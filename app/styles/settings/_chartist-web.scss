@@ -1,0 +1,33 @@
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+  @-moz-keyframes #{$name} {
+    @content;
+  }
+  @-ms-keyframes #{$name} {
+    @content;
+  }
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@mixin animation($name, $params) {
+  -webkit-animation: #{$name} $params; /* Safari 4+ */
+  -moz-animation: #{$name} $params; /* Fx 5+ */
+  -o-animation: #{$name} $params; /* Opera 12+ */
+  animation: #{$name} $params; /* IE 10+ */
+}
+
+$color-white: #EADBC4;
+$color-mint: #A8DACF;
+$color-green: #046971;
+$color-dark-green: #001A25;
+$color-grapefruit: #F05B4F;
+$color-red: #D70206;
+$color-yellow: #F4C63D;
+$color-black: #222222;
+$color-gray: #453D3F;
+
+$font-body: "Oxygen";

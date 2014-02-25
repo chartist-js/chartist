@@ -1,0 +1,164 @@
+@import "settings/chartist-web";
+@import "settings/foundation";
+@import "foundation/scss/normalize";
+@import "foundation/scss/foundation";
+@import "compass/css3";
+
+body {
+  line-height: 1.4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Oxygen";
+  font-weight: 300;
+  text-transform: uppercase;
+  color: $color-gray;
+}
+
+h1 {
+  font-size: rem-calc(32px);
+
+  @media #{$medium-up} {
+    font-size: 46px;
+  }
+}
+
+h2 {
+  font-size: 26px;
+
+  @media #{$medium-up} {
+    font-size: 34px;
+  }
+}
+
+.page-header {
+  background-color: $color-yellow;
+  @include background(linear-gradient(top, $color-yellow 0%, lighten($color-yellow, 5%) 70%, $color-yellow 100%));
+  min-height: 200px;
+  text-align: center;
+
+  > h1 {
+    font-size: rem-calc(48px);
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    font-weight: 700;
+    color: white;
+    line-height: 0.5;
+    margin-top: 2rem;
+    @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
+
+    @media #{$medium-up} {
+      font-size: rem-calc(80px);
+    }
+
+    > small {
+      font-size: rem-calc(19px);
+      display: inline-block;
+      width: 100%;
+    }
+  }
+
+  > figure {
+    display: inline-block;
+    max-width: 380px;
+  }
+}
+
+.documentation-section {
+  @include grid-row();
+
+  > header {
+    @include grid-column(12);
+  }
+
+  > .content {
+    @include grid-column(12);
+
+    @media #{$medium-up} {
+      @include grid-column(9);
+    }
+
+    > .chart-container {
+      width: 100%;
+      height: 0;
+      padding-bottom: 67%;
+      background-color: $color-black;
+    }
+  }
+
+  > .side-notes {
+    @include grid-column(12);
+    
+    @media #{$medium-up} {
+      @include grid-column(3);
+    }
+  }
+}
+
+@include keyframes(dashoffset) {
+  0% {
+    stroke-dashoffset: 0px;
+  }
+
+  100% {
+    stroke-dashoffset: -20px;
+  }
+}
+
+.crt-label {
+  fill: $color-white;
+  font-size: 13px;
+}
+
+.crt-vertical-grid {
+  stroke: lighten($color-black, 5%);
+  stroke-dasharray: 3px;
+  stroke-width: 1px;
+}
+
+.crt-horizontal-grid {
+  stroke: lighten($color-black, 10%);
+  stroke-dasharray: 3px;
+  stroke-width: 1px;
+}
+
+.crt-series {
+  &.investment {
+    .crt-point {
+      stroke: $color-grapefruit;
+      stroke-width: 10px;
+      stroke-linecap: square;
+    }
+
+    .crt-line {
+      fill: none;
+      stroke-dasharray: 5px;
+      stroke-dashoffset: 0px;
+      stroke: $color-grapefruit;
+      stroke-width: 4px;
+
+      @include animation(dashoffset, 1s linear infinite);
+    }
+  }
+
+  &.income {
+    .crt-point {
+      stroke: $color-mint;
+      stroke-width: 13px;
+      stroke-linecap: round;
+    }
+
+    .crt-line {
+      fill: none;
+      stroke: $color-mint;
+      stroke-width: 4px;
+    }
+  }
+}
+
+@import url("http://fonts.googleapis.com/css?family=Varela+Round|Oxygen:400,300,700");
