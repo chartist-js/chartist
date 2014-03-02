@@ -14,6 +14,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  grunt.loadNpmTasks('assemble');
+
   // Define the configuration for all the tasks
   grunt.initConfig({
 
@@ -26,6 +28,10 @@ module.exports = function (grunt) {
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
+      assemble: {
+        files: ['<%= settings.app %>/docs/{,*/}*.{hbs,yml,json}'],
+        tasks: ['assemble']
+      },
       js: {
         files: ['<%= settings.app %>/scripts/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
@@ -145,12 +151,14 @@ module.exports = function (grunt) {
         partials: ['app/docs/partials/**/*.hbs'],
         layoutdir: 'app/docs/layouts',
         layoutext: '.hbs',
-        layout: ['app/docs/layouts/default.hbs'],
+        layout: ['default'],
         data: ['app/docs/data/*.{json,yml}']
       },
       pages: {
-        src: ['app/docs/*.hbs'],
-        dest: 'app/'
+        expand: true,
+        cwd: 'app/docs',
+        src: ['*.hbs'],
+        dest: 'app'
       }
     },
 
