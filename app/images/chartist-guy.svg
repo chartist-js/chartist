@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 15.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" id="guy" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve">
+<svg version="1.1" id="guy" viewBox="0 0 486 486" preserveAspectRatio="xMinYMin meet">
 <g>
   <g id="shadows" opacity="0.1">
     <path d="M55.997,405.221c0,3.051,41.857,5.499,93.509,5.499c51.643,0,93.494-2.448,93.494-5.499
@@ -27,6 +24,7 @@
       </g>
     </g>
   </g>
+  <svg id="chart-canvas" x="50.055" y="189.846" width="195.399" height="136.78" viewBox="0 0 195.399 136.78"></svg>
   <g>
     <path fill="#231F20" d="M365.406,347.481l0.982,53.303h-8.344l-4.399-40.897c0,0-7.466,1.87-26.572,1.87
       c-19.109,0-28.33-1.335-28.33-1.335l-11.923,40.59l-8.343-0.133l10.16-53.469l5.705-2.122l68.967-0.797L365.406,347.481z"/>

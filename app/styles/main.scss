@@ -4,6 +4,23 @@
 @import "foundation/scss/foundation";
 @import "compass/css3";
 
+//TODO: Create library mixins and separate from page styles to provide as library
+
+@mixin responsive-svg-container($width: 100%, $ratio: 1/1) {
+  display: block;
+  position: relative;
+  width: $width;
+  padding-bottom: 100% * $ratio;
+  overflow: hidden;
+
+  svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
 body {
   line-height: 1.4;
 }
@@ -13,7 +30,6 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: "Oxygen";
   font-weight: 300;
   text-transform: uppercase;
   color: $color-gray;
@@ -38,7 +54,6 @@ h2 {
 .page-header {
   background-color: $color-yellow;
   @include background(linear-gradient(top, $color-yellow 0%, lighten($color-yellow, 5%) 70%, $color-yellow 100%));
-  min-height: 200px;
   text-align: center;
 
   > h1 {
@@ -63,9 +78,13 @@ h2 {
     }
   }
 
-  > figure {
-    display: inline-block;
-    max-width: 380px;
+  > .limiter {
+    max-width: 480px;
+    margin: 0 auto;
+
+    > figure {
+      @include responsive-svg-container();
+    }
   }
 }
 
@@ -140,6 +159,24 @@ h2 {
       stroke-dasharray: 5px;
       stroke-dashoffset: 0px;
       stroke: $color-grapefruit;
+      stroke-width: 4px;
+
+      @include animation(dashoffset, 1s linear infinite);
+    }
+  }
+
+  &.chartist {
+    .crt-point {
+      stroke: $color-red;
+      stroke-width: 10px;
+      stroke-linecap: round;
+    }
+
+    .crt-line {
+      fill: none;
+      stroke: $color-red;
+      stroke-dasharray: 5px;
+      stroke-dashoffset: 0px;
       stroke-width: 4px;
 
       @include animation(dashoffset, 1s linear infinite);

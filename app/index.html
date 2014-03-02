@@ -22,35 +22,42 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 </head>
-<body ng-app="snapSvgAngularApp">
+<body>
 <!--[if lt IE 9]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
   your browser</a> to improve your experience.</p>
 <![endif]-->
 
 <header class="page-header">
-  <h1>Chartist.js<small> Simple responsive charts</small></h1>
-  <figure>
-    <img src="/images/chartist-guy.svg" alt="Chartist Guy"/>
-  </figure>
+  <h1>Chartist.js
+    <small> Simple responsive charts</small>
+  </h1>
+  <div class="limiter">
+    <figure>
+      <svg id="chartist-guy" data-svg-src="/images/chartist-guy.svg"></svg>
+    </figure>
+  </div>
 </header>
 
-<section class="documentation-section">
-  <header>
-    <h2>Chart CSS animation example</h2>
-  </header>
-  <div class="content">
-    <div class="chart-container">
-      <svg id="chart"></svg>
+<article class="main" role="main">
+  <section class="documentation-section">
+    <header>
+      <h2>Chart CSS animation example</h2>
+    </header>
+    <div class="content">
+      <div class="chart-container">
+        <svg id="chart"></svg>
+      </div>
     </div>
-  </div>
-  <aside class="side-notes">
-    <p>Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!</p>
-  </aside>
-</section>
+    <aside class="side-notes">
+      <p>Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations
+        and transitions to be applied to your SVG elements!</p>
+    </aside>
+  </section>
+</article>
 
 <!-- Add your site or application content here -->
-<article class="main" role="main" ng-view=""></article>
+
 
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
 <script>

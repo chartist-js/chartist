@@ -1,8 +1,13 @@
 //TODO: The whole library needs to be extracted into its own library project and not together with the website / documentation
 //TODO: Add more chart types!
-//TODO: Refactor library structure to optimize scopes and closures
+//TODO: Refactor methods to simplify structure
 (function (document, window, undefined) {
   'use strict';
+
+  // Helps to simplyfy functional style code
+  function noop(n) {
+    return n;
+  }
 
   // Some utility functions
   function extend(target, source) {
@@ -15,6 +20,33 @@
       }
     }
     return target;
+  }
+
+  // Get element height / width with fallback to SVGAnimatedLength
+  function getHeight(svgElement) {
+    if (svgElement.clientHeight) {
+      return svgElement.clientHeight;
+    } else {
+      try {
+        return svgElement.height.baseVal.value;
+      } catch (e) {
+      }
+    }
+
+    return 0;
+  }
+
+  function getWidth(svgElement) {
+    if (svgElement.clientWidth) {
+      return svgElement.clientWidth;
+    } else {
+      try {
+        return svgElement.width.baseVal.value;
+      } catch (e) {
+      }
+    }
+
+    return 0;
   }
 
   var LineChartHelpers = {
@@ -117,7 +149,7 @@
       for (var i = bounds.min; i <= bounds.max; i += bounds.step) {
         // Add grid line
         var gridLineY = LineChartHelpers.projectPoint(paper, i, bounds, options);
-        var gridElement = paper.line(options.chartPadding, gridLineY, paper.node.clientWidth - options.chartPadding, gridLineY);
+        var gridElement = paper.line(options.chartPadding, gridLineY, getWidth(paper.node) - options.chartPadding, gridLineY);
         if (options.classNames.horizontalGridLine) {
           gridElement.node.setAttribute('class', options.classNames.horizontalGridLine);
         }
@@ -142,7 +174,7 @@
     },
 
     getAvailableHeight: function (paper, options) {
-      return paper.node.clientHeight - (options.chartPadding * 2) - options.labelOffset;
+      return getHeight(paper.node) - (options.chartPadding * 2) - options.labelOffset;
     },
 
     // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
@@ -206,43 +238,39 @@
     }
   };
 
-  window.Chartist = function (query, data, baseOptions) {
-    var responsiveOptions,
+
+  // Chartist closure constructor
+  window.Chartist = window.Chartist || function (query, data, options) {
+
+    var defaultOptions = {
+        labelOffset: 40,
+        labelPadding: 5,
+        labelSampling: 1,
+        labelInterpolationFnc: noop,
+        showLines: true,
+        showPoint: true,
+        showLabels: true,
+        showVerticalGrid: true,
+        showHorizontalGrid: true,
+        horizontalGridMinSpace: 40,
+        verticalGridSampling: 1,
+        lineSmooth: true,
+        chartPadding: 20,
+        classNames: {
+          labels: 'crt-label',
+          series: 'crt-series',
+          line: 'crt-line',
+          point: 'crt-point',
+          verticalGridLine: 'crt-vertical-grid',
+          horizontalGridLine: 'crt-horizontal-grid'
+        }
+      },
+      baseOptions = extend(extend({}, defaultOptions), options),
+      responsiveOptions = arguments[3] || false,
       paper = Snap(query),
       dataArray = LineChartHelpers.normalizeDataArray(LineChartHelpers.getDataArray(data), data.labels.length),
       i,
       j;
-
-    if (arguments[3]) {
-      responsiveOptions = arguments[3];
-    }
-
-    this.reflow = function () {
-      reflow();
-    };
-
-    function reflow() {
-      createChart();
-    }
-
-    // Callback for matchMedia to trigger reflow
-    function mediaQueryTrigger() {
-      reflow();
-    }
-
-    if (!window.matchMedia) {
-      throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
-    } else if (responsiveOptions) {
-
-      for (i = 0; i < responsiveOptions.length; i++) {
-        var mql = window.matchMedia(responsiveOptions[i][0]);
-        mql.addListener(mediaQueryTrigger);
-        // Trigger the first time manually
-        if (mql.matches) {
-          mediaQueryTrigger();
-        }
-      }
-    }
 
     function createChart() {
       var options,
@@ -256,10 +284,12 @@
 
       // Construct current options based on responsive option overrides (overrides in sequence of responsiveOptions)
       options = extend({}, baseOptions);
-      for (i = 0; i < responsiveOptions.length; i++) {
-        var mql = window.matchMedia(responsiveOptions[i][0]);
-        if (mql.matches) {
-          options = extend(options, responsiveOptions[i][1]);
+      if (responsiveOptions) {
+        for (i = 0; i < responsiveOptions.length; i++) {
+          var mql = window.matchMedia(responsiveOptions[i][0]);
+          if (mql.matches) {
+            options = extend(options, responsiveOptions[i][1]);
+          }
         }
       }
 
@@ -276,13 +306,13 @@
       for (i = 0; i < data.labels.length; i++) {
         for (j = 0; j < dataArray.length; j++) {
           positions[j][i] = {
-            x: ((paper.node.clientWidth - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
+            x: ((getWidth(paper.node) - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
             y: LineChartHelpers.projectPoint(paper, dataArray[j][i], bounds, options)
           };
 
           labelPositions[i] = {
-            x: ((paper.node.clientWidth - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
-            y: paper.node.clientHeight - options.chartPadding
+            x: ((getWidth(paper.node) - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
+            y: getHeight(paper.node) - options.chartPadding
           };
         }
       }
@@ -321,9 +351,28 @@
       }
     }
 
+    // Do important checks and throw if necessary
+    if (!paper) {
+      throw 'Could not instantiate Snap.js with query "' + query + '"';
+    }
+
+    if (!window.matchMedia) {
+      throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
+    } else if (responsiveOptions) {
+
+      for (i = 0; i < responsiveOptions.length; i++) {
+        var mql = window.matchMedia(responsiveOptions[i][0]);
+        mql.addListener(createChart);
+      }
+    }
+
     createChart();
 
-    return this;
+    // Public members
+    return {
+      update: function() {
+        createChart();
+      }
+    };
   };
-
 }(document, window));
