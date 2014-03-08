@@ -3,6 +3,7 @@
 @import "foundation/scss/normalize";
 @import "foundation/scss/foundation";
 @import "compass/css3";
+@import "modules";
 
 //TODO: Create library mixins and separate from page styles to provide as library
 
@@ -22,7 +23,7 @@
 }
 
 body {
-  line-height: 1.4;
+  line-height: 1.54;
 }
 
 * {
@@ -33,22 +34,38 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   text-transform: uppercase;
   color: $color-gray;
+  line-height: 1;
 }
 
+$heading-scale: generateScale(16, $scale-perfect-fourth);
+
 h1 {
-  font-size: rem-calc(32px);
+  font-size: rem-calc(nth($heading-scale, 6));
 
   @media #{$medium-up} {
-    font-size: 46px;
+    font-size: rem-calc(nth($heading-scale, 8));
   }
 }
 
 h2 {
-  font-size: 26px;
+  font-size: rem-calc(nth($heading-scale, 5));
 
   @media #{$medium-up} {
-    font-size: 34px;
+    font-size: rem-calc(nth($heading-scale, 7));
   }
+}
+
+h2 {
+  font-size: rem-calc(nth($heading-scale, 5));
+
+  @media #{$medium-up} {
+    font-size: rem-calc(nth($heading-scale, 6));
+  }
+}
+
+ul {
+  list-style: disc outside none;
+  padding-left: 1em;
 }
 
 .landing-page-header {
@@ -58,7 +75,7 @@ h2 {
 
   > .introduction-title {
     text-transform: uppercase;
-    font-size: rem-calc(48px);
+    font-size: rem-calc(nth($heading-scale, 8));
     margin: 0;
     display: inline-block;
     width: 100%;
@@ -69,11 +86,11 @@ h2 {
     @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
 
     @media #{$medium-up} {
-      font-size: rem-calc(80px);
+      font-size: rem-calc(nth($heading-scale, 9));
     }
 
     > small {
-      font-size: rem-calc(19px);
+      font-size: rem-calc(nth($heading-scale, 4));
       display: inline-block;
       width: 100%;
     }

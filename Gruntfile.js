@@ -40,7 +40,7 @@ module.exports = function (grunt) {
         tasks: ['newer:jshint:test', 'jasmine']
       },
       compass: {
-        files: ['<%= pkg.config.source %>/styles/{,*/}*.{scss,sass}'],
+        files: ['<%= pkg.config.source %>/styles/**/*.{scss,sass}'],
         tasks: ['compass:server']
       },
       gruntfile: {
