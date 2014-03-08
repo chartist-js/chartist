@@ -3,7 +3,7 @@
 var optionsChartistGuy = {
   chartPadding: 10,
   axisX: {
-    labelOffset: 10
+    labelOffset: 15
   }
 };
 
@@ -11,7 +11,9 @@ var chartistGuyData = {
   labels: ['One', 'Two', 'Three', 'Four'],
   series: [
     {
-      className: 'series-a',
+      data: [1883000, 2050000, 3706000, 5806000]
+    },
+    {
       data: [1283000, 3250000, 5706000, 3950000]
     }
   ]

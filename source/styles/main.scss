@@ -190,7 +190,45 @@ ul {
     font-size: 13px;
   }
 
+  .ct-grid {
+    stroke: darken($color-white, 20%);
+    stroke-dasharray: 2px;
+    stroke-width: 1px;
+  }
 
+  .ct-series {
+    &.ct-series-a {
+      .ct-point {
+        stroke: $color-red;
+        stroke-width: 10px;
+        stroke-linecap: round;
+      }
+
+      .ct-line {
+        fill: none;
+        stroke-dasharray: 5px;
+        stroke: $color-red;
+        stroke-width: 4px;
+
+        @include animation(dashoffset, 1s linear infinite);
+      }
+    }
+
+    &.ct-series-b {
+      .ct-point {
+        stroke: $color-green;
+        stroke-width: 8px;
+        stroke-linecap: square;
+      }
+
+      .ct-line {
+        fill: none;
+        stroke-dasharray: 10px 3px;
+        stroke: $color-green;
+        stroke-width: 2px;
+      }
+    }
+  }
 }
 
 #example-chart-one {
@@ -216,7 +254,6 @@ ul {
       .ct-line {
         fill: none;
         stroke-dasharray: 5px;
-        stroke-dashoffset: 0px;
         stroke: $color-grapefruit;
         stroke-width: 4px;
 
