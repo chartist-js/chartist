@@ -10,15 +10,15 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title></title>
-  <meta name="description" content="">
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
   <!-- build:css styles/vendor.css -->
   <!-- bower:css -->
   <!-- endbower -->
   <!-- endbuild -->
-  <!-- build:css({.tmp,app}) styles/main.css -->
+  <!-- build:css({.tmp,source}) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 </head>
@@ -40,27 +40,7 @@
 </header>
 
 <article class="main" role="main">
-  
-<header>
-  <h1>Chartist - Simple responsive charts</h1>
-</header>
-
-<p>Chartist landing page content</p>
-
-<section class="documentation-section">
-  <header>
-    <h2>Chart CSS animation example</h2>
-  </header>
-  <div class="content">
-    <div class="chart-container">
-      <svg id="chart"></svg>
-    </div>
-  </div>
-  <aside class="side-notes">
-    <p>Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations
-      and transitions to be applied to your SVG elements!</p>
-  </aside>
-</section>
+  {{> body  }}
 </article>
 
 <script>
@@ -98,7 +78,7 @@
 <!-- endbower -->
 <!-- endbuild -->
 
-<!-- build:js({.tmp,app}) scripts/scripts.js -->
+<!-- build:js({.tmp,source}) scripts/scripts.js -->
 <script src="scripts/chartist.js"></script>
 <script src="scripts/main.js"></script>
 <!-- endbuild -->

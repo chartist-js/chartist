@@ -19,21 +19,17 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
 
-    // Project settings
-    settings: {
-      // configurable paths
-      app: require('./bower.json').appPath || 'app',
-      dist: 'dist'
-    },
+    // Grunt package with settings
+    pkg: grunt.file.readJSON('package.json'),
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       assemble: {
-        files: ['<%= settings.app %>/docs/{,*/}*.{hbs,yml,json}'],
+        files: ['<%= pkg.config.source %>/docs/{,*/}*.{hbs,yml,json}'],
         tasks: ['assemble']
       },
       js: {
-        files: ['<%= settings.app %>/scripts/{,*/}*.js'],
+        files: ['<%= pkg.config.source %>/scripts/{,*/}*.js'],
         tasks: ['newer:jshint:all'],
         options: {
           livereload: true
@@ -44,7 +40,7 @@ module.exports = function (grunt) {
         tasks: ['newer:jshint:test', 'jasmine']
       },
       compass: {
-        files: ['<%= settings.app %>/styles/{,*/}*.{scss,sass}'],
+        files: ['<%= pkg.config.source %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server']
       },
       gruntfile: {
@@ -55,9 +51,9 @@ module.exports = function (grunt) {
           livereload: '<%= connect.options.livereload %>'
         },
         files: [
-          '<%= settings.app %>/{,*/}*.html',
+          '.tmp/{,*/}*.html',
           '.tmp/styles/{,*/}*.css',
-          '<%= settings.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= pkg.config.source %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
       }
     },
@@ -75,7 +71,7 @@ module.exports = function (grunt) {
           open: true,
           base: [
             '.tmp',
-            '<%= settings.app %>'
+            '<%= pkg.config.source %>'
           ]
         }
       },
@@ -85,13 +81,13 @@ module.exports = function (grunt) {
           base: [
             '.tmp',
             'test',
-            '<%= settings.app %>'
+            '<%= pkg.config.source %>'
           ]
         }
       },
       dist: {
         options: {
-          base: '<%= settings.dist %>'
+          base: '<%= pkg.config.dist %>'
         }
       }
     },
@@ -104,7 +100,7 @@ module.exports = function (grunt) {
       },
       all: [
         'Gruntfile.js',
-        '<%= settings.app %>/scripts/{,*/}*.js'
+        '<%= pkg.config.source %>/scripts/{,*/}*.js'
       ],
       test: {
         options: {
@@ -122,8 +118,8 @@ module.exports = function (grunt) {
             dot: true,
             src: [
               '.tmp',
-              '<%= settings.dist %>/*',
-              '!<%= settings.dist %>/.git*'
+              '<%= pkg.config.dist %>/*',
+              '!<%= pkg.config.dist %>/.git*'
             ]
           }
         ]
@@ -131,57 +127,41 @@ module.exports = function (grunt) {
       server: '.tmp'
     },
 
-    // Add vendor prefixed styles
-    /*    autoprefixer: {
-     options: {
-     browsers: ['last 1 version']
-     },
-     dist: {
-     files: [{
-     expand: true,
-     cwd: '.tmp/styles/',
-     src: '{,*//*}*.css',
-     dest: '.tmp/styles/'
-     }]
-     }
-     },*/
-
     assemble: {
       options: {
-        partials: ['app/docs/partials/**/*.hbs'],
-        layoutdir: 'app/docs/layouts',
+        partials: ['<%= pkg.config.source %>/docs/partials/**/*.hbs'],
+        layoutdir: '<%= pkg.config.source %>/docs/layouts',
         layoutext: '.hbs',
         layout: ['default'],
-        data: ['app/docs/data/*.{json,yml}']
+        data: ['<%= pkg.config.source %>/docs/data/*.{json,yml}']
       },
       pages: {
         expand: true,
-        cwd: 'app/docs',
+        cwd: '<%= pkg.config.source %>/docs',
         src: ['*.hbs'],
-        dest: 'app'
+        dest: '.tmp'
       }
     },
 
     // Automatically inject Bower components into the app
     'bower-install': {
       app: {
-        html: '<%= settings.app %>/index.html',
-        ignorePath: '<%= settings.app %>/',
-        exclude: ['bower_components/foundation/css/foundation.css']
+        html: '.tmp/index.html',
+        ignorePath: '<%= pkg.config.source %>/',
+        exclude: '<%= pkg.config.bowerExclude %>'
       }
     },
-
 
     // Compiles Sass to CSS and generates necessary files if requested
     compass: {
       options: {
-        sassDir: '<%= settings.app %>/styles',
+        sassDir: '<%= pkg.config.source %>/styles',
         cssDir: '.tmp/styles',
         generatedImagesDir: '.tmp/images/generated',
-        imagesDir: '<%= settings.app %>/images',
-        javascriptsDir: '<%= settings.app %>/scripts',
-        fontsDir: '<%= settings.app %>/styles/fonts',
-        importPath: '<%= settings.app %>/bower_components',
+        imagesDir: '<%= pkg.config.source %>/images',
+        javascriptsDir: '<%= pkg.config.source %>/scripts',
+        fontsDir: '<%= pkg.config.source %>/styles/fonts',
+        importPath: '<%= pkg.config.source %>/bower_components',
         httpImagesPath: '/images',
         httpGeneratedImagesPath: '/images/generated',
         httpFontsPath: '/styles/fonts',
@@ -191,7 +171,7 @@ module.exports = function (grunt) {
       },
       dist: {
         options: {
-          generatedImagesDir: '<%= settings.dist %>/images/generated'
+          generatedImagesDir: '<%= pkg.config.dist %>/images/generated'
         }
       },
       server: {
@@ -206,10 +186,10 @@ module.exports = function (grunt) {
       dist: {
         files: {
           src: [
-            '<%= settings.dist %>/scripts/{,*/}*.js',
-            '<%= settings.dist %>/styles/{,*/}*.css',
-            '<%= settings.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= settings.dist %>/styles/fonts/*'
+            '<%= pkg.config.dist %>/scripts/{,*/}*.js',
+            '<%= pkg.config.dist %>/styles/{,*/}*.css',
+            '<%= pkg.config.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+            '<%= pkg.config.dist %>/styles/fonts/*'
           ]
         }
       }
@@ -219,18 +199,18 @@ module.exports = function (grunt) {
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
     useminPrepare: {
-      html: '<%= settings.app %>/index.html',
+      html: '.tmp/index.html',
       options: {
-        dest: '<%= settings.dist %>'
+        dest: '<%= pkg.config.dist %>'
       }
     },
 
     // Performs rewrites based on rev and the useminPrepare configuration
     usemin: {
-      html: ['<%= settings.dist %>/{,*/}*.html'],
-      css: ['<%= settings.dist %>/styles/{,*/}*.css'],
+      html: ['<%= pkg.config.dist %>/{,*/}*.html'],
+      css: ['<%= pkg.config.dist %>/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= settings.dist %>']
+        assetsDirs: ['<%= pkg.config.dist %>']
       }
     },
 
@@ -240,9 +220,9 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: '<%= settings.app %>/images',
+            cwd: '<%= pkg.config.source %>/images',
             src: '{,*/}*.{png,jpg,jpeg,gif}',
-            dest: '<%= settings.dist %>/images'
+            dest: '<%= pkg.config.dist %>/images'
           }
         ]
       }
@@ -252,9 +232,9 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: '<%= settings.app %>/images',
+            cwd: '<%= pkg.config.source %>/images',
             src: '{,*/}*.svg',
-            dest: '<%= settings.dist %>/images'
+            dest: '<%= pkg.config.dist %>/images'
           }
         ],
         options: {
@@ -277,9 +257,9 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: '<%= settings.dist %>',
+            cwd: '<%= pkg.config.dist %>',
             src: ['*.html'],
-            dest: '<%= settings.dist %>'
+            dest: '<%= pkg.config.dist %>'
           }
         ]
       }
@@ -303,7 +283,7 @@ module.exports = function (grunt) {
     // Replace Google CDN references
     cdnify: {
       dist: {
-        html: ['<%= settings.dist %>/*.html']
+        html: ['<%= pkg.config.dist %>/*.html']
       }
     },
 
@@ -314,13 +294,12 @@ module.exports = function (grunt) {
           {
             expand: true,
             dot: true,
-            cwd: '<%= settings.app %>',
-            dest: '<%= settings.dist %>',
+            cwd: '<%= pkg.config.source %>',
+            dest: '<%= pkg.config.dist %>',
             src: [
               '*.{ico,png,txt}',
               '.htaccess',
               '*.html',
-              'views/{,*/}*.html',
               'bower_components/**/*',
               'images/{,*/}*.{webp}',
               'fonts/*'
@@ -329,14 +308,22 @@ module.exports = function (grunt) {
           {
             expand: true,
             cwd: '.tmp/images',
-            dest: '<%= settings.dist %>/images',
+            dest: '<%= pkg.config.dist %>/images',
             src: ['generated/*']
+          },
+          {
+            expand: true,
+            cwd: '.tmp',
+            dest: '<%= pkg.config.dist %>',
+            src: [
+              '*.html'
+            ]
           }
         ]
       },
       styles: {
         expand: true,
-        cwd: '<%= settings.app %>/styles',
+        cwd: '<%= pkg.config.source %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
       }
@@ -358,20 +345,14 @@ module.exports = function (grunt) {
     },
 
     // Test settings
-    /*karma: {
-     unit: {
-     configFile: 'karma.conf.js',
-     singleRun: true
-     }
-     }*/
     jasmine: {
       dist: {
         src: [
-          'app/bower_components/jquery/dist/jquery.min.js',
-          'app/bower_components/fastclick/lib/fastclick.js',
-          'app/bower_components/foundation/js/foundation.min.js',
-          'app/bower_components/snap.svg/dist/snap.svg-min.js',
-          'app/scripts/chartist.js',
+          'source/bower_components/jquery/dist/jquery.min.js',
+          'source/bower_components/fastclick/lib/fastclick.js',
+          'source/bower_components/foundation/js/foundation.min.js',
+          'source/bower_components/snap.svg/dist/snap.svg-min.js',
+          'source/scripts/chartist.js'
         ],
         options: {
           specs: 'test/spec/**/spec-*.js',

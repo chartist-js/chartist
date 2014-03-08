@@ -50,5 +50,12 @@
   },
   "scripts": {
     "test": "grunt test"
+  },
+  "config": {
+    "source": "source",
+    "dist": "dist",
+    "bowerExclude": [
+      "bower_components/foundation/css/foundation.css"
+    ]
   }
 }
