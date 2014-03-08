@@ -158,73 +158,103 @@ ul {
   }
 }
 
-.crt-label {
-  fill: $color-white;
-  font-size: 13px;
-}
-
-.crt-vertical-grid {
-  stroke: lighten($color-black, 5%);
-  stroke-dasharray: 3px;
-  stroke-width: 1px;
-}
-
-.crt-horizontal-grid {
-  stroke: lighten($color-black, 10%);
-  stroke-dasharray: 3px;
-  stroke-width: 1px;
-}
-
-.crt-series {
-  &.investment {
-    .crt-point {
-      stroke: $color-grapefruit;
-      stroke-width: 10px;
-      stroke-linecap: square;
-    }
-
-    .crt-line {
-      fill: none;
-      stroke-dasharray: 5px;
-      stroke-dashoffset: 0px;
-      stroke: $color-grapefruit;
-      stroke-width: 4px;
-
-      @include animation(dashoffset, 1s linear infinite);
-    }
+@include keyframes(bouncing-stroke) {
+  0% {
+    stroke-width: 5px;
   }
 
-  &.chartist {
-    .crt-point {
-      stroke: $color-red;
-      stroke-width: 10px;
-      stroke-linecap: round;
-    }
-
-    .crt-line {
-      fill: none;
-      stroke: $color-red;
-      stroke-dasharray: 5px;
-      stroke-dashoffset: 0px;
-      stroke-width: 4px;
-
-      @include animation(dashoffset, 1s linear infinite);
-    }
+  50% {
+    stroke-width: 10px;
   }
 
-  &.income {
-    .crt-point {
-      stroke: $color-mint;
-      stroke-width: 13px;
-      stroke-linecap: round;
+  100% {
+    stroke-width: 5px;
+  }
+}
+
+@include keyframes(exploding-stroke) {
+  0% {
+    stroke-width: 2px;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-width: 20px;
+    opacity: 0;
+  }
+}
+
+#chart-one {
+  .ct-label {
+    fill: $color-white;
+    font-size: 13px;
+  }
+
+  .ct-vertical-grid {
+    stroke: lighten($color-black, 5%);
+    stroke-dasharray: 3px;
+    stroke-width: 1px;
+  }
+
+  .ct-horizontal-grid {
+    stroke: lighten($color-black, 10%);
+    stroke-dasharray: 3px;
+    stroke-width: 1px;
+  }
+
+  .ct-series {
+    &.ct-series-a {
+      .ct-point {
+        stroke: $color-grapefruit;
+        stroke-width: 10px;
+        stroke-linecap: square;
+      }
+
+      .ct-line {
+        fill: none;
+        stroke-dasharray: 5px;
+        stroke-dashoffset: 0px;
+        stroke: $color-grapefruit;
+        stroke-width: 4px;
+
+        @include animation(dashoffset, 1s linear infinite);
+      }
     }
 
-    .crt-line {
-      fill: none;
-      stroke: $color-mint;
-      stroke-width: 4px;
+    &.ct-series-b {
+      .ct-point {
+        stroke: $color-red;
+        stroke-width: 10px;
+        stroke-linecap: round;
+
+        @include animation(bouncing-stroke, 0.5s ease infinite);
+      }
+
+      .ct-line {
+        fill: none;
+        stroke: $color-red;
+        stroke-width: 3px;
+      }
+    }
+
+    &.ct-series-c {
+      .ct-point {
+        stroke: $color-yellow;
+        stroke-width: 10px;
+        stroke-linecap: round;
+        @include animation(exploding-stroke, 1s ease-out infinite);
+      }
+
+      .ct-line {
+        fill: none;
+        stroke: $color-yellow;
+        stroke-dasharray: 40px 3px;
+        stroke-width: 2px;
+      }
     }
   }
 }
+
+
 
 @import url("http://fonts.googleapis.com/css?family=Varela+Round|Oxygen:400,300,700");

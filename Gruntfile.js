@@ -153,6 +153,7 @@ module.exports = function (grunt) {
     },
 
     // Compiles Sass to CSS and generates necessary files if requested
+    // TODO: Replace with grunt-libsass
     compass: {
       options: {
         sassDir: '<%= pkg.config.source %>/styles',

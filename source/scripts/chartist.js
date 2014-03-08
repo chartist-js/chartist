@@ -4,9 +4,15 @@
 (function (document, window, undefined) {
   'use strict';
 
-  // Helps to simplyfy functional style code
+  // Helps to simplify functional style code
   function noop(n) {
     return n;
+  }
+
+  // Generates a-z from number
+  function alphaNumerize(n) {
+    // Limit to a-z
+    return String.fromCharCode(97 + n%26);
   }
 
   // Some utility functions
@@ -49,7 +55,7 @@
     return 0;
   }
 
-  var LineChartHelpers = {
+  var ChartHelpers = {
     // Internal functions
     getDataArray: function (data) {
       var array = [];
@@ -108,13 +114,14 @@
       var labelElements = [];
       for (var i = 0; i < positions.length; i++) {
 
-        // Exit based on sampling to skip label rendering
-        if (i % options.labelSampling !== 0) {
+        // If interpolation function returns falsy value we skipp this label
+        var interpolated = options.axisX.labelInterpolationFnc(labels[i]);
+        if(!interpolated && interpolated !== 0) {
           continue;
         }
 
-        // Add labels with configured padding (left)
-        var label = paper.text(positions[i].x + options.labelPadding, positions[i].y, options.labelInterpolationFnc(labels[i]));
+        //TODO: Add possibility to define padding (not using 2 px default)
+        var label = paper.text(positions[i].x + 2, positions[i].y, interpolated);
         if (options.classNames.labels) {
           label.node.setAttribute('class', options.classNames.labels);
         }
@@ -124,14 +131,9 @@
       return labelElements;
     },
 
-    createVerticalGrid: function (paper, positions, options) {
+    createHorizontalGrid: function (paper, positions, options) {
       var gridElements = [];
       for (var i = 0; i < positions.length; i++) {
-
-        // Exit based on sampling to skip grid line rendering
-        if (i % options.verticalGridSampling !== 0) {
-          continue;
-        }
 
         // Add grid line
         var gridElement = paper.line(positions[i].x, positions[i].y, positions[i].x, options.chartPadding);
@@ -144,11 +146,11 @@
       return gridElements;
     },
 
-    createHorizontalGrid: function (paper, bounds, options) {
+    createVerticalGrid: function (paper, bounds, options) {
       var gridElements = [];
       for (var i = bounds.min; i <= bounds.max; i += bounds.step) {
         // Add grid line
-        var gridLineY = LineChartHelpers.projectPoint(paper, i, bounds, options);
+        var gridLineY = ChartHelpers.projectPoint(paper, i, bounds, options);
         var gridElement = paper.line(options.chartPadding, gridLineY, getWidth(paper.node) - options.chartPadding, gridLineY);
         if (options.classNames.horizontalGridLine) {
           gridElement.node.setAttribute('class', options.classNames.horizontalGridLine);
@@ -164,17 +166,17 @@
     },
 
     projectPoint: function (paper, value, bounds, options) {
-      var availableHeight = LineChartHelpers.getAvailableHeight(paper, options);
+      var availableHeight = ChartHelpers.getAvailableHeight(paper, options);
       return availableHeight - (value / bounds.range * availableHeight) + options.chartPadding + (bounds.min / bounds.range * availableHeight);
     },
 
     projectLength: function (paper, length, bounds, options) {
-      var availableHeight = LineChartHelpers.getAvailableHeight(paper, options);
+      var availableHeight = ChartHelpers.getAvailableHeight(paper, options);
       return (length / bounds.range * availableHeight);
     },
 
     getAvailableHeight: function (paper, options) {
-      return getHeight(paper.node) - (options.chartPadding * 2) - options.labelOffset;
+      return getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.labelOffset;
     },
 
     // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
@@ -201,7 +203,7 @@
       }
 
       bounds.valueRange = bounds.high - bounds.low;
-      bounds.oom = LineChartHelpers.orderOfMagnitude(bounds.valueRange);
+      bounds.oom = ChartHelpers.orderOfMagnitude(bounds.valueRange);
       bounds.min = Math.floor(bounds.low / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
       bounds.max = Math.ceil(bounds.high / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
       bounds.range = bounds.max - bounds.min;
@@ -210,8 +212,8 @@
 
       // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
       while (true) {
-        var length = LineChartHelpers.projectLength(paper, bounds.step / 2, bounds, options);
-        if (length >= options.horizontalGridMinSpace) {
+        var length = ChartHelpers.projectLength(paper, bounds.step / 2, bounds, options);
+        if (length >= options.axisY.scaleMinSpace) {
           bounds.step /= 2;
         } else {
           break;
@@ -243,32 +245,36 @@
   window.Chartist = window.Chartist || function (query, data, options) {
 
     var defaultOptions = {
-        labelOffset: 40,
-        labelPadding: 5,
-        labelSampling: 1,
-        labelInterpolationFnc: noop,
+        axisX: {
+          showLabel: true,
+          showGrid: true,
+          labelOffset: 40,
+          labelInterpolationFnc: noop
+        },
+        axisY: {
+          showLabel: true,
+          showGrid: true,
+          labelOffset: 40,
+          labelInterpolationFnc: noop,
+          scaleMinSpace: 40
+        },
         showLines: true,
         showPoint: true,
-        showLabels: true,
-        showVerticalGrid: true,
-        showHorizontalGrid: true,
-        horizontalGridMinSpace: 40,
-        verticalGridSampling: 1,
         lineSmooth: true,
         chartPadding: 20,
         classNames: {
-          labels: 'crt-label',
-          series: 'crt-series',
-          line: 'crt-line',
-          point: 'crt-point',
-          verticalGridLine: 'crt-vertical-grid',
-          horizontalGridLine: 'crt-horizontal-grid'
+          labels: 'ct-label',
+          series: 'ct-series',
+          line: 'ct-line',
+          point: 'ct-point',
+          verticalGridLine: 'ct-vertical-grid',
+          horizontalGridLine: 'ct-horizontal-grid'
         }
       },
       baseOptions = extend(extend({}, defaultOptions), options),
       responsiveOptions = arguments[3] || false,
       paper = Snap(query),
-      dataArray = LineChartHelpers.normalizeDataArray(LineChartHelpers.getDataArray(data), data.labels.length),
+      dataArray = ChartHelpers.normalizeDataArray(ChartHelpers.getDataArray(data), data.labels.length),
       i,
       j;
 
@@ -294,12 +300,14 @@
       }
 
       // initialize bounds
-      bounds = LineChartHelpers.getBounds(paper, dataArray, options);
+      bounds = ChartHelpers.getBounds(paper, dataArray, options);
 
       // initialize series groups and position array
       for (j = 0; j < data.series.length; j++) {
         seriesGroups[j] = paper.g();
-        seriesGroups[j].node.setAttribute('class', options.classNames.series + ' ' + data.series[j].className);
+        // Use series class from series data or if not set generate one
+        seriesGroups[j].node.setAttribute('class', options.classNames.series + ' '
+          + (data.series[j].className || options.classNames.series + '-' + alphaNumerize(j)));
         positions[j] = [];
       }
 
@@ -307,7 +315,7 @@
         for (j = 0; j < dataArray.length; j++) {
           positions[j][i] = {
             x: ((getWidth(paper.node) - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
-            y: LineChartHelpers.projectPoint(paper, dataArray[j][i], bounds, options)
+            y: ChartHelpers.projectPoint(paper, dataArray[j][i], bounds, options)
           };
 
           labelPositions[i] = {
@@ -321,32 +329,32 @@
       // TODO: Optimize performance so we only loop once
 
       // First draw the grids
-      if (options.showVerticalGrid) {
+      if (options.axisX.showGrid) {
         var verticalGrid = paper.g();
-        verticalGrid.add(LineChartHelpers.createVerticalGrid(paper, labelPositions, options));
+        verticalGrid.add(ChartHelpers.createHorizontalGrid(paper, labelPositions, options));
         verticalGrid.prependTo(paper);
       }
 
-      if (options.showHorizontalGrid) {
+      if (options.axisY.showGrid) {
         var horizontalGrid = paper.g();
-        horizontalGrid.add(LineChartHelpers.createHorizontalGrid(paper, bounds, options));
+        horizontalGrid.add(ChartHelpers.createVerticalGrid(paper, bounds, options));
         horizontalGrid.prependTo(paper);
       }
 
       // Draw the series
       for (j = 0; j < data.series.length; j++) {
         if (options.showLines) {
-          seriesGroups[j].add(LineChartHelpers.createLines(paper, positions[j], options));
+          seriesGroups[j].add(ChartHelpers.createLines(paper, positions[j], options));
         }
 
         if (options.showPoint) {
-          seriesGroups[j].add(LineChartHelpers.createPoints(paper, positions[j], options));
+          seriesGroups[j].add(ChartHelpers.createPoints(paper, positions[j], options));
         }
       }
 
-      if (options.showLabels) {
+      if (options.axisX.showLabel) {
         var labels = paper.g();
-        labels.add(LineChartHelpers.createLabels(paper, data.labels, labelPositions, options));
+        labels.add(ChartHelpers.createLabels(paper, data.labels, labelPositions, options));
         labels.appendTo(paper);
       }
     }
