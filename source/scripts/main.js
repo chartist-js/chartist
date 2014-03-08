@@ -41,7 +41,15 @@ var examples = [
         {
           labelSampling: 2,
           axisX: {
-            labelOffset: 20
+            labelOffset: 20,
+            labelInterpolationFnc: function(value, index) {
+              // Interpolation function causes only every 2nd label to be displayed
+              if(index % 2 !== 0) {
+                return false;
+              } else {
+                return value;
+              }
+            }
           }
         }
       ]
@@ -62,7 +70,7 @@ Snap.load($('#chartist-guy').data('svgSrc'), function (fragment) {
 });
 
 // Initialize test line chart with override settings for small breakpoint
-charts.push(window.Chartist('#chart-one', examples[0].data, examples[0].options, examples[0].responsiveOptions));
+charts.push(window.Chartist('#example-chart-one', examples[0].data, examples[0].options, examples[0].responsiveOptions));
 // On window resize trigger reflow
 $(window).on('resize', function () {
   console.log('Resize');

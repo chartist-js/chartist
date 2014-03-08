@@ -115,7 +115,7 @@
       for (var i = 0; i < positions.length; i++) {
 
         // If interpolation function returns falsy value we skipp this label
-        var interpolated = options.axisX.labelInterpolationFnc(labels[i]);
+        var interpolated = options.axisX.labelInterpolationFnc(labels[i], i);
         if(!interpolated && interpolated !== 0) {
           continue;
         }
