@@ -301,8 +301,8 @@
       for (j = 0; j < data.series.length; j++) {
         seriesGroups[j] = paper.g();
         // Use series class from series data or if not set generate one
-        seriesGroups[j].node.setAttribute('class', options.classNames.series + ' '
-          + (data.series[j].className || options.classNames.series + '-' + alphaNumerize(j)));
+        seriesGroups[j].node.setAttribute('class', options.classNames.series + ' ' +
+          (data.series[j].className || options.classNames.series + '-' + alphaNumerize(j)));
         positions[j] = [];
       }
 
