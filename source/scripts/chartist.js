@@ -122,9 +122,7 @@
 
         //TODO: Add possibility to define padding (not using 2 px default)
         var label = paper.text(positions[i].x + 2, positions[i].y, interpolated);
-        if (options.classNames.labels) {
-          label.node.setAttribute('class', options.classNames.labels);
-        }
+        label.node.setAttribute('class', options.classNames.labels);
         labelElements.push(label);
       }
 
@@ -137,9 +135,7 @@
 
         // Add grid line
         var gridElement = paper.line(positions[i].x, positions[i].y, positions[i].x, options.chartPadding);
-        if (options.classNames.verticalGridLine) {
-          gridElement.node.setAttribute('class', options.classNames.verticalGridLine);
-        }
+        gridElement.node.setAttribute('class', options.classNames.grid + ' ' + options.classNames.horizontal);
         gridElements.push(gridElement);
       }
 
@@ -152,9 +148,7 @@
         // Add grid line
         var gridLineY = ChartHelpers.projectPoint(paper, i, bounds, options);
         var gridElement = paper.line(options.chartPadding, gridLineY, getWidth(paper.node) - options.chartPadding, gridLineY);
-        if (options.classNames.horizontalGridLine) {
-          gridElement.node.setAttribute('class', options.classNames.horizontalGridLine);
-        }
+        gridElement.node.setAttribute('class', options.classNames.grid + ' ' + options.classNames.vertical);
         gridElements.push(gridElement);
       }
 
@@ -267,8 +261,9 @@
           series: 'ct-series',
           line: 'ct-line',
           point: 'ct-point',
-          verticalGridLine: 'ct-vertical-grid',
-          horizontalGridLine: 'ct-horizontal-grid'
+          grid: 'ct-grid',
+          vertical: 'ct-vertical',
+          horizontal: 'ct-horizontal'
         }
       },
       baseOptions = extend(extend({}, defaultOptions), options),

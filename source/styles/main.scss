@@ -184,20 +184,23 @@ ul {
   }
 }
 
+#chartist-guy #chart-canvas {
+  .ct-label {
+    fill: darken($color-white, 50%);
+    font-size: 13px;
+  }
+
+
+}
+
 #example-chart-one {
   .ct-label {
     fill: $color-white;
     font-size: 13px;
   }
 
-  .ct-vertical-grid {
+  .ct-grid {
     stroke: lighten($color-black, 5%);
-    stroke-dasharray: 3px;
-    stroke-width: 1px;
-  }
-
-  .ct-horizontal-grid {
-    stroke: lighten($color-black, 10%);
     stroke-dasharray: 3px;
     stroke-width: 1px;
   }
