@@ -12,19 +12,19 @@ var optionsChartistGuy = {
     showLabel: true,
     showGrid: true,
     labelInterpolationFnc: function(n) {
-      return Math.round(n / 1000000) + 'mio';
+      return Math.round(n / 100000) / 10 + 'm.';
     }
   }
 };
 
 var chartistGuyData = {
-  labels: ['One', 'Two', 'Three', 'Four'],
+  labels: ['1st', '2nd', '3rd'],
   series: [
     {
-      data: [1883000, 2050000, 3706000, 5806000]
+      data: [1283000, 1500000, 5706000]
     },
     {
-      data: [1283000, 3250000, 5706000, 3950000]
+      data: [1883000, 2050000, 3706000]
     }
   ]
 };
