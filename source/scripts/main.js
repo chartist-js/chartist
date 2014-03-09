@@ -1,9 +1,19 @@
 'use strict';
 
 var optionsChartistGuy = {
-  chartPadding: 10,
   axisX: {
-    labelOffset: 15
+    showLabel: true,
+    showGrid: true,
+    labelInterpolationFnc: function(n) {
+      return n;
+    }
+  },
+  axisY: {
+    showLabel: true,
+    showGrid: true,
+    labelInterpolationFnc: function(n) {
+      return Math.round(n / 1000000) + 'mio';
+    }
   }
 };
 
@@ -41,7 +51,6 @@ var examples = [
       [
         Foundation.media_queries.small,
         {
-          labelSampling: 2,
           axisX: {
             labelOffset: 20,
             labelInterpolationFnc: function(value, index) {
