@@ -1,6 +1,6 @@
 # Warm welcome to you by the Chartist Guy
 
-![The Chartist Guy](http://chartist.gridware.ch/images/chartist-guy.png "The Chartist Guy")
+![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/source/images/chartist-guy.svg "The Chartist Guy")
 
 Chartist.js is a responsive charting library built with SVG. There are hundreds of nice charting libraries already
 out there, but they are either:
