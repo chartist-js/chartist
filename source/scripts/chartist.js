@@ -92,7 +92,7 @@
     },
 
     getAvailableHeight: function (paper, options) {
-      return getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.labelOffset;
+      return getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.offset;
     },
 
     // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
