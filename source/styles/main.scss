@@ -33,7 +33,6 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   text-transform: uppercase;
-  color: $color-gray;
   line-height: 1;
 }
 
@@ -133,7 +132,10 @@ ul {
         width: 100%;
         height: 0;
         padding-bottom: 67%;
-        background-color: $color-black;
+
+        &.dark {
+          background-color: $color-black;
+        }
       }
     }
 
@@ -197,7 +199,7 @@ ul {
   }
 
   .ct-series {
-    &.ct-series-a {
+    &.ct-series-b {
       .ct-point {
         stroke: $color-red;
         stroke-width: 10px;
@@ -214,7 +216,7 @@ ul {
       }
     }
 
-    &.ct-series-b {
+    &.ct-series-a {
       .ct-point {
         stroke: $color-green;
         stroke-width: 8px;
@@ -231,7 +233,7 @@ ul {
   }
 }
 
-#example-chart-one {
+#example-chart-two {
   .ct-label {
     fill: $color-white;
     font-size: 13px;
@@ -256,7 +258,6 @@ ul {
         stroke-dasharray: 5px;
         stroke: $color-grapefruit;
         stroke-width: 4px;
-
         @include animation(dashoffset, 1s linear infinite);
       }
     }
@@ -266,7 +267,6 @@ ul {
         stroke: $color-red;
         stroke-width: 10px;
         stroke-linecap: round;
-
         @include animation(bouncing-stroke, 0.5s ease infinite);
       }
 

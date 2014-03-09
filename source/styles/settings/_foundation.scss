@@ -37,7 +37,7 @@ $total-columns: 12;
 
 // We use these to control various global styles
 $body-bg: $color-white;
-$body-font-color: $color-black;
+$body-font-color: darken($color-white, 60%);
 $body-font-family: $font-body;
 // $body-font-weight: normal;
 // $body-font-style: normal;

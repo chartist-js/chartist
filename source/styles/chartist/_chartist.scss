@@ -1,0 +1,60 @@
+$ct-class-chart: ct-chart;
+$ct-class-label: ct-label;
+$ct-class-series: ct-series;
+$ct-class-line: ct-line;
+$ct-class-point: ct-point;
+$ct-class-grid: ct-grid;
+$ct-class-vertical: ct-vertical;
+$ct-class-horizontal: ct-horizontal;
+
+$ct-text-color: #222222;
+$ct-text-size: 0.75rem;
+
+$ct-include-classes: true;
+$ct-include-colored-series: true;
+
+$ct-series-names: (a, b, c, d);
+$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
+
+@if $ct-include-classes {
+  .#{$ct-class-chart} {
+    .#{$ct-class-label} {
+      fill: rgba(0, 0, 0, 0.4);
+      font-size: $ct-text-size;
+    }
+
+    .#{$ct-class-grid} {
+      stroke: rgba(0, 0, 0, 0.2);
+      stroke-dasharray: 2px;
+      stroke-width: 1px;
+    }
+
+    .#{$ct-class-point} {
+      stroke-width: 10px;
+      stroke-linecap: round;
+    }
+
+    .#{$ct-class-line} {
+      fill: none;
+      stroke-width: 4px;
+    }
+
+    @if $ct-include-colored-series {
+      .#{$ct-class-series} {
+        @for $i from 0 to length($ct-series-names) {
+          &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
+            $color: nth($ct-series-colors, $i + 1);
+
+            .ct-point {
+              stroke: $color;
+            }
+
+            .ct-line {
+              stroke: $color;
+            }
+          }
+        }
+      }
+    }
+  }
+}
