@@ -308,13 +308,14 @@
 
       for (i = 0; i < data.labels.length; i++) {
         for (j = 0; j < dataArray.length; j++) {
+          var posX = ((getWidth(paper.node) - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding;
           positions[j][i] = {
-            x: ((getWidth(paper.node) - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
+            x: posX,
             y: ChartHelpers.projectPoint(paper, dataArray[j][i], bounds, options)
           };
 
           labelPositions[i] = {
-            x: ((getWidth(paper.node) - options.chartPadding * 2) / data.labels.length * i) + options.chartPadding,
+            x: posX,
             y: getHeight(paper.node) - options.chartPadding
           };
         }
