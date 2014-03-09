@@ -19,7 +19,7 @@ We are still in alpha version 0.1 and there are a lot of things to do until we a
 
 ## Version notes
 
-We are currently on 0.1 alpha and we are far away from a production ready version. Your help is needed! Please contribute
+We are currently on 0.2 alpha and we are far away from a production ready version. Your help is needed! Please contribute
 to the project if you like the idea and the concept and help us to bring nice looking responsive open-source charts
 to the masses.
 

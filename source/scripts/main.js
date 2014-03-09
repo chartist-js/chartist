@@ -51,7 +51,7 @@ var examples = [
     options: {
       axisX: {
         offset: 40,
-        labelInterpolationFnc: function(value, index) {
+        labelInterpolationFnc: function(value) {
           return 'Week ' + value;
         }
       },
