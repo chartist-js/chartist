@@ -33,7 +33,6 @@ body {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   text-transform: uppercase;
-  color: $color-gray;
   line-height: 1;
 }
 
@@ -133,7 +132,10 @@ ul {
         width: 100%;
         height: 0;
         padding-bottom: 67%;
-        background-color: $color-black;
+
+        &.dark {
+          background-color: $color-black;
+        }
       }
     }
 
@@ -231,7 +233,7 @@ ul {
   }
 }
 
-#example-chart-one {
+#example-chart-two {
   .ct-label {
     fill: $color-white;
     font-size: 13px;

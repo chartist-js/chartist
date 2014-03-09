@@ -10,7 +10,7 @@
   }
 
   // Generates a-z from number
-  function alphaNumerize(n) {
+  function alphaNumerate(n) {
     // Limit to a-z
     return String.fromCharCode(97 + n%26);
   }
@@ -377,7 +377,7 @@
         seriesGroups[i] = paper.g();
         // Use series class from series data or if not set generate one
         seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + alphaNumerize(i)));
+          (data.series[i].className || options.classNames.series + '-' + alphaNumerate(i)));
 
         createSeries(data.series[i].data, seriesGroups[i], projectPoint);
 
