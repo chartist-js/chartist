@@ -13,11 +13,6 @@
   <title>{{ title }}</title>
   <meta name="description" content="{{ description }}">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <!-- build:css styles/vendor.css -->
-  <!-- bower:css -->
-  <!-- endbower -->
-  <!-- endbuild -->
   <!-- build:css({.tmp,source}) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
@@ -61,13 +56,13 @@
 </script>
 
 <!--[if lt IE 9]>
-<!-- build:js scripts/oldie.js -->
+<!-- build:js({.tmp,source}) scripts/oldie.js -->
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <!-- endbuild -->
 <![endif]-->
 
-<!-- build:js scripts/vendor.js -->
+<!-- build:js({.tmp,source}) scripts/vendor.js -->
 <!-- bower:js -->
 <script src="bower_components/modernizr/modernizr.js"></script>
 <script src="bower_components/jquery/dist/jquery.js"></script>
