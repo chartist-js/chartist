@@ -1,6 +1,6 @@
 # Warm welcome to you by the Chartist Guy
 
-![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/source/images/chartist-guy.svg "The Chartist Guy")
+![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/source/images/chartist-guy.png "The Chartist Guy")
 
 Chartist.js is a responsive charting library built with SVG. There are hundreds of nice charting libraries already
 out there, but they are either:
@@ -26,7 +26,8 @@ to the project if you like the idea and the concept and help us to bring nice lo
 to the masses.
 
 ### Important missing stuff
-1. Cross-browser support (currently only tested on chrome :( ). We should support down to IE9.
+
+1. Cross-browser support (currently only tested on chrome, android 4+, iOS). We should support all major browsers down to IE9.
 2. Better separation of the library to the demo site
 3. Jasmine Tests!
 4. Better interfaces to the library (i.e. jQuery with data-* attributes for configuration)
