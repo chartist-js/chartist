@@ -1,0 +1,27 @@
+{
+    "title": "Snap.svg",
+    "output": "doc/reference.html",
+    "template": "template.dot",
+    "files": [{
+        "url": "src/svg.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/svg.js"
+    }, {
+        "url": "src/equal.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/equal.js"
+    }, {
+        "url": "src/mina.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/mina.js"
+    }, {
+        "url": "src/filter.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/filter.js"
+    }, {
+        "url": "src/mouse.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/mouse.js"
+    }, {
+        "url": "src/path.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/path.js"
+    }, {
+        "url": "src/set.js",
+        "link": "https://github.com/adobe-webplatform/savage/blob/master/src/set.js"
+    }]
+}

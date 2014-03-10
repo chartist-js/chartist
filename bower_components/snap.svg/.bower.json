@@ -1,0 +1,34 @@
+{
+  "name": "Snap.svg",
+  "version": "0.2.0",
+  "homepage": "http://snapsvg.io",
+  "authors": [
+    "Dmitry Baranovskiy <dmitry@baranovskiy.com>"
+  ],
+  "description": "The JavaScript library for modern SVG graphics",
+  "main": "dist/snap.svg-min.js",
+  "keywords": [
+    "svg",
+    "snap",
+    "js",
+    "javascript"
+  ],
+  "license": "Apache 2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "demos",
+    "src"
+  ],
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.0",
+    "commit": "001ea911ca0c3c1c7c68dd5603217f963e1e3b6d"
+  },
+  "_source": "git://github.com/adobe-webplatform/Snap.svg.git",
+  "_target": "~0.2.0",
+  "_originalSource": "snap.svg"
+}
