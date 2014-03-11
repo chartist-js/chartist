@@ -5,7 +5,7 @@ $color-dark-green: #001A25;
 $color-grapefruit: #F05B4F;
 $color-red: #D70206;
 $color-yellow: #F4C63D;
-$color-black: #222222;
+$color-black: darken($color-white, 60%);
 $color-gray: #453D3F;
 
 $font-body: "Oxygen", Helvetica, Arial, sans-serif;

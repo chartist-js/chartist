@@ -180,7 +180,7 @@
           labelInterpolationFnc: noop,
           scaleMinSpace: 20
         },
-        showLines: true,
+        showLine: true,
         showPoint: true,
         lineSmooth: true,
         chartPadding: 5,
@@ -357,7 +357,7 @@
           }
         }
 
-        if(options.showLines) {
+        if(options.showLine) {
           var snapPath = paper.path(path);
           snapPath.node.setAttribute('class', options.classNames.line);
           seriesGroup.prepend(snapPath);

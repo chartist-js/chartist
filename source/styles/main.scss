@@ -36,29 +36,29 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1;
 }
 
-$heading-scale: generateScale(16, $scale-perfect-fourth);
+$modular-scale: generateScale(16, $scale-perfect-fourth);
 
 h1 {
-  font-size: rem-calc(nth($heading-scale, 6));
+  font-size: rem-calc(nth($modular-scale, 6));
 
   @media #{$medium-up} {
-    font-size: rem-calc(nth($heading-scale, 8));
+    font-size: rem-calc(nth($modular-scale, 8));
   }
 }
 
 h2 {
-  font-size: rem-calc(nth($heading-scale, 5));
+  font-size: rem-calc(nth($modular-scale, 5));
 
   @media #{$medium-up} {
-    font-size: rem-calc(nth($heading-scale, 7));
+    font-size: rem-calc(nth($modular-scale, 7));
   }
 }
 
-h2 {
-  font-size: rem-calc(nth($heading-scale, 5));
+h3 {
+  font-size: rem-calc(nth($modular-scale, 5));
 
   @media #{$medium-up} {
-    font-size: rem-calc(nth($heading-scale, 6));
+    font-size: rem-calc(nth($modular-scale, 6));
   }
 }
 
@@ -67,14 +67,24 @@ ul {
   padding-left: 1em;
 }
 
+.invisible {
+  display: block !important;
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.browser-hint {
+  @include panel();
+}
+
 .landing-page-header {
   background-color: $color-yellow;
-  @include background(linear-gradient(top, $color-yellow 0%, lighten($color-yellow, 5%) 70%, $color-yellow 100%));
   text-align: center;
 
   > .introduction-title {
     text-transform: uppercase;
-    font-size: rem-calc(nth($heading-scale, 8));
+    font-size: rem-calc(nth($modular-scale, 8));
     margin: 0;
     display: inline-block;
     width: 100%;
@@ -85,11 +95,11 @@ ul {
     @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
 
     @media #{$medium-up} {
-      font-size: rem-calc(nth($heading-scale, 9));
+      font-size: rem-calc(nth($modular-scale, 9));
     }
 
     > small {
-      font-size: rem-calc(nth($heading-scale, 4));
+      font-size: rem-calc(nth($modular-scale, 4));
       display: inline-block;
       width: 100%;
     }
@@ -116,6 +126,8 @@ ul {
 
   .documentation-section {
     @include grid-row(nest);
+    margin-top: rem-calc(nth($modular-scale, 6));
+    margin-bottom: rem-calc(nth($modular-scale, 8));
 
     > header {
       @include grid-column(12);
@@ -134,7 +146,7 @@ ul {
         padding-bottom: 67%;
 
         &.dark {
-          background-color: $color-black;
+          background-color: $color-dark-green;
         }
       }
     }
@@ -235,12 +247,12 @@ ul {
 
 #example-chart-two {
   .ct-label {
-    fill: $color-white;
+    fill: lighten($color-dark-green, 30%);
     font-size: 13px;
   }
 
   .ct-grid {
-    stroke: lighten($color-black, 5%);
+    stroke: lighten($color-dark-green, 5%);
     stroke-dasharray: 3px;
     stroke-width: 1px;
   }
