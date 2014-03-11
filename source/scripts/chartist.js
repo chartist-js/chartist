@@ -195,7 +195,8 @@
         }
       },
       baseOptions = extend(extend({}, defaultOptions), options),
-      paper = Snap(query),
+      container = document.querySelector(query),
+      paper,
       dataArray = ChartHelpers.normalizeDataArray(ChartHelpers.getDataArray(data), data.labels.length),
       i;
 
@@ -384,10 +385,18 @@
       }
     }
 
+
+
     // Do important checks and throw if necessary
-    if (!paper) {
-      throw 'Could not instantiate Snap.js with query "' + query + '"';
+    if (!container) {
+      throw 'Container node with selector "' + query + '" not found';
     }
+
+    paper = Snap();
+    if (!paper) {
+      throw 'Could not instantiate Snap.js!';
+    }
+    container.appendChild(paper.node);
 
     if (!window.matchMedia) {
       throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
@@ -403,6 +412,7 @@
 
     // Public members
     return {
+      version: '0.2',
       update: function() {
         createChart();
       }
