@@ -46,6 +46,9 @@ module.exports = function (grunt) {
       gruntfile: {
         files: ['Gruntfile.js']
       },
+      'bower-install': {
+        files: ['.tmp/index.html']
+      },
       livereload: {
         options: {
           livereload: '<%= connect.options.livereload %>'
