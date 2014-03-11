@@ -26,7 +26,7 @@ module.exports = function (grunt) {
     watch: {
       assemble: {
         files: ['<%= pkg.config.source %>/docs/{,*/}*.{hbs,yml,json}'],
-        tasks: ['assemble']
+        tasks: ['assemble', 'bower-install']
       },
       js: {
         files: ['<%= pkg.config.source %>/scripts/{,*/}*.js'],
@@ -45,9 +45,6 @@ module.exports = function (grunt) {
       },
       gruntfile: {
         files: ['Gruntfile.js']
-      },
-      'bower-install': {
-        files: ['.tmp/index.html']
       },
       livereload: {
         options: {
