@@ -42,9 +42,9 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
     @include responsive-svg-container($ratio: 1/1.618);
 
     @if $ct-include-responsive-containers {
-      @for $i from 1 to length($ct-scales-names) {
-        &.#{nth($ct-scales-names, $i)} {
-          @include responsive-svg-container($ratio: nth($ct-scales, $i));
+      @for $i from 0 to length($ct-scales-names) {
+        &.#{nth($ct-scales-names, $i + 1)} {
+          @include responsive-svg-container($ratio: nth($ct-scales, $i + 1));
         }
       }
     }
@@ -72,9 +72,9 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
 
     @if $ct-include-colored-series {
       .#{$ct-class-series} {
-        @for $i from 1 to length($ct-series-names) {
-          &.#{$ct-class-series}-#{nth($ct-series-names, $i)} {
-            $color: nth($ct-series-colors, $i);
+        @for $i from 0 to length($ct-series-names) {
+          &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
+            $color: nth($ct-series-colors, $i + 1);
 
             .ct-point {
               stroke: $color;
