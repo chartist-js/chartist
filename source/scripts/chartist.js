@@ -163,7 +163,7 @@
 
 
   // Chartist closure constructor
-  window.Chartist = window.Chartist || function (query, data, options) {
+  window.Chartist = window.Chartist || function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -195,7 +195,6 @@
         }
       },
       baseOptions = extend(extend({}, defaultOptions), options),
-      responsiveOptions = arguments[3] || false,
       paper = Snap(query),
       dataArray = ChartHelpers.normalizeDataArray(ChartHelpers.getDataArray(data), data.labels.length),
       i;
