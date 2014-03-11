@@ -1,3 +1,6 @@
+$ct-scales: (3/4, 1/1.618, 9/16, 1, 1/2, 1/3, 1/4);
+$ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-square, ct-octave, major-twelfth, double-octave);
+
 $ct-class-chart: ct-chart;
 $ct-class-label: ct-label;
 $ct-class-series: ct-series;
@@ -11,13 +14,41 @@ $ct-text-color: #222222;
 $ct-text-size: 0.75rem;
 
 $ct-include-classes: true;
-$ct-include-colored-series: true;
+$ct-include-colored-series: $ct-include-classes;
+$ct-include-responsive-containers: $ct-include-classes;
 
 $ct-series-names: (a, b, c, d);
 $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
 
+@mixin responsive-svg-container($width: 100%, $ratio: 1/1) {
+  display: block;
+  position: relative;
+  width: $width;
+  padding-bottom: 100% * $ratio;
+  overflow: hidden;
+
+  > svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
 @if $ct-include-classes {
   .#{$ct-class-chart} {
+    @include responsive-svg-container($ratio: 1/1.618);
+
+    @if $ct-include-responsive-containers {
+      @for $i from 1 to length($ct-scales-names) {
+        &.#{nth($ct-scales-names, $i)} {
+          @include responsive-svg-container($ratio: nth($ct-scales, $i));
+        }
+      }
+    }
+
     .#{$ct-class-label} {
       fill: rgba(0, 0, 0, 0.4);
       font-size: $ct-text-size;
@@ -41,9 +72,9 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
 
     @if $ct-include-colored-series {
       .#{$ct-class-series} {
-        @for $i from 0 to length($ct-series-names) {
-          &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
-            $color: nth($ct-series-colors, $i + 1);
+        @for $i from 1 to length($ct-series-names) {
+          &.#{$ct-class-series}-#{nth($ct-series-names, $i)} {
+            $color: nth($ct-series-colors, $i);
 
             .ct-point {
               stroke: $color;
