@@ -19,11 +19,11 @@ That's why we have started Chartist.js and our goal is to solve all of the above
 ## Example site
 
 You can visit this Site http://gionkunz.github.io/chartist-js/ which is in fact a build of the current project.
-We are still in alpha version 0.2 and there are a lot of things to do until we are production ready (see version notes)
+We are still in alpha version 0.0.2 and there are a lot of things to do until we are production ready (see version notes)
 
 ## Version notes
 
-We are currently on 0.2 alpha and we are far away from a production ready version. Your help is needed! Please contribute
+We are currently on 0.0.2 alpha and we are far away from a production ready version. Your help is needed! Please contribute
 to the project if you like the idea and the concept and help us to bring nice looking responsive open-source charts
 to the masses.
 
