@@ -6,6 +6,7 @@
     "es5-shim": "~2.1.0",
     "snap.svg": "~0.2.0",
     "foundation": "~5.1.1",
-    "highlightjs": "~8.0.0"
+    "highlightjs": "~8.0.0",
+    "font-awesome": "~4.0.3"
   }
 }

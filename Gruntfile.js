@@ -21,6 +21,7 @@ module.exports = function (grunt) {
 
     // Grunt package with settings
     pkg: grunt.file.readJSON('package.json'),
+    year: new Date().getFullYear(),
 
     // Watches files for changes and runs tasks based on the changed files
     watch: {
@@ -322,6 +323,10 @@ module.exports = function (grunt) {
           }
         ]
       },
+      libdist: {
+        src: 'source/scripts/chartist.js',
+        dest: 'lib/chartist-<%= pkg.version %>.js'
+      },
       styles: {
         expand: true,
         cwd: '<%= pkg.config.source %>/styles',
@@ -361,6 +366,29 @@ module.exports = function (grunt) {
           phantomjs: {
             'ignore-ssl-errors': true
           }
+        }
+      }
+    },
+
+    // Uglify for library js compression
+    uglify: {
+      libdist: {
+        options: {
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */'
+        },
+        files: {
+          'libdist/chartist-<%= pkg.version %>.min.js': ['source/scripts/chartist.js']
+        }
+      }
+    },
+    // CSS min for library
+    cssmin: {
+      libdist: {
+        options: {
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */'
+        },
+        files: {
+          'libdist/chartist-<%= pkg.version %>.min.css': ['.tmp/styles/chartist.css']
         }
       }
     }
@@ -408,7 +436,9 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'cssmin:libdist',
+    'uglify:libdist'
   ]);
 
   grunt.registerTask('default', [

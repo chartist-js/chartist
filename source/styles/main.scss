@@ -5,6 +5,17 @@
 @import "foundation/scss/foundation";
 @import "modules";
 @import "base";
+@import "font-awesome/scss/font-awesome";
+
+.fa-icon:before {
+  display: inline-block;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .button {
   text-transform: uppercase;
@@ -66,6 +77,47 @@
       @include responsive-svg-container();
     }
   }
+
+  > .call-to-action {
+    text-align: center;
+    padding-bottom: $column-gutter;
+    padding-left: $column-gutter / 2;
+    padding-right: $column-gutter / 2;
+
+    > .button {
+      color: white;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300 !important;
+
+      &:before {
+        padding-right: 0.5em;
+      }
+
+      &.download {
+        background-color: $color-red;
+        &:hover,
+        &:focus { background-color: shade($color-red, 10%); color: rgba(255, 255, 255, 1);}
+      }
+
+      &.contribute {
+        background-color: $color-grapefruit;
+        &:hover,
+        &:focus { background-color: shade($color-grapefruit, 10%); color: rgba(255, 255, 255, 1);}
+      }
+
+      @media #{$small-only} {
+        width: 100%;
+        font-size: 1em;
+        font-weight: 700 !important;
+      }
+
+      @media #{$medium-up} {
+        &.download {
+          margin-right: $column-gutter / 2;
+        }
+      }
+    }
+  }
 }
 
 .main {
@@ -75,6 +127,7 @@
 
   @media #{$medium-up} {
     @include grid-row();
+    margin-top: rem-calc(nth($modular-scale, 8));
   }
 
   .documentation-section {
@@ -184,7 +237,7 @@
 
     &.ct-series-a {
       .ct-point {
-        stroke: $color-green;
+        stroke: $color-grapefruit;
         stroke-width: 8px;
         stroke-linecap: square;
       }
@@ -192,7 +245,7 @@
       .ct-line {
         fill: none;
         stroke-dasharray: 10px 3px;
-        stroke: $color-green;
+        stroke: $color-grapefruit;
         stroke-width: 2px;
       }
     }
@@ -263,4 +316,4 @@
 
 
 
-@import url("http://fonts.googleapis.com/css?family=Varela+Round|Oxygen:400,300,700");
+@import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
