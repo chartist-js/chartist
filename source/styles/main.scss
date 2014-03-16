@@ -42,6 +42,10 @@
   }
 }
 
+pre > code {
+  font-family: "Source Code Pro", "Courier New", monospace !important;
+}
+
 .landing-page-header {
   background-color: $color-yellow;
   text-align: center;
@@ -317,3 +321,4 @@
 
 
 @import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
+@import url("http://fonts.googleapis.com/css?family=Source+Code+Pro");
