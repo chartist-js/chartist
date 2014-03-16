@@ -1,5 +1,21 @@
 'use strict';
 
+// Initialize highlight.js
+window.hljs.initHighlightingOnLoad();
+
+// Generic data-* driven control behaviour
+$(function() {
+  $('[data-toggle-visible]').each(function() {
+    var $element = $(this),
+      $target = $($element.data('toggleVisible'));
+
+    $target.addClass('invisible');
+    $element.on('click', function() {
+      $target.toggleClass('invisible');
+    });
+  });
+});
+
 var optionsChartistGuy = {
   axisX: {
     showLabel: true,
@@ -35,16 +51,16 @@ var examples = [
       labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       series: [
         {
-          data: [12, 8, 5, 7, 2, 4, 3, 2, 10]
+          data: [12, 9, 7, 8, 6, 4, 3, 2, 0]
         },
         {
           data: [2, 1, 4, 7, 9, 8, 7, 4, 7]
         },
         {
-          data: [1, 2, 5, 3, 9, 2, 3, 2, 4]
+          data: [1, 2, 4, 5, 6, 8, 9, 10, 11]
         },
         {
-          data: [7, 5, 3, 2, 1, 0, 2, 5, 9]
+          data: [11, 7.5, 5.5, 5, 4, 3.5, 2, 1, 0]
         }
       ]
     },
@@ -114,6 +130,41 @@ var examples = [
         }
       ]
     ]
+  },
+  {
+    data: {
+      labels: ['1', '2', '3', '4', '5', '6'],
+      series: [
+        {
+          data: [1, 2, 3, 5, 8, 13]
+        }
+      ]
+    },
+    options: {
+      axisX: {
+        labelInterpolationFnc: function(value) {
+          return 'Calendar Week ' + value;
+        }
+      }
+    },
+    responsiveOptions: [
+      ['screen and (min-width: 641px) and (max-width: 1024px)', {
+        showPoint: false,
+        axisX: {
+          labelInterpolationFnc: function(value) {
+            return 'Week ' + value;
+          }
+        }
+      }],
+      ['screen and (max-width: 640px)', {
+        showLine: false,
+        axisX: {
+          labelInterpolationFnc: function(value) {
+            return 'W' + value;
+          }
+        }
+      }]
+    ]
   }
 ];
 
@@ -132,6 +183,7 @@ Snap.load($('#chartist-guy').data('svgSrc'), function (fragment) {
 // Initialize test line chart with override settings for small breakpoint
 charts.push(window.Chartist('#example-chart-one', examples[0].data, examples[0].options, examples[0].responsiveOptions));
 charts.push(window.Chartist('#example-chart-two', examples[1].data, examples[1].options, examples[1].responsiveOptions));
+charts.push(window.Chartist('#example-chart-three', examples[2].data, examples[2].options, examples[2].responsiveOptions));
 // On window resize trigger reflow
 $(window).on('resize', function () {
   console.log('Resize');

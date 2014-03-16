@@ -163,7 +163,7 @@
 
 
   // Chartist closure constructor
-  window.Chartist = window.Chartist || function (query, data, options) {
+  window.Chartist = window.Chartist || function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -180,7 +180,7 @@
           labelInterpolationFnc: noop,
           scaleMinSpace: 20
         },
-        showLines: true,
+        showLine: true,
         showPoint: true,
         lineSmooth: true,
         chartPadding: 5,
@@ -195,8 +195,8 @@
         }
       },
       baseOptions = extend(extend({}, defaultOptions), options),
-      responsiveOptions = arguments[3] || false,
-      paper = Snap(query),
+      container = document.querySelector(query),
+      paper,
       dataArray = ChartHelpers.normalizeDataArray(ChartHelpers.getDataArray(data), data.labels.length),
       i;
 
@@ -357,7 +357,7 @@
           }
         }
 
-        if(options.showLines) {
+        if(options.showLine) {
           var snapPath = paper.path(path);
           snapPath.node.setAttribute('class', options.classNames.line);
           seriesGroup.prepend(snapPath);
@@ -385,10 +385,18 @@
       }
     }
 
+
+
     // Do important checks and throw if necessary
-    if (!paper) {
-      throw 'Could not instantiate Snap.js with query "' + query + '"';
+    if (!container) {
+      throw 'Container node with selector "' + query + '" not found';
     }
+
+    paper = Snap();
+    if (!paper) {
+      throw 'Could not instantiate Snap.js!';
+    }
+    container.appendChild(paper.node);
 
     if (!window.matchMedia) {
       throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
@@ -404,6 +412,7 @@
 
     // Public members
     return {
+      version: '0.2',
       update: function() {
         createChart();
       }

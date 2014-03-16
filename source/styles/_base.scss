@@ -1,0 +1,63 @@
+$modular-scale: generateScale(16, $scale-perfect-fourth);
+
+body {
+  line-height: 1.54;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+p:first-child {
+  margin-top: 0;
+}
+
+a {
+  color: $color-red;
+  text-decoration: none;
+
+  &:hover {
+    color: lighten($color-red, 10%);
+  }
+}
+
+ul {
+  list-style: disc outside none;
+  padding-left: 1em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: rem-calc(nth($modular-scale, 6));
+  font-weight: 400;
+
+  @media #{$medium-up} {
+    font-size: rem-calc(nth($modular-scale, 8));
+    font-weight: 300;
+  }
+}
+
+h2 {
+  font-size: rem-calc(nth($modular-scale, 5));
+  font-weight: 400;
+
+  @media #{$medium-up} {
+    font-size: rem-calc(nth($modular-scale, 7));
+    font-weight: 300;
+  }
+}
+
+h3 {
+  font-size: rem-calc(nth($modular-scale, 4));
+  font-weight: 700;
+
+  @media #{$medium-up} {
+    font-size: rem-calc(nth($modular-scale, 6));
+    font-weight: 400;
+  }
+}

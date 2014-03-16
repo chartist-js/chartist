@@ -1,80 +1,54 @@
 @import "settings/chartist-web";
 @import "settings/foundation";
+@import "compass/css3";
 @import "foundation/scss/normalize";
 @import "foundation/scss/foundation";
-@import "compass/css3";
 @import "modules";
+@import "base";
+@import "font-awesome/scss/font-awesome";
 
-//TODO: Create library mixins and separate from page styles to provide as library
-
-@mixin responsive-svg-container($width: 100%, $ratio: 1/1) {
-  display: block;
-  position: relative;
-  width: $width;
-  padding-bottom: 100% * $ratio;
-  overflow: hidden;
-
-  svg {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-body {
-  line-height: 1.54;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 300;
-  text-transform: uppercase;
+.fa-icon:before {
+  display: inline-block;
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
   line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-$heading-scale: generateScale(16, $scale-perfect-fourth);
+.button {
+  text-transform: uppercase;
+}
 
-h1 {
-  font-size: rem-calc(nth($heading-scale, 6));
+.invisible {
+  display: block !important;
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
 
-  @media #{$medium-up} {
-    font-size: rem-calc(nth($heading-scale, 8));
+.browser-hint {
+  margin-bottom: rem-calc(nth($modular-scale, 4));
+  padding: rem-calc(nth($modular-scale, 4));
+  background: $color-gray;
+  color: white;
+
+  a {
+    color: $color-yellow;
+    &:hover {
+      color: lighten($color-yellow, 10%);
+    }
   }
-}
-
-h2 {
-  font-size: rem-calc(nth($heading-scale, 5));
-
-  @media #{$medium-up} {
-    font-size: rem-calc(nth($heading-scale, 7));
-  }
-}
-
-h2 {
-  font-size: rem-calc(nth($heading-scale, 5));
-
-  @media #{$medium-up} {
-    font-size: rem-calc(nth($heading-scale, 6));
-  }
-}
-
-ul {
-  list-style: disc outside none;
-  padding-left: 1em;
 }
 
 .landing-page-header {
   background-color: $color-yellow;
-  @include background(linear-gradient(top, $color-yellow 0%, lighten($color-yellow, 5%) 70%, $color-yellow 100%));
   text-align: center;
 
   > .introduction-title {
     text-transform: uppercase;
-    font-size: rem-calc(nth($heading-scale, 8));
+    font-size: rem-calc(nth($modular-scale, 8));
     margin: 0;
     display: inline-block;
     width: 100%;
@@ -85,11 +59,11 @@ ul {
     @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
 
     @media #{$medium-up} {
-      font-size: rem-calc(nth($heading-scale, 9));
+      font-size: rem-calc(nth($modular-scale, 9));
     }
 
     > small {
-      font-size: rem-calc(nth($heading-scale, 4));
+      font-size: rem-calc(nth($modular-scale, 4));
       display: inline-block;
       width: 100%;
     }
@@ -103,6 +77,47 @@ ul {
       @include responsive-svg-container();
     }
   }
+
+  > .call-to-action {
+    text-align: center;
+    padding-bottom: $column-gutter;
+    padding-left: $column-gutter / 2;
+    padding-right: $column-gutter / 2;
+
+    > .button {
+      color: white;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300 !important;
+
+      &:before {
+        padding-right: 0.5em;
+      }
+
+      &.download {
+        background-color: $color-red;
+        &:hover,
+        &:focus { background-color: shade($color-red, 10%); color: rgba(255, 255, 255, 1);}
+      }
+
+      &.contribute {
+        background-color: $color-grapefruit;
+        &:hover,
+        &:focus { background-color: shade($color-grapefruit, 10%); color: rgba(255, 255, 255, 1);}
+      }
+
+      @media #{$small-only} {
+        width: 100%;
+        font-size: 1em;
+        font-weight: 700 !important;
+      }
+
+      @media #{$medium-up} {
+        &.download {
+          margin-right: $column-gutter / 2;
+        }
+      }
+    }
+  }
 }
 
 .main {
@@ -112,10 +127,18 @@ ul {
 
   @media #{$medium-up} {
     @include grid-row();
+    margin-top: rem-calc(nth($modular-scale, 8));
   }
 
   .documentation-section {
     @include grid-row(nest);
+    margin-top: rem-calc(nth($modular-scale, 4));
+    margin-bottom: rem-calc(nth($modular-scale, 6));
+
+    @media #{$medium-up} {
+      margin-top: rem-calc(nth($modular-scale, 6));
+      margin-bottom: rem-calc(nth($modular-scale, 8));
+    }
 
     > header {
       @include grid-column(12);
@@ -128,13 +151,9 @@ ul {
         @include grid-column(9);
       }
 
-      > .chart-container {
-        width: 100%;
-        height: 0;
-        padding-bottom: 67%;
-
+      > .ct-chart {
         &.dark {
-          background-color: $color-black;
+          background-color: $color-dark-green;
         }
       }
     }
@@ -218,7 +237,7 @@ ul {
 
     &.ct-series-a {
       .ct-point {
-        stroke: $color-green;
+        stroke: $color-grapefruit;
         stroke-width: 8px;
         stroke-linecap: square;
       }
@@ -226,7 +245,7 @@ ul {
       .ct-line {
         fill: none;
         stroke-dasharray: 10px 3px;
-        stroke: $color-green;
+        stroke: $color-grapefruit;
         stroke-width: 2px;
       }
     }
@@ -235,12 +254,12 @@ ul {
 
 #example-chart-two {
   .ct-label {
-    fill: $color-white;
+    fill: lighten($color-dark-green, 30%);
     font-size: 13px;
   }
 
   .ct-grid {
-    stroke: lighten($color-black, 5%);
+    stroke: lighten($color-dark-green, 5%);
     stroke-dasharray: 3px;
     stroke-width: 1px;
   }
@@ -297,4 +316,4 @@ ul {
 
 
 
-@import url("http://fonts.googleapis.com/css?family=Varela+Round|Oxygen:400,300,700");
+@import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
