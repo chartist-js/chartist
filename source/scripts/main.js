@@ -186,8 +186,6 @@ charts.push(window.Chartist('#example-chart-two', examples[1].data, examples[1].
 charts.push(window.Chartist('#example-chart-three', examples[2].data, examples[2].options, examples[2].responsiveOptions));
 // On window resize trigger reflow
 $(window).on('resize', function () {
-  console.log('Resize');
-
   charts.forEach(function(e) {
     e.update();
   });
