@@ -28,31 +28,22 @@
     return target;
   }
 
-  // Get element height / width with fallback to SVGAnimatedLength
+  // Get element height / width with fallback to SVGAnimatedLength or parent container dimensions
+  // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
   function getHeight(svgElement) {
     if (svgElement.clientHeight) {
       return svgElement.clientHeight;
     } else {
-      try {
-        return svgElement.height.baseVal.value;
-      } catch (e) {
-      }
+      return svgElement.parentNode.clientHeight;
     }
-
-    return 0;
   }
 
   function getWidth(svgElement) {
     if (svgElement.clientWidth) {
       return svgElement.clientWidth;
     } else {
-      try {
-        return svgElement.width.baseVal.value;
-      } catch (e) {
-      }
+      return svgElement.parentNode.clientWidth;
     }
-
-    return 0;
   }
 
   var ChartHelpers = {
@@ -180,6 +171,8 @@
           labelInterpolationFnc: noop,
           scaleMinSpace: 20
         },
+        width: undefined,
+        height: undefined,
         showLine: true,
         showPoint: true,
         lineSmooth: true,
@@ -259,8 +252,8 @@
       // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
       var chartRect = {
         x1: yAxisOffset + options.chartPadding,
-        y1: getHeight(paper.node) - xAxisOffset - options.chartPadding,
-        x2: getWidth(paper.node) - options.chartPadding,
+        y1: options.height || getHeight(paper.node) - xAxisOffset - options.chartPadding,
+        x2: options.width || getWidth(paper.node) - options.chartPadding,
         y2: options.chartPadding,
         width: function() {
           return this.x2 - this.x1;
@@ -392,7 +385,7 @@
       throw 'Container node with selector "' + query + '" not found';
     }
 
-    paper = Snap();
+    paper = Snap(options.width || '100%' , options.height || '100%');
     if (!paper) {
       throw 'Could not instantiate Snap.js!';
     }

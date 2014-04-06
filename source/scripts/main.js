@@ -17,6 +17,8 @@ $(function() {
 });
 
 var optionsChartistGuy = {
+  width: 190,
+  height: 130,
   axisX: {
     showLabel: true,
     showGrid: true,

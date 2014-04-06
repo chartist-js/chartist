@@ -63,11 +63,11 @@ pre > code {
     @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
 
     @media #{$medium-up} {
-      font-size: rem-calc(nth($modular-scale, 9));
+      font-size: rem-calc(nth($modular-scale, 10));
     }
 
     > small {
-      font-size: rem-calc(nth($modular-scale, 4));
+      font-size: rem-calc(nth($modular-scale, 6));
       display: inline-block;
       width: 100%;
     }
