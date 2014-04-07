@@ -252,8 +252,8 @@
       // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
       var chartRect = {
         x1: yAxisOffset + options.chartPadding,
-        y1: options.height || getHeight(paper.node) - xAxisOffset - options.chartPadding,
-        x2: options.width || getWidth(paper.node) - options.chartPadding,
+        y1: (options.height || getHeight(paper.node)) - xAxisOffset - options.chartPadding,
+        x2: (options.width || getWidth(paper.node)) - options.chartPadding,
         y2: options.chartPadding,
         width: function() {
           return this.x2 - this.x1;
