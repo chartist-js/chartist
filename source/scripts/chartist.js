@@ -150,7 +150,7 @@
 
     var defaultOptions = {
         axisX: {
-          offset: 5,
+          offset: 0,
           showLabel: true,
           showGrid: true,
           labelInterpolationFnc: noop
