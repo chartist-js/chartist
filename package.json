@@ -48,7 +48,9 @@
     "source": "source",
     "dist": "dist",
     "bowerExclude": [
-      "bower_components/foundation/css/foundation.css"
+      "foundation.css",
+      "es5-shim.js",
+      "json3.min.js"
     ]
   }
 }
