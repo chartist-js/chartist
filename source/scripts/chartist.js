@@ -28,22 +28,14 @@
     return target;
   }
 
-  // Get element height / width with fallback to SVGAnimatedLength or parent container dimensions
+  // Get element height / width with fallback to svg BoundingBox or parent container dimensions
   // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
   function getHeight(svgElement) {
-    if (svgElement.clientHeight) {
-      return svgElement.clientHeight;
-    } else {
-      return svgElement.parentNode.clientHeight;
-    }
+    return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
   }
 
   function getWidth(svgElement) {
-    if (svgElement.clientWidth) {
-      return svgElement.clientWidth;
-    } else {
-      return svgElement.parentNode.clientWidth;
-    }
+    return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
   }
 
   var ChartHelpers = {
