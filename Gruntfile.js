@@ -149,7 +149,9 @@ module.exports = function (grunt) {
       app: {
         src: ['.tmp/**/*.html'],
         ignorePath: '<%= pkg.config.source %>/',
-        exclude: '<%= pkg.config.bowerExclude %>'
+        exclude: '<%= pkg.config.bowerExclude %>',
+        dependencies: true,
+        devDependencies: true
       }
     },
 
