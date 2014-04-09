@@ -187,8 +187,8 @@
 
     function createChart() {
       var options,
-        xAxisOffset = 0,
-        yAxisOffset = 0,
+        xAxisTextOffset = 0,
+        yAxisTextOffset = 0,
         seriesGroups = [],
         bounds;
 
@@ -232,19 +232,29 @@
 
       // First generate labels to calculate max offset for chart
       if (options.axisX.showLabel) {
-        xAxisOffset = calculateLabelOffset(data.labels, options.classNames.labelX, options.axisX.labelInterpolationFnc, getHeight);
+        xAxisTextOffset = calculateLabelOffset(
+          data.labels,
+          [options.classNames.label, options.classNames.horizontal].join(' '),
+          options.axisX.labelInterpolationFnc,
+          getHeight
+        );
       }
-      xAxisOffset += options.axisX.offset;
+      xAxisTextOffset += options.axisX.offset;
 
       if (options.axisY.showLabel) {
-        yAxisOffset = calculateLabelOffset(bounds.values, options.classNames.labelY, options.axisY.labelInterpolationFnc, getWidth);
+        yAxisTextOffset = calculateLabelOffset(
+          bounds.values,
+          [options.classNames.label, options.classNames.horizontal].join(' '),
+          options.axisY.labelInterpolationFnc,
+          getWidth
+        );
       }
-      yAxisOffset += options.axisY.offset;
+      yAxisTextOffset += options.axisY.offset;
 
       // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
       var chartRect = {
-        x1: yAxisOffset + options.chartPadding,
-        y1: (options.height || getHeight(paper.node)) - xAxisOffset - options.chartPadding,
+        x1: options.chartPadding + yAxisTextOffset,
+        y1: (options.height || getHeight(paper.node)) - options.chartPadding - xAxisTextOffset,
         x2: (options.width || getWidth(paper.node)) - options.chartPadding,
         y2: options.chartPadding,
         width: function() {
@@ -271,27 +281,31 @@
         }
       }
 
+      // Create X-Axis
       interpolateData(data.labels, options.axisX.labelInterpolationFnc, function(data, index, interpolatedValue) {
         var pos = chartRect.x1 + chartRect.width() / data.length * index;
 
         if (options.axisX.showGrid) {
           var line = paper.line(pos, chartRect.y1, pos, chartRect.y2);
-          line.node.setAttribute('class', options.classNames.grid + ' ' + options.classNames.horizontal);
+          line.node.setAttribute('class', [options.classNames.grid, options.classNames.horizontal].join(' '));
           grid.add(line);
         }
 
         if (options.axisX.showLabel) {
           // Use config offset for setting labels of
-          var label = paper.text(pos + 2, chartRect.y1 + options.axisX.offset, ''+interpolatedValue);
-          // Set alignment baseline to hanging (text is below specified Y coordinate)
+          var label = paper.text(pos + 2, 0, ''+interpolatedValue);
+          label.node.setAttribute('class', [options.classNames.label, options.classNames.horizontal].join(' '));
+
+          // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
           label.attr({
-            'alignment-baseline': 'hanging'
+            y: chartRect.y1 + getHeight(label.node) + options.axisX.offset
           });
-          label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.horizontal);
+
           labels.add(label);
         }
       });
 
+      // Create Y-Axis
       interpolateData(bounds.values, options.axisY.labelInterpolationFnc, function(data, index, interpolatedValue) {
         var pos = chartRect.y1 - chartRect.height() / data.length * index;
 
@@ -304,7 +318,7 @@
         if (options.axisY.showLabel) {
           // Position later
           //TODO: make padding of 2px configurable
-          var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
+          var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisTextOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
             pos - 2, ''+interpolatedValue);
           label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
 
