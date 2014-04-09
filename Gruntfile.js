@@ -27,7 +27,7 @@ module.exports = function (grunt) {
     watch: {
       assemble: {
         files: ['<%= pkg.config.source %>/docs/{,*/}*.{hbs,yml,json}'],
-        tasks: ['assemble', 'bower-install']
+        tasks: ['assemble', 'bowerInstall']
       },
       js: {
         files: ['<%= pkg.config.source %>/scripts/{,*/}*.js'],
@@ -145,11 +145,13 @@ module.exports = function (grunt) {
     },
 
     // Automatically inject Bower components into the app
-    'bower-install': {
+    'bowerInstall': {
       app: {
-        html: '.tmp/index.html',
+        src: ['.tmp/**/*.html'],
         ignorePath: '<%= pkg.config.source %>/',
-        exclude: '<%= pkg.config.bowerExclude %>'
+        exclude: '<%= pkg.config.bowerExclude %>',
+        dependencies: true,
+        devDependencies: true
       }
     },
 
@@ -403,7 +405,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'assemble',
-      'bower-install',
+      'bowerInstall',
       'concurrent:server',
       'connect:livereload',
       'watch'
@@ -425,7 +427,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'assemble',
-    'bower-install',
+    'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
     'concat',
