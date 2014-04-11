@@ -1,6 +1,3 @@
-//TODO: The whole library needs to be extracted into its own library project and not together with the website / documentation
-//TODO: Add more chart types!
-//TODO: Refactor methods to simplify structure
 (function (document, window, undefined) {
   'use strict';
 
@@ -12,7 +9,7 @@
   // Generates a-z from number
   function alphaNumerate(n) {
     // Limit to a-z
-    return String.fromCharCode(97 + n%26);
+    return String.fromCharCode(97 + n % 26);
   }
 
   // Some utility functions
@@ -141,6 +138,40 @@
       }
 
       return bounds;
+    },
+
+    calculateLabelOffset: function (paper, data, labelClass, labelInterpolationFnc, offsetFnc) {
+      var offset = 0;
+      for (var i = 0; i < data.length; i++) {
+        // If interpolation function returns falsy value we skipp this label
+        var interpolated = labelInterpolationFnc(data[i], i);
+        if (!interpolated && interpolated !== 0) {
+          continue;
+        }
+
+        var label = paper.text(0, 0, '' + interpolated);
+        label.node.setAttribute('class', labelClass);
+
+        // Check if this is the largest label and update offset
+        offset = Math.max(offset, offsetFnc(label.node));
+        // Remove label after offset Calculation
+        label.remove();
+      }
+
+      return offset;
+    },
+
+    // Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
+    interpolateData: function (data, labelInterpolationFnc, callback) {
+      for (var index = 0; index < data.length; index++) {
+        // If interpolation function returns falsy value we skipp this label
+        var interpolatedValue = labelInterpolationFnc(data[index], index);
+        if (!interpolatedValue && interpolatedValue !== 0) {
+          continue;
+        }
+
+        callback(data, index, interpolatedValue);
+      }
     }
   };
 
@@ -209,30 +240,10 @@
       // initialize bounds
       bounds = ChartHelpers.getBounds(paper, dataArray, options);
 
-      function calculateLabelOffset(data, labelClass, labelInterpolationFnc, offsetFnc) {
-        var offset = 0;
-        for (var i = 0; i < data.length; i++) {
-          // If interpolation function returns falsy value we skipp this label
-          var interpolated = labelInterpolationFnc(data[i], i);
-          if(!interpolated && interpolated !== 0) {
-            continue;
-          }
-
-          var label = paper.text(0, 0, ''+interpolated);
-          label.node.setAttribute('class', labelClass);
-
-          // Check if this is the largest label and update offset
-          offset = Math.max(offset, offsetFnc(label.node));
-          // Remove label after offset Calculation
-          label.remove();
-        }
-
-        return offset;
-      }
-
       // First generate labels to calculate max offset for chart
       if (options.axisX.showLabel) {
-        xAxisTextOffset = calculateLabelOffset(
+        xAxisTextOffset = ChartHelpers.calculateLabelOffset(
+          paper,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -242,7 +253,8 @@
       xAxisTextOffset += options.axisX.offset;
 
       if (options.axisY.showLabel) {
-        yAxisTextOffset = calculateLabelOffset(
+        yAxisTextOffset = ChartHelpers.calculateLabelOffset(
+          paper,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -257,10 +269,10 @@
         y1: (options.height || getHeight(paper.node)) - options.chartPadding - xAxisTextOffset,
         x2: (options.width || getWidth(paper.node)) - options.chartPadding,
         y2: options.chartPadding,
-        width: function() {
+        width: function () {
           return this.x2 - this.x1;
         },
-        height: function() {
+        height: function () {
           return this.y1 - this.y2;
         }
       };
@@ -269,20 +281,8 @@
       var labels = paper.g(),
         grid = paper.g();
 
-      function interpolateData(data, labelInterpolationFnc, callback) {
-        for (var index = 0; index < data.length; index++) {
-          // If interpolation function returns falsy value we skipp this label
-          var interpolatedValue = labelInterpolationFnc(data[index], index);
-          if(!interpolatedValue && interpolatedValue !== 0) {
-            continue;
-          }
-
-          callback(data, index, interpolatedValue);
-        }
-      }
-
       // Create X-Axis
-      interpolateData(data.labels, options.axisX.labelInterpolationFnc, function(data, index, interpolatedValue) {
+      ChartHelpers.interpolateData(data.labels, options.axisX.labelInterpolationFnc, function (data, index, interpolatedValue) {
         var pos = chartRect.x1 + chartRect.width() / data.length * index;
 
         if (options.axisX.showGrid) {
@@ -293,7 +293,7 @@
 
         if (options.axisX.showLabel) {
           // Use config offset for setting labels of
-          var label = paper.text(pos + 2, 0, ''+interpolatedValue);
+          var label = paper.text(pos + 2, 0, '' + interpolatedValue);
           label.node.setAttribute('class', [options.classNames.label, options.classNames.horizontal].join(' '));
 
           // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
@@ -306,7 +306,7 @@
       });
 
       // Create Y-Axis
-      interpolateData(bounds.values, options.axisY.labelInterpolationFnc, function(data, index, interpolatedValue) {
+      ChartHelpers.interpolateData(bounds.values, options.axisY.labelInterpolationFnc, function (data, index, interpolatedValue) {
         var pos = chartRect.y1 - chartRect.height() / data.length * index;
 
         if (options.axisY.showGrid) {
@@ -319,7 +319,7 @@
           // Position later
           //TODO: make padding of 2px configurable
           var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisTextOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
-            pos - 2, ''+interpolatedValue);
+            pos - 2, '' + interpolatedValue);
           label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
 
           // Set text-anchor based on alignment
@@ -337,7 +337,7 @@
           point;
 
         // First dot we need to add before loop
-        if(options.showPoint) {
+        if (options.showPoint) {
           point = paper.line(p.x, p.y, p.x, p.y);
           point.node.setAttribute('class', options.classNames.point);
           seriesGroup.append(point);
@@ -349,14 +349,14 @@
           path += ' ' + p.x + ',' + p.y;
 
           //If we should show points we need to create them now to avoid secondary loop
-          if(options.showPoint) {
+          if (options.showPoint) {
             point = paper.line(p.x, p.y, p.x, p.y);
             point.node.setAttribute('class', options.classNames.point);
             seriesGroup.append(point);
           }
         }
 
-        if(options.showLine) {
+        if (options.showLine) {
           var snapPath = paper.path(path);
           snapPath.node.setAttribute('class', options.classNames.line);
           seriesGroup.prepend(snapPath);
@@ -385,13 +385,12 @@
     }
 
 
-
     // Do important checks and throw if necessary
     if (!container) {
       throw 'Container node with selector "' + query + '" not found';
     }
 
-    paper = Snap(options.width || '100%' , options.height || '100%');
+    paper = Snap(options.width || '100%', options.height || '100%');
     if (!paper) {
       throw 'Could not instantiate Snap.js!';
     }
@@ -412,7 +411,7 @@
     // Public members
     return {
       version: '0.0.3',
-      update: function() {
+      update: function () {
         createChart();
       }
     };
