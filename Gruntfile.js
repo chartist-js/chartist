@@ -1,11 +1,5 @@
 'use strict';
 
-// # Globbing
-// for performance reasons we're only matching one level down:
-// 'test/spec/{,*/}*.js'
-// use this if you want to recursively match all subfolders:
-// 'test/spec/**/*.js'
-
 module.exports = function (grunt) {
 
   // Load grunt tasks automatically
@@ -325,10 +319,6 @@ module.exports = function (grunt) {
           }
         ]
       },
-      libdist: {
-        src: 'source/scripts/chartist.js',
-        dest: 'lib/chartist-<%= pkg.version %>.js'
-      },
       styles: {
         expand: true,
         cwd: '<%= pkg.config.source %>/styles',
@@ -360,7 +350,8 @@ module.exports = function (grunt) {
           'source/bower_components/fastclick/lib/fastclick.js',
           'source/bower_components/foundation/js/foundation.min.js',
           'source/bower_components/snap.svg/dist/snap.svg-min.js',
-          'source/scripts/chartist.js'
+          'source/scripts/chartist.core.js',
+          'source/scripts/chartist.line.js'
         ],
         options: {
           specs: 'test/spec/**/spec-*.js',
@@ -376,10 +367,14 @@ module.exports = function (grunt) {
     uglify: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */'
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */',
+          sourceMap: true,
+          sourceMapIncludeSources: true
         },
         files: {
-          'libdist/chartist-<%= pkg.version %>.min.js': ['source/scripts/chartist.js']
+          'libdist/chartist-<%= pkg.version %>.core.min.js': ['source/scripts/chartist.core.js'],
+          'libdist/chartist-<%= pkg.version %>.line.min.js': ['source/scripts/chartist.line.js'],
+          'libdist/chartist-<%= pkg.version %>.all.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js']
         }
       }
     },
@@ -438,9 +433,7 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin',
-    'htmlmin',
-    'cssmin:libdist',
-    'uglify:libdist'
+    'htmlmin'
   ]);
 
   grunt.registerTask('default', [
