@@ -4,6 +4,8 @@
   // Export chartist namespace
   var Chartist = window.Chartist = window.Chartist || {};
 
+  Chartist.version = '0.0.3';
+
   // Helps to simplify functional style code
   Chartist.noop = function (n) {
     return n;
@@ -26,6 +28,35 @@
       }
     }
     return target;
+  };
+
+  // Filter an array
+  Chartist.filter = function (array, filterFnc) {
+    var accepted = [],
+      acceptedOnly,
+      i,
+      handler = {
+        accept: function (e) {
+          accepted.push(e);
+        },
+        acceptOnly: function (e) {
+          acceptedOnly = e;
+        }
+      };
+
+    for (i = 0; i < array.length; i++) {
+      var returnValue = filterFnc.call(handler, array[i]);
+
+      if (acceptedOnly !== undefined) {
+        return acceptedOnly;
+      }
+
+      if (returnValue === false) {
+        return accepted;
+      }
+    }
+
+    return accepted;
   };
 
   // Get element height / width with fallback to svg BoundingBox or parent container dimensions
@@ -192,6 +223,44 @@
     };
   };
 
+  // Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+  // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one
+  Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {
+    var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
+      currentOptions,
+      mediaQueryListeners = [],
+      i;
+
+    function applyOptions() {
+      currentOptions = Chartist.extend({}, baseOptions);
+
+      if (responsiveOptions) {
+        for (i = 0; i < responsiveOptions.length; i++) {
+          var mql = window.matchMedia(responsiveOptions[i][0]);
+          if (mql.matches) {
+            currentOptions = Chartist.extend(currentOptions, responsiveOptions[i][1]);
+          }
+        }
+      }
+
+      optionsChangedCallbackFnc(currentOptions);
+      return currentOptions;
+    }
+
+    if (!window.matchMedia) {
+      throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
+    } else if (responsiveOptions) {
+
+      for (i = 0; i < responsiveOptions.length; i++) {
+        var mql = window.matchMedia(responsiveOptions[i][0]);
+        mql.addListener(applyOptions);
+        mediaQueryListeners.push(mql);
+      }
+    }
+
+    return applyOptions();
+  };
+
   // Line chart constructor
   window.Chartist.Line = window.Chartist.Line || function (query, data, options, responsiveOptions) {
 
@@ -226,32 +295,20 @@
           horizontal: 'ct-horizontal'
         }
       },
-      baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
+      currentOptions,
       container = document.querySelector(query),
       paper,
       dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length),
       i;
 
-    function createChart() {
-      var options,
-        xAxisOffset,
+    function createChart(options) {
+      var xAxisOffset,
         yAxisOffset,
         seriesGroups = [],
         bounds;
 
       // Clear the stage
       paper.clear();
-
-      // Construct current options based on responsive option overrides (overrides in sequence of responsiveOptions)
-      options = Chartist.extend({}, baseOptions);
-      if (responsiveOptions) {
-        for (i = 0; i < responsiveOptions.length; i++) {
-          var mql = window.matchMedia(responsiveOptions[i][0]);
-          if (mql.matches) {
-            options = Chartist.extend(options, responsiveOptions[i][1]);
-          }
-        }
-      }
 
       // initialize bounds
       bounds = Chartist.getBounds(paper, dataArray, options);
@@ -398,23 +455,18 @@
     }
     container.appendChild(paper.node);
 
-    if (!window.matchMedia) {
-      throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
-    } else if (responsiveOptions) {
-
-      for (i = 0; i < responsiveOptions.length; i++) {
-        var mql = window.matchMedia(responsiveOptions[i][0]);
-        mql.addListener(createChart);
-      }
-    }
-
-    createChart();
+    // Obtain current options based on matching media queries (if responsive options are given)
+    // This will also register a listener that is re-creating the chart based on media changes
+    currentOptions = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, function(changedOptions) {
+      currentOptions = changedOptions;
+      createChart(currentOptions);
+    });
 
     // Public members
     return {
-      version: '0.0.3',
+      version: Chartist.version,
       update: function () {
-        createChart();
+        createChart(currentOptions);
       }
     };
   };
