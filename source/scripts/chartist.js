@@ -1,198 +1,196 @@
 (function (document, window, undefined) {
   'use strict';
 
+  // Export chartist namespace
+  var Chartist = window.Chartist = window.Chartist || {};
+
   // Helps to simplify functional style code
-  function noop(n) {
+  Chartist.noop = function (n) {
     return n;
-  }
+  };
 
   // Generates a-z from number
-  function alphaNumerate(n) {
+  Chartist.alphaNumerate = function (n) {
     // Limit to a-z
     return String.fromCharCode(97 + n % 26);
-  }
+  };
 
-  // Some utility functions
-  function extend(target, source) {
+  // Simple recursive object extend
+  Chartist.extend = function (target, source) {
     target = target || {};
     for (var prop in source) {
       if (typeof source[prop] === 'object') {
-        target[prop] = extend(target[prop], source[prop]);
+        target[prop] = Chartist.extend(target[prop], source[prop]);
       } else {
         target[prop] = source[prop];
       }
     }
     return target;
-  }
+  };
 
   // Get element height / width with fallback to svg BoundingBox or parent container dimensions
   // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
-  function getHeight(svgElement) {
+  Chartist.getHeight = function (svgElement) {
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
-  }
+  };
 
-  function getWidth(svgElement) {
+  Chartist.getWidth = function (svgElement) {
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
-  }
+  };
 
-  var ChartHelpers = {
-    // Internal functions
-    getDataArray: function (data) {
-      var array = [];
+  // Convert data series into plain array
+  Chartist.getDataArray = function (data) {
+    var array = [];
 
-      for (var i = 0; i < data.series.length; i++) {
-        array[i] = data.series[i].data;
+    for (var i = 0; i < data.series.length; i++) {
+      array[i] = data.series[i].data;
+    }
+
+    return array;
+  };
+
+  // Add missing values at the end of the arrays
+  Chartist.normalizeDataArray = function (dataArray, length) {
+    for (var i = 0; i < dataArray.length; i++) {
+      if (dataArray[i].length === length) {
+        continue;
       }
 
-      return array;
-    },
-
-    // Add missing values at the end of the arrays
-    normalizeDataArray: function (dataArray, length) {
-      for (var i = 0; i < dataArray.length; i++) {
-        if (dataArray[i].length === length) {
-          continue;
-        }
-
-        for (var j = dataArray[i].length; j < length; j++) {
-          dataArray[i][j] = 0;
-        }
+      for (var j = dataArray[i].length; j < length; j++) {
+        dataArray[i][j] = 0;
       }
+    }
 
-      return dataArray;
-    },
+    return dataArray;
+  };
 
-    orderOfMagnitude: function (value) {
-      return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
-    },
+  Chartist.orderOfMagnitude = function (value) {
+    return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
+  };
 
-    projectLength: function (paper, length, bounds, options) {
-      var availableHeight = ChartHelpers.getAvailableHeight(paper, options);
-      return (length / bounds.range * availableHeight);
-    },
+  Chartist.projectLength = function (paper, length, bounds, options) {
+    var availableHeight = Chartist.getAvailableHeight(paper, options);
+    return (length / bounds.range * availableHeight);
+  };
 
-    getAvailableHeight: function (paper, options) {
-      return getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.offset;
-    },
+  Chartist.getAvailableHeight = function (paper, options) {
+    return Chartist.getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.offset;
+  };
 
-    // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-    getBounds: function (paper, dataArray, options) {
-      var i,
-        j,
-        newMin,
-        newMax,
-        bounds = {
-          low: Number.MAX_VALUE,
-          high: Number.MIN_VALUE
-        };
-
-      for (i = 0; i < dataArray.length; i++) {
-        for (j = 0; j < dataArray[i].length; j++) {
-          if (dataArray[i][j] > bounds.high) {
-            bounds.high = dataArray[i][j];
-          }
-
-          if (dataArray[i][j] < bounds.low) {
-            bounds.low = dataArray[i][j];
-          }
-        }
-      }
-
-      bounds.valueRange = bounds.high - bounds.low;
-      bounds.oom = ChartHelpers.orderOfMagnitude(bounds.valueRange);
-      bounds.min = Math.floor(bounds.low / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
-      bounds.max = Math.ceil(bounds.high / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
-      bounds.range = bounds.max - bounds.min;
-      bounds.step = Math.pow(10, bounds.oom);
-      bounds.numberOfSteps = Math.round(bounds.range / bounds.step);
-
-      // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
-      while (true) {
-        var length = ChartHelpers.projectLength(paper, bounds.step / 2, bounds, options);
-        if (length >= options.axisY.scaleMinSpace) {
-          bounds.step /= 2;
-        } else {
-          break;
-        }
-      }
-
-      // Narrow min and max based on new step
-      newMin = bounds.min;
-      newMax = bounds.max;
-      for (i = bounds.min; i <= bounds.max; i += bounds.step) {
-        if (i + bounds.step < bounds.low) {
-          newMin += bounds.step;
-        }
-
-        if (i - bounds.step > bounds.high) {
-          newMax -= bounds.step;
-        }
-      }
-      bounds.min = newMin;
-      bounds.max = newMax;
-      bounds.range = bounds.max - bounds.min;
-
-      bounds.values = [];
-      for (i = bounds.min; i <= bounds.max; i += bounds.step) {
-        bounds.values.push(i);
-      }
-
-      return bounds;
-    },
-
-    calculateLabelOffset: function (paper, data, labelClass, labelInterpolationFnc, offsetFnc) {
-      var offset = 0;
-      for (var i = 0; i < data.length; i++) {
-        // If interpolation function returns falsy value we skipp this label
-        var interpolated = labelInterpolationFnc(data[i], i);
-        if (!interpolated && interpolated !== 0) {
-          continue;
-        }
-
-        var label = paper.text(0, 0, '' + interpolated);
-        label.node.setAttribute('class', labelClass);
-
-        // Check if this is the largest label and update offset
-        offset = Math.max(offset, offsetFnc(label.node));
-        // Remove label after offset Calculation
-        label.remove();
-      }
-
-      return offset;
-    },
-
-    // Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
-    interpolateData: function (data, labelInterpolationFnc, callback) {
-      for (var index = 0; index < data.length; index++) {
-        // If interpolation function returns falsy value we skipp this label
-        var interpolatedValue = labelInterpolationFnc(data[index], index);
-        if (!interpolatedValue && interpolatedValue !== 0) {
-          continue;
-        }
-
-        callback(data, index, interpolatedValue);
-      }
-    },
-
-    // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
-    createChartRect: function (paper, options, xAxisOffset, yAxisOffset) {
-      return {
-        x1: options.chartPadding + yAxisOffset,
-        y1: (options.height || getHeight(paper.node)) - options.chartPadding - xAxisOffset,
-        x2: (options.width || getWidth(paper.node)) - options.chartPadding,
-        y2: options.chartPadding,
-        width: function () {
-          return this.x2 - this.x1;
-        },
-        height: function () {
-          return this.y1 - this.y2;
-        }
+  // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
+  Chartist.getBounds = function (paper, dataArray, options) {
+    var i,
+      j,
+      newMin,
+      newMax,
+      bounds = {
+        low: Number.MAX_VALUE,
+        high: Number.MIN_VALUE
       };
+
+    for (i = 0; i < dataArray.length; i++) {
+      for (j = 0; j < dataArray[i].length; j++) {
+        if (dataArray[i][j] > bounds.high) {
+          bounds.high = dataArray[i][j];
+        }
+
+        if (dataArray[i][j] < bounds.low) {
+          bounds.low = dataArray[i][j];
+        }
+      }
+    }
+
+    bounds.valueRange = bounds.high - bounds.low;
+    bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);
+    bounds.min = Math.floor(bounds.low / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
+    bounds.max = Math.ceil(bounds.high / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
+    bounds.range = bounds.max - bounds.min;
+    bounds.step = Math.pow(10, bounds.oom);
+    bounds.numberOfSteps = Math.round(bounds.range / bounds.step);
+
+    // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
+    while (true) {
+      var length = Chartist.projectLength(paper, bounds.step / 2, bounds, options);
+      if (length >= options.axisY.scaleMinSpace) {
+        bounds.step /= 2;
+      } else {
+        break;
+      }
+    }
+
+    // Narrow min and max based on new step
+    newMin = bounds.min;
+    newMax = bounds.max;
+    for (i = bounds.min; i <= bounds.max; i += bounds.step) {
+      if (i + bounds.step < bounds.low) {
+        newMin += bounds.step;
+      }
+
+      if (i - bounds.step > bounds.high) {
+        newMax -= bounds.step;
+      }
+    }
+    bounds.min = newMin;
+    bounds.max = newMax;
+    bounds.range = bounds.max - bounds.min;
+
+    bounds.values = [];
+    for (i = bounds.min; i <= bounds.max; i += bounds.step) {
+      bounds.values.push(i);
+    }
+
+    return bounds;
+  };
+
+  Chartist.calculateLabelOffset = function (paper, data, labelClass, labelInterpolationFnc, offsetFnc) {
+    var offset = 0;
+    for (var i = 0; i < data.length; i++) {
+      // If interpolation function returns falsy value we skipp this label
+      var interpolated = labelInterpolationFnc(data[i], i);
+      if (!interpolated && interpolated !== 0) {
+        continue;
+      }
+
+      var label = paper.text(0, 0, '' + interpolated);
+      label.node.setAttribute('class', labelClass);
+
+      // Check if this is the largest label and update offset
+      offset = Math.max(offset, offsetFnc(label.node));
+      // Remove label after offset Calculation
+      label.remove();
+    }
+
+    return offset;
+  };
+
+  // Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
+  Chartist.interpolateData = function (data, labelInterpolationFnc, callback) {
+    for (var index = 0; index < data.length; index++) {
+      // If interpolation function returns falsy value we skipp this label
+      var interpolatedValue = labelInterpolationFnc(data[index], index);
+      if (!interpolatedValue && interpolatedValue !== 0) {
+        continue;
+      }
+
+      callback(data, index, interpolatedValue);
     }
   };
 
-  // Export chartist namespace
-  window.Chartist = window.Chartist || {};
+  // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+  Chartist.createChartRect = function (paper, options, xAxisOffset, yAxisOffset) {
+    return {
+      x1: options.chartPadding + yAxisOffset,
+      y1: (options.height || Chartist.getHeight(paper.node)) - options.chartPadding - xAxisOffset,
+      x2: (options.width || Chartist.getWidth(paper.node)) - options.chartPadding,
+      y2: options.chartPadding,
+      width: function () {
+        return this.x2 - this.x1;
+      },
+      height: function () {
+        return this.y1 - this.y2;
+      }
+    };
+  };
 
   // Line chart constructor
   window.Chartist.Line = window.Chartist.Line || function (query, data, options, responsiveOptions) {
@@ -202,14 +200,14 @@
           offset: 0,
           showLabel: true,
           showGrid: true,
-          labelInterpolationFnc: noop
+          labelInterpolationFnc: Chartist.noop
         },
         axisY: {
           offset: 5,
           showLabel: true,
           showGrid: true,
           labelAlign: 'right',
-          labelInterpolationFnc: noop,
+          labelInterpolationFnc: Chartist.noop,
           scaleMinSpace: 20
         },
         width: undefined,
@@ -228,10 +226,10 @@
           horizontal: 'ct-horizontal'
         }
       },
-      baseOptions = extend(extend({}, defaultOptions), options),
+      baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
       container = document.querySelector(query),
       paper,
-      dataArray = ChartHelpers.normalizeDataArray(ChartHelpers.getDataArray(data), data.labels.length),
+      dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length),
       i;
 
     function createChart() {
@@ -245,48 +243,48 @@
       paper.clear();
 
       // Construct current options based on responsive option overrides (overrides in sequence of responsiveOptions)
-      options = extend({}, baseOptions);
+      options = Chartist.extend({}, baseOptions);
       if (responsiveOptions) {
         for (i = 0; i < responsiveOptions.length; i++) {
           var mql = window.matchMedia(responsiveOptions[i][0]);
           if (mql.matches) {
-            options = extend(options, responsiveOptions[i][1]);
+            options = Chartist.extend(options, responsiveOptions[i][1]);
           }
         }
       }
 
       // initialize bounds
-      bounds = ChartHelpers.getBounds(paper, dataArray, options);
+      bounds = Chartist.getBounds(paper, dataArray, options);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
-        xAxisOffset += ChartHelpers.calculateLabelOffset(
+        xAxisOffset += Chartist.calculateLabelOffset(
           paper,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
-          getHeight
+          Chartist.getHeight
         );
       }
 
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
-        yAxisOffset += ChartHelpers.calculateLabelOffset(
+        yAxisOffset += Chartist.calculateLabelOffset(
           paper,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
-          getWidth
+          Chartist.getWidth
         );
       }
 
-      var chartRect = ChartHelpers.createChartRect(paper, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(paper, options, xAxisOffset, yAxisOffset);
       // Start drawing
       var labels = paper.g(),
         grid = paper.g();
 
       // Create X-Axis
-      ChartHelpers.interpolateData(data.labels, options.axisX.labelInterpolationFnc, function (data, index, interpolatedValue) {
+      Chartist.interpolateData(data.labels, options.axisX.labelInterpolationFnc, function (data, index, interpolatedValue) {
         var pos = chartRect.x1 + chartRect.width() / data.length * index;
 
         if (options.axisX.showGrid) {
@@ -302,7 +300,7 @@
 
           // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
           label.attr({
-            y: chartRect.y1 + getHeight(label.node) + options.axisX.offset
+            y: chartRect.y1 + Chartist.getHeight(label.node) + options.axisX.offset
           });
 
           labels.add(label);
@@ -310,7 +308,7 @@
       });
 
       // Create Y-Axis
-      ChartHelpers.interpolateData(bounds.values, options.axisY.labelInterpolationFnc, function (data, index, interpolatedValue) {
+      Chartist.interpolateData(bounds.values, options.axisY.labelInterpolationFnc, function (data, index, interpolatedValue) {
         var pos = chartRect.y1 - chartRect.height() / data.length * index;
 
         if (options.axisY.showGrid) {
@@ -380,7 +378,7 @@
         seriesGroups[i] = paper.g();
         // Use series class from series data or if not set generate one
         seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + alphaNumerate(i)));
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
         createSeries(data.series[i].data, seriesGroups[i], projectPoint);
 
