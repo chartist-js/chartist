@@ -462,6 +462,14 @@
       createChart(currentOptions);
     });
 
+    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
+    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
+    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
+    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
+    window.addEventListener('resize', function(event) {
+      createChart(currentOptions);
+    });
+
     // Public members
     return {
       version: Chartist.version,
