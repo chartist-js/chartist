@@ -172,12 +172,30 @@
 
         callback(data, index, interpolatedValue);
       }
+    },
+
+    // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+    createChartRect: function (paper, options, xAxisOffset, yAxisOffset) {
+      return {
+        x1: options.chartPadding + yAxisOffset,
+        y1: (options.height || getHeight(paper.node)) - options.chartPadding - xAxisOffset,
+        x2: (options.width || getWidth(paper.node)) - options.chartPadding,
+        y2: options.chartPadding,
+        width: function () {
+          return this.x2 - this.x1;
+        },
+        height: function () {
+          return this.y1 - this.y2;
+        }
+      };
     }
   };
 
+  // Export chartist namespace
+  window.Chartist = window.Chartist || {};
 
-  // Chartist closure constructor
-  window.Chartist = window.Chartist || function (query, data, options, responsiveOptions) {
+  // Line chart constructor
+  window.Chartist.Line = window.Chartist.Line || function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -218,8 +236,8 @@
 
     function createChart() {
       var options,
-        xAxisTextOffset = 0,
-        yAxisTextOffset = 0,
+        xAxisOffset,
+        yAxisOffset,
         seriesGroups = [],
         bounds;
 
@@ -240,9 +258,9 @@
       // initialize bounds
       bounds = ChartHelpers.getBounds(paper, dataArray, options);
 
-      // First generate labels to calculate max offset for chart
+      xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
-        xAxisTextOffset = ChartHelpers.calculateLabelOffset(
+        xAxisOffset += ChartHelpers.calculateLabelOffset(
           paper,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
@@ -250,10 +268,10 @@
           getHeight
         );
       }
-      xAxisTextOffset += options.axisX.offset;
 
+      yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
-        yAxisTextOffset = ChartHelpers.calculateLabelOffset(
+        yAxisOffset += ChartHelpers.calculateLabelOffset(
           paper,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
@@ -261,22 +279,8 @@
           getWidth
         );
       }
-      yAxisTextOffset += options.axisY.offset;
 
-      // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
-      var chartRect = {
-        x1: options.chartPadding + yAxisTextOffset,
-        y1: (options.height || getHeight(paper.node)) - options.chartPadding - xAxisTextOffset,
-        x2: (options.width || getWidth(paper.node)) - options.chartPadding,
-        y2: options.chartPadding,
-        width: function () {
-          return this.x2 - this.x1;
-        },
-        height: function () {
-          return this.y1 - this.y2;
-        }
-      };
-
+      var chartRect = ChartHelpers.createChartRect(paper, options, xAxisOffset, yAxisOffset);
       // Start drawing
       var labels = paper.g(),
         grid = paper.g();
@@ -318,7 +322,7 @@
         if (options.axisY.showLabel) {
           // Position later
           //TODO: make padding of 2px configurable
-          var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisTextOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
+          var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
             pos - 2, '' + interpolatedValue);
           label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
 
