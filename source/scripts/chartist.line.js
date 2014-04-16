@@ -35,7 +35,6 @@
         }
       },
       currentOptions,
-      container = document.querySelector(query),
       paper,
       dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length),
       i;
@@ -46,8 +45,8 @@
         seriesGroups = [],
         bounds;
 
-      // Clear the stage
-      paper.clear();
+      // Create new paper the stage
+      paper = Chartist.createPaper(query, options.width, options.height);
 
       // initialize bounds
       bounds = Chartist.getBounds(paper, dataArray, options);
@@ -181,18 +180,6 @@
         paper.add(seriesGroups[i]);
       }
     }
-
-
-    // Do important checks and throw if necessary
-    if (!container) {
-      throw 'Container node with selector "' + query + '" not found';
-    }
-
-    paper = Snap(options.width || '100%', options.height || '100%');
-    if (!paper) {
-      throw 'Could not instantiate Snap.js!';
-    }
-    container.appendChild(paper.node);
 
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes

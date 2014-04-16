@@ -30,33 +30,15 @@
     return target;
   };
 
-  // Filter an array
-  Chartist.filter = function (array, filterFnc) {
-    var accepted = [],
-      acceptedOnly,
-      i,
-      handler = {
-        accept: function (e) {
-          accepted.push(e);
-        },
-        acceptOnly: function (e) {
-          acceptedOnly = e;
-        }
-      };
+  // Simple array each function
+  Chartist.each = function(array, callback) {
+    for (var i = 0 ; i < array.length; i++ ) {
+      var value = callback.call( array[i], i, array[i] );
 
-    for (i = 0; i < array.length; i++) {
-      var returnValue = filterFnc.call(handler, array[i]);
-
-      if (acceptedOnly !== undefined) {
-        return acceptedOnly;
-      }
-
-      if (returnValue === false) {
-        return accepted;
+      if(value === false) {
+        break;
       }
     }
-
-    return accepted;
   };
 
   // Get element height / width with fallback to svg BoundingBox or parent container dimensions
@@ -67,6 +49,41 @@
 
   Chartist.getWidth = function (svgElement) {
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
+  };
+
+  // Create Chartist container and instantiate snap paper
+  Chartist.createPaper = function(query, width, height) {
+    var container = document.querySelector(query),
+        paper;
+
+    // If container was not found we throw up
+    if (!container) {
+      throw 'Container node with selector "' + query + '" not found';
+    }
+
+    // If already contains paper we clear it, set width / height and return
+    if(container.__chartistPaper !== undefined) {
+      paper = container.__chartistPaper.attr({
+        width: width || '100%',
+        height: height || '100%'
+      });
+      // Clear the paper if its already used before so we start fresh
+      paper.clear();
+
+    } else {
+      // Create Snap paper with width and height or use 100% as default
+      paper = Snap(width || '100%', height || '100%');
+      if (!paper) {
+        throw 'Could not instantiate Snap.js!';
+      }
+      // Append the snap SVG to our container
+      container.appendChild(paper.node);
+
+      // Set paper in DOM element so we have a trace for later
+      container.__chartistPaper = paper;
+    }
+
+    return paper;
   };
 
   // Convert data series into plain array
