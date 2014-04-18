@@ -34,9 +34,9 @@ module.exports = function (grunt) {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'jasmine']
       },
-      compass: {
+      sass: {
         files: ['<%= pkg.config.source %>/styles/**/*.{scss,sass}'],
-        tasks: ['compass:server']
+        tasks: ['sass:server']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -149,35 +149,43 @@ module.exports = function (grunt) {
       }
     },
 
-    // Compiles Sass to CSS and generates necessary files if requested
-    // TODO: Replace with grunt-libsass
-    compass: {
+    // Compile SASS into CSS with libsass (node-sass)
+    sass: {
       options: {
-        sassDir: '<%= pkg.config.source %>/styles',
-        cssDir: '.tmp/styles',
-        generatedImagesDir: '.tmp/images/generated',
-        imagesDir: '<%= pkg.config.source %>/images',
-        javascriptsDir: '<%= pkg.config.source %>/scripts',
-        fontsDir: '<%= pkg.config.source %>/styles/fonts',
-        importPath: '<%= pkg.config.source %>/bower_components',
-        httpImagesPath: '/images',
-        httpGeneratedImagesPath: '/images/generated',
-        httpFontsPath: '/styles/fonts',
-        relativeAssets: false,
-        assetCacheBuster: false,
-        raw: 'Sass::Script::Number.precision = 10\n'
+        includePaths: ['<%= pkg.config.source %>/bower_components'],
+        imagePath: '<%= pkg.config.source %>/images'
       },
       dist: {
         options: {
-          generatedImagesDir: '<%= pkg.config.dist %>/images/generated'
-        }
+          sourceComments: 'none'
+        },
+        files: [
+          {
+            expand: true,
+            cwd: '<%= pkg.config.source %>/styles',
+            src: '{,*/}*.{scss,sass}',
+            ext: '.css',
+            dest: '.tmp/styles'
+          }
+        ]
       },
       server: {
         options: {
-          debugInfo: true
-        }
+          sourceComments: 'map'
+        },
+        files: [
+          {
+            expand: true,
+            cwd: '<%= pkg.config.source %>/styles',
+            src: '{,*/}*.{scss,sass}',
+            ext: '.css',
+            dest: '.tmp/styles'
+          }
+        ]
       }
     },
+
+
 
     // Renames files for browser caching purposes
     rev: {
@@ -330,13 +338,13 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'compass:server'
+        'sass:server'
       ],
       test: [
-        'compass'
+        'sass'
       ],
       dist: [
-        'compass:dist',
+        'sass:dist',
         'imagemin',
         'svgmin'
       ]
