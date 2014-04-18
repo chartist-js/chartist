@@ -271,28 +271,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // Allow the use of non-minsafe AngularJS files. Automatically makes it
-    // minsafe compatible so Uglify does not destroy the ng references
-    ngmin: {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd: '.tmp/concat/scripts',
-            src: '*.js',
-            dest: '.tmp/concat/scripts'
-          }
-        ]
-      }
-    },
-
-    // Replace Google CDN references
-    cdnify: {
-      dist: {
-        html: ['<%= pkg.config.dist %>/*.html']
-      }
-    },
-
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -396,6 +374,16 @@ module.exports = function (grunt) {
           'libdist/chartist-<%= pkg.version %>.min.css': ['.tmp/styles/chartist.css']
         }
       }
+    },
+
+    // Generate documentation with JSHint 3.3 (>3.3 = no Java dependency)
+    jsdoc : {
+      dist : {
+        src: ['README.md', 'source/scripts/**/*.js', 'test/**/*.js'],
+        options: {
+          destination: 'dist/apidoc'
+        }
+      }
     }
   });
 
@@ -434,14 +422,13 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'concat',
-    'ngmin',
     'copy:dist',
-    'cdnify',
     'cssmin',
     'uglify',
     'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'jsdoc'
   ]);
 
   grunt.registerTask('default', [

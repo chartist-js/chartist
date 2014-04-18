@@ -35,7 +35,9 @@
     "grunt-contrib-jasmine": "~0.6.1",
     "jasmine-fixture": "~1.0.8",
     "assemble": "~0.4.36",
-    "grunt-bower-install": "~1.4.0"
+    "grunt-bower-install": "~1.4.0",
+    "jsdoc": "~3.3.0",
+    "grunt-jsdoc": "~0.5.4"
   },
   "engines": {
     "node": ">=0.8.0"
