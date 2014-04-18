@@ -1,4 +1,4 @@
-$ct-scales: (3/4, 1/1.618, 9/16, 1, 1/2, 1/3, 1/4);
+$ct-scales: ((3/4), (1/1.618), (9/16), 1, (1/2), (1/3), (1/4));
 $ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-square, ct-octave, major-twelfth, double-octave);
 
 $ct-class-chart: ct-chart;
@@ -20,7 +20,7 @@ $ct-include-responsive-containers: $ct-include-classes;
 $ct-series-names: (a, b, c, d);
 $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
 
-@mixin responsive-svg-container($width: 100%, $ratio: 1/1) {
+@mixin responsive-svg-container($width: 100%, $ratio: (1/1)) {
   display: block;
   position: relative;
   width: $width;
@@ -39,7 +39,7 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #046971);
 
 @if $ct-include-classes {
   .#{$ct-class-chart} {
-    @include responsive-svg-container($ratio: 1/1.618);
+    @include responsive-svg-container($ratio: (1/1.618));
 
     @if $ct-include-responsive-containers {
       @for $i from 0 to length($ct-scales-names) {
