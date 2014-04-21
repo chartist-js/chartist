@@ -31,11 +31,11 @@
   };
 
   // Simple array each function
-  Chartist.each = function(array, callback) {
-    for (var i = 0 ; i < array.length; i++ ) {
-      var value = callback.call( array[i], i, array[i] );
+  Chartist.each = function (array, callback) {
+    for (var i = 0; i < array.length; i++) {
+      var value = callback.call(array[i], i, array[i]);
 
-      if(value === false) {
+      if (value === false) {
         break;
       }
     }
@@ -52,9 +52,9 @@
   };
 
   // Create Chartist container and instantiate snap paper
-  Chartist.createPaper = function(query, width, height) {
+  Chartist.createPaper = function (query, width, height) {
     var container = document.querySelector(query),
-        paper;
+      paper;
 
     // If container was not found we throw up
     if (!container) {
@@ -62,7 +62,7 @@
     }
 
     // If already contains paper we clear it, set width / height and return
-    if(container.__chartistPaper !== undefined) {
+    if (container.__chartistPaper !== undefined) {
       paper = container.__chartistPaper.attr({
         width: width || '100%',
         height: height || '100%'
@@ -125,28 +125,36 @@
     return Chartist.getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.offset;
   };
 
-  // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (paper, dataArray, options) {
+  // Get highest and lowest value of data array
+  Chartist.getHighLow = function (dataArray) {
     var i,
       j,
-      newMin,
-      newMax,
-      bounds = {
-        low: Number.MAX_VALUE,
-        high: Number.MIN_VALUE
+      highLow = {
+        high: Number.MIN_VALUE,
+        low: Number.MAX_VALUE
       };
 
     for (i = 0; i < dataArray.length; i++) {
       for (j = 0; j < dataArray[i].length; j++) {
-        if (dataArray[i][j] > bounds.high) {
-          bounds.high = dataArray[i][j];
+        if (dataArray[i][j] > highLow.high) {
+          highLow.high = dataArray[i][j];
         }
 
-        if (dataArray[i][j] < bounds.low) {
-          bounds.low = dataArray[i][j];
+        if (dataArray[i][j] < highLow.low) {
+          highLow.low = dataArray[i][j];
         }
       }
     }
+
+    return highLow;
+  };
+
+  // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
+  Chartist.getBounds = function (paper, dataArray, options) {
+    var i,
+      newMin,
+      newMax,
+      bounds = Chartist.getHighLow(dataArray);
 
     bounds.valueRange = bounds.high - bounds.low;
     bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);
