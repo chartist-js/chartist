@@ -1,0 +1,79 @@
+.landing-page-header {
+  background-color: $color-yellow;
+  text-align: center;
+
+  > .introduction-title {
+    text-transform: uppercase;
+    font-size: rem-calc(nth($modular-scale, 8));
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    font-weight: 700;
+    color: white;
+    line-height: 0.5;
+    margin-top: 2rem;
+
+    @include text-shadow(1px 1px mix(black, $color-yellow, 15%), 2px 2px mix(black, $color-yellow, 15%), 3px 3px mix(black, $color-yellow, 15%));
+
+    @media #{$medium-up} {
+      font-size: rem-calc(nth($modular-scale, 10));
+    }
+
+    > small {
+      font-size: rem-calc(nth($modular-scale, 4));
+      display: inline-block;
+      width: 100%;
+      @include text-shadow(1px 1px mix(black, $color-yellow, 15%), 2px 2px mix(black, $color-yellow, 15%));
+    }
+  }
+
+  > .limiter {
+    max-width: 480px;
+    margin: 0 auto;
+
+    > figure {
+      @include responsive-svg-container();
+    }
+  }
+
+  > .call-to-action {
+    text-align: center;
+    padding-bottom: $column-gutter;
+    padding-left: $column-gutter / 2;
+    padding-right: $column-gutter / 2;
+
+    > .button {
+      color: white;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300 !important;
+
+      &:before {
+        padding-right: 0.5em;
+      }
+
+      &.download {
+        background-color: $color-red;
+        &:hover,
+        &:focus { background-color: shade($color-red, 10%); color: rgba(255, 255, 255, 1);}
+      }
+
+      &.contribute {
+        background-color: $color-grapefruit;
+        &:hover,
+        &:focus { background-color: shade($color-grapefruit, 10%); color: rgba(255, 255, 255, 1);}
+      }
+
+      @media #{$small-only} {
+        width: 100%;
+        font-size: 1em;
+        font-weight: 700 !important;
+      }
+
+      @media #{$medium-up} {
+        &.download {
+          margin-right: $column-gutter / 2;
+        }
+      }
+    }
+  }
+}

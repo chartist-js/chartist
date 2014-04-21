@@ -3,10 +3,12 @@ layout: default
 ---
 {{> navigation }}
 
-{{#with page-getting-started}}
-  {{> side-navigation }}
-{{/with}}
+<section class="{{page-class}}">
+  {{#with page-getting-started}}
+    {{> side-navigation }}
+  {{/with}}
 
-<article class="main" role="main">
-  {{> body  }}
-</article>
+  <article class="main" role="main">
+    {{> body  }}
+  </article>
+</section>
