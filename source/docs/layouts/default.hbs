@@ -16,6 +16,7 @@
   <!-- build:css({.tmp,source}) styles/vendor.css -->
   <!-- bower:css -->
   <!-- endbower -->
+  <link rel="stylesheet" href="bower_components/foundation/css/normalize.css"/>
   <link rel="stylesheet" href="bower_components/highlightjs/styles/monokai_sublime.css"/>
   <!-- endbuild -->
   <!-- build:css({.tmp,source}) styles/main.css -->
@@ -28,24 +29,7 @@
   your browser</a> to improve your experience.</p>
 <![endif]-->
 
-<header class="landing-page-header">
-  <div class="introduction-title">Chartist.js
-    <small> Simple responsive charts</small>
-  </div>
-  <div class="limiter">
-    <figure>
-      <svg id="chartist-guy" data-svg-src="images/chartist-guy.svg"></svg>
-    </figure>
-  </div>
-  <div class="call-to-action">
-    <a class="button large download fa-icon fa-download" href="https://github.com/gionkunz/chartist-js/tree/develop/libdist" target="_blank">Download</a>
-    <a class="button large contribute fa-icon fa-github" href="https://github.com/gionkunz/chartist-js" target="_blank">Contribute</a>
-  </div>
-</header>
-
-<article class="main" role="main">
-  {{> body  }}
-</article>
+{{> body  }}
 
 <script>
   (function (i, s, o, g, r, a, m) {
@@ -74,12 +58,17 @@
 <!-- build:js(source/bower_components) scripts/vendor.js -->
 <!-- bower:js -->
 <!-- endbower -->
+<script src="bower_components/foundation/js/foundation/foundation.js"></script>
+<script src="bower_components/foundation/js/foundation/foundation.topbar.js"></script>
+<script src="bower_components/foundation/js/vendor/fastclick.js"></script>
 <!-- endbuild -->
 
 <!-- build:js({.tmp,source}) scripts/scripts.js -->
 <script src="scripts/chartist.core.js"></script>
 <script src="scripts/chartist.line.js"></script>
-<script src="scripts/main.js"></script>
+<script src="scripts/docs/main.js"></script>
+<script src="scripts/docs/chartist-guy.js"></script>
+<script src="scripts/docs/example-charts.js"></script>
 <!-- endbuild -->
 </body>
 </html>

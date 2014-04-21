@@ -49,6 +49,10 @@ pre > code {
   font-family: "Source Code Pro", "Courier New", monospace !important;
 }
 
+.sticky.contain-to-grid {
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+
 .landing-page-header {
   background-color: $color-yellow;
   text-align: center;
@@ -63,7 +67,8 @@ pre > code {
     color: white;
     line-height: 0.5;
     margin-top: 2rem;
-    @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
+
+    @include text-shadow(1px 1px mix(black, $color-yellow, 15%), 2px 2px mix(black, $color-yellow, 15%), 3px 3px mix(black, $color-yellow, 15%));
 
     @media #{$medium-up} {
       font-size: rem-calc(nth($modular-scale, 10));
@@ -73,6 +78,7 @@ pre > code {
       font-size: rem-calc(nth($modular-scale, 4));
       display: inline-block;
       width: 100%;
+      @include text-shadow(1px 1px mix(black, $color-yellow, 15%), 2px 2px mix(black, $color-yellow, 15%));
     }
   }
 
@@ -259,7 +265,7 @@ pre > code {
   }
 }
 
-#example-chart-two {
+#example-line-months-interpolation {
   .ct-label {
     fill: lighten($color-dark-green, 30%);
     font-size: 13px;
