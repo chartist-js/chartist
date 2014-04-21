@@ -5,13 +5,13 @@
 
     var defaultOptions = {
         axisX: {
-          offset: 0,
+          offset: 10,
           showLabel: true,
           showGrid: true,
           labelInterpolationFnc: Chartist.noop
         },
         axisY: {
-          offset: 5,
+          offset: 15,
           showLabel: true,
           showGrid: true,
           labelAlign: 'right',
