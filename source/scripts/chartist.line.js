@@ -80,8 +80,13 @@
 
       // Create X-Axis
       Chartist.each(data.labels, function (index, value) {
-        var interpolatedValue = options.axisX.labelInterpolationFnc(value),
+        var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
           pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
+
+        // If interpolated value returns falsey (except 0) we don't draw the grid line
+        if(!interpolatedValue && interpolatedValue !== 0) {
+          return;
+        }
 
         if (options.axisX.showGrid) {
           var line = paper.line(pos, chartRect.y1, pos, chartRect.y2);
@@ -105,8 +110,13 @@
 
       // Create Y-Axis
       Chartist.each(bounds.values, function (index, value) {
-        var interpolatedValue = options.axisY.labelInterpolationFnc(value),
+        var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
           pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
+
+        // If interpolated value returns falsey (except 0) we don't draw the grid line
+        if(!interpolatedValue && interpolatedValue !== 0) {
+          return;
+        }
 
         if (options.axisY.showGrid) {
           var line = paper.line(chartRect.x1, pos, chartRect.x2, pos);
