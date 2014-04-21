@@ -53,7 +53,8 @@
 
   // Create Chartist container and instantiate snap paper
   Chartist.createPaper = function (query, width, height) {
-    var container = document.querySelector(query),
+    // Get dom object from query or if already dom object just use it
+    var container = query.nodeType ? query : document.querySelector(query),
       paper;
 
     // If container was not found we throw up
