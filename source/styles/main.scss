@@ -51,6 +51,23 @@ pre > code {
 
 .sticky.contain-to-grid {
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+
+  &.fixed {
+    .top-bar .name h1 a:before {
+      content: "";
+      display: inline-block;
+      width: 34px;
+      height: 34px;
+      margin-top: -4px;
+      margin-right: 10px;
+      vertical-align: middle;
+      border-radius: 50%;
+      border: 2px solid #F4C63D;
+      background: #F4C63D url("/images/chartist-icon.png") no-repeat;
+      background-size: 32px 32px;
+      background-position: center;
+    }
+  }
 }
 
 .landing-page-header {
