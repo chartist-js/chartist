@@ -75,62 +75,90 @@ pre > code {
 
 .main {
   @include grid-row();
-  padding-left: $column-gutter / 2;
-  padding-right: $column-gutter / 2;
 
   @media #{$medium-up} {
-    @include grid-row();
     margin-top: rem-calc(nth($modular-scale, 8));
   }
 
-  .documentation-section {
-    @include grid-row(nest);
-    margin-top: rem-calc(nth($modular-scale, 4));
-    margin-bottom: rem-calc(nth($modular-scale, 6));
+  > header {
+    @include grid-column(12);
+  }
+
+  > .side-navigation {
+    @include grid-column(12);
 
     @media #{$medium-up} {
-      margin-top: rem-calc(nth($modular-scale, 6));
-      margin-bottom: rem-calc(nth($modular-scale, 8));
+      @include grid-column(3);
+    }
+  }
+
+  > .content {
+    @include grid-column(12);
+
+    @media #{$medium-up} {
+      @include grid-column(9);
     }
 
-    > header {
+    > .documentation-section {
+      @include grid-row(nest);
+
+      margin-top: rem-calc(nth($modular-scale, 4));
+      margin-bottom: rem-calc(nth($modular-scale, 6));
+
+      @media #{$medium-up} {
+        margin-top: rem-calc(nth($modular-scale, 6));
+        margin-bottom: rem-calc(nth($modular-scale, 8));
+      }
+
+      > header {
+        @include grid-column(12);
+      }
+
+      > .content {
+        @include grid-column(12);
+
+        @media #{$medium-up} {
+          @include grid-column(9);
+        }
+
+        > .ct-chart {
+          &.dark {
+            background-color: $color-gray;
+          }
+        }
+      }
+
+      > .side-notes {
+        @include grid-column(12);
+
+        @media #{$medium-up} {
+          @include grid-column(3);
+        }
+      }
+
+      &.full {
+        > .content {
+          @media #{$medium-up} {
+            @include grid-column(12);
+          }
+        }
+
+        > .side-notes {
+          @media #{$medium-up} {
+            @include grid-column(12);
+          }
+        }
+      }
+    }
+  }
+
+  .full & {
+    > .side-navigation {
       @include grid-column(12);
     }
 
     > .content {
       @include grid-column(12);
-
-      @media #{$medium-up} {
-        @include grid-column(9);
-      }
-
-      > .ct-chart {
-        &.dark {
-          background-color: $color-gray;
-        }
-      }
-    }
-
-    > .side-notes {
-      @include grid-column(12);
-
-      @media #{$medium-up} {
-        @include grid-column(3);
-      }
-    }
-
-    &.full {
-      > .content {
-        @media #{$medium-up} {
-          @include grid-column(12);
-        }
-      }
-
-      > .side-notes {
-        @media #{$medium-up} {
-          @include grid-column(12);
-        }
-      }
     }
   }
 }

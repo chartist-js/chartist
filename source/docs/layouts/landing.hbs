@@ -20,6 +20,11 @@ layout: default
   {{> navigation }}
 
   <article class="main" role="main">
-    {{> body  }}
+    <header>
+      <h2>{{title}}</h2>
+    </header>
+    <div class="content">
+      {{> body  }}
+    </div>
   </article>
 </section>
