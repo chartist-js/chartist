@@ -1,5 +1,7 @@
 .landing-page-header {
   background-color: $color-yellow;
+  @include filter-gradient(lighten($color-yellow, 10%), $color-yellow, horizontal); // IE6-9 fallback on horizontal gradient
+  @include background-image(radial-gradient(center, ellipse cover, lighten($color-yellow, 10%) 0%, $color-yellow 100%));
   text-align: center;
 
   > .introduction-title {
