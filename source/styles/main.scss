@@ -55,7 +55,7 @@ pre > code {
 .sticky.contain-to-grid {
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 
-  &.fixed {
+  &.fixed, .page-content & {
     .top-bar .name h1 a:before {
       content: "";
       display: inline-block;
