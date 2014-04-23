@@ -3,7 +3,8 @@ Chartist style - Licensed under WTFPL by Gion Kunz https://github.com/gionkunz/c
 */
 
 .hljs {
-  display: block; padding: 0.5em;
+  display: block;
+  padding: rem-calc(nth($modular-scale, 5));
   background: $color-black;
 }
 
