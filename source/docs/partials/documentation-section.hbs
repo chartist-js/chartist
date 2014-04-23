@@ -1,0 +1,53 @@
+<section class="documentation-section{{#unless side-notes}} full{{/unless}}">
+  <header>
+    <h3>{{title}}</h3>
+  </header>
+  <div class="content">
+    {{#with example-chart}}
+      <div id="{{id}}" class="{{classes}}" data-chartist-example="{{type}}"></div>
+    {{/with}}
+
+    {{#each sub-sections}}
+      <h4>{{title}}</h4>
+      <p>{{text}}</p>
+      {{#each hints}}
+        <div class="hint">
+          <div class="title">{{title}}</div>
+          <div class="content">{{{text}}}</div>
+        </div>
+      {{/each}}
+
+      {{#each sub-sections}}
+        <h5>{{title}}</h5>
+        <p>{{text}}</p>
+        {{#each hints}}
+          <div class="hint">
+            <div class="title">{{title}}</div>
+            <div class="content">{{{text}}}</div>
+          </div>
+        {{/each}}
+      {{/each}}
+    {{/each}}
+
+    {{#each hints}}
+      <div class="hint">
+        <div class="title">{{title}}</div>
+        <div class="content">{{{text}}}</div>
+      </div>
+    {{/each}}
+
+    {{#if snippet-id}}
+      <a href="#_" class="button" data-toggle-visible="#{{snippet-id}}">Show code</a>
+      <pre id="{{snippet-id}}">
+        <code class="js">{{ glob (snippetPath snippet-id) }}</code>
+      </pre>
+    {{/if}}
+
+  </div>
+
+  {{#if side-notes}}
+  <aside class="side-notes">
+    <p>{{side-notes}}</p>
+  </aside>
+  {{/if}}
+</section>
