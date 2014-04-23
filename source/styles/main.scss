@@ -28,11 +28,19 @@
   visibility: hidden;
 }
 
-.browser-hint {
-  margin-bottom: rem-calc(nth($modular-scale, 4));
-  padding: rem-calc(nth($modular-scale, 4));
+.hint {
+  margin-top: rem-calc(nth($modular-scale, 5));
+  margin-bottom: rem-calc(nth($modular-scale, 5));
+  padding: rem-calc(nth($modular-scale, 5));
   background: $color-gray;
   color: white;
+
+  > .title {
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: lighten($color-black, 20%);
+  }
 
   a {
     color: $color-yellow;
