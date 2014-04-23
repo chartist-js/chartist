@@ -56,13 +56,13 @@
       &.download {
         background-color: $color-red;
         &:hover,
-        &:focus { background-color: shade($color-red, 10%); color: rgba(255, 255, 255, 1);}
+        &:focus { background-color: darken($color-red, 10%); color: rgba(255, 255, 255, 1);}
       }
 
       &.contribute {
         background-color: $color-grapefruit;
         &:hover,
-        &:focus { background-color: shade($color-grapefruit, 10%); color: rgba(255, 255, 255, 1);}
+        &:focus { background-color: darken($color-grapefruit, 10%); color: rgba(255, 255, 255, 1);}
       }
 
       @media #{$small-only} {
