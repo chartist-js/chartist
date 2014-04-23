@@ -124,6 +124,7 @@ module.exports = function (grunt) {
 
     assemble: {
       options: {
+        helpers: ['<%= pkg.config.source %>/docs/helpers/**/*.js'],
         partials: ['<%= pkg.config.source %>/docs/partials/**/*.hbs'],
         layoutdir: '<%= pkg.config.source %>/docs/layouts',
         layoutext: '.hbs',
