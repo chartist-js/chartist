@@ -3,25 +3,18 @@
 
 @import "settings/chartist-web";
 @import "settings/foundation";
+@import "settings/font-awesome-variables";
+
 @import "compass-mixins/lib/compass/css3";
 @import "foundation/scss/normalize";
 @import "foundation/scss/foundation";
 @import "modules";
 @import "base";
-@import "font-awesome/scss/font-awesome";
 
 @import "highlight";
 @import "landing";
 
-.fa-icon:before {
-  display: inline-block;
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@include embed-font('FontAwesome', 'fontawesome-webfont');
 
 .button {
   text-transform: uppercase;
