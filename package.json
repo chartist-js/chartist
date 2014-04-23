@@ -37,7 +37,8 @@
     "assemble": "~0.4.36",
     "grunt-bower-install": "~1.4.0",
     "jsdoc": "~3.3.0",
-    "grunt-jsdoc": "~0.5.4"
+    "grunt-jsdoc": "~0.5.4",
+    "handlebars-helpers": "~0.5.5"
   },
   "engines": {
     "node": ">=0.8.0"
