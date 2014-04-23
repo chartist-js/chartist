@@ -61,53 +61,10 @@ of other great charting libraries but after using them there were always tweaks 
     <p class="browser-hint">For IE9 you need to use a matchMedia polyfill. You should take a look at
       <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.</p>
 
-    <button class="button" data-toggle-visible="#code-example-one">Show code</button>
-    <pre id="code-example-one"><code class="js">
-/* Add a basic data series with six labels and values */
-var data: {
-  labels: ['1', '2', '3', '4', '5', '6'],
-  series: [
-    {
-      data: [1, 2, 3, 5, 8, 13]
-    }
-  ]
-};
-
-/* Set some base options (settings will override the default settings in Chartist.js *see default settings*)
-   We are adding a basic label interpolation function for the xAxis labels. */
-var options: {
-  axisX: {
-    labelInterpolationFnc: function(value) {
-      return 'Calendar Week ' + value;
-    }
-  }
-};
-
-      /* Now we can specify multiple responsive settings that will override the base settings based on order and if the media queries match.
-         In this example we are changing the visibility of dots and lines as well as use different label interpolations for space reasons.
-      */
-var responsiveOptions: [
-  ['screen and (min-width: 641px) and (max-width: 1024px)', {
-    showPoint: false,
-    axisX: {
-      labelInterpolationFnc: function(value) {
-        return 'Week ' + value;
-      }
-    }
-  }],
-  ['screen and (max-width: 640px)', {
-    showLine: false,
-    axisX: {
-      labelInterpolationFnc: function(value) {
-        return 'W' + value;
-      }
-    }
-  }]
-];
-
-/* Initialize the chart with the above settings */
-Chartist('#my-chart', data, options, responsiveOptions);
-    </code></pre>
+    <a href="#_" class="button" data-toggle-visible="#simple-responsive-settings">Show code</a>
+    <pre id="simple-responsive-settings">
+      <code class="js">{{ glob 'source/docs/code-snippets/simple-responsive-settings.js' }}</code>
+    </pre>
   </div>
   <aside class="side-notes">
     <p>With the clear separation of concerns within Chartist.js you're able to style your charts with CSS in @media queries.

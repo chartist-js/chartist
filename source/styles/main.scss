@@ -1,5 +1,5 @@
 @import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
-@import url("http://fonts.googleapis.com/css?family=Source+Code+Pro");
+@import url("http://fonts.googleapis.com/css?family=Source+Code+Pro:400,700");
 
 @import "settings/chartist-web";
 @import "settings/foundation";
@@ -10,6 +10,7 @@
 @import "base";
 @import "font-awesome/scss/font-awesome";
 
+@import "highlight";
 @import "landing";
 
 .fa-icon:before {
