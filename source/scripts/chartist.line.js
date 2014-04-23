@@ -175,7 +175,7 @@
       function projectPoint(data, index) {
         return {
           x: chartRect.x1 + chartRect.width() / data.length * index,
-          y: chartRect.y1 - data[index] / bounds.range * chartRect.height() + (bounds.min / bounds.range * chartRect.height())
+          y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
         };
       }
 
