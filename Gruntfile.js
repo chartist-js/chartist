@@ -424,12 +424,17 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'concat',
     'copy:dist',
-    'cssmin',
-    'uglify',
+    'cssmin:generated',
+    'uglify:generated',
     'rev',
     'usemin',
     'htmlmin',
     'jsdoc'
+  ]);
+
+  grunt.registerTask('libdist', [
+    'cssmin:libdist',
+    'uglify:libdist'
   ]);
 
   grunt.registerTask('default', [
