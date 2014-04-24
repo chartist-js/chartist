@@ -36,6 +36,7 @@
   color: white;
 
   > .title {
+    font-size: rem-calc(nth($modular-scale, 4));
     text-transform: uppercase;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -84,6 +85,10 @@ pre > code {
 
   > header {
     @include grid-column(12);
+
+    .page-content & {
+      margin-bottom: 5rem;
+    }
   }
 
   > .side-navigation {
@@ -91,6 +96,28 @@ pre > code {
 
     @media #{$medium-up} {
       @include grid-column(3);
+    }
+
+    > nav > .side-nav {
+      background-color: mix(black, $color-white, 5%);
+      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+
+      > .heading {
+        font-size: rem-calc(nth($modular-scale, 4));
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-top: rem-calc(nth($modular-scale, 7));
+        margin-bottom: rem-calc(nth($modular-scale, 4));
+        color: $color-black;
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+
+      > li:not(.heading) > a:before {
+        content: "\2013\20";
+      }
     }
   }
 

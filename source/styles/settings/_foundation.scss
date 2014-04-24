@@ -32,7 +32,7 @@ $include-html-global-classes: true;
 // $include-xl-html-grid-classes: false;
 
 $row-width: rem-calc(1200);
-$column-gutter: rem-calc(30);
+$column-gutter: rem-calc(50);
 $total-columns: 12;
 
 // We use these to control various global styles
@@ -277,7 +277,7 @@ $xxlarge-only: "#{$screen} and (min-width:#{lower-bound($xxlarge-range)}) and (m
 
 // Breadcrumbs
 
-// $include-html-nav-classes: $include-html-classes;
+$include-html-nav-classes: $include-html-classes;
 
 // We use this to set the background color for the breadcrumb container.
 // $crumb-bg: scale-color($secondary-color, $lightness: 55%);
@@ -889,31 +889,31 @@ $button-font-color: $color-black;
 
 // Side Nav
 
-// $include-html-nav-classes: $include-html-classes;
+$include-html-nav-classes: true;
 
 // We use this to control padding.
-// $side-nav-padding: rem-calc(14 0);
+$side-nav-padding: 1rem 1rem;
 
 // We use these to control list styles.
-// $side-nav-list-type: none;
-// $side-nav-list-position: inside;
-// $side-nav-list-margin: rem-calc(0 0 7 0);
+$side-nav-list-type: none;
+$side-nav-list-position: inside;
+$side-nav-list-margin: rem-calc(0 0 7 0);
 
 // We use these to control link styles.
-// $side-nav-link-color: $primary-color;
-// $side-nav-link-color-active: scale-color($side-nav-link-color, $lightness: 30%);
-// $side-nav-link-color-hover: scale-color($side-nav-link-color, $lightness: 30%);
-// $side-nav-font-size: rem-calc(14);
-// $side-nav-font-weight: normal;
-// $side-nav-font-family: $body-font-family;
-// $side-nav-active-font-family: $side-nav-font-family;
+$side-nav-link-color: $color-red;
+$side-nav-link-color-active: scale-color($side-nav-link-color, $lightness: 30%);
+$side-nav-link-color-hover: scale-color($side-nav-link-color, $lightness: 30%);
+$side-nav-font-size: rem-calc(14);
+$side-nav-font-weight: normal;
+$side-nav-font-family: $body-font-family;
+$side-nav-active-font-family: $side-nav-font-family;
 
 
 
 // We use these to control border styles
-// $side-nav-divider-size: 1px;
-// $side-nav-divider-style: solid;
-// $side-nav-divider-color: scale-color(#fff, $lightness: -10%);
+$side-nav-divider-size: 1px;
+$side-nav-divider-style: solid;
+$side-nav-divider-color: scale-color(#fff, $lightness: -10%);
 
 // Split Buttons
 

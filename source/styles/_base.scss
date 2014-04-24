@@ -37,6 +37,12 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   text-transform: uppercase;
   line-height: 1.2;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+
+  &:first-child {
+    margin-top: 0;
+  }
 }
 
 h2 {
