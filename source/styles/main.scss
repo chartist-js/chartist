@@ -55,7 +55,7 @@
   }
 
   &[class*="hint-"] {
-    padding-left: 5rem;
+    padding-left: 5.2rem;
 
     &.hint-cross-browser {
       @include icon($fa-var-arrows-alt, 3rem);
@@ -66,7 +66,7 @@
       left: rem-calc(nth($modular-scale, 5));
       top: rem-calc(nth($modular-scale, 5));
       font-size: 3rem;
-      color: lighten($color-black, 10%);
+      color: lighten($color-black, 5%);
     }
   }
 }
@@ -105,38 +105,45 @@ pre > code {
 
   > header {
     @include grid-column(12);
+    margin-top: rem-calc(nth($modular-scale, 8));
 
     .page-content & {
-      margin-bottom: 5rem;
+      margin-bottom: rem-calc(nth($modular-scale, 5));
     }
   }
 
   > .side-navigation {
-    @include grid-column(12);
+    display: none;
 
     @media #{$medium-up} {
+      display: block;
       @include grid-column(3);
-    }
 
-    > nav > .side-nav {
-      background-color: mix(black, $color-white, 5%);
-      box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+      > nav > .side-nav {
+        background-color: mix(black, $color-white, 5%);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
 
-      > .heading {
-        font-size: rem-calc(nth($modular-scale, 4));
-        text-transform: uppercase;
-        font-weight: 600;
-        margin-top: rem-calc(nth($modular-scale, 7));
-        margin-bottom: rem-calc(nth($modular-scale, 4));
-        color: $color-black;
+        > .heading {
+          font-size: rem-calc(nth($modular-scale, 4));
+          text-transform: uppercase;
+          font-weight: 600;
+          margin-top: rem-calc(nth($modular-scale, 7));
+          margin-bottom: rem-calc(nth($modular-scale, 4));
+          color: $color-black;
 
-        &:first-child {
-          margin-top: 0;
+          &:first-child {
+            margin-top: 0;
+          }
         }
-      }
 
-      > li:not(.heading) > a:before {
-        content: "\2013\20";
+        > li:not(.heading) > a {
+          text-indent: -0.8rem;
+          margin-left: 0.8rem;
+
+          &:before {
+            content: "\2013\00A0";
+          }
+        }
       }
     }
   }
