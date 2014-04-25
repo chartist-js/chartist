@@ -129,7 +129,7 @@ module.exports = function (grunt) {
         layoutdir: '<%= pkg.config.source %>/docs/layouts',
         layoutext: '.hbs',
         layout: ['default'],
-        data: ['<%= pkg.config.source %>/docs/data/*.{json,yml}']
+        data: ['<%= pkg.config.source %>/docs/data/**/*.{json,yml}']
       },
       pages: {
         expand: true,
