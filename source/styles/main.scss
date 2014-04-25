@@ -32,6 +32,7 @@
 }
 
 .hint {
+  position: relative;
   margin-top: rem-calc(nth($modular-scale, 5));
   margin-bottom: rem-calc(nth($modular-scale, 5));
   padding: rem-calc(nth($modular-scale, 5));
@@ -50,6 +51,22 @@
     color: $color-yellow;
     &:hover {
       color: lighten($color-yellow, 10%);
+    }
+  }
+
+  &[class*="hint-"] {
+    padding-left: 5rem;
+
+    &.hint-cross-browser {
+      @include icon($fa-var-arrows-alt, 3rem);
+    }
+
+    &:before {
+      position: absolute;
+      left: rem-calc(nth($modular-scale, 5));
+      top: rem-calc(nth($modular-scale, 5));
+      font-size: 3rem;
+      color: lighten($color-black, 10%);
     }
   }
 }

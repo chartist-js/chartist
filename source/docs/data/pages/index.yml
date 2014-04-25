@@ -13,6 +13,7 @@ documentation-sections:
       type: Line
     hints:
       - title: Cross-browser support
+        classes: hint-cross-browser
         text: Note that CSS3 animations on SVG CSS attributes is not supported on all browsers and the appearance may vary.
     side-notes: Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!
 
@@ -26,6 +27,7 @@ documentation-sections:
         text: Configuring different chart behaviour for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.
         hints:
           - title: Cross-browser support
+            classes: hint-cross-browser
             text: For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill
     snippet:
       id: simple-responsive-settings
