@@ -1,0 +1,25 @@
+side-navigation:
+  - group-name: Getting started
+    links:
+      - text: The Chartists way
+        url: "#"
+      - text: Dependencies
+        url: "#"
+  - group-name: Download and set-up
+    links:
+      - text: One, two, three, CSS!
+        url: "#"
+      - text: The SASS way
+        url: "#"
+      - text: Bower
+        url: "#"
+  - group-name: Create your first chart
+    links:
+      - text: Choose a container
+        url: "#"
+      - text: Where is the data?
+        url: "#"
+      - text: Pimp my chart!
+        url: "#"
+      - text: Responsive sugar topping
+        url: "#"

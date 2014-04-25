@@ -18,6 +18,10 @@ module.exports.register = function (Handlebars, opt, params)  {
 
     pkg: function (key) {
       return pkg[key];
+    },
+
+    jsonStringify: function(obj) {
+      return JSON.stringify(obj);
     }
   };
 
