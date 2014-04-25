@@ -161,6 +161,10 @@ pre > code {
       margin-top: rem-calc(nth($modular-scale, 4));
       margin-bottom: rem-calc(nth($modular-scale, 6));
 
+    &:first-child {
+      margin-top: 0;
+    }
+
       @media #{$medium-up} {
         margin-top: rem-calc(nth($modular-scale, 6));
         margin-bottom: rem-calc(nth($modular-scale, 8));

@@ -13,6 +13,13 @@ module.exports.register = function (Handlebars, opt, params)  {
   // Loading package.json for later use
   var pkg = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json')));
 
+  function slugify(str) {
+    return str
+      .toLowerCase()
+      .replace(/[^\w ]+/g,'')
+      .replace(/ +/g,'-');
+  }
+
   // The helpers to be exported
   var helpers = {
 
@@ -26,6 +33,10 @@ module.exports.register = function (Handlebars, opt, params)  {
 
     jsonStringify: function(obj) {
       return JSON.stringify(obj);
+    },
+
+    slugify: function(str) {
+      return slugify(str);
     }
   };
 
