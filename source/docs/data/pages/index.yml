@@ -27,5 +27,8 @@ documentation-sections:
         hints:
           - title: Cross-browser support
             text: For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill
-    snippet-id: simple-responsive-settings
+    snippet:
+      id: simple-responsive-settings
+      lang: js
+      button-label: Show code
     side-notes: With the clear separation of concerns within Chartist.js you're able to style your charts with CSS in @media queries. However, sometimes it requires to also control the behaviour of your charts depending on the media. For this purpose Chartist.js provides you with a simple configuration override mechanism based on media queries.

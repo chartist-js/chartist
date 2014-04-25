@@ -5,8 +5,8 @@ module.exports.register = function (Handlebars, opt, params)  {
   // The helpers to be exported
   var helpers = {
 
-    snippetPath: function (snippetId) {
-      return 'source/docs/code-snippets/' + snippetId + '.js';
+    snippetPath: function (snippetId, snippetLang) {
+      return 'source/docs/code-snippets/' + snippetId + '.' + snippetLang || 'js';
     }
   };
 

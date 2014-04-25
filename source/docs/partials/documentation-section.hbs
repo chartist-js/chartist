@@ -7,47 +7,38 @@
       <div id="{{id}}" class="{{classes}}" data-chartist-example="{{type}}"></div>
     {{/with}}
 
+    {{! Allowing one nesting level with different heading size so sub-sections.sub-sections is possible }}
     {{#each sub-sections}}
       <h4>{{title}}</h4>
       <p>{{text}}</p>
+
       {{#each hints}}
-        <div class="hint">
-          <div class="title">{{title}}</div>
-          <div class="content">{{{text}}}</div>
-        </div>
+        {{> hint}}
       {{/each}}
 
       {{#each sub-sections}}
         <h5>{{title}}</h5>
         <p>{{text}}</p>
+
         {{#each hints}}
-          <div class="hint">
-            <div class="title">{{title}}</div>
-            <div class="content">{{{text}}}</div>
-          </div>
+          {{> hint}}
         {{/each}}
       {{/each}}
     {{/each}}
 
     {{#each hints}}
-      <div class="hint">
-        <div class="title">{{title}}</div>
-        <div class="content">{{{text}}}</div>
-      </div>
+      {{> hint}}
     {{/each}}
 
-    {{#if snippet-id}}
-      <a href="#_" class="button" data-toggle-visible="#{{snippet-id}}">Show code</a>
-      <pre id="{{snippet-id}}">
-        <code class="js">{{ glob (snippetPath snippet-id) }}</code>
-      </pre>
+    {{#if snippet}}
+      {{> code-snippet snippet}}
     {{/if}}
 
   </div>
 
   {{#if side-notes}}
-  <aside class="side-notes">
-    <p>{{side-notes}}</p>
-  </aside>
+    <aside class="side-notes">
+      <p>{{side-notes}}</p>
+    </aside>
   {{/if}}
 </section>

@@ -20,6 +20,10 @@ module.exports.register = function (Handlebars, opt, params)  {
       return pkg[key];
     },
 
+    escape: function(str) {
+      return Handlebars.Utils.escapeExpression(str);
+    },
+
     jsonStringify: function(obj) {
       return JSON.stringify(obj);
     }
