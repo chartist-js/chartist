@@ -35,7 +35,8 @@
     "grunt-bower-install": "~1.4.0",
     "jsdoc": "~3.3.0",
     "grunt-jsdoc": "~0.5.4",
-    "handlebars-helpers": "~0.5.5"
+    "handlebars-helpers": "~0.5.5",
+    "seed-random": "~2.2.0"
   },
   "engines": {
     "node": ">=0.8.0"
