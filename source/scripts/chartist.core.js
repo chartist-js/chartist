@@ -257,6 +257,80 @@
     };
   };
 
+  Chartist.createXAxis = function(paper, chartRect, data, grid, labels, options) {
+    // Create X-Axis
+    Chartist.each(data.labels, function (index, value) {
+      var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
+        pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
+
+      // If interpolated value returns falsey (except 0) we don't draw the grid line
+      if(!interpolatedValue && interpolatedValue !== 0) {
+        return;
+      }
+
+      if (options.axisX.showGrid) {
+        var line = paper.line(pos, chartRect.y1, pos, chartRect.y2);
+        line.node.setAttribute('class', [options.classNames.grid, options.classNames.horizontal].join(' '));
+        grid.add(line);
+      }
+
+      if (options.axisX.showLabel) {
+        // Use config offset for setting labels of
+        var label = paper.text(pos + 2, 0, '' + interpolatedValue);
+        label.node.setAttribute('class', [options.classNames.label, options.classNames.horizontal].join(' '));
+
+        // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
+        label.attr({
+          y: chartRect.y1 + Chartist.getHeight(label.node) + options.axisX.offset
+        });
+
+        labels.add(label);
+      }
+    });
+  };
+
+  Chartist.createYAxis = function(paper, chartRect, bounds, grid, labels, offset, options) {
+    // Create Y-Axis
+    Chartist.each(bounds.values, function (index, value) {
+      var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
+        pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
+
+      // If interpolated value returns falsey (except 0) we don't draw the grid line
+      if(!interpolatedValue && interpolatedValue !== 0) {
+        return;
+      }
+
+      if (options.axisY.showGrid) {
+        var line = paper.line(chartRect.x1, pos, chartRect.x2, pos);
+        line.node.setAttribute('class', options.classNames.grid + ' ' + options.classNames.vertical);
+        grid.add(line);
+      }
+
+      if (options.axisY.showLabel) {
+        // Position later
+        //TODO: make padding of 2px configurable
+        //TODO: Check for refacoring
+        var label = paper.text(options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
+            pos - 2, '' + interpolatedValue);
+        label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
+
+        // Set text-anchor based on alignment
+        label.attr({
+          'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
+        });
+
+        labels.add(label);
+      }
+    });
+  };
+
+  Chartist.projectPoint = function(chartRect, bounds, data, index) {
+    return {
+      x: chartRect.x1 + chartRect.width() / data.length * index,
+      y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
+    };
+  };
+
   // Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
   // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one
   Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {

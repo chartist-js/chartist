@@ -77,119 +77,49 @@
       var labels = paper.g(),
         grid = paper.g();
 
-      // Create X-Axis
-      Chartist.each(data.labels, function (index, value) {
-        var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-          pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
+      Chartist.createXAxis(paper, chartRect, data, grid, labels, options);
+      Chartist.createYAxis(paper, chartRect, bounds, grid, labels, yAxisOffset, options);
 
-        // If interpolated value returns falsey (except 0) we don't draw the grid line
-        if(!interpolatedValue && interpolatedValue !== 0) {
-          return;
+      // Draw the series
+      // initialize series groups
+      for (var i = 0; i < data.series.length; i++) {
+        seriesGroups[i] = paper.g();
+        // Use series class from series data or if not set generate one
+        seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+
+        var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, 0),
+          path = 'M' + p.x + ',' + p.y + ' ' + (options.lineSmooth ? 'R' : 'L'),
+          point;
+
+        // First dot we need to add before loop
+        if (options.showPoint) {
+          point = paper.line(p.x, p.y, p.x, p.y);
+          point.node.setAttribute('class', options.classNames.point);
+          seriesGroups[i].append(point);
         }
 
-        if (options.axisX.showGrid) {
-          var line = paper.line(pos, chartRect.y1, pos, chartRect.y2);
-          line.node.setAttribute('class', [options.classNames.grid, options.classNames.horizontal].join(' '));
-          grid.add(line);
-        }
+        // First point is created, continue with rest
+        for (var j = 1; j < data.series[i].data.length; j++) {
+          p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j);
+          path += ' ' + p.x + ',' + p.y;
 
-        if (options.axisX.showLabel) {
-          // Use config offset for setting labels of
-          var label = paper.text(pos + 2, 0, '' + interpolatedValue);
-          label.node.setAttribute('class', [options.classNames.label, options.classNames.horizontal].join(' '));
-
-          // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-          label.attr({
-            y: chartRect.y1 + Chartist.getHeight(label.node) + options.axisX.offset
-          });
-
-          labels.add(label);
-        }
-      });
-
-      // Create Y-Axis
-      Chartist.each(bounds.values, function (index, value) {
-        var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
-          pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
-
-        // If interpolated value returns falsey (except 0) we don't draw the grid line
-        if(!interpolatedValue && interpolatedValue !== 0) {
-          return;
-        }
-
-        if (options.axisY.showGrid) {
-          var line = paper.line(chartRect.x1, pos, chartRect.x2, pos);
-          line.node.setAttribute('class', options.classNames.grid + ' ' + options.classNames.vertical);
-          grid.add(line);
-        }
-
-        if (options.axisY.showLabel) {
-          // Position later
-          //TODO: make padding of 2px configurable
-          var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
-            pos - 2, '' + interpolatedValue);
-          label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
-
-          // Set text-anchor based on alignment
-          label.attr({
-            'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
-          });
-
-          labels.add(label);
-        }
-      });
-
-      function projectPoint(data, index) {
-        return {
-          x: chartRect.x1 + chartRect.width() / data.length * index,
-          y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
-        };
-      }
-
-      function createSeries(seriesGroups, data, paper, options) {
-        // Draw the series
-        // initialize series groups
-        for (var i = 0; i < data.series.length; i++) {
-          seriesGroups[i] = paper.g();
-          // Use series class from series data or if not set generate one
-          seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
-            (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
-
-          var p = projectPoint(data.series[i].data, 0),
-            path = 'M' + p.x + ',' + p.y + ' ' + (options.lineSmooth ? 'R' : 'L'),
-            point;
-
-          // First dot we need to add before loop
+          //If we should show points we need to create them now to avoid secondary loop
           if (options.showPoint) {
             point = paper.line(p.x, p.y, p.x, p.y);
             point.node.setAttribute('class', options.classNames.point);
             seriesGroups[i].append(point);
           }
-
-          // First point is created, continue with rest
-          for (var j = 1; j < data.series[i].data.length; j++) {
-            p = projectPoint(data.series[i].data, j);
-            path += ' ' + p.x + ',' + p.y;
-
-            //If we should show points we need to create them now to avoid secondary loop
-            if (options.showPoint) {
-              point = paper.line(p.x, p.y, p.x, p.y);
-              point.node.setAttribute('class', options.classNames.point);
-              seriesGroups[i].append(point);
-            }
-          }
-
-          if (options.showLine) {
-            var snapPath = paper.path(path);
-            snapPath.node.setAttribute('class', options.classNames.line);
-            seriesGroups[i].prepend(snapPath);
-          }
-
-          paper.add(seriesGroups[i]);
         }
-      }
 
-      createSeries(seriesGroups, data, paper, options);
+        if (options.showLine) {
+          var snapPath = paper.path(path);
+          snapPath.node.setAttribute('class', options.classNames.line);
+          seriesGroups[i].prepend(snapPath);
+        }
+
+        paper.add(seriesGroups[i]);
+      }
     }
 
     // Obtain current options based on matching media queries (if responsive options are given)
@@ -203,6 +133,8 @@
     // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
     // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
     // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
+    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
+    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
     window.addEventListener('resize', function () {
       createChart(currentOptions);
     });
