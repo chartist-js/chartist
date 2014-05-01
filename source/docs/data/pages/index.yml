@@ -17,6 +17,13 @@ documentation-sections:
         text: Note that CSS3 animations on SVG CSS attributes is not supported on all browsers and the appearance may vary.
     side-notes: Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!
 
+  - title: New bar chart type!
+    example-chart:
+      id: example-simple-bar
+      classes: ct-chart
+      type: Bar
+    side-notes: We are constantly working on enhancements of our existing charts and adding new chart types. While we only have two chart types currently available you can customize them to your own needs while getting a huge vaiarity of configurations and designs.
+
   - title: Responsive charts configuration
     example-chart:
       id: example-line-simple-responsive
