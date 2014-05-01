@@ -140,38 +140,6 @@
         }
       });
 
-      function createSeries(data, seriesGroup, projectPointFnc) {
-        var p = projectPointFnc(data, 0),
-          path = 'M' + p.x + ',' + p.y + ' ' + (options.lineSmooth ? 'R' : 'L'),
-          point;
-
-        // First dot we need to add before loop
-        if (options.showPoint) {
-          point = paper.line(p.x, p.y, p.x, p.y);
-          point.node.setAttribute('class', options.classNames.point);
-          seriesGroup.append(point);
-        }
-
-        // First point is created, continue with rest
-        for (var i = 1; i < data.length; i++) {
-          p = projectPointFnc(data, i);
-          path += ' ' + p.x + ',' + p.y;
-
-          //If we should show points we need to create them now to avoid secondary loop
-          if (options.showPoint) {
-            point = paper.line(p.x, p.y, p.x, p.y);
-            point.node.setAttribute('class', options.classNames.point);
-            seriesGroup.append(point);
-          }
-        }
-
-        if (options.showLine) {
-          var snapPath = paper.path(path);
-          snapPath.node.setAttribute('class', options.classNames.line);
-          seriesGroup.prepend(snapPath);
-        }
-      }
-
       function projectPoint(data, index) {
         return {
           x: chartRect.x1 + chartRect.width() / data.length * index,
@@ -179,18 +147,50 @@
         };
       }
 
-      // Draw the series
-      // initialize series groups
-      for (i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = paper.g();
-        // Use series class from series data or if not set generate one
-        seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+      function createSeries(seriesGroups, data, paper, options) {
+        // Draw the series
+        // initialize series groups
+        for (var i = 0; i < data.series.length; i++) {
+          seriesGroups[i] = paper.g();
+          // Use series class from series data or if not set generate one
+          seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
+            (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
-        createSeries(data.series[i].data, seriesGroups[i], projectPoint);
+          var p = projectPoint(data.series[i].data, 0),
+            path = 'M' + p.x + ',' + p.y + ' ' + (options.lineSmooth ? 'R' : 'L'),
+            point;
 
-        paper.add(seriesGroups[i]);
+          // First dot we need to add before loop
+          if (options.showPoint) {
+            point = paper.line(p.x, p.y, p.x, p.y);
+            point.node.setAttribute('class', options.classNames.point);
+            seriesGroups[i].append(point);
+          }
+
+          // First point is created, continue with rest
+          for (var j = 1; j < data.series[i].data.length; j++) {
+            p = projectPoint(data.series[i].data, j);
+            path += ' ' + p.x + ',' + p.y;
+
+            //If we should show points we need to create them now to avoid secondary loop
+            if (options.showPoint) {
+              point = paper.line(p.x, p.y, p.x, p.y);
+              point.node.setAttribute('class', options.classNames.point);
+              seriesGroups[i].append(point);
+            }
+          }
+
+          if (options.showLine) {
+            var snapPath = paper.path(path);
+            snapPath.node.setAttribute('class', options.classNames.line);
+            seriesGroups[i].prepend(snapPath);
+          }
+
+          paper.add(seriesGroups[i]);
+        }
       }
+
+      createSeries(seriesGroups, data, paper, options);
     }
 
     // Obtain current options based on matching media queries (if responsive options are given)
