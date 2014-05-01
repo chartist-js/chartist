@@ -36,8 +36,7 @@
       },
       currentOptions,
       paper,
-      dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length),
-      i;
+      dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
     function createChart(options) {
       var xAxisOffset,
