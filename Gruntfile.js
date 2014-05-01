@@ -361,7 +361,8 @@ module.exports = function (grunt) {
         files: {
           'libdist/chartist-<%= pkg.version %>.core.min.js': ['source/scripts/chartist.core.js'],
           'libdist/chartist-<%= pkg.version %>.line.min.js': ['source/scripts/chartist.line.js'],
-          'libdist/chartist-<%= pkg.version %>.all.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js']
+          'libdist/chartist-<%= pkg.version %>.bar.min.js': ['source/scripts/chartist.bar.js'],
+          'libdist/chartist-<%= pkg.version %>.all.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js']
         }
       }
     },
