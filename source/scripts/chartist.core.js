@@ -151,11 +151,19 @@
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (paper, dataArray, options) {
+  Chartist.getBounds = function (paper, dataArray, options, high, low) {
     var i,
       newMin,
       newMax,
       bounds = Chartist.getHighLow(dataArray);
+
+    // Overrides of high / low from settings
+    bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
+    bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
+
+    // Overrides of high / low from function call (highest priority)
+    bounds.high = high || (high === 0 ? 0 : bounds.high);
+    bounds.low = low || (low === 0 ? 0 : bounds.low);
 
     bounds.valueRange = bounds.high - bounds.low;
     bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);
