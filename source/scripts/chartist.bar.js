@@ -16,15 +16,18 @@
           showGrid: true,
           labelAlign: 'right',
           labelInterpolationFnc: Chartist.noop,
-          scaleMinSpace: 20
+          scaleMinSpace: 40
         },
         width: undefined,
         height: undefined,
         chartPadding: 5,
+        seriesBarDistance: 15,
         classNames: {
           label: 'ct-label',
           series: 'ct-series',
           bar: 'ct-bar',
+          thin: 'ct-thin',
+          thick: 'ct-thick',
           grid: 'ct-grid',
           vertical: 'ct-vertical',
           horizontal: 'ct-horizontal'
@@ -44,7 +47,7 @@
       paper = Chartist.createPaper(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(paper, dataArray, options);
+      bounds = Chartist.getBounds(paper, dataArray, options, null, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
@@ -73,101 +76,36 @@
       var labels = paper.g(),
         grid = paper.g();
 
-      // Create X-Axis
-      Chartist.each(data.labels, function (index, value) {
-        var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-          pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
+      Chartist.createXAxis(paper, chartRect, data, grid, labels, options);
+      Chartist.createYAxis(paper, chartRect, bounds, grid, labels, yAxisOffset, options);
 
-        // If interpolated value returns falsey (except 0) we don't draw the grid line
-        if(!interpolatedValue && interpolatedValue !== 0) {
-          return;
+      // Draw the series
+      // initialize series groups
+      for (var i = 0; i < data.series.length; i++) {
+        // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
+        var biPol = i - (data.series.length - 1) / 2,
+        // Half of the period with between vertical grid lines used to position bars
+          periodHalfWidth = chartRect.width() / data.series[i].data.length / 2;
+
+        seriesGroups[i] = paper.g();
+        // Use series class from series data or if not set generate one
+        seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+
+        for(var j = 0; j < data.series[i].data.length; j++) {
+          var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j),
+            bar;
+
+          // Offset to center bar between grid lines and using bi-polar offset for multiple series
+          p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
+
+          bar = paper.line(p.x, chartRect.y1, p.x, p.y);
+          bar.node.setAttribute('class', options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
+          seriesGroups[i].prepend(bar);
         }
 
-        if (options.axisX.showGrid) {
-          var line = paper.line(pos, chartRect.y1, pos, chartRect.y2);
-          line.node.setAttribute('class', [options.classNames.grid, options.classNames.horizontal].join(' '));
-          grid.add(line);
-        }
-
-        if (options.axisX.showLabel) {
-          // Use config offset for setting labels of
-          var label = paper.text(pos + 2, 0, '' + interpolatedValue);
-          label.node.setAttribute('class', [options.classNames.label, options.classNames.horizontal].join(' '));
-
-          // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-          label.attr({
-            y: chartRect.y1 + Chartist.getHeight(label.node) + options.axisX.offset
-          });
-
-          labels.add(label);
-        }
-      });
-
-      // Create Y-Axis
-      Chartist.each(bounds.values, function (index, value) {
-        var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
-          pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
-
-        // If interpolated value returns falsey (except 0) we don't draw the grid line
-        if(!interpolatedValue && interpolatedValue !== 0) {
-          return;
-        }
-
-        if (options.axisY.showGrid) {
-          var line = paper.line(chartRect.x1, pos, chartRect.x2, pos);
-          line.node.setAttribute('class', options.classNames.grid + ' ' + options.classNames.vertical);
-          grid.add(line);
-        }
-
-        if (options.axisY.showLabel) {
-          // Position later
-          //TODO: make padding of 2px configurable
-          var label = paper.text(options.axisY.labelAlign === 'right' ? yAxisOffset - options.axisY.offset + options.chartPadding : options.chartPadding,
-            pos - 2, '' + interpolatedValue);
-          label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
-
-          // Set text-anchor based on alignment
-          label.attr({
-            'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
-          });
-
-          labels.add(label);
-        }
-      });
-
-      function projectPoint(data, index) {
-        return {
-          x: chartRect.x1 + chartRect.width() / data.length * index,
-          y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
-        };
+        paper.add(seriesGroups[i]);
       }
-
-      function createSeries(seriesGroups, data, paper, options) {
-        // Draw the series
-        // initialize series groups
-        for (var i = 0; i < data.series.length; i++) {
-          seriesGroups[i] = paper.g();
-          // Use series class from series data or if not set generate one
-          seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
-            (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
-
-          for(var j = 0; j < data.series[i].data.length; j++) {
-            var p = projectPoint(data.series[i].data, j),
-              bar;
-
-            // Offset to center bar between grid lines.
-            p.x += chartRect.width() / data.series[i].data.length / 2;
-
-            bar = paper.line(p.x, chartRect.y1, p.x, p.y);
-            bar.node.setAttribute('class', options.classNames.bar);
-            seriesGroups[i].prepend(bar);
-          }
-
-          paper.add(seriesGroups[i]);
-        }
-      }
-
-      createSeries(seriesGroups, data, paper, options);
     }
 
     // Obtain current options based on matching media queries (if responsive options are given)

@@ -11,6 +11,9 @@ $ct-class-grid: ct-grid !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
 
+$ct-class-thin: ct-thin !default;
+$ct-class-thick: ct-thick !default;
+
 $ct-text-color: #222222 !default;
 $ct-text-size: 0.75rem !default;
 
@@ -41,6 +44,7 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
 @if $ct-include-classes {
   .#{$ct-class-chart} {
     @include responsive-svg-container($ratio: (1/1.618));
+    margin-bottom: 1rem;
 
     @if $ct-include-responsive-containers {
       @for $i from 0 to length($ct-scales-names) {
@@ -74,6 +78,14 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
     .#{$ct-class-bar} {
       fill: none;
       stroke-width: 10px;
+    }
+
+    .#{$ct-class-thin} {
+      stroke-width: 5px;
+    }
+
+    .#{$ct-class-thick} {
+      stroke-width: 20px;
     }
 
     @if $ct-include-colored-series {
