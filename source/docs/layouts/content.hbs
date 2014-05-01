@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<section class="page-content {{page-class}}">
+  {{> navigation }}
+  <article class="main" role="main">
+    <header>
+      <h2>{{title}}</h2>
+    </header>
+    {{> side-navigation page.side-navigation }}
+    <div class="content">
+      {{> body }}
+    </div>
+  </article>
+</section>

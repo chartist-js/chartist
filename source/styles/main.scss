@@ -1,24 +1,27 @@
+@import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
+@import url("http://fonts.googleapis.com/css?family=Source+Code+Pro:400,700");
+
 @import "settings/chartist-web";
 @import "settings/foundation";
-@import "compass/css3";
+@import "settings/font-awesome-variables";
+
+@import "compass-mixins/lib/compass/css3";
 @import "foundation/scss/normalize";
 @import "foundation/scss/foundation";
 @import "modules";
 @import "base";
-@import "font-awesome/scss/font-awesome";
 
-.fa-icon:before {
-  display: inline-block;
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: normal;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+@import "chartist/settings";
+@import "chartist/chartist";
+
+@import "highlight";
+@import "landing";
+
+@include embed-font('FontAwesome', 'fontawesome-webfont');
 
 .button {
   text-transform: uppercase;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .invisible {
@@ -28,16 +31,42 @@
   visibility: hidden;
 }
 
-.browser-hint {
-  margin-bottom: rem-calc(nth($modular-scale, 4));
-  padding: rem-calc(nth($modular-scale, 4));
+.hint {
+  position: relative;
+  margin-top: rem-calc(nth($modular-scale, 5));
+  margin-bottom: rem-calc(nth($modular-scale, 5));
+  padding: rem-calc(nth($modular-scale, 5));
   background: $color-gray;
   color: white;
+
+  > .title {
+    font-size: rem-calc(nth($modular-scale, 4));
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: lighten($color-black, 20%);
+  }
 
   a {
     color: $color-yellow;
     &:hover {
       color: lighten($color-yellow, 10%);
+    }
+  }
+
+  &[class*="hint-"] {
+    padding-left: 5.2rem;
+
+    &.hint-cross-browser {
+      @include icon($fa-var-arrows-alt, 3rem);
+    }
+
+    &:before {
+      position: absolute;
+      left: rem-calc(nth($modular-scale, 5));
+      top: rem-calc(nth($modular-scale, 5));
+      font-size: 3rem;
+      color: lighten($color-black, 5%);
     }
   }
 }
@@ -46,131 +75,152 @@ pre > code {
   font-family: "Source Code Pro", "Courier New", monospace !important;
 }
 
-.landing-page-header {
-  background-color: $color-yellow;
-  text-align: center;
+.sticky.contain-to-grid {
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
 
-  > .introduction-title {
-    text-transform: uppercase;
-    font-size: rem-calc(nth($modular-scale, 8));
-    margin: 0;
-    display: inline-block;
-    width: 100%;
-    font-weight: 700;
-    color: white;
-    line-height: 0.5;
-    margin-top: 2rem;
-    @include text-shadow(1px 1px rgba(0, 0, 0, 0.2));
-
-    @media #{$medium-up} {
-      font-size: rem-calc(nth($modular-scale, 10));
-    }
-
-    > small {
-      font-size: rem-calc(nth($modular-scale, 4));
+  &.fixed, .page-content & {
+    .top-bar .name h1 a:before {
+      content: "";
       display: inline-block;
-      width: 100%;
-    }
-  }
-
-  > .limiter {
-    max-width: 480px;
-    margin: 0 auto;
-
-    > figure {
-      @include responsive-svg-container();
-    }
-  }
-
-  > .call-to-action {
-    text-align: center;
-    padding-bottom: $column-gutter;
-    padding-left: $column-gutter / 2;
-    padding-right: $column-gutter / 2;
-
-    > .button {
-      color: white;
-      color: rgba(255, 255, 255, 0.9);
-      font-weight: 300 !important;
-
-      &:before {
-        padding-right: 0.5em;
-      }
-
-      &.download {
-        background-color: $color-red;
-        &:hover,
-        &:focus { background-color: shade($color-red, 10%); color: rgba(255, 255, 255, 1);}
-      }
-
-      &.contribute {
-        background-color: $color-grapefruit;
-        &:hover,
-        &:focus { background-color: shade($color-grapefruit, 10%); color: rgba(255, 255, 255, 1);}
-      }
-
-      @media #{$small-only} {
-        width: 100%;
-        font-size: 1em;
-        font-weight: 700 !important;
-      }
-
-      @media #{$medium-up} {
-        &.download {
-          margin-right: $column-gutter / 2;
-        }
-      }
+      width: 34px;
+      height: 34px;
+      margin-top: -4px;
+      margin-right: 10px;
+      vertical-align: middle;
+      border-radius: 50%;
+      border: 2px solid #F4C63D;
+      background: #F4C63D url("/images/chartist-icon.png") no-repeat;
+      background-size: 32px 32px;
+      background-position: center;
     }
   }
 }
 
 .main {
   @include grid-row();
-  padding-left: $column-gutter / 2;
-  padding-right: $column-gutter / 2;
 
   @media #{$medium-up} {
-    @include grid-row();
     margin-top: rem-calc(nth($modular-scale, 8));
   }
 
-  .documentation-section {
-    @include grid-row(nest);
-    margin-top: rem-calc(nth($modular-scale, 4));
-    margin-bottom: rem-calc(nth($modular-scale, 6));
+  > header {
+    @include grid-column(12);
+    margin-top: rem-calc(nth($modular-scale, 8));
+
+    .page-content & {
+      margin-bottom: rem-calc(nth($modular-scale, 5));
+    }
+  }
+
+  > .side-navigation {
+    display: none;
 
     @media #{$medium-up} {
-      margin-top: rem-calc(nth($modular-scale, 6));
-      margin-bottom: rem-calc(nth($modular-scale, 8));
+      display: block;
+      @include grid-column(3);
+
+      > nav > .side-nav {
+        background-color: mix(black, $color-white, 5%);
+        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+
+        > .heading {
+          font-size: rem-calc(nth($modular-scale, 4));
+          text-transform: uppercase;
+          font-weight: 600;
+          margin-top: rem-calc(nth($modular-scale, 7));
+          margin-bottom: rem-calc(nth($modular-scale, 4));
+          color: $color-black;
+
+          &:first-child {
+            margin-top: 0;
+          }
+        }
+
+        > li:not(.heading) > a {
+          text-indent: -0.8rem;
+          margin-left: 0.8rem;
+
+          &:before {
+            content: "\2013\00A0";
+          }
+        }
+      }
+    }
+  }
+
+  > .content {
+    @include grid-column(12);
+
+    @media #{$medium-up} {
+      @include grid-column(9);
     }
 
-    > header {
+    > .documentation-section {
+      @include grid-row(nest);
+
+      margin-top: rem-calc(nth($modular-scale, 4));
+      margin-bottom: rem-calc(nth($modular-scale, 6));
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+      @media #{$medium-up} {
+        margin-top: rem-calc(nth($modular-scale, 6));
+        margin-bottom: rem-calc(nth($modular-scale, 8));
+      }
+
+      > header {
+        @include grid-column(12);
+      }
+
+      > .content {
+        @include grid-column(12);
+
+        @media #{$medium-up} {
+          @include grid-column(9);
+        }
+
+        > .ct-chart {
+          &.dark {
+            background-color: $color-gray;
+          }
+        }
+      }
+
+      > .side-notes {
+        @include grid-column(12);
+
+        @media #{$medium-up} {
+          @include grid-column(3);
+        }
+      }
+
+      &.full {
+        > .content {
+          @media #{$medium-up} {
+            @include grid-column(12);
+          }
+        }
+
+        > .side-notes {
+          @media #{$medium-up} {
+            @include grid-column(12);
+          }
+        }
+      }
+    }
+  }
+
+  .full & {
+    > .side-navigation {
       @include grid-column(12);
     }
 
     > .content {
       @include grid-column(12);
-
-      @media #{$medium-up} {
-        @include grid-column(9);
-      }
-
-      > .ct-chart {
-        &.dark {
-          background-color: $color-dark-green;
-        }
-      }
-    }
-
-    > .side-notes {
-      @include grid-column(12);
-
-      @media #{$medium-up} {
-        @include grid-column(3);
-      }
     }
   }
-
 }
 
 @include keyframes(dashoffset) {
@@ -256,14 +306,14 @@ pre > code {
   }
 }
 
-#example-chart-two {
+#example-line-months-interpolation {
   .ct-label {
-    fill: lighten($color-dark-green, 30%);
+    fill: lighten($color-gray, 30%);
     font-size: 13px;
   }
 
   .ct-grid {
-    stroke: lighten($color-dark-green, 5%);
+    stroke: lighten($color-gray, 5%);
     stroke-dasharray: 3px;
     stroke-width: 1px;
   }
@@ -317,8 +367,3 @@ pre > code {
     }
   }
 }
-
-
-
-@import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
-@import url("http://fonts.googleapis.com/css?family=Source+Code+Pro");

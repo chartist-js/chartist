@@ -1,0 +1,43 @@
+documentation-sections:
+  - title: Flexible & Responsive SVG charting library
+    example-chart:
+      id: example-line-four-series
+      classes: ct-chart
+      type: Line
+    side-notes: Chartist is built up very simple and its goal is to keep the handling down to a minimum for providing you with nicely designed responsive charts.
+
+  - title: Chart CSS animation example
+    example-chart:
+      id: example-line-months-interpolation
+      classes: ct-chart dark
+      type: Line
+    hints:
+      - title: Cross-browser support
+        classes: hint-cross-browser
+        text: Note that CSS3 animations on SVG CSS attributes is not supported on all browsers and the appearance may vary.
+    side-notes: Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!
+
+  - title: New bar chart type!
+    example-chart:
+      id: example-simple-bar
+      classes: ct-chart
+      type: Bar
+    side-notes: We are constantly working on enhancements of our existing charts and adding new chart types. While we only have two chart types currently available you can customize them to your own needs while getting a huge vaiarity of configurations and designs.
+
+  - title: Responsive charts configuration
+    example-chart:
+      id: example-line-simple-responsive
+      classes: ct-chart
+      type: Line
+    sub-sections:
+      - title: Configuration overrides based on media queries
+        text: Configuring different chart behaviour for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.
+        hints:
+          - title: Cross-browser support
+            classes: hint-cross-browser
+            text: For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill
+    snippet:
+      id: simple-responsive-settings
+      lang: js
+      button-label: Show code
+    side-notes: With the clear separation of concerns within Chartist.js you're able to style your charts with CSS in @media queries. However, sometimes it requires to also control the behaviour of your charts depending on the media. For this purpose Chartist.js provides you with a simple configuration override mechanism based on media queries.

@@ -1,11 +1,5 @@
 'use strict';
 
-// # Globbing
-// for performance reasons we're only matching one level down:
-// 'test/spec/{,*/}*.js'
-// use this if you want to recursively match all subfolders:
-// 'test/spec/**/*.js'
-
 module.exports = function (grunt) {
 
   // Load grunt tasks automatically
@@ -26,7 +20,7 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       assemble: {
-        files: ['<%= pkg.config.source %>/docs/{,*/}*.{hbs,yml,json}'],
+        files: ['<%= pkg.config.source %>/docs/**/*.{hbs,yml,json}'],
         tasks: ['assemble', 'bowerInstall']
       },
       js: {
@@ -40,9 +34,9 @@ module.exports = function (grunt) {
         files: ['test/spec/{,*/}*.js'],
         tasks: ['newer:jshint:test', 'jasmine']
       },
-      compass: {
+      sass: {
         files: ['<%= pkg.config.source %>/styles/**/*.{scss,sass}'],
-        tasks: ['compass:server']
+        tasks: ['sass:server']
       },
       gruntfile: {
         files: ['Gruntfile.js']
@@ -130,11 +124,12 @@ module.exports = function (grunt) {
 
     assemble: {
       options: {
+        helpers: ['<%= pkg.config.source %>/docs/helpers/**/*.js'],
         partials: ['<%= pkg.config.source %>/docs/partials/**/*.hbs'],
         layoutdir: '<%= pkg.config.source %>/docs/layouts',
         layoutext: '.hbs',
         layout: ['default'],
-        data: ['<%= pkg.config.source %>/docs/data/*.{json,yml}']
+        data: ['<%= pkg.config.source %>/docs/data/**/*.{json,yml}']
       },
       pages: {
         expand: true,
@@ -155,35 +150,43 @@ module.exports = function (grunt) {
       }
     },
 
-    // Compiles Sass to CSS and generates necessary files if requested
-    // TODO: Replace with grunt-libsass
-    compass: {
+    // Compile SASS into CSS with libsass (node-sass)
+    sass: {
       options: {
-        sassDir: '<%= pkg.config.source %>/styles',
-        cssDir: '.tmp/styles',
-        generatedImagesDir: '.tmp/images/generated',
-        imagesDir: '<%= pkg.config.source %>/images',
-        javascriptsDir: '<%= pkg.config.source %>/scripts',
-        fontsDir: '<%= pkg.config.source %>/styles/fonts',
-        importPath: '<%= pkg.config.source %>/bower_components',
-        httpImagesPath: '/images',
-        httpGeneratedImagesPath: '/images/generated',
-        httpFontsPath: '/styles/fonts',
-        relativeAssets: false,
-        assetCacheBuster: false,
-        raw: 'Sass::Script::Number.precision = 10\n'
+        includePaths: ['<%= pkg.config.source %>/bower_components'],
+        imagePath: '<%= pkg.config.source %>/images'
       },
       dist: {
         options: {
-          generatedImagesDir: '<%= pkg.config.dist %>/images/generated'
-        }
+          sourceComments: 'none'
+        },
+        files: [
+          {
+            expand: true,
+            cwd: '<%= pkg.config.source %>/styles',
+            src: '{,*/}*.{scss,sass}',
+            ext: '.css',
+            dest: '.tmp/styles'
+          }
+        ]
       },
       server: {
         options: {
-          debugInfo: true
-        }
+          sourceComments: 'map'
+        },
+        files: [
+          {
+            expand: true,
+            cwd: '<%= pkg.config.source %>/styles',
+            src: '{,*/}*.{scss,sass}',
+            ext: '.css',
+            dest: '.tmp/styles'
+          }
+        ]
       }
     },
+
+
 
     // Renames files for browser caching purposes
     rev: {
@@ -269,28 +272,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // Allow the use of non-minsafe AngularJS files. Automatically makes it
-    // minsafe compatible so Uglify does not destroy the ng references
-    ngmin: {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd: '.tmp/concat/scripts',
-            src: '*.js',
-            dest: '.tmp/concat/scripts'
-          }
-        ]
-      }
-    },
-
-    // Replace Google CDN references
-    cdnify: {
-      dist: {
-        html: ['<%= pkg.config.dist %>/*.html']
-      }
-    },
-
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -325,10 +306,6 @@ module.exports = function (grunt) {
           }
         ]
       },
-      libdist: {
-        src: 'source/scripts/chartist.js',
-        dest: 'lib/chartist-<%= pkg.version %>.js'
-      },
       styles: {
         expand: true,
         cwd: '<%= pkg.config.source %>/styles',
@@ -340,13 +317,13 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'compass:server'
+        'sass:server'
       ],
       test: [
-        'compass'
+        'sass'
       ],
       dist: [
-        'compass:dist',
+        'sass:dist',
         'imagemin',
         'svgmin'
       ]
@@ -360,7 +337,8 @@ module.exports = function (grunt) {
           'source/bower_components/fastclick/lib/fastclick.js',
           'source/bower_components/foundation/js/foundation.min.js',
           'source/bower_components/snap.svg/dist/snap.svg-min.js',
-          'source/scripts/chartist.js'
+          'source/scripts/chartist.core.js',
+          'source/scripts/chartist.line.js'
         ],
         options: {
           specs: 'test/spec/**/spec-*.js',
@@ -376,10 +354,15 @@ module.exports = function (grunt) {
     uglify: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */'
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */',
+          sourceMap: true,
+          sourceMapIncludeSources: true
         },
         files: {
-          'libdist/chartist-<%= pkg.version %>.min.js': ['source/scripts/chartist.js']
+          'libdist/chartist-<%= pkg.version %>.core.min.js': ['source/scripts/chartist.core.js'],
+          'libdist/chartist-<%= pkg.version %>.line.min.js': ['source/scripts/chartist.line.js'],
+          'libdist/chartist-<%= pkg.version %>.bar.min.js': ['source/scripts/chartist.bar.js'],
+          'libdist/chartist-<%= pkg.version %>.all.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js']
         }
       }
     },
@@ -391,6 +374,16 @@ module.exports = function (grunt) {
         },
         files: {
           'libdist/chartist-<%= pkg.version %>.min.css': ['.tmp/styles/chartist.css']
+        }
+      }
+    },
+
+    // Generate documentation with JSHint 3.3 (>3.3 = no Java dependency)
+    jsdoc : {
+      dist : {
+        src: ['README.md', 'source/scripts/**/*.js', 'test/**/*.js'],
+        options: {
+          destination: 'dist/apidoc'
         }
       }
     }
@@ -431,14 +424,16 @@ module.exports = function (grunt) {
     'useminPrepare',
     'concurrent:dist',
     'concat',
-    'ngmin',
     'copy:dist',
-    'cdnify',
-    'cssmin',
-    'uglify',
+    'cssmin:generated',
+    'uglify:generated',
     'rev',
     'usemin',
     'htmlmin',
+    'jsdoc'
+  ]);
+
+  grunt.registerTask('libdist', [
     'cssmin:libdist',
     'uglify:libdist'
   ]);

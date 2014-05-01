@@ -1,19 +1,16 @@
 ---
-layout: default
+layout: landing
+page-class: full
 title: Chartist - Simple responsive charts
 description: Create responsive, scalable and good looking charts with chartist.js.
 ---
-<header>
-  <h1>Chartist - Simple responsive charts</h1>
-</header>
-
 <p>You may think that this is just yet an other charting library. But Chartist.js is the product of
 a community that was disappointed about the abilities provided by other charting libraries. Of course there are hundreds
 of other great charting libraries but after using them there were always tweaks you would have wished for that were not
   included.</p>
-<h2>Facts about Chartist</h2>
+<h3>Facts about Chartist</h3>
 <p>The following facts should give you an overview why to choose Chartists as your front-end chart generator:</p>
-<ul>
+<ul class="list">
   <li>Simple handling while using convention over configuration</li>
   <li>Great flexibility while using clear separation of concerns (Style with CSS & control with JS)</li>
   <li>Usage of SVG (Yes! SVG is the future of illustration in web!)</li>
@@ -22,99 +19,6 @@ of other great charting libraries but after using them there were always tweaks 
   <li>Fully built and customizable with SASS</li>
 </ul>
 
-<section class="documentation-section">
-  <header>
-    <h2>Flexible & Responsive SVG charting library</h2>
-  </header>
-  <div class="content">
-    <div id="example-chart-one" class="ct-chart ct-golden-section">
-    </div>
-  </div>
-  <aside class="side-notes">
-    <p>Chartist is built up very simple and its goal is to keep the handling down to a minimum for providing you with nicely designed responsive charts.</p>
-  </aside>
-</section>
-
-<section class="documentation-section">
-  <header>
-    <h2>Chart CSS animation example</h2>
-  </header>
-  <div class="content">
-    <div id="example-chart-two" class="ct-chart dark">
-    </div>
-    <p class="browser-hint">Note that CSS3 animations on SVG CSS attributes is not supported on all browsers and the
-    appearance may vary. </p>
-  </div>
-  <aside class="side-notes">
-    <p>Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations
-      and transitions to be applied to your SVG elements!</p>
-  </aside>
-</section>
-
-<section class="documentation-section">
-  <header>
-    <h2>Responsive charts configuration</h2>
-  </header>
-  <div class="content">
-    <div id="example-chart-three" class="ct-chart">
-    </div>
-    <h3>Configuration overrides based on media queries</h3>
-    <p>Configuring different chart behaviour for various media is made simple with an override mechanism. The priority of
-    the override mechanism is based on order of specification of the matching media queries.</p>
-    <p class="browser-hint">For IE9 you need to use a matchMedia polyfill. You should take a look at
-      <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.</p>
-
-    <button class="button" data-toggle-visible="#code-example-one">Show code</button>
-    <pre id="code-example-one"><code class="js">
-/* Add a basic data series with six labels and values */
-var data: {
-  labels: ['1', '2', '3', '4', '5', '6'],
-  series: [
-    {
-      data: [1, 2, 3, 5, 8, 13]
-    }
-  ]
-};
-
-/* Set some base options (settings will override the default settings in Chartist.js *see default settings*)
-   We are adding a basic label interpolation function for the xAxis labels. */
-var options: {
-  axisX: {
-    labelInterpolationFnc: function(value) {
-      return 'Calendar Week ' + value;
-    }
-  }
-};
-
-      /* Now we can specify multiple responsive settings that will override the base settings based on order and if the media queries match.
-         In this example we are changing the visibility of dots and lines as well as use different label interpolations for space reasons.
-      */
-var responsiveOptions: [
-  ['screen and (min-width: 641px) and (max-width: 1024px)', {
-    showPoint: false,
-    axisX: {
-      labelInterpolationFnc: function(value) {
-        return 'Week ' + value;
-      }
-    }
-  }],
-  ['screen and (max-width: 640px)', {
-    showLine: false,
-    axisX: {
-      labelInterpolationFnc: function(value) {
-        return 'W' + value;
-      }
-    }
-  }]
-];
-
-/* Initialize the chart with the above settings */
-Chartist('#my-chart', data, options, responsiveOptions);
-    </code></pre>
-  </div>
-  <aside class="side-notes">
-    <p>With the clear separation of concerns within Chartist.js you're able to style your charts with CSS in @media queries.
-     However, sometimes it requires to also control the behaviour of your charts depending on the media. For this purpose
-    Chartist.js provides you with a simple configuration override mechanism based on media queries.</p>
-  </aside>
-</section>
+{{#each page.documentation-sections}}
+  {{>documentation-section}}
+{{/each}}

@@ -1,0 +1,12 @@
+<aside class="side-navigation">
+  <nav>
+    <ul class="side-nav">
+      {{#each this}}
+        <li class="heading">{{group-name}}</li>
+        {{#each links}}
+          <li><a href="{{url}}">{{text}}</a></li>
+        {{/each}}
+      {{/each}}
+    </ul>
+  </nav>
+</aside>
