@@ -6,6 +6,7 @@
     width: 195,
     height: 137,
     axisX: {
+      offset: 0,
       showLabel: true,
       showGrid: true,
       labelInterpolationFnc: function(n) {
@@ -13,6 +14,7 @@
       }
     },
     axisY: {
+      offset: 5,
       showLabel: true,
       showGrid: true,
       labelInterpolationFnc: function(n) {
