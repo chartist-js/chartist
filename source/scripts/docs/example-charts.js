@@ -5,56 +5,95 @@
 
   Examples.data = {
     // Smoothed line chart with four series and label interpolation responsive demo
-    'example-line-four-series': {
+    'example-gallery-one': {
       data: {
-        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+        labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9'],
         series: [
           {
             data: [12, 9, 7, 8, 6, 4, 3, 2, 0]
           },
           {
-            data: [2, 1, 4, 7, 9, 8, 7, 4, 7]
+            data: [2, 1, 3.5, 7, 9, 8, 7.7, 4, 7]
           },
           {
-            data: [1, 2, 4, 5, 6, 8, 9, 10, 11]
+            data: [1, 3, 4, 5, 6, 8, 9, 10, 11]
           },
           {
-            data: [11, 7.5, 5.5, 5, 4, 3.5, 2, 1, 0]
+            data: [11, 7.5, 5.5, 5.5, 4, 3.5, 2, 1, 0]
           }
         ]
       },
       options: {
         axisX: {
-          offset: 40,
-          labelInterpolationFnc: function (value) {
-            return 'Week ' + value;
-          }
+          offset: 15
         },
         axisY: {
-          offset: 40
+          offset: 15
         }
-      },
-      responsiveOptions: [
-        [
-          Foundation.media_queries.small,
+      }
+    },
+
+    // Bar chart small example with two series
+    'example-gallery-two': {
+      data: {
+        labels: ['1938', '1939', '1940', '1941', '1942', '1943'],
+        series: [
           {
-            axisX: {
-              offset: 5,
-              labelInterpolationFnc: function (value, index) {
-                // Interpolation function causes only every 2nd label to be displayed
-                if (index % 2 !== 0) {
-                  return false;
-                } else {
-                  return 'W' + value;
-                }
-              }
-            },
-            axisY: {
-              offset: 5
-            }
+            data: [12000, 9000, 7000, 8000, 12000, 10000]
+          },
+          {
+            data: [2000, 1000, 3500, 7000, 5000, 9000]
           }
         ]
-      ]
+      },
+      options: {
+        seriesBarDistance: 5,
+        axisX: {
+          offset: 15
+        },
+        axisY: {
+          offset: 15
+        }
+      }
+    },
+
+    // Simple pie chart
+    'example-gallery-three': {
+      data: {
+        series: [
+          {
+            data: [20]
+          },
+          {
+            data: [15]
+          },
+          {
+            data: [40]
+          },
+          {
+            data: [10]
+          }
+        ]
+      }
+    },
+
+    // Pie as donut
+    'example-gallery-four': {
+      data: {
+        series: [
+          {
+            data: [60]
+          },
+          {
+            data: [20]
+          }
+        ]
+      },
+      options: {
+        donut: true,
+        donutWidth: 40,
+        total: 100
+      }
     },
 
     // Simple line chart demo with month view on x axis and label interpolation that only shows ever second month's label on mobile

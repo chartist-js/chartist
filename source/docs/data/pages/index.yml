@@ -1,11 +1,4 @@
 documentation-sections:
-  - title: Flexible & Responsive SVG charting library
-    example-chart:
-      id: example-line-four-series
-      classes: ct-chart
-      type: Line
-    side-notes: Chartist is built up very simple and its goal is to keep the handling down to a minimum for providing you with nicely designed responsive charts.
-
   - title: Chart CSS animation example
     example-chart:
       id: example-line-months-interpolation

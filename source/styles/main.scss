@@ -210,6 +210,14 @@ pre > code {
         }
       }
     }
+
+    > ul.example-gallery {
+      @include block-grid(1);
+
+      @media #{$medium-up} {
+        @include block-grid(2);
+      }
+    }
   }
 
   .full & {
