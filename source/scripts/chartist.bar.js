@@ -97,6 +97,7 @@
             bar;
 
           // Offset to center bar between grid lines and using bi-polar offset for multiple series
+          // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
           bar = paper.line(p.x, chartRect.y1, p.x, p.y);
