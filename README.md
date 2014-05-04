@@ -23,7 +23,7 @@ We are still in alpha version 0.0.5 and there are a lot of things to do until we
 
 ## Version notes
 
-We are currently on version 0.1.0 and still heavily developing. Your help is needed! Please contribute
+We are currently on version 0.1.1 and still heavily developing. Your help is needed! Please contribute
 to the project if you like the idea and the concept and help us to bring nice looking responsive open-source charts
 to the masses.
 
@@ -34,7 +34,7 @@ to the masses.
 3. Documentation: JSDoc, Getting started documentation and landing page
 4. Better interfaces to the library (i.e. jQuery with data-* attributes for configuration), Angular.js directive etc.
 5. Richer SASS / CSS framework
-6. Other charts types (pie, donut, spider etc.)
+6. Other charts types (spider etc.)
 
 ## Contribution
 

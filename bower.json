@@ -1,7 +1,7 @@
 {
   "name": "chartist",
-  "version": "0.1.0",
-  "main": ["./libdist/chartist-0.1.0.all.min.js", "./libdist/chartist-0.1.0.min.css"],
+  "version": "0.1.1",
+  "main": ["./libdist/chartist-0.1.1.all.min.js", "./libdist/chartist-0.1.1.min.css"],
   "dependencies": {
     "snap.svg": "~0.2.0"
   },
