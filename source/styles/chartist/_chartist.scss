@@ -7,6 +7,8 @@ $ct-class-series: ct-series !default;
 $ct-class-line: ct-line !default;
 $ct-class-point: ct-point !default;
 $ct-class-bar: ct-bar !default;
+$ct-class-slice: ct-slice !default;
+$ct-class-donut: ct-donut !default;
 $ct-class-grid: ct-grid !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
@@ -80,6 +82,11 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
       stroke-width: 10px;
     }
 
+    .#{$ct-class-slice}.#{$ct-class-donut} {
+      fill: none;
+      stroke-width: 60px;
+    }
+
     .#{$ct-class-thin} {
       stroke-width: 5px;
     }
@@ -94,8 +101,12 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
           &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
             $color: nth($ct-series-colors, $i + 1);
 
-            .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar} {
+            .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice}.#{$ct-class-donut} {
               stroke: $color;
+            }
+
+            .#{$ct-class-slice}:not(.#{$ct-class-donut}) {
+              fill: $color;
             }
           }
         }
