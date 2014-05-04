@@ -31,6 +31,7 @@
   };
 
   // Simple array each function
+  // TODO: Use Array forEach as browser support allows (IE 9+)
   Chartist.each = function (array, callback) {
     for (var i = 0; i < array.length; i++) {
       var value = callback.call(array[i], i, array[i]);
@@ -239,6 +240,15 @@
 
       callback(data, index, interpolatedValue);
     }
+  };
+
+  Chartist.polarToCartesian = function(centerX, centerY, radius, angleInDegrees) {
+    var angleInRadians = (angleInDegrees-90) * Math.PI / 180.0;
+
+    return {
+      x: centerX + (radius * Math.cos(angleInRadians)),
+      y: centerY + (radius * Math.sin(angleInRadians))
+    };
   };
 
   // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
