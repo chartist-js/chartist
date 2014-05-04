@@ -94,7 +94,8 @@
 
         // First dot we need to add before loop
         if (options.showPoint) {
-          point = paper.line(p.x, p.y, p.x, p.y);
+          // Small offset for Firefox to render squares correctly
+          point = paper.line(p.x, p.y, p.x + 0.01, p.y);
           point.node.setAttribute('class', options.classNames.point);
           seriesGroups[i].append(point);
         }
@@ -105,8 +106,9 @@
           path += ' ' + p.x + ',' + p.y;
 
           //If we should show points we need to create them now to avoid secondary loop
+          // Small offset for Firefox to render squares correctly
           if (options.showPoint) {
-            point = paper.line(p.x, p.y, p.x, p.y);
+            point = paper.line(p.x, p.y, p.x  + 0.01, p.y);
             point.node.setAttribute('class', options.classNames.point);
             seriesGroups[i].append(point);
           }
