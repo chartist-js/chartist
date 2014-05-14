@@ -1,4 +1,11 @@
-// Chartist Bar chart
+/**
+ * @author: Gion Kunz
+ * @name: Chartist - Bar Chart
+ * @param document
+ * @param window
+ * @param Chartist
+ * @param undefined
+ */
 (function (document, window, Chartist, undefined) {
   'use strict';
   Chartist.Bar = Chartist.Bar || function (query, data, options, responsiveOptions) {
@@ -37,16 +44,20 @@
       paper,
       dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
-    function createChart(options) {
+     function createChart(options) {
       var xAxisOffset,
         yAxisOffset,
         seriesGroups = [],
         bounds;
 
-      // Create new paper the stage
+        /**
+         * @description Create new paper the stage
+         */
       paper = Chartist.createPaper(query, options.width, options.height);
 
-      // initialize bounds
+        /**
+         * @description initialize bounds
+         */
       bounds = Chartist.getBounds(paper, dataArray, options, null, 0);
 
       xAxisOffset = options.axisX.offset;
@@ -72,23 +83,36 @@
       }
 
       var chartRect = Chartist.createChartRect(paper, options, xAxisOffset, yAxisOffset);
-      // Start drawing
+
+        /**
+         * @description Start drawing
+         */
       var labels = paper.g(),
         grid = paper.g();
 
       Chartist.createXAxis(paper, chartRect, data, grid, labels, options);
       Chartist.createYAxis(paper, chartRect, bounds, grid, labels, yAxisOffset, options);
 
-      // Draw the series
-      // initialize series groups
+        /**
+         * @description Draw the series
+         * @description initialize series groups
+         */
       for (var i = 0; i < data.series.length; i++) {
-        // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
+          /**
+           * @description Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
+           * @type {number}
+           */
         var biPol = i - (data.series.length - 1) / 2,
-        // Half of the period with between vertical grid lines used to position bars
+              /**
+               * @description Half of the period with between vertical grid lines used to position bars
+               * @type {number}
+               */
           periodHalfWidth = chartRect.width() / data.series[i].data.length / 2;
 
         seriesGroups[i] = paper.g();
-        // Use series class from series data or if not set generate one
+          /**
+           * @description Use series class from series data or if not set generate one
+           */
         seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
@@ -96,7 +120,10 @@
           var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j),
             bar;
 
-          // Offset to center bar between grid lines and using bi-polar offset for multiple series
+            /**
+             * @description Offset to center bar between grid lines and using bi-polar offset for multiple series
+             * @type {number}
+             */
           // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
@@ -109,24 +136,30 @@
       }
     }
 
-    // Obtain current options based on matching media queries (if responsive options are given)
-    // This will also register a listener that is re-creating the chart based on media changes
+      /**
+       * @description Obtain current options based on matching media queries (if responsive options are given
+       * @description This will also register a listener that is re-creating the chart based on media changes
+       */
     currentOptions = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, function (changedOptions) {
       currentOptions = changedOptions;
       createChart(currentOptions);
     });
 
     // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
+      /**
+       * @description This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
+       * @description work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
+       * @description See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
+       * @description Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
+       * @description The problem is with the label offsets that can't be converted into percentage and affecting the chart container
+       */
     window.addEventListener('resize', function () {
       createChart(currentOptions);
     });
 
-    // Public members
+      /**
+       * @description Public members
+       */
     return {
       version: Chartist.version,
       update: function () {

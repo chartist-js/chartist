@@ -1,23 +1,52 @@
+/**
+ * @author Gion Kunz
+ */
 (function (document, window, undefined) {
   'use strict';
 
-  // Export chartist namespace
+    /**
+     * @name Chartist
+     * @description Export chartist namespace
+     * @type {{}|*|Window.Chartist}
+     */
   var Chartist = window.Chartist = window.Chartist || {};
 
   Chartist.version = '0.0.3';
 
-  // Helps to simplify functional style code
+    /**
+     * @name noop
+     * @function noop
+     * @description Helps to simplify functional style code
+     * @param n
+     * @returns {*}
+     */
   Chartist.noop = function (n) {
     return n;
   };
 
-  // Generates a-z from number
+    /**
+     * @name alphaNumerate
+     * @function alphaNumerate
+     * @description Generates a-z from number
+     * @param n
+     * @returns {string}
+     */
   Chartist.alphaNumerate = function (n) {
-    // Limit to a-z
+
+      /**
+       * @description Limit to a-z
+       */
     return String.fromCharCode(97 + n % 26);
   };
 
-  // Simple recursive object extend
+    /**
+     * @name extend
+     * @function extend
+     * @description Simple recursive object extend
+     * @param target
+     * @param source
+     * @returns {*|{}}
+     */
   Chartist.extend = function (target, source) {
     target = target || {};
     for (var prop in source) {
@@ -30,8 +59,14 @@
     return target;
   };
 
-  // Simple array each function
   // TODO: Use Array forEach as browser support allows (IE 9+)
+    /**
+     * @name each
+     * @function each
+     * @description Simple array each function
+     * @param array
+     * @param callback
+     */
   Chartist.each = function (array, callback) {
     for (var i = 0; i < array.length; i++) {
       var value = callback.call(array[i], i, array[i]);
@@ -42,8 +77,14 @@
     }
   };
 
-  // Get element height / width with fallback to svg BoundingBox or parent container dimensions
-  // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+    /**
+     * @name getHeight
+     * @function getHeight
+     * @description Get element height / width with fallback to svg BoundingBox or parent container dimensions
+     * @description See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+     * @param svgElement
+     * @returns {number}
+     */
   Chartist.getHeight = function (svgElement) {
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
   };
@@ -52,43 +93,71 @@
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
   };
 
-  // Create Chartist container and instantiate snap paper
+    /**
+     * @name createPaper
+     * @function createPaper
+     * @description Create Chartist container and instantiate snap paper
+     * @param query
+     * @param width
+     * @param height
+     * @returns {*}
+     */
   Chartist.createPaper = function (query, width, height) {
-    // Get dom object from query or if already dom object just use it
+      /**
+       * @description Get dom object from query or if already dom object just use it
+       */
     var container = query.nodeType ? query : document.querySelector(query),
       paper;
 
-    // If container was not found we throw up
+      /**
+       * @description If container was not found we throw up
+       */
     if (!container) {
       throw 'Container node with selector "' + query + '" not found';
     }
 
-    // If already contains paper we clear it, set width / height and return
+      /**
+       * @description If already contains paper we clear it, set width / height and return
+       */
     if (container.__chartistPaper !== undefined) {
       paper = container.__chartistPaper.attr({
         width: width || '100%',
         height: height || '100%'
       });
-      // Clear the paper if its already used before so we start fresh
+        /**
+         * @description Clear the paper if its already used before so we start fresh
+         */
       paper.clear();
 
     } else {
-      // Create Snap paper with width and height or use 100% as default
+        /**
+         * @description Create Snap paper with width and height or use 100% as default
+         */
       paper = Snap(width || '100%', height || '100%');
       if (!paper) {
         throw 'Could not instantiate Snap.js!';
       }
-      // Append the snap SVG to our container
+        /**
+         * @description Append the snap SVG to our container
+         */
       container.appendChild(paper.node);
 
-      // Set paper in DOM element so we have a trace for later
+        /**
+         * @description Set paper in DOM element so we have a trace for later
+         */
       container.__chartistPaper = paper;
     }
 
     return paper;
   };
 
-  // Convert data series into plain array
+    /**
+     * @name getDateArray
+     * @function getDataArray
+     * @description Convert data series into plain array
+     * @param data
+     * @returns {Array}
+     */
   Chartist.getDataArray = function (data) {
     var array = [];
 
@@ -99,7 +168,14 @@
     return array;
   };
 
-  // Add missing values at the end of the arrays
+    /**
+     * @name normalizeDataArray
+     * @function normalizeDataArray
+     * @description Add missing values at the end of the arrays
+     * @param dataArray
+     * @param length
+     * @returns {*}
+     */
   Chartist.normalizeDataArray = function (dataArray, length) {
     for (var i = 0; i < dataArray.length; i++) {
       if (dataArray[i].length === length) {
@@ -127,7 +203,13 @@
     return Chartist.getHeight(paper.node) - (options.chartPadding * 2) - options.axisX.offset;
   };
 
-  // Get highest and lowest value of data array
+    /**
+     * @name getHighLow
+     * @function getHighLow
+     * @description Get highest and lowest value of data array
+     * @param dataArray
+     * @returns {{high: Number, low: Number}}
+     */
   Chartist.getHighLow = function (dataArray) {
     var i,
       j,
@@ -151,18 +233,34 @@
     return highLow;
   };
 
-  // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
+    /**
+     * @name getBounds
+     * @function getBounds
+     * @description Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
+     * @param paper
+     * @param dataArray
+     * @param options
+     * @param high
+     * @param low
+     * @returns {*}
+     */
   Chartist.getBounds = function (paper, dataArray, options, high, low) {
     var i,
       newMin,
       newMax,
       bounds = Chartist.getHighLow(dataArray);
 
-    // Overrides of high / low from settings
+      /**
+       * @description Overrides of high / low from settings
+       * @type {*|number}
+       */
     bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
     bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
 
-    // Overrides of high / low from function call (highest priority)
+      /**
+       * @description Overrides of high / low from function call (highest priority)
+       * @type {*|number}
+       */
     bounds.high = high || (high === 0 ? 0 : bounds.high);
     bounds.low = low || (low === 0 ? 0 : bounds.low);
 
@@ -174,7 +272,9 @@
     bounds.step = Math.pow(10, bounds.oom);
     bounds.numberOfSteps = Math.round(bounds.range / bounds.step);
 
-    // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
+      /**
+       * @description Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
+       */
     while (true) {
       var length = Chartist.projectLength(paper, bounds.step / 2, bounds, options);
       if (length >= options.axisY.scaleMinSpace) {
@@ -184,7 +284,9 @@
       }
     }
 
-    // Narrow min and max based on new step
+      /**
+       * @description Narrow min and max based on new step
+       */
     newMin = bounds.min;
     newMax = bounds.max;
     for (i = bounds.min; i <= bounds.max; i += bounds.step) {
@@ -211,7 +313,9 @@
   Chartist.calculateLabelOffset = function (paper, data, labelClass, labelInterpolationFnc, offsetFnc) {
     var offset = 0;
     for (var i = 0; i < data.length; i++) {
-      // If interpolation function returns falsy value we skipp this label
+        /**
+         * @description If interpolation function returns falsy value we skipp this label
+         */
       var interpolated = labelInterpolationFnc(data[i], i);
       if (!interpolated && interpolated !== 0) {
         continue;
@@ -220,19 +324,33 @@
       var label = paper.text(0, 0, '' + interpolated);
       label.node.setAttribute('class', labelClass);
 
-      // Check if this is the largest label and update offset
+        /**
+         * @description Check if this is the largest label and update offset
+         * @type {number}
+         */
       offset = Math.max(offset, offsetFnc(label.node));
-      // Remove label after offset Calculation
+        /**
+         * @description Remove label after offset Calculation
+         */
       label.remove();
     }
 
     return offset;
   };
 
-  // Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
+    /**
+     * @name interpolateData
+     * @function interpolateData
+     * @description Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
+     * @param data
+     * @param labelInterpolationFnc
+     * @param callback
+     */
   Chartist.interpolateData = function (data, labelInterpolationFnc, callback) {
     for (var index = 0; index < data.length; index++) {
-      // If interpolation function returns falsy value we skipp this label
+        /**
+         * @description If interpolation function returns falsy value we skipp this label
+         */
       var interpolatedValue = labelInterpolationFnc(data[index], index);
       if (!interpolatedValue && interpolatedValue !== 0) {
         continue;
@@ -251,7 +369,16 @@
     };
   };
 
-  // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+    /**
+     * @name createChartRect
+     * @function createChartRect
+     * @description Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+     * @param paper
+     * @param options
+     * @param xAxisOffset
+     * @param yAxisOffset
+     * @returns {{x1: *, y1: number, x2: number, y2: (k.chartPadding|*|m.chartPadding|p.chartPadding|q.chartPadding|defaultOptions.chartPadding), width: width, height: height}}
+     */
   Chartist.createChartRect = function (paper, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
@@ -268,12 +395,16 @@
   };
 
   Chartist.createXAxis = function(paper, chartRect, data, grid, labels, options) {
-    // Create X-Axis
+      /**
+       * @description Create X-Axis
+       */
     Chartist.each(data.labels, function (index, value) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
         pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
 
-      // If interpolated value returns falsey (except 0) we don't draw the grid line
+        /**
+         * @description If interpolated value returns falsey (except 0) we don't draw the grid line
+         */
       if(!interpolatedValue && interpolatedValue !== 0) {
         return;
       }
@@ -285,7 +416,9 @@
       }
 
       if (options.axisX.showLabel) {
-        // Use config offset for setting labels of
+          /**
+           * @description Use config offset for setting labels of
+           */
         var label = paper.text(pos + 2, 0, '' + interpolatedValue);
         label.node.setAttribute('class', [options.classNames.label, options.classNames.horizontal].join(' '));
 
@@ -300,12 +433,16 @@
   };
 
   Chartist.createYAxis = function(paper, chartRect, bounds, grid, labels, offset, options) {
-    // Create Y-Axis
+      /**
+       * @description Create Y-Axis
+       */
     Chartist.each(bounds.values, function (index, value) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
         pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
 
-      // If interpolated value returns falsey (except 0) we don't draw the grid line
+        /**
+         * @description If interpolated value returns falsey (except 0) we don't draw the grid line
+         */
       if(!interpolatedValue && interpolatedValue !== 0) {
         return;
       }
@@ -317,14 +454,18 @@
       }
 
       if (options.axisY.showLabel) {
-        // Position later
+          /**
+           * @description Position later
+           */
         //TODO: make padding of 2px configurable
         //TODO: Check for refacoring
         var label = paper.text(options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
             pos - 2, '' + interpolatedValue);
         label.node.setAttribute('class', options.classNames.label + ' ' + options.classNames.vertical);
 
-        // Set text-anchor based on alignment
+          /**
+           * @description Set text-anchor based on alignment
+           */
         label.attr({
           'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
         });
@@ -341,7 +482,16 @@
     };
   };
 
-  // Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+    /**
+     * @name optionsProvider
+     * @function optionsProvider
+     * @description Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+     * @param defaultOptions
+     * @param options
+     * @param responsiveOptions
+     * @param optionsChangedCallbackFnc
+     * @returns {*}
+     */
   // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one
   Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {
     var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
