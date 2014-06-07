@@ -28,6 +28,6 @@
     "commit": "a049d66ca2bc8e36916e76eb6f45b0626adaf582"
   },
   "_source": "git://github.com/Igosuki/compass-mixins.git",
-  "_target": "~1.0.0",
+  "_target": "1.0.0",
   "_originalSource": "compass-mixins"
 }

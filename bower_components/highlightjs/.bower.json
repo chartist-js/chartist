@@ -20,6 +20,5 @@
   },
   "_source": "git://github.com/components/highlightjs.git",
   "_target": "~8.0.0",
-  "_originalSource": "highlightjs",
-  "_direct": true
+  "_originalSource": "highlightjs"
 }
