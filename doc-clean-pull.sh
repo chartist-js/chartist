@@ -6,4 +6,4 @@ rm -rf fonts
 rm -rf images
 rm -rf scripts
 rm -rf styles
-cp -r dist/* .
+cp -r sitedist/* .

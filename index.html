@@ -8,7 +8,7 @@
   
   <code class="js">/* Add a basic data series with six labels and values */
 var data = {
-  labels: [&amp;#x27;1&amp;#x27;, &amp;#x27;2&amp;#x27;, &amp;#x27;3&amp;#x27;, &amp;#x27;4&amp;#x27;, &amp;#x27;5&amp;#x27;, &amp;#x27;6&amp;#x27;],
+  labels: [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;],
     series: [
     {
       data: [1, 2, 3, 5, 8, 13]
@@ -20,33 +20,33 @@ var data = {
 var options = {
   axisX: {
     labelInterpolationFnc: function(value) {
-      return &amp;#x27;Calendar Week &amp;#x27; + value;
+      return &#x27;Calendar Week &#x27; + value;
     }
   }
 };
 
 /* Now we can specify multiple responsive settings that will override the base settings based on order and if the media queries match. In this example we are changing the visibility of dots and lines as well as use different label interpolations for space reasons. */
 var responsiveOptions = [
-  [&amp;#x27;screen and (min-width: 641px) and (max-width: 1024px)&amp;#x27;, {
+  [&#x27;screen and (min-width: 641px) and (max-width: 1024px)&#x27;, {
     showPoint: false,
     axisX: {
       labelInterpolationFnc: function(value) {
-        return &amp;#x27;Week &amp;#x27; + value;
+        return &#x27;Week &#x27; + value;
       }
     }
   }],
-  [&amp;#x27;screen and (max-width: 640px)&amp;#x27;, {
+  [&#x27;screen and (max-width: 640px)&#x27;, {
     showLine: false,
     axisX: {
       labelInterpolationFnc: function(value) {
-        return &amp;#x27;W&amp;#x27; + value;
+        return &#x27;W&#x27; + value;
       }
     }
   }]
 ];
 
 /* Initialize the chart with the above settings */
-Chartist.Line(&amp;#x27;#my-chart&amp;#x27;, data, options, responsiveOptions);</code>
+Chartist.Line(&#x27;#my-chart&#x27;, data, options, responsiveOptions);</code>
 </pre></div><aside class="side-notes"><p>With the clear separation of concerns within Chartist.js you&#x27;re able to style your charts with CSS in @media queries. However, sometimes it requires to also control the behaviour of your charts depending on the media. For this purpose Chartist.js provides you with a simple configuration override mechanism based on media queries.</p></aside></section></div></article></section><script>(function (i, s, o, g, r, a, m) {
     i['GoogleAnalyticsObject'] = r;
     i[r] = i[r] || function () {

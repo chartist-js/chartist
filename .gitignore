@@ -1,5 +1,5 @@
 .sass-cache/
 .tmp/
-dist/
+sitedist/
 node_modules/
 source/
