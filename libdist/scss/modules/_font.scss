@@ -1,4 +1,4 @@
-$font-path: "../../fonts" !default;
+$font-path: "/fonts" !default;
 
 @mixin embed-font($font-name, $font-file, $font-path: $font-path) {
   @font-face {

@@ -17,7 +17,7 @@
 
 @import "highlight";
 
-@include embed-font("FontAwesome", "fontawesome-webfont");
+@include embed-font("FontAwesome", "fontawesome-webfont", "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts");
 
 .button {
   text-transform: uppercase;
