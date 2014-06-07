@@ -1,0 +1,24 @@
+$ct-class-chart: ct-chart !default;
+$ct-class-label: ct-label !default;
+$ct-class-series: ct-series !default;
+$ct-class-line: ct-line !default;
+$ct-class-point: ct-point !default;
+$ct-class-bar: ct-bar !default;
+$ct-class-slice: ct-slice !default;
+$ct-class-donut: ct-donut !default;
+$ct-class-grid: ct-grid !default;
+$ct-class-vertical: ct-vertical !default;
+$ct-class-horizontal: ct-horizontal !default;
+
+$ct-class-thin: ct-thin !default;
+$ct-class-thick: ct-thick !default;
+
+$ct-text-color: #222222 !default;
+$ct-text-size: 0.75rem !default;
+
+$ct-include-classes: true !default;
+$ct-include-colored-series: $ct-include-classes !default;
+$ct-include-responsive-containers: $ct-include-classes !default;
+
+$ct-series-names: (a, b, c, d) !default;
+$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;

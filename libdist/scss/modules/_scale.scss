@@ -1,0 +1,41 @@
+$scale-minor-second: 15/16;
+$scale-major-second: 8/9;
+$scale-minor-third: 5/6;
+$scale-major-third: 4/5;
+$scale-perfect-fourth: 3/4;
+$scale-perfect-fifth: 2/3;
+$scale-minor-sixth: 5/8;
+$scale-golden-section: 1/1.618;
+$scale-major-sixth: 3/5;
+$scale-minor-seventh: 9/16;
+$scale-major-seventh: 8/15;
+$scale-octave: 1/2;
+$scale-major-tenth: 2/5;
+$scale-major-eleventh: 3/8;
+$scale-major-twelfth: 1/3;
+$scale-double-octave: 1/4;
+
+@function generateScale($base: 16, $scale-type: $scale-golden-section, $limit-lower: 6, $limit-upper: 100) {
+  $scale: ();
+  $value: $base;
+
+  @while $value > $limit-lower {
+    $value: $value * $scale-type;
+    @if $value > $limit-lower {
+      $scale: append($scale, $value);
+    }
+  }
+
+  $scale: reverse($scale);
+  $scale: append($scale, $base);
+
+  $value: $base;
+  @while $value < $limit-upper {
+    $value: $value / $scale-type;
+    @if $value < $limit-upper {
+      $scale: append($scale, $value);
+    }
+  }
+
+  @return $scale;
+}

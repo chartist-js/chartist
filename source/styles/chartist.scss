@@ -1,1 +1,118 @@
-@import "chartist/chartist";
+@import 'modules';
+
+$ct-scales: ((3/4), (1/1.618), (9/16), 1, (1/2), (1/3), (1/4));
+$ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-square, ct-octave, major-twelfth, double-octave);
+
+$ct-class-chart: ct-chart !default;
+$ct-class-label: ct-label !default;
+$ct-class-series: ct-series !default;
+$ct-class-line: ct-line !default;
+$ct-class-point: ct-point !default;
+$ct-class-bar: ct-bar !default;
+$ct-class-slice: ct-slice !default;
+$ct-class-donut: ct-donut !default;
+$ct-class-grid: ct-grid !default;
+$ct-class-vertical: ct-vertical !default;
+$ct-class-horizontal: ct-horizontal !default;
+
+$ct-class-thin: ct-thin !default;
+$ct-class-thick: ct-thick !default;
+
+$ct-text-color: #222222 !default;
+$ct-text-size: 0.75rem !default;
+
+$ct-include-classes: true !default;
+$ct-include-colored-series: $ct-include-classes !default;
+$ct-include-responsive-containers: $ct-include-classes !default;
+
+$ct-series-names: (a, b, c, d) !default;
+$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
+
+@mixin responsive-svg-container($width: 100%, $ratio: (1/1)) {
+  display: block;
+  position: relative;
+  width: $width;
+  padding-bottom: 100% * $ratio;
+  overflow: hidden;
+
+  > svg {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@if $ct-include-classes {
+  .#{$ct-class-chart} {
+    @include responsive-svg-container($ratio: (1/1.618));
+    margin-bottom: 1rem;
+
+    @if $ct-include-responsive-containers {
+      @for $i from 0 to length($ct-scales-names) {
+        &.#{nth($ct-scales-names, $i + 1)} {
+          @include responsive-svg-container($ratio: nth($ct-scales, $i + 1));
+        }
+      }
+    }
+
+    .#{$ct-class-label} {
+      fill: rgba(0, 0, 0, 0.4);
+      font-size: $ct-text-size;
+    }
+
+    .#{$ct-class-grid} {
+      stroke: rgba(0, 0, 0, 0.2);
+      stroke-dasharray: 2px;
+      stroke-width: 1px;
+    }
+
+    .#{$ct-class-point} {
+      stroke-width: 10px;
+      stroke-linecap: round;
+    }
+
+    .#{$ct-class-line} {
+      fill: none;
+      stroke-width: 4px;
+    }
+
+    .#{$ct-class-bar} {
+      fill: none;
+      stroke-width: 10px;
+    }
+
+    .#{$ct-class-slice}.#{$ct-class-donut} {
+      fill: none;
+      stroke-width: 60px;
+    }
+
+    .#{$ct-class-thin} {
+      stroke-width: 5px;
+    }
+
+    .#{$ct-class-thick} {
+      stroke-width: 20px;
+    }
+
+    @if $ct-include-colored-series {
+      .#{$ct-class-series} {
+        @for $i from 0 to length($ct-series-names) {
+          &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
+            $color: nth($ct-series-colors, $i + 1);
+
+            .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice}.#{$ct-class-donut} {
+              stroke: $color;
+            }
+
+            .#{$ct-class-slice}:not(.#{$ct-class-donut}) {
+              fill: $color;
+            }
+          }
+        }
+      }
+    }
+  }
+}

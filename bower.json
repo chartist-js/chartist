@@ -1,7 +1,7 @@
 {
   "name": "chartist",
   "version": "0.1.1",
-  "main": ["./libdist/chartist-0.1.1.min.js", "./libdist/chartist-0.1.1.min.css"],
+  "main": ["./libdist/chartist.min.js", "./libdist/chartist.min.css"],
   "dependencies": {
     "snap.svg": "~0.2.0"
   },
@@ -12,5 +12,14 @@
     "highlightjs": "~8.0.0",
     "font-awesome": "~4.0.3",
     "compass-mixins": "~1.0.0"
-  }
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "sitedist",
+    "source",
+    "test"
+  ]
 }

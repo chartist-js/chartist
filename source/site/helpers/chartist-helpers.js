@@ -6,7 +6,7 @@ module.exports.register = function (Handlebars, opt, params)  {
   var helpers = {
 
     snippetPath: function (snippetId, snippetLang) {
-      return 'source/docs/code-snippets/' + snippetId + '.' + snippetLang || 'js';
+      return 'source/site/code-snippets/' + snippetId + '.' + snippetLang || 'js';
     }
   };
 

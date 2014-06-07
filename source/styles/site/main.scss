@@ -1,23 +1,23 @@
 @import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
 @import url("http://fonts.googleapis.com/css?family=Source+Code+Pro:400,700");
 
-@import "settings/chartist-web";
+@import "settings/chartist-docs";
 @import "settings/foundation";
 @import "settings/font-awesome-variables";
+
+@import "../settings/chartist-settings";
+@import "../chartist";
 
 @import "compass-mixins/lib/compass/css3";
 @import "foundation/scss/normalize";
 @import "foundation/scss/foundation";
-@import "modules";
+
 @import "base";
-
-@import "chartist/settings";
-@import "chartist/chartist";
-
-@import "highlight";
 @import "landing";
 
-@include embed-font('FontAwesome', 'fontawesome-webfont');
+@import "highlight";
+
+@include embed-font("FontAwesome", "fontawesome-webfont");
 
 .button {
   text-transform: uppercase;
@@ -89,7 +89,7 @@ pre > code {
       vertical-align: middle;
       border-radius: 50%;
       border: 2px solid #F4C63D;
-      background: #F4C63D url("../images/chartist-icon.png") no-repeat;
+      background: #F4C63D url("../../images/chartist-icon.png") no-repeat;
       background-size: 32px 32px;
       background-position: center;
     }

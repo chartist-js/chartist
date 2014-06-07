@@ -20,7 +20,7 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       assemble: {
-        files: ['<%= pkg.config.source %>/docs/**/*.{hbs,yml,json}'],
+        files: ['<%= pkg.config.source %>/site/**/*.{hbs,yml,json}'],
         tasks: ['assemble', 'bowerInstall']
       },
       js: {
@@ -124,16 +124,16 @@ module.exports = function (grunt) {
 
     assemble: {
       options: {
-        helpers: ['<%= pkg.config.source %>/docs/helpers/**/*.js'],
-        partials: ['<%= pkg.config.source %>/docs/partials/**/*.hbs'],
-        layoutdir: '<%= pkg.config.source %>/docs/layouts',
+        helpers: ['<%= pkg.config.source %>/site/helpers/**/*.js'],
+        partials: ['<%= pkg.config.source %>/site/partials/**/*.hbs'],
+        layoutdir: '<%= pkg.config.source %>/site/layouts',
         layoutext: '.hbs',
         layout: ['default'],
-        data: ['<%= pkg.config.source %>/docs/data/**/*.{json,yml}']
+        data: ['<%= pkg.config.source %>/site/data/**/*.{json,yml}']
       },
       pages: {
         expand: true,
-        cwd: '<%= pkg.config.source %>/docs',
+        cwd: '<%= pkg.config.source %>/site',
         src: ['*.hbs'],
         dest: '.tmp'
       }
@@ -291,11 +291,24 @@ module.exports = function (grunt) {
           }
         ]
       },
-      styles: {
-        expand: true,
-        cwd: '<%= pkg.config.source %>/styles',
-        dest: '.tmp/styles/',
-        src: '{,*/}*.css'
+      libdist: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= pkg.config.source %>/styles',
+            dest: 'libdist/scss/',
+            src: [
+              'modules/**/*.scss',
+              'settings/**/*.scss',
+              '*.scss'
+            ]
+          },
+          {
+            dest: 'libdist/',
+            src: 'LICENSE'
+          }
+        ]
+
       }
     },
 
@@ -344,7 +357,7 @@ module.exports = function (grunt) {
           sourceMapIncludeSources: true
         },
         files: {
-          'libdist/chartist-<%= pkg.version %>.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js', 'source/scripts/chartist.pie.js']
+          'libdist/chartist.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js', 'source/scripts/chartist.pie.js']
         }
       }
     },
@@ -355,7 +368,7 @@ module.exports = function (grunt) {
           banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */'
         },
         files: {
-          'libdist/chartist-<%= pkg.version %>.min.css': ['.tmp/styles/chartist.css']
+          'libdist/chartist.min.css': ['.tmp/styles/chartist.css']
         }
       }
     },
@@ -365,7 +378,7 @@ module.exports = function (grunt) {
       dist : {
         src: ['README.md', 'source/scripts/**/*.js', 'test/**/*.js'],
         options: {
-          destination: 'dist/apidoc'
+          destination: 'sitedist/apidoc'
         }
       }
     }
@@ -416,7 +429,8 @@ module.exports = function (grunt) {
 
   grunt.registerTask('libdist', [
     'cssmin:libdist',
-    'uglify:libdist'
+    'uglify:libdist',
+    'copy:libdist'
   ]);
 
   grunt.registerTask('default', [

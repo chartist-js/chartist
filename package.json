@@ -45,7 +45,7 @@
   },
   "config": {
     "source": "source",
-    "dist": "dist",
+    "dist": "sitedist",
     "bowerExclude": [
       "foundation.css",
       "es5-shim.js",
