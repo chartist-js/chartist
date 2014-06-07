@@ -187,21 +187,6 @@ module.exports = function (grunt) {
     },
 
 
-
-    // Renames files for browser caching purposes
-    rev: {
-      dist: {
-        files: {
-          src: [
-            '<%= pkg.config.dist %>/scripts/{,*/}*.js',
-            '<%= pkg.config.dist %>/styles/{,*/}*.css',
-            '<%= pkg.config.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-            '<%= pkg.config.dist %>/styles/fonts/*'
-          ]
-        }
-      }
-    },
-
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
@@ -428,7 +413,6 @@ module.exports = function (grunt) {
     'copy:dist',
     'cssmin:generated',
     'uglify:generated',
-    'rev',
     'usemin',
     'htmlmin',
     'jsdoc'
