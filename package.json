@@ -23,7 +23,6 @@
     "grunt-contrib-uglify": "~0.4.0",
     "grunt-contrib-watch": "~0.5.2",
     "grunt-newer": "~0.5.4",
-    "grunt-rev": "~0.1.0",
     "grunt-svgmin": "~0.2.0",
     "grunt-usemin": "~2.0.0",
     "jshint-stylish": "~0.1.3",
