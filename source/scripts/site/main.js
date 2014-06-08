@@ -10,8 +10,9 @@ $(function() {
       $target = $($element.data('toggleVisible'));
 
     $target.addClass('invisible');
-    $element.on('click', function() {
+    $element.on('click', function(e) {
       $target.toggleClass('invisible');
+      e.preventDefault();
     });
   });
 });
