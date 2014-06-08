@@ -15,6 +15,28 @@ $(function() {
       e.preventDefault();
     });
   });
+
+  $('[data-sticky]').each(function() {
+    var $element = $(this),
+      initialOffset = $element.offset().top,
+      margin = $element.data('sticky') || 0;
+
+    $(window).on('scroll', function() {
+      var scrollTop = $(window).scrollTop();
+
+      if(scrollTop > initialOffset - margin) {
+        $element.css({
+          position: 'relative',
+          top: scrollTop + margin - initialOffset
+        });
+      } else {
+        $element.css({
+          position: '',
+          top: ''
+        });
+      }
+    });
+  });
 });
 
 // Initialize foundation

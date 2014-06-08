@@ -117,7 +117,7 @@ pre > code {
 
     @media #{$medium-up} {
       display: block;
-      @include grid-column(3);
+      @include grid-column(4);
 
       > nav > .side-nav {
         background-color: mix(black, $color-white, 5%);
@@ -146,12 +146,20 @@ pre > code {
         }
       }
     }
+
+    @media #{$large-up} {
+      @include grid-column(3);
+    }
   }
 
   > .content {
     @include grid-column(12);
 
     @media #{$medium-up} {
+      @include grid-column(8);
+    }
+
+    @media #{$large-up} {
       @include grid-column(9);
     }
 
