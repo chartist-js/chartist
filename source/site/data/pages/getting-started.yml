@@ -1,58 +1,108 @@
-side-navigation:
-  - group-name: Introduction
-    links:
-      - text: The Chartist way
-        url: "#"
-      - text: Dependencies
-        url: "#"
-
-  - group-name: Download and set-up
-    links:
-      - text: One, two, three, CSS!
-        url: "#"
-      - text: The SASS way
-        url: "#"
-      - text: Bower
-        url: "#"
-
-  - group-name: Create your first chart
-    links:
-      - text: Choose a container
-        url: "#"
-      - text: Where is the data?
-        url: "#"
-      - text: Pimp my chart!
-        url: "#"
-      - text: Responsive sugar topping
-        url: "#"
-
-documentation-sections:
+sections:
   - title: Introduction
-    text: Coming soon...
-    sub-sections:
-      - title: The Chartist way
-        text: Coming soon...
-      - title: Dependencies
-        text: Coming soon...
+    level: 3
+    items:
+      - type: text
+        data:
+          text: Coming soon...
+      - type: sub-section
+        data:
+          title: The Chartist way
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+      - type: sub-section
+        data:
+          title: Dependencies
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
 
   - title: Download and set-up
-    text: Coming soon...
-    sub-sections:
-      - title: One, two, three, CSS!
-        text: Coming soon...
-      - title: The SASS way
-        text: Coming soon...
-      - title: Bower
-        text: Coming soon...
+    level: 3
+    items:
+      - type: text
+        data:
+          text: Coming soon...
+      - type: sub-section
+        data:
+          title: One, two, three, CSS!
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+      - type: sub-section
+        data:
+          title: The SASS way
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+      - type: sub-section
+        data:
+          title: Bower
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
 
   - title: Create your first chart
-    text: Coming soon...
-    sub-sections:
-      - title: Choose a container
-        text: Coming soon...
-      - title: Where is the data?
-        text: Coming soon...
-      - title: Pimp my chart!
-        text: Coming soon...
-      - title: Responsive sugar topping
-        text: Coming soon...
+    level: 3
+    items:
+      - type: text
+        data:
+          text: Coming soon...
+      - type: sub-section
+        data:
+          title: Choose a container
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+      - type: sub-section
+        data:
+          title: Where is the data?
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+      - type: sub-section
+        data:
+          title: Pimp my chart!
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+      - type: sub-section
+        data:
+          title: Responsive sugar topping
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...
+
+  - title: Advanced
+    level: 3
+    items:
+      - type: text
+        data:
+          text: Coming soon...
+      - type: sub-section
+        data:
+          title: Adding behavior to your charts
+          level: 4
+          items:
+            - type: text
+              data:
+                text: Coming soon...

@@ -1,10 +1,12 @@
 <aside class="side-navigation">
   <nav>
     <ul class="side-nav">
-      {{#each this}}
-        <li class="heading">{{group-name}}</li>
-        {{#each links}}
-          <li><a href="{{url}}">{{text}}</a></li>
+      {{#each page.sections}}
+        <li class="heading">{{title}}</li>
+        {{#each items}}
+          {{#is type 'sub-section'}}
+            <li><a href="#{{#if id}}{{id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
+          {{/is}}
         {{/each}}
       {{/each}}
     </ul>

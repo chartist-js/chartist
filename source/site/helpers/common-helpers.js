@@ -37,6 +37,23 @@ module.exports.register = function (Handlebars, opt, params)  {
 
     slugify: function(str) {
       return slugify(str);
+    },
+
+    partial: function(name, context) {
+      var partial = Handlebars.partials[name];
+
+      // Check if partial is not found, invalid or un-compiled and handle accordingly
+      if(!partial) {
+        throw 'Could not find partial with name "' + name + '".';
+      } else if(typeof partial === 'string') {
+        // Compile partial as its still a string and update Handlebars
+        partial = Handlebars.partials[name] = Handlebars.compile(Handlebars.partials[name]);
+      } else if(typeof partial !== 'function') {
+        throw 'Found unknown type of partial "' + name + '" (' + typeof Handlebars.partials[name] +
+          ') in Handlebars partial Array => ' + Handlebars.partials;
+      }
+
+      return new Handlebars.SafeString(partial(context || this));
     }
   };
 

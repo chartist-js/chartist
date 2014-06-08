@@ -1,5 +1,4 @@
-<a href="#_" class="button" data-toggle-visible="#{{id}}">{{button-label}}</a>
-<pre id="{{id}}">
-  {{! if path is there then we load the file and escape in path otherwise we lookup a file called id.lang (index.html, test.js etc.) }}
-  <code class="{{lang}}">{{#if path}}{{glob path}}{{else}}{{glob (snippetPath id lang)}}{{/if}}</code>
-</pre>
+<a href="#" class="button" data-toggle-visible="#{{id}}">{{button-label}}</a>
+{{! if path is there then we load the file and escape in path otherwise we lookup a file called id.lang (index.html,
+    test.js etc.) }}
+<pre id="{{id}}"><code class="{{lang}}">{{#if path}}{{glob path}}{{else}}{{glob (snippetPath id lang)}}{{/if}}</code></pre>
