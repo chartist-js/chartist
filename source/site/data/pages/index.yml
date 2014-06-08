@@ -38,6 +38,11 @@ sections:
           id: example-line-simple-responsive
           classes: ct-chart
           type: Line
+      - type: code-snippet
+        data:
+          id: simple-responsive-settings
+          lang: js
+          button-label: Show code
       - type: sub-section
         data:
           title: Configuration overrides based on media queries
@@ -51,11 +56,6 @@ sections:
                 title: Cross-browser support
                 classes: hint-cross-browser
                 text: For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.
-            - type: code-snippet
-              data:
-                id: simple-responsive-settings
-                lang: js
-                button-label: Show code
     side-notes:
       - type: text
         data:

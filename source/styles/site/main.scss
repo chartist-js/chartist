@@ -1,20 +1,15 @@
 @import url("http://fonts.googleapis.com/css?family=Oxygen:400,300,700");
 @import url("http://fonts.googleapis.com/css?family=Source+Code+Pro:400,700");
-
 @import "settings/chartist-docs";
 @import "settings/foundation";
 @import "settings/font-awesome-variables";
-
 @import "../settings/chartist-settings";
 @import "../chartist";
-
 @import "compass-mixins/lib/compass/css3";
 @import "foundation/scss/normalize";
 @import "foundation/scss/foundation";
-
 @import "base";
 @import "landing";
-
 @import "highlight";
 
 @include embed-font("FontAwesome", "fontawesome-webfont", "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts");
@@ -89,7 +84,7 @@ pre > code {
       vertical-align: middle;
       border-radius: 50%;
       border: 2px solid #F4C63D;
-      background: #F4C63D url("../../images/chartist-icon.png") no-repeat;
+      background: #F4C63D url("../images/chartist-icon.png") no-repeat;
       background-size: 32px 32px;
       background-position: center;
     }
@@ -105,10 +100,10 @@ pre > code {
 
   > header {
     @include grid-column(12);
-    margin-top: rem-calc(nth($modular-scale, 8));
+    margin-top: rem-calc(nth($modular-scale, 5));
 
     .page-content & {
-      margin-bottom: rem-calc(nth($modular-scale, 5));
+      margin-bottom: rem-calc(nth($modular-scale, 8));
     }
   }
 
@@ -119,36 +114,36 @@ pre > code {
       display: block;
       @include grid-column(4);
 
-      > nav > .side-nav {
-        background-color: mix(black, $color-white, 5%);
-        box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+      > nav {
+        max-width: 250px;
 
-        > .heading {
-          font-size: rem-calc(nth($modular-scale, 4));
-          text-transform: uppercase;
-          font-weight: 600;
-          margin-top: rem-calc(nth($modular-scale, 7));
-          margin-bottom: rem-calc(nth($modular-scale, 4));
-          color: $color-black;
+        > .side-nav {
+          background-color: mix(black, $color-white, 5%);
+          box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
 
-          &:first-child {
-            margin-top: 0;
+          > .heading {
+            font-size: rem-calc(nth($modular-scale, 4));
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: rem-calc(nth($modular-scale, 7));
+            margin-bottom: rem-calc(nth($modular-scale, 4));
+            color: $color-black;
+
+            &:first-child {
+              margin-top: 0;
+            }
           }
-        }
 
-        > li:not(.heading) > a {
-          text-indent: -0.8rem;
-          margin-left: 0.8rem;
+          > li:not(.heading) > a {
+            text-indent: -0.8rem;
+            margin-left: 0.8rem;
 
-          &:before {
-            content: "\2013\00A0";
+            &:before {
+              content: "\2013\00A0";
+            }
           }
         }
       }
-    }
-
-    @media #{$large-up} {
-      @include grid-column(3);
     }
   }
 
@@ -159,19 +154,15 @@ pre > code {
       @include grid-column(8);
     }
 
-    @media #{$large-up} {
-      @include grid-column(9);
-    }
-
     > .documentation-section {
       @include grid-row(nest);
 
       margin-top: rem-calc(nth($modular-scale, 4));
       margin-bottom: rem-calc(nth($modular-scale, 6));
 
-    &:first-child {
-      margin-top: 0;
-    }
+      &:first-child {
+        margin-top: 0;
+      }
 
       @media #{$medium-up} {
         margin-top: rem-calc(nth($modular-scale, 6));
