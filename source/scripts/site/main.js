@@ -40,4 +40,8 @@ $(function() {
 });
 
 // Initialize foundation
-$(document).foundation();
+$(document).foundation({
+  topbar: {
+    scrolltop: false
+  }
+});
