@@ -1,49 +1,7 @@
 sections:
-  - title: Introduction
-    level: 3
-    items:
-      - type: text
-        data:
-          text: Coming soon...
-      - type: sub-section
-        data:
-          title: The Chartist way
-          level: 4
-          items:
-            - type: text
-              data:
-                text: Coming soon...
-      - type: sub-section
-        data:
-          title: Dependencies
-          level: 4
-          items:
-            - type: text
-              data:
-                text: Coming soon...
-
   - title: Download and set-up
     level: 3
     items:
-      - type: text
-        data:
-          text: Coming soon...
-      - type: sub-section
-        data:
-          title: One, two, three, CSS!
-          level: 4
-          items:
-            - type: text
-              data:
-                text: Coming soon...
-      - type: sub-section
-        data:
-          title: The SASS way
-          level: 4
-          items:
-            - type: text
-              data:
-                text: Coming soon...
       - type: sub-section
         data:
           title: Bower
@@ -51,7 +9,66 @@ sections:
           items:
             - type: text
               data:
-                text: Coming soon...
+                text: 'The easiest way to get Chartist.js is by using <a href="http://bower.io/" target="_blank">bower</a>:'
+            - type: code
+              data:
+                lang: bash
+                code: bower install chartist
+            - type: text
+              data:
+                text: The Chartist.js bower package contains the JavaScript library, CSS as well as the SASS (SCSS) files. You can then integrate the desired dependencies in your project and start using it immediately.
+
+      - type: sub-section
+        data:
+          title: One, two, three, CSS!
+          level: 4
+          items:
+            - type: text
+              data:
+                text: The fastest way to get started is by using the Chartist.js CSS files. The CSS is compiled from the SASS files with de default class names which are also configured by default in the JavaScript library. You can then override the default styles or modify the CSS file, however, for customization it's recommended to use the SASS version of Chartist.js.
+            - type: code-snippet
+              data:
+                id: simple-start
+                lang: html
+
+      - type: sub-section
+        data:
+          title: The SASS way
+          level: 4
+          items:
+            - type: text
+              data:
+                text: If you like to customize your charts you can either remove the CSS fully and write your own classes using the Chartist.js SASS mixins or you just use the Chartist.js SASS settings file to customize the look and feel of your charts.
+            - type: text
+              data:
+                text: Styling inline SVG with CSS is a breeze and you should also consider writing your own classes for your charts and using the SASS mixins. You can read more about using the SASS mixins in the <a href="#advanced">advanced</a> section.
+            - type: text
+              data:
+                text: To customize the style of your charts using the SASS settings file you should copy the settings file to your own SASS folder.
+            - type: code
+              data:
+                lang: bash
+                code: cp bower_components/chartist/libdist/scss/settings/_chartist-settings.scss styles
+            - type: text
+              data:
+                text: Then just import your copy of the settings file before you import the chartist.scss file.
+            - type: code-snippet
+              data:
+                id: custom-include
+                lang: scss
+            - type: heading
+              data:
+                level: 5
+                title: Default settings
+            - type: text
+              data:
+                text: The settings file contains all relevant settings used in the mixins and while generating the default classes. You can change there settings to get all styles generated with your own styles.
+            - type: code-snippet
+              data:
+                id: default-sass-settings
+                button: Show default settings
+                path: source/styles/settings/_chartist-settings.scss
+                lang: scss
 
   - title: Create your first chart
     level: 3

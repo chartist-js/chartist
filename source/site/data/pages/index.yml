@@ -42,7 +42,7 @@ sections:
         data:
           id: simple-responsive-settings
           lang: js
-          button-label: Show code
+          button: Show code
       - type: sub-section
         data:
           title: Configuration overrides based on media queries
