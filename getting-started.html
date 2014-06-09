@@ -4,7 +4,69 @@
 <html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - Getting started</title><meta name="description" content="Learn how to use Chartist.js"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><!--[if lt IE 9]>
 <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
   your browser</a> to improve your experience.</p>
-<![endif]--><section class="page-content getting-started"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="/">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="#">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="#">API Documentation</a></li><li><a href="#">Demos</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Getting started</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Introduction</li><li><a href="#">The Chartist way</a></li><li><a href="#">Dependencies</a></li><li class="heading">Download and set-up</li><li><a href="#">One, two, three, CSS!</a></li><li><a href="#">The SASS way</a></li><li><a href="#">Bower</a></li><li class="heading">Create your first chart</li><li><a href="#">Choose a container</a></li><li><a href="#">Where is the data?</a></li><li><a href="#">Pimp my chart!</a></li><li><a href="#">Responsive sugar topping</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3 id="introduction">Introduction</h3></header><div class="content"><p>Coming soon...</p><h4 id="the-chartist-way">The Chartist way</h4><p>Coming soon...</p><h4 id="dependencies">Dependencies</h4><p>Coming soon...</p></div></section><section class="documentation-section full"><header><h3 id="download-and-setup">Download and set-up</h3></header><div class="content"><p>Coming soon...</p><h4 id="one-two-three-css">One, two, three, CSS!</h4><p>Coming soon...</p><h4 id="the-sass-way">The SASS way</h4><p>Coming soon...</p><h4 id="bower">Bower</h4><p>Coming soon...</p></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>Coming soon...</p><h4 id="choose-a-container">Choose a container</h4><p>Coming soon...</p><h4 id="where-is-the-data">Where is the data?</h4><p>Coming soon...</p><h4 id="pimp-my-chart">Pimp my chart!</h4><p>Coming soon...</p><h4 id="responsive-sugar-topping">Responsive sugar topping</h4><p>Coming soon...</p></div></section></div></article></section><script>(function (i, s, o, g, r, a, m) {
+<![endif]--><section class="page-content getting-started"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/libdist">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="#">API Documentation</a></li><li><a href="#">Demos</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Getting started</h2></header><aside class="side-navigation" data-sticky="100"><nav><ul class="side-nav"><li class="heading">Download and set-up</li><li><a href="#bower">Bower</a></li><li><a href="#one-two-three-css">One, two, three, CSS!</a></li><li><a href="#the-sass-way">The SASS way</a></li><li class="heading">Create your first chart</li><li><a href="#choose-a-container">Choose a container</a></li><li><a href="#where-is-the-data">Where is the data?</a></li><li><a href="#pimp-my-chart">Pimp my chart!</a></li><li><a href="#responsive-sugar-topping">Responsive sugar topping</a></li><li class="heading">Advanced</li><li><a href="#adding-behavior-to-your-charts">Adding behavior to your charts</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3 id="download-and-setup">Download and set-up</h3></header><div class="content"><div class="sub-section"><h4 id="bower">Bower</h4><p>The easiest way to get Chartist.js is by using <a href="http://bower.io/" target="_blank">bower</a>:</p><pre><code class="bash">bower install chartist</code></pre><p>The Chartist.js bower package contains the JavaScript library, CSS as well as the SASS (SCSS) files. You can then integrate the desired dependencies in your project and start using it immediately.</p></div><div class="sub-section"><h4 id="one-two-three-css">One, two, three, CSS!</h4><p>The fastest way to get started is by using the Chartist.js CSS files. The CSS is compiled from the SASS files with de default class names which are also configured by default in the JavaScript library. You can then override the default styles or modify the CSS file, however, for customization it's recommended to use the SASS version of Chartist.js.</p><pre id="simple-start"><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;bower_components/chartist/libdist/chartist.min.css&quot;&gt;
+    &lt;script async src=&quot;bower_components/chartist/libdist/chartist.min.js&quot;&gt;&lt;/script&gt;
+  &lt;/head&gt;
+&lt;/html&gt;</code></pre></div><div class="sub-section"><h4 id="the-sass-way">The SASS way</h4><p>If you like to customize your charts you can either remove the CSS fully and write your own classes using the Chartist.js SASS mixins or you just use the Chartist.js SASS settings file to customize the look and feel of your charts.</p><p>Styling inline SVG with CSS is a breeze and you should also consider writing your own classes for your charts and using the SASS mixins. You can read more about using the SASS mixins in the <a href="#advanced">advanced</a> section.</p><p>To customize the style of your charts using the SASS settings file you should copy the settings file to your own SASS folder.</p><pre><code class="bash">cp bower_components/chartist/libdist/scss/settings/_chartist-settings.scss styles</code></pre><p>Then just import your copy of the settings file before you import the chartist.scss file.</p><pre id="custom-include"><code class="scss">@import &quot;_my-chartist-settings.scss&quot;;
+@import &quot;chartist/libdist/scss/chartist.scss&quot;;</code></pre><h5 id="default-settings">Default settings</h5><p>The settings file contains all relevant settings used in the mixins and while generating the default classes. You can change there settings to get all styles generated with your own styles.</p><a href="#" class="button" data-toggle-visible="#default-sass-settings">Show default settings</a><pre id="default-sass-settings"><code class="scss">// Scales for responsive SVG containers
+$ct-scales: ((3/4), (1/1.618), (9/16), 1, (1/2), (1/3), (1/4)) !default;
+$ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-square, ct-octave, ct-major-twelfth, ct-double-octave) !default;
+
+// Class names to be used when generating CSS
+$ct-class-chart: ct-chart !default;
+$ct-class-label: ct-label !default;
+$ct-class-series: ct-series !default;
+$ct-class-line: ct-line !default;
+$ct-class-point: ct-point !default;
+$ct-class-bar: ct-bar !default;
+$ct-class-slice: ct-slice !default;
+$ct-class-donut: ct-donut !default;
+$ct-class-grid: ct-grid !default;
+$ct-class-vertical: ct-vertical !default;
+$ct-class-horizontal: ct-horizontal !default;
+
+// Container ratio
+$ct-container-ratio: (1/1.618) !default;
+
+// Text styles for labels
+$ct-text-color: rgba(0, 0, 0, 0.4) !default;
+$ct-text-size: 0.75rem !default;
+
+// Grid styles
+$ct-grid-color: rgba(0, 0, 0, 0.2) !default;
+$ct-grid-dasharray: 2px !default;
+$ct-grid-width: 1px !default;
+
+// Line chart properties
+$ct-line-width: 4px !default;
+$ct-line-dasharray: false !default;
+$ct-point-size: 10px !default;
+// Line chart point, can be either round or square
+$ct-point-shape: round !default;
+
+// Bar chart bar width
+$ct-bar-width: 10px !default;
+
+// Donut width (If donut width is to big it can cause issues where the shape gets distorted)
+$ct-donut-width: 60px !default;
+
+// If set to true it will include the default classes and generate CSS output. If you&#x27;re planning to use the mixins you
+// should set this property to false
+$ct-include-classes: true !default;
+
+// If this is set to true the CSS will contain colored series. You can extend or change the color with the
+// properties below
+$ct-include-colored-series: $ct-include-classes !default;
+
+// If set to true this will include all responsive container variations using the scales defined at the top of the script
+$ct-include-alternative-responsive-containers: $ct-include-classes !default;
+
+// Series names and colors. This can be extended or customized as desired. Just add more series and colors.
+$ct-series-names: (a, b, c, d) !default;
+$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;</code></pre></div></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>Coming soon...</p><div class="sub-section"><h4 id="choose-a-container">Choose a container</h4><p>Coming soon...</p></div><div class="sub-section"><h4 id="where-is-the-data">Where is the data?</h4><p>Coming soon...</p></div><div class="sub-section"><h4 id="pimp-my-chart">Pimp my chart!</h4><p>Coming soon...</p></div><div class="sub-section"><h4 id="responsive-sugar-topping">Responsive sugar topping</h4><p>Coming soon...</p></div></div></section><section class="documentation-section full"><header><h3 id="advanced">Advanced</h3></header><div class="content"><p>Coming soon...</p><div class="sub-section"><h4 id="adding-behavior-to-your-charts">Adding behavior to your charts</h4><p>Coming soon...</p></div></div></section></div></article></section><script>(function (i, s, o, g, r, a, m) {
     i['GoogleAnalyticsObject'] = r;
     i[r] = i[r] || function () {
       (i[r].q = i[r].q || []).push(arguments)
