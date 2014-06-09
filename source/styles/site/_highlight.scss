@@ -76,7 +76,8 @@ Chartist style - Licensed under WTFPL by Gion Kunz https://github.com/gionkunz/c
 .apache .hljs-cbracket,
 .tex .hljs-command,
 .hljs-prompt,
-.hljs-number {
+.hljs-number,
+.hljs-hexcolor {
   color: $color-yellow;
 }
 

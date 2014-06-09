@@ -34,7 +34,7 @@
     margin: 0 auto;
 
     > figure {
-      @include responsive-svg-container();
+      @include ct-responsive-svg-container($ratio: (1/1));
     }
   }
 

@@ -1,3 +1,8 @@
+// Scales for responsive SVG containers
+$ct-scales: ((3/4), (1/1.618), (9/16), 1, (1/2), (1/3), (1/4)) !default;
+$ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-square, ct-octave, ct-major-twelfth, ct-double-octave) !default;
+
+// Class names to be used when generating CSS
 $ct-class-chart: ct-chart !default;
 $ct-class-label: ct-label !default;
 $ct-class-series: ct-series !default;
@@ -10,15 +15,42 @@ $ct-class-grid: ct-grid !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
 
-$ct-class-thin: ct-thin !default;
-$ct-class-thick: ct-thick !default;
+// Container ratio
+$ct-container-ratio: (1/1.618) !default;
 
-$ct-text-color: #222222 !default;
+// Text styles for labels
+$ct-text-color: rgba(0, 0, 0, 0.4) !default;
 $ct-text-size: 0.75rem !default;
 
-$ct-include-classes: true !default;
-$ct-include-colored-series: $ct-include-classes !default;
-$ct-include-responsive-containers: $ct-include-classes !default;
+// Grid styles
+$ct-grid-color: rgba(0, 0, 0, 0.2) !default;
+$ct-grid-dasharray: 2px !default;
+$ct-grid-width: 1px !default;
 
+// Line chart properties
+$ct-line-width: 4px !default;
+$ct-line-dasharray: false !default;
+$ct-point-size: 10px !default;
+// Line chart point, can be either round or square
+$ct-point-shape: round !default;
+
+// Bar chart bar width
+$ct-bar-width: 10px !default;
+
+// Donut width (If donut width is to big it can cause issues where the shape gets distorted)
+$ct-donut-width: 60px !default;
+
+// If set to true it will include the default classes and generate CSS output. If you're planning to use the mixins you
+// should set this property to false
+$ct-include-classes: true !default;
+
+// If this is set to true the CSS will contain colored series. You can extend or change the color with the
+// properties below
+$ct-include-colored-series: $ct-include-classes !default;
+
+// If set to true this will include all responsive container variations using the scales defined at the top of the script
+$ct-include-alternative-responsive-containers: $ct-include-classes !default;
+
+// Series names and colors. This can be extended or customized as desired. Just add more series and colors.
 $ct-series-names: (a, b, c, d) !default;
 $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;

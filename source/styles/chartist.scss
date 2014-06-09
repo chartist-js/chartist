@@ -1,34 +1,7 @@
-@import 'modules';
+@import "modules";
+@import "settings/chartist-settings";
 
-$ct-scales: ((3/4), (1/1.618), (9/16), 1, (1/2), (1/3), (1/4));
-$ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-square, ct-octave, major-twelfth, double-octave);
-
-$ct-class-chart: ct-chart !default;
-$ct-class-label: ct-label !default;
-$ct-class-series: ct-series !default;
-$ct-class-line: ct-line !default;
-$ct-class-point: ct-point !default;
-$ct-class-bar: ct-bar !default;
-$ct-class-slice: ct-slice !default;
-$ct-class-donut: ct-donut !default;
-$ct-class-grid: ct-grid !default;
-$ct-class-vertical: ct-vertical !default;
-$ct-class-horizontal: ct-horizontal !default;
-
-$ct-class-thin: ct-thin !default;
-$ct-class-thick: ct-thick !default;
-
-$ct-text-color: #222222 !default;
-$ct-text-size: 0.75rem !default;
-
-$ct-include-classes: true !default;
-$ct-include-colored-series: $ct-include-classes !default;
-$ct-include-responsive-containers: $ct-include-classes !default;
-
-$ct-series-names: (a, b, c, d) !default;
-$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
-
-@mixin responsive-svg-container($width: 100%, $ratio: (1/1)) {
+@mixin ct-responsive-svg-container($width: 100%, $ratio: $ct-container-ratio) {
   display: block;
   position: relative;
   width: $width;
@@ -45,72 +18,102 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;
   }
 }
 
-@if $ct-include-classes {
-  .#{$ct-class-chart} {
-    @include responsive-svg-container($ratio: (1/1.618));
-    margin-bottom: 1rem;
+@mixin ct-chart-label($ct-text-color: $ct-text-color, $ct-text-size: $ct-text-size) {
+  fill: $ct-text-color;
+  font-size: $ct-text-size;
+}
 
-    @if $ct-include-responsive-containers {
-      @for $i from 0 to length($ct-scales-names) {
-        &.#{nth($ct-scales-names, $i + 1)} {
-          @include responsive-svg-container($ratio: nth($ct-scales, $i + 1));
+@mixin ct-chart-grid($ct-grid-color: $ct-grid-color, $ct-grid-width: $ct-grid-width, $ct-grid-dasharray: $ct-grid-dasharray) {
+  stroke: $ct-grid-color;
+  stroke-width: $ct-grid-width;
+
+  @if ($ct-grid-dasharray) {
+    stroke-dasharray: $ct-grid-dasharray;
+  }
+}
+
+@mixin ct-chart-point($ct-point-size: $ct-point-size, $ct-point-shape: $ct-point-shape) {
+  stroke-width: $ct-point-size;
+  stroke-linecap: $ct-point-shape;
+}
+
+@mixin ct-chart-line($ct-line-width: $ct-line-width, $ct-line-dasharray: $ct-line-dasharray) {
+  fill: none;
+  stroke-width: $ct-line-width;
+
+  @if ($ct-line-dasharray) {
+    stroke-dasharray: $ct-line-dasharray;
+  }
+}
+
+@mixin ct-chart-bar($ct-bar-width: $ct-bar-width) {
+  fill: none;
+  stroke-width: $ct-bar-width;
+}
+
+@mixin ct-chart-donut($ct-donut-width: $ct-donut-width) {
+  fill: none;
+  stroke-width: $ct-donut-width;
+}
+
+@mixin ct-chart-series-color($color) {
+  .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice}.#{$ct-class-donut} {
+    stroke: $color;
+  }
+
+  .#{$ct-class-slice}:not(.#{$ct-class-donut}) {
+    fill: $color;
+  }
+}
+
+@mixin ct-chart($ct-container-ratio: $ct-container-ratio, $ct-text-color: $ct-text-color, $ct-text-size: $ct-text-size, $ct-grid-color: $ct-grid-color, $ct-grid-width: $ct-grid-width, $ct-grid-dasharray: $ct-grid-dasharray, $ct-point-size: $ct-point-size, $ct-point-shape: $ct-point-shape, $ct-line-width: $ct-line-width, $ct-bar-width: $ct-bar-width, $ct-donut-width: $ct-donut-width, $ct-series-names: $ct-series-names, $ct-series-colors: $ct-series-colors) {
+  @include ct-responsive-svg-container($ct-container-ratio);
+
+  .#{$ct-class-label} {
+    @include ct-chart-label($ct-text-color, $ct-text-size);
+  }
+
+  .#{$ct-class-grid} {
+    @include ct-chart-grid($ct-grid-color, $ct-grid-width, $ct-grid-dasharray);
+  }
+
+  .#{$ct-class-point} {
+    @include ct-chart-point($ct-point-size, $ct-point-shape);
+  }
+
+  .#{$ct-class-line} {
+    @include ct-chart-line($ct-line-width);
+  }
+
+  .#{$ct-class-bar} {
+    @include ct-chart-bar($ct-bar-width);
+  }
+
+  .#{$ct-class-slice}.#{$ct-class-donut} {
+    @include ct-chart-donut($ct-donut-width);
+  }
+
+  @if $ct-include-colored-series {
+    .#{$ct-class-series} {
+      @for $i from 0 to length($ct-series-names) {
+        &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
+          $color: nth($ct-series-colors, $i + 1);
+
+          @include ct-chart-series-color($color);
         }
       }
     }
+  }
+}
 
-    .#{$ct-class-label} {
-      fill: rgba(0, 0, 0, 0.4);
-      font-size: $ct-text-size;
-    }
+@if $ct-include-classes {
+  .#{$ct-class-chart} {
+    @include ct-chart();
 
-    .#{$ct-class-grid} {
-      stroke: rgba(0, 0, 0, 0.2);
-      stroke-dasharray: 2px;
-      stroke-width: 1px;
-    }
-
-    .#{$ct-class-point} {
-      stroke-width: 10px;
-      stroke-linecap: round;
-    }
-
-    .#{$ct-class-line} {
-      fill: none;
-      stroke-width: 4px;
-    }
-
-    .#{$ct-class-bar} {
-      fill: none;
-      stroke-width: 10px;
-    }
-
-    .#{$ct-class-slice}.#{$ct-class-donut} {
-      fill: none;
-      stroke-width: 60px;
-    }
-
-    .#{$ct-class-thin} {
-      stroke-width: 5px;
-    }
-
-    .#{$ct-class-thick} {
-      stroke-width: 20px;
-    }
-
-    @if $ct-include-colored-series {
-      .#{$ct-class-series} {
-        @for $i from 0 to length($ct-series-names) {
-          &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
-            $color: nth($ct-series-colors, $i + 1);
-
-            .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice}.#{$ct-class-donut} {
-              stroke: $color;
-            }
-
-            .#{$ct-class-slice}:not(.#{$ct-class-donut}) {
-              fill: $color;
-            }
-          }
+    @if $ct-include-alternative-responsive-containers {
+      @for $i from 0 to length($ct-scales-names) {
+        &.#{nth($ct-scales-names, $i + 1)} {
+          @include ct-responsive-svg-container($ratio: nth($ct-scales, $i + 1));
         }
       }
     }
