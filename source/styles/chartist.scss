@@ -67,8 +67,6 @@
 }
 
 @mixin ct-chart($ct-container-ratio: $ct-container-ratio, $ct-text-color: $ct-text-color, $ct-text-size: $ct-text-size, $ct-grid-color: $ct-grid-color, $ct-grid-width: $ct-grid-width, $ct-grid-dasharray: $ct-grid-dasharray, $ct-point-size: $ct-point-size, $ct-point-shape: $ct-point-shape, $ct-line-width: $ct-line-width, $ct-bar-width: $ct-bar-width, $ct-donut-width: $ct-donut-width, $ct-series-names: $ct-series-names, $ct-series-colors: $ct-series-colors) {
-  @include ct-responsive-svg-container($ct-container-ratio);
-
   .#{$ct-class-label} {
     @include ct-chart-label($ct-text-color, $ct-text-size);
   }
