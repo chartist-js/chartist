@@ -65,7 +65,7 @@ sections:
                 text: The settings file contains all relevant variables used in the mixins and while generating the default classes. You can simply change the settings for styling your own charts. If you want to override certain settings based on state or pseeudo selectors, you can use the individual mixins to only override specific styles.
             - type: text
               data:
-                text: Take a look at the settings to see how to customize the style of the defalt Chartist.js classes.
+                text: Take a look at the settings to see how to customize the style of the defalt Chartist.js class selectors.
             - type: code-snippet
               data:
                 id: default-sass-settings
@@ -78,23 +78,27 @@ sections:
     items:
       - type: text
         data:
-          text: Coming soon...
+          text: In this section you'll go through a simple example of how to use Chartist.js in your project. You'll learn the default stages you go through when creating and customizing a basic line chart. If you'd like to see more in depth and advanced examples you should check out the <a href="#advanced">advanced</a> section or the <a href="demos.html">demo page</a>.
       - type: sub-section
         data:
-          title: Choose a container
+          title: As simple as it can get
           level: 4
           items:
             - type: text
               data:
-                text: Coming soon...
+                text: In order to create a simple line chart you only need to have a container element and initialize Chartist.js passing in the selector for the container element. Give the container the class ct-chart so that it will get the default styles.
+            - type: code-snippet
+              data:
+                id: simple-start-fixed-chart
+                lang: js
       - type: sub-section
         data:
-          title: Where is the data?
+          title: The configuration of your chart
           level: 4
           items:
             - type: text
               data:
-                text: Coming soon...
+                text: Chartist.js is built very flexible and almost everything within your charts can be configured. In the default settings (that you can check in the <a href="apidoc/">API Documentation</a>) you'll get some predefined defaults
       - type: sub-section
         data:
           title: Pimp my chart!
