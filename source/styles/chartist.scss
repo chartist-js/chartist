@@ -5,8 +5,21 @@
   display: block;
   position: relative;
   width: $width;
-  padding-bottom: 100% * $ratio;
-  overflow: hidden;
+
+  &:before {
+    display: block;
+    float: left;
+    content: "";
+    width: 0;
+    height: 0;
+    padding-bottom: $ratio * 100%;
+  }
+
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 
   > svg {
     display: block;
