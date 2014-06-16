@@ -16,7 +16,7 @@
           showGrid: true,
           labelAlign: 'right',
           labelInterpolationFnc: Chartist.noop,
-          scaleMinSpace: 20
+          scaleMinSpace: 30
         },
         width: undefined,
         height: undefined,
