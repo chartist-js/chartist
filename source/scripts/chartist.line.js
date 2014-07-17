@@ -89,7 +89,7 @@
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
         var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, 0),
-          path = 'M' + p.x + ',' + p.y + ' ' + (options.lineSmooth ? 'R' : 'L'),
+          path = [p.x, p.y],
           point;
 
         // First dot we need to add before loop
@@ -103,19 +103,33 @@
         // First point is created, continue with rest
         for (var j = 1; j < data.series[i].data.length; j++) {
           p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j);
-          path += ' ' + p.x + ',' + p.y;
+          path.push(p.x, p.y);
 
           //If we should show points we need to create them now to avoid secondary loop
           // Small offset for Firefox to render squares correctly
           if (options.showPoint) {
-            point = paper.line(p.x, p.y, p.x  + 0.01, p.y);
+            point = paper.line(p.x, p.y, p.x + 0.01, p.y);
             point.node.setAttribute('class', options.classNames.point);
             seriesGroups[i].append(point);
           }
         }
 
         if (options.showLine) {
-          var snapPath = paper.path(path);
+          var pt = 'M' + path[0] + ',' + path[1] + ' ';
+
+          if (options.lineSmooth) {
+            // If smoothed path convert catmull rom to bezier paths
+            var catmull = Chartist.catmullRom2bezier(path);
+            for(var k = 0; k < catmull.length; k++) {
+              pt += 'C' + catmull[k].join();
+            }
+          } else {
+            for(var l = 3; l < path.length; l += 2) {
+              pt += 'L ' + path[l - 1] + ',' + path[l];
+            }
+          }
+
+          var snapPath = paper.path(pt);
           snapPath.node.setAttribute('class', options.classNames.line);
           seriesGroups[i].prepend(snapPath);
         }
