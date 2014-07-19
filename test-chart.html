@@ -1,0 +1,40 @@
+<!doctype html><!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - Getting started</title><meta name="description" content="Learn how to use Chartist.js"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><!--[if lt IE 9]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+  your browser</a> to improve your experience.</p>
+<![endif]--><section class="page-content getting-started"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/libdist">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="#">API Documentation</a></li><li><a href="#">Demos</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Getting started</h2></header><aside class="side-navigation" data-sticky="100"><nav><ul class="side-nav"></ul></nav></aside><div class="content"><div class="ct-chart"></div><script>window.addEventListener('load', function() {
+    Chartist.Line('.ct-chart',
+        {
+          labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+          series: [
+            {
+              data: [5, 2, 4, 2, 0]
+            },
+            {
+              data: [3, 4, 3, 1, 4]
+            }
+          ]
+        },
+        {
+          width: 300,
+          height: 200
+        }
+    );
+  });</script></div></article></section><script>(function (i, s, o, g, r, a, m) {
+    i['GoogleAnalyticsObject'] = r;
+    i[r] = i[r] || function () {
+      (i[r].q = i[r].q || []).push(arguments)
+    }, i[r].l = 1 * new Date();
+    a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0];
+    a.async = 1;
+    a.src = g;
+    m.parentNode.insertBefore(a, m)
+  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+  ga('create', 'UA-XXXXX-X');
+  ga('send', 'pageview');</script><!--[if lt IE 9]>
+<script src="scripts/oldie.js"></script>
+<![endif]--><script src="scripts/vendor.js"></script><script src="scripts/scripts.js"></script>

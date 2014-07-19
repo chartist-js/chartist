@@ -1,0 +1,35 @@
+{
+  "name": "svg.js",
+  "version": "1.0.0-rc.9",
+  "homepage": "http://svgjs.com/",
+  "authors": [
+    "Wout Fierens <wout@impinc.co.uk>"
+  ],
+  "description": "A lightweight library for manipulating and animating SVG",
+  "main": "dist/svg.js",
+  "keywords": [
+    "svg",
+    "vector",
+    "graphics"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "spec/",
+    "src/",
+    "Gemfile",
+    "Gemfile.lock",
+    "package.json",
+    "Rakefile"
+  ],
+  "_release": "1.0.0-rc.9",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.0-rc.9",
+    "commit": "adad1d062678522e684bfe5216f63a3f400bd3c9"
+  },
+  "_source": "git://github.com/wout/svg.js.git",
+  "_target": "~1.0.0-rc.9",
+  "_originalSource": "svg.js",
+  "_direct": true
+}
