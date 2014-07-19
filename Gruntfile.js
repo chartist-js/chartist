@@ -352,7 +352,7 @@ module.exports = function (grunt) {
     uglify: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */',
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */',
           sourceMap: true,
           sourceMapIncludeSources: true
         },
@@ -365,7 +365,7 @@ module.exports = function (grunt) {
     cssmin: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the FTWPL license.\n * http://www.wtfpl.net/\n */'
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */'
         },
         files: {
           'libdist/chartist.min.css': ['.tmp/styles/chartist.css']
