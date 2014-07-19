@@ -35,7 +35,7 @@
         }
       },
       currentOptions,
-      paper,
+      draw,
       dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
     function createChart(options) {
@@ -44,16 +44,16 @@
         seriesGroups = [],
         bounds;
 
-      // Create new paper the stage
-      paper = Chartist.createPaper(query, options.width, options.height);
+      // Create new draw object
+      draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(paper, dataArray, options);
+      bounds = Chartist.getBounds(draw, dataArray, options);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
         xAxisOffset += Chartist.calculateLabelOffset(
-          paper,
+          draw,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -64,7 +64,7 @@
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
         yAxisOffset += Chartist.calculateLabelOffset(
-          paper,
+          draw,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -72,69 +72,64 @@
         );
       }
 
-      var chartRect = Chartist.createChartRect(paper, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
       // Start drawing
-      var labels = paper.g(),
-        grid = paper.g();
+      var labels = draw.group(),
+        grid = draw.group();
 
-      Chartist.createXAxis(paper, chartRect, data, grid, labels, options);
-      Chartist.createYAxis(paper, chartRect, bounds, grid, labels, yAxisOffset, options);
+      Chartist.createXAxis(chartRect, data, grid, labels, options);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
 
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = paper.g();
+        seriesGroups[i] = draw.group();
         // Use series class from series data or if not set generate one
-        seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
+        seriesGroups[i].addClass(options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
         var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, 0),
-          path = [p.x, p.y],
+          pathCoordinates = [p.x, p.y],
           point;
 
         // First dot we need to add before loop
         if (options.showPoint) {
           // Small offset for Firefox to render squares correctly
-          point = paper.line(p.x, p.y, p.x + 0.01, p.y);
-          point.node.setAttribute('class', options.classNames.point);
-          seriesGroups[i].append(point);
+          point = seriesGroups[i].line(p.x, p.y, p.x + 0.01, p.y);
+          point.addClass(options.classNames.point);
         }
 
         // First point is created, continue with rest
         for (var j = 1; j < data.series[i].data.length; j++) {
           p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j);
-          path.push(p.x, p.y);
+          pathCoordinates.push(p.x, p.y);
 
           //If we should show points we need to create them now to avoid secondary loop
           // Small offset for Firefox to render squares correctly
           if (options.showPoint) {
-            point = paper.line(p.x, p.y, p.x + 0.01, p.y);
-            point.node.setAttribute('class', options.classNames.point);
-            seriesGroups[i].append(point);
+            point = seriesGroups[i].line(p.x, p.y, p.x + 0.01, p.y);
+            point.addClass(options.classNames.point);
           }
         }
 
         if (options.showLine) {
-          var pt = 'M' + path[0] + ',' + path[1] + ' ';
+          var svgPathString = 'M' + pathCoordinates[0] + ',' + pathCoordinates[1] + ' ';
 
           if (options.lineSmooth) {
             // If smoothed path convert catmull rom to bezier paths
-            var catmull = Chartist.catmullRom2bezier(path);
-            for(var k = 0; k < catmull.length; k++) {
-              pt += 'C' + catmull[k].join();
+            var cr = Chartist.catmullRom2bezier(pathCoordinates);
+            for(var k = 0; k < cr.length; k++) {
+              svgPathString += 'C' + cr[k].join();
             }
           } else {
-            for(var l = 3; l < path.length; l += 2) {
-              pt += 'L ' + path[l - 1] + ',' + path[l];
+            for(var l = 3; l < pathCoordinates.length; l += 2) {
+              svgPathString += 'L ' + pathCoordinates[l - 1] + ',' + pathCoordinates[l];
             }
           }
 
-          var snapPath = paper.path(pt);
-          snapPath.node.setAttribute('class', options.classNames.line);
-          seriesGroups[i].prepend(snapPath);
+          var path = seriesGroups[i].path(svgPathString);
+          path.addClass(options.classNames.line);
         }
-
-        paper.add(seriesGroups[i]);
       }
     }
 

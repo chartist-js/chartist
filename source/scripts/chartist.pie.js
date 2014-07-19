@@ -18,7 +18,7 @@
         donutWidth: 60
       },
       currentOptions,
-      paper,
+      draw,
       dataArray = Chartist.getDataArray(data);
 
     function createChart(options) {
@@ -28,10 +28,10 @@
         totalDataSum,
         startAngle = options.startAngle;
 
-      // Create new paper the stage
-      paper = Chartist.createPaper(query, options.width, options.height);
+      // Create SVG.js draw
+      draw = Chartist.createDraw(query, options.width, options.height);
       // Calculate charting rect
-      chartRect = Chartist.createChartRect(paper, options, 0, 0);
+      chartRect = Chartist.createChartRect(draw, options, 0, 0);
       // Get biggest circle radius possible within chartRect
       radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
       // Calculate total of all series to get reference value or use total reference from optional options
@@ -53,9 +53,9 @@
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = paper.g();
+        seriesGroups[i] = draw.group();
         // Use series class from series data or if not set generate one
-        seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
+        seriesGroups[i].addClass(options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
         var endAngle = startAngle + dataArray[i][0] / totalDataSum * 360;
@@ -81,17 +81,16 @@
         }
 
         // Create the SVG path with snap
-        var path = paper.path(d.join(' '));
+        var path = seriesGroups[i].path(d.join(' '));
 
         // If this is a donut chart we add the donut class, otherwise just a regular slice
-        path.node.setAttribute('class', options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+        path.addClass(options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
 
         if(options.donut === true) {
-          path.node.setAttribute('style', 'stroke-width: ' + (+options.donutWidth) + 'px');
+          path.attr({
+            'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
+          });
         }
-
-        seriesGroups[i].add(path);
-        paper.add(seriesGroups[i]);
 
         // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
         // (except for last slice)

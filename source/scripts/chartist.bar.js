@@ -34,7 +34,7 @@
         }
       },
       currentOptions,
-      paper,
+      draw,
       dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
     function createChart(options) {
@@ -43,16 +43,16 @@
         seriesGroups = [],
         bounds;
 
-      // Create new paper the stage
-      paper = Chartist.createPaper(query, options.width, options.height);
+      // Create new SVG.js draw
+      draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(paper, dataArray, options, null, 0);
+      bounds = Chartist.getBounds(draw, dataArray, options, null, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
         xAxisOffset += Chartist.calculateLabelOffset(
-          paper,
+          draw,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -63,7 +63,7 @@
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
         yAxisOffset += Chartist.calculateLabelOffset(
-          paper,
+          draw,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -71,13 +71,13 @@
         );
       }
 
-      var chartRect = Chartist.createChartRect(paper, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
       // Start drawing
-      var labels = paper.g(),
-        grid = paper.g();
+      var labels = draw.group(),
+        grid = draw.group();
 
-      Chartist.createXAxis(paper, chartRect, data, grid, labels, options);
-      Chartist.createYAxis(paper, chartRect, bounds, grid, labels, yAxisOffset, options);
+      Chartist.createXAxis(chartRect, data, grid, labels, options);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
 
       // Draw the series
       // initialize series groups
@@ -87,9 +87,9 @@
         // Half of the period with between vertical grid lines used to position bars
           periodHalfWidth = chartRect.width() / data.series[i].data.length / 2;
 
-        seriesGroups[i] = paper.g();
+        seriesGroups[i] = draw.group();
         // Use series class from series data or if not set generate one
-        seriesGroups[i].node.setAttribute('class', options.classNames.series + ' ' +
+        seriesGroups[i].addClass(options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
         for(var j = 0; j < data.series[i].data.length; j++) {
@@ -100,12 +100,9 @@
           // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
-          bar = paper.line(p.x, chartRect.y1, p.x, p.y);
-          bar.node.setAttribute('class', options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
-          seriesGroups[i].prepend(bar);
+          bar = seriesGroups[i].line(p.x, chartRect.y1, p.x, p.y);
+          bar.addClass(options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
         }
-
-        paper.add(seriesGroups[i]);
       }
     }
 
