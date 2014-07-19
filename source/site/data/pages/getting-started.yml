@@ -13,7 +13,7 @@ sections:
             - type: code
               data:
                 lang: bash
-                code: bower install chartist
+                code: bower install chartist --save
             - type: text
               data:
                 text: The bower package contains the JavaScript library, CSS as well as the SASS (SCSS) files. You can then integrate the desired dependencies in your project and start using them immediately.
