@@ -4,7 +4,7 @@
   // Export chartist namespace
   var Chartist = window.Chartist = window.Chartist || {};
 
-  Chartist.version = '0.1.3';
+  Chartist.version = '0.1.4';
 
   // Helps to simplify functional style code
   Chartist.noop = function (n) {
