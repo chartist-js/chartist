@@ -73,7 +73,7 @@
       draw.clear();
 
     } else {
-      // Create Snap paper with width and height or use 100% as default
+      // Create svg.js draw with width and height or use 100% as default
       draw = SVG(container).size(width || '100%', height || '100%');
       if (!draw) {
         throw 'Could not instantiate SVG.js!';
