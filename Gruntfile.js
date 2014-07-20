@@ -431,7 +431,7 @@ module.exports = function (grunt) {
     'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
-    'concat',
+    'concat:generated',
     'copy:dist',
     'cssmin:generated',
     'uglify:generated',
