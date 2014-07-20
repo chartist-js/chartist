@@ -70,13 +70,9 @@ $ct-series-names: (a, b, c, d) !default;
 $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;</code></pre></div></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>In this section you'll go through a simple example of how to use Chartist.js in your project. You'll learn the default stages you go through when creating and customizing a basic line chart. If you'd like to see more in depth and advanced examples you should check out the <a href="#advanced">advanced</a> section or the <a href="demos.html">demo page</a>.</p><div class="sub-section"><h4 id="as-simple-as-it-can-get">As simple as it can get</h4><p>In order to create a simple line chart you only need to have a container element and initialize Chartist.js passing in the selector for the container element. Give the container the class ct-chart so that it will get the default styles.</p><pre id="simple-start-fixed-chart"><code class="js">var data = {
   // A labels array that can contain any sort of values
   labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
-  // Our series array that contains series objects
+  // Our series array that contains series objects or in this case series data arrays
   series: [
-    // A series object consists of data and meta information about the series
-    {
-      // Our data array contains numeric data
-      data: [5, 2, 4, 2, 0]
-    }
+    [5, 2, 4, 2, 0]
   ]
 };
 
