@@ -48,34 +48,14 @@
     // Simple pie chart
     'example-gallery-three': {
       data: {
-        series: [
-          {
-            data: [20]
-          },
-          {
-            data: [15]
-          },
-          {
-            data: [40]
-          },
-          {
-            data: [10]
-          }
-        ]
+        series: [20, 15, 40, 10]
       }
     },
 
     // Pie as donut
     'example-gallery-four': {
       data: {
-        series: [
-          {
-            data: [60]
-          },
-          {
-            data: [20]
-          }
-        ]
+        series: [60, 20]
       },
       options: {
         donut: true,

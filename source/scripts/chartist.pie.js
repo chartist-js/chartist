@@ -18,15 +18,15 @@
         donutWidth: 60
       },
       currentOptions,
-      draw,
-      dataArray = Chartist.getDataArray(data);
+      draw;
 
     function createChart(options) {
       var seriesGroups = [],
         chartRect,
         radius,
         totalDataSum,
-        startAngle = options.startAngle;
+        startAngle = options.startAngle,
+        dataArray = Chartist.getDataArray(data);
 
       // Create SVG.js draw
       draw = Chartist.createDraw(query, options.width, options.height);
@@ -36,7 +36,7 @@
       radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
       // Calculate total of all series to get reference value or use total reference from optional options
       totalDataSum = options.total || dataArray.reduce(function(previousValue, currentValue) {
-        return previousValue + currentValue[0];
+        return previousValue + currentValue;
       }, 0);
 
       // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
@@ -58,7 +58,7 @@
         seriesGroups[i].addClass(options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
-        var endAngle = startAngle + dataArray[i][0] / totalDataSum * 360;
+        var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
         // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
         // with Z and use 359.99 degrees
         if(endAngle - startAngle === 360) {
