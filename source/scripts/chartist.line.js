@@ -35,8 +35,7 @@
         }
       },
       currentOptions,
-      draw,
-      dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
+      draw;
 
     function createChart(options) {
       var xAxisOffset,
@@ -48,7 +47,7 @@
       draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, dataArray, options);
+      bounds = Chartist.getBounds(draw, data, options);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
@@ -115,8 +114,9 @@
         if (options.showLine) {
           var svgPathString = 'M' + pathCoordinates[0] + ',' + pathCoordinates[1] + ' ';
 
-          if (options.lineSmooth) {
-            // If smoothed path convert catmull rom to bezier paths
+          // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
+          if (options.lineSmooth && pathCoordinates.length > 4) {
+
             var cr = Chartist.catmullRom2bezier(pathCoordinates);
             for(var k = 0; k < cr.length; k++) {
               svgPathString += 'C' + cr[k].join();

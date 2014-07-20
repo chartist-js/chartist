@@ -34,8 +34,7 @@
         }
       },
       currentOptions,
-      draw,
-      dataArray = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
+      draw;
 
     function createChart(options) {
       var xAxisOffset,
@@ -47,7 +46,7 @@
       draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, dataArray, options, null, 0);
+      bounds = Chartist.getBounds(draw, data, options, null, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
