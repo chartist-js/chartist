@@ -41,13 +41,14 @@
       var xAxisOffset,
         yAxisOffset,
         seriesGroups = [],
-        bounds;
+        bounds,
+        normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
       // Create new draw object
       draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, data, options);
+      bounds = Chartist.getBounds(draw, normalizedData, options);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
@@ -87,7 +88,7 @@
         seriesGroups[i].addClass(options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
-        var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, 0),
+        var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], 0),
           pathCoordinates = [p.x, p.y],
           point;
 
@@ -99,8 +100,8 @@
         }
 
         // First point is created, continue with rest
-        for (var j = 1; j < data.series[i].data.length; j++) {
-          p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j);
+        for (var j = 1; j < normalizedData[i].length; j++) {
+          p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
           pathCoordinates.push(p.x, p.y);
 
           //If we should show points we need to create them now to avoid secondary loop

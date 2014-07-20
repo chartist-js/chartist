@@ -1,13 +1,9 @@
 var data = {
   // A labels array that can contain any sort of values
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-  // Our series array that contains series objects
+  // Our series array that contains series objects or in this case series data arrays
   series: [
-    // A series object consists of data and meta information about the series
-    {
-      // Our data array contains numeric data
-      data: [5, 2, 4, 2, 0]
-    }
+    [5, 2, 4, 2, 0]
   ]
 };
 

@@ -40,13 +40,14 @@
       var xAxisOffset,
         yAxisOffset,
         seriesGroups = [],
-        bounds;
+        bounds,
+        normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
       // Create new SVG.js draw
       draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, data, options, null, 0);
+      bounds = Chartist.getBounds(draw, normalizedData, options, null, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
@@ -84,15 +85,15 @@
         // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
         var biPol = i - (data.series.length - 1) / 2,
         // Half of the period with between vertical grid lines used to position bars
-          periodHalfWidth = chartRect.width() / data.series[i].data.length / 2;
+          periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
 
         seriesGroups[i] = draw.group();
         // Use series class from series data or if not set generate one
         seriesGroups[i].addClass(options.classNames.series + ' ' +
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
 
-        for(var j = 0; j < data.series[i].data.length; j++) {
-          var p = Chartist.projectPoint(chartRect, bounds, data.series[i].data, j),
+        for(var j = 0; j < normalizedData[i].length; j++) {
+          var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
             bar;
 
           // Offset to center bar between grid lines and using bi-polar offset for multiple series

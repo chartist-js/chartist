@@ -91,7 +91,10 @@
     var array = [];
 
     for (var i = 0; i < data.series.length; i++) {
-      array[i] = data.series[i].data;
+      // If the series array contains an object with a data property we will use the property
+      // otherwise the value directly (array or number)
+      array[i] = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ?
+        data.series[i].data : data.series[i];
     }
 
     return array;
@@ -150,11 +153,11 @@
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (draw, data, options, high, low) {
+  Chartist.getBounds = function (draw, normalizedData, options, high, low) {
     var i,
       newMin,
       newMax,
-      bounds = Chartist.getHighLow(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length));
+      bounds = Chartist.getHighLow(normalizedData);
 
     // Overrides of high / low from settings
     bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
