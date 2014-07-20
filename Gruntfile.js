@@ -352,7 +352,7 @@ module.exports = function (grunt) {
     uglify: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */',
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n',
           sourceMap: true,
           sourceMapIncludeSources: true
         },
@@ -365,10 +365,23 @@ module.exports = function (grunt) {
     cssmin: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */'
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n'
         },
         files: {
           'libdist/chartist.min.css': ['.tmp/styles/chartist.css']
+        }
+      }
+    },
+
+    // Concat for uncompressed library js
+    concat: {
+      libdist: {
+        options: {
+          separator: ';',
+          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n'
+        },
+        files: {
+          'libdist/chartist.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js', 'source/scripts/chartist.pie.js']
         }
       }
     },
@@ -430,7 +443,8 @@ module.exports = function (grunt) {
   grunt.registerTask('libdist', [
     'cssmin:libdist',
     'uglify:libdist',
-    'copy:libdist'
+    'copy:libdist',
+    'concat:libdist'
   ]);
 
   grunt.registerTask('default', [
