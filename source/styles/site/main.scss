@@ -182,6 +182,10 @@ pre > code {
         @include grid-column(12);
 
         @media #{$medium-up} {
+          @include grid-column(8);
+        }
+
+        @media #{$large-up} {
           @include grid-column(9);
         }
 
@@ -200,6 +204,10 @@ pre > code {
         @include grid-column(12);
 
         @media #{$medium-up} {
+          @include grid-column(4);
+        }
+
+        @media #{$large-up} {
           @include grid-column(3);
         }
       }

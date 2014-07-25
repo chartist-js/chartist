@@ -160,6 +160,33 @@
           }
         }]
       ]
+    },
+
+    // Simple settings override
+    'simple-configuration-chart': {
+      data: {
+        labels: ['1', '2', '3', '4', '5', '6'],
+        series: [
+          [5, 4, 3, 7, 5, 10],
+          [3, 2, 9, 5, 4, 6],
+          [2, 1, 2.8, 4, 3, 5]
+        ]
+      },
+      options: {
+        showPoint: false,
+        lineSmooth: false,
+        axisX: {
+          showGrid: false,
+          showLabel: false
+        },
+        axisY: {
+          offset: 40,
+          labelInterpolationFnc: function(value) {
+            return '£' + value + 'm';
+          }
+        }
+      },
+      responsiveOptions: []
     }
   };
 

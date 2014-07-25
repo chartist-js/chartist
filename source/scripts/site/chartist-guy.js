@@ -5,6 +5,7 @@
   var optionsChartistGuy = {
     width: 195,
     height: 137,
+    chartPadding: 10,
     axisX: {
       offset: 0,
       showLabel: true,
