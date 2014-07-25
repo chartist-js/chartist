@@ -1,4 +1,4 @@
-/* Chartist.js 0.1.4
+/* Chartist.js 0.1.5
  * Copyright © 2014 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -9,7 +9,7 @@
   // Export chartist namespace
   var Chartist = window.Chartist = window.Chartist || {};
 
-  Chartist.version = '0.1.4';
+  Chartist.version = '0.1.5';
 
   // Helps to simplify functional style code
   Chartist.noop = function (n) {
@@ -138,7 +138,7 @@
     var i,
       j,
       highLow = {
-        high: Number.MIN_VALUE,
+        high: -Number.MAX_VALUE,
         low: Number.MAX_VALUE
       };
 
@@ -158,7 +158,7 @@
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (draw, normalizedData, options, high, low) {
+  Chartist.getBounds = function (draw, normalizedData, options, referenceValue) {
     var i,
       newMin,
       newMax,
@@ -168,9 +168,13 @@
     bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
     bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
 
-    // Overrides of high / low from function call (highest priority)
-    bounds.high = high || (high === 0 ? 0 : bounds.high);
-    bounds.low = low || (low === 0 ? 0 : bounds.low);
+    // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
+    // used to generate the chart. This is useful when the chart always needs to contain the position of the
+    // invisible reference value in the view i.e. for bipolar scales.
+    if(referenceValue || referenceValue === 0) {
+      bounds.high = Math.max(referenceValue, bounds.high);
+      bounds.low = Math.min(referenceValue, bounds.low);
+    }
 
     bounds.valueRange = bounds.high - bounds.low;
     bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);
@@ -459,6 +463,8 @@
         showLine: true,
         showPoint: true,
         lineSmooth: true,
+        low: undefined,
+        high: undefined,
         chartPadding: 5,
         classNames: {
           label: 'ct-label',
@@ -617,6 +623,8 @@
         },
         width: undefined,
         height: undefined,
+        high: undefined,
+        low: undefined,
         chartPadding: 5,
         seriesBarDistance: 15,
         classNames: {
@@ -644,7 +652,7 @@
       draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, normalizedData, options, null, 0);
+      bounds = Chartist.getBounds(draw, normalizedData, options, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
@@ -671,7 +679,9 @@
       var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
       // Start drawing
       var labels = draw.group(),
-        grid = draw.group();
+        grid = draw.group(),
+        // Projected 0 point
+        zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
       Chartist.createXAxis(chartRect, data, grid, labels, options);
       Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
@@ -697,7 +707,7 @@
           // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
-          bar = seriesGroups[i].line(p.x, chartRect.y1, p.x, p.y);
+          bar = seriesGroups[i].line(p.x, zeroPoint.y, p.x, p.y);
           bar.addClass(options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
         }
       }
