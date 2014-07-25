@@ -133,7 +133,7 @@
     var i,
       j,
       highLow = {
-        high: Number.MIN_VALUE,
+        high: -Number.MAX_VALUE,
         low: Number.MAX_VALUE
       };
 
