@@ -76,7 +76,9 @@
       var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
       // Start drawing
       var labels = draw.group(),
-        grid = draw.group();
+        grid = draw.group(),
+        // Projected 0 point
+        zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
       Chartist.createXAxis(chartRect, data, grid, labels, options);
       Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
@@ -102,7 +104,7 @@
           // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
-          bar = seriesGroups[i].line(p.x, chartRect.y1, p.x, p.y);
+          bar = seriesGroups[i].line(p.x, zeroPoint.y, p.x, p.y);
           bar.addClass(options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
         }
       }
