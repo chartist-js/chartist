@@ -153,7 +153,7 @@
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (draw, normalizedData, options, high, low) {
+  Chartist.getBounds = function (draw, normalizedData, options, referenceValue) {
     var i,
       newMin,
       newMax,
@@ -163,9 +163,13 @@
     bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
     bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
 
-    // Overrides of high / low from function call (highest priority)
-    bounds.high = high || (high === 0 ? 0 : bounds.high);
-    bounds.low = low || (low === 0 ? 0 : bounds.low);
+    // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
+    // used to generate the chart. This is useful when the chart always needs to contain the position of the
+    // invisible reference value in the view i.e. for bipolar scales.
+    if(referenceValue || referenceValue === 0) {
+      bounds.high = Math.max(referenceValue, bounds.high);
+      bounds.low = Math.min(referenceValue, bounds.low);
+    }
 
     bounds.valueRange = bounds.high - bounds.low;
     bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);

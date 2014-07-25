@@ -49,7 +49,7 @@
       draw = Chartist.createDraw(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, normalizedData, options, null, 0);
+      bounds = Chartist.getBounds(draw, normalizedData, options, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
