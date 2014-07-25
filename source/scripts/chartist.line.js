@@ -23,6 +23,8 @@
         showLine: true,
         showPoint: true,
         lineSmooth: true,
+        low: undefined,
+        high: undefined,
         chartPadding: 5,
         classNames: {
           label: 'ct-label',

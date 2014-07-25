@@ -20,6 +20,8 @@
         },
         width: undefined,
         height: undefined,
+        high: undefined,
+        low: undefined,
         chartPadding: 5,
         seriesBarDistance: 15,
         classNames: {
