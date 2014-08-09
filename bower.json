@@ -5,9 +5,6 @@
     "./libdist/chartist.min.js",
     "./libdist/chartist.min.css"
   ],
-  "dependencies": {
-    "svg.js": "~1.0.0-rc.9"
-  },
   "devDependencies": {
     "snap.svg": "~0.2.0",
     "json3": "~3.2.6",
