@@ -1,7 +1,22 @@
-// Chartist line chart
-(function (document, window, Chartist, undefined) {
+// UMD, continue down for module definition
+(function(root, factory) {
   'use strict';
-  Chartist.Pie = Chartist.Pie || function (query, data, options, responsiveOptions) {
+
+  if(typeof exports === 'object') {
+    module.exports = factory(require('chartist-core'));
+  }
+  else if(typeof define === 'function' && define.amd) {
+    define(['chartist-core'], factory);
+  }
+  else {
+    root.Chartist.Pie = factory(root.Chartist);
+  }
+
+}(this, function(Chartist) {
+  // Chartist Pie & Donut chart
+  'use strict';
+
+  return function Pie (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         width: undefined,
@@ -126,4 +141,4 @@
       }
     };
   };
-}(document, window, window.Chartist));
+}));
