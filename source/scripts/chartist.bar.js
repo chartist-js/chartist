@@ -36,7 +36,7 @@
         }
       },
       currentOptions,
-      draw;
+      svg;
 
     function createChart(options) {
       var xAxisOffset,
@@ -45,16 +45,16 @@
         bounds,
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
-      // Create new SVG.js draw
-      draw = Chartist.createDraw(query, options.width, options.height);
+      // Create new svg element
+      svg = Chartist.createSvg(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, normalizedData, options, 0);
+      bounds = Chartist.getBounds(svg, normalizedData, options, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
         xAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -65,7 +65,7 @@
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
         yAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -73,10 +73,10 @@
         );
       }
 
-      var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
       // Start drawing
-      var labels = draw.group(),
-        grid = draw.group(),
+      var labels = svg.elem('g'),
+        grid = svg.elem('g'),
         // Projected 0 point
         zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
@@ -91,10 +91,12 @@
         // Half of the period with between vertical grid lines used to position bars
           periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
 
-        seriesGroups[i] = draw.group();
+        seriesGroups[i] = svg.elem('g');
         // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass(options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
 
         for(var j = 0; j < normalizedData[i].length; j++) {
           var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
@@ -104,8 +106,12 @@
           // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
-          bar = seriesGroups[i].line(p.x, zeroPoint.y, p.x, p.y);
-          bar.addClass(options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
+          bar = seriesGroups[i].elem('line', {
+            x1: p.x,
+            y1: zeroPoint.y,
+            x2: p.x,
+            y2: p.y
+          }, options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
         }
       }
     }

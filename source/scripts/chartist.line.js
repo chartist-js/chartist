@@ -37,7 +37,7 @@
         }
       },
       currentOptions,
-      draw;
+      svg;
 
     function createChart(options) {
       var xAxisOffset,
@@ -46,16 +46,16 @@
         bounds,
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
-      // Create new draw object
-      draw = Chartist.createDraw(query, options.width, options.height);
+      // Create new svg object
+      svg = Chartist.createSvg(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, normalizedData, options);
+      bounds = Chartist.getBounds(svg, normalizedData, options);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
         xAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -66,7 +66,7 @@
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
         yAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -74,10 +74,10 @@
         );
       }
 
-      var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
       // Start drawing
-      var labels = draw.group(),
-        grid = draw.group();
+      var labels = svg.elem('g'),
+        grid = svg.elem('g');
 
       Chartist.createXAxis(chartRect, data, grid, labels, options);
       Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
@@ -85,10 +85,12 @@
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = draw.group();
+        seriesGroups[i] = svg.elem('g');
         // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass(options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
 
         var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], 0),
           pathCoordinates = [p.x, p.y],
@@ -97,8 +99,12 @@
         // First dot we need to add before loop
         if (options.showPoint) {
           // Small offset for Firefox to render squares correctly
-          point = seriesGroups[i].line(p.x, p.y, p.x + 0.01, p.y);
-          point.addClass(options.classNames.point);
+          point = seriesGroups[i].elem('line', {
+            x1: p.x,
+            y1: p.y,
+            x2: p.x + 0.01,
+            y2: p.y
+          }, options.classNames.point);
         }
 
         // First point is created, continue with rest
@@ -109,8 +115,12 @@
           //If we should show points we need to create them now to avoid secondary loop
           // Small offset for Firefox to render squares correctly
           if (options.showPoint) {
-            point = seriesGroups[i].line(p.x, p.y, p.x + 0.01, p.y);
-            point.addClass(options.classNames.point);
+            point = seriesGroups[i].elem('line', {
+              x1: p.x,
+              y1: p.y,
+              x2: p.x + 0.01,
+              y2: p.y
+            }, options.classNames.point);
           }
         }
 
@@ -130,8 +140,9 @@
             }
           }
 
-          var path = seriesGroups[i].path(svgPathString);
-          path.addClass(options.classNames.line);
+          seriesGroups[i].elem('path', {
+            d: svgPathString
+          }, options.classNames.line);
         }
       }
     }

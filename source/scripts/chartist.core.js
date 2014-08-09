@@ -52,38 +52,39 @@
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
   };
 
-  // Create Chartist.js container and instantiate SVG.js draw
-  Chartist.createDraw = function (query, width, height) {
+  // Create Chartist SVG element
+  Chartist.createSvg = function (query, width, height) {
     // Get dom object from query or if already dom object just use it
     var container = query.nodeType ? query : document.querySelector(query),
-      draw;
+      svg;
 
     // If container was not found we throw up
     if (!container) {
       throw 'Container node with selector "' + query + '" not found';
     }
 
-    // If already contains draw we clear it, set width / height and return
-    if (container.__ctDraw !== undefined) {
-      draw = container.__ctDraw.attr({
+    // If already contains our svg object we clear it, set width / height and return
+    if (container._ctChart !== undefined) {
+      svg = container._ctChart.attr({
         width: width || '100%',
         height: height || '100%'
       });
       // Clear the draw if its already used before so we start fresh
-      draw.clear();
+      svg.empty();
 
     } else {
-      // Create svg.js draw with width and height or use 100% as default
-      draw = SVG(container).size(width || '100%', height || '100%');
-      if (!draw) {
-        throw 'Could not instantiate SVG.js!';
-      }
+      // Create svg object with width and height or use 100% as default
+      svg = Chartist.Svg('svg').attr({
+        width: width || '100%',
+        height: height || '100%'
+      });
 
-      // Set draw in DOM element so we have a trace for later
-      container.__ctDraw = draw;
+      // Add the DOM node to our container
+      container.appendChild(svg._node);
+      container._ctChart = svg;
     }
 
-    return draw;
+    return svg;
   };
 
   // Convert data series into plain array
@@ -119,13 +120,13 @@
     return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
   };
 
-  Chartist.projectLength = function (draw, length, bounds, options) {
-    var availableHeight = Chartist.getAvailableHeight(draw, options);
+  Chartist.projectLength = function (svg, length, bounds, options) {
+    var availableHeight = Chartist.getAvailableHeight(svg, options);
     return (length / bounds.range * availableHeight);
   };
 
-  Chartist.getAvailableHeight = function (draw, options) {
-    return Chartist.getHeight(draw.node) - (options.chartPadding * 2) - options.axisX.offset;
+  Chartist.getAvailableHeight = function (svg, options) {
+    return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
   };
 
   // Get highest and lowest value of data array
@@ -153,7 +154,7 @@
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (draw, normalizedData, options, referenceValue) {
+  Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
     var i,
       newMin,
       newMax,
@@ -181,7 +182,7 @@
 
     // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
     while (true) {
-      var length = Chartist.projectLength(draw, bounds.step / 2, bounds, options);
+      var length = Chartist.projectLength(svg, bounds.step / 2, bounds, options);
       if (length >= options.axisY.scaleMinSpace) {
         bounds.step /= 2;
       } else {
@@ -213,7 +214,7 @@
     return bounds;
   };
 
-  Chartist.calculateLabelOffset = function (draw, data, labelClass, labelInterpolationFnc, offsetFnc) {
+  Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
     var offset = 0;
     for (var i = 0; i < data.length; i++) {
       // If interpolation function returns falsy value we skipp this label
@@ -222,17 +223,13 @@
         continue;
       }
 
-      var label = draw.plain('' + interpolated);
-      label.attr({
-        'font-family': null
-      });
-      //TODO: Check if needed
-      label.dx(0);
-      label.dy(0);
-      label.addClass(labelClass);
+      var label = svg.elem('text', {
+        dx: 0,
+        dy: 0
+      }, labelClass).text('' + interpolated);
 
       // Check if this is the largest label and update offset
-      offset = Math.max(offset, offsetFnc(label.node));
+      offset = Math.max(offset, offsetFnc(label._node));
       // Remove label after offset Calculation
       label.remove();
     }
@@ -263,11 +260,11 @@
   };
 
   // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
-  Chartist.createChartRect = function (draw, options, xAxisOffset, yAxisOffset) {
+  Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
-      y1: (options.height || Chartist.getHeight(draw.node)) - options.chartPadding - xAxisOffset,
-      x2: (options.width || Chartist.getWidth(draw.node)) - options.chartPadding,
+      y1: (options.height || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
+      x2: (options.width || Chartist.getWidth(svg._node)) - options.chartPadding,
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
@@ -290,22 +287,24 @@
       }
 
       if (options.axisX.showGrid) {
-        var line = grid.line(pos, chartRect.y1, pos, chartRect.y2);
-        line.addClass([options.classNames.grid, options.classNames.horizontal].join(' '));
+        grid.elem('line', {
+          x1: pos,
+          y1: chartRect.y1,
+          x2: pos,
+          y2: chartRect.y2
+        }, [options.classNames.grid, options.classNames.horizontal].join(' '));
       }
 
       if (options.axisX.showLabel) {
         // Use config offset for setting labels of
-        var label = labels.plain('' + interpolatedValue);
-        label.attr({
-          'font-family': null
-        });
-        label.dx(pos + 2);
-
-        label.addClass([options.classNames.label, options.classNames.horizontal].join(' '));
+        var label = labels.elem('text', {
+            dx: pos + 2
+          }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
 
         // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-        label.dy(chartRect.y1 + Chartist.getHeight(label.node) + options.axisX.offset);
+        label.attr({
+          dy: chartRect.y1 + Chartist.getHeight(label._node) + options.axisX.offset
+        });
       }
     });
   };
@@ -322,27 +321,20 @@
       }
 
       if (options.axisY.showGrid) {
-        var line = grid.line(chartRect.x1, pos, chartRect.x2, pos);
-        line.addClass(options.classNames.grid + ' ' + options.classNames.vertical);
+        grid.elem('line', {
+          x1: chartRect.x1,
+          y1: pos,
+          x2: chartRect.x2,
+          y2: pos
+        }, [options.classNames.grid, options.classNames.vertical].join(' '));
       }
 
       if (options.axisY.showLabel) {
-        // Position later
-        //TODO: make padding of 2px configurable
-        //TODO: Check for refactoring
-        var label = labels.plain('' + interpolatedValue);
-        // Reset defaults
-        label.attr({
-          'font-family': null
-        });
-        label.dx(options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding);
-        label.dy(pos - 2);
-        label.addClass(options.classNames.label + ' ' + options.classNames.vertical);
-
-        // Set text-anchor based on alignment
-        label.attr({
+        labels.elem('text', {
+          dx: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
+          dy: pos - 2,
           'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
-        });
+        }, [options.classNames.label, options.classNames.vertical].join(' ')).text('' + interpolatedValue);
       }
     });
   };

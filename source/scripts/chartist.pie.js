@@ -18,7 +18,7 @@
         donutWidth: 60
       },
       currentOptions,
-      draw;
+      svg;
 
     function createChart(options) {
       var seriesGroups = [],
@@ -29,9 +29,9 @@
         dataArray = Chartist.getDataArray(data);
 
       // Create SVG.js draw
-      draw = Chartist.createDraw(query, options.width, options.height);
+      svg = Chartist.createSvg(query, options.width, options.height);
       // Calculate charting rect
-      chartRect = Chartist.createChartRect(draw, options, 0, 0);
+      chartRect = Chartist.createChartRect(svg, options, 0, 0);
       // Get biggest circle radius possible within chartRect
       radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
       // Calculate total of all series to get reference value or use total reference from optional options
@@ -53,10 +53,12 @@
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = draw.group();
+        seriesGroups[i] = svg.elem('g');
         // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass(options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
 
         var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
         // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
@@ -68,7 +70,7 @@
         var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 ? 0 : 0.2)),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
         arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
-        d =  [
+        d = [
           // Start at the end point from the cartesian coordinates
           'M', end.x, end.y,
           // Draw arc
@@ -80,12 +82,13 @@
           d.push('L', center.x, center.y);
         }
 
-        // Create the SVG path with snap
-        var path = seriesGroups[i].path(d.join(' '));
-
+        // Create the SVG path
         // If this is a donut chart we add the donut class, otherwise just a regular slice
-        path.addClass(options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+        var path = seriesGroups[i].elem('path', {
+          d: d.join(' ')
+        }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
 
+        // If this is a donut, we add the stroke-width as style attribute
         if(options.donut === true) {
           path.attr({
             'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
