@@ -11,11 +11,11 @@ describe('Chartist SVG', function () {
   });
 
   it('should exist in global namespace', function () {
-    expect(window.Chartist.Svg).toBeDefined();
+    expect(window.Chartist.svg).toBeDefined();
   });
 
   it('should create a valid svg dom element', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
 
     expect(svg).toBeDefined();
     expect(svg._node).toBeDefined();
@@ -23,7 +23,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should create a valid svg dom element with attributes', function () {
-    var svg = window.Chartist.Svg('svg', {
+    var svg = window.Chartist.svg('svg', {
       width: '100%',
       height: '100%'
     });
@@ -36,7 +36,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should create nested objects with attributes', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
     svg.elem('g').elem('g').elem('circle', {
       cx: 100,
       cy: 100,
@@ -51,7 +51,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should allow to set attributes manually', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
     svg.elem('circle').attr({
       cx: 100,
       cy: 100,
@@ -66,7 +66,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should clear on each nesting level', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
     var group = svg.elem('g');
     group.elem('circle');
     group.elem('circle');
@@ -83,7 +83,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should allow to remove a certain element', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
     var text = svg.elem('text');
 
     expect(svg._node).toBeDefined();
@@ -95,7 +95,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should allow to write text content into elements', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
     svg.elem('text').text('Hello World');
 
     expect(svg._node).toBeDefined();
@@ -106,7 +106,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should allow to add and remove classes on elements', function () {
-    var svg = window.Chartist.Svg('svg')
+    var svg = window.Chartist.svg('svg')
       .addClass('test-class-1')
       .addClass('test-class-2')
       // Should not allow duplicates
@@ -130,7 +130,7 @@ describe('Chartist SVG', function () {
   });
 
   it('should allow to travers up in the fluent API chain and set attributes on the way', function () {
-    var svg = window.Chartist.Svg('svg');
+    var svg = window.Chartist.svg('svg');
     svg.elem('g').elem('g').elem('g').elem('circle')
       .parent().attr({
         transform: 'rotate(10 10 10)'
