@@ -18,8 +18,8 @@ describe('Chartist SVG', function () {
     var svg = window.Chartist.Svg('svg');
 
     expect(svg).toBeDefined();
-    expect(svg.node).toBeDefined();
-    expect(svg.node.nodeName.toLowerCase()).toBe('svg');
+    expect(svg._node).toBeDefined();
+    expect(svg._node.nodeName.toLowerCase()).toBe('svg');
   });
 
   it('should create a valid svg dom element with attributes', function () {
@@ -29,10 +29,10 @@ describe('Chartist SVG', function () {
     });
 
     expect(svg).toBeDefined();
-    expect(svg.node).toBeDefined();
-    expect(svg.node.nodeName.toLowerCase()).toBe('svg');
-    expect(svg.node.attributes.width.textContent).toBe('100%');
-    expect(svg.node.attributes.height.textContent).toBe('100%');
+    expect(svg._node).toBeDefined();
+    expect(svg._node.nodeName.toLowerCase()).toBe('svg');
+    expect(svg._node.attributes.width.textContent).toBe('100%');
+    expect(svg._node.attributes.height.textContent).toBe('100%');
   });
 
   it('should create nested objects with attributes', function () {
@@ -43,11 +43,11 @@ describe('Chartist SVG', function () {
       r: 10
     });
 
-    expect(svg.node).toBeDefined();
-    expect(svg.node.firstChild.firstChild.firstChild).toBeDefined();
-    expect(svg.node.firstChild.firstChild.firstChild.attributes.cx.textContent).toBe('100');
-    expect(svg.node.firstChild.firstChild.firstChild.attributes.cy.textContent).toBe('100');
-    expect(svg.node.firstChild.firstChild.firstChild.attributes.r.textContent).toBe('10');
+    expect(svg._node).toBeDefined();
+    expect(svg._node.firstChild.firstChild.firstChild).toBeDefined();
+    expect(svg._node.firstChild.firstChild.firstChild.attributes.cx.textContent).toBe('100');
+    expect(svg._node.firstChild.firstChild.firstChild.attributes.cy.textContent).toBe('100');
+    expect(svg._node.firstChild.firstChild.firstChild.attributes.r.textContent).toBe('10');
   });
 
   it('should allow to set attributes manually', function () {
@@ -58,11 +58,28 @@ describe('Chartist SVG', function () {
       r: 10
     });
 
-    expect(svg.node).toBeDefined();
-    expect(svg.node.firstChild).toBeDefined();
-    expect(svg.node.firstChild.attributes.cx.textContent).toBe('100');
-    expect(svg.node.firstChild.attributes.cy.textContent).toBe('100');
-    expect(svg.node.firstChild.attributes.r.textContent).toBe('10');
+    expect(svg._node).toBeDefined();
+    expect(svg._node.firstChild).toBeDefined();
+    expect(svg._node.firstChild.attributes.cx.textContent).toBe('100');
+    expect(svg._node.firstChild.attributes.cy.textContent).toBe('100');
+    expect(svg._node.firstChild.attributes.r.textContent).toBe('10');
+  });
+
+  it('should clear on each nesting level', function () {
+    var svg = window.Chartist.Svg('svg');
+    var group = svg.elem('g');
+    group.elem('circle');
+    group.elem('circle');
+    group.elem('circle');
+
+    expect(svg._node).toBeDefined();
+    expect(svg._node.firstChild.childNodes.length).toBe(3);
+
+    group.empty();
+    expect(svg._node.firstChild.childNodes.length).toBe(0);
+
+    svg.empty();
+    expect(svg._node.firstChild).toBeNull();
   });
 
   it('should allow to travers up in the fluent API chain and set attributes on the way', function () {
@@ -82,17 +99,17 @@ describe('Chartist SVG', function () {
         height: '100%'
       });
 
-    expect(svg.node).toBeDefined();
-    expect(svg.node.attributes.width.textContent).toBe('100%');
-    expect(svg.node.attributes.height.textContent).toBe('100%');
+    expect(svg._node).toBeDefined();
+    expect(svg._node.attributes.width.textContent).toBe('100%');
+    expect(svg._node.attributes.height.textContent).toBe('100%');
 
-    expect(svg.node.firstChild).toBeDefined();
-    expect(svg.node.firstChild.attributes.transform.textContent).toBe('rotate(30 30 30)');
+    expect(svg._node.firstChild).toBeDefined();
+    expect(svg._node.firstChild.attributes.transform.textContent).toBe('rotate(30 30 30)');
 
-    expect(svg.node.firstChild.firstChild).toBeDefined();
-    expect(svg.node.firstChild.firstChild.attributes.transform.textContent).toBe('rotate(20 20 20)');
+    expect(svg._node.firstChild.firstChild).toBeDefined();
+    expect(svg._node.firstChild.firstChild.attributes.transform.textContent).toBe('rotate(20 20 20)');
 
-    expect(svg.node.firstChild.firstChild.firstChild).toBeDefined();
-    expect(svg.node.firstChild.firstChild.firstChild.attributes.transform.textContent).toBe('rotate(10 10 10)');
+    expect(svg._node.firstChild.firstChild.firstChild).toBeDefined();
+    expect(svg._node.firstChild.firstChild.firstChild.attributes.transform.textContent).toBe('rotate(10 10 10)');
   });
 });

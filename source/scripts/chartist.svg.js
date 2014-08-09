@@ -4,12 +4,12 @@
 
     var svgns = 'http://www.w3.org/2000/svg';
 
-    function attr(element, attributes) {
+    function attr(node, attributes) {
       Object.keys(attributes).forEach(function(key) {
-        element.setAttribute(key, attributes[key]);
+        node.setAttribute(key, attributes[key]);
       });
 
-      return element;
+      return node;
     }
 
     function elem(name, attributes, parentNode) {
@@ -25,14 +25,24 @@
       return element;
     }
 
+    function empty(node) {
+      while (node.firstChild) {
+        node.removeChild(node.firstChild);
+      }
+    }
+
     return {
-      node: elem(name, attributes, parent ? parent.node : undefined),
+      _node: elem(name, attributes, parent ? parent._node : undefined),
       _parent: parent,
       parent: function() {
         return this._parent;
       },
       attr: function(attributes) {
-        attr(this.node, attributes);
+        attr(this._node, attributes);
+        return this;
+      },
+      empty: function() {
+        empty(this._node);
         return this;
       },
       elem: function(name, attributes) {
