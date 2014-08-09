@@ -1,15 +1,27 @@
-/* Chartist.js 0.1.5
+/* Chartist.js 0.1.6
  * Copyright © 2014 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
  */
-(function (document, window, undefined) {
+(function(root, factory) {
   'use strict';
 
-  // Export chartist namespace
-  var Chartist = window.Chartist = window.Chartist || {};
+  if(typeof exports === 'object') {
+    module.exports = factory();
+  }
+  else if(typeof define === 'function' && define.amd) {
+    define([], factory);
+  }
+  else {
+    root.Chartist = factory();
+  }
 
-  Chartist.version = '0.1.5';
+}(this, function() {
+  'use strict';
+
+  // The Chartist core contains shared static functions
+  var Chartist = {};
+  Chartist.version = '0.1.6';
 
   // Helps to simplify functional style code
   Chartist.noop = function (n) {
@@ -35,16 +47,111 @@
     return target;
   };
 
-  // Simple array each function
-  // TODO: Use Array forEach as browser support allows (IE 9+)
-  Chartist.each = function (array, callback) {
-    for (var i = 0; i < array.length; i++) {
-      var value = callback.call(array[i], i, array[i]);
+  // Simple SVG dom manipulation functions
+  Chartist.svg = function(name, attributes, className, parent) {
 
-      if (value === false) {
-        break;
+    var svgns = 'http://www.w3.org/2000/svg';
+
+    function attr(node, attributes) {
+      Object.keys(attributes).forEach(function(key) {
+        node.setAttribute(key, attributes[key]);
+      });
+
+      return node;
+    }
+
+    function elem(svg, name, attributes, className, parentNode) {
+      var node = document.createElementNS(svgns, name);
+      node._ctSvgElement = svg;
+
+      if(parentNode) {
+        parentNode.appendChild(node);
+      }
+
+      if(attributes) {
+        attr(node, attributes);
+      }
+
+      if(className) {
+        addClass(node, className);
+      }
+
+      return node;
+    }
+
+    function text(node, t) {
+      node.appendChild(document.createTextNode(t));
+    }
+
+    function empty(node) {
+      while (node.firstChild) {
+        node.removeChild(node.firstChild);
       }
     }
+
+    function remove(node) {
+      node.parentNode.removeChild(node);
+    }
+
+    function classes(node) {
+      return node.getAttribute('class') ? node.getAttribute('class').trim().split(/\s+/) : [];
+    }
+
+    function addClass(node, names) {
+      node.setAttribute('class',
+        classes(node)
+          .concat(names.trim().split(/\s+/))
+          .filter(function(elem, pos, self) {
+            return self.indexOf(elem) === pos;
+          }).join(' ')
+      );
+    }
+
+    function removeClass(node, names) {
+      var removedClasses = names.trim().split(/\s+/);
+
+      node.setAttribute('class', classes(node).filter(function(name) {
+        return removedClasses.indexOf(name) === -1;
+      }).join(' '));
+    }
+
+    return {
+      _node: elem(this, name, attributes, className, parent ? parent._node : undefined),
+      _parent: parent,
+      parent: function() {
+        return this._parent;
+      },
+      attr: function(attributes) {
+        attr(this._node, attributes);
+        return this;
+      },
+      empty: function() {
+        empty(this._node);
+        return this;
+      },
+      remove: function() {
+        remove(this._node);
+        return this;
+      },
+      elem: function(name, attributes, className) {
+        return Chartist.svg(name, attributes, className, this);
+      },
+      text: function(t) {
+        text(this._node, t);
+        return this;
+      },
+      addClass: function(names) {
+        addClass(this._node, names);
+        return this;
+      },
+      removeClass: function(names) {
+        removeClass(this._node, names);
+        return this;
+      },
+      classes: function() {
+        return classes(this._node);
+      }
+    };
   };
 
   // Get element height / width with fallback to svg BoundingBox or parent container dimensions
@@ -57,38 +164,39 @@
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
   };
 
-  // Create Chartist.js container and instantiate SVG.js draw
-  Chartist.createDraw = function (query, width, height) {
+  // Create Chartist SVG element
+  Chartist.createSvg = function (query, width, height) {
     // Get dom object from query or if already dom object just use it
     var container = query.nodeType ? query : document.querySelector(query),
-      draw;
+      svg;
 
     // If container was not found we throw up
     if (!container) {
       throw 'Container node with selector "' + query + '" not found';
     }
 
-    // If already contains draw we clear it, set width / height and return
-    if (container.__ctDraw !== undefined) {
-      draw = container.__ctDraw.attr({
+    // If already contains our svg object we clear it, set width / height and return
+    if (container._ctChart !== undefined) {
+      svg = container._ctChart.attr({
         width: width || '100%',
         height: height || '100%'
       });
       // Clear the draw if its already used before so we start fresh
-      draw.clear();
+      svg.empty();
 
     } else {
-      // Create svg.js draw with width and height or use 100% as default
-      draw = SVG(container).size(width || '100%', height || '100%');
-      if (!draw) {
-        throw 'Could not instantiate SVG.js!';
-      }
+      // Create svg object with width and height or use 100% as default
+      svg = Chartist.svg('svg').attr({
+        width: width || '100%',
+        height: height || '100%'
+      });
 
-      // Set draw in DOM element so we have a trace for later
-      container.__ctDraw = draw;
+      // Add the DOM node to our container
+      container.appendChild(svg._node);
+      container._ctChart = svg;
     }
 
-    return draw;
+    return svg;
   };
 
   // Convert data series into plain array
@@ -124,13 +232,13 @@
     return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
   };
 
-  Chartist.projectLength = function (draw, length, bounds, options) {
-    var availableHeight = Chartist.getAvailableHeight(draw, options);
+  Chartist.projectLength = function (svg, length, bounds, options) {
+    var availableHeight = Chartist.getAvailableHeight(svg, options);
     return (length / bounds.range * availableHeight);
   };
 
-  Chartist.getAvailableHeight = function (draw, options) {
-    return Chartist.getHeight(draw.node) - (options.chartPadding * 2) - options.axisX.offset;
+  Chartist.getAvailableHeight = function (svg, options) {
+    return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
   };
 
   // Get highest and lowest value of data array
@@ -158,7 +266,7 @@
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
-  Chartist.getBounds = function (draw, normalizedData, options, referenceValue) {
+  Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
     var i,
       newMin,
       newMax,
@@ -186,7 +294,7 @@
 
     // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
     while (true) {
-      var length = Chartist.projectLength(draw, bounds.step / 2, bounds, options);
+      var length = Chartist.projectLength(svg, bounds.step / 2, bounds, options);
       if (length >= options.axisY.scaleMinSpace) {
         bounds.step /= 2;
       } else {
@@ -218,7 +326,7 @@
     return bounds;
   };
 
-  Chartist.calculateLabelOffset = function (draw, data, labelClass, labelInterpolationFnc, offsetFnc) {
+  Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
     var offset = 0;
     for (var i = 0; i < data.length; i++) {
       // If interpolation function returns falsy value we skipp this label
@@ -227,17 +335,13 @@
         continue;
       }
 
-      var label = draw.plain('' + interpolated);
-      label.attr({
-        'font-family': null
-      });
-      //TODO: Check if needed
-      label.dx(0);
-      label.dy(0);
-      label.addClass(labelClass);
+      var label = svg.elem('text', {
+        dx: 0,
+        dy: 0
+      }, labelClass).text('' + interpolated);
 
       // Check if this is the largest label and update offset
-      offset = Math.max(offset, offsetFnc(label.node));
+      offset = Math.max(offset, offsetFnc(label._node));
       // Remove label after offset Calculation
       label.remove();
     }
@@ -268,11 +372,11 @@
   };
 
   // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
-  Chartist.createChartRect = function (draw, options, xAxisOffset, yAxisOffset) {
+  Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
-      y1: (options.height || Chartist.getHeight(draw.node)) - options.chartPadding - xAxisOffset,
-      x2: (options.width || Chartist.getWidth(draw.node)) - options.chartPadding,
+      y1: (options.height || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
+      x2: (options.width || Chartist.getWidth(svg._node)) - options.chartPadding,
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
@@ -285,7 +389,7 @@
 
   Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
     // Create X-Axis
-    Chartist.each(data.labels, function (index, value) {
+    data.labels.forEach(function(value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
         pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
 
@@ -295,29 +399,31 @@
       }
 
       if (options.axisX.showGrid) {
-        var line = grid.line(pos, chartRect.y1, pos, chartRect.y2);
-        line.addClass([options.classNames.grid, options.classNames.horizontal].join(' '));
+        grid.elem('line', {
+          x1: pos,
+          y1: chartRect.y1,
+          x2: pos,
+          y2: chartRect.y2
+        }, [options.classNames.grid, options.classNames.horizontal].join(' '));
       }
 
       if (options.axisX.showLabel) {
         // Use config offset for setting labels of
-        var label = labels.plain('' + interpolatedValue);
-        label.attr({
-          'font-family': null
-        });
-        label.dx(pos + 2);
-
-        label.addClass([options.classNames.label, options.classNames.horizontal].join(' '));
+        var label = labels.elem('text', {
+            dx: pos + 2
+          }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
 
         // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-        label.dy(chartRect.y1 + Chartist.getHeight(label.node) + options.axisX.offset);
+        label.attr({
+          dy: chartRect.y1 + Chartist.getHeight(label._node) + options.axisX.offset
+        });
       }
     });
   };
 
   Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
     // Create Y-Axis
-    Chartist.each(bounds.values, function (index, value) {
+    bounds.values.forEach(function(value, index) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
         pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
 
@@ -327,27 +433,20 @@
       }
 
       if (options.axisY.showGrid) {
-        var line = grid.line(chartRect.x1, pos, chartRect.x2, pos);
-        line.addClass(options.classNames.grid + ' ' + options.classNames.vertical);
+        grid.elem('line', {
+          x1: chartRect.x1,
+          y1: pos,
+          x2: chartRect.x2,
+          y2: pos
+        }, [options.classNames.grid, options.classNames.vertical].join(' '));
       }
 
       if (options.axisY.showLabel) {
-        // Position later
-        //TODO: make padding of 2px configurable
-        //TODO: Check for refactoring
-        var label = labels.plain('' + interpolatedValue);
-        // Reset defaults
-        label.attr({
-          'font-family': null
-        });
-        label.dx(options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding);
-        label.dy(pos - 2);
-        label.addClass(options.classNames.label + ' ' + options.classNames.vertical);
-
-        // Set text-anchor based on alignment
-        label.attr({
+        labels.elem('text', {
+          dx: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
+          dy: pos - 2,
           'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
-        });
+        }, [options.classNames.label, options.classNames.vertical].join(' ')).text('' + interpolatedValue);
       }
     });
   };
@@ -438,10 +537,27 @@
     return d;
   };
 
-}(document, window));;// Chartist line chart
-(function (document, window, Chartist, undefined) {
+  return Chartist;
+
+}));;// UMD, continue down for module definition
+(function(root, factory) {
   'use strict';
-  Chartist.Line = Chartist.Line || function (query, data, options, responsiveOptions) {
+
+  if(typeof exports === 'object') {
+    module.exports = factory(require('chartist-core'));
+  }
+  else if(typeof define === 'function' && define.amd) {
+    define(['chartist-core'], factory);
+  }
+  else {
+    root.Chartist.Line = factory(root.Chartist);
+  }
+
+}(this, function(Chartist) {
+  // Chartist line chart
+  'use strict';
+
+  return function Line (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -477,7 +593,7 @@
         }
       },
       currentOptions,
-      draw;
+      svg;
 
     function createChart(options) {
       var xAxisOffset,
@@ -486,16 +602,16 @@
         bounds,
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
-      // Create new draw object
-      draw = Chartist.createDraw(query, options.width, options.height);
+      // Create new svg object
+      svg = Chartist.createSvg(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, normalizedData, options);
+      bounds = Chartist.getBounds(svg, normalizedData, options);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
         xAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -506,7 +622,7 @@
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
         yAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -514,10 +630,10 @@
         );
       }
 
-      var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
       // Start drawing
-      var labels = draw.group(),
-        grid = draw.group();
+      var labels = svg.elem('g'),
+        grid = svg.elem('g');
 
       Chartist.createXAxis(chartRect, data, grid, labels, options);
       Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
@@ -525,10 +641,12 @@
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = draw.group();
+        seriesGroups[i] = svg.elem('g');
         // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass(options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
 
         var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], 0),
           pathCoordinates = [p.x, p.y],
@@ -537,8 +655,12 @@
         // First dot we need to add before loop
         if (options.showPoint) {
           // Small offset for Firefox to render squares correctly
-          point = seriesGroups[i].line(p.x, p.y, p.x + 0.01, p.y);
-          point.addClass(options.classNames.point);
+          point = seriesGroups[i].elem('line', {
+            x1: p.x,
+            y1: p.y,
+            x2: p.x + 0.01,
+            y2: p.y
+          }, options.classNames.point);
         }
 
         // First point is created, continue with rest
@@ -549,8 +671,12 @@
           //If we should show points we need to create them now to avoid secondary loop
           // Small offset for Firefox to render squares correctly
           if (options.showPoint) {
-            point = seriesGroups[i].line(p.x, p.y, p.x + 0.01, p.y);
-            point.addClass(options.classNames.point);
+            point = seriesGroups[i].elem('line', {
+              x1: p.x,
+              y1: p.y,
+              x2: p.x + 0.01,
+              y2: p.y
+            }, options.classNames.point);
           }
         }
 
@@ -570,8 +696,9 @@
             }
           }
 
-          var path = seriesGroups[i].path(svgPathString);
-          path.addClass(options.classNames.line);
+          seriesGroups[i].elem('path', {
+            d: svgPathString
+          }, options.classNames.line);
         }
       }
     }
@@ -601,10 +728,25 @@
       }
     };
   };
-}(document, window, window.Chartist));;// Chartist Bar chart
-(function (document, window, Chartist, undefined) {
+}));;// UMD, continue down for module definition
+(function(root, factory) {
   'use strict';
-  Chartist.Bar = Chartist.Bar || function (query, data, options, responsiveOptions) {
+
+  if(typeof exports === 'object') {
+    module.exports = factory(require('chartist-core'));
+  }
+  else if(typeof define === 'function' && define.amd) {
+    define(['chartist-core'], factory);
+  }
+  else {
+    root.Chartist.Bar = factory(root.Chartist);
+  }
+
+}(this, function(Chartist) {
+  // Chartist Bar chart
+  'use strict';
+
+  return function Bar (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -639,7 +781,7 @@
         }
       },
       currentOptions,
-      draw;
+      svg;
 
     function createChart(options) {
       var xAxisOffset,
@@ -648,16 +790,16 @@
         bounds,
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
-      // Create new SVG.js draw
-      draw = Chartist.createDraw(query, options.width, options.height);
+      // Create new svg element
+      svg = Chartist.createSvg(query, options.width, options.height);
 
       // initialize bounds
-      bounds = Chartist.getBounds(draw, normalizedData, options, 0);
+      bounds = Chartist.getBounds(svg, normalizedData, options, 0);
 
       xAxisOffset = options.axisX.offset;
       if (options.axisX.showLabel) {
         xAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
@@ -668,7 +810,7 @@
       yAxisOffset = options.axisY.offset;
       if (options.axisY.showLabel) {
         yAxisOffset += Chartist.calculateLabelOffset(
-          draw,
+          svg,
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
@@ -676,10 +818,10 @@
         );
       }
 
-      var chartRect = Chartist.createChartRect(draw, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
       // Start drawing
-      var labels = draw.group(),
-        grid = draw.group(),
+      var labels = svg.elem('g'),
+        grid = svg.elem('g'),
         // Projected 0 point
         zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
@@ -694,10 +836,12 @@
         // Half of the period with between vertical grid lines used to position bars
           periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
 
-        seriesGroups[i] = draw.group();
+        seriesGroups[i] = svg.elem('g');
         // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass(options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
 
         for(var j = 0; j < normalizedData[i].length; j++) {
           var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
@@ -707,8 +851,12 @@
           // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
           p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
-          bar = seriesGroups[i].line(p.x, zeroPoint.y, p.x, p.y);
-          bar.addClass(options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
+          bar = seriesGroups[i].elem('line', {
+            x1: p.x,
+            y1: zeroPoint.y,
+            x2: p.x,
+            y2: p.y
+          }, options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
         }
       }
     }
@@ -738,10 +886,25 @@
       }
     };
   };
-}(document, window, window.Chartist));;// Chartist line chart
-(function (document, window, Chartist, undefined) {
+}));;// UMD, continue down for module definition
+(function(root, factory) {
   'use strict';
-  Chartist.Pie = Chartist.Pie || function (query, data, options, responsiveOptions) {
+
+  if(typeof exports === 'object') {
+    module.exports = factory(require('chartist-core'));
+  }
+  else if(typeof define === 'function' && define.amd) {
+    define(['chartist-core'], factory);
+  }
+  else {
+    root.Chartist.Pie = factory(root.Chartist);
+  }
+
+}(this, function(Chartist) {
+  // Chartist Pie & Donut chart
+  'use strict';
+
+  return function Pie (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         width: undefined,
@@ -758,7 +921,7 @@
         donutWidth: 60
       },
       currentOptions,
-      draw;
+      svg;
 
     function createChart(options) {
       var seriesGroups = [],
@@ -769,9 +932,9 @@
         dataArray = Chartist.getDataArray(data);
 
       // Create SVG.js draw
-      draw = Chartist.createDraw(query, options.width, options.height);
+      svg = Chartist.createSvg(query, options.width, options.height);
       // Calculate charting rect
-      chartRect = Chartist.createChartRect(draw, options, 0, 0);
+      chartRect = Chartist.createChartRect(svg, options, 0, 0);
       // Get biggest circle radius possible within chartRect
       radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
       // Calculate total of all series to get reference value or use total reference from optional options
@@ -793,10 +956,12 @@
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = draw.group();
+        seriesGroups[i] = svg.elem('g');
         // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass(options.classNames.series + ' ' +
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i)));
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
 
         var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
         // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
@@ -808,7 +973,7 @@
         var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 ? 0 : 0.2)),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
         arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
-        d =  [
+        d = [
           // Start at the end point from the cartesian coordinates
           'M', end.x, end.y,
           // Draw arc
@@ -820,12 +985,13 @@
           d.push('L', center.x, center.y);
         }
 
-        // Create the SVG path with snap
-        var path = seriesGroups[i].path(d.join(' '));
-
+        // Create the SVG path
         // If this is a donut chart we add the donut class, otherwise just a regular slice
-        path.addClass(options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+        var path = seriesGroups[i].elem('path', {
+          d: d.join(' ')
+        }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
 
+        // If this is a donut, we add the stroke-width as style attribute
         if(options.donut === true) {
           path.attr({
             'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
@@ -863,4 +1029,4 @@
       }
     };
   };
-}(document, window, window.Chartist));
+}));

@@ -16,7 +16,7 @@
 
   // The Chartist core contains shared static functions
   var Chartist = {};
-  Chartist.version = '0.1.5';
+  Chartist.version = '0.1.6';
 
   // Helps to simplify functional style code
   Chartist.noop = function (n) {
