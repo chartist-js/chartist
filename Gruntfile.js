@@ -334,9 +334,11 @@ module.exports = function (grunt) {
           'source/bower_components/jquery/dist/jquery.min.js',
           'source/bower_components/fastclick/lib/fastclick.js',
           'source/bower_components/foundation/js/foundation.min.js',
-          'source/bower_components/snap.svg/dist/snap.svg-min.js',
           'source/scripts/chartist.core.js',
-          'source/scripts/chartist.line.js'
+          'source/scripts/chartist.svg.js',
+          'source/scripts/chartist.line.js',
+          'source/scripts/chartist.bar.js',
+          'source/scripts/chartist.pie.js'
         ],
         options: {
           specs: 'test/spec/**/spec-*.js',
