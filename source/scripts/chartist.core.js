@@ -30,18 +30,6 @@
     return target;
   };
 
-  // Simple array each function
-  // TODO: Use Array forEach as browser support allows (IE 9+)
-  Chartist.each = function (array, callback) {
-    for (var i = 0; i < array.length; i++) {
-      var value = callback.call(array[i], i, array[i]);
-
-      if (value === false) {
-        break;
-      }
-    }
-  };
-
   // Get element height / width with fallback to svg BoundingBox or parent container dimensions
   // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
   Chartist.getHeight = function (svgElement) {
@@ -277,7 +265,7 @@
 
   Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
     // Create X-Axis
-    Chartist.each(data.labels, function (index, value) {
+    data.labels.forEach(function(value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
         pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
 
@@ -311,7 +299,7 @@
 
   Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
     // Create Y-Axis
-    Chartist.each(bounds.values, function (index, value) {
+    bounds.values.forEach(function(value, index) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
         pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
 
