@@ -1,22 +1,9 @@
-// UMD, continue down for module definition
-(function(root, factory) {
+// Chartist Line chart
+/* global Chartist */
+(function(window, document, Chartist){
   'use strict';
 
-  if(typeof exports === 'object') {
-    module.exports = factory(require('chartist-core'));
-  }
-  else if(typeof define === 'function' && define.amd) {
-    define(['chartist-core'], factory);
-  }
-  else {
-    root.Chartist.Line = factory(root.Chartist);
-  }
-
-}(this, function(Chartist) {
-  // Chartist line chart
-  'use strict';
-
-  return function Line (query, data, options, responsiveOptions) {
+  Chartist.Line = function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -187,4 +174,5 @@
       }
     };
   };
-}));
+
+}(window, document, Chartist));

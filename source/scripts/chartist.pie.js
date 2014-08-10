@@ -1,22 +1,9 @@
-// UMD, continue down for module definition
-(function(root, factory) {
+// Chartist Pie & Donut chart
+/* global Chartist */
+(function(window, document, Chartist) {
   'use strict';
 
-  if(typeof exports === 'object') {
-    module.exports = factory(require('chartist-core'));
-  }
-  else if(typeof define === 'function' && define.amd) {
-    define(['chartist-core'], factory);
-  }
-  else {
-    root.Chartist.Pie = factory(root.Chartist);
-  }
-
-}(this, function(Chartist) {
-  // Chartist Pie & Donut chart
-  'use strict';
-
-  return function Pie (query, data, options, responsiveOptions) {
+  Chartist.Pie = function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         width: undefined,
@@ -83,14 +70,14 @@
         }
 
         var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 ? 0 : 0.2)),
-        end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
-        arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
-        d = [
-          // Start at the end point from the cartesian coordinates
-          'M', end.x, end.y,
-          // Draw arc
-          'A', radius, radius, 0, arcSweep, 0, start.x, start.y
-        ];
+          end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
+          arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
+          d = [
+            // Start at the end point from the cartesian coordinates
+            'M', end.x, end.y,
+            // Draw arc
+            'A', radius, radius, 0, arcSweep, 0, start.x, start.y
+          ];
 
         // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
         if(options.donut === false) {
@@ -141,4 +128,5 @@
       }
     };
   };
-}));
+
+}(window, document, Chartist));

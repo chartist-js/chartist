@@ -1,22 +1,9 @@
-// UMD, continue down for module definition
-(function(root, factory) {
+// Chartist Bar chart
+/* global Chartist */
+(function(window, document, Chartist){
   'use strict';
 
-  if(typeof exports === 'object') {
-    module.exports = factory(require('chartist-core'));
-  }
-  else if(typeof define === 'function' && define.amd) {
-    define(['chartist-core'], factory);
-  }
-  else {
-    root.Chartist.Bar = factory(root.Chartist);
-  }
-
-}(this, function(Chartist) {
-  // Chartist Bar chart
-  'use strict';
-
-  return function Bar (query, data, options, responsiveOptions) {
+  Chartist.Bar = function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {
         axisX: {
@@ -92,7 +79,7 @@
       // Start drawing
       var labels = svg.elem('g'),
         grid = svg.elem('g'),
-        // Projected 0 point
+      // Projected 0 point
         zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
       Chartist.createXAxis(chartRect, data, grid, labels, options);
@@ -156,4 +143,5 @@
       }
     };
   };
-}));
+
+}(window, document, Chartist));

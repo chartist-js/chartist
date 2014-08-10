@@ -1,22 +1,11 @@
-(function(root, factory) {
+// The Chartist core contains shared static functions
+
+// This object is prepared for export via UMD
+var Chartist = {};
+Chartist.version = '0.1.6';
+
+(function (window, document, Chartist) {
   'use strict';
-
-  if(typeof exports === 'object') {
-    module.exports = factory();
-  }
-  else if(typeof define === 'function' && define.amd) {
-    define([], factory);
-  }
-  else {
-    root.Chartist = factory();
-  }
-
-}(this, function() {
-  'use strict';
-
-  // The Chartist core contains shared static functions
-  var Chartist = {};
-  Chartist.version = '0.1.6';
 
   // Helps to simplify functional style code
   Chartist.noop = function (n) {
@@ -40,113 +29,6 @@
       }
     }
     return target;
-  };
-
-  // Simple SVG dom manipulation functions
-  Chartist.svg = function(name, attributes, className, parent) {
-
-    var svgns = 'http://www.w3.org/2000/svg';
-
-    function attr(node, attributes) {
-      Object.keys(attributes).forEach(function(key) {
-        node.setAttribute(key, attributes[key]);
-      });
-
-      return node;
-    }
-
-    function elem(svg, name, attributes, className, parentNode) {
-      var node = document.createElementNS(svgns, name);
-      node._ctSvgElement = svg;
-
-      if(parentNode) {
-        parentNode.appendChild(node);
-      }
-
-      if(attributes) {
-        attr(node, attributes);
-      }
-
-      if(className) {
-        addClass(node, className);
-      }
-
-      return node;
-    }
-
-    function text(node, t) {
-      node.appendChild(document.createTextNode(t));
-    }
-
-    function empty(node) {
-      while (node.firstChild) {
-        node.removeChild(node.firstChild);
-      }
-    }
-
-    function remove(node) {
-      node.parentNode.removeChild(node);
-    }
-
-    function classes(node) {
-      return node.getAttribute('class') ? node.getAttribute('class').trim().split(/\s+/) : [];
-    }
-
-    function addClass(node, names) {
-      node.setAttribute('class',
-        classes(node)
-          .concat(names.trim().split(/\s+/))
-          .filter(function(elem, pos, self) {
-            return self.indexOf(elem) === pos;
-          }).join(' ')
-      );
-    }
-
-    function removeClass(node, names) {
-      var removedClasses = names.trim().split(/\s+/);
-
-      node.setAttribute('class', classes(node).filter(function(name) {
-        return removedClasses.indexOf(name) === -1;
-      }).join(' '));
-    }
-
-    return {
-      _node: elem(this, name, attributes, className, parent ? parent._node : undefined),
-      _parent: parent,
-      parent: function() {
-        return this._parent;
-      },
-      attr: function(attributes) {
-        attr(this._node, attributes);
-        return this;
-      },
-      empty: function() {
-        empty(this._node);
-        return this;
-      },
-      remove: function() {
-        remove(this._node);
-        return this;
-      },
-      elem: function(name, attributes, className) {
-        return Chartist.svg(name, attributes, className, this);
-      },
-      text: function(t) {
-        text(this._node, t);
-        return this;
-      },
-      addClass: function(names) {
-        addClass(this._node, names);
-        return this;
-      },
-      removeClass: function(names) {
-        removeClass(this._node, names);
-        return this;
-      },
-      classes: function() {
-        return classes(this._node);
-      }
-    };
   };
 
   // Get element height / width with fallback to svg BoundingBox or parent container dimensions
@@ -274,7 +156,7 @@
     // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
     // used to generate the chart. This is useful when the chart always needs to contain the position of the
     // invisible reference value in the view i.e. for bipolar scales.
-    if(referenceValue || referenceValue === 0) {
+    if (referenceValue || referenceValue === 0) {
       bounds.high = Math.max(referenceValue, bounds.high);
       bounds.low = Math.min(referenceValue, bounds.low);
     }
@@ -384,7 +266,7 @@
 
   Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
     // Create X-Axis
-    data.labels.forEach(function(value, index) {
+    data.labels.forEach(function (value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
         pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
 
@@ -405,8 +287,8 @@
       if (options.axisX.showLabel) {
         // Use config offset for setting labels of
         var label = labels.elem('text', {
-            dx: pos + 2
-          }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
+          dx: pos + 2
+        }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
 
         // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
         label.attr({
@@ -418,7 +300,7 @@
 
   Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
     // Create Y-Axis
-    bounds.values.forEach(function(value, index) {
+    bounds.values.forEach(function (value, index) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
         pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
 
@@ -532,6 +414,4 @@
     return d;
   };
 
-  return Chartist;
-
-}));
+}(window, document, Chartist));
