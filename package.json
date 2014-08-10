@@ -44,6 +44,7 @@
     "test": "grunt test"
   },
   "config": {
+    "banner": "/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n",
     "source": "source",
     "dist": "sitedist",
     "bowerExclude": [

@@ -8,6 +8,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  var pkg = require('./package.json');
+
   grunt.loadNpmTasks('assemble');
 
   // Define the configuration for all the tasks
@@ -354,7 +356,7 @@ module.exports = function (grunt) {
     uglify: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n',
+          banner: pkg.config.banner,
           sourceMap: true,
           sourceMapIncludeSources: true
         },
@@ -367,7 +369,7 @@ module.exports = function (grunt) {
     cssmin: {
       libdist: {
         options: {
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n'
+          banner: pkg.config.banner
         },
         files: {
           'libdist/chartist.min.css': ['.tmp/styles/chartist.css']
@@ -380,7 +382,7 @@ module.exports = function (grunt) {
       libdist: {
         options: {
           separator: ';',
-          banner: '/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n'
+          banner: pkg.config.banner
         },
         files: {
           'libdist/chartist.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js', 'source/scripts/chartist.pie.js']
