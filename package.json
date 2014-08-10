@@ -4,6 +4,7 @@
   "author": "Gion Kunz",
   "homepage": "https://github.com/gionkunz/chartist-js",
   "repository": "https://github.com/gionkunz/chartist-js.git",
+  "main": "libdist/chartist.js",
   "license": "WTFPL",
   "dependencies": {},
   "devDependencies": {
