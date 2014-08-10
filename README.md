@@ -24,7 +24,7 @@ reached a stable and reliable state already.
 
 ## Version notes
 
-We are currently on version 0.1.6 and still heavily developing. Your help is needed! Please contribute
+We are currently on version 0.1.7 and still heavily developing. Your help is needed! Please contribute
 to the project if you like the idea and the concept and help us to bring nice looking responsive open-source charts
 to the masses.
 

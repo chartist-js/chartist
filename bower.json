@@ -1,6 +1,6 @@
 {
   "name": "chartist",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "main": [
     "./libdist/chartist.min.js",
     "./libdist/chartist.min.css"
