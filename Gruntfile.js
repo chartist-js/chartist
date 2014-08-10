@@ -392,7 +392,6 @@ module.exports = function (grunt) {
       libdist: {
         src: 'libdist/chartist.js',
         objectToExport: 'Chartist',
-        amdModuleId: 'chartist',
         globalAlias: 'Chartist',
         indent: '  '
       }
