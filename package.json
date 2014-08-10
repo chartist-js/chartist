@@ -1,11 +1,30 @@
 {
   "name": "chartist",
+  "title": "Chartist.js",
   "version": "0.1.6",
   "author": "Gion Kunz",
-  "homepage": "https://github.com/gionkunz/chartist-js",
-  "repository": "https://github.com/gionkunz/chartist-js.git",
+  "homepage": "https://gionkunz.github.io/chartist-js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gionkunz/chartist-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gionkunz/chartist-js/issues"
+  },
+  "keywords": [
+    "chartist",
+    "respnsive charts",
+    "charts",
+    "charting"
+  ],
   "main": "libdist/chartist.js",
-  "license": "WTFPL",
+  "browser": "libdist/chartist.js",
+  "licenses": [
+    {
+      "type": "WTFPL",
+      "url": "https://github.com/gionkunz/chartist-js/blob/master/LICENSE"
+    }
+  ],
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
