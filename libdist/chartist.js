@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.1.7
+  /* Chartist.js 0.1.8
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -19,7 +19,7 @@
 
   // This object is prepared for export via UMD
   var Chartist = {};
-  Chartist.version = '0.1.7';
+  Chartist.version = '0.1.8';
 
   (function (window, document, Chartist) {
     'use strict';
