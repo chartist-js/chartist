@@ -24,7 +24,6 @@
     "$": false,
     "SVG": false,
     "Snap": false,
-    "Foundation": false,
-    "define": false
+    "Foundation": false
   }
 }
