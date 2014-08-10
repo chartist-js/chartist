@@ -333,9 +333,6 @@ module.exports = function (grunt) {
     jasmine: {
       dist: {
         src: [
-          'source/bower_components/jquery/dist/jquery.min.js',
-          'source/bower_components/fastclick/lib/fastclick.js',
-          'source/bower_components/foundation/js/foundation.min.js',
           'source/scripts/chartist.core.js',
           'source/scripts/chartist.svg.js',
           'source/scripts/chartist.line.js',
