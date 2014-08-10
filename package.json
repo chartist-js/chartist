@@ -18,6 +18,7 @@
     "charts",
     "charting"
   ],
+  "files": ["libdist", "sitedist", "LICENSE", "package.json", "README.md"],
   "main": "libdist/chartist.js",
   "browser": "libdist/chartist.js",
   "licenses": [
