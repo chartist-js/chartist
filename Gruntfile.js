@@ -361,7 +361,7 @@ module.exports = function (grunt) {
           sourceMapIncludeSources: true
         },
         files: {
-          'libdist/chartist.min.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js', 'source/scripts/chartist.pie.js']
+          'libdist/chartist.min.js': ['libdist/chartist.js']
         }
       }
     },
@@ -390,6 +390,17 @@ module.exports = function (grunt) {
       }
     },
 
+    // UMDify Chartist libdist
+    umd: {
+      libdist: {
+        src: 'libdist/chartist.js',
+        objectToExport: 'Chartist',
+        amdModuleId: 'chartist',
+        globalAlias: 'Chartist',
+        indent: '  '
+      }
+    },
+
     // Generate documentation with JSHint 3.3 (>3.3 = no Java dependency)
     jsdoc : {
       dist : {
@@ -400,7 +411,6 @@ module.exports = function (grunt) {
       }
     }
   });
-
 
   grunt.registerTask('serve', function (target) {
     if (target === 'dist') {
@@ -445,10 +455,11 @@ module.exports = function (grunt) {
   ]);
 
   grunt.registerTask('libdist', [
-    'cssmin:libdist',
-    'uglify:libdist',
     'copy:libdist',
-    'concat:libdist'
+    'concat:libdist',
+    'umd:libdist',
+    'cssmin:libdist',
+    'uglify:libdist'
   ]);
 
   grunt.registerTask('default', [
