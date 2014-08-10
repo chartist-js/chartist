@@ -3,14 +3,14 @@
         module.exports = factory();
     }
     else if(typeof define === 'function' && define.amd) {
-        define('chartist', [], factory);
+        define([], factory);
     }
     else {
         root['Chartist'] = factory();
     }
 }(this, function() {
 
-  /* Chartist.js 0.1.9
+  /* Chartist.js 0.1.10
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -19,7 +19,7 @@
 
   // This object is prepared for export via UMD
   var Chartist = {};
-  Chartist.version = '0.1.9';
+  Chartist.version = '0.1.10';
 
   (function (window, document, Chartist) {
     'use strict';
