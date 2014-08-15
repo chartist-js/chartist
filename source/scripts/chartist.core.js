@@ -4,25 +4,51 @@
  * @module Chartist.Core
  */
 
-// This object is prepared for export via UMD
+/**
+ * @namespace Chartist
+ * @description The Chartist core contains shared static functions
+ * @description This object is prepared for export via UMD
+ * @version 0.1.2
+ * @author Gion Kunz
+ * @author Ives Ebneter
+ */
 var Chartist = {};
 Chartist.version = '0.1.12';
 
 (function (window, document, Chartist) {
   'use strict';
 
-  // Helps to simplify functional style code
+  /**
+   * @memberOf Chartist
+   * @function noop
+   * @param {*} n This exact value will be returned by the noop function
+   * @return {*} The same value that was provided to the n parameter
+   * @description Helps to simplify functional style code
+   */
   Chartist.noop = function (n) {
     return n;
   };
 
-  // Generates a-z from number
+  /**
+   * @memberOf Chartist
+   * @function alphaNumerate
+   * @param {Number} n A number from 0 to 26 that will result in a letter a-z
+   * @return {String} A character from a-z based on the input number n
+   * @description Generates a-z from number
+   */
   Chartist.alphaNumerate = function (n) {
     // Limit to a-z
     return String.fromCharCode(97 + n % 26);
   };
 
-  // Simple recursive object extend
+  /**
+   * @memberOf Chartist
+   * @function extend
+   * @param {Object} target Target object where the source will be merged into
+   * @param {Object} source This object will be merged into target and then target is returned
+   * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
+   * @description Simple recursive object extend
+   */
   Chartist.extend = function (target, source) {
     target = target || {};
     for (var prop in source) {
@@ -35,12 +61,24 @@ Chartist.version = '0.1.12';
     return target;
   };
 
-  // Get element height / width with fallback to svg BoundingBox or parent container dimensions
-  // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+  /**
+   * @memberOf Chartist
+   * @function getHeight
+   * @description Get element height with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+   * @param {Object} svgElement The svg element from which we want to retrieve its height
+   * @return {number|*} The elements height in pixels
+   */
   Chartist.getHeight = function (svgElement) {
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
   };
 
+  /**
+   * @memberOf Chartist
+   * @function getWidth
+   * @description Get element width with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+   * @param {Object} svgElement The svg element from which we want to retrieve its width
+   * @return {number|*} The elements width in pixels
+   */
   Chartist.getWidth = function (svgElement) {
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
   };
@@ -80,7 +118,13 @@ Chartist.version = '0.1.12';
     return svg;
   };
 
-  // Convert data series into plain array
+  /**
+   * @memberOf Chartist
+   * @function getDataArray
+   * @description Convert data series into plain array
+   * @param {Object} data The Object that contains the data to be visualized in a chart
+   * @return {Array} The Array that contains the data to be visualized in a chart
+   */
   Chartist.getDataArray = function (data) {
     var array = [];
 
