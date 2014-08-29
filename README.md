@@ -1,6 +1,6 @@
 # Big welcome by the Chartist Guy
 
-![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/source/images/chartist-guy.png "The Chartist Guy")
+![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/source/images/chartist-guy.gif "The Chartist Guy")
 
 *Checkout the documentation site at http://gionkunz.github.io/chartist-js/*
 
