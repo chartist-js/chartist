@@ -7,14 +7,14 @@ var data = {
   ]
 };
 
-// As options we currently only set a static size of 300x200 px. We can also omit this and use flexible containers
-// which you'll learn later on
+// As options we currently only set a static size of 300x200 px. We can also omit this and use aspect ratio containers
+// as you saw in the previous example
 var options = {
   width: 300,
   height: 200
 };
 
-// In the global name space Chartist we call the Line function to initialize a line chart
+// In the global name space Chartist we call the Bar function to initialize a bar chart
 // As a first parameter we pass in a selector where we would like to get our chart created
-// Second parameter is the actuall data object and as a third parameter we pass in our options
-Chartist.Line('.ct-chart', data, options);
+// Second parameter is the actual data object and as a third parameter we pass in our options
+Chartist.Bar('.ct-chart', data, options);
