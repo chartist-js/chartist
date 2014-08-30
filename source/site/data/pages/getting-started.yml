@@ -128,14 +128,139 @@ sections:
             - type: text
               data:
                 text: >
-                        In order to create a simple line chart you only need to have a container element and
-                        initialize Chartist.js passing in the selector for the container element. Give the
-                        container the class ct-chart so that it will get the default styles.
+                        Chartist provides you a very simple API to get started, however, while trying to follow the
+                         best practice of relying on standards and clear separation of concerns it sometimes needs a small mind
+                         shift in order to understand how things are meant to work within Chartist. Instead of specifying
+                         your colors, line width and other style related things in the JavaScript API, you'll need to use
+                         CSS in order to control your appearance.
 
-            - type: code-snippet
+            - type: sub-section
               data:
-                id: simple-start-fixed-chart
-                lang: js
+                title: Creating a chart using aspect ratios
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              Because of the nature of responsive design it's important to understand that blocks in design like images,
+                              videos and similar content needs to be able to scale and adapt to the media. In order, for an element to scale, you
+                              need to rely on a certain aspect ratio (like 4:3, 3:2, 16:9 etc.) for your elements and container rather
+                              than specifying a fixed width and height.
+
+                  - type: text
+                    data:
+                      text: >
+                              To Designers this Idea is absolutely not new, but to developers this might be at first. However, when a Designer talks
+                              to a Developer about the images being 320px x 240px on this page and 300px x 200px on that element, he actually just
+                              translated his Design of using 4:3 and 3:2 images into pixels.
+
+                  - type: text
+                    data:
+                      text: >
+                              With Chartist you can specify those ratios directly on containers without the need to calculate any fixed dimensions.
+                              In order to create a chart that is using the aspect ratio of a golden section you can just add the class .ct-golden-section
+                              to your container where you initialize Chartist.
+
+                  - type: text
+                    data:
+                      text: >
+                              Here is a list of all available container ratios (If using the SASS version of Chartist you can also easily add others):
+
+                  - type: table
+                    data:
+                      id: container-aspect-ratio-classes
+                      button: Show available aspect ratios
+                      header:
+                        - Container class
+                        - Ratio
+                      rows:
+                        -
+                          - .ct-minor-second
+                          - '15:16'
+                        -
+                          - .ct-major-second
+                          - '8:9'
+                        -
+                          - .ct-minor-third
+                          - '5:6'
+                        -
+                          - .ct-major-third
+                          - '4:5'
+                        -
+                          - .ct-perfect-fourth
+                          - '3:4'
+                        -
+                          - .ct-perfect-fifth
+                          - '2:3'
+                        -
+                          - .ct-minor-sixth
+                          - '5:8'
+                        -
+                          - .ct-golden-section
+                          - '1:1.618'
+                        -
+                          - .ct-major-sixth
+                          - '3:5'
+                        -
+                          - .ct-minor-seventh
+                          - '9:16'
+                        -
+                          - .ct-major-seventh
+                          - '8:15'
+                        -
+                          - .ct-octave
+                          - '1:2'
+                        -
+                          - .ct-major-tenth
+                          - '2:5'
+                        -
+                          - .ct-major-eleventh
+                          - '3:8'
+                        -
+                          - .ct-major-twelfth
+                          - '1:3'
+                        -
+                          - .ct-double-octave
+                          - '1:4'
+
+                  - type: text
+                    data:
+                      text: >
+                              Use the following HTML code to specify a container with one of the above aspect ratio classes.
+
+                  - type: code
+                    data:
+                      code: '<div class="ct-chart ct-perfect-fourth"></div>'
+                      lang: html
+
+                  - type: text
+                    data:
+                      text: >
+                              When using a fixed aspect ratio container you can then simply initialize your chart without
+                              specifying any width or height in the options.
+
+                  - type: code-snippet
+                    data:
+                      id: simple-start-aspect-ratio-chart
+                      lang: js
+
+            - type: sub-section
+              data:
+                title: Creating a chart with fixed dimensions
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              In order to create a simple line chart with fixed width and height you only need to have a
+                              container element and initialize Chartist.js on it.
+                              Give the container the class ct-chart so that it will get the default styles (if you don't
+                              use your own classes).
+
+                  - type: code-snippet
+                    data:
+                      id: simple-start-fixed-chart
+                      lang: js
 
       - type: sub-section
         data:
