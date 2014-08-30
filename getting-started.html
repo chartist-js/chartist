@@ -8,7 +8,6 @@
 &lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&quot;stylesheet&quot; href=&quot;bower_components/chartist/libdist/chartist.min.css&quot;&gt;
-    &lt;script src=&quot;bower_components/svg.js/dist/svg.js&quot;&gt;&lt;/script&gt;
     &lt;script src=&quot;bower_components/chartist/libdist/chartist.min.js&quot;&gt;&lt;/script&gt;
   &lt;/head&gt;
 &lt;/html&gt;</code></pre></div><div class="sub-section"><h4 id="the-sass-way">The SASS way</h4><p>If you like to customize your charts you can either remove the CSS fully and write your own selectors using the Chartist.js SASS mixins or you just use the Chartist.js SASS settings file to customize the look and feel of your charts.</p><p>Styling inline SVG with CSS is a breeze and you should also consider writing your own selectors for your charts and using the SASS mixins. You can read more about using the SASS mixins in the <a href="#advanced">advanced</a> section.</p><p>To customize the style of your charts using the SASS settings file you should copy the settings file to your own SASS folder.</p><pre><code class="bash">cp bower_components/chartist/libdist/scss/settings/_chartist-settings.scss styles</code></pre><p>Then just import your copy of the settings file before you import the chartist.scss file and change the settings in your copy as desired.</p><pre id="custom-include"><code class="scss">@import &quot;_my-chartist-settings.scss&quot;;
@@ -67,7 +66,7 @@ $ct-include-alternative-responsive-containers: $ct-include-classes !default;
 
 // Series names and colors. This can be extended or customized as desired. Just add more series and colors.
 $ct-series-names: (a, b, c, d) !default;
-$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;</code></pre></div></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>In this section you'll go through a simple example of how to use Chartist.js in your project. You'll learn the default stages you go through when creating and customizing a basic line chart. If you'd like to see more in depth and advanced examples you should check out the <a href="#advanced">advanced</a> section or the <a href="demos.html">demo page</a>.</p><div class="sub-section"><h4 id="as-simple-as-it-can-get">As simple as it can get</h4><p>In order to create a simple line chart you only need to have a container element and initialize Chartist.js passing in the selector for the container element. Give the container the class ct-chart so that it will get the default styles.</p><pre id="simple-start-fixed-chart"><code class="js">var data = {
+$ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;</code></pre></div></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>In this section you'll go through a simple example of how to use Chartist.js in your project. You'll learn the default stages you go through when creating and customizing a basic line chart. If you'd like to see more in depth and advanced examples you should check out the <a href="#advanced">advanced</a> section or the <a href="demos.html">demo page</a>.</p><div class="sub-section"><h4 id="as-simple-as-it-can-get">As simple as it can get</h4><p>Chartist provides you a very simple API to get started, however, while trying to follow the best practice of relying on standards and clear separation of concerns it sometimes needs a small mind shift in order to understand how things are meant to work within Chartist. Instead of specifying your colors, line width and other style related things in the JavaScript API, you'll need to use CSS in order to control your appearance.</p><div class="sub-section"><h5 id="creating-a-chart-using-aspect-ratios">Creating a chart using aspect ratios</h5><p>Because of the nature of responsive design it's important to understand that blocks in design like images, videos and similar content needs to be able to scale and adapt to the media. In order, for an element to scale, you need to rely on a certain aspect ratio (like 4:3, 3:2, 16:9 etc.) for your elements and container rather than specifying a fixed width and height.</p><p>To Designers this Idea is absolutely not new, but to developers this might be at first. However, when a Designer talks to a Developer about the images being 320px x 240px on this page and 300px x 200px on that element, he actually just translated his Design of using 4:3 and 3:2 images into pixels.</p><p>With Chartist you can specify those ratios directly on containers without the need to calculate any fixed dimensions. In order to create a chart that is using the aspect ratio of a golden section you can just add the class .ct-golden-section to your container where you initialize Chartist.</p><p>Here is a list of all available container ratios (If using the SASS version of Chartist you can also easily add others):</p><a href="#" class="button" data-toggle-visible="#container-aspect-ratio-classes">Show available aspect ratios</a><table id="container-aspect-ratio-classes"><thead><tr><th>Container class<th>Ratio<tbody><tr><td>.ct-minor-second<td>15:16<tr><td>.ct-major-second<td>8:9<tr><td>.ct-minor-third<td>5:6<tr><td>.ct-major-third<td>4:5<tr><td>.ct-perfect-fourth<td>3:4<tr><td>.ct-perfect-fifth<td>2:3<tr><td>.ct-minor-sixth<td>5:8<tr><td>.ct-golden-section<td>1:1.618<tr><td>.ct-major-sixth<td>3:5<tr><td>.ct-minor-seventh<td>9:16<tr><td>.ct-major-seventh<td>8:15<tr><td>.ct-octave<td>1:2<tr><td>.ct-major-tenth<td>2:5<tr><td>.ct-major-eleventh<td>3:8<tr><td>.ct-major-twelfth<td>1:3<tr><td>.ct-double-octave<td>1:4</table><p>Use the following HTML code to specify a container with one of the above aspect ratio classes.</p><pre><code class="html">&lt;div class=&quot;ct-chart ct-perfect-fourth&quot;&gt;&lt;/div&gt;</code></pre><p>When using a fixed aspect ratio container you can then simply initialize your chart without specifying any width or height in the options.</p><pre id="simple-start-aspect-ratio-chart"><code class="js">var data = {
   // A labels array that can contain any sort of values
   labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
   // Our series array that contains series objects or in this case series data arrays
@@ -76,17 +75,29 @@ $ct-series-colors: (#d70206, #F05B4F, #F4C63D, #453D3F) !default;</code></pre></
   ]
 };
 
-// As options we currently only set a static size of 300x200 px. We can also omit this and use flexible containers
-// which you&#x27;ll learn later on
+// In the global name space Chartist we call the Line function to initialize a line chart
+// As a first parameter we pass in a selector where we would like to get our chart created
+// Second parameter is the actual data object
+Chartist.Line(&#x27;.ct-chart&#x27;, data);</code></pre></div><div class="sub-section"><h5 id="creating-a-chart-with-fixed-dimensions">Creating a chart with fixed dimensions</h5><p>In order to create a simple line chart with fixed width and height you only need to have a container element and initialize Chartist.js on it. Give the container the class ct-chart so that it will get the default styles (if you don't use your own classes).</p><pre id="simple-start-fixed-chart"><code class="js">var data = {
+  // A labels array that can contain any sort of values
+  labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
+  // Our series array that contains series objects or in this case series data arrays
+  series: [
+    [5, 2, 4, 2, 0]
+  ]
+};
+
+// As options we currently only set a static size of 300x200 px. We can also omit this and use aspect ratio containers
+// as you saw in the previous example
 var options = {
   width: 300,
   height: 200
 };
 
-// In the global name space Chartist we call the Line function to initialize a line chart
+// In the global name space Chartist we call the Bar function to initialize a bar chart
 // As a first parameter we pass in a selector where we would like to get our chart created
-// Second parameter is the actuall data object and as a third parameter we pass in our options
-Chartist.Line(&#x27;.ct-chart&#x27;, data, options);</code></pre></div><div class="sub-section"><h4 id="the-configuration-of-your-chart">The configuration of your chart</h4><p>Chartist.js is built very flexible and almost everything within your charts can be configured. In the default settings (that you can check in the <a href="apidoc/">API Documentation</a>) you'll get some predefined defaults applied to your charts.</p><p>You can always override the default settings of your charts by passing in a configuration object at creation time.</p><div id="simple-configuration-chart" class="ct-chart ct-golden-section" data-chartist-example="Line"></div><a href="#" class="button" data-toggle-visible="#simple-configuration">Show code and comments</a><pre id="simple-configuration"><code class="js">// Our labels and three data series
+// Second parameter is the actual data object and as a third parameter we pass in our options
+Chartist.Bar(&#x27;.ct-chart&#x27;, data, options);</code></pre></div></div><div class="sub-section"><h4 id="the-configuration-of-your-chart">The configuration of your chart</h4><p>Chartist.js is built very flexible and almost everything within your charts can be configured. In the default settings (that you can check in the <a href="apidoc/">API Documentation</a>) you'll get some predefined defaults applied to your charts.</p><p>You can always override the default settings of your charts by passing in a configuration object at creation time.</p><div id="simple-configuration-chart" class="ct-chart ct-golden-section" data-chartist-example="Line"></div><a href="#" class="button" data-toggle-visible="#simple-configuration">Show code and comments</a><pre id="simple-configuration"><code class="js">// Our labels and three data series
 var data = {
   labels: [&#x27;Week1&#x27;, &#x27;Week2&#x27;, &#x27;Week3&#x27;, &#x27;Week4&#x27;, &#x27;Week5&#x27;, &#x27;Week6&#x27;],
   series: [
