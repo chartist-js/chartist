@@ -85,3 +85,23 @@ h5 {
     font-weight: 700;
   }
 }
+
+table {
+  min-width: 50%;
+  text-align: left;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 0.5em 1em;
+  }
+
+  tr {
+    th, td {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  thead th {
+    padding: 0.8em 1em;
+  }
+}

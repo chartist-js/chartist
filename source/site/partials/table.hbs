@@ -1,0 +1,22 @@
+{{#if button}}<a href="#" class="button" data-toggle-visible="#{{id}}">{{button}}</a>{{/if}}
+<table id="{{id}}">
+  {{#if header}}
+    <thead>
+      <tr>
+      {{#each header}}
+        <th>{{this}}</th>
+      {{/each}}
+      </tr>
+    </thead>
+  {{/if}}
+
+  <tbody>
+    {{#each rows}}
+      <tr>
+        {{#each this}}
+          <td>{{this}}</td>
+        {{/each}}
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
