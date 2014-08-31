@@ -10,6 +10,14 @@ If you find a bug in the source code or a mistake in the documentation, you can 
 submitting an issue to our [GitHub Repository][github]. Even better you can submit a Pull Request
 with a fix.
 
+## How to Run a Local Distribution
+
+1. `cd` into your local copy of the repository.
+2. Run `npm install` to install dependencies located in `package.json`.
+3. Run `bower update` to install bower dependencies.
+4. Run `grunt build` to build the local copy.
+5. Run `grunt serve` to start the watch task, and the web server should automatically open. Congrats, you should now be able to see your local copy of the demo site.
+
 ## <a name="submit"></a> Submission Guidelines
 
 If you are creating a Pull Request, fork the repository and make any changes on the `develop` branch.
