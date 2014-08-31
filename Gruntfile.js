@@ -22,8 +22,12 @@ module.exports = function (grunt) {
     // Watches files for changes and runs tasks based on the changed files
     watch: {
       assemble: {
-        files: ['<%= pkg.config.source %>/site/**/*.{hbs,yml,json}'],
-        tasks: ['assemble', 'bowerInstall']
+        files: ['<%= pkg.config.source %>/site/**/*.{hbs,yml,json,js}'],
+        tasks: ['doxication', 'assemble', 'bowerInstall']
+      },
+      doxication: {
+        files: ['.tmp/data/**/*.{yml,json}'],
+        tasks: ['doxication', 'assemble', 'bowerInstall']
       },
       js: {
         files: ['<%= pkg.config.source %>/scripts/{,*/}*.js'],
@@ -131,7 +135,7 @@ module.exports = function (grunt) {
         layoutdir: '<%= pkg.config.source %>/site/layouts',
         layoutext: '.hbs',
         layout: ['default'],
-        data: ['<%= pkg.config.source %>/site/data/**/*.{json,yml}']
+        data: ['<%= pkg.config.source %>/site/data/**/*.{json,yml}', '.tmp/data/**/*.{json,yml}']
       },
       pages: {
         expand: true,
@@ -397,13 +401,14 @@ module.exports = function (grunt) {
       }
     },
 
-    // Generate documentation with JSHint 3.3 (>3.3 = no Java dependency)
-    jsdoc : {
-      dist : {
-        src: ['README.md', 'source/scripts/**/*.js', 'test/**/*.js'],
+    // Generate API documentation data file for usage in assemble
+    doxication : {
+      all: {
         options: {
-          destination: 'sitedist/apidoc'
-        }
+          format: 'yml'
+        },
+        src: ['source/scripts/*.js'],
+        dest: '.tmp/data/apidox.yml'
       }
     }
   });
@@ -415,6 +420,7 @@ module.exports = function (grunt) {
 
     grunt.task.run([
       'clean:server',
+      'doxication',
       'assemble',
       'bowerInstall',
       'concurrent:server',
@@ -437,6 +443,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'doxication',
     'assemble',
     'bowerInstall',
     'useminPrepare',
@@ -446,8 +453,7 @@ module.exports = function (grunt) {
     'cssmin:generated',
     'uglify:generated',
     'usemin',
-    'htmlmin',
-    'jsdoc'
+    'htmlmin'
   ]);
 
   grunt.registerTask('libdist', [

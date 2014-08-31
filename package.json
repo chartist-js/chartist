@@ -18,7 +18,13 @@
     "charts",
     "charting"
   ],
-  "files": ["libdist", "sitedist", "LICENSE", "package.json", "README.md"],
+  "files": [
+    "libdist",
+    "sitedist",
+    "LICENSE",
+    "package.json",
+    "README.md"
+  ],
   "main": "libdist/chartist.js",
   "browser": "libdist/chartist.js",
   "licenses": [
@@ -54,11 +60,11 @@
     "jasmine-fixture": "~1.0.8",
     "assemble": "~0.4.36",
     "grunt-bower-install": "~1.4.0",
-    "jsdoc": "~3.3.0",
-    "grunt-jsdoc": "~0.5.4",
     "handlebars-helpers": "~0.5.5",
     "seed-random": "~2.2.0",
-    "grunt-umd": "^1.7.4"
+    "grunt-umd": "^1.7.4",
+    "grunt-doxication": "0.0.4",
+    "lodash": "^2.4.1"
   },
   "engines": {
     "node": ">=0.8.0"
