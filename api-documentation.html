@@ -1,0 +1,240 @@
+<!doctype html><!--[if lt IE 7]>
+<html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
+<html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><!--[if lt IE 9]>
+<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+  your browser</a> to improve your experience.</p>
+<![endif]--><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/libdist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation" data-sticky="100"><nav><ul class="side-nav"><li class="heading">Module Chartist.Bar</li><li><a href="#method-chartistbar">method Chartist.Bar()</a></li><li class="heading">Module Chartist.Core</li><li class="heading">Module Chartist.Line</li><li><a href="#method-chartistline">method Chartist.Line()</a></li><li class="heading">Module Chartist.Pie</li><li><a href="#method-chartistpie">method Chartist.Pie()</a></li><li class="heading">Module Chartist.Svg</li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>chartist.bar.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbar">Module Chartist.Bar</h4><div class="module-description"><p>The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.</p></div><div class="module-members"><article class="module-member method"><header><h5 class="member-title" id="method-chartistbar"><span class="member-tag">method</span> Chartist.Bar()</h5><div class="description"><p>This method creates a new bar chart and returns an object handle with delegations to the internal closure of the bar chart. You can use the returned object to redraw the chart.</p></div></header><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>string</code></span> <span class="param-type"><code>HTMLElement</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>object</code></span> )<div class="param-description">The data object that needs to consist of a labels and a series array</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre><code class="js">// These are the default options of the line chart
+var options = {
+  // Options for X-Axis
+  axisX: {
+    // The offset of the labels to the chart area
+    offset: 10,
+    // If labels should be shown or not
+    showLabel: true,
+    // If the axis grid should be drawn or not
+    showGrid: true,
+    // Interpolation function that allows you to intercept the value from the axis label
+    labelInterpolationFnc: function(value){return value;}
+  },
+  // Options for Y-Axis
+  axisY: {
+    // The offset of the labels to the chart area
+    offset: 15,
+    // If labels should be shown or not
+    showLabel: true,
+    // If the axis grid should be drawn or not
+    showGrid: true,
+    // For the Y-Axis you can set a label alignment property of right or left
+    labelAlign: &#x27;right&#x27;,
+    // Interpolation function that allows you to intercept the value from the axis label
+    labelInterpolationFnc: function(value){return value;}
+    // This value specifies the minimum height in pixel of the scale steps
+    scaleMinSpace: 30
+  },
+  // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  width: undefined,
+  // Specify a fixed height for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  height: undefined,
+  // If the line should be drawn or not
+  showLine: true,
+  // If dots should be drawn or not
+  showPoint: true,
+  // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
+  lineSmooth: true,
+  // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+  low: undefined,
+  // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
+  high: undefined,
+  // Padding of the chart drawing area to the container element and labels
+  chartPadding: 5,
+  // Specify the distance in pixel of bars in a group
+  seriesBarDistance: 15,
+  // Override the class names that get used to generate the SVG structure of the chart
+  classNames: {
+    label: &#x27;ct-label&#x27;,
+    series: &#x27;ct-series&#x27;,
+    bar: &#x27;ct-bar&#x27;,
+    point: &#x27;ct-point&#x27;,
+    grid: &#x27;ct-grid&#x27;,
+    vertical: &#x27;ct-vertical&#x27;,
+    horizontal: &#x27;ct-horizontal&#x27;
+  }
+};
+</code></pre><pre><code class="js">// Create a simple bar chart
+var data = {
+  labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
+  series: [
+    [5, 2, 4, 2, 0]
+  ]
+};
+
+// In the global name space Chartist we call the Bar function to initialize a bar chart. As a first parameter we pass in a selector where we would like to get our chart created and as a second parameter we pass our data object.
+Chartist.Bar(&#x27;.ct-chart&#x27;, data);
+</code></pre><pre><code class="js">// This example creates a bipolar grouped bar chart where the boundaries are limitted to -10 and 10
+Chartist.Bar(&#x27;.ct-chart&#x27;, {
+  labels: [1, 2, 3, 4, 5, 6, 7],
+  series: [
+    [1, 3, 2, -5, -3, 1, -6],
+    [-5, -2, -4, -1, 2, -3, 1]
+  ]
+}, {
+  seriesBarDistance: 12,
+  low: -10,
+  heigh: 10
+});</code></pre></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.core.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistcore">Module Chartist.Core</h4><div class="module-description"><p>The core module of Chartist that is mainly providing static functions and higher level functions for chart modules.</p></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.line.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistline">Module Chartist.Line</h4><div class="module-description"><p>The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global <code>Chartist</code> namespace where you find the <code>Line</code> function as a main entry point.</p></div><div class="module-members"><article class="module-member method"><header><h5 class="member-title" id="method-chartistline"><span class="member-tag">method</span> Chartist.Line()</h5><div class="description"><p>This method creates a new line chart and returns an object handle to the internal closure. Currently you can use the returned object only for updating / redrawing the chart.</p></div></header><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>string</code></span> <span class="param-type"><code>HTMLElement</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>object</code></span> )<div class="param-description">The data object that needs to consist of a labels and a series array</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre><code class="js">// These are the default options of the line chart
+var options = {
+  // Options for X-Axis
+  axisX: {
+    // The offset of the labels to the chart area
+    offset: 10,
+    // If labels should be shown or not
+    showLabel: true,
+    // If the axis grid should be drawn or not
+    showGrid: true,
+    // Interpolation function that allows you to intercept the value from the axis label
+    labelInterpolationFnc: function(value){return value;}
+  },
+  // Options for Y-Axis
+  axisY: {
+    // The offset of the labels to the chart area
+    offset: 15,
+    // If labels should be shown or not
+    showLabel: true,
+    // If the axis grid should be drawn or not
+    showGrid: true,
+    // For the Y-Axis you can set a label alignment property of right or left
+    labelAlign: &#x27;right&#x27;,
+    // Interpolation function that allows you to intercept the value from the axis label
+    labelInterpolationFnc: function(value){return value;}
+    // This value specifies the minimum height in pixel of the scale steps
+    scaleMinSpace: 30
+  },
+  // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  width: undefined,
+  // Specify a fixed height for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  height: undefined,
+  // If the line should be drawn or not
+  showLine: true,
+  // If dots should be drawn or not
+  showPoint: true,
+  // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
+  lineSmooth: true,
+  // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+  low: undefined,
+  // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
+  high: undefined,
+  // Padding of the chart drawing area to the container element and labels
+  chartPadding: 5,
+  // Override the class names that get used to generate the SVG structure of the chart
+  classNames: {
+    label: &#x27;ct-label&#x27;,
+    series: &#x27;ct-series&#x27;,
+    line: &#x27;ct-line&#x27;,
+    point: &#x27;ct-point&#x27;,
+    grid: &#x27;ct-grid&#x27;,
+    vertical: &#x27;ct-vertical&#x27;,
+    horizontal: &#x27;ct-horizontal&#x27;
+  }
+};
+</code></pre><pre><code class="js">// Create a simple line chart
+var data = {
+  // A labels array that can contain any sort of values
+  labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
+  // Our series array that contains series objects or in this case series data arrays
+  series: [
+    [5, 2, 4, 2, 0]
+  ]
+};
+
+// As options we currently only set a static size of 300x200 px
+var options = {
+  width: &#x27;300px&#x27;,
+  height: &#x27;200px&#x27;
+};
+
+// In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
+Chartist.Line(&#x27;.ct-chart&#x27;, data, options);
+</code></pre><pre><code class="js">// Create a line chart with responsive options
+
+var data = {
+  // A labels array that can contain any sort of values
+  labels: [&#x27;Monday&#x27;, &#x27;Tuesday&#x27;, &#x27;Wednesday&#x27;, &#x27;Thursday&#x27;, &#x27;Friday&#x27;],
+  // Our series array that contains series objects or in this case series data arrays
+  series: [
+    [5, 2, 4, 2, 0]
+  ]
+};
+
+// In adition to the regular options we specify responsive option overrides that will override the default configutation based on the matching media queries.
+var responsiveOptions = [
+  [&#x27;screen and (min-width: 641px) and (max-width: 1024px)&#x27;, {
+    showPoint: false,
+    axisX: {
+      labelInterpolationFnc: function(value) {
+        // Will return Mon, Tue, Wed etc. on medium screens
+        return value.slice(0, 3);
+      }
+    }
+  }],
+  [&#x27;screen and (max-width: 640px)&#x27;, {
+    showLine: false,
+    axisX: {
+      labelInterpolationFnc: function(value) {
+        // Will return M, T, W etc. on small screens
+        return value[0];
+      }
+    }
+  }]
+];
+
+Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code></pre></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.pie.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistpie">Module Chartist.Pie</h4><div class="module-description"><p>The pie chart module of Chartist that can be used to draw pie, donut or gauge charts</p></div><div class="module-members"><article class="module-member method"><header><h5 class="member-title" id="method-chartistpie"><span class="member-tag">method</span> Chartist.Pie()</h5><div class="description"><p>This method creates a new pie chart and returns an object that can be used to redraw the chart.</p></div></header><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>string</code></span> <span class="param-type"><code>HTMLElement</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>object</code></span> )<div class="param-description">The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don&#x27;t necessarily need to be in percentage.</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre><code class="js">// Default options of the pie chart
+var defaultOptions = {
+  // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  width: undefined,
+  // Specify a fixed height for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  height: undefined,
+  // Padding of the chart drawing area to the container element and labels
+  chartPadding: 5,
+  // Override the class names that get used to generate the SVG structure of the chart
+  classNames: {
+    series: &#x27;ct-series&#x27;,
+    slice: &#x27;ct-slice&#x27;,
+    donut: &#x27;ct-donut&#x27;
+  },
+  // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
+  startAngle: 0,
+  // An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
+  total: undefined,
+  // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
+  donut: false,
+  // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
+  donutWidth: 60
+};
+</code></pre><pre><code class="js">// Simple pie chart example with four series
+Chartist.Pie(&#x27;.ct-chart&#x27;, {
+  series: [10, 2, 4, 3]
+});
+</code></pre><pre><code class="js">// Drawing a donut chart
+Chartist.Pie(&#x27;.ct-chart&#x27;, {
+  series: [10, 2, 4, 3]
+}, {
+  donut: true
+});
+</code></pre><pre><code class="js">// Using donut, startAngle and total to draw a gauge chart
+Chartist.Pie(&#x27;.ct-chart&#x27;, {
+  series: [20, 10, 30, 40]
+}, {
+  donut: true,
+  donutWidth: 20,
+  startAngle: 270,
+  total: 200
+});</code></pre></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.svg.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvg">Module Chartist.svg</h4><div class="module-description"><p>Chartist SVG module for simple SVG DOM abstraction</p></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53685926-1', 'auto');
+  ga('send', 'pageview');</script><!--[if lt IE 9]>
+<script src="scripts/oldie.js"></script>
+<![endif]--><script src="scripts/vendor.js"></script><script src="scripts/scripts.js"></script>
