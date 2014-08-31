@@ -1,0 +1,42 @@
+<article class="module-member {{ctx.type}}">
+  <header>
+    <h5 class="member-title" id="{{slugify (concat ctx.type ' ' ctx.string)}}"><span class="member-tag">{{ctx.type}}</span> {{ctx.string}}</h5>
+    <div class="description">{{{description.summary}}}</div>
+  </header>
+  {{#is ctx.type 'method'}}
+    <h6>Parameters</h6>
+    {{#each (doxTagsOfType this 'param')}}
+      <div class="param">
+        <code>{{name}}</code>
+        ({{#each types}}
+          <span class="param-type"><code>{{this}}</code></span>
+        {{/each}})
+        <div class="param-description">{{description}}</div>
+      </div>
+    {{/each}}
+
+    {{#with (doxTag this 'return')}}
+      <h6>Returns</h6>
+
+      <div class="return">
+        ({{#each types}}
+          <span class="param-type"><code>{{this}}</code></span>
+        {{/each}})
+        <div class="param-description">{{description}}</div>
+      </div>
+    {{/with}}
+  {{/is}}
+
+  {{#if (doxTag this 'showcode')}}
+    <h6>Code</h6>
+    <div class="code">
+      <pre><code class="js">{{code}}</code></pre>
+    </div>
+  {{/if}}
+
+  <h6>Examples</h6>
+  {{#each (doxTagsOfType this 'example')}}
+    <pre><code class="js">{{string}}</code></pre>
+  {{/each}}
+
+</article>
