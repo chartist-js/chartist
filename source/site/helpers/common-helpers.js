@@ -39,6 +39,15 @@ module.exports.register = function (Handlebars, opt, params)  {
       return slugify(str);
     },
 
+    concat: function() {
+      var arr = [];
+      for(var i = 0; i < arguments.length - 1; i++) {
+        arr[i] = arguments[i];
+      }
+
+      return arr.join('');
+    },
+
     partial: function(name, context) {
       var partial = Handlebars.partials[name];
 
