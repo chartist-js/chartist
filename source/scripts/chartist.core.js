@@ -1,4 +1,8 @@
-// The Chartist core contains shared static functions
+/**
+ * The core module of Chartist that is mainly providing static functions and higher level functions for chart modules.
+ *
+ * @module Chartist.Core
+ */
 
 // This object is prepared for export via UMD
 var Chartist = {};

@@ -1,8 +1,73 @@
-// Chartist Pie & Donut chart
+/**
+ * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts
+ *
+ * @module Chartist.Pie
+ */
 /* global Chartist */
 (function(window, document, Chartist) {
   'use strict';
 
+  /**
+   * This method creates a new pie chart and returns an object that can be used to redraw the chart.
+   *
+   * @memberof Chartist.Pie
+   * @param {string|HTMLElement} query A selector query string or directly a DOM element
+   * @param {object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
+   * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+   * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+   * @return {object} An object with a version and an update method to manually redraw the chart
+   * @function
+   *
+   * @example
+   * // Default options of the pie chart
+   * var defaultOptions = {
+   *   // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
+   *   width: undefined,
+   *   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
+   *   height: undefined,
+   *   // Padding of the chart drawing area to the container element and labels
+   *   chartPadding: 5,
+   *   // Override the class names that get used to generate the SVG structure of the chart
+   *   classNames: {
+   *     series: 'ct-series',
+   *     slice: 'ct-slice',
+   *     donut: 'ct-donut'
+   *   },
+   *   // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
+   *   startAngle: 0,
+   *   // An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
+   *   total: undefined,
+   *   // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
+   *   donut: false,
+   *   // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
+   *   donutWidth: 60
+   * };
+   *
+   * @example
+   * // Simple pie chart example with four series
+   * Chartist.Pie('.ct-chart', {
+   *   series: [10, 2, 4, 3]
+   * });
+   *
+   * @example
+   * // Drawing a donut chart
+   * Chartist.Pie('.ct-chart', {
+   *   series: [10, 2, 4, 3]
+   * }, {
+   *   donut: true
+   * });
+   *
+   * @example
+   * // Using donut, startAngle and total to draw a gauge chart
+   * Chartist.Pie('.ct-chart', {
+   *   series: [20, 10, 30, 40]
+   * }, {
+   *   donut: true,
+   *   donutWidth: 20,
+   *   startAngle: 270,
+   *   total: 200
+   * });
+   */
   Chartist.Pie = function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {

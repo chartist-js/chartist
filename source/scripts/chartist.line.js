@@ -1,8 +1,139 @@
-// Chartist Line chart
+/**
+ * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
+ *
+ * For examples on how to use the line chart please check the examples of the `Chartist.Line` method.
+ *
+ * @module Chartist.Line
+ */
 /* global Chartist */
 (function(window, document, Chartist){
   'use strict';
 
+  /**
+   * This method creates a new line chart and returns an object handle to the internal closure. Currently you can use the returned object only for updating / redrawing the chart.
+   *
+   * @memberof Chartist.Line
+   * @param {string|HTMLElement} query A selector query string or directly a DOM element
+   * @param {object} data The data object that needs to consist of a labels and a series array
+   * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+   * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+   * @return {object} An object with a version and an update method to manually redraw the chart
+   * @function
+   *
+   * @example
+   * // These are the default options of the line chart
+   * var options = {
+   *   // Options for X-Axis
+   *   axisX: {
+   *     // The offset of the labels to the chart area
+   *     offset: 10,
+   *     // If labels should be shown or not
+   *     showLabel: true,
+   *     // If the axis grid should be drawn or not
+   *     showGrid: true,
+   *     // Interpolation function that allows you to intercept the value from the axis label
+   *     labelInterpolationFnc: function(value){return value;}
+   *   },
+   *   // Options for Y-Axis
+   *   axisY: {
+   *     // The offset of the labels to the chart area
+   *     offset: 15,
+   *     // If labels should be shown or not
+   *     showLabel: true,
+   *     // If the axis grid should be drawn or not
+   *     showGrid: true,
+   *     // For the Y-Axis you can set a label alignment property of right or left
+   *     labelAlign: 'right',
+   *     // Interpolation function that allows you to intercept the value from the axis label
+   *     labelInterpolationFnc: function(value){return value;}
+   *     // This value specifies the minimum height in pixel of the scale steps
+   *     scaleMinSpace: 30
+   *   },
+   *   // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
+   *   width: undefined,
+   *   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
+   *   height: undefined,
+   *   // If the line should be drawn or not
+   *   showLine: true,
+   *   // If dots should be drawn or not
+   *   showPoint: true,
+   *   // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
+   *   lineSmooth: true,
+   *   // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+   *   low: undefined,
+   *   // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
+   *   high: undefined,
+   *   // Padding of the chart drawing area to the container element and labels
+   *   chartPadding: 5,
+   *   // Override the class names that get used to generate the SVG structure of the chart
+   *   classNames: {
+   *     label: 'ct-label',
+   *     series: 'ct-series',
+   *     line: 'ct-line',
+   *     point: 'ct-point',
+   *     grid: 'ct-grid',
+   *     vertical: 'ct-vertical',
+   *     horizontal: 'ct-horizontal'
+   *   }
+   * };
+   *
+   * @example
+   * // Create a simple line chart
+   * var data = {
+   *   // A labels array that can contain any sort of values
+   *   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+   *   // Our series array that contains series objects or in this case series data arrays
+   *   series: [
+   *     [5, 2, 4, 2, 0]
+   *   ]
+   * };
+   *
+   * // As options we currently only set a static size of 300x200 px
+   * var options = {
+   *   width: '300px',
+   *   height: '200px'
+   * };
+   *
+   * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
+   * Chartist.Line('.ct-chart', data, options);
+   *
+   * @example
+   * // Create a line chart with responsive options
+   *
+   * var data = {
+   *   // A labels array that can contain any sort of values
+   *   labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+   *   // Our series array that contains series objects or in this case series data arrays
+   *   series: [
+   *     [5, 2, 4, 2, 0]
+   *   ]
+   * };
+   *
+   * // In adition to the regular options we specify responsive option overrides that will override the default configutation based on the matching media queries.
+   * var responsiveOptions = [
+   *   ['screen and (min-width: 641px) and (max-width: 1024px)', {
+   *     showPoint: false,
+   *     axisX: {
+   *       labelInterpolationFnc: function(value) {
+   *         // Will return Mon, Tue, Wed etc. on medium screens
+   *         return value.slice(0, 3);
+   *       }
+   *     }
+   *   }],
+   *   ['screen and (max-width: 640px)', {
+   *     showLine: false,
+   *     axisX: {
+   *       labelInterpolationFnc: function(value) {
+   *         // Will return M, T, W etc. on small screens
+   *         return value[0];
+   *       }
+   *     }
+   *   }]
+   * ];
+   *
+   * Chartist.Line('.ct-chart', data, null, responsiveOptions);
+   *
+   */
   Chartist.Line = function (query, data, options, responsiveOptions) {
 
     var defaultOptions = {

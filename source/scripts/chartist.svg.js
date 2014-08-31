@@ -1,4 +1,8 @@
-// Chartist simple SVG DOM abstraction library
+/**
+ * Chartist SVG module for simple SVG DOM abstraction
+ *
+ * @module Chartist.svg
+ */
 /* global Chartist */
 (function(window, document, Chartist) {
   'use strict';
