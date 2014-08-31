@@ -25,8 +25,9 @@ We have three grunt tasks:
 1. `grunt build` - Creates the distribution of the example / demo site which is used as visual development help of the charts but also serves as the documentation site / gh-pages.
 2. `grunt serve` - Starts watch with livereload that is executing the same things as the site dist default task but for live development.
 3. `grunt test` - Executes jasmine tests separately, although we have a very big lack of tests.
-4. `grunt libdist` - Creates the libdist folder that contains UMDified, minified, and bannered versions of the concatenated files.
-5. `grunt serve:dist` - Executes a dist and serves the directory statically in order to serve with the production example / demo site.
+4. `grunt serve:dist` - Executes a dist and serves the directory statically in order to serve with the production example / demo site.
+
+`libdist` should **not** be included in any Pull Requests. So please ensure that code is not being committed as part of the Pull Request.
 
 ### Documentation
 
