@@ -86,6 +86,12 @@ h5 {
   }
 }
 
+h6 {
+  font-size: rem-calc(nth($modular-scale, 3));
+  font-weight: 700;
+  margin-top: 2em;
+}
+
 table {
   min-width: 50%;
   text-align: left;

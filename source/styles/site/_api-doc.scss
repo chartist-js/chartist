@@ -1,0 +1,18 @@
+.module-member {
+  margin-bottom: 2em;
+
+  .member-title {
+    background: #453D3F;
+    padding: 0.5em;
+    color: white;
+    text-transform: none;
+  }
+
+  .param {
+    margin-bottom: 0.5em;
+
+    > code {
+      font-weight: bold;
+    }
+  }
+}
