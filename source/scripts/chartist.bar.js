@@ -43,7 +43,7 @@
    *     // For the Y-Axis you can set a label alignment property of right or left
    *     labelAlign: 'right',
    *     // Interpolation function that allows you to intercept the value from the axis label
-   *     labelInterpolationFnc: function(value){return value;}
+   *     labelInterpolationFnc: function(value){return value;},
    *     // This value specifies the minimum height in pixel of the scale steps
    *     scaleMinSpace: 30
    *   },
