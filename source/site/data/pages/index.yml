@@ -11,7 +11,7 @@ sections:
         data:
           title: Cross-browser support
           classes: hint-cross-browser
-          text: Note that CSS3 animations on SVG CSS attributes is not supported on all browsers and the appearance may vary.
+          text: Note that CSS3 animations on SVG CSS attributes are not supported on all browsers and the appearance may vary.
     side-notes:
       - type: text
         data:
