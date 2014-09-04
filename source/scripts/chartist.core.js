@@ -6,8 +6,7 @@
 
 /**
  * @namespace Chartist
- * @description The Chartist core contains shared static functions
- * @description This object is prepared for export via UMD
+ * @description The Chartist core contains shared static functions.This object is prepared for export via UMD
  * @version 0.1.2
  * @author Gion Kunz
  * @author Ives Ebneter
@@ -64,9 +63,9 @@ Chartist.version = '0.1.12';
   /**
    * @memberOf Chartist
    * @function getHeight
-   * @description Get element height with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
    * @param {Object} svgElement The svg element from which we want to retrieve its height
-   * @return {number|*} The elements height in pixels
+   * @return {Number} The elements height in pixels
+   * @description Get element height with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
    */
   Chartist.getHeight = function (svgElement) {
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
@@ -75,9 +74,9 @@ Chartist.version = '0.1.12';
   /**
    * @memberOf Chartist
    * @function getWidth
-   * @description Get element width with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
    * @param {Object} svgElement The svg element from which we want to retrieve its width
-   * @return {number|*} The elements width in pixels
+   * @return {Number} The elements width in pixels
+   * @description Get element width with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
    */
   Chartist.getWidth = function (svgElement) {
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
@@ -121,9 +120,9 @@ Chartist.version = '0.1.12';
   /**
    * @memberOf Chartist
    * @function getDataArray
+   * @param {Object} data The Object that contains the data to be visualized in the chart
+   * @return {Array} The Array that contains the data to be visualized in the chart
    * @description Convert data series into plain array
-   * @param {Object} data The Object that contains the data to be visualized in a chart
-   * @return {Array} The Array that contains the data to be visualized in a chart
    */
   Chartist.getDataArray = function (data) {
     var array = [];
@@ -138,7 +137,14 @@ Chartist.version = '0.1.12';
     return array;
   };
 
-  // Add missing values at the end of the arrays
+  /**
+   * @memberOf Chartist
+   * @function normalizeDataArray
+   * @param {Array} dataArray The array that contains the data to be visualized in the chart
+   * @param {Number} length The length of the x-axis data array.
+   * @return {Array} The array that got updated with missing values.
+   * @description Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart
+   */
   Chartist.normalizeDataArray = function (dataArray, length) {
     for (var i = 0; i < dataArray.length; i++) {
       if (dataArray[i].length === length) {
@@ -153,20 +159,51 @@ Chartist.version = '0.1.12';
     return dataArray;
   };
 
+  /**
+   * @memberOf Chartist
+   * @function orderOfMagnitude
+   * @param {Number} value The value Range of the chart
+   * @return {Number} The order of magnitude
+   * @description Calculate the order of magnitude for the chart
+   */
   Chartist.orderOfMagnitude = function (value) {
     return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
   };
 
+  /**
+   * @memberOf Chartist
+   * @function projectLength
+   * @param {Object} svg The svg element for the chart
+   * @param {Number} length ?
+   * @param {Object} bounds All the values to set the bounds of the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @return {Number} ?
+   * @description ?
+   */
   Chartist.projectLength = function (svg, length, bounds, options) {
     var availableHeight = Chartist.getAvailableHeight(svg, options);
     return (length / bounds.range * availableHeight);
   };
 
+  /**
+   * @memberOf Chartist
+   * @function getAvailableHeight
+   * @param {Object} svg The svg element for the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @return {Number} The height of the area in the chart for the data series
+   * @description Get the height of the area in the chart for the data series
+   */
   Chartist.getAvailableHeight = function (svg, options) {
     return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
   };
 
-  // Get highest and lowest value of data array
+  /**
+   * @memberOf Chartist
+   * @function getHighLow
+   * @param {Array} dataArray The array that contains the data to be visualized in the chart
+   * @return {Array} The array that contains the highest and lowest value that will be visualized on the chart.
+   * @description Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.
+   */
   Chartist.getHighLow = function (dataArray) {
     var i,
       j,
@@ -191,6 +228,16 @@ Chartist.version = '0.1.12';
   };
 
   // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
+  /**
+   * @memberOf Chartist
+   * @function getBounds
+   * @param {Object} svg The svg element for the chart
+   * @param {Array} normalizedData The array that got updated with missing values.
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Number} referenceValue The reference value for the chart.
+   * @return {Object} All the values to set the bounds of the chart
+   * @description Calculate and retrieve all the bounds for the chart and return them in one array
+   */
   Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
     var i,
       newMin,
@@ -251,6 +298,17 @@ Chartist.version = '0.1.12';
     return bounds;
   };
 
+  /**
+   * @memberOf Chartist
+   * @function calculateLabelOffset
+   * @param {Object} svg The svg element for the chart
+   * @param {Array} data The array that contains the data to be visualized in the chart
+   * @param {Object} labelClass ?
+   * @param {Function} labelInterpolationFnc The Function that will return the labels
+   * @param {Function} offsetFnc ?
+   * @return {number} The number that represents the label offset in pixels
+   * @description Calculate the needed offset to fit in the labels
+   */
   Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
     var offset = 0;
     for (var i = 0; i < data.length; i++) {
@@ -274,7 +332,14 @@ Chartist.version = '0.1.12';
     return offset;
   };
 
-  // Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
+  /**
+   * @memberOf Chartist
+   * @function interpolateData
+   * @param {Array} data The array that contains the data to be visualized in the chart
+   * @param {Function} labelInterpolationFnc The Function that will return the labels
+   * @param {Function} callback ?
+   * @description Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
+   */
   Chartist.interpolateData = function (data, labelInterpolationFnc, callback) {
     for (var index = 0; index < data.length; index++) {
       // If interpolation function returns falsy value we skipp this label
@@ -287,6 +352,16 @@ Chartist.version = '0.1.12';
     }
   };
 
+  /**
+   * @memberOf Chartist
+   * @function polarToCartesian
+   * @param {Number} centerX X-axis coordinates of center point of circle segment
+   * @param {Number} centerY X-axis coordinates of center point of circle segment
+   * @param {Number} radius Radius of circle segment
+   * @param {Number} angleInDegrees Angle of circle segment in degrees
+   * @return {{x: Number, y: Number}} Coordinates of point on circumference
+   * @description Calculate cartesian coordinates of polar coordinates
+   */
   Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
 
@@ -296,7 +371,16 @@ Chartist.version = '0.1.12';
     };
   };
 
-  // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+  /**
+   * @memberOf Chartist
+   * @function createChartRect
+   * @param {Object} svg The svg element for the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Number} xAxisOffset The offset of the x-axis to the border of the svg element
+   * @param {Number} yAxisOffset The offset of the y-axis to the border of the svg element
+   * @return {{x1: Number, y1: Number, x2: Number, y2: Number, width: Number, height: Number}} The chart rectangles coordinates inside the svg element plus the rectangles measurements
+   * @description Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+   */
   Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
@@ -312,6 +396,16 @@ Chartist.version = '0.1.12';
     };
   };
 
+  /**
+   * @memberOf Chartist
+   * @function createXAxis
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} data The Object that contains the data to be visualized in the chart
+   * @param {Object} grid ?
+   * @param {Object} labels ?
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @description Draw the x-axis onto the svg element
+   */
   Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
     // Create X-Axis
     data.labels.forEach(function (value, index) {
@@ -346,6 +440,17 @@ Chartist.version = '0.1.12';
     });
   };
 
+  /**
+   * @memberOf Chartist
+   * @function createYAxis
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} bounds All the values to set the bounds of the chart
+   * @param grid ?
+   * @param labels ?
+   * @param {Number} offset Offset for the y-axis
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @description Draw the y-axis onto the svg element
+   */
   Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
     // Create Y-Axis
     bounds.values.forEach(function (value, index) {
@@ -376,6 +481,16 @@ Chartist.version = '0.1.12';
     });
   };
 
+  /**
+   * @memberOf Chartist
+   * @function projectPoint
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} bounds All the values to set the bounds of the chart
+   * @param {Array} data The array that contains the data to be visualized in the chart
+   * @param {Number} index The index of the current project point
+   * @return {{x: number, y: number}} The coordinates of the current project point on the svg element
+   * @description Determine the current point on the svg element to draw the data series
+   */
   Chartist.projectPoint = function (chartRect, bounds, data, index) {
     return {
       x: chartRect.x1 + chartRect.width() / data.length * index,
@@ -383,8 +498,17 @@ Chartist.version = '0.1.12';
     };
   };
 
-  // Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
   // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one
+  /**
+   * @memberOf Chartist
+   * @function optionsProvider
+   * @param {Object} defaultOptions Default options from Chartist
+   * @param {Object} options Options set by user
+   * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
+   * @param {Function} optionsChangedCallbackFnc ?
+   * @return {Function} ?
+   * @description Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+   */
   Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {
     var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
       currentOptions,
@@ -421,7 +545,14 @@ Chartist.version = '0.1.12';
     return applyOptions();
   };
 
-  // http://schepers.cc/getting-to-the-point
+  /**
+   * @memberOf Chartist
+   * @function catmullRom2bezier
+   * @param {Array} crp ?
+   * @param {Boolean} z ?
+   * @return {Array} ?
+   * @description http://schepers.cc/getting-to-the-point
+   */
   Chartist.catmullRom2bezier = function (crp, z) {
     var d = [];
     for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
