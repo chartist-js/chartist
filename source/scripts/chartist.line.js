@@ -233,6 +233,9 @@
         if (options.showPoint) {
           // Small offset for Firefox to render squares correctly
           point = seriesGroups[i].elem('line', {
+            // need x & y data for a tooltip
+            x:data.labels[i],
+            y:data.series[0][0],
             x1: p.x,
             y1: p.y,
             x2: p.x + 0.01,
@@ -249,6 +252,9 @@
           // Small offset for Firefox to render squares correctly
           if (options.showPoint) {
             point = seriesGroups[i].elem('line', {
+              // need x & y data for a tooltip
+              x:data.labels[i],
+              y:data.series[i][j],
               x1: p.x,
               y1: p.y,
               x2: p.x + 0.01,
