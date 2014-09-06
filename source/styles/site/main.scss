@@ -101,6 +101,16 @@ pre > code {
   margin-bottom: 1rem;
 }
 
+.ct-chart-pie {
+  .ct-label {
+    font-size: 1em;
+
+    @media #{$small-only} {
+      fill: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
 .main {
   @include grid-row();
 

@@ -48,8 +48,41 @@
     // Simple pie chart
     'example-gallery-three': {
       data: {
+        labels: ['Day one', 'Day two', 'Day three', 'Day four'],
         series: [20, 15, 40, 10]
-      }
+      },
+      options: {
+        labelInterpolationFnc: function(value) {
+          return value.split(/\s+/).reduce(function(str, elem) {
+            return str + elem[0] + '.';
+          }, '');
+        }
+      },
+      responsiveOptions: [
+        [
+          Foundation.media_queries.medium,
+          {
+            chartPadding: 30,
+            labelOffset: 50,
+            labelDirection: 'explode',
+            labelInterpolationFnc: function(value) {
+              return value;
+            }
+          }
+        ],
+        [
+          Foundation.media_queries.large,
+          {
+            labelOffset: 80
+          }
+        ],
+        [
+          Foundation.media_queries.xlarge,
+          {
+            labelOffset: 100
+          }
+        ]
+      ]
     },
 
     // Pie as donut
@@ -60,8 +93,29 @@
       options: {
         donut: true,
         donutWidth: 40,
-        total: 100
-      }
+        total: 100,
+        labelInterpolationFnc: function(value) {
+          return value + '%';
+        }
+      },
+      responsiveOptions: [
+        [
+          Foundation.media_queries.medium,
+          {
+            labelOffset: 30,
+            chartPadding: 10,
+            labelDirection: 'explode'
+          }
+        ],
+        [
+          Foundation.media_queries.large,
+          {
+            labelOffset: -30,
+            chartPadding: 0,
+            labelDirection: 'implode'
+          }
+        ]
+      ]
     },
 
     // Simple line chart demo with month view on x axis and label interpolation that only shows ever second month's label on mobile

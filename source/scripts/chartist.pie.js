@@ -32,7 +32,8 @@
    *     chart: 'ct-chart-pie',
    *     series: 'ct-series',
    *     slice: 'ct-slice',
-   *     donut: 'ct-donut'
+   *     donut: 'ct-donut',
+         label: 'ct-label'
    *   },
    *   // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
    *   startAngle: 0,
@@ -41,7 +42,15 @@
    *   // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
    *   donut: false,
    *   // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
-   *   donutWidth: 60
+   *   donutWidth: 60,
+   *   // If a label should be shown or not
+   *   showLabel: true,
+   *   // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
+   *   labelOffset: 0,
+   *   // An interpolation function for the label value
+   *   labelInterpolationFnc: function(value, index) {return value;},
+   *   // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
+   *   labelDirection: 'neutral'
    * };
    *
    * @example
@@ -68,6 +77,16 @@
    *   startAngle: 270,
    *   total: 200
    * });
+   *
+   * @example
+   * // Drawing a pie chart with padding and labels that are outside the pie
+   * Chartist.Pie('.ct-chart', {
+   *   series: [20, 10, 30, 40]
+   * }, {
+   *   chartPadding: 30,
+   *   labelOffset: 50,
+   *   labelDirection: 'explode'
+   * });
    */
   Chartist.Pie = function (query, data, options, responsiveOptions) {
 
@@ -79,20 +98,41 @@
           chart: 'ct-chart-pie',
           series: 'ct-series',
           slice: 'ct-slice',
-          donut: 'ct-donut'
+          donut: 'ct-donut',
+          label: 'ct-label'
         },
         startAngle: 0,
         total: undefined,
         donut: false,
-        donutWidth: 60
+        donutWidth: 60,
+        showLabel: true,
+        labelOffset: 0,
+        labelInterpolationFnc: Chartist.noop,
+        labelOverflow: false,
+        labelDirection: 'neutral'
       },
       currentOptions,
       svg;
+
+    function determineAnchorPosition(center, label, direction) {
+      var toTheRight = label.x > center.x;
+
+      if(toTheRight && direction === 'explode' ||
+        !toTheRight && direction === 'implode') {
+        return 'start';
+      } else if(toTheRight && direction === 'implode' ||
+        !toTheRight && direction === 'explode') {
+        return 'end';
+      } else {
+        return 'middle';
+      }
+    }
 
     function createChart(options) {
       var seriesGroups = [],
         chartRect,
         radius,
+        labelRadius,
         totalDataSum,
         startAngle = options.startAngle,
         dataArray = Chartist.getDataArray(data);
@@ -112,6 +152,12 @@
       // Unfortunately this is not possible with the current SVG Spec
       // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
       radius -= options.donut ? options.donutWidth / 2  : 0;
+
+      // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
+      // see https://github.com/gionkunz/chartist-js/issues/21
+      labelRadius = options.donut ? radius : radius / 2;
+      // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
+      labelRadius += options.labelOffset;
 
       // Calculate end angle based on total sum and current data value and offset with padding
       var center = {
@@ -162,6 +208,20 @@
           path.attr({
             'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
           });
+        }
+
+        // If we need to show labels we need to add the label for this slice now
+        if(options.showLabel) {
+          // Position at the labelRadius distance from center and between start and end angle
+          var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
+            interpolatedValue = options.labelInterpolationFnc(data.labels ? data.labels[i] : dataArray[i], i);
+
+          seriesGroups[i].elem('text', {
+            dx: labelPosition.x,
+            dy: labelPosition.y,
+            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection),
+            text: '' + interpolatedValue
+          }, options.classNames.label).text('' + interpolatedValue);
         }
 
         // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
