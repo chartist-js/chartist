@@ -29,6 +29,7 @@
    *   chartPadding: 5,
    *   // Override the class names that get used to generate the SVG structure of the chart
    *   classNames: {
+   *     chart: 'ct-chart-pie',
    *     series: 'ct-series',
    *     slice: 'ct-slice',
    *     donut: 'ct-donut'
@@ -75,6 +76,7 @@
         height: undefined,
         chartPadding: 5,
         classNames: {
+          chart: 'ct-chart-pie',
           series: 'ct-series',
           slice: 'ct-slice',
           donut: 'ct-donut'
@@ -96,7 +98,7 @@
         dataArray = Chartist.getDataArray(data);
 
       // Create SVG.js draw
-      svg = Chartist.createSvg(query, options.width, options.height);
+      svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
       // Calculate charting rect
       chartRect = Chartist.createChartRect(svg, options, 0, 0);
       // Get biggest circle radius possible within chartRect

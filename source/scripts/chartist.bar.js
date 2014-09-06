@@ -67,6 +67,7 @@
    *   seriesBarDistance: 15,
    *   // Override the class names that get used to generate the SVG structure of the chart
    *   classNames: {
+   *     chart: 'ct-chart-bar',
    *     label: 'ct-label',
    *     series: 'ct-series',
    *     bar: 'ct-bar',
@@ -128,6 +129,7 @@
         chartPadding: 5,
         seriesBarDistance: 15,
         classNames: {
+          chart: 'ct-chart-bar',
           label: 'ct-label',
           series: 'ct-series',
           bar: 'ct-bar',
@@ -149,7 +151,7 @@
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
       // Create new svg element
-      svg = Chartist.createSvg(query, options.width, options.height);
+      svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
 
       // initialize bounds
       bounds = Chartist.getBounds(svg, normalizedData, options, 0);

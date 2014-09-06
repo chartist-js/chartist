@@ -46,7 +46,7 @@ Chartist.version = '0.1.10';
   };
 
   // Create Chartist SVG element
-  Chartist.createSvg = function (query, width, height) {
+  Chartist.createSvg = function (query, width, height, className) {
     // Get dom object from query or if already dom object just use it
     var container = query.nodeType ? query : document.querySelector(query),
       svg;
@@ -61,7 +61,7 @@ Chartist.version = '0.1.10';
       svg = container._ctChart.attr({
         width: width || '100%',
         height: height || '100%'
-      });
+      }).removeAllClasses().addClass(className);
       // Clear the draw if its already used before so we start fresh
       svg.empty();
 
@@ -70,7 +70,7 @@ Chartist.version = '0.1.10';
       svg = Chartist.svg('svg').attr({
         width: width || '100%',
         height: height || '100%'
-      });
+      }).addClass(className);
 
       // Add the DOM node to our container
       container.appendChild(svg._node);

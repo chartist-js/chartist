@@ -67,6 +67,7 @@
    *   chartPadding: 5,
    *   // Override the class names that get used to generate the SVG structure of the chart
    *   classNames: {
+   *     chart: 'ct-chart-line',
    *     label: 'ct-label',
    *     series: 'ct-series',
    *     line: 'ct-line',
@@ -160,6 +161,7 @@
         high: undefined,
         chartPadding: 5,
         classNames: {
+          chart: 'ct-chart-line',
           label: 'ct-label',
           series: 'ct-series',
           line: 'ct-line',
@@ -180,7 +182,7 @@
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
       // Create new svg object
-      svg = Chartist.createSvg(query, options.width, options.height);
+      svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
 
       // initialize bounds
       bounds = Chartist.getBounds(svg, normalizedData, options);

@@ -74,6 +74,10 @@
       }).join(' '));
     }
 
+    function removeAllClasses(node) {
+      node.className = '';
+    }
+
     return {
       _node: elem(this, name, attributes, className, parent ? parent._node : undefined),
       _parent: parent,
@@ -105,6 +109,10 @@
       },
       removeClass: function(names) {
         removeClass(this._node, names);
+        return this;
+      },
+      removeAllClasses: function() {
+        removeAllClasses(this._node);
         return this;
       },
       classes: function() {
