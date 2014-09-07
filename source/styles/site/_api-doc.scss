@@ -4,7 +4,7 @@
   .member-title {
     background: #453D3F;
     padding: 0.5em;
-    color: white;
+    color: lighten($color-white, 10%);
     text-transform: none;
   }
 

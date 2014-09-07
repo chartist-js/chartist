@@ -1,0 +1,21 @@
+sections:
+  - title: Line chart examples
+    level: 3
+    items:
+      - type: live-example
+        data:
+          title: Simple line chart
+          level: 4
+          id: simple-line-chart
+          classes: ct-golden-section
+          intro: An example of a simple line chart with three series. You can edit this example in realtime.
+  - title: Pie chart examples
+    level: 3
+    items:
+      - type: live-example
+        data:
+          title: Gauge chart
+          level: 4
+          id: simple-gauge-chart
+          classes: ct-golden-section ct-negative-labels
+          intro: This pie chart uses donut, startAngle and total to draw a gauge chart.

@@ -1,3 +1,13 @@
+gallery-examples:
+  - id: example-gallery-one
+    classes: ct-golden-section
+  - id: example-gallery-two
+    classes: ct-golden-section
+  - id: example-gallery-three
+    classes: ct-golden-section
+  - id: example-gallery-four
+    classes: ct-golden-section
+
 sections:
   - title: Chart CSS animation example
     level: 3
@@ -5,8 +15,7 @@ sections:
       - type: example-chart
         data:
           id: example-line-months-interpolation
-          classes: ct-chart ct-golden-section dark
-          type: Line
+          classes: ct-golden-section dark
       - type: hint
         data:
           title: Cross-browser support
@@ -23,8 +32,7 @@ sections:
       - type: example-chart
         data:
           id: example-simple-bar
-          classes: ct-chart ct-golden-section
-          type: Bar
+          classes: ct-golden-section
     side-notes:
       - type: text
         data:
@@ -36,13 +44,8 @@ sections:
       - type: example-chart
         data:
           id: example-line-simple-responsive
-          classes: ct-chart ct-golden-section
-          type: Line
-      - type: code-snippet
-        data:
-          id: simple-responsive-settings
-          lang: js
-          button: Show code
+          classes: ct-golden-section
+          show-code-button: Show code
       - type: sub-section
         data:
           title: Configuration overrides based on media queries

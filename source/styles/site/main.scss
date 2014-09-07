@@ -16,7 +16,9 @@
 @import "base";
 @import "landing";
 @import "highlight";
+@import "code-mirror-theme";
 @import "api-doc";
+@import "live-example";
 
 @include embed-font("FontAwesome", "fontawesome-webfont", "//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/fonts");
 
@@ -38,7 +40,7 @@
   margin-bottom: rem-calc(nth($modular-scale, 5));
   padding: rem-calc(nth($modular-scale, 5));
   background: $color-gray;
-  color: white;
+  color: lighten($color-white, 10%);
 
   > .title {
     font-size: rem-calc(nth($modular-scale, 4));

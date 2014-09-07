@@ -11,18 +11,11 @@ of other great charting libraries but after using them there were always tweaks 
 
 <h3>Highly customizable responsive charts</h3>
 <ul class="example-gallery">
-  <li>
-    <div id="example-gallery-one" class="ct-chart ct-golden-section" data-chartist-example="Line"></div>
-  </li>
-  <li>
-    <div id="example-gallery-two" class="ct-chart ct-golden-section" data-chartist-example="Bar"></div>
-  </li>
-  <li>
-    <div id="example-gallery-three" class="ct-chart ct-golden-section" data-chartist-example="Pie"></div>
-  </li>
-  <li>
-    <div id="example-gallery-four" class="ct-chart ct-golden-section" data-chartist-example="Pie"></div>
-  </li>
+  {{#each page.gallery-examples}}
+    <li>
+      {{> example-chart }}
+    </li>
+  {{/each}}
 </ul>
 
 <h3>Facts about Chartist</h3>
