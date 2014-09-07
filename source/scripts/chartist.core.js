@@ -82,7 +82,15 @@ Chartist.version = '0.1.12';
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
   };
 
-  // Create Chartist SVG element
+  /**
+   * @memberOf Chartist
+   * @function createSvg
+   * @param {String} query The query to select the HTML element that will serve as container
+   * @param {String} width Set the width of the SVG element
+   * @param {String}height Set the height of the SVG element
+   * @param {String} className ?
+   * @return {Object} The created/cleaned SVG element
+   */
   Chartist.createSvg = function (query, width, height, className) {
     // Get dom object from query or if already dom object just use it
     var container = query.nodeType ? query : document.querySelector(query),
