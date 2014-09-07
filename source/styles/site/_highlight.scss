@@ -24,7 +24,7 @@ Chartist style - Licensed under WTFPL by Gion Kunz https://github.com/gionkunz/c
 }
 
 .hljs {
-  color: white;
+  color: lighten($color-white, 10%);
 }
 
 .hljs .hljs-constant,
@@ -35,7 +35,7 @@ Chartist style - Licensed under WTFPL by Gion Kunz https://github.com/gionkunz/c
 .hljs-code,
 .hljs-class .hljs-title,
 .hljs-header {
-  color: white;
+  color: lighten($color-white, 10%);
 }
 
 .hljs-link_label,
