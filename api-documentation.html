@@ -258,4 +258,19 @@ Chartist.Pie(&#x27;.ct-chart&#x27;, {
   ga('require', 'displayfeatures');
   ga('send', 'pageview');</script><!--[if lt IE 9]>
 <script src="scripts/oldie.js"></script>
-<![endif]--><script src="scripts/vendor.js"></script><script src="scripts/scripts.js"></script>
+<![endif]--><script src="scripts/vendor.js"></script><script src="scripts/scripts.js"></script><!-- Take web fonts off the critical path but risk FOUT --><script type="text/javascript">WebFontConfig = {
+    google: { families: ['Oxygen:400,300,700', 'Source+Code+Pro:400,700'] },
+    custom: {
+      families: [ 'FontAwesome' ],
+      urls: [ '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css']
+    }
+  };
+  (function() {
+    var wf = document.createElement('script');
+    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+    wf.type = 'text/javascript';
+    wf.async = 'true';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(wf, s);
+  })();</script>
