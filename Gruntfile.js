@@ -410,6 +410,20 @@ module.exports = function (grunt) {
         src: ['source/scripts/*.js'],
         dest: '.tmp/data/apidox.yml'
       }
+    },
+
+    // Use critical to inline above the fold critical CSS during the build process
+    critical: {
+      dist: {
+        options: {
+          base: './',
+          css: '<%= pkg.config.dist %>/styles/main.css',
+          width: 320,
+          height: 1600
+        },
+        src: '<%= pkg.config.dist %>/index.html',
+        dest: '<%= pkg.config.dist %>/index.html'
+      }
     }
   });
 
@@ -453,6 +467,7 @@ module.exports = function (grunt) {
     'cssmin:generated',
     'uglify:generated',
     'usemin',
+    'critical',
     'htmlmin'
   ]);
 

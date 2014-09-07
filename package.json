@@ -64,7 +64,8 @@
     "seed-random": "~2.2.0",
     "grunt-umd": "^1.7.4",
     "grunt-doxication": "0.0.4",
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "grunt-critical": "0.0.3"
   },
   "engines": {
     "node": ">=0.8.0"
