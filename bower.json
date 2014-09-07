@@ -12,7 +12,9 @@
     "foundation": "~5.1.1",
     "highlightjs": "~8.0.0",
     "font-awesome": "~4.0.3",
-    "compass-mixins": "~1.0.0"
+    "compass-mixins": "~1.0.0",
+    "codemirror": "~4.5.0",
+    "base64": "~0.3.0"
   },
   "ignore": [
     ".*",
