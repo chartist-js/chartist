@@ -419,7 +419,7 @@ module.exports = function (grunt) {
           base: './',
           css: '<%= pkg.config.dist %>/styles/main.css',
           width: 320,
-          height: 1600
+          height: 3000
         },
         src: '<%= pkg.config.dist %>/index.html',
         dest: '<%= pkg.config.dist %>/index.html'
