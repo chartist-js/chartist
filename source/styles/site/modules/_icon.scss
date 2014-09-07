@@ -17,6 +17,11 @@ $icon-include-classes: true;
     line-height: 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    // In usage with google font loader we will hide and unhide based on status class on html element
+    .wf-loading & {
+      visibility: hidden;
+    }
   }
 }
 
