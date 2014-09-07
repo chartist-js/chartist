@@ -63,6 +63,14 @@ module.exports.register = function (Handlebars, opt, params)  {
       }
 
       return new Handlebars.SafeString(partial(context || this));
+    },
+
+    atob: function(a) {
+      return new Buffer(a, 'base64').toString('utf8');
+    },
+
+    btoa: function(b) {
+      return new Buffer(b, 'utf8').toString('base64');
     }
   };
 
