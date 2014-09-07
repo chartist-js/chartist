@@ -3,6 +3,20 @@
 // Initialize highlight.js
 window.hljs.initHighlightingOnLoad();
 
+function evalChartistCode(code, chartElement) {
+  // Modify the code to use a proper selector using the ID of the example as well as return the Chartist object
+  var modified = code.replace(/Chartist\s*\.\s*(.+)\(\s*['"](.+)['"]/, function(match, type) {
+    return ['return', ' ', 'Chartist', '.', type, '(', 'arguments[0]'].join('');
+  });
+
+  try {
+    // Create function from the modified code and execute it
+    return (new Function(modified)(chartElement)); // jshint ignore:line
+  } catch(err) {
+    // Maybe show error in the future
+  }
+}
+
 // Generic data-* driven control behaviour
 $(function() {
   $('[data-toggle-visible]').each(function() {
@@ -36,6 +50,63 @@ $(function() {
         });
       }
     });
+  });
+
+  $('[data-example]').each(function() {
+    var $element = $(this),
+      code = window.atob($element.data('example'));
+
+    // Execute the Chartist code immediately
+    evalChartistCode(code, $element.get(0));
+  });
+
+  $('[data-live-example]').each(function() {
+    var $element = $(this),
+      $editor = $element.find('.code-editor'),
+      initialCode = window.atob($element.data('liveExample')),
+      chartist,
+      cm;
+
+    function updateChart() {
+      if(chartist) {
+        chartist.update();
+      }
+    }
+
+    function initializeCodeMirror() {
+      if(cm) {
+        return;
+      }
+
+      cm = window.CodeMirror.fromTextArea($editor.get(0), {
+        mode: 'javascript',
+        theme: 'chartist',
+        lineWrapping: true,
+        indentUnit: 2,
+        tabSize: 2
+      });
+
+      cm.on('change', function(event) {
+        // Execute the Chartist code once the code gets updated
+        chartist = evalChartistCode(event.doc.getValue(), $element.find('.ct-chart').get(0));
+      });
+    }
+
+    $element.find('.edit-button').on('click', function() {
+      $element.addClass('edit-mode');
+      updateChart();
+      initializeCodeMirror();
+    });
+
+    $element.find('.close-edit-button').on('click', function() {
+      $element.removeClass('edit-mode');
+      updateChart();
+    });
+
+    $editor.val(initialCode);
+
+    // Execute the Chartist code immediately
+    chartist = evalChartistCode(initialCode, $element.find('.ct-chart').get(0));
   });
 });
 
