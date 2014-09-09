@@ -275,7 +275,7 @@
 
           seriesGroups[i].elem('path', {
             d: svgPathString
-          }, options.classNames.line).attr({
+          }, options.classNames.line, true).attr({
             'ct-values': normalizedData[i]
           }, Chartist.xmlNs.uri);
         }
