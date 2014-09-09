@@ -12,7 +12,7 @@
     uri: 'http://gionkunz.github.com/chartist-js/ct'
   };
 
-  Chartist.svg = function(name, attributes, className, parent) {
+  Chartist.svg = function(name, attributes, className, insertFirst, parent) {
 
     var svgNs = 'http://www.w3.org/2000/svg',
       xmlNs = 'http://www.w3.org/2000/xmlns/';
@@ -29,7 +29,7 @@
       return node;
     }
 
-    function elem(svg, name, attributes, className, parentNode) {
+    function elem(svg, name, attributes, className, insertFirst, parentNode) {
       var node = document.createElementNS(svgNs, name);
 
       // If this is an SVG element created then custom namespace
@@ -38,7 +38,11 @@
       }
 
       if(parentNode) {
-        parentNode.appendChild(node);
+        if(insertFirst && parentNode.firstChild) {
+          parentNode.insertBefore(node, parentNode.firstChild);
+        } else {
+          parentNode.appendChild(node);
+        }
       }
 
       if(attributes) {
@@ -93,7 +97,7 @@
     }
 
     return {
-      _node: elem(this, name, attributes, className, parent ? parent._node : undefined),
+      _node: elem(this, name, attributes, className, insertFirst, parent ? parent._node : undefined),
       _parent: parent,
       parent: function() {
         return this._parent;
@@ -110,8 +114,8 @@
         remove(this._node);
         return this;
       },
-      elem: function(name, attributes, className) {
-        return Chartist.svg(name, attributes, className, this);
+      elem: function(name, attributes, className, insertFirst) {
+        return Chartist.svg(name, attributes, className, insertFirst, this);
       },
       text: function(t) {
         text(this._node, t);

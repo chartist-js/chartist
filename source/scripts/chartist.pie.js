@@ -168,7 +168,7 @@
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
-        seriesGroups[i] = svg.elem('g');
+        seriesGroups[i] = svg.elem('g', null, null, true);
 
         // If the series is an object and contains a name we add a custom attribute
         if(data.series[i].name) {
