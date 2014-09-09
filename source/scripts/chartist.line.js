@@ -235,23 +235,11 @@
           (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
         ].join(' '));
 
-        var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], 0),
-          pathCoordinates = [p.x, p.y],
+        var p,
+          pathCoordinates = [],
           point;
 
-        // First dot we need to add before loop
-        if (options.showPoint) {
-          // Small offset for Firefox to render squares correctly
-          point = seriesGroups[i].elem('line', {
-            x1: p.x,
-            y1: p.y,
-            x2: p.x + 0.01,
-            y2: p.y
-          }, options.classNames.point);
-        }
-
-        // First point is created, continue with rest
-        for (var j = 1; j < normalizedData[i].length; j++) {
+        for (var j = 0; j < normalizedData[i].length; j++) {
           p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
           pathCoordinates.push(p.x, p.y);
 
