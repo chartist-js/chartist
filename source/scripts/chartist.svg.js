@@ -7,21 +7,35 @@
 (function(window, document, Chartist) {
   'use strict';
 
+  Chartist.xmlNs = {
+    qualifiedName: 'xmlns:ct',
+    uri: 'http://gionkunz.github.com/chartist-js/ct'
+  };
+
   Chartist.svg = function(name, attributes, className, parent) {
 
-    var svgns = 'http://www.w3.org/2000/svg';
+    var svgNs = 'http://www.w3.org/2000/svg',
+      xmlNs = 'http://www.w3.org/2000/xmlns/';
 
-    function attr(node, attributes) {
+    function attr(node, attributes, ns) {
       Object.keys(attributes).forEach(function(key) {
-        node.setAttribute(key, attributes[key]);
+        if(ns) {
+          node.setAttributeNS(ns, key, attributes[key]);
+        } else {
+          node.setAttribute(key, attributes[key]);
+        }
       });
 
       return node;
     }
 
     function elem(svg, name, attributes, className, parentNode) {
-      var node = document.createElementNS(svgns, name);
-      node._ctSvgElement = svg;
+      var node = document.createElementNS(svgNs, name);
+
+      // If this is an SVG element created then custom namespace
+      if(name === 'svg') {
+        node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
+      }
 
       if(parentNode) {
         parentNode.appendChild(node);
@@ -84,8 +98,8 @@
       parent: function() {
         return this._parent;
       },
-      attr: function(attributes) {
-        attr(this._node, attributes);
+      attr: function(attributes, ns) {
+        attr(this._node, attributes, ns);
         return this;
       },
       empty: function() {

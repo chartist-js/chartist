@@ -197,6 +197,14 @@
           periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
 
         seriesGroups[i] = svg.elem('g');
+
+        // If the series is an object and contains a name we add a custom attribute
+        if(data.series[i].name) {
+          seriesGroups[i].attr({
+            'ct-series-name': data.series[i].name
+          }, Chartist.xmlNs.uri);
+        }
+
         // Use series class from series data or if not set generate one
         seriesGroups[i].addClass([
           options.classNames.series,
@@ -216,7 +224,9 @@
             y1: zeroPoint.y,
             x2: p.x,
             y2: p.y
-          }, options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
+          }, options.classNames.bar).attr({
+            'ct-value': normalizedData[i][j]
+          }, Chartist.xmlNs.uri);
         }
       }
     }

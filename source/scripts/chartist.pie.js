@@ -169,6 +169,14 @@
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
         seriesGroups[i] = svg.elem('g');
+
+        // If the series is an object and contains a name we add a custom attribute
+        if(data.series[i].name) {
+          seriesGroups[i].attr({
+            'ct-series-name': data.series[i].name
+          }, Chartist.xmlNs.uri);
+        }
+
         // Use series class from series data or if not set generate one
         seriesGroups[i].addClass([
           options.classNames.series,
@@ -202,6 +210,11 @@
         var path = seriesGroups[i].elem('path', {
           d: d.join(' ')
         }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+
+        // Adding the pie series value to the path
+        path.attr({
+          'ct-value': dataArray[i]
+        }, Chartist.xmlNs.uri);
 
         // If this is a donut, we add the stroke-width as style attribute
         if(options.donut === true) {

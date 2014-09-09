@@ -28,9 +28,11 @@
     labels: ['1st', '2nd', '3rd'],
     series: [
       {
+        name: 'Workers',
         data: [1283000, 1500000, 5706000]
       },
       {
+        name: 'Nobles',
         data: [1883000, 2050000, 3706000]
       }
     ]
