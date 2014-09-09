@@ -175,6 +175,9 @@ sections:
                         - Ratio
                       rows:
                         -
+                          - .ct-square
+                          - '1'
+                        -
                           - .ct-minor-second
                           - '15:16'
                         -
