@@ -104,6 +104,27 @@
     @include ct-chart-donut($ct-donut-width);
   }
 
+  .#{$ct-class-tooltip} {
+    fill: $ct-tooltip-color;
+    font-size: $ct-tooltip-text-size;
+  }
+
+  text.#{$ct-class-tooltip} {
+    fill: $ct-tooltip-text-color;
+  }
+
+  .#{$ct-class-series} .#{$ct-class-tooltip} {
+    visibility: hidden;
+  }
+
+  .#{$ct-class-series}:hover > .#{$ct-class-tooltip} {
+    visibility: visible;
+  }
+
+  .#{$ct-class-tip-group}:hover > .#{$ct-class-tooltip} {
+    visibility: visible;
+  }
+
   @if $ct-include-colored-series {
     .#{$ct-class-series} {
       @for $i from 0 to length($ct-series-names) {

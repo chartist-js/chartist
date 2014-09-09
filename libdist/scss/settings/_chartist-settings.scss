@@ -4,6 +4,9 @@ $ct-scales-names: (ct-perfect-fourth, ct-golden-section, ct-minor-seventh, ct-sq
 
 // Class names to be used when generating CSS
 $ct-class-chart: ct-chart !default;
+$ct-class-chart-line: ct-chart-line !default;
+$ct-class-chart-bar: ct-chart-bar !default;
+$ct-class-chart-pie: ct-chart-pie !default;
 $ct-class-label: ct-label !default;
 $ct-class-series: ct-series !default;
 $ct-class-line: ct-line !default;
@@ -14,6 +17,8 @@ $ct-class-donut: ct-donut !default;
 $ct-class-grid: ct-grid !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
+$ct-class-tooltip: ct-tooltip !default;
+$ct-class-tip-group: ct-tip-group !default;
 
 // Container ratio
 $ct-container-ratio: (1/1.618) !default;
@@ -21,6 +26,11 @@ $ct-container-ratio: (1/1.618) !default;
 // Text styles for labels
 $ct-text-color: rgba(0, 0, 0, 0.4) !default;
 $ct-text-size: 0.75rem !default;
+
+// Text styles for tooltips
+$ct-tooltip-color: rgb(50, 50, 50) !default;
+$ct-tooltip-text-color: rgba(255, 255, 255, .8) !default;
+$ct-tooltip-text-size: 0.75rem !default;
 
 // Grid styles
 $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
