@@ -232,8 +232,7 @@
           seriesGroups[i].elem('text', {
             dx: labelPosition.x,
             dy: labelPosition.y,
-            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection),
-            text: '' + interpolatedValue
+            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
           }, options.classNames.label).text('' + interpolatedValue);
         }
 
