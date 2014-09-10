@@ -6,12 +6,12 @@ window.hljs.initHighlightingOnLoad();
 function evalChartistCode(code, chartElement) {
   // Modify the code to use a proper selector using the ID of the example as well as return the Chartist object
   var modified = code.replace(/Chartist\s*\.\s*(.+)\(\s*['"](.+)['"]/, function(match, type) {
-    return ['return', ' ', 'Chartist', '.', type, '(', 'arguments[0]'].join('');
-  });
+    return ['var chartist = Chartist.', type, '(chartElement'].join('');
+  }) + '; return chartist;';
 
   try {
     // Create function from the modified code and execute it
-    return (new Function(modified)(chartElement)); // jshint ignore:line
+    return (new Function(['chartElement', '$chart'], modified)(chartElement, $(chartElement))); // jshint ignore:line
   } catch(err) {
     // Maybe show error in the future
   }
