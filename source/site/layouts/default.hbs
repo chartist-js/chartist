@@ -48,18 +48,30 @@
 <!-- endbuild -->
 <![endif]-->
 
-<!-- build:js(source/bower_components) scripts/vendor.js -->
-<!-- bower:js -->
-<!-- endbower -->
-<script src="../bower_components/codemirror/mode/javascript/javascript.js"></script>
-<!-- endbuild -->
+<!-- build:js({.tmp,source}) scripts/all.js -->
+<!-- Vendor scripts -->
+<script src="bower_components/modernizr/modernizr.js"></script>
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/snap.svg/dist/snap.svg-min.js"></script>
+<script src="bower_components/fastclick/lib/fastclick.js"></script>
+<script src="bower_components/jquery.cookie/jquery.cookie.js"></script>
+<script src="bower_components/jquery-placeholder/jquery.placeholder.js"></script>
+<script src="bower_components/foundation/js/foundation.js"></script>
+<script src="bower_components/highlightjs/highlight.pack.js"></script>
+<script src="bower_components/codemirror/lib/codemirror.js"></script>
+<script src="bower_components/base64/base64.js"></script>
+<script src="bower_components/jquery-easing/jquery.easing.js"></script>
+<script src="bower_components/jquery-easing/jquery.easing.min.js"></script>
+<script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
 
-<!-- build:js({.tmp,source}) scripts/scripts.js -->
+<!-- Chartist scripts -->
 <script src="scripts/chartist.core.js"></script>
 <script src="scripts/chartist.svg.js"></script>
 <script src="scripts/chartist.line.js"></script>
 <script src="scripts/chartist.bar.js"></script>
 <script src="scripts/chartist.pie.js"></script>
+
+<!-- Chartist site scripts -->
 <script src="scripts/site/main.js"></script>
 <script src="scripts/site/chartist-guy.js"></script>
 <!-- endbuild -->

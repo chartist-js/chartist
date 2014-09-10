@@ -208,7 +208,21 @@ module.exports = function (grunt) {
       html: ['<%= pkg.config.dist %>/{,*/}*.html'],
       css: ['<%= pkg.config.dist %>/styles/{,*/}*.css'],
       options: {
-        assetsDirs: ['<%= pkg.config.dist %>']
+        assetsDirs: ['<%= pkg.config.dist %>'],
+        blockReplacements: {
+          js: function (block) {
+
+            var asyncScripts = [
+              'scripts/all.js'
+            ];
+
+            var isAsync = block.async || asyncScripts.indexOf(block.dest) > -1;
+
+            return isAsync ?
+              '<script async src="' + block.dest + '"><\/script>' :
+              '<script src="' + block.dest + '"><\/script>';
+          }
+        }
       }
     },
 
