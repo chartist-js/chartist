@@ -173,7 +173,7 @@
         // If the series is an object and contains a name we add a custom attribute
         if(data.series[i].name) {
           seriesGroups[i].attr({
-            'ct-series-name': data.series[i].name
+            'series-name': data.series[i].name
           }, Chartist.xmlNs.uri);
         }
 
@@ -213,7 +213,7 @@
 
         // Adding the pie series value to the path
         path.attr({
-          'ct-value': dataArray[i]
+          'value': dataArray[i]
         }, Chartist.xmlNs.uri);
 
         // If this is a donut, we add the stroke-width as style attribute

@@ -201,7 +201,7 @@
         // If the series is an object and contains a name we add a custom attribute
         if(data.series[i].name) {
           seriesGroups[i].attr({
-            'ct-series-name': data.series[i].name
+            'series-name': data.series[i].name
           }, Chartist.xmlNs.uri);
         }
 
@@ -225,7 +225,7 @@
             x2: p.x,
             y2: p.y
           }, options.classNames.bar).attr({
-            'ct-value': normalizedData[i][j]
+            'value': normalizedData[i][j]
           }, Chartist.xmlNs.uri);
         }
       }

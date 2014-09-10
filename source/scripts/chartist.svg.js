@@ -9,6 +9,7 @@
 
   Chartist.xmlNs = {
     qualifiedName: 'xmlns:ct',
+    prefix: 'ct',
     uri: 'http://gionkunz.github.com/chartist-js/ct'
   };
 
@@ -20,7 +21,7 @@
     function attr(node, attributes, ns) {
       Object.keys(attributes).forEach(function(key) {
         if(ns) {
-          node.setAttributeNS(ns, key, attributes[key]);
+          node.setAttributeNS(ns, [Chartist.xmlNs.prefix, ':', key].join(''), attributes[key]);
         } else {
           node.setAttribute(key, attributes[key]);
         }

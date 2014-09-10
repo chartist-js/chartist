@@ -20,8 +20,8 @@ var $toolTip = $chart
 
 $chart.on('mouseenter', '.ct-point', function() {
   var $point = $(this),
-    value = $point.attr('ct-value'),
-    seriesName = $point.parent().attr('ct-series-name');
+    value = $point.attr('ct:value'),
+    seriesName = $point.parent().attr('ct:series-name');
 
   $point.animate({'stroke-width': '50px'}, 300, 'easeOutQuad');
   $toolTip.html(seriesName + '<br>' + value).show();

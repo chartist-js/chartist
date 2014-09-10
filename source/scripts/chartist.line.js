@@ -225,7 +225,7 @@
         // If the series is an object and contains a name we add a custom attribute
         if(data.series[i].name) {
           seriesGroups[i].attr({
-            'ct-series-name': data.series[i].name
+            'series-name': data.series[i].name
           }, Chartist.xmlNs.uri);
         }
 
@@ -252,7 +252,7 @@
               x2: p.x + 0.01,
               y2: p.y
             }, options.classNames.point).attr({
-              'ct-value': normalizedData[i][j]
+              'value': normalizedData[i][j]
             }, Chartist.xmlNs.uri);
           }
         }
@@ -276,7 +276,7 @@
           seriesGroups[i].elem('path', {
             d: svgPathString
           }, options.classNames.line, true).attr({
-            'ct-values': normalizedData[i]
+            'values': normalizedData[i]
           }, Chartist.xmlNs.uri);
         }
       }
