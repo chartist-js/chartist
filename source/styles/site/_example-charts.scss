@@ -1,0 +1,59 @@
+#chartist-guy #chart-canvas {
+  @include ct-chart($ct-text-color: darken($color-white, 50%), $ct-grid-color: darken($color-white, 20%));
+
+  .ct-series {
+    &.ct-series-a {
+      .ct-point {
+        @include ct-chart-point($ct-point-shape: square, $ct-point-size: 8px);
+      }
+
+      .ct-line {
+        @include ct-chart-line($ct-line-dasharray: 5px);
+        @include animation(dashoffset, 1s linear infinite);
+      }
+    }
+  }
+}
+
+#example-line-months-interpolation {
+  @include ct-chart($ct-text-color: lighten($color-gray, 30%), $ct-grid-color: lighten($color-gray, 5%), $ct-grid-dasharray: 3px);
+
+  .ct-series {
+    &.ct-series-a {
+      .ct-point {
+        @include ct-chart-point($ct-point-shape: square);
+      }
+
+      .ct-line {
+        @include ct-chart-line($ct-line-width: 4px, $ct-line-dasharray: 5px);
+        @include animation(dashoffset, 1s linear infinite);
+      }
+    }
+
+    &.ct-series-b {
+      .ct-point {
+        @include animation(bouncing-stroke, 0.5s ease infinite);
+      }
+
+      .ct-line {
+        @include ct-chart-line($ct-line-width: 3px);
+      }
+    }
+
+    &.ct-series-c {
+      .ct-point {
+        @include animation(exploding-stroke, 1s ease-out infinite);
+      }
+
+      .ct-line {
+        @include ct-chart-line($ct-line-width: 2px, $ct-line-dasharray: 40px 3px);
+      }
+    }
+  }
+}
+
+#behavior-with-jquery {
+  .ct-point {
+    @include ct-chart-point($ct-point-size: 20px);
+  }
+}
