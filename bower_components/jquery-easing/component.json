@@ -1,0 +1,18 @@
+{
+    "name"         : "jquery-easing",
+    "version"      : "1.3.0",
+    "description"  : "jQuery Easing",
+    "main"         : [ "./jquery.easing.js", "./jquery.easing.min.js" ],
+    "homepage"     : "http://gsgd.co.uk/sandbox/jquery/easing",
+    "dependencies" : {
+        "jquery" : ">= 1.7.x"
+    },
+    "keywords"     : [
+        "jquery",
+        "easing"
+    ],
+    "author" : {
+        "name" : "George McGinley Smith",
+        "web"  : "http://gsgd.co.uk/freelance"
+    }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "jquery-easing",
+  "description": "jQuery Easing",
+  "main": [
+    "./jquery.easing.js",
+    "./jquery.easing.min.js"
+  ],
+  "homepage": "http://gsgd.co.uk/sandbox/jquery/easing",
+  "dependencies": {
+    "jquery": ">= 1.7.x"
+  },
+  "keywords": [
+    "jquery",
+    "easing"
+  ],
+  "author": {
+    "name": "George McGinley Smith",
+    "web": "http://gsgd.co.uk/freelance"
+  },
+  "_release": "a6f21ff77c",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a6f21ff77c84cee11562d36c51fb5b9c95f2eec0"
+  },
+  "_source": "git://github.com/danro/jquery-easing.git",
+  "_target": "*",
+  "_originalSource": "jquery-easing",
+  "_direct": true
+}
