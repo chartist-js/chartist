@@ -118,7 +118,7 @@ sections:
                   In this section you'll go through a simple example of how to use Chartist.js in your project.
                   You'll learn the default stages you go through when creating and customizing a basic line chart.
                   If you'd like to see more in depth and advanced examples you should check out
-                  the <a href="#advanced">advanced</a> section or the <a href="demos.html">demo page</a>.
+                  the <a href="#advanced">advanced</a> section or the <a href="examples.html">examples page</a>.
 
       - type: sub-section
         data:
@@ -143,16 +143,15 @@ sections:
                     data:
                       text: >
                               Because of the nature of responsive design it's important to understand that blocks in design like images,
-                              videos and similar content needs to be able to scale and adapt to the media. In order, for an element to scale, you
-                              need to rely on a certain aspect ratio (like 4:3, 3:2, 16:9 etc.) for your elements and container rather
-                              than specifying a fixed width and height.
+                              videos and similar content need to be able to scale and adapt to the media. In order for an element to scale, you
+                              need to rely on a certain aspect ratios (like 4:3, 3:2, 16:9 etc.) rather than specifying a fixed width and height.
 
                   - type: text
                     data:
                       text: >
-                              To Designers this Idea is absolutely not new, but to developers this might be at first. However, when a Designer talks
-                              to a Developer about the images being 320px x 240px on this page and 300px x 200px on that element, he actually just
-                              translated his Design of using 4:3 and 3:2 images into pixels.
+                              To designers this Idea is absolutely not new, but to developers this might be at first. However, when a designer talks
+                              to a developer about the images being 320x240 on this page and 300x200 on that element, he actually just
+                              translated his idea of using 4:3 and 3:2 images into pixels.
 
                   - type: text
                     data:
@@ -274,7 +273,7 @@ sections:
               data:
                 text: >
                         Chartist.js is built very flexible and almost everything within your charts can be configured.
-                        In the default settings (that you can check in the <a href="apidoc/">API Documentation</a>)
+                        In the default settings (that you can check in the <a href="api-documentation.html">API Documentation</a>)
                         you'll get some predefined defaults applied to your charts.
 
             - type: text
