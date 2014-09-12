@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+//TODO remove line 5
 var UglifyJS = require('uglify-js');
 
 // Export helpers
