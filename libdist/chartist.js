@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.1.11
+  /* Chartist.js 0.1.12
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -23,7 +23,7 @@
 
   // This object is prepared for export via UMD
   var Chartist = {};
-  Chartist.version = '0.1.11';
+  Chartist.version = '0.1.12';
 
   (function (window, document, Chartist) {
     'use strict';
@@ -444,24 +444,43 @@
   (function(window, document, Chartist) {
     'use strict';
 
-    Chartist.svg = function(name, attributes, className, parent) {
+    Chartist.xmlNs = {
+      qualifiedName: 'xmlns:ct',
+      prefix: 'ct',
+      uri: 'http://gionkunz.github.com/chartist-js/ct'
+    };
 
-      var svgns = 'http://www.w3.org/2000/svg';
+    Chartist.svg = function(name, attributes, className, insertFirst, parent) {
 
-      function attr(node, attributes) {
+      var svgNs = 'http://www.w3.org/2000/svg',
+        xmlNs = 'http://www.w3.org/2000/xmlns/';
+
+      function attr(node, attributes, ns) {
         Object.keys(attributes).forEach(function(key) {
-          node.setAttribute(key, attributes[key]);
+          if(ns) {
+            node.setAttributeNS(ns, [Chartist.xmlNs.prefix, ':', key].join(''), attributes[key]);
+          } else {
+            node.setAttribute(key, attributes[key]);
+          }
         });
 
         return node;
       }
 
-      function elem(svg, name, attributes, className, parentNode) {
-        var node = document.createElementNS(svgns, name);
-        node._ctSvgElement = svg;
+      function elem(svg, name, attributes, className, insertFirst, parentNode) {
+        var node = document.createElementNS(svgNs, name);
+
+        // If this is an SVG element created then custom namespace
+        if(name === 'svg') {
+          node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
+        }
 
         if(parentNode) {
-          parentNode.appendChild(node);
+          if(insertFirst && parentNode.firstChild) {
+            parentNode.insertBefore(node, parentNode.firstChild);
+          } else {
+            parentNode.appendChild(node);
+          }
         }
 
         if(attributes) {
@@ -516,13 +535,13 @@
       }
 
       return {
-        _node: elem(this, name, attributes, className, parent ? parent._node : undefined),
+        _node: elem(this, name, attributes, className, insertFirst, parent ? parent._node : undefined),
         _parent: parent,
         parent: function() {
           return this._parent;
         },
-        attr: function(attributes) {
-          attr(this._node, attributes);
+        attr: function(attributes, ns) {
+          attr(this._node, attributes, ns);
           return this;
         },
         empty: function() {
@@ -533,8 +552,8 @@
           remove(this._node);
           return this;
         },
-        elem: function(name, attributes, className) {
-          return Chartist.svg(name, attributes, className, this);
+        elem: function(name, attributes, className, insertFirst) {
+          return Chartist.svg(name, attributes, className, insertFirst, this);
         },
         text: function(t) {
           text(this._node, t);
@@ -781,29 +800,25 @@
         // initialize series groups
         for (var i = 0; i < data.series.length; i++) {
           seriesGroups[i] = svg.elem('g');
+
+          // If the series is an object and contains a name we add a custom attribute
+          if(data.series[i].name) {
+            seriesGroups[i].attr({
+              'series-name': data.series[i].name
+            }, Chartist.xmlNs.uri);
+          }
+
           // Use series class from series data or if not set generate one
           seriesGroups[i].addClass([
             options.classNames.series,
             (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
           ].join(' '));
 
-          var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], 0),
-            pathCoordinates = [p.x, p.y],
+          var p,
+            pathCoordinates = [],
             point;
 
-          // First dot we need to add before loop
-          if (options.showPoint) {
-            // Small offset for Firefox to render squares correctly
-            point = seriesGroups[i].elem('line', {
-              x1: p.x,
-              y1: p.y,
-              x2: p.x + 0.01,
-              y2: p.y
-            }, options.classNames.point);
-          }
-
-          // First point is created, continue with rest
-          for (var j = 1; j < normalizedData[i].length; j++) {
+          for (var j = 0; j < normalizedData[i].length; j++) {
             p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
             pathCoordinates.push(p.x, p.y);
 
@@ -815,7 +830,9 @@
                 y1: p.y,
                 x2: p.x + 0.01,
                 y2: p.y
-              }, options.classNames.point);
+              }, options.classNames.point).attr({
+                'value': normalizedData[i][j]
+              }, Chartist.xmlNs.uri);
             }
           }
 
@@ -837,7 +854,9 @@
 
             seriesGroups[i].elem('path', {
               d: svgPathString
-            }, options.classNames.line);
+            }, options.classNames.line, true).attr({
+              'values': normalizedData[i]
+            }, Chartist.xmlNs.uri);
           }
         }
       }
@@ -1068,6 +1087,14 @@
             periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
 
           seriesGroups[i] = svg.elem('g');
+
+          // If the series is an object and contains a name we add a custom attribute
+          if(data.series[i].name) {
+            seriesGroups[i].attr({
+              'series-name': data.series[i].name
+            }, Chartist.xmlNs.uri);
+          }
+
           // Use series class from series data or if not set generate one
           seriesGroups[i].addClass([
             options.classNames.series,
@@ -1087,7 +1114,9 @@
               y1: zeroPoint.y,
               x2: p.x,
               y2: p.y
-            }, options.classNames.bar + (data.series[i].barClasses ? ' ' + data.series[i].barClasses : ''));
+            }, options.classNames.bar).attr({
+              'value': normalizedData[i][j]
+            }, Chartist.xmlNs.uri);
           }
         }
       }
@@ -1289,7 +1318,15 @@
         // Draw the series
         // initialize series groups
         for (var i = 0; i < data.series.length; i++) {
-          seriesGroups[i] = svg.elem('g');
+          seriesGroups[i] = svg.elem('g', null, null, true);
+
+          // If the series is an object and contains a name we add a custom attribute
+          if(data.series[i].name) {
+            seriesGroups[i].attr({
+              'series-name': data.series[i].name
+            }, Chartist.xmlNs.uri);
+          }
+
           // Use series class from series data or if not set generate one
           seriesGroups[i].addClass([
             options.classNames.series,
@@ -1324,6 +1361,11 @@
             d: d.join(' ')
           }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
 
+          // Adding the pie series value to the path
+          path.attr({
+            'value': dataArray[i]
+          }, Chartist.xmlNs.uri);
+
           // If this is a donut, we add the stroke-width as style attribute
           if(options.donut === true) {
             path.attr({
@@ -1340,8 +1382,7 @@
             seriesGroups[i].elem('text', {
               dx: labelPosition.x,
               dy: labelPosition.y,
-              'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection),
-              text: '' + interpolatedValue
+              'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
             }, options.classNames.label).text('' + interpolatedValue);
           }
 

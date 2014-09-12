@@ -6,7 +6,7 @@
 
 // This object is prepared for export via UMD
 var Chartist = {};
-Chartist.version = '0.1.11';
+Chartist.version = '0.1.12';
 
 (function (window, document, Chartist) {
   'use strict';
