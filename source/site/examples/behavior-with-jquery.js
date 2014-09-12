@@ -16,7 +16,8 @@ var easeOutQuad = function (x, t, b, c, d) {
   return -c * (t /= d) * (t - 2) + b;
 };
 
-// $chart is set to a jQuery wrapper around the chart container div
+var $chart = $('.ct-chart');
+
 var $toolTip = $chart
   .append('<div class="tooltip"></div>')
   .find('.tooltip')
