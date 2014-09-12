@@ -13,8 +13,7 @@
     "highlightjs": "~8.0.0",
     "compass-mixins": "~1.0.0",
     "codemirror": "~4.5.0",
-    "base64": "~0.3.0",
-    "jquery-easing": "*"
+    "base64": "~0.3.0"
   },
   "ignore": [
     ".*",
