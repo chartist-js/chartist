@@ -7,8 +7,12 @@ body {
   background-repeat: repeat repeat;
 }
 
-* {
+html {
   box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
 }
 
 p:first-child {
@@ -30,6 +34,14 @@ ul {
   &.list {
     list-style: disc outside none;
     padding-left: 1em;
+  }
+}
+
+pre {
+  white-space: normal;
+
+  code {
+    white-space: pre-wrap;
   }
 }
 
@@ -76,20 +88,23 @@ h4 {
 }
 
 h5 {
-  font-size: rem-calc(nth($modular-scale, 3));
+  font-size: rem-calc(nth($modular-scale, 4));
   font-weight: 700;
   margin-top: 2em;
 
   @media #{$medium-up} {
     font-size: rem-calc(nth($modular-scale, 4));
-    font-weight: 700;
   }
 }
 
 h6 {
-  font-size: rem-calc(nth($modular-scale, 3));
+  font-size: rem-calc(nth($modular-scale, 4));
   font-weight: 700;
   margin-top: 2em;
+
+  @media #{$medium-up} {
+    font-size: rem-calc(nth($modular-scale, 4));
+  }
 }
 
 table {

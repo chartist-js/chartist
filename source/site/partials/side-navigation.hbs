@@ -5,11 +5,11 @@
         <li class="heading">{{title}}</li>
         {{#each items}}
           {{#is type 'sub-section'}}
-            <li><a href="#{{#if id}}{{id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
+            <li><a class="text-clipping" href="#{{#if id}}{{id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
           {{/is}}
 
           {{#is type 'live-example'}}
-            <li><a href="#{{#if id}}{{id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
+            <li><a class="text-clipping" href="#{{#if id}}{{id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
           {{/is}}
         {{/each}}
       {{/each}}

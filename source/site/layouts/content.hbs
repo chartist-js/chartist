@@ -7,7 +7,13 @@ layout: default
     <header>
       <h2>{{title}}</h2>
     </header>
-    {{>side-navigation}}
+
+    {{#if page.side-nav}}
+      {{partial page.side-nav this}}
+    {{else}}
+      {{>side-navigation}}
+    {{/if}}
+
     <div class="content">
       {{>body}}
     </div>

@@ -1,42 +1,50 @@
 <article class="module-member {{ctx.type}}">
-  <header>
+  <header class="member-header">
     <h5 class="member-title" id="{{slugify (concat ctx.type ' ' ctx.string)}}"><span class="member-tag">{{ctx.type}}</span> {{ctx.string}}</h5>
-    <div class="description">{{{description.summary}}}</div>
+    <button class="api-code-button" data-toggle-visible="#{{slugify (concat ctx.type ' ' ctx.string ' code')}}">Show code</button>
   </header>
-  {{#is ctx.type 'method'}}
-    <h6>Parameters</h6>
-    {{#each (doxTagsOfType this 'param')}}
-      <div class="param">
-        <code>{{name}}</code>
-        ({{#each types}}
-          <span class="param-type"><code>{{this}}</code></span>
-        {{/each}})
-        <div class="param-description">{{description}}</div>
-      </div>
-    {{/each}}
+  <pre id="{{slugify (concat ctx.type ' ' ctx.string ' code')}}">
+    <code class="javascript">{{code}}</code>
+  </pre>
+  <div class="member-content">
+    <div class="description">{{{description.summary}}}</div>
 
-    {{#with (doxTag this 'return')}}
-      <h6>Returns</h6>
+    {{#is ctx.type 'method'}}
+      {{#if (doxTagsOfType this 'param')}}
+        <h6>Parameters</h6>
+        {{#each (doxTagsOfType this 'param')}}
+          <div class="param">
+            <code>{{name}}</code>
+            ({{#each types}}
+              <span class="param-type"><code>{{this}}</code></span>
+            {{/each}})
+            <div class="param-description">{{description}}</div>
+          </div>
+        {{/each}}
+      {{/if}}
 
-      <div class="return">
-        ({{#each types}}
-          <span class="param-type"><code>{{this}}</code></span>
-        {{/each}})
-        <div class="param-description">{{description}}</div>
-      </div>
-    {{/with}}
-  {{/is}}
+      {{#if (doxTagsOfType this 'return')}}
+        {{#with (doxTag this 'return')}}
+          <h6>Returns</h6>
 
-  {{#if (doxTag this 'showcode')}}
-    <h6>Code</h6>
-    <div class="code">
-      <pre><code class="js">{{code}}</code></pre>
-    </div>
-  {{/if}}
+          <div class="return">
+            ({{#each types}}
+              <span class="param-type"><code>{{this}}</code></span>
+            {{/each}})
+            <div class="param-description">{{description}}</div>
+          </div>
+        {{/with}}
+      {{/if}}
 
-  <h6>Examples</h6>
-  {{#each (doxTagsOfType this 'example')}}
-    <pre><code class="js">{{string}}</code></pre>
-  {{/each}}
+    {{/is}}
+
+    {{#if (doxTagsOfType this 'example')}}
+      <h6>Examples</h6>
+      {{#each (doxTagsOfType this 'example')}}
+        <pre class="api-example"><code class="js">{{string}}</code></pre>
+      {{/each}}
+    {{/if}}
+
+  </div>
 
 </article>

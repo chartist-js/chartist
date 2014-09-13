@@ -30,6 +30,12 @@
   visibility: hidden;
 }
 
+.text-clipping {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .hint {
   position: relative;
   margin-top: rem-calc(nth($modular-scale, 5));
@@ -177,8 +183,6 @@ pre > code {
           }
 
           > li:not(.heading) > a {
-            text-indent: -0.8rem;
-            margin-left: 0.8rem;
 
             &:before {
               content: "\2013\00A0";
