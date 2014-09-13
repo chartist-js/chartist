@@ -23,11 +23,11 @@ module.exports = function (grunt) {
     watch: {
       assemble: {
         files: ['<%= pkg.config.source %>/site/**/*.{hbs,yml,json,js}'],
-        tasks: ['doxication', 'assemble', 'bowerInstall']
+        tasks: ['doxication', 'assemble']
       },
       doxication: {
         files: ['.tmp/data/**/*.{yml,json}'],
-        tasks: ['doxication', 'assemble', 'bowerInstall']
+        tasks: ['doxication', 'assemble']
       },
       js: {
         files: ['<%= pkg.config.source %>/scripts/{,*/}*.js'],
@@ -142,17 +142,6 @@ module.exports = function (grunt) {
         cwd: '<%= pkg.config.source %>/site',
         src: ['*.hbs'],
         dest: '.tmp'
-      }
-    },
-
-    // Automatically inject Bower components into the app
-    'bowerInstall': {
-      app: {
-        src: ['.tmp/**/*.html'],
-        ignorePath: '<%= pkg.config.source %>/',
-        exclude: '<%= pkg.config.bowerExclude %>',
-        dependencies: true,
-        devDependencies: true
       }
     },
 
@@ -450,7 +439,6 @@ module.exports = function (grunt) {
       'clean:server',
       'doxication',
       'assemble',
-      'bowerInstall',
       'concurrent:server',
       'connect:livereload',
       'watch'
@@ -473,7 +461,6 @@ module.exports = function (grunt) {
     'clean:dist',
     'doxication',
     'assemble',
-    'bowerInstall',
     'useminPrepare',
     'concurrent:dist',
     'concat:generated',

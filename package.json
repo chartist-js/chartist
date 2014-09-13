@@ -59,7 +59,6 @@
     "grunt-contrib-jasmine": "~0.7.0",
     "jasmine-fixture": "~1.0.8",
     "assemble": "~0.4.36",
-    "grunt-bower-install": "~1.4.0",
     "handlebars-helpers": "~0.5.5",
     "seed-random": "~2.2.0",
     "grunt-umd": "^1.7.4",
@@ -76,11 +75,6 @@
   "config": {
     "banner": "/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n",
     "source": "source",
-    "dist": "sitedist",
-    "bowerExclude": [
-      "foundation.css",
-      "es5-shim.js",
-      "json3.min.js"
-    ]
+    "dist": "sitedist"
   }
 }
