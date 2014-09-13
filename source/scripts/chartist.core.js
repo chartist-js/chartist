@@ -1,9 +1,6 @@
 /**
  * The core module of Chartist that is mainly providing static functions and higher level functions for chart modules.
  *
- * @version 0.1.2
- * @author Gion Kunz
- * @author Ives Ebneter
  * @module Chartist.Core
  */
 var Chartist = {};
@@ -24,7 +21,7 @@ Chartist.version = '0.1.12';
   };
 
   /**
-   * Generates a-z from number
+   * Generates a-z from a number 0 to 26
    *
    * @memberof Chartist.Core
    * @param {number} n A number from 0 to 26 that will result in a letter a-z
@@ -55,8 +52,10 @@ Chartist.version = '0.1.12';
     return target;
   };
 
+  //TODO: move into Chartist.svg
   /**
-   * Get element height with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+   * Get element height with fallback to svg BoundingBox or parent container dimensions:
+   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
    * @memberof Chartist.Core
    * @param {object} svgElement The svg element from which we want to retrieve its height
@@ -66,8 +65,10 @@ Chartist.version = '0.1.12';
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
   };
 
+  //TODO: move into Chartist.svg
   /**
-   * Get element width with fallback to svg BoundingBox or parent container dimensions: See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+   * Get element width with fallback to svg BoundingBox or parent container dimensions:
+   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
    * @memberof Chartist.Core
    * @param {object} svgElement The svg element from which we want to retrieve its width
@@ -363,7 +364,7 @@ Chartist.version = '0.1.12';
    * @param {object} options The Object that contains all the optional values for the chart
    * @param {number} xAxisOffset The offset of the x-axis to the border of the svg element
    * @param {number} yAxisOffset The offset of the y-axis to the border of the svg element
-   * @return {number} The chart rectangles coordinates inside the svg element plus the rectangles measurements
+   * @return {object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
    */
   Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
@@ -381,7 +382,7 @@ Chartist.version = '0.1.12';
   };
 
   /**
-   * Draw the x-axis onto the svg element
+   * Generate grid lines and labels for the x-axis into grid and labels group SVG elements
    *
    * @memberof Chartist.Core
    * @param {object} chartRect The rectangle that sets the bounds for the chart in the svg element
@@ -425,7 +426,7 @@ Chartist.version = '0.1.12';
   };
 
   /**
-   * Draw the y-axis onto the svg element
+   * Generate grid lines and labels for the y-axis into grid and labels group SVG elements
    *
    * @memberof Chartist.Core
    * @param {object} chartRect The rectangle that sets the bounds for the chart in the svg element
@@ -473,7 +474,7 @@ Chartist.version = '0.1.12';
    * @param {object} bounds All the values to set the bounds of the chart
    * @param {array} data The array that contains the data to be visualized in the chart
    * @param {number} index The index of the current project point
-   * @return {number} The coordinates of the current project point on the svg element
+   * @return {object} The coordinates object of the current project point containing an x and y number property
    */
   Chartist.projectPoint = function (chartRect, bounds, data, index) {
     return {
@@ -490,7 +491,8 @@ Chartist.version = '0.1.12';
    * @param {object} defaultOptions Default options from Chartist
    * @param {object} options Options set by user
    * @param {array} responsiveOptions Optional functions to add responsive behavior to chart
-   * @return {object} The consolidated options object from the defaults, base and responsive options
+   * @param {function} optionsChangedCallbackFnc The callback that will be executed when a media change triggered new options to be used. The callback function will receive the new options as first parameter.
+   * @return {object} The consolidated options object from the defaults, base and matching responsive options
    */
   Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {
     var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
@@ -510,7 +512,6 @@ Chartist.version = '0.1.12';
         }
       }
 
-      //TODO delete this callback function
       optionsChangedCallbackFnc(currentOptions);
       return currentOptions;
     }
