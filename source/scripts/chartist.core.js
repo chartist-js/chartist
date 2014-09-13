@@ -336,19 +336,6 @@ Chartist.version = '0.1.12';
     return offset;
   };
 
-  //TODO Remove interpolateData function
-  Chartist.interpolateData = function (data, labelInterpolationFnc, callback) {
-    for (var index = 0; index < data.length; index++) {
-      // If interpolation function returns falsy value we skipp this label
-      var interpolatedValue = labelInterpolationFnc(data[index], index);
-      if (!interpolatedValue && interpolatedValue !== 0) {
-        continue;
-      }
-
-      callback(data, index, interpolatedValue);
-    }
-  };
-
   /**
    * Calculate cartesian coordinates of polar coordinates
    *
