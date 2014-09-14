@@ -11,11 +11,11 @@
    * This method creates a new pie chart and returns an object that can be used to redraw the chart.
    *
    * @memberof Chartist.Pie
-   * @param {string|HTMLElement} query A selector query string or directly a DOM element
-   * @param {object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
-   * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
-   * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
-   * @return {object} An object with a version and an update method to manually redraw the chart
+   * @param {String|Node} query A selector query string or directly a DOM element
+   * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
+   * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+   * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+   * @return {Object} An object with a version and an update method to manually redraw the chart
    *
    * @example
    * // Default options of the pie chart

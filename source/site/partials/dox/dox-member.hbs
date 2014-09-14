@@ -1,9 +1,9 @@
 <article class="module-member {{ctx.type}}">
   <header class="member-header">
-    <h5 class="member-title" id="{{slugify (concat ctx.type ' ' ctx.string)}}"><span class="member-tag">{{ctx.type}}</span> {{ctx.string}}</h5>
-    <button class="api-code-button" data-toggle-visible="#{{slugify (concat ctx.type ' ' ctx.string ' code')}}">Show code</button>
+    <h5 class="member-title" id="{{doxHash this}}"><span class="member-tag">{{ctx.type}}</span> {{ctx.string}}</h5>
+    <button class="api-code-button" data-toggle-visible="#{{concat (doxHash this) '-code'}}">Show code</button>
   </header>
-  <pre id="{{slugify (concat ctx.type ' ' ctx.string ' code')}}">
+  <pre id="{{concat (doxHash this) '-code'}}">
     <code class="javascript">{{code}}</code>
   </pre>
   <div class="member-content">

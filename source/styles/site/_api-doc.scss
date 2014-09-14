@@ -51,6 +51,24 @@
     }
   }
 
+  .param-type {
+
+    > code {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 0.1em 0.2em;
+    }
+
+    &:after {
+      content: "╱";
+    }
+
+    &:last-of-type {
+      &:after {
+        content: none;
+      }
+    }
+  }
+
   pre {
     margin: 0 -10px;
   }

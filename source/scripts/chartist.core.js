@@ -24,8 +24,8 @@ Chartist.version = '0.1.12';
    * Generates a-z from a number 0 to 26
    *
    * @memberof Chartist.Core
-   * @param {number} n A number from 0 to 26 that will result in a letter a-z
-   * @return {string} A character from a-z based on the input number n
+   * @param {Number} n A number from 0 to 26 that will result in a letter a-z
+   * @return {String} A character from a-z based on the input number n
    */
   Chartist.alphaNumerate = function (n) {
     // Limit to a-z
@@ -36,9 +36,9 @@ Chartist.version = '0.1.12';
    * Simple recursive object extend
    *
    * @memberof Chartist.Core
-   * @param {object} target Target object where the source will be merged into
-   * @param {object} source This object will be merged into target and then target is returned
-   * @return {object} An object that has the same reference as target but is extended and merged with the properties of source
+   * @param {Object} target Target object where the source will be merged into
+   * @param {Object} source This object will be merged into target and then target is returned
+   * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
    */
   Chartist.extend = function (target, source) {
     target = target || {};
@@ -58,8 +58,8 @@ Chartist.version = '0.1.12';
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
    * @memberof Chartist.Core
-   * @param {object} svgElement The svg element from which we want to retrieve its height
-   * @return {number} The elements height in pixels
+   * @param {Node} svgElement The svg element from which we want to retrieve its height
+   * @return {Number} The elements height in pixels
    */
   Chartist.getHeight = function (svgElement) {
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
@@ -71,8 +71,8 @@ Chartist.version = '0.1.12';
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
    * @memberof Chartist.Core
-   * @param {object} svgElement The svg element from which we want to retrieve its width
-   * @return {number} The elements width in pixels
+   * @param {Node} svgElement The svg element from which we want to retrieve its width
+   * @return {Number} The elements width in pixels
    */
   Chartist.getWidth = function (svgElement) {
     return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
@@ -82,7 +82,7 @@ Chartist.version = '0.1.12';
    * This is a wrapper around document.querySelector that will return the query if it's already of type Node
    *
    * @memberof Chartist.Core
-   * @param {string|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
+   * @param {String|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
    * @return {Node}
    */
   Chartist.querySelector = function(query) {
@@ -94,10 +94,10 @@ Chartist.version = '0.1.12';
    *
    * @memberof Chartist.Core
    * @param {Node} container The containing DOM Node object that will be used to plant the SVG element
-   * @param {string} width Set the width of the SVG element. Default is 100%
-   * @param {string} height Set the height of the SVG element. Default is 100%
-   * @param {string} className Specify a class to be added to the SVG element
-   * @return {object} The created/reinitialized SVG element
+   * @param {String} width Set the width of the SVG element. Default is 100%
+   * @param {String} height Set the height of the SVG element. Default is 100%
+   * @param {String} className Specify a class to be added to the SVG element
+   * @return {Object} The created/reinitialized SVG element
    */
   Chartist.createSvg = function (container, width, height, className) {
     var svg;
@@ -130,8 +130,8 @@ Chartist.version = '0.1.12';
    * Convert data series into plain array
    *
    * @memberof Chartist.Core
-   * @param {object} data The series object that contains the data to be visualized in the chart
-   * @return {array} A plain array that contains the data to be visualized in the chart
+   * @param {Object} data The series object that contains the data to be visualized in the chart
+   * @return {Array} A plain array that contains the data to be visualized in the chart
    */
   Chartist.getDataArray = function (data) {
     var array = [];
@@ -150,9 +150,9 @@ Chartist.version = '0.1.12';
    * Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart
    *
    * @memberof Chartist.Core
-   * @param {array} dataArray The array that contains the data to be visualized in the chart. The array in this parameter will be modified by function.
-   * @param {number} length The length of the x-axis data array.
-   * @return {array} The array that got updated with missing values.
+   * @param {Array} dataArray The array that contains the data to be visualized in the chart. The array in this parameter will be modified by function.
+   * @param {Number} length The length of the x-axis data array.
+   * @return {Array} The array that got updated with missing values.
    */
   Chartist.normalizeDataArray = function (dataArray, length) {
     for (var i = 0; i < dataArray.length; i++) {
@@ -172,8 +172,8 @@ Chartist.version = '0.1.12';
    * Calculate the order of magnitude for the chart scale
    *
    * @memberof Chartist.Core
-   * @param {number} value The value Range of the chart
-   * @return {number} The order of magnitude
+   * @param {Number} value The value Range of the chart
+   * @return {Number} The order of magnitude
    */
   Chartist.orderOfMagnitude = function (value) {
     return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
@@ -183,11 +183,11 @@ Chartist.version = '0.1.12';
    * Project a data length into screen coordinates (pixels)
    *
    * @memberof Chartist.Core
-   * @param {object} svg The svg element for the chart
-   * @param {number} length Single data value from a series array
-   * @param {object} bounds All the values to set the bounds of the chart
-   * @param {object} options The Object that contains all the optional values for the chart
-   * @return {number} The projected data length in pixels
+   * @param {Object} svg The svg element for the chart
+   * @param {Number} length Single data value from a series array
+   * @param {Object} bounds All the values to set the bounds of the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @return {Number} The projected data length in pixels
    */
   Chartist.projectLength = function (svg, length, bounds, options) {
     var availableHeight = Chartist.getAvailableHeight(svg, options);
@@ -198,9 +198,9 @@ Chartist.version = '0.1.12';
    * Get the height of the area in the chart for the data series
    *
    * @memberof Chartist.Core
-   * @param {object} svg The svg element for the chart
-   * @param {object} options The Object that contains all the optional values for the chart
-   * @return {number} The height of the area in the chart for the data series
+   * @param {Object} svg The svg element for the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
     return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
@@ -210,8 +210,8 @@ Chartist.version = '0.1.12';
    * Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.
    *
    * @memberof Chartist.Core
-   * @param {array} dataArray The array that contains the data to be visualized in the chart
-   * @return {array} The array that contains the highest and lowest value that will be visualized on the chart.
+   * @param {Array} dataArray The array that contains the data to be visualized in the chart
+   * @return {Array} The array that contains the highest and lowest value that will be visualized on the chart.
    */
   Chartist.getHighLow = function (dataArray) {
     var i,
@@ -241,11 +241,11 @@ Chartist.version = '0.1.12';
    * Calculate and retrieve all the bounds for the chart and return them in one array
    *
    * @memberof Chartist.Core
-   * @param {object} svg The svg element for the chart
-   * @param {array} normalizedData The array that got updated with missing values.
-   * @param {object} options The Object that contains all the optional values for the chart
-   * @param {number} referenceValue The reference value for the chart.
-   * @return {object} All the values to set the bounds of the chart
+   * @param {Object} svg The svg element for the chart
+   * @param {Array} normalizedData The array that got updated with missing values.
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Number} referenceValue The reference value for the chart.
+   * @return {Object} All the values to set the bounds of the chart
    */
   Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
     var i,
@@ -311,12 +311,12 @@ Chartist.version = '0.1.12';
    * Calculate the needed offset to fit in the labels
    *
    * @memberof Chartist.Core
-   * @param {object} svg The svg element for the chart
-   * @param {array} data The array that contains the data to be visualized in the chart
-   * @param {object} labelClass All css classes of the label
-   * @param {function} labelInterpolationFnc The function that interpolates the label value
-   * @param {function} offsetFnc Function to find greatest value of either the width or the height of the label, depending on the context
-   * @return {number} The number that represents the label offset in pixels
+   * @param {Object} svg The svg element for the chart
+   * @param {Array} data The array that contains the data to be visualized in the chart
+   * @param {Object} labelClass All css classes of the label
+   * @param {Function} labelInterpolationFnc The function that interpolates the label value
+   * @param {Function} offsetFnc Function to find greatest value of either the width or the height of the label, depending on the context
+   * @return {Number} The number that represents the label offset in pixels
    */
   Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
     var offset = 0;
@@ -345,11 +345,11 @@ Chartist.version = '0.1.12';
    * Calculate cartesian coordinates of polar coordinates
    *
    * @memberof Chartist.Core
-   * @param {number} centerX X-axis coordinates of center point of circle segment
-   * @param {number} centerY X-axis coordinates of center point of circle segment
-   * @param {number} radius Radius of circle segment
-   * @param {number} angleInDegrees Angle of circle segment in degrees
-   * @return {number} Coordinates of point on circumference
+   * @param {Number} centerX X-axis coordinates of center point of circle segment
+   * @param {Number} centerY X-axis coordinates of center point of circle segment
+   * @param {Number} radius Radius of circle segment
+   * @param {Number} angleInDegrees Angle of circle segment in degrees
+   * @return {Number} Coordinates of point on circumference
    */
   Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -364,11 +364,11 @@ Chartist.version = '0.1.12';
    * Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
    *
    * @memberof Chartist.Core
-   * @param {object} svg The svg element for the chart
-   * @param {object} options The Object that contains all the optional values for the chart
-   * @param {number} xAxisOffset The offset of the x-axis to the border of the svg element
-   * @param {number} yAxisOffset The offset of the y-axis to the border of the svg element
-   * @return {object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
+   * @param {Object} svg The svg element for the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Number} xAxisOffset The offset of the x-axis to the border of the svg element
+   * @param {Number} yAxisOffset The offset of the y-axis to the border of the svg element
+   * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
    */
   Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
@@ -389,11 +389,11 @@ Chartist.version = '0.1.12';
    * Generate grid lines and labels for the x-axis into grid and labels group SVG elements
    *
    * @memberof Chartist.Core
-   * @param {object} chartRect The rectangle that sets the bounds for the chart in the svg element
-   * @param {object} data The Object that contains the data to be visualized in the chart
-   * @param {object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
-   * @param {object} labels Chartist.svg wrapper object to be filled with the lables of the chart
-   * @param {object} options The Object that contains all the optional values for the chart
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} data The Object that contains the data to be visualized in the chart
+   * @param {Object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
+   * @param {Object} labels Chartist.svg wrapper object to be filled with the lables of the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
    */
   Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
     // Create X-Axis
@@ -433,12 +433,12 @@ Chartist.version = '0.1.12';
    * Generate grid lines and labels for the y-axis into grid and labels group SVG elements
    *
    * @memberof Chartist.Core
-   * @param {object} chartRect The rectangle that sets the bounds for the chart in the svg element
-   * @param {object} bounds All the values to set the bounds of the chart
-   * @param {object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
-   * @param {object} labels Chartist.svg wrapper object to be filled with the lables of the chart
-   * @param {number} offset Offset for the y-axis
-   * @param {object} options The Object that contains all the optional values for the chart
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} bounds All the values to set the bounds of the chart
+   * @param {Object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
+   * @param {Object} labels Chartist.svg wrapper object to be filled with the lables of the chart
+   * @param {Number} offset Offset for the y-axis
+   * @param {Object} options The Object that contains all the optional values for the chart
    */
   Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
     // Create Y-Axis
@@ -474,11 +474,11 @@ Chartist.version = '0.1.12';
    * Determine the current point on the svg element to draw the data series
    *
    * @memberof Chartist.Core
-   * @param {object} chartRect The rectangle that sets the bounds for the chart in the svg element
-   * @param {object} bounds All the values to set the bounds of the chart
-   * @param {array} data The array that contains the data to be visualized in the chart
-   * @param {number} index The index of the current project point
-   * @return {object} The coordinates object of the current project point containing an x and y number property
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} bounds All the values to set the bounds of the chart
+   * @param {Array} data The array that contains the data to be visualized in the chart
+   * @param {Number} index The index of the current project point
+   * @return {Object} The coordinates object of the current project point containing an x and y number property
    */
   Chartist.projectPoint = function (chartRect, bounds, data, index) {
     return {
@@ -492,11 +492,11 @@ Chartist.version = '0.1.12';
    * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
    *
    * @memberof Chartist.Core
-   * @param {object} defaultOptions Default options from Chartist
-   * @param {object} options Options set by user
-   * @param {array} responsiveOptions Optional functions to add responsive behavior to chart
-   * @param {function} optionsChangedCallbackFnc The callback that will be executed when a media change triggered new options to be used. The callback function will receive the new options as first parameter.
-   * @return {object} The consolidated options object from the defaults, base and matching responsive options
+   * @param {Object} defaultOptions Default options from Chartist
+   * @param {Object} options Options set by user
+   * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
+   * @param {Function} optionsChangedCallbackFnc The callback that will be executed when a media change triggered new options to be used. The callback function will receive the new options as first parameter.
+   * @return {Object} The consolidated options object from the defaults, base and matching responsive options
    */
   Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions) {
     var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),

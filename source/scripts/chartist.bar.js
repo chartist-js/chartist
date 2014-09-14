@@ -11,11 +11,11 @@
    * This method creates a new bar chart and returns an object handle with delegations to the internal closure of the bar chart. You can use the returned object to redraw the chart.
    *
    * @memberof Chartist.Bar
-   * @param {string|HTMLElement} query A selector query string or directly a DOM element
-   * @param {object} data The data object that needs to consist of a labels and a series array
-   * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
-   * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
-   * @return {object} An object with a version and an update method to manually redraw the chart
+   * @param {String|Node} query A selector query string or directly a DOM element
+   * @param {Object} data The data object that needs to consist of a labels and a series array
+   * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+   * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+   * @return {Object} An object with a version and an update method to manually redraw the chart
    *
    * @example
    * // These are the default options of the line chart
