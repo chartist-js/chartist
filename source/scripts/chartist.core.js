@@ -79,28 +79,32 @@ Chartist.version = '0.1.12';
   };
 
   /**
+   * This is a wrapper around document.querySelector that will return the query if it's already of type Node
+   *
+   * @memberof Chartist.Core
+   * @param {string|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
+   * @return {Node}
+   */
+  Chartist.querySelector = function(query) {
+    return query instanceof Node ? query : document.querySelector(query);
+  };
+
+  /**
    * Create or reinitialize the SVG element for the chart
    *
    * @memberof Chartist.Core
-   * @param {string|node} query The query to select the HTML element that will serve as container or directly a DOM Node object
+   * @param {Node} container The containing DOM Node object that will be used to plant the SVG element
    * @param {string} width Set the width of the SVG element. Default is 100%
    * @param {string} height Set the height of the SVG element. Default is 100%
    * @param {string} className Specify a class to be added to the SVG element
    * @return {object} The created/reinitialized SVG element
    */
-  Chartist.createSvg = function (query, width, height, className) {
-    // Get dom object from query or if already dom object just use it
-    var container = query.nodeType ? query : document.querySelector(query),
-      svg;
-
-    // If container was not found we throw up
-    if (!container) {
-      throw 'Container node with selector "' + query + '" not found';
-    }
+  Chartist.createSvg = function (container, width, height, className) {
+    var svg;
 
     // If already contains our svg object we clear it, set width / height and return
-    if (container._ctChart !== undefined) {
-      svg = container._ctChart.attr({
+    if (container.chartistSvg !== undefined) {
+      svg = container.chartistSvg.attr({
         width: width || '100%',
         height: height || '100%'
       }).removeAllClasses().addClass(className);
@@ -116,7 +120,7 @@ Chartist.version = '0.1.12';
 
       // Add the DOM node to our container
       container.appendChild(svg._node);
-      container._ctChart = svg;
+      container.chartistSvg = svg;
     }
 
     return svg;
@@ -494,13 +498,14 @@ Chartist.version = '0.1.12';
    * @param {function} optionsChangedCallbackFnc The callback that will be executed when a media change triggered new options to be used. The callback function will receive the new options as first parameter.
    * @return {object} The consolidated options object from the defaults, base and matching responsive options
    */
-  Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {
+  Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions) {
     var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
       currentOptions,
       mediaQueryListeners = [],
+      optionsListeners = [],
       i;
 
-    function applyOptions() {
+    function updateCrrentOptions() {
       currentOptions = Chartist.extend({}, baseOptions);
 
       if (responsiveOptions) {
@@ -511,9 +516,12 @@ Chartist.version = '0.1.12';
           }
         }
       }
+    }
 
-      optionsChangedCallbackFnc(currentOptions);
-      return currentOptions;
+    function clearMediaQueryListeners() {
+      mediaQueryListeners.forEach(function(mql) {
+        mql.removeListener(updateCrrentOptions);
+      });
     }
 
     if (!window.matchMedia) {
@@ -522,12 +530,28 @@ Chartist.version = '0.1.12';
 
       for (i = 0; i < responsiveOptions.length; i++) {
         var mql = window.matchMedia(responsiveOptions[i][0]);
-        mql.addListener(applyOptions);
+        mql.addListener(updateCrrentOptions);
         mediaQueryListeners.push(mql);
       }
     }
+    // Execute initially so we get the correct current options
+    updateCrrentOptions();
 
-    return applyOptions();
+    return {
+      get currentOptions() {
+        return Chartist.extend({}, currentOptions);
+      },
+      addOptionsListener: function(callback) {
+        optionsListeners.push(callback);
+      },
+      removeOptionsListener: function(callback) {
+        optionsListeners.splice(optionsListeners.indexOf(callback), 1);
+      },
+      clear: function() {
+        optionsListeners = [];
+        clearMediaQueryListeners();
+      }
+    };
   };
 
   //http://schepers.cc/getting-to-the-point

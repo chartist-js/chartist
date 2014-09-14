@@ -16,7 +16,6 @@
    * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
    * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    * @return {object} An object with a version and an update method to manually redraw the chart
-   * @function
    *
    * @example
    * // These are the default options of the line chart
@@ -140,7 +139,8 @@
           horizontal: 'ct-horizontal'
         }
       },
-      currentOptions,
+      optionsProvider,
+      container = Chartist.querySelector(query),
       svg;
 
     function createChart(options) {
@@ -151,7 +151,7 @@
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
       // Create new svg element
-      svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
+      svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
 
       // initialize bounds
       bounds = Chartist.getBounds(svg, normalizedData, options, 0);
@@ -231,12 +231,55 @@
       }
     }
 
+    /**
+     * Updates the chart which currently does a full reconstruction of the SVG DOM
+     *
+     * @memberof Chartist.Bar
+     *
+     */
+    function update() {
+      createChart(optionsProvider.currentOptions);
+    }
+
+    /**
+     * This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.
+     *
+     * @memberof Chartist.Bar
+     */
+    function detach() {
+      window.removeEventListener('resize', update);
+      optionsProvider.clear();
+    }
+
+    /**
+     * Add a listener for the responsive options updates. Once the chart will switch to a new option set the listener will be called with the new options.
+     *
+     * @memberof Chartist.Bar
+     * @param {Function} callback Callback function that will have the new options as first parameter
+     */
+    function addOptionsListener(callback) {
+      optionsProvider.addOptionsListener(callback);
+    }
+
+    /**
+     * Remove a responsive options listener that was previously added using the addOptionsListener method.
+     *
+     * @memberof Chartist.Bar
+     * @param {Function} callback The callback function that was registered earlier with addOptionsListener
+     */
+    function removeOptionsListener(callback) {
+      optionsProvider.removeOptionsListener(callback);
+    }
+
+    // If this container already contains chartist, let's try to detach first and unregister all event listeners
+    if(container.chartist) {
+      container.chartist.detach();
+    }
+
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes
-    currentOptions = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, function (changedOptions) {
-      currentOptions = changedOptions;
-      createChart(currentOptions);
-    });
+    optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions);
+    createChart(optionsProvider.currentOptions);
 
     // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
     // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -244,17 +287,20 @@
     // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
     // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
     // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-    window.addEventListener('resize', function () {
-      createChart(currentOptions);
-    });
+    window.addEventListener('resize', update);
 
     // Public members
-    return {
+    var api = {
       version: Chartist.version,
-      update: function () {
-        createChart(currentOptions);
-      }
+      update: update,
+      detach: detach,
+      addOptionsListener: addOptionsListener,
+      removeOptionsListener: removeOptionsListener
     };
+
+    container.chartist = api;
+
+    return api;
   };
 
 }(window, document, Chartist));
