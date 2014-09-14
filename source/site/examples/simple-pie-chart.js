@@ -1,9 +1,11 @@
-Chartist.Pie('.ct-chart', {
-  series: [20, 10, 30, 40]
-}, {
-  donut: true,
-  donutWidth: 60,
-  startAngle: 270,
-  total: 200,
-  showLabel: false
+var data = {
+  series: [5, 3, 4]
+};
+
+var sum = function(a, b) { return a + b };
+
+Chartist.Pie('.ct-chart', data, {
+  labelInterpolationFnc: function(value) {
+    return Math.round(value / data.series.reduce(sum) * 100) + '%';
+  }
 });

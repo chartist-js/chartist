@@ -9,9 +9,59 @@ sections:
           id: simple-line-chart
           classes: ct-golden-section
           intro: An example of a simple line chart with three series. You can edit this example in realtime.
+      - type: live-example
+        data:
+          title: Line scatter diagram with responsive settings
+          level: 4
+          id: line-scatter-random
+          classes: ct-golden-section
+          intro: >
+                   This advanced example uses a line chart to draw a scatter diagram. The data object is created
+                   with a functional style random mechanism. There is a mobile first responsive configuration using
+                   the responsive options to show less labels on small screens.
+  - title: Bar chart examples
+    level: 3
+    items:
+      - type: live-example
+        data:
+          title: Bi-polar bar chart
+          level: 4
+          id: bi-polar-bar-interpolated
+          classes: ct-golden-section
+          intro: >
+                    A bi-plar bar chart with a range limit set with low and high. There is also an interpolation
+                    function used to skip every odd grid line / label.
+      - type: live-example
+        data:
+          title: Overlapping bars on mobile
+          level: 4
+          id: overlapping-bars
+          classes: ct-golden-section
+          intro: >
+                    This example makes use of label interpolation and the seriesBarDistance property that allows you
+                    to make bars overlap over each other. This then can be used to use the avialable space on mobile better.
+                    Resize your browser to see the effect of the responsive configuration.
   - title: Pie chart examples
     level: 3
     items:
+      - type: live-example
+        data:
+          title: Simple pie chart
+          level: 4
+          id: simple-pie-chart
+          classes: ct-golden-section ct-negative-labels
+          intro: A very simple pie chart with label interpolation to show percentage instead of the actual data series value.
+      - type: live-example
+        data:
+          title: Pie chart with custom labels
+          level: 4
+          id: pie-with-custom-labels
+          classes: ct-golden-section
+          intro: >
+                    This pie chart is configured with custom labels specified in the data object. On desktop we use the labelOffset
+                    property to offset the labels from the center. Also labelDirection can be used to control the direction
+                    in which the labels are expanding.
+
       - type: live-example
         data:
           title: Gauge chart
