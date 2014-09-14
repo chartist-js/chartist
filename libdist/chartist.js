@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.1.12
+  /* Chartist.js 0.1.13
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -20,26 +20,43 @@
    *
    * @module Chartist.Core
    */
-
-  // This object is prepared for export via UMD
   var Chartist = {};
-  Chartist.version = '0.1.12';
+  Chartist.version = '0.1.13';
 
   (function (window, document, Chartist) {
     'use strict';
 
-    // Helps to simplify functional style code
+    /**
+     * Helps to simplify functional style code
+     *
+     * @memberof Chartist.Core
+     * @param {*} n This exact value will be returned by the noop function
+     * @return {*} The same value that was provided to the n parameter
+     */
     Chartist.noop = function (n) {
       return n;
     };
 
-    // Generates a-z from number
+    /**
+     * Generates a-z from a number 0 to 26
+     *
+     * @memberof Chartist.Core
+     * @param {Number} n A number from 0 to 26 that will result in a letter a-z
+     * @return {String} A character from a-z based on the input number n
+     */
     Chartist.alphaNumerate = function (n) {
       // Limit to a-z
       return String.fromCharCode(97 + n % 26);
     };
 
-    // Simple recursive object extend
+    /**
+     * Simple recursive object extend
+     *
+     * @memberof Chartist.Core
+     * @param {Object} target Target object where the source will be merged into
+     * @param {Object} source This object will be merged into target and then target is returned
+     * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
+     */
     Chartist.extend = function (target, source) {
       target = target || {};
       for (var prop in source) {
@@ -52,30 +69,59 @@
       return target;
     };
 
-    // Get element height / width with fallback to svg BoundingBox or parent container dimensions
-    // See https://bugzilla.mozilla.org/show_bug.cgi?id=530985
+    //TODO: move into Chartist.svg
+    /**
+     * Get element height with fallback to svg BoundingBox or parent container dimensions:
+     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+     *
+     * @memberof Chartist.Core
+     * @param {Node} svgElement The svg element from which we want to retrieve its height
+     * @return {Number} The elements height in pixels
+     */
     Chartist.getHeight = function (svgElement) {
       return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
     };
 
+    //TODO: move into Chartist.svg
+    /**
+     * Get element width with fallback to svg BoundingBox or parent container dimensions:
+     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+     *
+     * @memberof Chartist.Core
+     * @param {Node} svgElement The svg element from which we want to retrieve its width
+     * @return {Number} The elements width in pixels
+     */
     Chartist.getWidth = function (svgElement) {
       return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
     };
 
-    // Create Chartist SVG element
-    Chartist.createSvg = function (query, width, height, className) {
-      // Get dom object from query or if already dom object just use it
-      var container = query.nodeType ? query : document.querySelector(query),
-        svg;
+    /**
+     * This is a wrapper around document.querySelector that will return the query if it's already of type Node
+     *
+     * @memberof Chartist.Core
+     * @param {String|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
+     * @return {Node}
+     */
+    Chartist.querySelector = function(query) {
+      return query instanceof Node ? query : document.querySelector(query);
+    };
 
-      // If container was not found we throw up
-      if (!container) {
-        throw 'Container node with selector "' + query + '" not found';
-      }
+    /**
+     * Create or reinitialize the SVG element for the chart
+     *
+     * @memberof Chartist.Core
+     * @param {Node} container The containing DOM Node object that will be used to plant the SVG element
+     * @param {String} width Set the width of the SVG element. Default is 100%
+     * @param {String} height Set the height of the SVG element. Default is 100%
+     * @param {String} className Specify a class to be added to the SVG element
+     * @return {Object} The created/reinitialized SVG element
+     */
+    Chartist.createSvg = function (container, width, height, className) {
+      var svg;
 
       // If already contains our svg object we clear it, set width / height and return
-      if (container._ctChart !== undefined) {
-        svg = container._ctChart.attr({
+      if (container.chartistSvg !== undefined) {
+        svg = container.chartistSvg.attr({
           width: width || '100%',
           height: height || '100%'
         }).removeAllClasses().addClass(className);
@@ -91,13 +137,19 @@
 
         // Add the DOM node to our container
         container.appendChild(svg._node);
-        container._ctChart = svg;
+        container.chartistSvg = svg;
       }
 
       return svg;
     };
 
-    // Convert data series into plain array
+    /**
+     * Convert data series into plain array
+     *
+     * @memberof Chartist.Core
+     * @param {Object} data The series object that contains the data to be visualized in the chart
+     * @return {Array} A plain array that contains the data to be visualized in the chart
+     */
     Chartist.getDataArray = function (data) {
       var array = [];
 
@@ -111,7 +163,14 @@
       return array;
     };
 
-    // Add missing values at the end of the arrays
+    /**
+     * Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart
+     *
+     * @memberof Chartist.Core
+     * @param {Array} dataArray The array that contains the data to be visualized in the chart. The array in this parameter will be modified by function.
+     * @param {Number} length The length of the x-axis data array.
+     * @return {Array} The array that got updated with missing values.
+     */
     Chartist.normalizeDataArray = function (dataArray, length) {
       for (var i = 0; i < dataArray.length; i++) {
         if (dataArray[i].length === length) {
@@ -126,20 +185,51 @@
       return dataArray;
     };
 
+    /**
+     * Calculate the order of magnitude for the chart scale
+     *
+     * @memberof Chartist.Core
+     * @param {Number} value The value Range of the chart
+     * @return {Number} The order of magnitude
+     */
     Chartist.orderOfMagnitude = function (value) {
       return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
     };
 
+    /**
+     * Project a data length into screen coordinates (pixels)
+     *
+     * @memberof Chartist.Core
+     * @param {Object} svg The svg element for the chart
+     * @param {Number} length Single data value from a series array
+     * @param {Object} bounds All the values to set the bounds of the chart
+     * @param {Object} options The Object that contains all the optional values for the chart
+     * @return {Number} The projected data length in pixels
+     */
     Chartist.projectLength = function (svg, length, bounds, options) {
       var availableHeight = Chartist.getAvailableHeight(svg, options);
       return (length / bounds.range * availableHeight);
     };
 
+    /**
+     * Get the height of the area in the chart for the data series
+     *
+     * @memberof Chartist.Core
+     * @param {Object} svg The svg element for the chart
+     * @param {Object} options The Object that contains all the optional values for the chart
+     * @return {Number} The height of the area in the chart for the data series
+     */
     Chartist.getAvailableHeight = function (svg, options) {
       return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
     };
 
-    // Get highest and lowest value of data array
+    /**
+     * Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.
+     *
+     * @memberof Chartist.Core
+     * @param {Array} dataArray The array that contains the data to be visualized in the chart
+     * @return {Array} The array that contains the highest and lowest value that will be visualized on the chart.
+     */
     Chartist.getHighLow = function (dataArray) {
       var i,
         j,
@@ -164,6 +254,16 @@
     };
 
     // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
+    /**
+     * Calculate and retrieve all the bounds for the chart and return them in one array
+     *
+     * @memberof Chartist.Core
+     * @param {Object} svg The svg element for the chart
+     * @param {Array} normalizedData The array that got updated with missing values.
+     * @param {Object} options The Object that contains all the optional values for the chart
+     * @param {Number} referenceValue The reference value for the chart.
+     * @return {Object} All the values to set the bounds of the chart
+     */
     Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
       var i,
         newMin,
@@ -224,6 +324,17 @@
       return bounds;
     };
 
+    /**
+     * Calculate the needed offset to fit in the labels
+     *
+     * @memberof Chartist.Core
+     * @param {Object} svg The svg element for the chart
+     * @param {Array} data The array that contains the data to be visualized in the chart
+     * @param {Object} labelClass All css classes of the label
+     * @param {Function} labelInterpolationFnc The function that interpolates the label value
+     * @param {Function} offsetFnc Function to find greatest value of either the width or the height of the label, depending on the context
+     * @return {Number} The number that represents the label offset in pixels
+     */
     Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
       var offset = 0;
       for (var i = 0; i < data.length; i++) {
@@ -247,19 +358,16 @@
       return offset;
     };
 
-    // Used to iterate over array, interpolate using a interpolation function and executing callback (used for rendering)
-    Chartist.interpolateData = function (data, labelInterpolationFnc, callback) {
-      for (var index = 0; index < data.length; index++) {
-        // If interpolation function returns falsy value we skipp this label
-        var interpolatedValue = labelInterpolationFnc(data[index], index);
-        if (!interpolatedValue && interpolatedValue !== 0) {
-          continue;
-        }
-
-        callback(data, index, interpolatedValue);
-      }
-    };
-
+    /**
+     * Calculate cartesian coordinates of polar coordinates
+     *
+     * @memberof Chartist.Core
+     * @param {Number} centerX X-axis coordinates of center point of circle segment
+     * @param {Number} centerY X-axis coordinates of center point of circle segment
+     * @param {Number} radius Radius of circle segment
+     * @param {Number} angleInDegrees Angle of circle segment in degrees
+     * @return {Number} Coordinates of point on circumference
+     */
     Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
       var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
 
@@ -269,7 +377,16 @@
       };
     };
 
-    // Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+    /**
+     * Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+     *
+     * @memberof Chartist.Core
+     * @param {Object} svg The svg element for the chart
+     * @param {Object} options The Object that contains all the optional values for the chart
+     * @param {Number} xAxisOffset The offset of the x-axis to the border of the svg element
+     * @param {Number} yAxisOffset The offset of the y-axis to the border of the svg element
+     * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
+     */
     Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
       return {
         x1: options.chartPadding + yAxisOffset,
@@ -285,6 +402,16 @@
       };
     };
 
+    /**
+     * Generate grid lines and labels for the x-axis into grid and labels group SVG elements
+     *
+     * @memberof Chartist.Core
+     * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+     * @param {Object} data The Object that contains the data to be visualized in the chart
+     * @param {Object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
+     * @param {Object} labels Chartist.svg wrapper object to be filled with the lables of the chart
+     * @param {Object} options The Object that contains all the optional values for the chart
+     */
     Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
       // Create X-Axis
       data.labels.forEach(function (value, index) {
@@ -319,6 +446,17 @@
       });
     };
 
+    /**
+     * Generate grid lines and labels for the y-axis into grid and labels group SVG elements
+     *
+     * @memberof Chartist.Core
+     * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+     * @param {Object} bounds All the values to set the bounds of the chart
+     * @param {Object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
+     * @param {Object} labels Chartist.svg wrapper object to be filled with the lables of the chart
+     * @param {Number} offset Offset for the y-axis
+     * @param {Object} options The Object that contains all the optional values for the chart
+     */
     Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
       // Create Y-Axis
       bounds.values.forEach(function (value, index) {
@@ -349,6 +487,16 @@
       });
     };
 
+    /**
+     * Determine the current point on the svg element to draw the data series
+     *
+     * @memberof Chartist.Core
+     * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+     * @param {Object} bounds All the values to set the bounds of the chart
+     * @param {Array} data The array that contains the data to be visualized in the chart
+     * @param {Number} index The index of the current project point
+     * @return {Object} The coordinates object of the current project point containing an x and y number property
+     */
     Chartist.projectPoint = function (chartRect, bounds, data, index) {
       return {
         x: chartRect.x1 + chartRect.width() / data.length * index,
@@ -356,15 +504,25 @@
       };
     };
 
-    // Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
     // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one
-    Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, optionsChangedCallbackFnc) {
+    /**
+     * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+     *
+     * @memberof Chartist.Core
+     * @param {Object} defaultOptions Default options from Chartist
+     * @param {Object} options Options set by user
+     * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
+     * @param {Function} optionsChangedCallbackFnc The callback that will be executed when a media change triggered new options to be used. The callback function will receive the new options as first parameter.
+     * @return {Object} The consolidated options object from the defaults, base and matching responsive options
+     */
+    Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions) {
       var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
         currentOptions,
         mediaQueryListeners = [],
+        optionsListeners = [],
         i;
 
-      function applyOptions() {
+      function updateCrrentOptions() {
         currentOptions = Chartist.extend({}, baseOptions);
 
         if (responsiveOptions) {
@@ -375,9 +533,12 @@
             }
           }
         }
+      }
 
-        optionsChangedCallbackFnc(currentOptions);
-        return currentOptions;
+      function clearMediaQueryListeners() {
+        mediaQueryListeners.forEach(function(mql) {
+          mql.removeListener(updateCrrentOptions);
+        });
       }
 
       if (!window.matchMedia) {
@@ -386,15 +547,31 @@
 
         for (i = 0; i < responsiveOptions.length; i++) {
           var mql = window.matchMedia(responsiveOptions[i][0]);
-          mql.addListener(applyOptions);
+          mql.addListener(updateCrrentOptions);
           mediaQueryListeners.push(mql);
         }
       }
+      // Execute initially so we get the correct current options
+      updateCrrentOptions();
 
-      return applyOptions();
+      return {
+        get currentOptions() {
+          return Chartist.extend({}, currentOptions);
+        },
+        addOptionsListener: function(callback) {
+          optionsListeners.push(callback);
+        },
+        removeOptionsListener: function(callback) {
+          optionsListeners.splice(optionsListeners.indexOf(callback), 1);
+        },
+        clear: function() {
+          optionsListeners = [];
+          clearMediaQueryListeners();
+        }
+      };
     };
 
-    // http://schepers.cc/getting-to-the-point
+    //http://schepers.cc/getting-to-the-point
     Chartist.catmullRom2bezier = function (crp, z) {
       var d = [];
       for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
@@ -592,12 +769,11 @@
      * This method creates a new line chart and returns an object handle to the internal closure. Currently you can use the returned object only for updating / redrawing the chart.
      *
      * @memberof Chartist.Line
-     * @param {string|HTMLElement} query A selector query string or directly a DOM element
-     * @param {object} data The data object that needs to consist of a labels and a series array
-     * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
-     * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
-     * @return {object} An object with a version and an update method to manually redraw the chart
-     * @function
+     * @param {String|Node} query A selector query string or directly a DOM element
+     * @param {Object} data The data object that needs to consist of a labels and a series array
+     * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+     * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+     * @return {Object} An object with a version and an update method to manually redraw the chart
      *
      * @example
      * // These are the default options of the line chart
@@ -750,7 +926,8 @@
             horizontal: 'ct-horizontal'
           }
         },
-        currentOptions,
+        optionsProvider,
+        container = Chartist.querySelector(query),
         svg;
 
       function createChart(options) {
@@ -761,7 +938,7 @@
           normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
         // Create new svg object
-        svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
+        svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
 
         // initialize bounds
         bounds = Chartist.getBounds(svg, normalizedData, options);
@@ -861,12 +1038,55 @@
         }
       }
 
+      /**
+       * Updates the chart which currently does a full reconstruction of the SVG DOM
+       *
+       * @memberof Chartist.Line
+       *
+       */
+      function update() {
+        createChart(optionsProvider.currentOptions);
+      }
+
+      /**
+       * This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.
+       *
+       * @memberof Chartist.Line
+       */
+      function detach() {
+        window.removeEventListener('resize', update);
+        optionsProvider.clear();
+      }
+
+      /**
+       * Add a listener for the responsive options updates. Once the chart will switch to a new option set the listener will be called with the new options.
+       *
+       * @memberof Chartist.Line
+       * @param {Function} callback Callback function that will have the new options as first parameter
+       */
+      function addOptionsListener(callback) {
+        optionsProvider.addOptionsListener(callback);
+      }
+
+      /**
+       * Remove a responsive options listener that was previously added using the addOptionsListener method.
+       *
+       * @memberof Chartist.Line
+       * @param {Function} callback The callback function that was registered earlier with addOptionsListener
+       */
+      function removeOptionsListener(callback) {
+        optionsProvider.removeOptionsListener(callback);
+      }
+
+      // If this container already contains chartist, let's try to detach first and unregister all event listeners
+      if(container.chartist) {
+        container.chartist.detach();
+      }
+
       // Obtain current options based on matching media queries (if responsive options are given)
       // This will also register a listener that is re-creating the chart based on media changes
-      currentOptions = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, function (changedOptions) {
-        currentOptions = changedOptions;
-        createChart(currentOptions);
-      });
+      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions);
+      createChart(optionsProvider.currentOptions);
 
       // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
       // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -874,17 +1094,24 @@
       // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
       // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
       // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-      window.addEventListener('resize', function () {
-        createChart(currentOptions);
-      });
+      function updateChart() {
+        createChart(optionsProvider.currentOptions);
+      }
+
+      window.addEventListener('resize', updateChart);
 
       // Public members
-      return {
+      var api = {
         version: Chartist.version,
-        update: function () {
-          createChart(currentOptions);
-        }
+        update: update,
+        detach: detach,
+        addOptionsListener: addOptionsListener,
+        removeOptionsListener: removeOptionsListener
       };
+
+      container.chartist = api;
+
+      return api;
     };
 
   }(window, document, Chartist));
@@ -901,12 +1128,11 @@
      * This method creates a new bar chart and returns an object handle with delegations to the internal closure of the bar chart. You can use the returned object to redraw the chart.
      *
      * @memberof Chartist.Bar
-     * @param {string|HTMLElement} query A selector query string or directly a DOM element
-     * @param {object} data The data object that needs to consist of a labels and a series array
-     * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
-     * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
-     * @return {object} An object with a version and an update method to manually redraw the chart
-     * @function
+     * @param {String|Node} query A selector query string or directly a DOM element
+     * @param {Object} data The data object that needs to consist of a labels and a series array
+     * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+     * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+     * @return {Object} An object with a version and an update method to manually redraw the chart
      *
      * @example
      * // These are the default options of the line chart
@@ -1030,7 +1256,8 @@
             horizontal: 'ct-horizontal'
           }
         },
-        currentOptions,
+        optionsProvider,
+        container = Chartist.querySelector(query),
         svg;
 
       function createChart(options) {
@@ -1041,7 +1268,7 @@
           normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
 
         // Create new svg element
-        svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
+        svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
 
         // initialize bounds
         bounds = Chartist.getBounds(svg, normalizedData, options, 0);
@@ -1121,12 +1348,55 @@
         }
       }
 
+      /**
+       * Updates the chart which currently does a full reconstruction of the SVG DOM
+       *
+       * @memberof Chartist.Bar
+       *
+       */
+      function update() {
+        createChart(optionsProvider.currentOptions);
+      }
+
+      /**
+       * This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.
+       *
+       * @memberof Chartist.Bar
+       */
+      function detach() {
+        window.removeEventListener('resize', update);
+        optionsProvider.clear();
+      }
+
+      /**
+       * Add a listener for the responsive options updates. Once the chart will switch to a new option set the listener will be called with the new options.
+       *
+       * @memberof Chartist.Bar
+       * @param {Function} callback Callback function that will have the new options as first parameter
+       */
+      function addOptionsListener(callback) {
+        optionsProvider.addOptionsListener(callback);
+      }
+
+      /**
+       * Remove a responsive options listener that was previously added using the addOptionsListener method.
+       *
+       * @memberof Chartist.Bar
+       * @param {Function} callback The callback function that was registered earlier with addOptionsListener
+       */
+      function removeOptionsListener(callback) {
+        optionsProvider.removeOptionsListener(callback);
+      }
+
+      // If this container already contains chartist, let's try to detach first and unregister all event listeners
+      if(container.chartist) {
+        container.chartist.detach();
+      }
+
       // Obtain current options based on matching media queries (if responsive options are given)
       // This will also register a listener that is re-creating the chart based on media changes
-      currentOptions = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, function (changedOptions) {
-        currentOptions = changedOptions;
-        createChart(currentOptions);
-      });
+      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions);
+      createChart(optionsProvider.currentOptions);
 
       // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
       // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -1134,17 +1404,20 @@
       // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
       // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
       // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-      window.addEventListener('resize', function () {
-        createChart(currentOptions);
-      });
+      window.addEventListener('resize', update);
 
       // Public members
-      return {
+      var api = {
         version: Chartist.version,
-        update: function () {
-          createChart(currentOptions);
-        }
+        update: update,
+        detach: detach,
+        addOptionsListener: addOptionsListener,
+        removeOptionsListener: removeOptionsListener
       };
+
+      container.chartist = api;
+
+      return api;
     };
 
   }(window, document, Chartist));
@@ -1161,12 +1434,11 @@
      * This method creates a new pie chart and returns an object that can be used to redraw the chart.
      *
      * @memberof Chartist.Pie
-     * @param {string|HTMLElement} query A selector query string or directly a DOM element
-     * @param {object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
-     * @param {object} [options] The options object with options that override the default options. Check the examples for a detailed list.
-     * @param {array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
-     * @return {object} An object with a version and an update method to manually redraw the chart
-     * @function
+     * @param {String|Node} query A selector query string or directly a DOM element
+     * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
+     * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
+     * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
+     * @return {Object} An object with a version and an update method to manually redraw the chart
      *
      * @example
      * // Default options of the pie chart
@@ -1261,7 +1533,8 @@
           labelOverflow: false,
           labelDirection: 'neutral'
         },
-        currentOptions,
+        optionsProvider,
+        container = Chartist.querySelector(query),
         svg;
 
       function determineAnchorPosition(center, label, direction) {
@@ -1288,7 +1561,7 @@
           dataArray = Chartist.getDataArray(data);
 
         // Create SVG.js draw
-        svg = Chartist.createSvg(query, options.width, options.height, options.classNames.chart);
+        svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
         // Calculate charting rect
         chartRect = Chartist.createChartRect(svg, options, 0, 0);
         // Get biggest circle radius possible within chartRect
@@ -1392,12 +1665,55 @@
         }
       }
 
+      /**
+       * Updates the chart which currently does a full reconstruction of the SVG DOM
+       *
+       * @memberof Chartist.Pie
+       *
+       */
+      function update() {
+        createChart(optionsProvider.currentOptions);
+      }
+
+      /**
+       * This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.
+       *
+       * @memberof Chartist.Pie
+       */
+      function detach() {
+        window.removeEventListener('resize', update);
+        optionsProvider.clear();
+      }
+
+      /**
+       * Add a listener for the responsive options updates. Once the chart will switch to a new option set the listener will be called with the new options.
+       *
+       * @memberof Chartist.Pie
+       * @param {Function} callback Callback function that will have the new options as first parameter
+       */
+      function addOptionsListener(callback) {
+        optionsProvider.addOptionsListener(callback);
+      }
+
+      /**
+       * Remove a responsive options listener that was previously added using the addOptionsListener method.
+       *
+       * @memberof Chartist.Pie
+       * @param {Function} callback The callback function that was registered earlier with addOptionsListener
+       */
+      function removeOptionsListener(callback) {
+        optionsProvider.removeOptionsListener(callback);
+      }
+
+      // If this container already contains chartist, let's try to detach first and unregister all event listeners
+      if(container.chartist) {
+        container.chartist.detach();
+      }
+
       // Obtain current options based on matching media queries (if responsive options are given)
       // This will also register a listener that is re-creating the chart based on media changes
-      currentOptions = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, function (changedOptions) {
-        currentOptions = changedOptions;
-        createChart(currentOptions);
-      });
+      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions);
+      createChart(optionsProvider.currentOptions);
 
       // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
       // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -1405,17 +1721,24 @@
       // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
       // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
       // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-      window.addEventListener('resize', function () {
-        createChart(currentOptions);
-      });
+      function updateChart() {
+        createChart(optionsProvider.currentOptions);
+      }
+
+      window.addEventListener('resize', updateChart);
 
       // Public members
-      return {
+      var api = {
         version: Chartist.version,
-        update: function () {
-          createChart(currentOptions);
-        }
+        update: update,
+        detach: detach,
+        addOptionsListener: addOptionsListener,
+        removeOptionsListener: removeOptionsListener
       };
+
+      container.chartist = api;
+
+      return api;
     };
 
   }(window, document, Chartist));
