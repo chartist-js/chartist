@@ -94,7 +94,7 @@
     }
 
     function removeAllClasses(node) {
-      node.className = '';
+      node.setAttribute('class', '');
     }
 
     return {
