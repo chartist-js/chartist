@@ -10,6 +10,16 @@ If you find a bug in the source code or a mistake in the documentation, you can 
 submitting an issue to our [GitHub Repository][github]. Even better you can submit a Pull Request
 with a fix.
 
+## Pre-requisites
+
+You will need the following to run a local development enviroment.
+
+- Node.js & npm
+- Bower (`sudo npm install bower -g`)
+- Grunt (`sudo npm install grunt-cli -g`)
+- Text editor of your choice
+
+
 ## How to Run a Local Distribution
 
 1. `cd` into your local copy of the repository.
