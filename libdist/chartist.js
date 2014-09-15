@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.1.13
+  /* Chartist.js 0.1.14
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -21,7 +21,7 @@
    * @module Chartist.Core
    */
   var Chartist = {};
-  Chartist.version = '0.1.13';
+  Chartist.version = '0.1.14';
 
   (function (window, document, Chartist) {
     'use strict';
@@ -273,6 +273,21 @@
       // Overrides of high / low from settings
       bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
       bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
+
+      // If high and low are the same because of misconfiguration or flat data (only the same value) we need
+      // to set the high or low to 0 depending on the polarity
+      if(bounds.high === bounds.low) {
+        // If both values are 0 we set high to 1
+        if(bounds.low === 0) {
+          bounds.high = 1;
+        } else if(bounds.low < 0) {
+          // If we have the same negative value for the bounds we set bounds.high to 0
+          bounds.high = 0;
+        } else {
+          // If we have the same positive value for the bounds we set bounds.low to 0
+          bounds.low = 0;
+        }
+      }
 
       // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
       // used to generate the chart. This is useful when the chart always needs to contain the position of the
@@ -708,7 +723,7 @@
       }
 
       function removeAllClasses(node) {
-        node.className = '';
+        node.setAttribute('class', '');
       }
 
       return {
