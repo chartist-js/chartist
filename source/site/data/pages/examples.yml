@@ -19,6 +19,16 @@ sections:
                    This advanced example uses a line chart to draw a scatter diagram. The data object is created
                    with a functional style random mechanism. There is a mobile first responsive configuration using
                    the responsive options to show less labels on small screens.
+      - type: live-example
+        data:
+          title: Line chart with tooltips
+          level: 4
+          id: behavior-with-jquery
+          classes: ct-golden-section
+          intro: >
+                   Adding behavior to your chart with JavaScript is a breeze and is just like any other DOM manipulation
+                   you do to your site. This is just one of many benefits of using inline-SVG and provides you with the
+                   freedom you need in order to create exactly the experience you're looking for.
   - title: Bar chart examples
     level: 3
     items:
