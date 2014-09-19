@@ -55,7 +55,7 @@ to the masses.
 ## Contribution
 
 We are looking for people who share the idea of having a simple, flexible charting library that is responsive and uses
-modern and future prove technologies. The goal of this project is to create a responsive charting library where developers
+modern and future-proof technologies. The goal of this project is to create a responsive charting library where developers
 have their joy in using it and designers love it because of the designing flexibility they have.
 
 Contribute if you like the Chartist Guy!
