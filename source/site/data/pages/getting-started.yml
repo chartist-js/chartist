@@ -32,7 +32,7 @@ sections:
               data:
                 text: >
                         The quickest way to get things up and running is by using the Chartist.js CSS files.
-                        The CSS is compiled from the SASS files with de default class names which are also
+                        The CSS is compiled from the SASS files with the default class names which are also
                         configured in the JavaScript library. You can then override the default styles or
                         modify the CSS file, however, for customization it's recommended to use the SASS
                         version of Chartist.js.
