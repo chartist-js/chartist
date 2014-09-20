@@ -18,27 +18,27 @@ describe('Chartist core tests', function() {
         charMap[character] = i;
       }
     });
-      
+
     it('should not through and exception in case of a given number outside of the expected range', function () {
-      expect(window.Chartist.alphaNumerate(100)).toBeDefined(); 
+      expect(window.Chartist.alphaNumerate(100)).toBeDefined();
     });
   });
-    
+
   describe('extend', function () {
     it('should recursively extend the given objects', function  () {
       var result = Chartist.extend({
-        one: 'one',
-        two: {
-          twentyThree: 'twenty three',
-          twentyFour: 'twenty four'
-        }
+          one: 'one',
+          two: {
+            twentyThree: 'twenty three',
+            twentyFour: 'twenty four'
+          }
         }, {
-        one: 1,
-        two: {
-          twentyTwo: 22,
-          twentyThree: 23
-        }
-      });
+          one: 1,
+          two: {
+            twentyTwo: 22,
+            twentyThree: 23
+          }
+        });
       expect(result.one).toEqual(1);
       expect(result.two.twentyTwo).toEqual(22);
     });
