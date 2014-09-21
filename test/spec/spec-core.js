@@ -98,4 +98,24 @@ describe('Chartist core tests', function() {
       expect(svg1).toBe(svg2);
     });
   });
+
+  describe('getDataArray()', function () {
+    it('should try to get the series.data object if it exists', function () {
+      var result = Chartist.getDataArray({
+        series: [
+          {data: 1},
+          {data: 2},
+          {data: 3}
+        ]
+      });
+      expect(result).toEqual([1, 2, 3]);
+    });
+
+    it('should use the series property it self if no data is defined within it', function () {
+      var result = Chartist.getDataArray({
+        series: [ 2, 4, 5 ]
+      });
+      expect(result).toEqual([2, 4, 5]);
+    });
+  });
 });
