@@ -76,6 +76,9 @@
     }
 
     function addClass(node, names) {
+      if (!(names)) {
+        return; // no need to do anything
+      }
       node.setAttribute('class',
         classes(node)
           .concat(names.trim().split(/\s+/))
