@@ -136,4 +136,16 @@ describe('Chartist core tests', function() {
       ]);
     });
   });
+
+  describe('orderOfMagnitude()', function () {
+    it('should return order of magnitute of the given value', function () {
+      expect(Chartist.orderOfMagnitude(0.0004)).toEqual(-4);
+      expect(Chartist.orderOfMagnitude(0.003)).toEqual(-3);
+      expect(Chartist.orderOfMagnitude(0.02)).toEqual(-2);
+      expect(Chartist.orderOfMagnitude(0.1)).toEqual(-1);
+      expect(Chartist.orderOfMagnitude(1234)).toEqual(3);
+      expect(Chartist.orderOfMagnitude(12345)).toEqual(4);
+      expect(Chartist.orderOfMagnitude(123456)).toEqual(5);
+    });
+  });
 });
