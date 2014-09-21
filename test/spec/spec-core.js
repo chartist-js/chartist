@@ -1,4 +1,4 @@
-/*globals Chartist, jQuery*/
+/*globals Chartist, jQuery, chartistJasmineMatchers*/
 
 var $ = jQuery;
 
@@ -6,28 +6,7 @@ describe('Chartist core tests', function() {
   'use strict';
 
   beforeEach(function () {
-    jasmine.addMatchers({
-      toThrowNamed: function () {
-        return {
-          compare: function(actual, expected) {
-            var result = { pass: true };
-            try {
-              actual();
-
-              result.pass = false;
-              result.message = 'Expected "' + expected + '" to occure but exception was throughn';
-            } catch (e) {
-              if (!(e.name) || e.name !== expected) {
-                result.pass = false;
-                result.message = 'Expected "' + expected + '" exception but got "' + e.name + '"';
-              }
-            }
-
-            return result;
-          }
-        };
-      }
-    });
+    jasmine.addMatchers(chartistJasmineMatchers);
   });
 
   describe('alphaNumerate', function () {
