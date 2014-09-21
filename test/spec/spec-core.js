@@ -127,4 +127,25 @@ describe('Chartist core tests', function() {
       expect(Chartist.orderOfMagnitude(123456)).toEqual(5);
     });
   });
+
+  describe('getHighLow()', function () {
+    it('should return an object with the highest and lowest value of the given data', function () {
+      expect(Chartist.getHighLow([
+        [-20, 3, 5],
+        [-30, 200, 3]
+      ])).toEqual({
+        high: 200,
+        low: -30
+      });
+    });
+  });
+
+  describe('polarToCartesian()', function () {
+    it('should return an object with x and y coordinates on circumference', function () {
+      expect(Chartist.polarToCartesian(1, 1, 2, 90)).toEqual({
+        x: 3,
+        y: 1
+      });
+    });
+  });
 });
