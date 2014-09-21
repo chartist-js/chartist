@@ -95,7 +95,10 @@ Chartist.version = '0.1.12';
 
     // If container was not found we throw up
     if (!container) {
-      throw 'Container node with selector "' + query + '" not found';
+      throw {
+        name: 'NodeNotFoundException',
+        message: 'Container node with selector "' + query + '" not found'
+      };
     }
 
     // If already contains our svg object we clear it, set width / height and return
