@@ -118,4 +118,22 @@ describe('Chartist core tests', function() {
       expect(result).toEqual([2, 4, 5]);
     });
   });
+
+  describe('normalizeDataArray()', function () {
+    it('should add a zero to any empty slot of the given array', function () {
+      expect(Chartist.normalizeDataArray([
+        [1],
+        [1, 2],
+        [1, 2, 3],
+        [1, 2, 3, 4],
+        [1, 2, 3, 4, 5]
+      ], 5)).toEqual([
+        [1, 0, 0, 0, 0],
+        [1, 2, 0, 0, 0],
+        [1, 2, 3, 0, 0],
+        [1, 2, 3, 4, 0],
+        [1, 2, 3, 4, 5]
+      ]);
+    });
+  });
 });
