@@ -24,7 +24,7 @@ You will need the following to run a local development enviroment.
 
 1. `cd` into your local copy of the repository.
 2. Run `npm install` to install dependencies located in `package.json`.
-3. Run `bower update` to install bower dependencies.
+3. Run `bower install` to install bower dependencies.
 5. Run `grunt serve` to start the watch task, and the web server should automatically open. Congrats, you should now be able to see your local copy of the demo site.
 
 ## <a name="submit"></a> Submission Guidelines
