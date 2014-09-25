@@ -59,6 +59,11 @@
   }
 }
 
+@mixin ct-chart-area($ct-area-opacity: $ct-area-opacity) {
+  stroke: none;
+  fill-opacity: $ct-area-opacity;
+}
+
 @mixin ct-chart-bar($ct-bar-width: $ct-bar-width) {
   fill: none;
   stroke-width: $ct-bar-width;
@@ -74,7 +79,7 @@
     stroke: $color;
   }
 
-  .#{$ct-class-slice}:not(.#{$ct-class-donut}) {
+  .#{$ct-class-slice}:not(.#{$ct-class-donut}), .#{$ct-class-area} {
     fill: $color;
   }
 }
@@ -94,6 +99,10 @@
 
   .#{$ct-class-line} {
     @include ct-chart-line($ct-line-width);
+  }
+
+  .#{$ct-class-area} {
+    @include ct-chart-area();
   }
 
   .#{$ct-class-bar} {

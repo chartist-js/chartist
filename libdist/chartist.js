@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.1.14
+  /* Chartist.js 0.1.15
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -827,6 +827,10 @@
      *   showLine: true,
      *   // If dots should be drawn or not
      *   showPoint: true,
+     *   // If the line chart should draw an area
+     *   showArea: false,
+     *   // The base for the area chart that will be used to close the area shape (is normally 0)
+     *   areaBase: 0,
      *   // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
      *   lineSmooth: true,
      *   // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
@@ -842,6 +846,7 @@
      *     series: 'ct-series',
      *     line: 'ct-line',
      *     point: 'ct-point',
+     *     area: 'ct-area',
      *     grid: 'ct-grid',
      *     vertical: 'ct-vertical',
      *     horizontal: 'ct-horizontal'
@@ -926,6 +931,8 @@
           height: undefined,
           showLine: true,
           showPoint: true,
+          showArea: false,
+          areaBase: 0,
           lineSmooth: true,
           low: undefined,
           high: undefined,
@@ -936,6 +943,7 @@
             series: 'ct-series',
             line: 'ct-line',
             point: 'ct-point',
+            area: 'ct-area',
             grid: 'ct-grid',
             vertical: 'ct-vertical',
             horizontal: 'ct-horizontal'
@@ -1028,27 +1036,49 @@
             }
           }
 
-          if (options.showLine) {
-            var svgPathString = 'M' + pathCoordinates[0] + ',' + pathCoordinates[1] + ' ';
+          // TODO: Nicer handling of conditions, maybe composition?
+          if (options.showLine || options.showArea) {
+            // TODO: We should add a path API in the SVG library for easier path creation
+            var pathElements = ['M' + pathCoordinates[0] + ',' + pathCoordinates[1]];
 
             // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
             if (options.lineSmooth && pathCoordinates.length > 4) {
 
               var cr = Chartist.catmullRom2bezier(pathCoordinates);
               for(var k = 0; k < cr.length; k++) {
-                svgPathString += 'C' + cr[k].join();
+                pathElements.push('C' + cr[k].join());
               }
             } else {
               for(var l = 3; l < pathCoordinates.length; l += 2) {
-                svgPathString += 'L ' + pathCoordinates[l - 1] + ',' + pathCoordinates[l];
+                pathElements.push('L' + pathCoordinates[l - 1] + ',' + pathCoordinates[l]);
               }
             }
 
-            seriesGroups[i].elem('path', {
-              d: svgPathString
-            }, options.classNames.line, true).attr({
-              'values': normalizedData[i]
-            }, Chartist.xmlNs.uri);
+            if(options.showArea) {
+              // If we need to draw area shapes we just make a copy of our pathElements SVG path array
+              var areaPathElements = pathElements.slice();
+              // We project the areaBase value into screen coordinates
+              var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [options.areaBase], 0);
+              // And splice our new area path array to add the missing path elements to close the area shape
+              areaPathElements.splice(0, 0, 'M' + areaBaseProjected.x + ',' + areaBaseProjected.y);
+              areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
+              areaPathElements.push('L' + pathCoordinates[pathCoordinates.length - 2] + ',' + areaBaseProjected.y);
+
+              // Create the new path for the area shape with the area class from the options
+              seriesGroups[i].elem('path', {
+                d: areaPathElements.join('')
+              }, options.classNames.area, true).attr({
+                'values': normalizedData[i]
+              }, Chartist.xmlNs.uri);
+            }
+
+            if(options.showLine) {
+              seriesGroups[i].elem('path', {
+                d: pathElements.join('')
+              }, options.classNames.line, true).attr({
+                'values': normalizedData[i]
+              }, Chartist.xmlNs.uri);
+            }
           }
         }
       }
