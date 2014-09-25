@@ -706,6 +706,8 @@ Chartist.Bar(&#x27;.ct-chart&#x27;, {
         height: undefined,
         showLine: true,
         showPoint: true,
+        showArea: false,
+        areaBase: 0,
         lineSmooth: true,
         low: undefined,
         high: undefined,
@@ -716,6 +718,7 @@ Chartist.Bar(&#x27;.ct-chart&#x27;, {
           series: &#x27;ct-series&#x27;,
           line: &#x27;ct-line&#x27;,
           point: &#x27;ct-point&#x27;,
+          area: &#x27;ct-area&#x27;,
           grid: &#x27;ct-grid&#x27;,
           vertical: &#x27;ct-vertical&#x27;,
           horizontal: &#x27;ct-horizontal&#x27;
@@ -808,27 +811,49 @@ Chartist.Bar(&#x27;.ct-chart&#x27;, {
           }
         }
 
-        if (options.showLine) {
-          var svgPathString = &#x27;M&#x27; + pathCoordinates[0] + &#x27;,&#x27; + pathCoordinates[1] + &#x27; &#x27;;
+        // TODO: Nicer handling of conditions, maybe composition?
+        if (options.showLine || options.showArea) {
+          // TODO: We should add a path API in the SVG library for easier path creation
+          var pathElements = [&#x27;M&#x27; + pathCoordinates[0] + &#x27;,&#x27; + pathCoordinates[1]];
 
           // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
           if (options.lineSmooth &amp;&amp; pathCoordinates.length &gt; 4) {
 
             var cr = Chartist.catmullRom2bezier(pathCoordinates);
             for(var k = 0; k &lt; cr.length; k++) {
-              svgPathString += &#x27;C&#x27; + cr[k].join();
+              pathElements.push(&#x27;C&#x27; + cr[k].join());
             }
           } else {
             for(var l = 3; l &lt; pathCoordinates.length; l += 2) {
-              svgPathString += &#x27;L &#x27; + pathCoordinates[l - 1] + &#x27;,&#x27; + pathCoordinates[l];
+              pathElements.push(&#x27;L&#x27; + pathCoordinates[l - 1] + &#x27;,&#x27; + pathCoordinates[l]);
             }
           }
 
-          seriesGroups[i].elem(&#x27;path&#x27;, {
-            d: svgPathString
-          }, options.classNames.line, true).attr({
-            &#x27;values&#x27;: normalizedData[i]
-          }, Chartist.xmlNs.uri);
+          if(options.showArea) {
+            // If we need to draw area shapes we just make a copy of our pathElements SVG path array
+            var areaPathElements = pathElements.slice();
+            // We project the areaBase value into screen coordinates
+            var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [options.areaBase], 0);
+            // And splice our new area path array to add the missing path elements to close the area shape
+            areaPathElements.splice(0, 0, &#x27;M&#x27; + areaBaseProjected.x + &#x27;,&#x27; + areaBaseProjected.y);
+            areaPathElements[1] = &#x27;L&#x27; + pathCoordinates[0] + &#x27;,&#x27; + pathCoordinates[1];
+            areaPathElements.push(&#x27;L&#x27; + pathCoordinates[pathCoordinates.length - 2] + &#x27;,&#x27; + areaBaseProjected.y);
+
+            // Create the new path for the area shape with the area class from the options
+            seriesGroups[i].elem(&#x27;path&#x27;, {
+              d: areaPathElements.join(&#x27;&#x27;)
+            }, options.classNames.area, true).attr({
+              &#x27;values&#x27;: normalizedData[i]
+            }, Chartist.xmlNs.uri);
+          }
+
+          if(options.showLine) {
+            seriesGroups[i].elem(&#x27;path&#x27;, {
+              d: pathElements.join(&#x27;&#x27;)
+            }, options.classNames.line, true).attr({
+              &#x27;values&#x27;: normalizedData[i]
+            }, Chartist.xmlNs.uri);
+          }
         }
       }
     }</code>
@@ -868,6 +893,10 @@ var options = {
   showLine: true,
   // If dots should be drawn or not
   showPoint: true,
+  // If the line chart should draw an area
+  showArea: false,
+  // The base for the area chart that will be used to close the area shape (is normally 0)
+  areaBase: 0,
   // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
   lineSmooth: true,
   // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
@@ -883,6 +912,7 @@ var options = {
     series: &#x27;ct-series&#x27;,
     line: &#x27;ct-line&#x27;,
     point: &#x27;ct-point&#x27;,
+    area: &#x27;ct-area&#x27;,
     grid: &#x27;ct-grid&#x27;,
     vertical: &#x27;ct-vertical&#x27;,
     horizontal: &#x27;ct-horizontal&#x27;
