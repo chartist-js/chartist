@@ -29,6 +29,26 @@ sections:
                    Adding behavior to your chart with JavaScript is a breeze and is just like any other DOM manipulation
                    you do to your site. This is just one of many benefits of using inline-SVG and provides you with the
                    freedom you need in order to create exactly the experience you're looking for.
+      - type: live-example
+        data:
+          title: Line chart with area
+          level: 4
+          id: example-line-area
+          classes: ct-golden-section
+          intro: >
+                   This chart uses the showArea option to draw line, dots but also an area shape. Use the low option to
+                   specify a fixed lower bound that will make the area expand. You can also use the areaBase property
+                   to specify a data value that will be used to determine the area shap base position (this is 0 by default).
+      - type: live-example
+        data:
+          title: Bi-polar Line chart with area only
+          level: 4
+          id: example-bipolar-line-area
+          classes: ct-golden-section
+          intro: >
+                   You can also only draw the area shapes of the line chart. Area shapes will always be constructed around
+                   their areaBase (that can be configured in the options) which also allows you to draw nice bi-polar
+                   areas.
   - title: Bar chart examples
     level: 3
     items:
