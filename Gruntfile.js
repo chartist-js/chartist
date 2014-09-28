@@ -153,7 +153,7 @@ module.exports = function (grunt) {
       },
       dist: {
         options: {
-          sourceComments: 'none'
+          sourceMap: false
         },
         files: [
           {
@@ -167,7 +167,7 @@ module.exports = function (grunt) {
       },
       server: {
         options: {
-          sourceComments: 'map'
+          sourceMap: true
         },
         files: [
           {
