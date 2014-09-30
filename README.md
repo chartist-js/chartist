@@ -23,7 +23,7 @@ That's why we have started Chartist.js and our goal is to solve all of the above
 
 Chartist's goal is to provide a simple, lightweight and non-intrusive library to responsive craft charts on your website. 
 It's important to understand that one of the main intentions of Chartist.js is to rely on standards rather than providing 
-a own solution to the problem which is is already solved by the standard. We need to leverage the power of the browsers 
+a own solution to the problem which is already solved by the standard. We need to leverage the power of the browsers 
 today and say good bye to the idea of solving all problems ourselves.
 
 Chartist works with inline-SVG and therefore leverages the power of the DOM to provide parts of its functionality. This 
