@@ -8,14 +8,14 @@
   'use strict';
 
   /**
-   * This method creates a new bar chart and returns an object handle with delegations to the internal closure of the bar chart. You can use the returned object to redraw the chart.
+   * This method creates a new bar chart and returns API object that you can use for later changes.
    *
    * @memberof Chartist.Bar
    * @param {String|Node} query A selector query string or directly a DOM element
    * @param {Object} data The data object that needs to consist of a labels and a series array
    * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
    * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
-   * @return {Object} An object with a version and an update method to manually redraw the chart
+   * @return {Object} An object which exposes the API for the created chart
    *
    * @example
    * // These are the default options of the line chart
@@ -141,7 +141,8 @@
       },
       optionsProvider,
       container = Chartist.querySelector(query),
-      svg;
+      svg,
+      eventEmitter = Chartist.EventEmitter();
 
     function createChart(options) {
       var xAxisOffset,
@@ -185,8 +186,8 @@
       // Projected 0 point
         zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
-      Chartist.createXAxis(chartRect, data, grid, labels, options);
-      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options);
+      Chartist.createXAxis(chartRect, data, grid, labels, options, eventEmitter);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, eventEmitter);
 
       // Draw the series
       // initialize series groups
@@ -227,22 +228,39 @@
           }, options.classNames.bar).attr({
             'value': normalizedData[i][j]
           }, Chartist.xmlNs.uri);
+
+          eventEmitter.emit('draw', {
+            type: 'bar',
+            value: normalizedData[i][j],
+            index: j,
+            group: seriesGroups[i],
+            element: bar,
+            x1: p.x,
+            y1: zeroPoint.y,
+            x2: p.x,
+            y2: p.y
+          });
         }
       }
     }
 
+    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
+    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
+    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
+    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
+    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
+    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
     /**
      * Updates the chart which currently does a full reconstruction of the SVG DOM
      *
      * @memberof Chartist.Bar
-     *
      */
     function update() {
       createChart(optionsProvider.currentOptions);
     }
 
     /**
-     * This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.
+     * This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.
      *
      * @memberof Chartist.Bar
      */
@@ -252,54 +270,50 @@
     }
 
     /**
-     * Add a listener for the responsive options updates. Once the chart will switch to a new option set the listener will be called with the new options.
+     * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
      *
      * @memberof Chartist.Bar
-     * @param {Function} callback Callback function that will have the new options as first parameter
+     * @param {String} event Name of the event. Check the examples for supported events.
+     * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
      */
-    function addOptionsListener(callback) {
-      optionsProvider.addOptionsListener(callback);
+    function on(event, handler) {
+      eventEmitter.addEventHandler(event, handler);
     }
 
     /**
-     * Remove a responsive options listener that was previously added using the addOptionsListener method.
+     * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
      *
      * @memberof Chartist.Bar
-     * @param {Function} callback The callback function that was registered earlier with addOptionsListener
+     * @param {String} event Name of the event for which a handler should be removed
+     * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
      */
-    function removeOptionsListener(callback) {
-      optionsProvider.removeOptionsListener(callback);
+    function off(event, handler) {
+      eventEmitter.removeEventHandler(event, handler);
     }
 
-    // If this container already contains chartist, let's try to detach first and unregister all event listeners
-    if(container.chartist) {
-      container.chartist.detach();
-    }
+    // Initialization of the chart
+
+    window.addEventListener('resize', update);
 
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes
-    optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions);
-    createChart(optionsProvider.currentOptions);
+    optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
+    // Using event loop for first draw to make it possible to register event listeners in the same call stack where
+    // the chart was created.
+    setTimeout(function() {
+      createChart(optionsProvider.currentOptions);
+    }, 0);
 
-    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-    window.addEventListener('resize', update);
-
-    // Public members
+    // Public members of the module (revealing module pattern style)
     var api = {
       version: Chartist.version,
       update: update,
-      detach: detach,
-      addOptionsListener: addOptionsListener,
-      removeOptionsListener: removeOptionsListener
+      on: on,
+      off: off,
+      detach: detach
     };
 
     container.chartist = api;
-
     return api;
   };
 

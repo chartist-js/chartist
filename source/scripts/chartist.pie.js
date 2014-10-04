@@ -112,7 +112,8 @@
       },
       optionsProvider,
       container = Chartist.querySelector(query),
-      svg;
+      svg,
+      eventEmitter = Chartist.EventEmitter();
 
     function determineAnchorPosition(center, label, direction) {
       var toTheRight = label.x > center.x;
@@ -223,17 +224,42 @@
           });
         }
 
+        // Fire off draw event
+        eventEmitter.emit('draw', {
+          type: 'slice',
+          value: dataArray[i],
+          totalDataSum: totalDataSum,
+          index: i,
+          group: seriesGroups[i],
+          element: path,
+          center: center,
+          radius: radius,
+          startAngle: startAngle,
+          endAngle: endAngle
+        });
+
         // If we need to show labels we need to add the label for this slice now
         if(options.showLabel) {
           // Position at the labelRadius distance from center and between start and end angle
           var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
             interpolatedValue = options.labelInterpolationFnc(data.labels ? data.labels[i] : dataArray[i], i);
 
-          seriesGroups[i].elem('text', {
+          var labelElement = seriesGroups[i].elem('text', {
             dx: labelPosition.x,
             dy: labelPosition.y,
             'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
           }, options.classNames.label).text('' + interpolatedValue);
+
+          // Fire off draw event
+          eventEmitter.emit('draw', {
+            type: 'label',
+            index: i,
+            group: seriesGroups[i],
+            element: labelElement,
+            text: '' + interpolatedValue,
+            x: labelPosition.x,
+            y: labelPosition.y
+          });
         }
 
         // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
@@ -242,6 +268,12 @@
       }
     }
 
+    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
+    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
+    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
+    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
+    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
+    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
     /**
      * Updates the chart which currently does a full reconstruction of the SVG DOM
      *
@@ -263,58 +295,50 @@
     }
 
     /**
-     * Add a listener for the responsive options updates. Once the chart will switch to a new option set the listener will be called with the new options.
+     * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
      *
      * @memberof Chartist.Pie
-     * @param {Function} callback Callback function that will have the new options as first parameter
+     * @param {String} event Name of the event. Check the examples for supported events.
+     * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
      */
-    function addOptionsListener(callback) {
-      optionsProvider.addOptionsListener(callback);
+    function on(event, handler) {
+      eventEmitter.addEventHandler(event, handler);
     }
 
     /**
-     * Remove a responsive options listener that was previously added using the addOptionsListener method.
+     * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
      *
      * @memberof Chartist.Pie
-     * @param {Function} callback The callback function that was registered earlier with addOptionsListener
+     * @param {String} event Name of the event for which a handler should be removed
+     * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
      */
-    function removeOptionsListener(callback) {
-      optionsProvider.removeOptionsListener(callback);
+    function off(event, handler) {
+      eventEmitter.removeEventHandler(event, handler);
     }
 
-    // If this container already contains chartist, let's try to detach first and unregister all event listeners
-    if(container.chartist) {
-      container.chartist.detach();
-    }
+    // Initialization of the chart
+
+    window.addEventListener('resize', update);
 
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes
-    optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions);
-    createChart(optionsProvider.currentOptions);
-
-    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-    function updateChart() {
+    optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
+    // Using event loop for first draw to make it possible to register event listeners in the same call stack where
+    // the chart was created.
+    setTimeout(function() {
       createChart(optionsProvider.currentOptions);
-    }
+    }, 0);
 
-    window.addEventListener('resize', updateChart);
-
-    // Public members
+    // Public members of the module (revealing module pattern style)
     var api = {
       version: Chartist.version,
       update: update,
-      detach: detach,
-      addOptionsListener: addOptionsListener,
-      removeOptionsListener: removeOptionsListener
+      on: on,
+      off: off,
+      detach: detach
     };
 
     container.chartist = api;
-
     return api;
   };
 

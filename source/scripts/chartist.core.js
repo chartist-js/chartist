@@ -410,11 +410,12 @@ Chartist.version = '0.1.14';
    * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
    * @param {Object} options The Object that contains all the optional values for the chart
    */
-  Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
+  Chartist.createXAxis = function (chartRect, data, grid, labels, options, eventEmitter) {
     // Create X-Axis
     data.labels.forEach(function (value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-        pos = chartRect.x1 + chartRect.width() / data.labels.length * index;
+        space = chartRect.width() / data.labels.length,
+        pos = chartRect.x1 + space * index;
 
       // If interpolated value returns falsey (except 0) we don't draw the grid line
       if (!interpolatedValue && interpolatedValue !== 0) {
@@ -422,23 +423,54 @@ Chartist.version = '0.1.14';
       }
 
       if (options.axisX.showGrid) {
-        grid.elem('line', {
+        var gridElement = grid.elem('line', {
           x1: pos,
           y1: chartRect.y1,
           x2: pos,
           y2: chartRect.y2
         }, [options.classNames.grid, options.classNames.horizontal].join(' '));
+
+        // Event for grid draw
+        eventEmitter.emit('draw', {
+          type: 'grid',
+          axis: 'x',
+          index: index,
+          group: grid,
+          element: gridElement,
+          x1: pos,
+          y1: chartRect.y1,
+          x2: pos,
+          y2: chartRect.y2
+        });
       }
 
       if (options.axisX.showLabel) {
         // Use config offset for setting labels of
-        var label = labels.elem('text', {
-          dx: pos + 2
+        var labelPos = {
+          x: pos + 2,
+          y: 0
+        };
+
+        var labelElement = labels.elem('text', {
+          dx: labelPos.x
         }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
 
         // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-        label.attr({
-          dy: chartRect.y1 + Chartist.getHeight(label._node) + options.axisX.offset
+        labelPos.y = chartRect.y1 + Chartist.getHeight(labelElement._node) + options.axisX.offset;
+        labelElement.attr({
+          dy: labelPos.y
+        });
+
+        eventEmitter.emit('draw', {
+          type: 'label',
+          axis: 'x',
+          index: index,
+          group: labels,
+          element: labelElement,
+          text: '' + interpolatedValue,
+          x: labelPos.x,
+          y: labelPos.y,
+          space: space
         });
       }
     });
@@ -455,11 +487,12 @@ Chartist.version = '0.1.14';
    * @param {Number} offset Offset for the y-axis
    * @param {Object} options The Object that contains all the optional values for the chart
    */
-  Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options) {
+  Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options, eventEmitter) {
     // Create Y-Axis
     bounds.values.forEach(function (value, index) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
-        pos = chartRect.y1 - chartRect.height() / bounds.values.length * index;
+        space = chartRect.height() / bounds.values.length,
+        pos = chartRect.y1 - space * index;
 
       // If interpolated value returns falsey (except 0) we don't draw the grid line
       if (!interpolatedValue && interpolatedValue !== 0) {
@@ -467,20 +500,52 @@ Chartist.version = '0.1.14';
       }
 
       if (options.axisY.showGrid) {
-        grid.elem('line', {
+        var gridElement = grid.elem('line', {
           x1: chartRect.x1,
           y1: pos,
           x2: chartRect.x2,
           y2: pos
         }, [options.classNames.grid, options.classNames.vertical].join(' '));
+
+        // Event for grid draw
+        eventEmitter.emit('draw', {
+          type: 'grid',
+          axis: 'y',
+          index: index,
+          group: grid,
+          element: gridElement,
+          x1: chartRect.x1,
+          y1: pos,
+          x2: chartRect.x2,
+          y2: pos
+        });
       }
 
       if (options.axisY.showLabel) {
-        labels.elem('text', {
+        // Use calculated offset and include padding for label x position
+        // TODO: Review together with possibilities to style labels. Maybe we should start using fixed label width which is easier and also makes multi line labels with foreignObjects easier
+        var labelPos = {
+          x: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
+          y: pos - 2
+        };
+
+        var labelElement = labels.elem('text', {
           dx: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
           dy: pos - 2,
           'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
         }, [options.classNames.label, options.classNames.vertical].join(' ')).text('' + interpolatedValue);
+
+        eventEmitter.emit('draw', {
+          type: 'label',
+          axis: 'y',
+          index: index,
+          group: labels,
+          element: labelElement,
+          text: '' + interpolatedValue,
+          x: labelPos.x,
+          y: labelPos.y,
+          space: space
+        });
       }
     });
   };
@@ -510,17 +575,17 @@ Chartist.version = '0.1.14';
    * @param {Object} defaultOptions Default options from Chartist
    * @param {Object} options Options set by user
    * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
-   * @param {Function} optionsChangedCallbackFnc The callback that will be executed when a media change triggered new options to be used. The callback function will receive the new options as first parameter.
+   * @param {Object} eventEmitter The event emitter that will be used to emit the options changed events
    * @return {Object} The consolidated options object from the defaults, base and matching responsive options
    */
-  Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions) {
+  Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, eventEmitter) {
     var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
       currentOptions,
       mediaQueryListeners = [],
-      optionsListeners = [],
       i;
 
-    function updateCrrentOptions() {
+    function updateCurrentOptions() {
+      var previousOptions = currentOptions;
       currentOptions = Chartist.extend({}, baseOptions);
 
       if (responsiveOptions) {
@@ -531,11 +596,18 @@ Chartist.version = '0.1.14';
           }
         }
       }
+
+      if(eventEmitter) {
+        eventEmitter.emit('optionsChanged', {
+          previousOptions: previousOptions,
+          currentOptions: currentOptions
+        });
+      }
     }
 
-    function clearMediaQueryListeners() {
+    function removeMediaQueryListeners() {
       mediaQueryListeners.forEach(function(mql) {
-        mql.removeListener(updateCrrentOptions);
+        mql.removeListener(updateCurrentOptions);
       });
     }
 
@@ -545,27 +617,18 @@ Chartist.version = '0.1.14';
 
       for (i = 0; i < responsiveOptions.length; i++) {
         var mql = window.matchMedia(responsiveOptions[i][0]);
-        mql.addListener(updateCrrentOptions);
+        mql.addListener(updateCurrentOptions);
         mediaQueryListeners.push(mql);
       }
     }
-    // Execute initially so we get the correct current options
-    updateCrrentOptions();
+    // Execute initially so we get the correct options
+    updateCurrentOptions();
 
     return {
       get currentOptions() {
         return Chartist.extend({}, currentOptions);
       },
-      addOptionsListener: function(callback) {
-        optionsListeners.push(callback);
-      },
-      removeOptionsListener: function(callback) {
-        optionsListeners.splice(optionsListeners.indexOf(callback), 1);
-      },
-      clear: function() {
-        optionsListeners = [];
-        clearMediaQueryListeners();
-      }
+      removeMediaQueryListeners: removeMediaQueryListeners
     };
   };
 
