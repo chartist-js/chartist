@@ -86,6 +86,7 @@
   font-weight: 700;
   text-align: center;
   pointer-events: none;
+  z-index: 1;
 
   &:after {
     content: "";

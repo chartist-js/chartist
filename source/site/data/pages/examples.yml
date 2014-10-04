@@ -49,6 +49,17 @@ sections:
                    You can also only draw the area shapes of the line chart. Area shapes will always be constructed around
                    their areaBase (that can be configured in the options) which also allows you to draw nice bi-polar
                    areas.
+      - type: live-example
+        data:
+          title: Using events to replace graphics
+          level: 4
+          id: example-line-modify-drawing
+          classes: ct-golden-section
+          intro: >
+                   Chartist has fixed graphical representations that are chosen because of their flexibility and to
+                   provide a high level of separation of the concerns. However, sometimes you probably would like to use
+                   different shapes or even images for your charts. One way to achieve this is by using the draw events and replace
+                   or add custom SVG shapes.
   - title: Bar chart examples
     level: 3
     items:
@@ -71,6 +82,14 @@ sections:
                     This example makes use of label interpolation and the seriesBarDistance property that allows you
                     to make bars overlap over each other. This then can be used to use the avialable space on mobile better.
                     Resize your browser to see the effect of the responsive configuration.
+      - type: live-example
+        data:
+          title: Add peek cricles using the draw events
+          level: 4
+          id: example-bar-with-circle-modify-drawing
+          classes: ct-golden-section
+          intro: >
+                    With the help of draw events we are able to add a custom SVG shape to the peek of our bars.
   - title: Pie chart examples
     level: 3
     items:
