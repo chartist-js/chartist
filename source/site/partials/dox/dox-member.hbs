@@ -9,34 +9,31 @@
   <div class="member-content">
     <div class="description">{{{description.summary}}}</div>
 
-    {{#is ctx.type 'method'}}
-      {{#if (doxTagsOfType this 'param')}}
-        <h6>Parameters</h6>
-        {{#each (doxTagsOfType this 'param')}}
-          <div class="param">
-            <code>{{name}}</code>
-            ({{#each types}}
-              <span class="param-type"><code>{{this}}</code></span>
-            {{/each}})
-            <div class="param-description">{{description}}</div>
-          </div>
-        {{/each}}
-      {{/if}}
+    {{#if (doxTagsOfType this 'param')}}
+      <h6>Parameters</h6>
+      {{#each (doxTagsOfType this 'param')}}
+        <div class="param">
+          <code>{{name}}</code>
+          ({{#each types}}
+            <span class="param-type"><code>{{this}}</code></span>
+          {{/each}})
+          <div class="param-description">{{description}}</div>
+        </div>
+      {{/each}}
+    {{/if}}
 
-      {{#if (doxTagsOfType this 'return')}}
-        {{#with (doxTag this 'return')}}
-          <h6>Returns</h6>
+    {{#if (doxTagsOfType this 'return')}}
+      {{#with (doxTag this 'return')}}
+        <h6>Returns</h6>
 
-          <div class="return">
-            ({{#each types}}
-              <span class="param-type"><code>{{this}}</code></span>
-            {{/each}})
-            <div class="param-description">{{description}}</div>
-          </div>
-        {{/with}}
-      {{/if}}
-
-    {{/is}}
+        <div class="return">
+          ({{#each types}}
+            <span class="param-type"><code>{{this}}</code></span>
+          {{/each}})
+          <div class="param-description">{{description}}</div>
+        </div>
+      {{/with}}
+    {{/if}}
 
     {{#if (doxTagsOfType this 'example')}}
       <h6>Examples</h6>
