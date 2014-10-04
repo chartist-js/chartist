@@ -52,7 +52,7 @@ Chartist.version = '0.1.14';
     return target;
   };
 
-  //TODO: move into Chartist.svg
+  //TODO: move into Chartist.Svg
   /**
    * Get element height with fallback to svg BoundingBox or parent container dimensions:
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
@@ -65,7 +65,7 @@ Chartist.version = '0.1.14';
     return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
   };
 
-  //TODO: move into Chartist.svg
+  //TODO: move into Chartist.Svg
   /**
    * Get element width with fallback to svg BoundingBox or parent container dimensions:
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
@@ -113,7 +113,7 @@ Chartist.version = '0.1.14';
 
     } else {
       // Create svg object with width and height or use 100% as default
-      svg = Chartist.svg('svg').attr({
+      svg = Chartist.Svg('svg').attr({
         width: width || '100%',
         height: height || '100%'
       }).addClass(className);
@@ -406,8 +406,8 @@ Chartist.version = '0.1.14';
    * @memberof Chartist.Core
    * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
    * @param {Object} data The Object that contains the data to be visualized in the chart
-   * @param {Object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
-   * @param {Object} labels Chartist.svg wrapper object to be filled with the lables of the chart
+   * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
+   * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
    * @param {Object} options The Object that contains all the optional values for the chart
    */
   Chartist.createXAxis = function (chartRect, data, grid, labels, options) {
@@ -450,8 +450,8 @@ Chartist.version = '0.1.14';
    * @memberof Chartist.Core
    * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
    * @param {Object} bounds All the values to set the bounds of the chart
-   * @param {Object} grid Chartist.svg wrapper object to be filled with the grid lines of the chart
-   * @param {Object} labels Chartist.svg wrapper object to be filled with the lables of the chart
+   * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
+   * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
    * @param {Number} offset Offset for the y-axis
    * @param {Object} options The Object that contains all the optional values for the chart
    */
