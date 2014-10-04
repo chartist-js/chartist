@@ -24,6 +24,5 @@
   },
   "_source": "git://github.com/davidchambers/Base64.js.git",
   "_target": "~0.3.0",
-  "_originalSource": "base64",
-  "_direct": true
+  "_originalSource": "base64"
 }

@@ -43,7 +43,7 @@
                         $background-6, $background-7, $background-8, $background-9, $background-10);
   $mult-bgs: -compass-list-size($backgrounds) > 1;
   $simple-background: if($mult-bgs or prefixed(-css2, $backgrounds), -css2(-compass-nth($backgrounds, last)), false);
-  @if not blank($simple-background) { background: $simple-background; }
+  @if not(blank($simple-background)) { background: $simple-background; }
   @include background($background-1, $background-2, $background-3, $background-4, $background-5,
                       $background-6, $background-7, $background-8, $background-9, $background-10);
 }

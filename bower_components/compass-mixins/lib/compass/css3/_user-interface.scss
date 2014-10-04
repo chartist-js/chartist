@@ -12,6 +12,6 @@
 @mixin user-select($select) {
   $select: unquote($select);
   @include experimental(user-select, $select,
-    -moz, -webkit, not -o, not -ms, -khtml, official
+    -moz, -webkit, not(-o), not(-ms), -khtml, official
   );
 }

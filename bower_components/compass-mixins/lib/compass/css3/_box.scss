@@ -3,7 +3,7 @@
 // display:box; must be used for any of the other flexbox mixins to work properly
 @mixin display-box {
   @include experimental-value(display, box,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -16,7 +16,7 @@ $default-box-orient: horizontal !default;
 ) {
   $orientation : unquote($orientation);
   @include experimental(box-orient, $orientation,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -29,7 +29,7 @@ $default-box-align: stretch !default;
 ) {
   $alignment : unquote($alignment);
   @include experimental(box-align, $alignment,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -43,7 +43,7 @@ $default-box-flex: 0 !default;
   $flex: $default-box-flex
 ) {
   @include experimental(box-flex, $flex,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -55,7 +55,7 @@ $default-box-flex-group: 1 !default;
   $group: $default-box-flex-group
 ) {
   @include experimental(box-flex-group, $group,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -64,10 +64,10 @@ $default-box-ordinal-group: 1 !default;
 
 // mixin which takes an int argument for ordinal grouping and rearranging the order
 @mixin box-ordinal-group(
-  $group: $default-box-ordinal-group
+  $group: $default-ordinal-flex-group
 ) {
   @include experimental(box-ordinal-group, $group,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -80,7 +80,7 @@ $default-box-direction: normal !default;
 ) {
   $direction: unquote($direction);
   @include experimental(box-direction, $direction,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -93,7 +93,7 @@ $default-box-lines: single !default;
 ) {
   $lines: unquote($lines);
   @include experimental(box-lines, $lines,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }
 
@@ -106,6 +106,6 @@ $default-box-pack: start !default;
 ) {
   $pack: unquote($pack);
   @include experimental(box-pack, $pack,
-    -moz, -webkit, not -o, -ms, not -khtml, official
+    -moz, -webkit, not(-o), -ms, not(-khtml), official
   );
 }

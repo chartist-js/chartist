@@ -18,6 +18,6 @@
 ) {
   $filter : compact($filter-1, $filter-2, $filter-3, $filter-4, $filter-5, $filter-6, $filter-7, $filter-8, $filter-9, $filter-10);
   @include experimental(filter, $filter,
-    -moz, -webkit, not -o, not -ms, not -khtml, official
+    -moz, -webkit, not(-o), not(-ms), not(-khtml), official
   );
 }

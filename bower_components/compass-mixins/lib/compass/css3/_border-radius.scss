@@ -42,18 +42,18 @@ $default-border-radius: 5px !default;
     // Webkit doesn't understand the official shorthand syntax for specifying
     // a vertical radius unless so in case there's several we only take the first.
     @include experimental(border-radius, first-value-of($radius) first-value-of($vertical-radius),
-      not -moz,
+      not(-moz),
       -webkit,
-      not -o,
-      not -ms,
-      not -khtml,
+      not(-o),
+      not(-ms),
+      not(-khtml),
       not official
     );
     @include experimental("border-radius", $radius unquote("/") $vertical-radius,
       -moz,
-      not -webkit,
-      not -o,
-      not -ms,
+      not(-webkit),
+      not(-o),
+      not(-ms),
       -khtml,
       official
     );
@@ -72,17 +72,17 @@ $default-border-radius: 5px !default;
   // Support for mozilla's syntax for specifying a corner
   @include experimental("border-radius-#{$vert}#{$horz}", $radius,
     -moz,
-    not -webkit,
-    not -o,
-    not -ms,
-    not -khtml,
+    not(-webkit),
+    not(-o),
+    not(-ms),
+    not(-khtml),
     not official
   );
   @include experimental("border-#{$vert}-#{$horz}-radius", $radius,
-    not -moz,
+    not(-moz),
     -webkit,
-    not -o,
-    not -ms,
+    not(-o),
+    not(-ms),
     -khtml,
     official
   );

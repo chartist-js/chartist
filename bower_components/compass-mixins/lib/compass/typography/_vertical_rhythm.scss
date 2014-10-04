@@ -46,10 +46,10 @@ $base-half-leader: $base-leader / 2;
 
 // True if a number has an absolute unit.
 @function absolute-unit($number) {
-  @return not (relative-unit($number) or unitless($number));
+  @return not(relative-unit($number) or unitless($number));
 }
 
-@if $relative-font-sizing and not relative-unit($font-unit) {
+@if $relative-font-sizing and not(relative-unit($font-unit)) {
   @warn "$relative-font-sizing is true but $font-unit is set to #{$font-unit} which is not a relative unit.";
 }
 
@@ -93,7 +93,7 @@ $base-half-leader: $base-leader / 2;
 // defaults to the smallest integer that is large enough to fit the font.
 // Use $from-size to adjust from a font-size other than the base font-size.
 @mixin adjust-font-size-to($to-size, $lines: lines-for-font-size($to-size), $from-size: $base-font-size) {
-  @if not $relative-font-sizing and $from-size != $base-font-size {
+  @if not($relative-font-sizing) and $from-size != $base-font-size {
     @warn "$relative-font-sizing is false but a relative font size was passed to adjust-font-size-to";
   }
   font-size: $font-unit * $to-size / $from-size;
@@ -114,7 +114,7 @@ $base-half-leader: $base-leader / 2;
   $font-size: $base-font-size,
   $offset: 0
 ) {
-  @if not $relative-font-sizing and $font-size != $base-font-size {
+  @if not($relative-font-sizing) and $font-size != $base-font-size {
     @warn "$relative-font-sizing is false but a relative font size was passed to the rhythm function";
   }
   $rhythm: $font-unit * ($lines * $base-line-height - $offset) / $font-size;
@@ -177,7 +177,7 @@ $base-half-leader: $base-leader / 2;
 // Apply a border and whitespace to any side without destroying the vertical
 // rhythm. The whitespace must be greater than the width of the border.
 @mixin apply-side-rhythm-border($side, $width: 1px, $lines: 1, $font-size: $base-font-size, $border-style: $default-rhythm-border-style) {
-  @if not $relative-font-sizing and $font-size != $base-font-size {
+  @if not($relative-font-sizing) and $font-size != $base-font-size {
     @warn "$relative-font-sizing is false but a relative font size was passed to apply-side-rhythm-border";
   }
   border-#{$side}: {
@@ -189,7 +189,7 @@ $base-half-leader: $base-leader / 2;
 
 // Apply borders and whitespace equally to all sides.
 @mixin rhythm-borders($width: 1px, $lines: 1, $font-size: $base-font-size, $border-style: $default-rhythm-border-style) {
-  @if not $relative-font-sizing and $font-size != $base-font-size {
+  @if not($relative-font-sizing) and $font-size != $base-font-size {
     @warn "$relative-font-sizing is false but a relative font size was passed to rhythm-borders";
   }
   border: {

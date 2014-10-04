@@ -29,7 +29,7 @@ $disable-magic-sprite-selectors:false !default;
   @if $dimensions {
     @include sprite-dimensions($map, $sprite);
   }
-  @if not $disable-magic-sprite-selectors {
+  @if not($disable-magic-sprite-selectors) {
     @include sprite-selectors($map, $sprite, $sprite, $offset-x, $offset-y);
   }
 }

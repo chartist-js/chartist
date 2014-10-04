@@ -22,5 +22,5 @@ $default-background-size: 100% auto !default;
 ) {
   $size-1: if(type-of($size-1) == string, unquote($size-1), $size-1);
   $sizes: compact($size-1, $size-2, $size-3, $size-4, $size-5, $size-6, $size-7, $size-8, $size-9, $size-10);
-  @include experimental(background-size, $sizes, -moz, -webkit, -o, not -ms, not -khtml);
+  @include experimental(background-size, $sizes, -moz, -webkit, -o, not(-ms), not(-khtml));
 }

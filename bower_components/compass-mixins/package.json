@@ -1,0 +1,41 @@
+{
+  "name": "compass-mixins",
+  "version": "0.12.3",
+  "author": {
+    "name": "Guillaume Balaine",
+    "email": "igosuki@gmail.com",
+    "url": "https://github.com/Igosuki"
+  },
+  "contributors": [{
+    "name": "Michael Heillein",
+    "url": "https://github.com/michaek"
+  }],
+  "description": "Compass stylesheets",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Igosuki/compass-mixins.git"
+  },
+  "main": "lib/_compass.scss",
+  "keywords": [
+    "compass",
+    "mixins",
+    "sass",
+    "css3"
+  ],
+  "scripts": {
+    "test": "./node_modules/jasmine-node/bin/jasmine-node test"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "chalk": "^0.5.1",
+    "jasmine-node": "^1.14.5",
+    "node-sass": "^0.9.3"
+  }
+}

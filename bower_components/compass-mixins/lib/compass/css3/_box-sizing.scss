@@ -8,6 +8,6 @@
 @mixin box-sizing($bs) {
   $bs: unquote($bs);
   @include experimental(box-sizing, $bs,
-    -moz, -webkit, not -o, not -ms, not -khtml, official
+    -moz, -webkit, not(-o), not(-ms), not(-khtml), official
   );
 }

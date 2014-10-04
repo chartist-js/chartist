@@ -68,7 +68,7 @@ $transitionable-prefixed-values: transform, transform-origin !default;
   @if type-of($duration-1) == string { $duration-1: unquote($duration-1); }
   $durations: compact($duration-1, $duration-2, $duration-3, $duration-4, $duration-5, $duration-6, $duration-7, $duration-8, $duration-9, $duration-10);
   @include experimental(transition-duration, $durations,
-    -moz, -webkit, -o, not -ms, not -khtml, official
+    -moz, -webkit, -o, not(-ms), not(-khtml), official
   );
 }
 
@@ -92,7 +92,7 @@ $transitionable-prefixed-values: transform, transform-origin !default;
   $function-1: unquote($function-1);
   $functions: compact($function-1, $function-2, $function-3, $function-4, $function-5, $function-6, $function-7, $function-8, $function-9, $function-10);
   @include experimental(transition-timing-function, $functions,
-    -moz, -webkit, -o, not -ms, not -khtml, official
+    -moz, -webkit, -o, not(-ms), not(-khtml), official
   );
 }
 
@@ -115,7 +115,7 @@ $transitionable-prefixed-values: transform, transform-origin !default;
   @if type-of($delay-1) == string { $delay-1: unquote($delay-1); }
   $delays: compact($delay-1, $delay-2, $delay-3, $delay-4, $delay-5, $delay-6, $delay-7, $delay-8, $delay-9, $delay-10);
   @include experimental(transition-delay, $delays,
-    -moz, -webkit, -o, not -ms, not -khtml, official
+    -moz, -webkit, -o, not(-ms), not(-khtml), official
   );
 }
 
@@ -214,7 +214,7 @@ $transitionable-prefixed-values: transform, transform-origin !default;
 // Checks if the value given is a unit of time.
 @function is-time($value) {
   @if type-of($value) == number {
-    @return not not index(s ms, unit($value));
+    @return not(not(index(s ms, unit($value))));
   } @else {
     @return false;
   }

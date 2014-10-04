@@ -104,11 +104,11 @@ $default-skew-y      : 5deg                  !default;
   $only3d: $only3d or -compass-list-size(-compass-list($origin)) > 2;
   @if $only3d {
     @include experimental(transform-origin, $origin,
-      -moz, -webkit, -o, -ms, not -khtml, official
+      -moz, -webkit, -o, -ms, not(-khtml), official
     );
   } @else {
     @include experimental(transform-origin, $origin,
-      -moz, -webkit, -o, -ms, not -khtml, official
+      -moz, -webkit, -o, -ms, not(-khtml), official
     );
   }
 }
@@ -147,11 +147,11 @@ $default-skew-y      : 5deg                  !default;
 ) {
   @if $only3d {
     @include experimental(transform, $transform,
-      -moz, -webkit, -o, -ms, not -khtml, official
+      -moz, -webkit, -o, -ms, not(-khtml), official
     );
   } @else {
     @include experimental(transform, $transform,
-      -moz, -webkit, -o, -ms, not -khtml, official
+      -moz, -webkit, -o, -ms, not(-khtml), official
     );
   }
 }
@@ -179,7 +179,7 @@ $default-skew-y      : 5deg                  !default;
 // values from 500 to 1000 are more-or-less "normal" - a good starting-point.
 @mixin perspective($p) {
   @include experimental(perspective, $p,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -190,7 +190,7 @@ $default-skew-y      : 5deg                  !default;
 // where the two arguments represent x/y coordinates
 @mixin perspective-origin($origin: 50%) {
   @include experimental(perspective-origin, $origin,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -202,7 +202,7 @@ $default-skew-y      : 5deg                  !default;
 // Browsers default to `flat`, mixin defaults to `preserve-3d`.
 @mixin transform-style($style: preserve-3d) {
   @include experimental(transform-style, $style,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -214,7 +214,7 @@ $default-skew-y      : 5deg                  !default;
 // Browsers default to visible, mixin defaults to hidden
 @mixin backface-visibility($visibility: hidden) {
   @include experimental(backface-visibility, $visibility,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 

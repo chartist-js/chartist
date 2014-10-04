@@ -1,0 +1,53 @@
+/*
+ * A partial implementation of the Ruby list functions from Compass:
+ * https://github.com/Compass/compass/blob/stable/lib/compass/sass_extensions/functions/lists.rb
+ */
+
+
+// compact is part of libsass
+
+@function -compass-nth($list, $place) {
+  // Yep, Sass-lists are 1-indexed.
+  @if $place == "first" {
+    $place: 1;
+  }
+  @if $place == "last" {
+    $place: length($list);
+  }
+  @return nth($list, $place);
+}
+
+// compass_list and compass_space_list can't be implemented in sass script
+
+@function -compass-list-size($list) {
+  @return length($list);
+}
+
+@function -compass-slice($list, $start, $end: false) {
+  @if $end == false {
+    $end: length($list);
+  }
+  $full: nth($list, $start);
+  @for $i from $start + 1 through $end {
+    $full: $full, nth($list, $i);
+  }
+  @return $full;
+}
+
+@function reject($list, $reject1, $reject2:null, $reject3:null, $reject4:null, $reject5:null, $reject6:null, $reject7:null, $reject8:null, $reject9:null) {
+  $rejects: $reject1, $reject2, $reject3, $reject4, $reject5, $reject6, $reject7, $reject8, $reject9;
+
+  $full: false;
+  @each $item in $list {
+    @if index($rejects, $item) {}
+    @else {
+      @if $full {
+        $full: $full, $item;
+      }
+      @else {
+        $full: $item;
+      }
+    }
+  }
+  @return $full;
+}

@@ -45,7 +45,7 @@ $default-box-shadow-inset : false !default;
   }
   $shadow : compact($shadow-1, $shadow-2, $shadow-3, $shadow-4, $shadow-5, $shadow-6, $shadow-7, $shadow-8, $shadow-9, $shadow-10);
   @include experimental(box-shadow, $shadow,
-    -moz, -webkit, not -o, not -ms, not -khtml, official
+    -moz, -webkit, not(-o), not(-ms), not(-khtml), official
   );
 }
 

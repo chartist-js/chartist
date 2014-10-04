@@ -8,7 +8,7 @@
 
 @mixin apply-transform($transform) {
   @include experimental(transform, $transform,
-    -moz, -webkit, -o, not -ms, not -khtml, official
+    -moz, -webkit, -o, not(-ms), not(-khtml), official
   );
 }
 
@@ -16,7 +16,7 @@
 
 @mixin apply-origin($origin) {
   @include experimental(transform-origin, $origin,
-    -moz, -webkit, -o, not -ms, not -khtml, official
+    -moz, -webkit, -o, not(-ms), not(-khtml), official
   );
 }
 

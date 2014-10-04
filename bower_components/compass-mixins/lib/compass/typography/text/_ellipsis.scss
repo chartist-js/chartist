@@ -12,14 +12,14 @@ $use-mozilla-ellipsis-binding: false !default;
   @if $no-wrap { white-space: nowrap; }
   overflow: hidden;
   @include experimental(text-overflow, ellipsis,
-    not -moz,
-    not -webkit,
+    not(-moz),
+    not(-webkit),
     -o,
     -ms,
-    not -khtml,
+    not(-khtml),
     official
   );
   @if $experimental-support-for-mozilla and $use-mozilla-ellipsis-binding {
-    -moz-binding: stylesheet-url(unquote("xml/ellipsis.xml#ellipsis"));    
+    -moz-binding: stylesheet-url(unquote("xml/ellipsis.xml#ellipsis"));
   }
 }

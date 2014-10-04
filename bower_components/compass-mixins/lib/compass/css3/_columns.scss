@@ -7,44 +7,35 @@
 //     @include columns(20em 2)
 @mixin columns($width-and-count) {
   @include experimental(columns, $width-and-count,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
 // Specify the number of columns
 @mixin column-count($count) {
   @include experimental(column-count, $count,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
 // Specify the gap between columns e.g. `20px`
 @mixin column-gap($width) {
   @include experimental(column-gap, $width,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
 // Specify the width of columns e.g. `100px`
 @mixin column-width($width) {
   @include experimental(column-width, $width,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
-}
-
-// Specify how many columns an element should span across.
-//
-// * legal values are 1, all
-@mixin column-span($columns) {
-	@include experimental(column-span, $columns,
-		-moz, -webkit, -o, -ms, not -khtml, official
-	);
 }
 
 // Specify the width of the rule between columns e.g. `1px`
 @mixin column-rule-width($width) {
   @include experimental(column-rule-width, $width,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -52,7 +43,7 @@
 // This works like border-style.
 @mixin column-rule-style($style) {
   @include experimental(column-rule-style, unquote($style),
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -60,7 +51,7 @@
 // This works like border-color.
 @mixin column-rule-color($color) {
   @include experimental(column-rule-color, $color,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -75,7 +66,7 @@
 @mixin column-rule($width, $style: false, $color: false) {
   $full : -compass-space-list(compact($width, $style, $color));
   @include experimental(column-rule, $full,
-    -moz, -webkit, -o, -ms, not -khtml, official
+    -moz, -webkit, -o, -ms, not(-khtml), official
   );
 }
 
@@ -92,7 +83,7 @@
 //    -webkit-column-break-before: always;
 //    column-break-before: always;}
 @mixin column-break-before($value: auto){
-   @include experimental(column-break-before, $value, not -moz, -webkit, not -o, not -ms, not -khtml, official );
+   @include experimental(column-break-before, $value, not(-moz), -webkit, not(-o), not(-ms), not(-khtml), official );
 }
 
 // Mixin for setting column-break-after
@@ -108,7 +99,7 @@
 //    -webkit-column-break-after: always;
 //    column-break-after: always; }
 @mixin column-break-after($value: auto){
-   @include experimental(column-break-after, $value, not -moz, -webkit, not -o, not -ms, not -khtml, official );
+   @include experimental(column-break-after, $value, not(-moz), -webkit, not(-o), not(-ms), not(-khtml), official );
 }
 
 // Mixin for setting column-break-inside
@@ -123,7 +114,7 @@
 //    -webkit-column-break-inside: auto;
 //    column-break-inside: auto;}
 @mixin column-break-inside($value: auto){
-   @include experimental(column-break-inside, $value, not -moz, -webkit, not -o, not -ms, not -khtml, official );
+   @include experimental(column-break-inside, $value, not(-moz), -webkit, not(-o), not(-ms), not(-khtml), official );
 }
 
 // All-purpose mixin for setting column breaks.
@@ -153,5 +144,5 @@
 //    column-break-inside: auto;}
  
 @mixin column-break($type: before, $value: auto){
-   @include experimental("column-break-#{$type}", $value, not -moz, -webkit, not -o, not -ms, not -khtml, official );
+   @include experimental("column-break-#{$type}", $value, not(-moz), -webkit, not(-o), not(-ms), not(-khtml), official );
 }

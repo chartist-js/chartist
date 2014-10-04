@@ -21,16 +21,16 @@
   @if $value == break-all {
     //Most browsers handle the break-all case the same...
     @include experimental(word-break, $value,
-      not -moz, not -webkit, not -o, -ms, not -khtml, official
+      not(-moz), not(-webkit), not(-o), -ms, not(-khtml), official
     );
     //Webkit handles break-all differently... as break-word
     @include experimental(word-break, break-word,
-      not -moz, not -webkit, not -o, not -ms, not -khtml, official
+      not(-moz), not(-webkit), not(-o), not(-ms), not(-khtml), official
     );
   }
   @else {
     @include experimental(word-break, $value,
-      not -moz, not -webkit, not -o, -ms, not -khtml, official
+      not(-moz), not(-webkit), not(-o), -ms, not(-khtml), official
     );
   }
 }
@@ -51,7 +51,7 @@
 //
 @mixin hyphens($value: auto){
   @include experimental(hyphens, $value,
-    -moz, -webkit, not -o, not -ms, not -khtml, official
+    -moz, -webkit, not(-o), not(-ms), not(-khtml), official
   );
 }
 
