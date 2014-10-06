@@ -167,7 +167,9 @@
       };
 
       // Check if there is only one non-zero value in the series array.
-      var hasSingleValInSeries = data.series.filter(function(val) { return val !== 0; }).length === 1;
+      var hasSingleValInSeries = data.series.filter(function(val) { 
+        return val !== 0; 
+      }).length === 1;
 
       // Draw the series
       // initialize series groups
