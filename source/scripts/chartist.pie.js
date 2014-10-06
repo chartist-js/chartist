@@ -166,6 +166,9 @@
         y: chartRect.y2 + chartRect.height() / 2
       };
 
+      // Check if there is only one non-zero value in the series array.
+      var hasSingleValInSeries = data.series.filter(function(val) { return val !== 0; }).length === 1;
+
       // Draw the series
       // initialize series groups
       for (var i = 0; i < data.series.length; i++) {
@@ -191,7 +194,7 @@
           endAngle -= 0.01;
         }
 
-        var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 ? 0 : 0.2)),
+        var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
           end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
           arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
           d = [
