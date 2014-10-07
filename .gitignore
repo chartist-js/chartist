@@ -3,3 +3,4 @@ sitedist
 .tmp
 .sass-cache
 source/bower_components
+.DS_Store
