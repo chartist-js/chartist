@@ -42,6 +42,26 @@ sections:
                 id: simple-start
                 lang: html
 
+            - type: heading
+              data:
+                level: 5
+                title: Use a CDN alternatively
+
+            - type: text
+              data:
+                text: >
+                        If you'd like to get started even faster you can also use a CDN to load Chartist.js. The
+                        awesome people at jsDelivr provide a fantastic job in hosting libraries from over 42 POP Locations
+                        around the world! They always update Chartist.js to the latest version immediately and
+                        they do all that for free! Check out the <a href="http://www.jsdelivr.com/" target="_blank">jsDeliver website</a>
+                        for more information.
+
+            - type: code-snippet
+              data:
+                id: simple-start-cdn
+                lang: html
+                button: Show CDN Code
+
       - type: sub-section
         data:
           title: The Sass way
