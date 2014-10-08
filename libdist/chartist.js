@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.2.0
+  /* Chartist.js 0.2.1
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -93,6 +93,20 @@
      */
     Chartist.getWidth = function (svgElement) {
       return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
+    };
+
+    /**
+     * Converts a string to a number while removing the unit px if present. If a number is passed then this will be returned unmodified.
+     *
+     * @param {String|Number} length
+     * @returns {Number} Returns the pixel as number or NaN if the passed length could not be converted to pixel
+     */
+    Chartist.getPixelLength = function(length) {
+      if(typeof length === 'string') {
+        length = length.replace(/px/i, '');
+      }
+
+      return +length;
     };
 
     /**
@@ -405,8 +419,8 @@
     Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
       return {
         x1: options.chartPadding + yAxisOffset,
-        y1: (options.height || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
-        x2: (options.width || Chartist.getWidth(svg._node)) - options.chartPadding,
+        y1: (Chartist.getPixelLength(options.height) || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
+        x2: (Chartist.getPixelLength(options.width) ||Chartist.getWidth(svg._node)) - options.chartPadding,
         y2: options.chartPadding,
         width: function () {
           return this.x2 - this.x1;
@@ -1949,6 +1963,11 @@
           y: chartRect.y2 + chartRect.height() / 2
         };
 
+        // Check if there is only one non-zero value in the series array.
+        var hasSingleValInSeries = data.series.filter(function(val) {
+          return val !== 0;
+        }).length === 1;
+
         // Draw the series
         // initialize series groups
         for (var i = 0; i < data.series.length; i++) {
@@ -1974,7 +1993,7 @@
             endAngle -= 0.01;
           }
 
-          var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 ? 0 : 0.2)),
+          var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
             end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
             arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
             d = [
