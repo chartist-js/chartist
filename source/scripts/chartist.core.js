@@ -79,6 +79,20 @@ Chartist.version = '0.1.14';
   };
 
   /**
+   * Converts a string to a number while removing the unit px if present. If a number is passed then this will be returned unmodified.
+   *
+   * @param {String|Number} length
+   * @returns {Number} Returns the pixel as number or NaN if the passed length could not be converted to pixel
+   */
+  Chartist.getPixelLength = function(length) {
+    if(typeof length === 'string') {
+      length = length.replace(/px/i, '');
+    }
+
+    return +length;
+  };
+
+  /**
    * This is a wrapper around document.querySelector that will return the query if it's already of type Node
    *
    * @memberof Chartist.Core
@@ -388,8 +402,8 @@ Chartist.version = '0.1.14';
   Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
-      y1: Chartist.getHeight(svg._node) - options.chartPadding - xAxisOffset,
-      x2: Chartist.getWidth(svg._node) - options.chartPadding,
+      y1: (Chartist.getPixelLength(options.height) || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
+      x2: (Chartist.getPixelLength(options.width) ||Chartist.getWidth(svg._node)) - options.chartPadding,
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
