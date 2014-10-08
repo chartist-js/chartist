@@ -388,8 +388,8 @@ Chartist.version = '0.1.14';
   Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
-      y1: (options.height || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
-      x2: (options.width || Chartist.getWidth(svg._node)) - options.chartPadding,
+      y1: Chartist.getHeight(svg._node) - options.chartPadding - xAxisOffset,
+      x2: Chartist.getWidth(svg._node) - options.chartPadding,
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
