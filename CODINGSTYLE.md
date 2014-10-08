@@ -1,8 +1,8 @@
-# Web Styleguide - Style guide to harmonize HTML, Javascript and CSS / SASS coding style
+# Web Styleguide - Style guide to harmonize HTML, Javascript and CSS / Sass coding style
 
 This document defines formatting and style rules for HTML, Javascript and CSS / SCSS. It aims at improving
 collaboration, code quality, and enabling supporting infrastructure. It applies to raw, working files that use HTML,
-Javascript and CSS, including SASS (SCSS) files.
+Javascript and CSS, including Sass (SCSS) files.
 
 If a group of developers start to use a style guide, errors become more obvious. If a certain parts of code are not
 complying with the style guide it could be a style error but it could also be a bug. This makes it easier to review
@@ -1799,7 +1799,7 @@ return x === 10 ? 'valid' : 'invalid';
 
 ***
 
-## CSS and SASS (SCSS) style rules
+## CSS and Sass (SCSS) style rules
 
 ***
 
@@ -2228,7 +2228,7 @@ body:after {
 
 ### Nested selectors (SCSS)
 
-In SASS you can nest selectors which is much cleaner and the code becomes much more readable. Nest all selectors but
+In Sass you can nest selectors which is much cleaner and the code becomes much more readable. Nest all selectors but
 try to avoid nesting without any content. If you need to specify some style attributes for a child element where the
 parent element will not receive any styling use a regular CSS selector chain. This will prevent your script to look
 overcomplicated.
@@ -2317,7 +2317,7 @@ If you nest your selectors introduce blank line between your nested selectors an
 
 ### Contextual media queries (SCSS)
 
-While nesting your selectors you can also make use of contextual media queries within SASS. With SASS you can use media
+While nesting your selectors you can also make use of contextual media queries within Sass. With Sass you can use media
 queries at any given nesting level. The resulting CSS will be converted so that the media query gets rendered around the
 selector.
 
@@ -2428,17 +2428,17 @@ them in order to provide the desktop styles.
 
 ### Nesting order and the parent selector (SCSS)
 
-While using the nesting features of SASS it's important to have a clear order to put your nesting in. A SCSS block
+While using the nesting features of Sass it's important to have a clear order to put your nesting in. A SCSS block
 should have the following content order.
 
 1.  Current selector's style attributes
 1.  Pseudo selectors with parent selector (:first-letter, :hover, :active etc)
 1.  Pseudo elements (:before and :after)
 1.  State classe with parent selector (.selected, .active, .enlarged etc.)
-1.  Contextual media queries with SASS
+1.  Contextual media queries with Sass
 1.  Sub selectors as the last part
 
-The following example should illustrate how this ordering will achieve a clear structure while making use of the SASS
+The following example should illustrate how this ordering will achieve a clear structure while making use of the Sass
 parent selector.
 
 **Recommended**
