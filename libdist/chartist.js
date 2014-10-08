@@ -1680,7 +1680,7 @@
               bar;
 
             // Offset to center bar between grid lines and using bi-polar offset for multiple series
-            // TODO: Check if we should really be able to add classes to the series. Should be handles with SASS and semantic / specific selectors
+            // TODO: Check if we should really be able to add classes to the series. Should be handles with Sass and semantic / specific selectors
             p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
             bar = seriesGroups[i].elem('line', {

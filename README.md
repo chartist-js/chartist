@@ -49,7 +49,7 @@ to the masses.
 2. Documentation: JSDoc, Getting started documentation and landing page
 3. Better accessibility using ARIA and other optimizations
 4. Better interfaces to the library (i.e. jQuery with data-* attributes for configuration), Angular.js directive etc.
-5. Richer SASS / CSS framework
+5. Richer Sass / CSS framework
 6. Other charts types (spider etc.)
 
 ## Contribution

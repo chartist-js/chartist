@@ -19,7 +19,7 @@ sections:
             - type: text
               data:
                 text: >
-                        The bower package contains the JavaScript library, CSS as well as the SASS (SCSS) files.
+                        The bower package contains the JavaScript library, CSS as well as the Sass (SCSS) files.
                         You can then integrate the desired dependencies in your project and start using them
                         immediately.
 
@@ -32,9 +32,9 @@ sections:
               data:
                 text: >
                         The quickest way to get things up and running is by using the Chartist.js CSS files.
-                        The CSS is compiled from the SASS files with the default class names which are also
+                        The CSS is compiled from the Sass files with the default class names which are also
                         configured in the JavaScript library. You can then override the default styles or
-                        modify the CSS file, however, for customization it's recommended to use the SASS
+                        modify the CSS file, however, for customization it's recommended to use the Sass
                         version of Chartist.js.
 
             - type: code-snippet
@@ -44,28 +44,28 @@ sections:
 
       - type: sub-section
         data:
-          title: The SASS way
+          title: The Sass way
           level: 4
           items:
             - type: text
               data:
                 text: >
                         If you like to customize your charts you can either remove the CSS fully and write your
-                        own selectors using the Chartist.js SASS mixins or you just use the Chartist.js SASS
+                        own selectors using the Chartist.js Sass mixins or you just use the Chartist.js Sass
                         settings file to customize the look and feel of your charts.
 
             - type: text
               data:
                 text: >
                         Styling inline SVG with CSS is a breeze and you should also consider writing your own
-                        selectors for your charts and using the SASS mixins. You can read more about using the
-                        SASS mixins in the <a href="#advanced">advanced</a> section.
+                        selectors for your charts and using the Sass mixins. You can read more about using the
+                        Sass mixins in the <a href="#advanced">advanced</a> section.
 
             - type: text
               data:
                 text: >
-                        To customize the style of your charts using the SASS settings file you should copy the
-                        settings file to your own SASS folder.
+                        To customize the style of your charts using the Sass settings file you should copy the
+                        settings file to your own Sass folder.
 
             - type: code
               data:
@@ -104,7 +104,7 @@ sections:
 
             - type: code-snippet
               data:
-                id: default-sass-settings
+                id: default-Sass-settings
                 button: Show default settings
                 path: source/styles/settings/_chartist-settings.scss
                 lang: scss
@@ -163,7 +163,7 @@ sections:
                   - type: text
                     data:
                       text: >
-                              Here is a list of all available container ratios (If using the SASS version of Chartist you can also easily add others):
+                              Here is a list of all available container ratios (If using the Sass version of Chartist you can also easily add others):
 
                   - type: table
                     data:
