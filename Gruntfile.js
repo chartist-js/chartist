@@ -145,7 +145,7 @@ module.exports = function (grunt) {
       }
     },
 
-    // Compile SASS into CSS with libsass (node-sass)
+    // Compile Sass into CSS with libsass (node-sass)
     sass: {
       options: {
         includePaths: ['<%= pkg.config.source %>/bower_components'],
