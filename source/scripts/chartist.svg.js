@@ -244,6 +244,28 @@
       node.setAttribute('class', '');
     }
 
+    /**
+     * Get element height with fallback to svg BoundingBox or parent container dimensions:
+     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+     *
+     * @memberof Chartist.Svg
+     * @return {Number} The elements height in pixels
+     */
+    function height(node) {
+      return node.clientHeight || Math.round(node.getBBox().height) || node.parentNode.clientHeight;
+    }
+
+    /**
+     * Get element width with fallback to svg BoundingBox or parent container dimensions:
+     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+     *
+     * @memberof Chartist.Core
+     * @return {Number} The elements width in pixels
+     */
+    function width(node) {
+      return node.clientWidth || Math.round(node.getBBox().width) || node.parentNode.clientWidth;
+    }
+
     return {
       _node: elem(name, attributes, className, parent ? parent._node : undefined, insertFirst),
       _parent: parent,
@@ -296,6 +318,12 @@
       },
       classes: function() {
         return classes(this._node);
+      },
+      height: function() {
+        return height(this._node);
+      },
+      width: function() {
+        return width(this._node);
       }
     };
   };

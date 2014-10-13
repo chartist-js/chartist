@@ -164,7 +164,7 @@
           data.labels,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisX.labelInterpolationFnc,
-          Chartist.getHeight
+          'height'
         );
       }
 
@@ -175,7 +175,7 @@
           bounds.values,
           [options.classNames.label, options.classNames.horizontal].join(' '),
           options.axisY.labelInterpolationFnc,
-          Chartist.getWidth
+          'width'
         );
       }
 

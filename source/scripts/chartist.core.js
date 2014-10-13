@@ -52,32 +52,6 @@ Chartist.version = '0.1.14';
     return target;
   };
 
-  //TODO: move into Chartist.Svg
-  /**
-   * Get element height with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
-   *
-   * @memberof Chartist.Core
-   * @param {Node} svgElement The svg element from which we want to retrieve its height
-   * @return {Number} The elements height in pixels
-   */
-  Chartist.getHeight = function (svgElement) {
-    return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
-  };
-
-  //TODO: move into Chartist.Svg
-  /**
-   * Get element width with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
-   *
-   * @memberof Chartist.Core
-   * @param {Node} svgElement The svg element from which we want to retrieve its width
-   * @return {Number} The elements width in pixels
-   */
-  Chartist.getWidth = function (svgElement) {
-    return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
-  };
-
   /**
    * Converts a string to a number while removing the unit px if present. If a number is passed then this will be returned unmodified.
    *
@@ -224,7 +198,7 @@ Chartist.version = '0.1.14';
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
+    return svg.height() - (options.chartPadding * 2) - options.axisX.offset;
   };
 
   /**
@@ -351,7 +325,7 @@ Chartist.version = '0.1.14';
    * @param {Array} data The array that contains the data to be visualized in the chart
    * @param {Object} labelClass All css classes of the label
    * @param {Function} labelInterpolationFnc The function that interpolates the label value
-   * @param {Function} offsetFnc Function to find greatest value of either the width or the height of the label, depending on the context
+   * @param {String} offsetFnc width or height. Will be used to call function on SVG element to get length
    * @return {Number} The number that represents the label offset in pixels
    */
   Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
@@ -369,7 +343,7 @@ Chartist.version = '0.1.14';
       }, labelClass).text('' + interpolated);
 
       // Check if this is the largest label and update offset
-      offset = Math.max(offset, offsetFnc(label._node));
+      offset = Math.max(offset, label[offsetFnc]());
       // Remove label after offset Calculation
       label.remove();
     }
@@ -409,8 +383,8 @@ Chartist.version = '0.1.14';
   Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
     return {
       x1: options.chartPadding + yAxisOffset,
-      y1: (Chartist.getPixelLength(options.height) || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
-      x2: (Chartist.getPixelLength(options.width) ||Chartist.getWidth(svg._node)) - options.chartPadding,
+      y1: (Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xAxisOffset,
+      x2: (Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding,
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
@@ -477,7 +451,7 @@ Chartist.version = '0.1.14';
         }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
 
         // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-        labelPos.y = chartRect.y1 + Chartist.getHeight(labelElement._node) + options.axisX.offset;
+        labelPos.y = chartRect.y1 + labelElement.height() + options.axisX.offset;
         labelElement.attr({
           dy: labelPos.y
         });
