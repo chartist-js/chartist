@@ -295,10 +295,15 @@
           }
 
           if(options.showArea) {
+            // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
+            // the area is not drawn outside the chart area.
+            var areaBase = Math.max(Math.min(options.areaBase, bounds.high), bounds.low);
+
             // If we need to draw area shapes we just make a copy of our pathElements SVG path array
             var areaPathElements = pathElements.slice();
+
             // We project the areaBase value into screen coordinates
-            var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [options.areaBase], 0);
+            var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [areaBase], 0);
             // And splice our new area path array to add the missing path elements to close the area shape
             areaPathElements.splice(0, 0, 'M' + areaBaseProjected.x + ',' + areaBaseProjected.y);
             areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
