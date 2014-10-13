@@ -116,21 +116,28 @@ Chartist.version = '0.1.14';
   Chartist.createSvg = function (container, width, height, className) {
     var svg;
 
+    width = width || '100%';
+    height = height || '100%';
+
     // If already contains our svg object we clear it, set width / height and return
     if (container.chartistSvg !== undefined) {
       svg = container.chartistSvg.attr({
-        width: width || '100%',
-        height: height || '100%'
-      }).removeAllClasses().addClass(className);
+        width: width,
+        height: height
+      }).removeAllClasses().addClass(className).attr({
+        style: 'width: ' + width + '; height: ' + height + ';'
+      });
       // Clear the draw if its already used before so we start fresh
       svg.empty();
 
     } else {
       // Create svg object with width and height or use 100% as default
       svg = Chartist.Svg('svg').attr({
-        width: width || '100%',
-        height: height || '100%'
-      }).addClass(className);
+        width: width,
+        height: height
+      }).addClass(className).attr({
+        style: 'width: ' + width + '; height: ' + height + ';'
+      });
 
       // Add the DOM node to our container
       container.appendChild(svg._node);
