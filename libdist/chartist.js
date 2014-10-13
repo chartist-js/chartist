@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.2.1
+  /* Chartist.js 0.2.2
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -21,7 +21,7 @@
    * @module Chartist.Core
    */
   var Chartist = {};
-  Chartist.version = '0.1.14';
+  Chartist.version = '0.2.2';
 
   (function (window, document, Chartist) {
     'use strict';
@@ -69,32 +69,6 @@
       return target;
     };
 
-    //TODO: move into Chartist.Svg
-    /**
-     * Get element height with fallback to svg BoundingBox or parent container dimensions:
-     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
-     *
-     * @memberof Chartist.Core
-     * @param {Node} svgElement The svg element from which we want to retrieve its height
-     * @return {Number} The elements height in pixels
-     */
-    Chartist.getHeight = function (svgElement) {
-      return svgElement.clientHeight || Math.round(svgElement.getBBox().height) || svgElement.parentNode.clientHeight;
-    };
-
-    //TODO: move into Chartist.Svg
-    /**
-     * Get element width with fallback to svg BoundingBox or parent container dimensions:
-     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
-     *
-     * @memberof Chartist.Core
-     * @param {Node} svgElement The svg element from which we want to retrieve its width
-     * @return {Number} The elements width in pixels
-     */
-    Chartist.getWidth = function (svgElement) {
-      return svgElement.clientWidth || Math.round(svgElement.getBBox().width) || svgElement.parentNode.clientWidth;
-    };
-
     /**
      * Converts a string to a number while removing the unit px if present. If a number is passed then this will be returned unmodified.
      *
@@ -133,21 +107,28 @@
     Chartist.createSvg = function (container, width, height, className) {
       var svg;
 
+      width = width || '100%';
+      height = height || '100%';
+
       // If already contains our svg object we clear it, set width / height and return
       if (container.chartistSvg !== undefined) {
         svg = container.chartistSvg.attr({
-          width: width || '100%',
-          height: height || '100%'
-        }).removeAllClasses().addClass(className);
+          width: width,
+          height: height
+        }).removeAllClasses().addClass(className).attr({
+          style: 'width: ' + width + '; height: ' + height + ';'
+        });
         // Clear the draw if its already used before so we start fresh
         svg.empty();
 
       } else {
         // Create svg object with width and height or use 100% as default
         svg = Chartist.Svg('svg').attr({
-          width: width || '100%',
-          height: height || '100%'
-        }).addClass(className);
+          width: width,
+          height: height
+        }).addClass(className).attr({
+          style: 'width: ' + width + '; height: ' + height + ';'
+        });
 
         // Add the DOM node to our container
         container.appendChild(svg._node);
@@ -234,7 +215,7 @@
      * @return {Number} The height of the area in the chart for the data series
      */
     Chartist.getAvailableHeight = function (svg, options) {
-      return Chartist.getHeight(svg._node) - (options.chartPadding * 2) - options.axisX.offset;
+      return svg.height() - (options.chartPadding * 2) - options.axisX.offset;
     };
 
     /**
@@ -361,7 +342,7 @@
      * @param {Array} data The array that contains the data to be visualized in the chart
      * @param {Object} labelClass All css classes of the label
      * @param {Function} labelInterpolationFnc The function that interpolates the label value
-     * @param {Function} offsetFnc Function to find greatest value of either the width or the height of the label, depending on the context
+     * @param {String} offsetFnc width or height. Will be used to call function on SVG element to get length
      * @return {Number} The number that represents the label offset in pixels
      */
     Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
@@ -379,7 +360,7 @@
         }, labelClass).text('' + interpolated);
 
         // Check if this is the largest label and update offset
-        offset = Math.max(offset, offsetFnc(label._node));
+        offset = Math.max(offset, label[offsetFnc]());
         // Remove label after offset Calculation
         label.remove();
       }
@@ -419,8 +400,8 @@
     Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
       return {
         x1: options.chartPadding + yAxisOffset,
-        y1: (Chartist.getPixelLength(options.height) || Chartist.getHeight(svg._node)) - options.chartPadding - xAxisOffset,
-        x2: (Chartist.getPixelLength(options.width) ||Chartist.getWidth(svg._node)) - options.chartPadding,
+        y1: (Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xAxisOffset,
+        x2: (Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding,
         y2: options.chartPadding,
         width: function () {
           return this.x2 - this.x1;
@@ -487,7 +468,7 @@
           }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
 
           // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-          labelPos.y = chartRect.y1 + Chartist.getHeight(labelElement._node) + options.axisX.offset;
+          labelPos.y = chartRect.y1 + labelElement.height() + options.axisX.offset;
           labelElement.attr({
             dy: labelPos.y
           });
@@ -1020,6 +1001,28 @@
         node.setAttribute('class', '');
       }
 
+      /**
+       * Get element height with fallback to svg BoundingBox or parent container dimensions:
+       * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+       *
+       * @memberof Chartist.Svg
+       * @return {Number} The elements height in pixels
+       */
+      function height(node) {
+        return node.clientHeight || Math.round(node.getBBox().height) || node.parentNode.clientHeight;
+      }
+
+      /**
+       * Get element width with fallback to svg BoundingBox or parent container dimensions:
+       * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+       *
+       * @memberof Chartist.Core
+       * @return {Number} The elements width in pixels
+       */
+      function width(node) {
+        return node.clientWidth || Math.round(node.getBBox().width) || node.parentNode.clientWidth;
+      }
+
       return {
         _node: elem(name, attributes, className, parent ? parent._node : undefined, insertFirst),
         _parent: parent,
@@ -1072,6 +1075,12 @@
         },
         classes: function() {
           return classes(this._node);
+        },
+        height: function() {
+          return height(this._node);
+        },
+        width: function() {
+          return width(this._node);
         }
       };
     };
@@ -1281,7 +1290,7 @@
             data.labels,
             [options.classNames.label, options.classNames.horizontal].join(' '),
             options.axisX.labelInterpolationFnc,
-            Chartist.getHeight
+            'height'
           );
         }
 
@@ -1292,7 +1301,7 @@
             bounds.values,
             [options.classNames.label, options.classNames.horizontal].join(' '),
             options.axisY.labelInterpolationFnc,
-            Chartist.getWidth
+            'width'
           );
         }
 
@@ -1373,10 +1382,15 @@
             }
 
             if(options.showArea) {
+              // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
+              // the area is not drawn outside the chart area.
+              var areaBase = Math.max(Math.min(options.areaBase, bounds.high), bounds.low);
+
               // If we need to draw area shapes we just make a copy of our pathElements SVG path array
               var areaPathElements = pathElements.slice();
+
               // We project the areaBase value into screen coordinates
-              var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [options.areaBase], 0);
+              var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [areaBase], 0);
               // And splice our new area path array to add the missing path elements to close the area shape
               areaPathElements.splice(0, 0, 'M' + areaBaseProjected.x + ',' + areaBaseProjected.y);
               areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
@@ -1641,7 +1655,7 @@
             data.labels,
             [options.classNames.label, options.classNames.horizontal].join(' '),
             options.axisX.labelInterpolationFnc,
-            Chartist.getHeight
+            'height'
           );
         }
 
@@ -1652,7 +1666,7 @@
             bounds.values,
             [options.classNames.label, options.classNames.horizontal].join(' '),
             options.axisY.labelInterpolationFnc,
-            Chartist.getWidth
+            'width'
           );
         }
 
