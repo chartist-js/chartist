@@ -6,6 +6,8 @@
 
 *Checkout this lightening talk that gives you an overview of Chartist in 5 minutes https://www.youtube.com/watch?v=WdYzPhOB_c8*
 
+*Guest talk of the Chartist.js Guy at the Treehouse Show https://www.youtube.com/watch?v=h9oH0iDaZDQ&t=2m40s*
+
 Chartist.js is a simple responsive charting library built with SVG. There are hundreds of nice charting libraries already
 out there, but they are either:
 
