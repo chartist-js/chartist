@@ -266,7 +266,7 @@
      */
     function detach() {
       window.removeEventListener('resize', update);
-      optionsProvider.clear();
+      optionsProvider.removeMediaQueryListeners();
     }
 
     /**
