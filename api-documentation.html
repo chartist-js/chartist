@@ -234,7 +234,7 @@ Chartist.Bar(&#x27;.ct-chart&#x27;, {
   </pre><div class="member-content"><div class="description"><p>Updates the chart which currently does a full reconstruction of the SVG DOM</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbar-function-detach"><span class="member-tag">function</span> detach()</h5><button class="api-code-button" data-toggle-visible="#chartistbar-function-detach-code">Show code</button></header><pre id="chartistbar-function-detach-code">
     <code class="javascript">function detach() {
       window.removeEventListener(&#x27;resize&#x27;, update);
-      optionsProvider.clear();
+      optionsProvider.removeMediaQueryListeners();
     }</code>
   </pre><div class="member-content"><div class="description"><p>This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbar-function-on"><span class="member-tag">function</span> on()</h5><button class="api-code-button" data-toggle-visible="#chartistbar-function-on-code">Show code</button></header><pre id="chartistbar-function-on-code">
     <code class="javascript">function on(event, handler) {
@@ -1404,7 +1404,7 @@ Chartist.Pie(&#x27;.ct-chart&#x27;, {
   </pre><div class="member-content"><div class="description"><p>Updates the chart which currently does a full reconstruction of the SVG DOM</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistpie-function-detach"><span class="member-tag">function</span> detach()</h5><button class="api-code-button" data-toggle-visible="#chartistpie-function-detach-code">Show code</button></header><pre id="chartistpie-function-detach-code">
     <code class="javascript">function detach() {
       window.removeEventListener(&#x27;resize&#x27;, update);
-      optionsProvider.clear();
+      optionsProvider.removeMediaQueryListeners();
     }</code>
   </pre><div class="member-content"><div class="description"><p>This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistpie-function-on"><span class="member-tag">function</span> on()</h5><button class="api-code-button" data-toggle-visible="#chartistpie-function-on-code">Show code</button></header><pre id="chartistpie-function-on-code">
     <code class="javascript">function on(event, handler) {
