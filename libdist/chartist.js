@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.2.2
+  /* Chartist.js 0.2.3
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -21,7 +21,7 @@
    * @module Chartist.Core
    */
   var Chartist = {};
-  Chartist.version = '0.2.2';
+  Chartist.version = '0.2.3';
 
   (function (window, document, Chartist) {
     'use strict';
@@ -1757,7 +1757,7 @@
        */
       function detach() {
         window.removeEventListener('resize', update);
-        optionsProvider.clear();
+        optionsProvider.removeMediaQueryListeners();
       }
 
       /**
@@ -2107,7 +2107,7 @@
        */
       function detach() {
         window.removeEventListener('resize', update);
-        optionsProvider.clear();
+        optionsProvider.removeMediaQueryListeners();
       }
 
       /**
