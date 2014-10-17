@@ -325,12 +325,12 @@
 
     window.addEventListener('resize', update);
 
-    // Obtain current options based on matching media queries (if responsive options are given)
-    // This will also register a listener that is re-creating the chart based on media changes
-    optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
     // Using event loop for first draw to make it possible to register event listeners in the same call stack where
     // the chart was created.
     setTimeout(function() {
+      // Obtain current options based on matching media queries (if responsive options are given)
+      // This will also register a listener that is re-creating the chart based on media changes
+      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
       createChart(optionsProvider.currentOptions);
     }, 0);
 
