@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.2.3
+  /* Chartist.js 0.2.4
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -21,7 +21,7 @@
    * @module Chartist.Core
    */
   var Chartist = {};
-  Chartist.version = '0.2.3';
+  Chartist.version = '0.2.4';
 
   (function (window, document, Chartist) {
     'use strict';
@@ -49,6 +49,7 @@
       return String.fromCharCode(97 + n % 26);
     };
 
+    // TODO: Make it possible to call extend with var args
     /**
      * Simple recursive object extend
      *
@@ -756,6 +757,324 @@
     };
 
   }(window, document, Chartist));;/**
+   * This module provides some basic prototype inheritance utilities.
+   *
+   * @module Chartist.Class
+   */
+  /* global Chartist */
+  (function(window, document, Chartist) {
+    'use strict';
+
+    function listToArray(list) {
+      var arr = [];
+      if (list.length) {
+        for (var i = 0; i < list.length; i++) {
+          arr.push(list[i]);
+        }
+      }
+      return arr;
+    }
+
+    /**
+     * Method to extend from current prototype.
+     *
+     * @memberof Chartist.Class
+     * @param {Object} properties The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.
+     * @param {Object} [superProtoOverride] By default extens will use the current class prototype or Chartist.class. With this parameter you can specify any super prototype that will be used.
+     * @returns {Function} Constructor function of the new class
+     *
+     * @example
+     * var Fruit = Class.extend({
+       * color: undefined,
+       *   sugar: undefined,
+       *
+       *   constructor: function(color, sugar) {
+       *     this.color = color;
+       *     this.sugar = sugar;
+       *   },
+       *
+       *   eat: function() {
+       *     this.sugar = 0;
+       *     return this;
+       *   }
+       * });
+     *
+     * var Banana = Fruit.extend({
+       *   length: undefined,
+       *
+       *   constructor: function(length, sugar) {
+       *     Banana.super.constructor.call(this, 'Yellow', sugar);
+       *     this.length = length;
+       *   }
+       * });
+     *
+     * var banana = new Banana(20, 40);
+     * console.log('banana instanceof Fruit', banana instanceof Fruit);
+     * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
+     * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+     * console.log(banana.sugar);
+     * console.log(banana.eat().sugar);
+     * console.log(banana.color);
+     */
+    function extend(properties, superProtoOverride) {
+      var superProto = superProtoOverride || this.prototype || Chartist.Class;
+      var proto = Object.create(superProto);
+
+      Chartist.Class.cloneDefinitions(proto, properties);
+
+      var constr = function() {
+        var fn = proto.constructor || function () {},
+          instance;
+
+        // If this is linked to the Chartist namespace the constructor was not called with new
+        // To provide a fallback we will instantiate here and return the instance
+        instance = this === Chartist ? Object.create(proto) : this;
+        fn.apply(instance, Array.prototype.slice.call(arguments, 0));
+
+        // If this constructor was not called with new we need to return the instance
+        // This will not harm when the constructor has been called with new as the returned value is ignored
+        return instance;
+      };
+
+      constr.prototype = proto;
+      constr.super = superProto;
+      constr.extend = this.extend;
+
+      return constr;
+    }
+
+    /**
+     * Creates a mixin from multiple super prototypes.
+     *
+     * @memberof Chartist.Class
+     * @param {Array} mixProtoArr An array of super prototypes or an array of super prototype constructors.
+     * @param {Object} properties The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.
+     * @returns {Function} Constructor function of the newly created mixin class
+     *
+     * @example
+     * var Fruit = Class.extend({
+       * color: undefined,
+       *   sugar: undefined,
+       *
+       *   constructor: function(color, sugar) {
+       *     this.color = color;
+       *     this.sugar = sugar;
+       *   },
+       *
+       *   eat: function() {
+       *     this.sugar = 0;
+       *     return this;
+       *   }
+       * });
+     *
+     * var Banana = Fruit.extend({
+       *   length: undefined,
+       *
+       *   constructor: function(length, sugar) {
+       *     Banana.super.constructor.call(this, 'Yellow', sugar);
+       *     this.length = length;
+       *   }
+       * });
+     *
+     * var banana = new Banana(20, 40);
+     * console.log('banana instanceof Fruit', banana instanceof Fruit);
+     * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
+     * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+     * console.log(banana.sugar);
+     * console.log(banana.eat().sugar);
+     * console.log(banana.color);
+     *
+     *
+     * var KCal = Class.extend({
+       *   sugar: 0,
+       *
+       *   constructor: function(sugar) {
+       *     this.sugar = sugar;
+       *   },
+       *
+       *   get kcal() {
+       *     return [this.sugar * 4, 'kcal'].join('');
+       *   }
+       * });
+     *
+     *      var Nameable = Class.extend({
+       *   name: undefined,
+       *
+       *   constructor: function(name) {
+       *     this.name = name;
+       *   }
+       * });
+     *
+     * var NameableKCalBanana = Class.mix([Banana, KCal, Nameable], {
+       *   constructor: function(name, length, sugar) {
+       *     Nameable.prototype.constructor.call(this, name);
+       *     Banana.prototype.constructor.call(this, length, sugar);
+       *   },
+       *
+       *   toString: function() {
+       *     return [this.name, 'with', this.length + 'cm', 'and', this.kcal].join(' ');
+       *   }
+       * });
+     *
+     *
+     *
+     * var banana = new Banana(20, 40);
+     * console.log('banana instanceof Fruit', banana instanceof Fruit);
+     * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
+     * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+     * console.log(banana.sugar);
+     * console.log(banana.eat().sugar);
+     * console.log(banana.color);
+     *
+     * var superBanana = new NameableKCalBanana('Super Mixin Banana', 30, 80);
+     * console.log(superBanana.toString());
+     *
+     */
+    function mix(mixProtoArr, properties) {
+      if(this !== Chartist.Class) {
+        throw new Error('Chartist.Class.mix should only be called on the type and never on an instance!');
+      }
+
+      // Make sure our mixin prototypes are the class objects and not the constructors
+      var superPrototypes = [{}]
+        .concat(mixProtoArr)
+        .map(function (prototype) {
+          return prototype instanceof Function ? prototype.prototype : prototype;
+        });
+
+      var mixedSuperProto = Chartist.Class.cloneDefinitions.apply(undefined, superPrototypes);
+      // Delete the constructor if present because we don't want to invoke a constructor on a mixed prototype
+      delete mixedSuperProto.constructor;
+      return this.extend(properties, mixedSuperProto);
+    }
+
+    // Variable argument list clones args > 0 into args[0] and retruns modified args[0]
+    function cloneDefinitions() {
+      var args = listToArray(arguments);
+      var target = args[0];
+
+      args.splice(1, args.length - 1).forEach(function (source) {
+        Object.getOwnPropertyNames(source).forEach(function (propName) {
+          // If this property already exist in target we delete it first
+          delete target[propName];
+          // Define the property with the descriptor from source
+          Object.defineProperty(target, propName,
+            Object.getOwnPropertyDescriptor(source, propName));
+        });
+      });
+
+      return target;
+    }
+
+    Chartist.Class = {
+      extend: extend,
+      mix: mix,
+      cloneDefinitions: cloneDefinitions
+    };
+
+  }(window, document, Chartist));;/**
+   * Base for all chart classes.
+   *
+   * @module Chartist.Base
+   */
+  /* global Chartist */
+  (function(window, document, Chartist) {
+    'use strict';
+
+    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
+    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
+    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
+    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
+    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
+    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
+    /**
+     * Updates the chart which currently does a full reconstruction of the SVG DOM
+     *
+     * @memberof Chartist.Line
+     */
+    function update() {
+      this.createChart(this.optionsProvider.currentOptions);
+    }
+
+    /**
+     * This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.
+     *
+     * @memberof Chartist.Line
+     */
+    function detach() {
+      window.removeEventListener('resize', this.update);
+      this.optionsProvider.removeMediaQueryListeners();
+    }
+
+    /**
+     * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
+     *
+     * @memberof Chartist.Line
+     * @param {String} event Name of the event. Check the examples for supported events.
+     * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
+     */
+    function on(event, handler) {
+      this.eventEmitter.addEventHandler(event, handler);
+    }
+
+    /**
+     * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
+     *
+     * @memberof Chartist.Line
+     * @param {String} event Name of the event for which a handler should be removed
+     * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
+     */
+    function off(event, handler) {
+      this.eventEmitter.removeEventHandler(event, handler);
+    }
+
+    /**
+     * Constructor of chart base class.
+     *
+     * @param query
+     * @param data
+     * @param options
+     * @param responsiveOptions
+     * @constructor
+     */
+    function Base(query, data, options, responsiveOptions) {
+      this.container = Chartist.querySelector(query);
+      this.data = data;
+      this.options = options;
+      this.responsiveOptions = responsiveOptions;
+      this.eventEmitter = Chartist.EventEmitter();
+
+      window.addEventListener('resize', this.update.bind(this));
+
+      // Using event loop for first draw to make it possible to register event listeners in the same call stack where
+      // the chart was created.
+      setTimeout(function() {
+        // Obtain current options based on matching media queries (if responsive options are given)
+        // This will also register a listener that is re-creating the chart based on media changes
+        // TODO: Remove default options parameter from optionsProvider
+        this.optionsProvider = Chartist.optionsProvider({}, this.options, this.responsiveOptions, this.eventEmitter);
+        this.createChart(this.optionsProvider.currentOptions);
+      }.bind(this), 0);
+    }
+
+    // Creating the chart base class
+    Chartist.Base = Chartist.Class.extend({
+      constructor: Base,
+      optionsProvider: undefined,
+      container: undefined,
+      svg: undefined,
+      eventEmitter: undefined,
+      createChart: function() {
+        throw new Error('Base chart type can\'t be instantiated!');
+      },
+      update: update,
+      detach: detach,
+      on: on,
+      off: off,
+      version: Chartist.version
+    });
+
+  }(window, document, Chartist));;/**
    * Chartist SVG module for simple SVG DOM abstraction
    *
    * @module Chartist.Svg
@@ -1096,8 +1415,191 @@
   (function(window, document, Chartist){
     'use strict';
 
+    var defaultOptions = {
+      axisX: {
+        offset: 10,
+        showLabel: true,
+        showGrid: true,
+        labelInterpolationFnc: Chartist.noop
+      },
+      axisY: {
+        offset: 15,
+        showLabel: true,
+        showGrid: true,
+        labelAlign: 'right',
+        labelInterpolationFnc: Chartist.noop,
+        scaleMinSpace: 30
+      },
+      width: undefined,
+      height: undefined,
+      showLine: true,
+      showPoint: true,
+      showArea: false,
+      areaBase: 0,
+      lineSmooth: true,
+      low: undefined,
+      high: undefined,
+      chartPadding: 5,
+      classNames: {
+        chart: 'ct-chart-line',
+        label: 'ct-label',
+        series: 'ct-series',
+        line: 'ct-line',
+        point: 'ct-point',
+        area: 'ct-area',
+        grid: 'ct-grid',
+        vertical: 'ct-vertical',
+        horizontal: 'ct-horizontal'
+      }
+    };
+
+    function createChart(options) {
+      var xAxisOffset,
+        yAxisOffset,
+        seriesGroups = [],
+        bounds,
+        normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
+
+      // Create new svg object
+      this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+
+      // initialize bounds
+      bounds = Chartist.getBounds(this.svg, normalizedData, options);
+
+      xAxisOffset = options.axisX.offset;
+      if (options.axisX.showLabel) {
+        xAxisOffset += Chartist.calculateLabelOffset(
+          this.svg,
+          this.data.labels,
+          [options.classNames.label, options.classNames.horizontal].join(' '),
+          options.axisX.labelInterpolationFnc,
+          'height'
+        );
+      }
+
+      yAxisOffset = options.axisY.offset;
+      if (options.axisY.showLabel) {
+        yAxisOffset += Chartist.calculateLabelOffset(
+          this.svg,
+          bounds.values,
+          [options.classNames.label, options.classNames.horizontal].join(' '),
+          options.axisY.labelInterpolationFnc,
+          'width'
+        );
+      }
+
+      var chartRect = Chartist.createChartRect(this.svg, options, xAxisOffset, yAxisOffset);
+      // Start drawing
+      var labels = this.svg.elem('g'),
+        grid = this.svg.elem('g');
+
+      Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, this.eventEmitter);
+
+      // Draw the series
+      // initialize series groups
+      for (var i = 0; i < this.data.series.length; i++) {
+        seriesGroups[i] = this.svg.elem('g');
+
+        // If the series is an object and contains a name we add a custom attribute
+        if(this.data.series[i].name) {
+          seriesGroups[i].attr({
+            'series-name': this.data.series[i].name
+          }, Chartist.xmlNs.uri);
+        }
+
+        // Use series class from series data or if not set generate one
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (this.data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
+
+        var p,
+          pathCoordinates = [],
+          point;
+
+        for (var j = 0; j < normalizedData[i].length; j++) {
+          p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
+          pathCoordinates.push(p.x, p.y);
+
+          //If we should show points we need to create them now to avoid secondary loop
+          // Small offset for Firefox to render squares correctly
+          if (options.showPoint) {
+            point = seriesGroups[i].elem('line', {
+              x1: p.x,
+              y1: p.y,
+              x2: p.x + 0.01,
+              y2: p.y
+            }, options.classNames.point).attr({
+              'value': normalizedData[i][j]
+            }, Chartist.xmlNs.uri);
+
+            this.eventEmitter.emit('draw', {
+              type: 'point',
+              value: normalizedData[i][j],
+              index: j,
+              group: seriesGroups[i],
+              element: point,
+              x: p.x,
+              y: p.y
+            });
+          }
+        }
+
+        // TODO: Nicer handling of conditions, maybe composition?
+        if (options.showLine || options.showArea) {
+          // TODO: We should add a path API in the SVG library for easier path creation
+          var pathElements = ['M' + pathCoordinates[0] + ',' + pathCoordinates[1]];
+
+          // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
+          if (options.lineSmooth && pathCoordinates.length > 4) {
+
+            var cr = Chartist.catmullRom2bezier(pathCoordinates);
+            for(var k = 0; k < cr.length; k++) {
+              pathElements.push('C' + cr[k].join());
+            }
+          } else {
+            for(var l = 3; l < pathCoordinates.length; l += 2) {
+              pathElements.push('L' + pathCoordinates[l - 1] + ',' + pathCoordinates[l]);
+            }
+          }
+
+          if(options.showArea) {
+            // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
+            // the area is not drawn outside the chart area.
+            var areaBase = Math.max(Math.min(options.areaBase, bounds.high), bounds.low);
+
+            // If we need to draw area shapes we just make a copy of our pathElements SVG path array
+            var areaPathElements = pathElements.slice();
+
+            // We project the areaBase value into screen coordinates
+            var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [areaBase], 0);
+            // And splice our new area path array to add the missing path elements to close the area shape
+            areaPathElements.splice(0, 0, 'M' + areaBaseProjected.x + ',' + areaBaseProjected.y);
+            areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
+            areaPathElements.push('L' + pathCoordinates[pathCoordinates.length - 2] + ',' + areaBaseProjected.y);
+
+            // Create the new path for the area shape with the area class from the options
+            seriesGroups[i].elem('path', {
+              d: areaPathElements.join('')
+            }, options.classNames.area, true).attr({
+              'values': normalizedData[i]
+            }, Chartist.xmlNs.uri);
+          }
+
+          if(options.showLine) {
+            seriesGroups[i].elem('path', {
+              d: pathElements.join('')
+            }, options.classNames.line, true).attr({
+              'values': normalizedData[i]
+            }, Chartist.xmlNs.uri);
+          }
+        }
+      }
+    }
+
     /**
-     * This method creates a new line chart and returns API object that you can use for later changes.
+     * This method creates a new line chart.
      *
      * @memberof Chartist.Line
      * @param {String|Node} query A selector query string or directly a DOM element
@@ -1187,7 +1689,7 @@
      * };
      *
      * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
-     * Chartist.Line('.ct-chart', data, options);
+     * new Chartist.Line('.ct-chart', data, options);
      *
      * @example
      * // Create a line chart with responsive options
@@ -1223,270 +1725,22 @@
      *   }]
      * ];
      *
-     * Chartist.Line('.ct-chart', data, null, responsiveOptions);
+     * new Chartist.Line('.ct-chart', data, null, responsiveOptions);
      *
      */
-    Chartist.Line = function (query, data, options, responsiveOptions) {
+    function Line(query, data, options, responsiveOptions) {
+      Chartist.Line.super.constructor.call(this,
+        query,
+        data,
+        Chartist.extend(Chartist.extend({}, defaultOptions), options),
+        responsiveOptions);
+    }
 
-      var defaultOptions = {
-          axisX: {
-            offset: 10,
-            showLabel: true,
-            showGrid: true,
-            labelInterpolationFnc: Chartist.noop
-          },
-          axisY: {
-            offset: 15,
-            showLabel: true,
-            showGrid: true,
-            labelAlign: 'right',
-            labelInterpolationFnc: Chartist.noop,
-            scaleMinSpace: 30
-          },
-          width: undefined,
-          height: undefined,
-          showLine: true,
-          showPoint: true,
-          showArea: false,
-          areaBase: 0,
-          lineSmooth: true,
-          low: undefined,
-          high: undefined,
-          chartPadding: 5,
-          classNames: {
-            chart: 'ct-chart-line',
-            label: 'ct-label',
-            series: 'ct-series',
-            line: 'ct-line',
-            point: 'ct-point',
-            area: 'ct-area',
-            grid: 'ct-grid',
-            vertical: 'ct-vertical',
-            horizontal: 'ct-horizontal'
-          }
-        },
-        optionsProvider,
-        container = Chartist.querySelector(query),
-        svg,
-        eventEmitter = Chartist.EventEmitter();
-
-      function createChart(options) {
-        var xAxisOffset,
-          yAxisOffset,
-          seriesGroups = [],
-          bounds,
-          normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
-
-        // Create new svg object
-        svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
-
-        // initialize bounds
-        bounds = Chartist.getBounds(svg, normalizedData, options);
-
-        xAxisOffset = options.axisX.offset;
-        if (options.axisX.showLabel) {
-          xAxisOffset += Chartist.calculateLabelOffset(
-            svg,
-            data.labels,
-            [options.classNames.label, options.classNames.horizontal].join(' '),
-            options.axisX.labelInterpolationFnc,
-            'height'
-          );
-        }
-
-        yAxisOffset = options.axisY.offset;
-        if (options.axisY.showLabel) {
-          yAxisOffset += Chartist.calculateLabelOffset(
-            svg,
-            bounds.values,
-            [options.classNames.label, options.classNames.horizontal].join(' '),
-            options.axisY.labelInterpolationFnc,
-            'width'
-          );
-        }
-
-        var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
-        // Start drawing
-        var labels = svg.elem('g'),
-          grid = svg.elem('g');
-
-        Chartist.createXAxis(chartRect, data, grid, labels, options, eventEmitter);
-        Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, eventEmitter);
-
-        // Draw the series
-        // initialize series groups
-        for (var i = 0; i < data.series.length; i++) {
-          seriesGroups[i] = svg.elem('g');
-
-          // If the series is an object and contains a name we add a custom attribute
-          if(data.series[i].name) {
-            seriesGroups[i].attr({
-              'series-name': data.series[i].name
-            }, Chartist.xmlNs.uri);
-          }
-
-          // Use series class from series data or if not set generate one
-          seriesGroups[i].addClass([
-            options.classNames.series,
-            (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
-          ].join(' '));
-
-          var p,
-            pathCoordinates = [],
-            point;
-
-          for (var j = 0; j < normalizedData[i].length; j++) {
-            p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
-            pathCoordinates.push(p.x, p.y);
-
-            //If we should show points we need to create them now to avoid secondary loop
-            // Small offset for Firefox to render squares correctly
-            if (options.showPoint) {
-              point = seriesGroups[i].elem('line', {
-                x1: p.x,
-                y1: p.y,
-                x2: p.x + 0.01,
-                y2: p.y
-              }, options.classNames.point).attr({
-                'value': normalizedData[i][j]
-              }, Chartist.xmlNs.uri);
-
-              eventEmitter.emit('draw', {
-                type: 'point',
-                value: normalizedData[i][j],
-                index: j,
-                group: seriesGroups[i],
-                element: point,
-                x: p.x,
-                y: p.y
-              });
-            }
-          }
-
-          // TODO: Nicer handling of conditions, maybe composition?
-          if (options.showLine || options.showArea) {
-            // TODO: We should add a path API in the SVG library for easier path creation
-            var pathElements = ['M' + pathCoordinates[0] + ',' + pathCoordinates[1]];
-
-            // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
-            if (options.lineSmooth && pathCoordinates.length > 4) {
-
-              var cr = Chartist.catmullRom2bezier(pathCoordinates);
-              for(var k = 0; k < cr.length; k++) {
-                pathElements.push('C' + cr[k].join());
-              }
-            } else {
-              for(var l = 3; l < pathCoordinates.length; l += 2) {
-                pathElements.push('L' + pathCoordinates[l - 1] + ',' + pathCoordinates[l]);
-              }
-            }
-
-            if(options.showArea) {
-              // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
-              // the area is not drawn outside the chart area.
-              var areaBase = Math.max(Math.min(options.areaBase, bounds.high), bounds.low);
-
-              // If we need to draw area shapes we just make a copy of our pathElements SVG path array
-              var areaPathElements = pathElements.slice();
-
-              // We project the areaBase value into screen coordinates
-              var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [areaBase], 0);
-              // And splice our new area path array to add the missing path elements to close the area shape
-              areaPathElements.splice(0, 0, 'M' + areaBaseProjected.x + ',' + areaBaseProjected.y);
-              areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
-              areaPathElements.push('L' + pathCoordinates[pathCoordinates.length - 2] + ',' + areaBaseProjected.y);
-
-              // Create the new path for the area shape with the area class from the options
-              seriesGroups[i].elem('path', {
-                d: areaPathElements.join('')
-              }, options.classNames.area, true).attr({
-                'values': normalizedData[i]
-              }, Chartist.xmlNs.uri);
-            }
-
-            if(options.showLine) {
-              seriesGroups[i].elem('path', {
-                d: pathElements.join('')
-              }, options.classNames.line, true).attr({
-                'values': normalizedData[i]
-              }, Chartist.xmlNs.uri);
-            }
-          }
-        }
-      }
-
-      // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-      // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-      // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-      // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-      // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-      // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-      /**
-       * Updates the chart which currently does a full reconstruction of the SVG DOM
-       *
-       * @memberof Chartist.Line
-       */
-      function update() {
-        createChart(optionsProvider.currentOptions);
-      }
-
-      /**
-       * This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.
-       *
-       * @memberof Chartist.Line
-       */
-      function detach() {
-        window.removeEventListener('resize', update);
-        optionsProvider.removeMediaQueryListeners();
-      }
-
-      /**
-       * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
-       *
-       * @memberof Chartist.Line
-       * @param {String} event Name of the event. Check the examples for supported events.
-       * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
-       */
-      function on(event, handler) {
-        eventEmitter.addEventHandler(event, handler);
-      }
-
-      /**
-       * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
-       *
-       * @memberof Chartist.Line
-       * @param {String} event Name of the event for which a handler should be removed
-       * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
-       */
-      function off(event, handler) {
-        eventEmitter.removeEventHandler(event, handler);
-      }
-
-      // Initialization of the chart
-
-      window.addEventListener('resize', update);
-
-      // Obtain current options based on matching media queries (if responsive options are given)
-      // This will also register a listener that is re-creating the chart based on media changes
-      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
-      // Using event loop for first draw to make it possible to register event listeners in the same call stack where
-      // the chart was created.
-      setTimeout(function() {
-        createChart(optionsProvider.currentOptions);
-      }, 0);
-
-      // Public members of the module (revealing module pattern style)
-      var api = {
-        version: Chartist.version,
-        update: update,
-        on: on,
-        off: off,
-        detach: detach
-      };
-
-      container.chartist = api;
-      return api;
-    };
+    // Creating line chart type in Chartist namespace
+    Chartist.Line = Chartist.Base.extend({
+      constructor: Line,
+      createChart: createChart
+    });
 
   }(window, document, Chartist));
   ;/**
@@ -1497,6 +1751,140 @@
   /* global Chartist */
   (function(window, document, Chartist){
     'use strict';
+
+    var defaultOptions = {
+      axisX: {
+        offset: 10,
+        showLabel: true,
+        showGrid: true,
+        labelInterpolationFnc: Chartist.noop
+      },
+      axisY: {
+        offset: 15,
+        showLabel: true,
+        showGrid: true,
+        labelAlign: 'right',
+        labelInterpolationFnc: Chartist.noop,
+        scaleMinSpace: 40
+      },
+      width: undefined,
+      height: undefined,
+      high: undefined,
+      low: undefined,
+      chartPadding: 5,
+      seriesBarDistance: 15,
+      classNames: {
+        chart: 'ct-chart-bar',
+        label: 'ct-label',
+        series: 'ct-series',
+        bar: 'ct-bar',
+        thin: 'ct-thin',
+        thick: 'ct-thick',
+        grid: 'ct-grid',
+        vertical: 'ct-vertical',
+        horizontal: 'ct-horizontal'
+      }
+    };
+
+    function createChart(options) {
+      var xAxisOffset,
+        yAxisOffset,
+        seriesGroups = [],
+        bounds,
+        normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
+
+      // Create new svg element
+      this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+
+      // initialize bounds
+      bounds = Chartist.getBounds(this.svg, normalizedData, options, 0);
+
+      xAxisOffset = options.axisX.offset;
+      if (options.axisX.showLabel) {
+        xAxisOffset += Chartist.calculateLabelOffset(
+          this.svg,
+          this.data.labels,
+          [options.classNames.label, options.classNames.horizontal].join(' '),
+          options.axisX.labelInterpolationFnc,
+          'height'
+        );
+      }
+
+      yAxisOffset = options.axisY.offset;
+      if (options.axisY.showLabel) {
+        yAxisOffset += Chartist.calculateLabelOffset(
+          this.svg,
+          bounds.values,
+          [options.classNames.label, options.classNames.horizontal].join(' '),
+          options.axisY.labelInterpolationFnc,
+          'width'
+        );
+      }
+
+      var chartRect = Chartist.createChartRect(this.svg, options, xAxisOffset, yAxisOffset);
+      // Start drawing
+      var labels = this.svg.elem('g'),
+        grid = this.svg.elem('g'),
+      // Projected 0 point
+        zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
+
+      Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, this.eventEmitter);
+
+      // Draw the series
+      // initialize series groups
+      for (var i = 0; i < this.data.series.length; i++) {
+        // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
+        var biPol = i - (this.data.series.length - 1) / 2,
+        // Half of the period with between vertical grid lines used to position bars
+          periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
+
+        seriesGroups[i] = this.svg.elem('g');
+
+        // If the series is an object and contains a name we add a custom attribute
+        if(this.data.series[i].name) {
+          seriesGroups[i].attr({
+            'series-name': this.data.series[i].name
+          }, Chartist.xmlNs.uri);
+        }
+
+        // Use series class from series data or if not set generate one
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (this.data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
+
+        for(var j = 0; j < normalizedData[i].length; j++) {
+          var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
+            bar;
+
+          // Offset to center bar between grid lines and using bi-polar offset for multiple series
+          // TODO: Check if we should really be able to add classes to the series. Should be handles with Sass and semantic / specific selectors
+          p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
+
+          bar = seriesGroups[i].elem('line', {
+            x1: p.x,
+            y1: zeroPoint.y,
+            x2: p.x,
+            y2: p.y
+          }, options.classNames.bar).attr({
+            'value': normalizedData[i][j]
+          }, Chartist.xmlNs.uri);
+
+          this.eventEmitter.emit('draw', {
+            type: 'bar',
+            value: normalizedData[i][j],
+            index: j,
+            group: seriesGroups[i],
+            element: bar,
+            x1: p.x,
+            y1: zeroPoint.y,
+            x2: p.x,
+            y2: p.y
+          });
+        }
+      }
+    }
 
     /**
      * This method creates a new bar chart and returns API object that you can use for later changes.
@@ -1578,11 +1966,11 @@
      * };
      *
      * // In the global name space Chartist we call the Bar function to initialize a bar chart. As a first parameter we pass in a selector where we would like to get our chart created and as a second parameter we pass our data object.
-     * Chartist.Bar('.ct-chart', data);
+     * new Chartist.Bar('.ct-chart', data);
      *
      * @example
      * // This example creates a bipolar grouped bar chart where the boundaries are limitted to -10 and 10
-     * Chartist.Bar('.ct-chart', {
+     * new Chartist.Bar('.ct-chart', {
      *   labels: [1, 2, 3, 4, 5, 6, 7],
      *   series: [
      *     [1, 3, 2, -5, -3, 1, -6],
@@ -1595,218 +1983,19 @@
      * });
      *
      */
-    Chartist.Bar = function (query, data, options, responsiveOptions) {
+    function Bar(query, data, options, responsiveOptions) {
+      Chartist.Bar.super.constructor.call(this,
+        query,
+        data,
+        Chartist.extend(Chartist.extend({}, defaultOptions), options),
+        responsiveOptions);
+    }
 
-      var defaultOptions = {
-          axisX: {
-            offset: 10,
-            showLabel: true,
-            showGrid: true,
-            labelInterpolationFnc: Chartist.noop
-          },
-          axisY: {
-            offset: 15,
-            showLabel: true,
-            showGrid: true,
-            labelAlign: 'right',
-            labelInterpolationFnc: Chartist.noop,
-            scaleMinSpace: 40
-          },
-          width: undefined,
-          height: undefined,
-          high: undefined,
-          low: undefined,
-          chartPadding: 5,
-          seriesBarDistance: 15,
-          classNames: {
-            chart: 'ct-chart-bar',
-            label: 'ct-label',
-            series: 'ct-series',
-            bar: 'ct-bar',
-            thin: 'ct-thin',
-            thick: 'ct-thick',
-            grid: 'ct-grid',
-            vertical: 'ct-vertical',
-            horizontal: 'ct-horizontal'
-          }
-        },
-        optionsProvider,
-        container = Chartist.querySelector(query),
-        svg,
-        eventEmitter = Chartist.EventEmitter();
-
-      function createChart(options) {
-        var xAxisOffset,
-          yAxisOffset,
-          seriesGroups = [],
-          bounds,
-          normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
-
-        // Create new svg element
-        svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
-
-        // initialize bounds
-        bounds = Chartist.getBounds(svg, normalizedData, options, 0);
-
-        xAxisOffset = options.axisX.offset;
-        if (options.axisX.showLabel) {
-          xAxisOffset += Chartist.calculateLabelOffset(
-            svg,
-            data.labels,
-            [options.classNames.label, options.classNames.horizontal].join(' '),
-            options.axisX.labelInterpolationFnc,
-            'height'
-          );
-        }
-
-        yAxisOffset = options.axisY.offset;
-        if (options.axisY.showLabel) {
-          yAxisOffset += Chartist.calculateLabelOffset(
-            svg,
-            bounds.values,
-            [options.classNames.label, options.classNames.horizontal].join(' '),
-            options.axisY.labelInterpolationFnc,
-            'width'
-          );
-        }
-
-        var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
-        // Start drawing
-        var labels = svg.elem('g'),
-          grid = svg.elem('g'),
-        // Projected 0 point
-          zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
-
-        Chartist.createXAxis(chartRect, data, grid, labels, options, eventEmitter);
-        Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, eventEmitter);
-
-        // Draw the series
-        // initialize series groups
-        for (var i = 0; i < data.series.length; i++) {
-          // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
-          var biPol = i - (data.series.length - 1) / 2,
-          // Half of the period with between vertical grid lines used to position bars
-            periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
-
-          seriesGroups[i] = svg.elem('g');
-
-          // If the series is an object and contains a name we add a custom attribute
-          if(data.series[i].name) {
-            seriesGroups[i].attr({
-              'series-name': data.series[i].name
-            }, Chartist.xmlNs.uri);
-          }
-
-          // Use series class from series data or if not set generate one
-          seriesGroups[i].addClass([
-            options.classNames.series,
-            (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
-          ].join(' '));
-
-          for(var j = 0; j < normalizedData[i].length; j++) {
-            var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
-              bar;
-
-            // Offset to center bar between grid lines and using bi-polar offset for multiple series
-            // TODO: Check if we should really be able to add classes to the series. Should be handles with Sass and semantic / specific selectors
-            p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
-
-            bar = seriesGroups[i].elem('line', {
-              x1: p.x,
-              y1: zeroPoint.y,
-              x2: p.x,
-              y2: p.y
-            }, options.classNames.bar).attr({
-              'value': normalizedData[i][j]
-            }, Chartist.xmlNs.uri);
-
-            eventEmitter.emit('draw', {
-              type: 'bar',
-              value: normalizedData[i][j],
-              index: j,
-              group: seriesGroups[i],
-              element: bar,
-              x1: p.x,
-              y1: zeroPoint.y,
-              x2: p.x,
-              y2: p.y
-            });
-          }
-        }
-      }
-
-      // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-      // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-      // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-      // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-      // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-      // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-      /**
-       * Updates the chart which currently does a full reconstruction of the SVG DOM
-       *
-       * @memberof Chartist.Bar
-       */
-      function update() {
-        createChart(optionsProvider.currentOptions);
-      }
-
-      /**
-       * This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.
-       *
-       * @memberof Chartist.Bar
-       */
-      function detach() {
-        window.removeEventListener('resize', update);
-        optionsProvider.removeMediaQueryListeners();
-      }
-
-      /**
-       * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
-       *
-       * @memberof Chartist.Bar
-       * @param {String} event Name of the event. Check the examples for supported events.
-       * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
-       */
-      function on(event, handler) {
-        eventEmitter.addEventHandler(event, handler);
-      }
-
-      /**
-       * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
-       *
-       * @memberof Chartist.Bar
-       * @param {String} event Name of the event for which a handler should be removed
-       * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
-       */
-      function off(event, handler) {
-        eventEmitter.removeEventHandler(event, handler);
-      }
-
-      // Initialization of the chart
-
-      window.addEventListener('resize', update);
-
-      // Obtain current options based on matching media queries (if responsive options are given)
-      // This will also register a listener that is re-creating the chart based on media changes
-      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
-      // Using event loop for first draw to make it possible to register event listeners in the same call stack where
-      // the chart was created.
-      setTimeout(function() {
-        createChart(optionsProvider.currentOptions);
-      }, 0);
-
-      // Public members of the module (revealing module pattern style)
-      var api = {
-        version: Chartist.version,
-        update: update,
-        on: on,
-        off: off,
-        detach: detach
-      };
-
-      container.chartist = api;
-      return api;
-    };
+    // Creating bar chart type in Chartist namespace
+    Chartist.Bar = Chartist.Base.extend({
+      constructor: Bar,
+      createChart: createChart
+    });
 
   }(window, document, Chartist));
   ;/**
@@ -1817,6 +2006,186 @@
   /* global Chartist */
   (function(window, document, Chartist) {
     'use strict';
+
+    var defaultOptions = {
+      width: undefined,
+      height: undefined,
+      chartPadding: 5,
+      classNames: {
+        chart: 'ct-chart-pie',
+        series: 'ct-series',
+        slice: 'ct-slice',
+        donut: 'ct-donut',
+        label: 'ct-label'
+      },
+      startAngle: 0,
+      total: undefined,
+      donut: false,
+      donutWidth: 60,
+      showLabel: true,
+      labelOffset: 0,
+      labelInterpolationFnc: Chartist.noop,
+      labelOverflow: false,
+      labelDirection: 'neutral'
+    };
+
+    function determineAnchorPosition(center, label, direction) {
+      var toTheRight = label.x > center.x;
+
+      if(toTheRight && direction === 'explode' ||
+        !toTheRight && direction === 'implode') {
+        return 'start';
+      } else if(toTheRight && direction === 'implode' ||
+        !toTheRight && direction === 'explode') {
+        return 'end';
+      } else {
+        return 'middle';
+      }
+    }
+
+    function createChart(options) {
+      var seriesGroups = [],
+        chartRect,
+        radius,
+        labelRadius,
+        totalDataSum,
+        startAngle = options.startAngle,
+        dataArray = Chartist.getDataArray(this.data);
+
+      // Create SVG.js draw
+      this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+      // Calculate charting rect
+      chartRect = Chartist.createChartRect(this.svg, options, 0, 0);
+      // Get biggest circle radius possible within chartRect
+      radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
+      // Calculate total of all series to get reference value or use total reference from optional options
+      totalDataSum = options.total || dataArray.reduce(function(previousValue, currentValue) {
+        return previousValue + currentValue;
+      }, 0);
+
+      // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
+      // Unfortunately this is not possible with the current SVG Spec
+      // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
+      radius -= options.donut ? options.donutWidth / 2  : 0;
+
+      // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
+      // see https://github.com/gionkunz/chartist-js/issues/21
+      labelRadius = options.donut ? radius : radius / 2;
+      // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
+      labelRadius += options.labelOffset;
+
+      // Calculate end angle based on total sum and current data value and offset with padding
+      var center = {
+        x: chartRect.x1 + chartRect.width() / 2,
+        y: chartRect.y2 + chartRect.height() / 2
+      };
+
+      // Check if there is only one non-zero value in the series array.
+      var hasSingleValInSeries = this.data.series.filter(function(val) {
+        return val !== 0;
+      }).length === 1;
+
+      // Draw the series
+      // initialize series groups
+      for (var i = 0; i < this.data.series.length; i++) {
+        seriesGroups[i] = this.svg.elem('g', null, null, true);
+
+        // If the series is an object and contains a name we add a custom attribute
+        if(this.data.series[i].name) {
+          seriesGroups[i].attr({
+            'series-name': this.data.series[i].name
+          }, Chartist.xmlNs.uri);
+        }
+
+        // Use series class from series data or if not set generate one
+        seriesGroups[i].addClass([
+          options.classNames.series,
+          (this.data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        ].join(' '));
+
+        var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
+        // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
+        // with Z and use 359.99 degrees
+        if(endAngle - startAngle === 360) {
+          endAngle -= 0.01;
+        }
+
+        var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
+          end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
+          arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
+          d = [
+            // Start at the end point from the cartesian coordinates
+            'M', end.x, end.y,
+            // Draw arc
+            'A', radius, radius, 0, arcSweep, 0, start.x, start.y
+          ];
+
+        // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
+        if(options.donut === false) {
+          d.push('L', center.x, center.y);
+        }
+
+        // Create the SVG path
+        // If this is a donut chart we add the donut class, otherwise just a regular slice
+        var path = seriesGroups[i].elem('path', {
+          d: d.join(' ')
+        }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+
+        // Adding the pie series value to the path
+        path.attr({
+          'value': dataArray[i]
+        }, Chartist.xmlNs.uri);
+
+        // If this is a donut, we add the stroke-width as style attribute
+        if(options.donut === true) {
+          path.attr({
+            'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
+          });
+        }
+
+        // Fire off draw event
+        this.eventEmitter.emit('draw', {
+          type: 'slice',
+          value: dataArray[i],
+          totalDataSum: totalDataSum,
+          index: i,
+          group: seriesGroups[i],
+          element: path,
+          center: center,
+          radius: radius,
+          startAngle: startAngle,
+          endAngle: endAngle
+        });
+
+        // If we need to show labels we need to add the label for this slice now
+        if(options.showLabel) {
+          // Position at the labelRadius distance from center and between start and end angle
+          var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
+            interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
+
+          var labelElement = seriesGroups[i].elem('text', {
+            dx: labelPosition.x,
+            dy: labelPosition.y,
+            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+          }, options.classNames.label).text('' + interpolatedValue);
+
+          // Fire off draw event
+          this.eventEmitter.emit('draw', {
+            type: 'label',
+            index: i,
+            group: seriesGroups[i],
+            element: labelElement,
+            text: '' + interpolatedValue,
+            x: labelPosition.x,
+            y: labelPosition.y
+          });
+        }
+
+        // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
+        // (except for last slice)
+        startAngle = endAngle;
+      }
+    }
 
     /**
      * This method creates a new pie chart and returns an object that can be used to redraw the chart.
@@ -1865,13 +2234,13 @@
      *
      * @example
      * // Simple pie chart example with four series
-     * Chartist.Pie('.ct-chart', {
+     * new Chartist.Pie('.ct-chart', {
      *   series: [10, 2, 4, 3]
      * });
      *
      * @example
      * // Drawing a donut chart
-     * Chartist.Pie('.ct-chart', {
+     * new Chartist.Pie('.ct-chart', {
      *   series: [10, 2, 4, 3]
      * }, {
      *   donut: true
@@ -1879,7 +2248,7 @@
      *
      * @example
      * // Using donut, startAngle and total to draw a gauge chart
-     * Chartist.Pie('.ct-chart', {
+     * new Chartist.Pie('.ct-chart', {
      *   series: [20, 10, 30, 40]
      * }, {
      *   donut: true,
@@ -1890,7 +2259,7 @@
      *
      * @example
      * // Drawing a pie chart with padding and labels that are outside the pie
-     * Chartist.Pie('.ct-chart', {
+     * new Chartist.Pie('.ct-chart', {
      *   series: [20, 10, 30, 40]
      * }, {
      *   chartPadding: 30,
@@ -1898,267 +2267,23 @@
      *   labelDirection: 'explode'
      * });
      */
-    Chartist.Pie = function (query, data, options, responsiveOptions) {
+    function Pie(query, data, options, responsiveOptions) {
+      Chartist.Pie.super.constructor.call(this,
+        query,
+        data,
+        Chartist.extend(Chartist.extend({}, defaultOptions), options),
+        responsiveOptions);
+    }
 
-      var defaultOptions = {
-          width: undefined,
-          height: undefined,
-          chartPadding: 5,
-          classNames: {
-            chart: 'ct-chart-pie',
-            series: 'ct-series',
-            slice: 'ct-slice',
-            donut: 'ct-donut',
-            label: 'ct-label'
-          },
-          startAngle: 0,
-          total: undefined,
-          donut: false,
-          donutWidth: 60,
-          showLabel: true,
-          labelOffset: 0,
-          labelInterpolationFnc: Chartist.noop,
-          labelOverflow: false,
-          labelDirection: 'neutral'
-        },
-        optionsProvider,
-        container = Chartist.querySelector(query),
-        svg,
-        eventEmitter = Chartist.EventEmitter();
-
-      function determineAnchorPosition(center, label, direction) {
-        var toTheRight = label.x > center.x;
-
-        if(toTheRight && direction === 'explode' ||
-          !toTheRight && direction === 'implode') {
-          return 'start';
-        } else if(toTheRight && direction === 'implode' ||
-          !toTheRight && direction === 'explode') {
-          return 'end';
-        } else {
-          return 'middle';
-        }
-      }
-
-      function createChart(options) {
-        var seriesGroups = [],
-          chartRect,
-          radius,
-          labelRadius,
-          totalDataSum,
-          startAngle = options.startAngle,
-          dataArray = Chartist.getDataArray(data);
-
-        // Create SVG.js draw
-        svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
-        // Calculate charting rect
-        chartRect = Chartist.createChartRect(svg, options, 0, 0);
-        // Get biggest circle radius possible within chartRect
-        radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
-        // Calculate total of all series to get reference value or use total reference from optional options
-        totalDataSum = options.total || dataArray.reduce(function(previousValue, currentValue) {
-          return previousValue + currentValue;
-        }, 0);
-
-        // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
-        // Unfortunately this is not possible with the current SVG Spec
-        // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
-        radius -= options.donut ? options.donutWidth / 2  : 0;
-
-        // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
-        // see https://github.com/gionkunz/chartist-js/issues/21
-        labelRadius = options.donut ? radius : radius / 2;
-        // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
-        labelRadius += options.labelOffset;
-
-        // Calculate end angle based on total sum and current data value and offset with padding
-        var center = {
-          x: chartRect.x1 + chartRect.width() / 2,
-          y: chartRect.y2 + chartRect.height() / 2
-        };
-
-        // Check if there is only one non-zero value in the series array.
-        var hasSingleValInSeries = data.series.filter(function(val) {
-          return val !== 0;
-        }).length === 1;
-
-        // Draw the series
-        // initialize series groups
-        for (var i = 0; i < data.series.length; i++) {
-          seriesGroups[i] = svg.elem('g', null, null, true);
-
-          // If the series is an object and contains a name we add a custom attribute
-          if(data.series[i].name) {
-            seriesGroups[i].attr({
-              'series-name': data.series[i].name
-            }, Chartist.xmlNs.uri);
-          }
-
-          // Use series class from series data or if not set generate one
-          seriesGroups[i].addClass([
-            options.classNames.series,
-            (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
-          ].join(' '));
-
-          var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
-          // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
-          // with Z and use 359.99 degrees
-          if(endAngle - startAngle === 360) {
-            endAngle -= 0.01;
-          }
-
-          var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
-            end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
-            arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
-            d = [
-              // Start at the end point from the cartesian coordinates
-              'M', end.x, end.y,
-              // Draw arc
-              'A', radius, radius, 0, arcSweep, 0, start.x, start.y
-            ];
-
-          // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
-          if(options.donut === false) {
-            d.push('L', center.x, center.y);
-          }
-
-          // Create the SVG path
-          // If this is a donut chart we add the donut class, otherwise just a regular slice
-          var path = seriesGroups[i].elem('path', {
-            d: d.join(' ')
-          }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
-
-          // Adding the pie series value to the path
-          path.attr({
-            'value': dataArray[i]
-          }, Chartist.xmlNs.uri);
-
-          // If this is a donut, we add the stroke-width as style attribute
-          if(options.donut === true) {
-            path.attr({
-              'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
-            });
-          }
-
-          // Fire off draw event
-          eventEmitter.emit('draw', {
-            type: 'slice',
-            value: dataArray[i],
-            totalDataSum: totalDataSum,
-            index: i,
-            group: seriesGroups[i],
-            element: path,
-            center: center,
-            radius: radius,
-            startAngle: startAngle,
-            endAngle: endAngle
-          });
-
-          // If we need to show labels we need to add the label for this slice now
-          if(options.showLabel) {
-            // Position at the labelRadius distance from center and between start and end angle
-            var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
-              interpolatedValue = options.labelInterpolationFnc(data.labels ? data.labels[i] : dataArray[i], i);
-
-            var labelElement = seriesGroups[i].elem('text', {
-              dx: labelPosition.x,
-              dy: labelPosition.y,
-              'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-            }, options.classNames.label).text('' + interpolatedValue);
-
-            // Fire off draw event
-            eventEmitter.emit('draw', {
-              type: 'label',
-              index: i,
-              group: seriesGroups[i],
-              element: labelElement,
-              text: '' + interpolatedValue,
-              x: labelPosition.x,
-              y: labelPosition.y
-            });
-          }
-
-          // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
-          // (except for last slice)
-          startAngle = endAngle;
-        }
-      }
-
-      // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-      // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-      // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-      // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-      // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-      // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-      /**
-       * Updates the chart which currently does a full reconstruction of the SVG DOM
-       *
-       * @memberof Chartist.Pie
-       *
-       */
-      function update() {
-        createChart(optionsProvider.currentOptions);
-      }
-
-      /**
-       * This method will detach the chart from any event listeners that have been added. This includes window.resize and media query listeners for the responsive options. Call this method in order to de-initialize dynamically created / removed charts.
-       *
-       * @memberof Chartist.Pie
-       */
-      function detach() {
-        window.removeEventListener('resize', update);
-        optionsProvider.removeMediaQueryListeners();
-      }
-
-      /**
-       * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
-       *
-       * @memberof Chartist.Pie
-       * @param {String} event Name of the event. Check the examples for supported events.
-       * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
-       */
-      function on(event, handler) {
-        eventEmitter.addEventHandler(event, handler);
-      }
-
-      /**
-       * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
-       *
-       * @memberof Chartist.Pie
-       * @param {String} event Name of the event for which a handler should be removed
-       * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
-       */
-      function off(event, handler) {
-        eventEmitter.removeEventHandler(event, handler);
-      }
-
-      // Initialization of the chart
-
-      window.addEventListener('resize', update);
-
-      // Obtain current options based on matching media queries (if responsive options are given)
-      // This will also register a listener that is re-creating the chart based on media changes
-      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
-      // Using event loop for first draw to make it possible to register event listeners in the same call stack where
-      // the chart was created.
-      setTimeout(function() {
-        createChart(optionsProvider.currentOptions);
-      }, 0);
-
-      // Public members of the module (revealing module pattern style)
-      var api = {
-        version: Chartist.version,
-        update: update,
-        on: on,
-        off: off,
-        detach: detach
-      };
-
-      container.chartist = api;
-      return api;
-    };
+    // Creating pie chart type in Chartist namespace
+    Chartist.Pie = Chartist.Base.extend({
+      constructor: Pie,
+      createChart: createChart,
+      determineAnchorPosition: determineAnchorPosition
+    });
 
   }(window, document, Chartist));
+
 
   return Chartist;
 
