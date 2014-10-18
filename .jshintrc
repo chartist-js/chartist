@@ -16,6 +16,7 @@
   "undef": true,
   "unused": true,
   "strict": true,
+  "validthis": true,
   "trailing": true,
   "smarttabs": true,
   "globals": {
