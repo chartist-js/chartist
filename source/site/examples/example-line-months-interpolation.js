@@ -25,4 +25,4 @@ var responsiveOptions = [
   ]
 ];
 
-Chartist.Line('.ct-chart', data, null, responsiveOptions);
+new Chartist.Line('.ct-chart', data, null, responsiveOptions);

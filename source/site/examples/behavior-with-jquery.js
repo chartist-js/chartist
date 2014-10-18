@@ -1,4 +1,4 @@
-Chartist.Line('.ct-chart', {
+new Chartist.Line('.ct-chart', {
   labels: ['1', '2', '3', '4', '5', '6'],
   series: [
     {

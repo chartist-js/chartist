@@ -35,4 +35,4 @@ var options = {
 };
 
 // All you need to do is pass your configuration as third parameter to the chart function
-Chartist.Line('.ct-chart', data, options);
+new Chartist.Line('.ct-chart', data, options);

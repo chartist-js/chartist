@@ -38,4 +38,4 @@ var responsiveOptions = [
 ];
 
 /* Initialize the chart with the above settings */
-Chartist.Line('#my-chart', data, options, responsiveOptions);
+new Chartist.Line('#my-chart', data, options, responsiveOptions);

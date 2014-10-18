@@ -24,4 +24,4 @@ var responsiveOptions = [
   }]
 ];
 
-Chartist.Pie('.ct-chart', data, options, responsiveOptions);
+new Chartist.Pie('.ct-chart', data, options, responsiveOptions);

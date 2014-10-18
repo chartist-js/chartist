@@ -15,4 +15,4 @@ var options = {
   }
 };
 
-Chartist.Bar('.ct-chart', data, options);
+new Chartist.Bar('.ct-chart', data, options);

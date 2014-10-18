@@ -4,7 +4,7 @@ var data = {
 
 var sum = function(a, b) { return a + b };
 
-Chartist.Pie('.ct-chart', data, {
+new Chartist.Pie('.ct-chart', data, {
   labelInterpolationFnc: function(value) {
     return Math.round(value / data.series.reduce(sum) * 100) + '%';
   }

@@ -7,7 +7,7 @@ var data = {
   ]
 };
 
-// In the global name space Chartist we call the Line function to initialize a line chart
-// As a first parameter we pass in a selector where we would like to get our chart created
-// Second parameter is the actual data object
-Chartist.Line('.ct-chart', data);
+// Create a new line chart object where as first parameter we pass in a selector
+// that is resolving to our chart container element. The Second parameter
+// is the actual data object.
+new Chartist.Line('.ct-chart', data);

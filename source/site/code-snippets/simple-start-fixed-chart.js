@@ -14,7 +14,7 @@ var options = {
   height: 200
 };
 
-// In the global name space Chartist we call the Bar function to initialize a bar chart
-// As a first parameter we pass in a selector where we would like to get our chart created
-// Second parameter is the actual data object and as a third parameter we pass in our options
-Chartist.Bar('.ct-chart', data, options);
+// Create a new line chart object where as first parameter we pass in a selector
+// that is resolving to our chart container element. The Second parameter
+// is the actual data object. As a third parameter we pass in our custom options.
+new Chartist.Bar('.ct-chart', data, options);

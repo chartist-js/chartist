@@ -21,4 +21,4 @@ var responsiveOptions = [
   }]
 ];
 
-Chartist.Bar('.ct-chart', data, options, responsiveOptions);
+new Chartist.Bar('.ct-chart', data, options, responsiveOptions);
