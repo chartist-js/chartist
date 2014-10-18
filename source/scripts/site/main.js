@@ -6,7 +6,7 @@ window.hljs.initHighlightingOnLoad();
 function evalChartistCode(code, chartElement) {
   // Modify the code to use a proper selector using the ID of the example as well as return the Chartist object
   var modified = code.replace(/.*Chartist\s*\.\s*(.+)\(\s*['"](.+)['"]/, function(match, type) {
-    return ['var chart = Chartist.', type, '(chartElement'].join('');
+    return ['var chart = new Chartist.', type, '(chartElement'].join('');
   }) + '; return chart;';
 
   // Remove any declaration of $chart as we are passing $chart to our function eval
