@@ -96,7 +96,8 @@
     update: update,
     detach: detach,
     on: on,
-    off: off
+    off: off,
+    version: Chartist.version
   });
 
 }(window, document, Chartist));
