@@ -7,6 +7,140 @@
 (function(window, document, Chartist){
   'use strict';
 
+  var defaultOptions = {
+    axisX: {
+      offset: 10,
+      showLabel: true,
+      showGrid: true,
+      labelInterpolationFnc: Chartist.noop
+    },
+    axisY: {
+      offset: 15,
+      showLabel: true,
+      showGrid: true,
+      labelAlign: 'right',
+      labelInterpolationFnc: Chartist.noop,
+      scaleMinSpace: 40
+    },
+    width: undefined,
+    height: undefined,
+    high: undefined,
+    low: undefined,
+    chartPadding: 5,
+    seriesBarDistance: 15,
+    classNames: {
+      chart: 'ct-chart-bar',
+      label: 'ct-label',
+      series: 'ct-series',
+      bar: 'ct-bar',
+      thin: 'ct-thin',
+      thick: 'ct-thick',
+      grid: 'ct-grid',
+      vertical: 'ct-vertical',
+      horizontal: 'ct-horizontal'
+    }
+  };
+
+  function createChart(options) {
+    var xAxisOffset,
+      yAxisOffset,
+      seriesGroups = [],
+      bounds,
+      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
+
+    // Create new svg element
+    this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+
+    // initialize bounds
+    bounds = Chartist.getBounds(this.svg, normalizedData, options, 0);
+
+    xAxisOffset = options.axisX.offset;
+    if (options.axisX.showLabel) {
+      xAxisOffset += Chartist.calculateLabelOffset(
+        this.svg,
+        this.data.labels,
+        [options.classNames.label, options.classNames.horizontal].join(' '),
+        options.axisX.labelInterpolationFnc,
+        'height'
+      );
+    }
+
+    yAxisOffset = options.axisY.offset;
+    if (options.axisY.showLabel) {
+      yAxisOffset += Chartist.calculateLabelOffset(
+        this.svg,
+        bounds.values,
+        [options.classNames.label, options.classNames.horizontal].join(' '),
+        options.axisY.labelInterpolationFnc,
+        'width'
+      );
+    }
+
+    var chartRect = Chartist.createChartRect(this.svg, options, xAxisOffset, yAxisOffset);
+    // Start drawing
+    var labels = this.svg.elem('g'),
+      grid = this.svg.elem('g'),
+    // Projected 0 point
+      zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
+
+    Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
+    Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, this.eventEmitter);
+
+    // Draw the series
+    // initialize series groups
+    for (var i = 0; i < this.data.series.length; i++) {
+      // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
+      var biPol = i - (this.data.series.length - 1) / 2,
+      // Half of the period with between vertical grid lines used to position bars
+        periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
+
+      seriesGroups[i] = this.svg.elem('g');
+
+      // If the series is an object and contains a name we add a custom attribute
+      if(this.data.series[i].name) {
+        seriesGroups[i].attr({
+          'series-name': this.data.series[i].name
+        }, Chartist.xmlNs.uri);
+      }
+
+      // Use series class from series data or if not set generate one
+      seriesGroups[i].addClass([
+        options.classNames.series,
+        (this.data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+      ].join(' '));
+
+      for(var j = 0; j < normalizedData[i].length; j++) {
+        var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
+          bar;
+
+        // Offset to center bar between grid lines and using bi-polar offset for multiple series
+        // TODO: Check if we should really be able to add classes to the series. Should be handles with Sass and semantic / specific selectors
+        p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
+
+        bar = seriesGroups[i].elem('line', {
+          x1: p.x,
+          y1: zeroPoint.y,
+          x2: p.x,
+          y2: p.y
+        }, options.classNames.bar).attr({
+          'value': normalizedData[i][j]
+        }, Chartist.xmlNs.uri);
+
+        this.eventEmitter.emit('draw', {
+          type: 'bar',
+          value: normalizedData[i][j],
+          index: j,
+          group: seriesGroups[i],
+          element: bar,
+          x1: p.x,
+          y1: zeroPoint.y,
+          x2: p.x,
+          y2: p.y
+        });
+      }
+    }
+  }
+
   /**
    * This method creates a new bar chart and returns API object that you can use for later changes.
    *
@@ -104,217 +238,18 @@
    * });
    *
    */
-  Chartist.Bar = function (query, data, options, responsiveOptions) {
+  function Bar(query, data, options, responsiveOptions) {
+    Chartist.Bar.super.constructor.call(this,
+      query,
+      data,
+      Chartist.extend(Chartist.extend({}, defaultOptions), options),
+      responsiveOptions);
+  }
 
-    var defaultOptions = {
-        axisX: {
-          offset: 10,
-          showLabel: true,
-          showGrid: true,
-          labelInterpolationFnc: Chartist.noop
-        },
-        axisY: {
-          offset: 15,
-          showLabel: true,
-          showGrid: true,
-          labelAlign: 'right',
-          labelInterpolationFnc: Chartist.noop,
-          scaleMinSpace: 40
-        },
-        width: undefined,
-        height: undefined,
-        high: undefined,
-        low: undefined,
-        chartPadding: 5,
-        seriesBarDistance: 15,
-        classNames: {
-          chart: 'ct-chart-bar',
-          label: 'ct-label',
-          series: 'ct-series',
-          bar: 'ct-bar',
-          thin: 'ct-thin',
-          thick: 'ct-thick',
-          grid: 'ct-grid',
-          vertical: 'ct-vertical',
-          horizontal: 'ct-horizontal'
-        }
-      },
-      optionsProvider,
-      container = Chartist.querySelector(query),
-      svg,
-      eventEmitter = Chartist.EventEmitter();
-
-    function createChart(options) {
-      var xAxisOffset,
-        yAxisOffset,
-        seriesGroups = [],
-        bounds,
-        normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length);
-
-      // Create new svg element
-      svg = Chartist.createSvg(container, options.width, options.height, options.classNames.chart);
-
-      // initialize bounds
-      bounds = Chartist.getBounds(svg, normalizedData, options, 0);
-
-      xAxisOffset = options.axisX.offset;
-      if (options.axisX.showLabel) {
-        xAxisOffset += Chartist.calculateLabelOffset(
-          svg,
-          data.labels,
-          [options.classNames.label, options.classNames.horizontal].join(' '),
-          options.axisX.labelInterpolationFnc,
-          'height'
-        );
-      }
-
-      yAxisOffset = options.axisY.offset;
-      if (options.axisY.showLabel) {
-        yAxisOffset += Chartist.calculateLabelOffset(
-          svg,
-          bounds.values,
-          [options.classNames.label, options.classNames.horizontal].join(' '),
-          options.axisY.labelInterpolationFnc,
-          'width'
-        );
-      }
-
-      var chartRect = Chartist.createChartRect(svg, options, xAxisOffset, yAxisOffset);
-      // Start drawing
-      var labels = svg.elem('g'),
-        grid = svg.elem('g'),
-      // Projected 0 point
-        zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
-
-      Chartist.createXAxis(chartRect, data, grid, labels, options, eventEmitter);
-      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, eventEmitter);
-
-      // Draw the series
-      // initialize series groups
-      for (var i = 0; i < data.series.length; i++) {
-        // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
-        var biPol = i - (data.series.length - 1) / 2,
-        // Half of the period with between vertical grid lines used to position bars
-          periodHalfWidth = chartRect.width() / normalizedData[i].length / 2;
-
-        seriesGroups[i] = svg.elem('g');
-
-        // If the series is an object and contains a name we add a custom attribute
-        if(data.series[i].name) {
-          seriesGroups[i].attr({
-            'series-name': data.series[i].name
-          }, Chartist.xmlNs.uri);
-        }
-
-        // Use series class from series data or if not set generate one
-        seriesGroups[i].addClass([
-          options.classNames.series,
-          (data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
-        ].join(' '));
-
-        for(var j = 0; j < normalizedData[i].length; j++) {
-          var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j),
-            bar;
-
-          // Offset to center bar between grid lines and using bi-polar offset for multiple series
-          // TODO: Check if we should really be able to add classes to the series. Should be handles with Sass and semantic / specific selectors
-          p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
-
-          bar = seriesGroups[i].elem('line', {
-            x1: p.x,
-            y1: zeroPoint.y,
-            x2: p.x,
-            y2: p.y
-          }, options.classNames.bar).attr({
-            'value': normalizedData[i][j]
-          }, Chartist.xmlNs.uri);
-
-          eventEmitter.emit('draw', {
-            type: 'bar',
-            value: normalizedData[i][j],
-            index: j,
-            group: seriesGroups[i],
-            element: bar,
-            x1: p.x,
-            y1: zeroPoint.y,
-            x2: p.x,
-            y2: p.y
-          });
-        }
-      }
-    }
-
-    // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
-    // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
-    // work with relative positions yet. We need to check if we can do a viewBox hack to switch to percentage.
-    // See http://mozilla.6506.n7.nabble.com/Specyfing-paths-with-percentages-unit-td247474.html
-    // Update: can be done using the above method tested here: http://codepen.io/gionkunz/pen/KDvLj
-    // The problem is with the label offsets that can't be converted into percentage and affecting the chart container
-    /**
-     * Updates the chart which currently does a full reconstruction of the SVG DOM
-     *
-     * @memberof Chartist.Bar
-     */
-    function update() {
-      createChart(optionsProvider.currentOptions);
-    }
-
-    /**
-     * This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.
-     *
-     * @memberof Chartist.Bar
-     */
-    function detach() {
-      window.removeEventListener('resize', update);
-      optionsProvider.removeMediaQueryListeners();
-    }
-
-    /**
-     * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
-     *
-     * @memberof Chartist.Bar
-     * @param {String} event Name of the event. Check the examples for supported events.
-     * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
-     */
-    function on(event, handler) {
-      eventEmitter.addEventHandler(event, handler);
-    }
-
-    /**
-     * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
-     *
-     * @memberof Chartist.Bar
-     * @param {String} event Name of the event for which a handler should be removed
-     * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
-     */
-    function off(event, handler) {
-      eventEmitter.removeEventHandler(event, handler);
-    }
-
-    // Initialization of the chart
-
-    window.addEventListener('resize', update);
-
-    // Using event loop for first draw to make it possible to register event listeners in the same call stack where
-    // the chart was created.
-    setTimeout(function() {
-      // Obtain current options based on matching media queries (if responsive options are given)
-      // This will also register a listener that is re-creating the chart based on media changes
-      optionsProvider = Chartist.optionsProvider(defaultOptions, options, responsiveOptions, eventEmitter);
-      createChart(optionsProvider.currentOptions);
-    }, 0);
-
-    // Public members of the module (revealing module pattern style)
-    var api = {
-      version: Chartist.version,
-      update: update,
-      on: on,
-      off: off,
-      detach: detach
-    };
-
-    container.chartist = api;
-    return api;
-  };
+  // Creating bar chart type in Chartist namespace
+  Chartist.Bar = Chartist.Base.extend({
+    constructor: Bar,
+    createChart: createChart
+  });
 
 }(window, document, Chartist));
