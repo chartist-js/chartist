@@ -32,6 +32,7 @@ Chartist.version = '0.2.3';
     return String.fromCharCode(97 + n % 26);
   };
 
+  // TODO: Make it possible to call extend with var args
   /**
    * Simple recursive object extend
    *
