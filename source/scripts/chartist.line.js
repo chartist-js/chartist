@@ -283,7 +283,7 @@
    * };
    *
    * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
-   * Chartist.Line('.ct-chart', data, options);
+   * new Chartist.Line('.ct-chart', data, options);
    *
    * @example
    * // Create a line chart with responsive options
@@ -319,7 +319,7 @@
    *   }]
    * ];
    *
-   * Chartist.Line('.ct-chart', data, null, responsiveOptions);
+   * new Chartist.Line('.ct-chart', data, null, responsiveOptions);
    *
    */
   function Line(query, data, options, responsiveOptions) {

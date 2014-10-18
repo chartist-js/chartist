@@ -221,11 +221,11 @@
    * };
    *
    * // In the global name space Chartist we call the Bar function to initialize a bar chart. As a first parameter we pass in a selector where we would like to get our chart created and as a second parameter we pass our data object.
-   * Chartist.Bar('.ct-chart', data);
+   * new Chartist.Bar('.ct-chart', data);
    *
    * @example
    * // This example creates a bipolar grouped bar chart where the boundaries are limitted to -10 and 10
-   * Chartist.Bar('.ct-chart', {
+   * new Chartist.Bar('.ct-chart', {
    *   labels: [1, 2, 3, 4, 5, 6, 7],
    *   series: [
    *     [1, 3, 2, -5, -3, 1, -6],

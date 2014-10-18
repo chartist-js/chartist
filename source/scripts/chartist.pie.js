@@ -234,13 +234,13 @@
    *
    * @example
    * // Simple pie chart example with four series
-   * Chartist.Pie('.ct-chart', {
+   * new Chartist.Pie('.ct-chart', {
    *   series: [10, 2, 4, 3]
    * });
    *
    * @example
    * // Drawing a donut chart
-   * Chartist.Pie('.ct-chart', {
+   * new Chartist.Pie('.ct-chart', {
    *   series: [10, 2, 4, 3]
    * }, {
    *   donut: true
@@ -248,7 +248,7 @@
    *
    * @example
    * // Using donut, startAngle and total to draw a gauge chart
-   * Chartist.Pie('.ct-chart', {
+   * new Chartist.Pie('.ct-chart', {
    *   series: [20, 10, 30, 40]
    * }, {
    *   donut: true,
@@ -259,7 +259,7 @@
    *
    * @example
    * // Drawing a pie chart with padding and labels that are outside the pie
-   * Chartist.Pie('.ct-chart', {
+   * new Chartist.Pie('.ct-chart', {
    *   series: [20, 10, 30, 40]
    * }, {
    *   chartPadding: 30,
