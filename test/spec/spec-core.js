@@ -10,11 +10,11 @@ describe('Chartist core tests', function() {
   });
 
   describe('alphaNumerate', function () {
-      
+
     it('should exist in global namespace', function () {
       expect(window.Chartist.alphaNumerate).toBeDefined();
     });
-    
+
     it('should generate a different character for a given number from 0 to 26', function () {
       var charMap = {};
       for (var i = 0; i < 26; i++) {
@@ -58,16 +58,10 @@ describe('Chartist core tests', function() {
 
   describe('createSvg()', function () {
 
-    it('should throw an exception if no element with the given query can be found', function () {
-      expect(function () {
-        Chartist.createSvg('.non-existing-element-selector');
-      }).toThrowNamed('NodeNotFoundException');
-    });
-
     it('should try to create an svg object for the given node', function () {
       var el = $('<div id="create-svg-test" />').appendTo('body')[0];
       Chartist.createSvg(el);
-      expect(el._ctChart).toBeDefined();
+      expect(el.chartistSvg).toBeDefined();
     });
 
     it('should mutate the given svg object if it exists', function () {
