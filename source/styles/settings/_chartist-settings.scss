@@ -25,6 +25,9 @@ $ct-container-ratio: (1/1.618) !default;
 // Text styles for labels
 $ct-text-color: rgba(0, 0, 0, 0.4) !default;
 $ct-text-size: 0.75rem !default;
+$ct-text-align: left !default;
+$ct-horizontal-text-align: left !default;
+$ct-vertical-text-align: right !default;
 
 // Grid styles
 $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
