@@ -319,40 +319,6 @@ Chartist.version = '0.2.4';
   };
 
   /**
-   * Calculate the needed offset to fit in the labels
-   *
-   * @memberof Chartist.Core
-   * @param {Object} svg The svg element for the chart
-   * @param {Array} data The array that contains the data to be visualized in the chart
-   * @param {Object} labelClass All css classes of the label
-   * @param {Function} labelInterpolationFnc The function that interpolates the label value
-   * @param {String} offsetFnc width or height. Will be used to call function on SVG element to get length
-   * @return {Number} The number that represents the label offset in pixels
-   */
-  Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
-    var offset = 0;
-    for (var i = 0; i < data.length; i++) {
-      // If interpolation function returns falsy value we skipp this label
-      var interpolated = labelInterpolationFnc(data[i], i);
-      if (!interpolated && interpolated !== 0) {
-        continue;
-      }
-
-      var label = svg.elem('text', {
-        dx: 0,
-        dy: 0
-      }, labelClass).text('' + interpolated);
-
-      // Check if this is the largest label and update offset
-      offset = Math.max(offset, label[offsetFnc]());
-      // Remove label after offset Calculation
-      label.remove();
-    }
-
-    return offset;
-  };
-
-  /**
    * Calculate cartesian coordinates of polar coordinates
    *
    * @memberof Chartist.Core
@@ -377,14 +343,12 @@ Chartist.version = '0.2.4';
    * @memberof Chartist.Core
    * @param {Object} svg The svg element for the chart
    * @param {Object} options The Object that contains all the optional values for the chart
-   * @param {Number} xAxisOffset The offset of the x-axis to the border of the svg element
-   * @param {Number} yAxisOffset The offset of the y-axis to the border of the svg element
    * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
    */
-  Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
+  Chartist.createChartRect = function (svg, options) {
     return {
-      x1: options.chartPadding + yAxisOffset,
-      y1: (Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xAxisOffset,
+      x1: options.chartPadding + (options.axisY ? options.axisY.offset : 0),
+      y1: (Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - (options.axisX ? options.axisX.offset : 0),
       x2: (Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding,
       y2: options.chartPadding,
       width: function () {
@@ -394,6 +358,11 @@ Chartist.version = '0.2.4';
         return this.y1 - this.y2;
       }
     };
+  };
+
+  Chartist.createLabel = function(parent, text, attributes, className) {
+    var content = '<span class="' + className + '">' + text + '</span>';
+    return parent.foreignObject(content, attributes);
   };
 
   /**
@@ -410,8 +379,9 @@ Chartist.version = '0.2.4';
     // Create X-Axis
     data.labels.forEach(function (value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-        space = chartRect.width() / data.labels.length,
-        pos = chartRect.x1 + space * index;
+        width = chartRect.width() / data.labels.length,
+        height = options.axisX.offset,
+        pos = chartRect.x1 + width * index;
 
       // If interpolated value returns falsey (except 0) we don't draw the grid line
       if (!interpolatedValue && interpolatedValue !== 0) {
@@ -441,21 +411,18 @@ Chartist.version = '0.2.4';
       }
 
       if (options.axisX.showLabel) {
-        // Use config offset for setting labels of
-        var labelPos = {
-          x: pos + 2,
-          y: 0
+        var labelPosition = {
+          x: pos + options.axisX.labelOffset.x,
+          y: chartRect.y1 + options.axisX.labelOffset.y
         };
 
-        var labelElement = labels.elem('text', {
-          dx: labelPos.x
-        }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
-
-        // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-        labelPos.y = chartRect.y1 + labelElement.height() + options.axisX.offset;
-        labelElement.attr({
-          dy: labelPos.y
-        });
+        var labelElement = Chartist.createLabel(labels, '' + interpolatedValue, {
+          x: labelPosition.x,
+          y: labelPosition.y,
+          width: width,
+          height: height,
+          style: 'overflow: visible;'
+        }, [options.classNames.label, options.classNames.horizontal].join(' '));
 
         eventEmitter.emit('draw', {
           type: 'label',
@@ -464,9 +431,15 @@ Chartist.version = '0.2.4';
           group: labels,
           element: labelElement,
           text: '' + interpolatedValue,
-          x: labelPos.x,
-          y: labelPos.y,
-          space: space
+          x: labelPosition.x,
+          y: labelPosition.y,
+          width: width,
+          height: height,
+          // TODO: Remove in next major release
+          get space() {
+            window.console.warn('EventEmitter: space is deprecated, use width or height instead.');
+            return this.width;
+          }
         });
       }
     });
@@ -480,15 +453,15 @@ Chartist.version = '0.2.4';
    * @param {Object} bounds All the values to set the bounds of the chart
    * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
    * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
-   * @param {Number} offset Offset for the y-axis
    * @param {Object} options The Object that contains all the optional values for the chart
    */
-  Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options, eventEmitter) {
+  Chartist.createYAxis = function (chartRect, bounds, grid, labels, options, eventEmitter) {
     // Create Y-Axis
     bounds.values.forEach(function (value, index) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
-        space = chartRect.height() / bounds.values.length,
-        pos = chartRect.y1 - space * index;
+        width = options.axisY.offset,
+        height = chartRect.height() / bounds.values.length,
+        pos = chartRect.y1 - height * index;
 
       // If interpolated value returns falsey (except 0) we don't draw the grid line
       if (!interpolatedValue && interpolatedValue !== 0) {
@@ -518,18 +491,18 @@ Chartist.version = '0.2.4';
       }
 
       if (options.axisY.showLabel) {
-        // Use calculated offset and include padding for label x position
-        // TODO: Review together with possibilities to style labels. Maybe we should start using fixed label width which is easier and also makes multi line labels with foreignObjects easier
-        var labelPos = {
-          x: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
-          y: pos - 2
+        var labelPosition = {
+          x: options.chartPadding + options.axisY.labelOffset.x,
+          y: pos + options.axisY.labelOffset.y
         };
 
-        var labelElement = labels.elem('text', {
-          dx: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
-          dy: pos - 2,
-          'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
-        }, [options.classNames.label, options.classNames.vertical].join(' ')).text('' + interpolatedValue);
+        var labelElement = Chartist.createLabel(labels, '' + interpolatedValue, {
+          x: labelPosition.x,
+          y: labelPosition.y,
+          width: width,
+          height: height,
+          style: 'overflow: visible;'
+        }, [options.classNames.label, options.classNames.vertical].join(' '));
 
         eventEmitter.emit('draw', {
           type: 'label',
@@ -538,9 +511,15 @@ Chartist.version = '0.2.4';
           group: labels,
           element: labelElement,
           text: '' + interpolatedValue,
-          x: labelPos.x,
-          y: labelPos.y,
-          space: space
+          x: labelPosition.x,
+          y: labelPosition.y,
+          width: width,
+          height: height,
+          // TODO: Remove in next major release
+          get space() {
+            window.console.warn('EventEmitter: space is deprecated, use width or height instead.');
+            return this.height;
+          }
         });
       }
     });

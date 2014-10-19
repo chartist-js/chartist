@@ -8,13 +8,4 @@ var data = {
   ]
 };
 
-var options = {
-  axisX: {
-    offset: 15
-  },
-  axisY: {
-    offset: 15
-  }
-};
-
-new Chartist.Line('.ct-chart', data, options);
+new Chartist.Line('.ct-chart', data);

@@ -7,13 +7,7 @@ var data = {
 };
 
 var options = {
-  seriesBarDistance: 5,
-    axisX: {
-    offset: 15
-  },
-  axisY: {
-    offset: 15
-  }
+  seriesBarDistance: 5
 };
 
 new Chartist.Bar('.ct-chart', data, options);

@@ -7,7 +7,7 @@
     height: 137,
     chartPadding: 10,
     axisX: {
-      offset: 0,
+      offset: 15,
       showLabel: true,
       showGrid: true,
       labelInterpolationFnc: function(n) {
@@ -15,9 +15,10 @@
       }
     },
     axisY: {
-      offset: 5,
+      offset: 25,
       showLabel: true,
       showGrid: true,
+      scaleMinSpace: 15,
       labelInterpolationFnc: function(n) {
         return Math.round(n / 100000) / 10 + 'm.';
       }

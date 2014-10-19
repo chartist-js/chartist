@@ -11,16 +11,23 @@
 
   var defaultOptions = {
     axisX: {
-      offset: 10,
+      offset: 30,
+      labelOffset: {
+        x: 0,
+        y: 5
+      },
       showLabel: true,
       showGrid: true,
       labelInterpolationFnc: Chartist.noop
     },
     axisY: {
-      offset: 15,
+      offset: 40,
+      labelOffset: {
+        x: -10,
+        y: -15
+      },
       showLabel: true,
       showGrid: true,
-      labelAlign: 'right',
       labelInterpolationFnc: Chartist.noop,
       scaleMinSpace: 30
     },
@@ -48,9 +55,7 @@
   };
 
   function createChart(options) {
-    var xAxisOffset,
-      yAxisOffset,
-      seriesGroups = [],
+    var seriesGroups = [],
       bounds,
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
 
@@ -60,35 +65,13 @@
     // initialize bounds
     bounds = Chartist.getBounds(this.svg, normalizedData, options);
 
-    xAxisOffset = options.axisX.offset;
-    if (options.axisX.showLabel) {
-      xAxisOffset += Chartist.calculateLabelOffset(
-        this.svg,
-        this.data.labels,
-        [options.classNames.label, options.classNames.horizontal].join(' '),
-        options.axisX.labelInterpolationFnc,
-        'height'
-      );
-    }
-
-    yAxisOffset = options.axisY.offset;
-    if (options.axisY.showLabel) {
-      yAxisOffset += Chartist.calculateLabelOffset(
-        this.svg,
-        bounds.values,
-        [options.classNames.label, options.classNames.horizontal].join(' '),
-        options.axisY.labelInterpolationFnc,
-        'width'
-      );
-    }
-
-    var chartRect = Chartist.createChartRect(this.svg, options, xAxisOffset, yAxisOffset);
+    var chartRect = Chartist.createChartRect(this.svg, options);
     // Start drawing
     var labels = this.svg.elem('g'),
       grid = this.svg.elem('g');
 
     Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
-    Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, this.eventEmitter);
+    Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter);
 
     // Draw the series
     // initialize series groups
