@@ -351,9 +351,27 @@ module.exports = function (grunt) {
         ],
         options: {
           specs: 'test/spec/**/spec-*.js',
-          helpers: 'test/spec/**/helper-*.js',
+          helpers: [
+            'test/spec/**/helper-*.js',
+            'node_modules/jquery/dist/jquery.js'
+          ],
           phantomjs: {
             'ignore-ssl-errors': true
+          },
+          template: require('grunt-template-jasmine-istanbul'),
+          templateOptions: {
+            coverage: '.tmp/coverage/coverage.json',
+            report: [
+              {
+                type: 'html',
+                options: {
+                  dir: '.tmp/coverage/html'
+                }
+              },
+              {
+                type: 'text-summary'
+              }
+            ]
           }
         }
       }
