@@ -199,7 +199,7 @@ Chartist.version = '0.2.4';
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return svg.height() - (options.chartPadding * 2) - options.axisX.offset;
+    return (Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset;
   };
 
   /**
