@@ -199,7 +199,7 @@ Chartist.version = '0.2.4';
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return (Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset;
+    return Math.max((Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
   };
 
   /**
@@ -351,10 +351,13 @@ Chartist.version = '0.2.4';
    * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
    */
   Chartist.createChartRect = function (svg, options) {
+    var yOffset = options.axisY ? options.axisY.offset : 0,
+      xOffset = options.axisX ? options.axisX.offset : 0;
+
     return {
-      x1: options.chartPadding + (options.axisY ? options.axisY.offset : 0),
-      y1: (Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - (options.axisX ? options.axisX.offset : 0),
-      x2: (Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding,
+      x1: options.chartPadding + yOffset,
+      y1: Math.max((Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
+      x2: Math.max((Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
