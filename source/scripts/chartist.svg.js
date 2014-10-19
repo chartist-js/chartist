@@ -97,15 +97,12 @@
      *
      * @memberof Chartist.Svg
      * @param {Node|String} content The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject
-     * @param {String} [x] The X position where the foreignObject will be placed relative to the next higher ViewBox
-     * @param {String} [y] The Y position where the foreignObject will be placed relative to the next higher ViewBox
-     * @param {String} [width] The width of the foreignElement
-     * @param {String} [height] The height of the foreignElement
+     * @param {String} [attributes] An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.
      * @param {String} [className] This class or class list will be added to the SVG element
      * @param {Boolean} [insertFirst] Specifies if the foreignObject should be inserted as first child
      * @returns {Object} New wrapper object that wraps the foreignObject element
      */
-    function foreignObject(content, x, y, width, height, className, parent, insertFirst) {
+    function foreignObject(content, attributes, className, parent, insertFirst) {
       // If content is string then we convert it to DOM
       // TODO: Handle case where content is not a string nor a DOM Node
       if(typeof content === 'string') {
@@ -119,12 +116,7 @@
 
       // Creating the foreignObject without required extension attribute (as described here
       // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
-      var fnObj = Chartist.Svg('foreignObject', {
-        x: x,
-        y: y,
-        width: width,
-        height: height
-      }, className, parent, insertFirst);
+      var fnObj = parent.elem('foreignObject', attributes, className, insertFirst);
 
       // Add content to foreignObjectElement
       fnObj._node.appendChild(content);
@@ -297,8 +289,8 @@
       elem: function(name, attributes, className, insertFirst) {
         return Chartist.Svg(name, attributes, className, this, insertFirst);
       },
-      foreignObject: function(content, x, y, width, height, className, insertFirst) {
-        return foreignObject(content, x, y, width, height, className, this, insertFirst);
+      foreignObject: function(content, attributes, className, insertFirst) {
+        return foreignObject(content, attributes, className, this, insertFirst);
       },
       text: function(t) {
         text(this._node, t);
