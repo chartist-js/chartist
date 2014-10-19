@@ -250,8 +250,8 @@ Chartist.version = '0.2.4';
       bounds = Chartist.getHighLow(normalizedData);
 
     // Overrides of high / low from settings
-    bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
-    bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
+    bounds.high = +options.high || (options.high === 0 ? 0 : bounds.high);
+    bounds.low = +options.low || (options.low === 0 ? 0 : bounds.low);
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
     // to set the high or low to 0 depending on the polarity
@@ -285,9 +285,14 @@ Chartist.version = '0.2.4';
     bounds.numberOfSteps = Math.round(bounds.range / bounds.step);
 
     // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
+    // If we are already below the scaleMinSpace value we will scale up
+    var length = Chartist.projectLength(svg, bounds.step, bounds, options),
+      scaleUp = length < options.axisY.scaleMinSpace;
+
     while (true) {
-      var length = Chartist.projectLength(svg, bounds.step / 2, bounds, options);
-      if (length >= options.axisY.scaleMinSpace) {
+      if (scaleUp && Chartist.projectLength(svg, bounds.step, bounds, options) <= options.axisY.scaleMinSpace) {
+        bounds.step *= 2;
+      } else if (!scaleUp && Chartist.projectLength(svg, bounds.step / 2, bounds, options) >= options.axisY.scaleMinSpace) {
         bounds.step /= 2;
       } else {
         break;
