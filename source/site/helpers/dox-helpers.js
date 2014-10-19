@@ -22,6 +22,15 @@ module.exports.register = function (Handlebars, opt, params)  {
       }
     },
 
+    doxHash: function(doxElement) {
+      return [helpers.doxTagProperty(doxElement, 'memberof', 'string'),
+        doxElement.ctx.type,
+        doxElement.ctx.name].join(' ')
+        .toLowerCase()
+        .replace(/[^\w ]+/g,'')
+        .replace(/ +/g,'-');
+    },
+
     doxTagsOfType: function(doxElement, doxTagType) {
       return _.filter(doxElement.tags, {type: doxTagType});
     },

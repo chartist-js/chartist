@@ -153,7 +153,7 @@ module.exports = function (grunt) {
       },
       dist: {
         options: {
-          sourceComments: 'none'
+          sourceMap: false
         },
         files: [
           {
@@ -167,7 +167,7 @@ module.exports = function (grunt) {
       },
       server: {
         options: {
-          sourceComments: 'map'
+          sourceMap: true
         },
         files: [
           {
@@ -341,6 +341,9 @@ module.exports = function (grunt) {
       dist: {
         src: [
           'source/scripts/chartist.core.js',
+          'source/scripts/chartist.event.js',
+          'source/scripts/chartist.class.js',
+          'source/scripts/chartist.base.js',
           'source/scripts/chartist.svg.js',
           'source/scripts/chartist.line.js',
           'source/scripts/chartist.bar.js',
@@ -407,7 +410,16 @@ module.exports = function (grunt) {
           banner: pkg.config.banner
         },
         files: {
-          'libdist/chartist.js': ['source/scripts/chartist.core.js', 'source/scripts/chartist.svg.js', 'source/scripts/chartist.line.js', 'source/scripts/chartist.bar.js', 'source/scripts/chartist.pie.js']
+          'libdist/chartist.js': [
+            'source/scripts/chartist.core.js',
+            'source/scripts/chartist.event.js',
+            'source/scripts/chartist.class.js',
+            'source/scripts/chartist.base.js',
+            'source/scripts/chartist.svg.js',
+            'source/scripts/chartist.line.js',
+            'source/scripts/chartist.bar.js',
+            'source/scripts/chartist.pie.js'
+          ]
         }
       }
     },

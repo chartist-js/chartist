@@ -2,7 +2,7 @@
   "name": "chartist",
   "title": "Chartist.js",
   "description": "Simple, responsive charts",
-  "version": "0.1.12",
+  "version": "0.2.4",
   "author": "Gion Kunz",
   "homepage": "https://gionkunz.github.io/chartist-js",
   "repository": {
@@ -41,6 +41,7 @@
     "grunt-concurrent": "~0.4.1",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.7.0",
+    "grunt-sass": "~0.14.2",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-connect": "~0.5.0",
     "grunt-contrib-copy": "~0.4.1",

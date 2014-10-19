@@ -17,4 +17,4 @@ var options = {
   }
 };
 
-Chartist.Line('.ct-chart', data, options);
+new Chartist.Line('.ct-chart', data, options);

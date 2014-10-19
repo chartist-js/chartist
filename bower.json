@@ -1,14 +1,12 @@
 {
   "name": "chartist",
-  "version": "0.1.12",
+  "version": "0.2.4",
   "main": [
     "./libdist/chartist.min.js",
     "./libdist/chartist.min.css"
   ],
   "devDependencies": {
     "snap.svg": "~0.2.0",
-    "json3": "~3.2.6",
-    "es5-shim": "~2.1.0",
     "foundation": "~5.1.1",
     "highlightjs": "~8.0.0",
     "compass-mixins": "~1.0.0",

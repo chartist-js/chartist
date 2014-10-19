@@ -86,6 +86,7 @@
   font-weight: 700;
   text-align: center;
   pointer-events: none;
+  z-index: 1;
 
   &:after {
     content: "";
@@ -100,7 +101,7 @@
   }
 }
 
-pre > code {
+code {
   font-family: "Source Code Pro", "Courier New", monospace !important;
   word-wrap: break-word;
 }

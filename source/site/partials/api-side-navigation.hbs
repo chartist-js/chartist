@@ -5,7 +5,7 @@
         {{#each modules}}
           <li class="heading">{{name}}</li>
           {{#each members}}
-            <li><a class="text-clipping" href="#{{slugify (concat ctx.type ' ' ctx.string)}}">{{ctx.string}}</a></li>
+            <li><a class="text-clipping" href="#{{doxHash this}}">{{ctx.string}}</a></li>
           {{/each}}
         {{/each}}
       {{/each}}

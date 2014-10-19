@@ -1,4 +1,4 @@
-Chartist.Pie('.ct-chart', {
+new Chartist.Pie('.ct-chart', {
   series: [20, 10, 30, 40]
 }, {
   donut: true,
