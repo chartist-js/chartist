@@ -40,8 +40,6 @@
       label: 'ct-label',
       series: 'ct-series',
       bar: 'ct-bar',
-      thin: 'ct-thin',
-      thick: 'ct-thick',
       grid: 'ct-grid',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal'

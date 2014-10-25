@@ -216,7 +216,7 @@
      * @return {Number} The height of the area in the chart for the data series
      */
     Chartist.getAvailableHeight = function (svg, options) {
-      return svg.height() - (options.chartPadding * 2) - options.axisX.offset;
+      return Math.max((Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
     };
 
     /**
@@ -267,8 +267,8 @@
         bounds = Chartist.getHighLow(normalizedData);
 
       // Overrides of high / low from settings
-      bounds.high = options.high || (options.high === 0 ? 0 : bounds.high);
-      bounds.low = options.low || (options.low === 0 ? 0 : bounds.low);
+      bounds.high = +options.high || (options.high === 0 ? 0 : bounds.high);
+      bounds.low = +options.low || (options.low === 0 ? 0 : bounds.low);
 
       // If high and low are the same because of misconfiguration or flat data (only the same value) we need
       // to set the high or low to 0 depending on the polarity
@@ -394,15 +394,16 @@
      * @memberof Chartist.Core
      * @param {Object} svg The svg element for the chart
      * @param {Object} options The Object that contains all the optional values for the chart
-     * @param {Number} xAxisOffset The offset of the x-axis to the border of the svg element
-     * @param {Number} yAxisOffset The offset of the y-axis to the border of the svg element
      * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
      */
-    Chartist.createChartRect = function (svg, options, xAxisOffset, yAxisOffset) {
+    Chartist.createChartRect = function (svg, options) {
+      var yOffset = options.axisY ? options.axisY.offset : 0,
+        xOffset = options.axisX ? options.axisX.offset : 0;
+
       return {
-        x1: options.chartPadding + yAxisOffset,
-        y1: (Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xAxisOffset,
-        x2: (Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding,
+        x1: options.chartPadding + yOffset,
+        y1: Math.max((Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
+        x2: Math.max((Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
         y2: options.chartPadding,
         width: function () {
           return this.x2 - this.x1;
