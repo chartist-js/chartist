@@ -83,3 +83,90 @@
     }
   }
 }
+
+.brwsrsup {
+  text-align: center;
+
+  .brwsrsup__support--supported {
+    color: $color-green;
+    @include icon($fa-var-check-circle, $icon-location: after, $icon-size: 1.5rem);
+  }
+
+  .brwsrsup__visually-hidden {
+    position: absolute;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    width: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+  }
+}
+
+@media screen and (max-width: 1100px) {
+  .brwsrsup {
+    display: block;
+    text-align: left;
+
+    thead {
+      display: none;
+    }
+
+    .brwsrsup__feature {
+      display: block;
+      padding: 10px 0;
+      margin: 20px 0 10px 0;
+    }
+
+    tbody {
+      display: block;
+    }
+
+    tr {
+      display: block;
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+    }
+
+    td {
+      display: block;
+    }
+
+    .brwsrsup__support {
+      diplay: block;
+      padding: 5px;
+      width: auto;
+      float: left;
+      margin: 0 10px 10px 0;
+
+      &:before {
+        content: attr(data-browser)" ";
+      }
+    }
+
+    .brwsrsup__support--supported {
+      background: $color-green;
+      color: white;
+
+      &:before {
+        content: attr(data-browser)" ";
+      }
+
+      @include icon($fa-var-check-circle, $icon-location: after);
+    }
+
+    .brwsrsup__support--not-supported {
+      background: $color-red;
+      color: lighten($color-white, 10%);
+
+      &:before {
+        content: attr(data-browser)" ";
+      }
+      @include icon($fa-var-exclamation-circle, $icon-location: after);
+    }
+  }
+}

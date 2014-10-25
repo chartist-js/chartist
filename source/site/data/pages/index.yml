@@ -9,6 +9,164 @@ gallery-examples:
     classes: ct-golden-section
 
 sections:
+  - title: Browser compatibility
+    level: 4
+    items:
+      - type: browser-support-table
+        data:
+          browsers:
+            - IE9
+            - IE10
+            - IE11
+            - Firefox 31
+            - Chrome 35
+            - Safari 7
+            - Safari 8
+            - Andorid 4.3
+            - Andorid 4.4
+            - iOS Safari 6
+            - iOS Safari 7
+          features:
+            - name: Overall Browser Support
+              browsers:
+                - name: IE9
+                  status: supported
+                  text: Supported
+                - name: IE10
+                  status: supported
+                  text: Supported
+                - name: IE11
+                  status: supported
+                  text: Supported
+                - name: Firefox 31
+                  status: supported
+                  text: Supported
+                - name: Chrome 35
+                  status: supported
+                  text: Supported
+                - name: Safari 7
+                  status: supported
+                  text: Supported
+                - name: Safari 8
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.3
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.4
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 6
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 7
+                  status: supported
+                  text: Supported
+            - name: Multi-line Labels (foreignObject)
+              browsers:
+                - name: IE9
+                  status: not-supported
+                  text: Not supported
+                - name: IE10
+                  status: not-supported
+                  text: Not supported
+                - name: IE11
+                  status: not-supported
+                  text: Not supported
+                - name: Firefox 31
+                  status: supported
+                  text: Supported
+                - name: Chrome 35
+                  status: supported
+                  text: Supported
+                - name: Safari 7
+                  status: not-supported
+                  text: Not supported
+                - name: Safari 8
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.3
+                  status: not-supported
+                  text: Not supported
+                - name: Andorid 4.4
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 6
+                  status: not-supported
+                  text: Not supported
+                - name: iOS Safari 7
+                  status: supported
+                  text: Supported
+            - name: Advanced CSS Animations
+              browsers:
+                - name: IE9
+                  status: not-supported
+                  text: Not supported
+                - name: IE10
+                  status: not-supported
+                  text: Not supported
+                - name: IE11
+                  status: not-supported
+                  text: Not supported
+                - name: Firefox 31
+                  status: supported
+                  text: Supported
+                - name: Chrome 35
+                  status: supported
+                  text: Supported
+                - name: Safari 7
+                  status: not-supported
+                  text: Not supported
+                - name: Safari 8
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.3
+                  status: not-supported
+                  text: Not supported
+                - name: Andorid 4.4
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 6
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 7
+                  status: supported
+                  text: Supported
+            - name: Reponsive Options Override
+              browsers:
+                - name: IE9*
+                  status: supported
+                  text: Supported with polyfill
+                - name: IE10
+                  status: supported
+                  text: Supported
+                - name: IE11
+                  status: supported
+                  text: Supported
+                - name: Firefox 31
+                  status: supported
+                  text: Supported
+                - name: Chrome 35
+                  status: supported
+                  text: Supported
+                - name: Safari 7
+                  status: supported
+                  text: Supported
+                - name: Safari 8
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.3
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.4
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 6
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 7
+                  status: supported
+                  text: Supported
   - title: Chart CSS animation example
     level: 3
     items:
