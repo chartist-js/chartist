@@ -137,6 +137,11 @@ Chartist.version = '0.2.4';
       // otherwise the value directly (array or number)
       array[i] = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ?
         data.series[i].data : data.series[i];
+
+      // Convert values to number
+      for (var j = 0; j < array[i].length; j++) {
+        array[i][j] = +array[i][j];
+      }
     }
 
     return array;
