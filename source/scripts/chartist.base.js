@@ -69,6 +69,7 @@
     this.options = options;
     this.responsiveOptions = responsiveOptions;
     this.eventEmitter = Chartist.EventEmitter();
+    this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
 
     window.addEventListener('resize', this.update.bind(this));
 
@@ -97,7 +98,8 @@
     detach: detach,
     on: on,
     off: off,
-    version: Chartist.version
+    version: Chartist.version,
+    supportsForeignObject: false
   });
 
 }(window, document, Chartist));

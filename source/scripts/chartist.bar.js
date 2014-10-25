@@ -12,7 +12,7 @@
       offset: 30,
       labelOffset: {
         x: 0,
-        y: 5
+        y: 0
       },
       showLabel: true,
       showGrid: true,
@@ -21,8 +21,8 @@
     axisY: {
       offset: 40,
       labelOffset: {
-        x: -10,
-        y: -15
+        x: 0,
+        y: 0
       },
       showLabel: true,
       showGrid: true,
@@ -64,8 +64,8 @@
     // Projected 0 point
       zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
-    Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
-    Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter);
+    Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
+    Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
 
     // Draw the series
     // initialize series groups
@@ -133,12 +133,17 @@
    * @return {Object} An object which exposes the API for the created chart
    *
    * @example
-   * // These are the default options of the line chart
+   * // These are the default options of the bar chart
    * var options = {
    *   // Options for X-Axis
    *   axisX: {
-   *     // The offset of the labels to the chart area
-   *     offset: 10,
+   *     // The offset of the chart drawing area to the border of the container
+   *     offset: 30,
+   *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+   *     labelOffset: {
+   *       x: 0,
+   *       y: 0
+   *     },
    *     // If labels should be shown or not
    *     showLabel: true,
    *     // If the axis grid should be drawn or not
@@ -148,14 +153,17 @@
    *   },
    *   // Options for Y-Axis
    *   axisY: {
-   *     // The offset of the labels to the chart area
-   *     offset: 15,
+   *     // The offset of the chart drawing area to the border of the container
+   *     offset: 40,
+   *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+   *     labelOffset: {
+   *       x: 0,
+   *       y: 0
+   *     },
    *     // If labels should be shown or not
    *     showLabel: true,
    *     // If the axis grid should be drawn or not
    *     showGrid: true,
-   *     // For the Y-Axis you can set a label alignment property of right or left
-   *     labelAlign: 'right',
    *     // Interpolation function that allows you to intercept the value from the axis label
    *     labelInterpolationFnc: function(value){return value;},
    *     // This value specifies the minimum height in pixel of the scale steps
@@ -165,12 +173,6 @@
    *   width: undefined,
    *   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
    *   height: undefined,
-   *   // If the line should be drawn or not
-   *   showLine: true,
-   *   // If dots should be drawn or not
-   *   showPoint: true,
-   *   // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
-   *   lineSmooth: true,
    *   // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
    *   low: undefined,
    *   // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
@@ -185,7 +187,6 @@
    *     label: 'ct-label',
    *     series: 'ct-series',
    *     bar: 'ct-bar',
-   *     point: 'ct-point',
    *     grid: 'ct-grid',
    *     vertical: 'ct-vertical',
    *     horizontal: 'ct-horizontal'
@@ -215,7 +216,7 @@
    * }, {
    *   seriesBarDistance: 12,
    *   low: -10,
-   *   heigh: 10
+   *   high: 10
    * });
    *
    */

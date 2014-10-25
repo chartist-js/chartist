@@ -368,9 +368,23 @@ Chartist.version = '0.2.4';
     };
   };
 
-  Chartist.createLabel = function(parent, text, attributes, className) {
-    var content = '<span class="' + className + '">' + text + '</span>';
-    return parent.foreignObject(content, attributes);
+  /**
+   * Creates a label with text and based on support of SVG1.1 extensibility will use a foreignObject with a SPAN element or a fallback to a regular SVG text element.
+   *
+   * @param {Object} parent The SVG element where the label should be created as a child
+   * @param {String} text The label text
+   * @param {Object} attributes An object with all attributes that should be set on the label element
+   * @param {String} className The class names that should be set for this element
+   * @param {Boolean} supportsForeignObject If this is true then a foreignObject will be used instead of a text element
+   * @returns {Object} The newly created SVG element
+   */
+  Chartist.createLabel = function(parent, text, attributes, className, supportsForeignObject) {
+    if(supportsForeignObject) {
+      var content = '<span class="' + className + '">' + text + '</span>';
+      return parent.foreignObject(content, attributes);
+    } else {
+      return parent.elem('text', attributes, className).text(text);
+    }
   };
 
   /**
@@ -382,8 +396,10 @@ Chartist.version = '0.2.4';
    * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
    * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
    * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Object} eventEmitter The passed event emitter will be used to emit draw events for labels and gridlines
+   * @param {Boolean} supportsForeignObject If this is true then a foreignObject will be used instead of a text element
    */
-  Chartist.createXAxis = function (chartRect, data, grid, labels, options, eventEmitter) {
+  Chartist.createXAxis = function (chartRect, data, grid, labels, options, eventEmitter, supportsForeignObject) {
     // Create X-Axis
     data.labels.forEach(function (value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
@@ -421,7 +437,7 @@ Chartist.version = '0.2.4';
       if (options.axisX.showLabel) {
         var labelPosition = {
           x: pos + options.axisX.labelOffset.x,
-          y: chartRect.y1 + options.axisX.labelOffset.y
+          y: chartRect.y1 + options.axisX.labelOffset.y + (supportsForeignObject ? 5 : 20)
         };
 
         var labelElement = Chartist.createLabel(labels, '' + interpolatedValue, {
@@ -430,7 +446,7 @@ Chartist.version = '0.2.4';
           width: width,
           height: height,
           style: 'overflow: visible;'
-        }, [options.classNames.label, options.classNames.horizontal].join(' '));
+        }, [options.classNames.label, options.classNames.horizontal].join(' '), supportsForeignObject);
 
         eventEmitter.emit('draw', {
           type: 'label',
@@ -462,8 +478,10 @@ Chartist.version = '0.2.4';
    * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
    * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
    * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Object} eventEmitter The passed event emitter will be used to emit draw events for labels and gridlines
+   * @param {Boolean} supportsForeignObject If this is true then a foreignObject will be used instead of a text element
    */
-  Chartist.createYAxis = function (chartRect, bounds, grid, labels, options, eventEmitter) {
+  Chartist.createYAxis = function (chartRect, bounds, grid, labels, options, eventEmitter, supportsForeignObject) {
     // Create Y-Axis
     bounds.values.forEach(function (value, index) {
       var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
@@ -500,8 +518,8 @@ Chartist.version = '0.2.4';
 
       if (options.axisY.showLabel) {
         var labelPosition = {
-          x: options.chartPadding + options.axisY.labelOffset.x,
-          y: pos + options.axisY.labelOffset.y
+          x: options.chartPadding + options.axisY.labelOffset.x + (supportsForeignObject ? -10 : 0),
+          y: pos + options.axisY.labelOffset.y + (supportsForeignObject ? -15 : 0)
         };
 
         var labelElement = Chartist.createLabel(labels, '' + interpolatedValue, {
@@ -510,7 +528,7 @@ Chartist.version = '0.2.4';
           width: width,
           height: height,
           style: 'overflow: visible;'
-        }, [options.classNames.label, options.classNames.vertical].join(' '));
+        }, [options.classNames.label, options.classNames.vertical].join(' '), supportsForeignObject);
 
         eventEmitter.emit('draw', {
           type: 'label',

@@ -14,7 +14,7 @@
       offset: 30,
       labelOffset: {
         x: 0,
-        y: 5
+        y: 0
       },
       showLabel: true,
       showGrid: true,
@@ -23,8 +23,8 @@
     axisY: {
       offset: 40,
       labelOffset: {
-        x: -10,
-        y: -15
+        x: 0,
+        y: 0
       },
       showLabel: true,
       showGrid: true,
@@ -70,8 +70,8 @@
     var labels = this.svg.elem('g'),
       grid = this.svg.elem('g');
 
-    Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
-    Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter);
+    Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
+    Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
 
     // Draw the series
     // initialize series groups
@@ -191,7 +191,12 @@
    *   // Options for X-Axis
    *   axisX: {
    *     // The offset of the labels to the chart area
-   *     offset: 10,
+   *     offset: 30,
+   *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+   *     labelOffset: {
+   *       x: 0,
+   *       y: 0
+   *     },
    *     // If labels should be shown or not
    *     showLabel: true,
    *     // If the axis grid should be drawn or not
@@ -202,13 +207,16 @@
    *   // Options for Y-Axis
    *   axisY: {
    *     // The offset of the labels to the chart area
-   *     offset: 15,
+   *     offset: 40,
+   *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+   *     labelOffset: {
+   *       x: 0,
+   *       y: 0
+   *     },
    *     // If labels should be shown or not
    *     showLabel: true,
    *     // If the axis grid should be drawn or not
    *     showGrid: true,
-   *     // For the Y-Axis you can set a label alignment property of right or left
-   *     labelAlign: 'right',
    *     // Interpolation function that allows you to intercept the value from the axis label
    *     labelInterpolationFnc: function(value){return value;},
    *     // This value specifies the minimum height in pixel of the scale steps
