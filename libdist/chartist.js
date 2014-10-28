@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.2.4
+  /* Chartist.js 0.3.1
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -21,7 +21,7 @@
    * @module Chartist.Core
    */
   var Chartist = {};
-  Chartist.version = '0.2.4';
+  Chartist.version = '0.3.1';
 
   (function (window, document, Chartist) {
     'use strict';
@@ -154,6 +154,11 @@
         // otherwise the value directly (array or number)
         array[i] = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ?
           data.series[i].data : data.series[i];
+
+        // Convert values to number
+        for (var j = 0; j < array[i].length; j++) {
+          array[i][j] = +array[i][j];
+        }
       }
 
       return array;
@@ -302,9 +307,14 @@
       bounds.numberOfSteps = Math.round(bounds.range / bounds.step);
 
       // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
+      // If we are already below the scaleMinSpace value we will scale up
+      var length = Chartist.projectLength(svg, bounds.step, bounds, options),
+        scaleUp = length < options.axisY.scaleMinSpace;
+
       while (true) {
-        var length = Chartist.projectLength(svg, bounds.step / 2, bounds, options);
-        if (length >= options.axisY.scaleMinSpace) {
+        if (scaleUp && Chartist.projectLength(svg, bounds.step, bounds, options) <= options.axisY.scaleMinSpace) {
+          bounds.step *= 2;
+        } else if (!scaleUp && Chartist.projectLength(svg, bounds.step / 2, bounds, options) >= options.axisY.scaleMinSpace) {
           bounds.step /= 2;
         } else {
           break;
@@ -333,40 +343,6 @@
       }
 
       return bounds;
-    };
-
-    /**
-     * Calculate the needed offset to fit in the labels
-     *
-     * @memberof Chartist.Core
-     * @param {Object} svg The svg element for the chart
-     * @param {Array} data The array that contains the data to be visualized in the chart
-     * @param {Object} labelClass All css classes of the label
-     * @param {Function} labelInterpolationFnc The function that interpolates the label value
-     * @param {String} offsetFnc width or height. Will be used to call function on SVG element to get length
-     * @return {Number} The number that represents the label offset in pixels
-     */
-    Chartist.calculateLabelOffset = function (svg, data, labelClass, labelInterpolationFnc, offsetFnc) {
-      var offset = 0;
-      for (var i = 0; i < data.length; i++) {
-        // If interpolation function returns falsy value we skipp this label
-        var interpolated = labelInterpolationFnc(data[i], i);
-        if (!interpolated && interpolated !== 0) {
-          continue;
-        }
-
-        var label = svg.elem('text', {
-          dx: 0,
-          dy: 0
-        }, labelClass).text('' + interpolated);
-
-        // Check if this is the largest label and update offset
-        offset = Math.max(offset, label[offsetFnc]());
-        // Remove label after offset Calculation
-        label.remove();
-      }
-
-      return offset;
     };
 
     /**
@@ -415,6 +391,25 @@
     };
 
     /**
+     * Creates a label with text and based on support of SVG1.1 extensibility will use a foreignObject with a SPAN element or a fallback to a regular SVG text element.
+     *
+     * @param {Object} parent The SVG element where the label should be created as a child
+     * @param {String} text The label text
+     * @param {Object} attributes An object with all attributes that should be set on the label element
+     * @param {String} className The class names that should be set for this element
+     * @param {Boolean} supportsForeignObject If this is true then a foreignObject will be used instead of a text element
+     * @returns {Object} The newly created SVG element
+     */
+    Chartist.createLabel = function(parent, text, attributes, className, supportsForeignObject) {
+      if(supportsForeignObject) {
+        var content = '<span class="' + className + '">' + text + '</span>';
+        return parent.foreignObject(content, attributes);
+      } else {
+        return parent.elem('text', attributes, className).text(text);
+      }
+    };
+
+    /**
      * Generate grid lines and labels for the x-axis into grid and labels group SVG elements
      *
      * @memberof Chartist.Core
@@ -423,13 +418,16 @@
      * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
      * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
      * @param {Object} options The Object that contains all the optional values for the chart
+     * @param {Object} eventEmitter The passed event emitter will be used to emit draw events for labels and gridlines
+     * @param {Boolean} supportsForeignObject If this is true then a foreignObject will be used instead of a text element
      */
-    Chartist.createXAxis = function (chartRect, data, grid, labels, options, eventEmitter) {
+    Chartist.createXAxis = function (chartRect, data, grid, labels, options, eventEmitter, supportsForeignObject) {
       // Create X-Axis
       data.labels.forEach(function (value, index) {
         var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-          space = chartRect.width() / data.labels.length,
-          pos = chartRect.x1 + space * index;
+          width = chartRect.width() / data.labels.length,
+          height = options.axisX.offset,
+          pos = chartRect.x1 + width * index;
 
         // If interpolated value returns falsey (except 0) we don't draw the grid line
         if (!interpolatedValue && interpolatedValue !== 0) {
@@ -459,21 +457,18 @@
         }
 
         if (options.axisX.showLabel) {
-          // Use config offset for setting labels of
-          var labelPos = {
-            x: pos + 2,
-            y: 0
+          var labelPosition = {
+            x: pos + options.axisX.labelOffset.x,
+            y: chartRect.y1 + options.axisX.labelOffset.y + (supportsForeignObject ? 5 : 20)
           };
 
-          var labelElement = labels.elem('text', {
-            dx: labelPos.x
-          }, [options.classNames.label, options.classNames.horizontal].join(' ')).text('' + interpolatedValue);
-
-          // TODO: should use 'alignment-baseline': 'hanging' but not supported in firefox. Instead using calculated height to offset y pos
-          labelPos.y = chartRect.y1 + labelElement.height() + options.axisX.offset;
-          labelElement.attr({
-            dy: labelPos.y
-          });
+          var labelElement = Chartist.createLabel(labels, '' + interpolatedValue, {
+            x: labelPosition.x,
+            y: labelPosition.y,
+            width: width,
+            height: height,
+            style: 'overflow: visible;'
+          }, [options.classNames.label, options.classNames.horizontal].join(' '), supportsForeignObject);
 
           eventEmitter.emit('draw', {
             type: 'label',
@@ -482,9 +477,15 @@
             group: labels,
             element: labelElement,
             text: '' + interpolatedValue,
-            x: labelPos.x,
-            y: labelPos.y,
-            space: space
+            x: labelPosition.x,
+            y: labelPosition.y,
+            width: width,
+            height: height,
+            // TODO: Remove in next major release
+            get space() {
+              window.console.warn('EventEmitter: space is deprecated, use width or height instead.');
+              return this.width;
+            }
           });
         }
       });
@@ -498,15 +499,17 @@
      * @param {Object} bounds All the values to set the bounds of the chart
      * @param {Object} grid Chartist.Svg wrapper object to be filled with the grid lines of the chart
      * @param {Object} labels Chartist.Svg wrapper object to be filled with the lables of the chart
-     * @param {Number} offset Offset for the y-axis
      * @param {Object} options The Object that contains all the optional values for the chart
+     * @param {Object} eventEmitter The passed event emitter will be used to emit draw events for labels and gridlines
+     * @param {Boolean} supportsForeignObject If this is true then a foreignObject will be used instead of a text element
      */
-    Chartist.createYAxis = function (chartRect, bounds, grid, labels, offset, options, eventEmitter) {
+    Chartist.createYAxis = function (chartRect, bounds, grid, labels, options, eventEmitter, supportsForeignObject) {
       // Create Y-Axis
       bounds.values.forEach(function (value, index) {
         var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
-          space = chartRect.height() / bounds.values.length,
-          pos = chartRect.y1 - space * index;
+          width = options.axisY.offset,
+          height = chartRect.height() / bounds.values.length,
+          pos = chartRect.y1 - height * index;
 
         // If interpolated value returns falsey (except 0) we don't draw the grid line
         if (!interpolatedValue && interpolatedValue !== 0) {
@@ -536,18 +539,18 @@
         }
 
         if (options.axisY.showLabel) {
-          // Use calculated offset and include padding for label x position
-          // TODO: Review together with possibilities to style labels. Maybe we should start using fixed label width which is easier and also makes multi line labels with foreignObjects easier
-          var labelPos = {
-            x: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
-            y: pos - 2
+          var labelPosition = {
+            x: options.chartPadding + options.axisY.labelOffset.x + (supportsForeignObject ? -10 : 0),
+            y: pos + options.axisY.labelOffset.y + (supportsForeignObject ? -15 : 0)
           };
 
-          var labelElement = labels.elem('text', {
-            dx: options.axisY.labelAlign === 'right' ? offset - options.axisY.offset + options.chartPadding : options.chartPadding,
-            dy: pos - 2,
-            'text-anchor': options.axisY.labelAlign === 'right' ? 'end' : 'start'
-          }, [options.classNames.label, options.classNames.vertical].join(' ')).text('' + interpolatedValue);
+          var labelElement = Chartist.createLabel(labels, '' + interpolatedValue, {
+            x: labelPosition.x,
+            y: labelPosition.y,
+            width: width,
+            height: height,
+            style: 'overflow: visible;'
+          }, [options.classNames.label, options.classNames.vertical].join(' '), supportsForeignObject);
 
           eventEmitter.emit('draw', {
             type: 'label',
@@ -556,9 +559,15 @@
             group: labels,
             element: labelElement,
             text: '' + interpolatedValue,
-            x: labelPos.x,
-            y: labelPos.y,
-            space: space
+            x: labelPosition.x,
+            y: labelPosition.y,
+            width: width,
+            height: height,
+            // TODO: Remove in next major release
+            get space() {
+              window.console.warn('EventEmitter: space is deprecated, use width or height instead.');
+              return this.height;
+            }
           });
         }
       });
@@ -974,7 +983,7 @@
     };
 
   }(window, document, Chartist));;/**
-   * Base for all chart classes.
+   * Base for all chart types. The methods in Chartist.Base are inherited to all chart types.
    *
    * @module Chartist.Base
    */
@@ -991,7 +1000,7 @@
     /**
      * Updates the chart which currently does a full reconstruction of the SVG DOM
      *
-     * @memberof Chartist.Line
+     * @memberof Chartist.Base
      */
     function update() {
       this.createChart(this.optionsProvider.currentOptions);
@@ -1000,7 +1009,7 @@
     /**
      * This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.
      *
-     * @memberof Chartist.Line
+     * @memberof Chartist.Base
      */
     function detach() {
       window.removeEventListener('resize', this.update);
@@ -1010,7 +1019,7 @@
     /**
      * Use this function to register event handlers. The handler callbacks are synchronous and will run in the main thread rather than the event loop.
      *
-     * @memberof Chartist.Line
+     * @memberof Chartist.Base
      * @param {String} event Name of the event. Check the examples for supported events.
      * @param {Function} handler The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
      */
@@ -1021,7 +1030,7 @@
     /**
      * Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.
      *
-     * @memberof Chartist.Line
+     * @memberof Chartist.Base
      * @param {String} event Name of the event for which a handler should be removed
      * @param {Function} [handler] The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
      */
@@ -1044,6 +1053,7 @@
       this.options = options;
       this.responsiveOptions = responsiveOptions;
       this.eventEmitter = Chartist.EventEmitter();
+      this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
 
       window.addEventListener('resize', this.update.bind(this));
 
@@ -1072,7 +1082,8 @@
       detach: detach,
       on: on,
       off: off,
-      version: Chartist.version
+      version: Chartist.version,
+      supportsForeignObject: false
     });
 
   }(window, document, Chartist));;/**
@@ -1174,15 +1185,12 @@
        *
        * @memberof Chartist.Svg
        * @param {Node|String} content The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject
-       * @param {String} [x] The X position where the foreignObject will be placed relative to the next higher ViewBox
-       * @param {String} [y] The Y position where the foreignObject will be placed relative to the next higher ViewBox
-       * @param {String} [width] The width of the foreignElement
-       * @param {String} [height] The height of the foreignElement
+       * @param {String} [attributes] An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.
        * @param {String} [className] This class or class list will be added to the SVG element
        * @param {Boolean} [insertFirst] Specifies if the foreignObject should be inserted as first child
        * @returns {Object} New wrapper object that wraps the foreignObject element
        */
-      function foreignObject(content, x, y, width, height, className, parent, insertFirst) {
+      function foreignObject(content, attributes, className, parent, insertFirst) {
         // If content is string then we convert it to DOM
         // TODO: Handle case where content is not a string nor a DOM Node
         if(typeof content === 'string') {
@@ -1196,12 +1204,7 @@
 
         // Creating the foreignObject without required extension attribute (as described here
         // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
-        var fnObj = Chartist.Svg('foreignObject', {
-          x: x,
-          y: y,
-          width: width,
-          height: height
-        }, className, parent, insertFirst);
+        var fnObj = parent.elem('foreignObject', attributes, className, insertFirst);
 
         // Add content to foreignObjectElement
         fnObj._node.appendChild(content);
@@ -1374,8 +1377,8 @@
         elem: function(name, attributes, className, insertFirst) {
           return Chartist.Svg(name, attributes, className, this, insertFirst);
         },
-        foreignObject: function(content, x, y, width, height, className, insertFirst) {
-          return foreignObject(content, x, y, width, height, className, this, insertFirst);
+        foreignObject: function(content, attributes, className, insertFirst) {
+          return foreignObject(content, attributes, className, this, insertFirst);
         },
         text: function(t) {
           text(this._node, t);
@@ -1405,6 +1408,17 @@
       };
     };
 
+    /**
+     * This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check http://www.w3.org/TR/SVG11/feature for a detailed list.
+     *
+     * @memberof Chartist.Svg
+     * @param {String} feature The SVG 1.1 feature that should be checked for support.
+     * @returns {Boolean} True of false if the feature is supported or not
+     */
+    Chartist.Svg.isSupported = function(feature) {
+      return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
+    };
+
   }(window, document, Chartist));;/**
    * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
    *
@@ -1418,16 +1432,23 @@
 
     var defaultOptions = {
       axisX: {
-        offset: 10,
+        offset: 30,
+        labelOffset: {
+          x: 0,
+          y: 0
+        },
         showLabel: true,
         showGrid: true,
         labelInterpolationFnc: Chartist.noop
       },
       axisY: {
-        offset: 15,
+        offset: 40,
+        labelOffset: {
+          x: 0,
+          y: 0
+        },
         showLabel: true,
         showGrid: true,
-        labelAlign: 'right',
         labelInterpolationFnc: Chartist.noop,
         scaleMinSpace: 30
       },
@@ -1455,9 +1476,7 @@
     };
 
     function createChart(options) {
-      var xAxisOffset,
-        yAxisOffset,
-        seriesGroups = [],
+      var seriesGroups = [],
         bounds,
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
 
@@ -1467,35 +1486,13 @@
       // initialize bounds
       bounds = Chartist.getBounds(this.svg, normalizedData, options);
 
-      xAxisOffset = options.axisX.offset;
-      if (options.axisX.showLabel) {
-        xAxisOffset += Chartist.calculateLabelOffset(
-          this.svg,
-          this.data.labels,
-          [options.classNames.label, options.classNames.horizontal].join(' '),
-          options.axisX.labelInterpolationFnc,
-          'height'
-        );
-      }
-
-      yAxisOffset = options.axisY.offset;
-      if (options.axisY.showLabel) {
-        yAxisOffset += Chartist.calculateLabelOffset(
-          this.svg,
-          bounds.values,
-          [options.classNames.label, options.classNames.horizontal].join(' '),
-          options.axisY.labelInterpolationFnc,
-          'width'
-        );
-      }
-
-      var chartRect = Chartist.createChartRect(this.svg, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(this.svg, options);
       // Start drawing
       var labels = this.svg.elem('g'),
         grid = this.svg.elem('g');
 
-      Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
-      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, this.eventEmitter);
+      Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
 
       // Draw the series
       // initialize series groups
@@ -1615,7 +1612,12 @@
      *   // Options for X-Axis
      *   axisX: {
      *     // The offset of the labels to the chart area
-     *     offset: 10,
+     *     offset: 30,
+     *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+     *     labelOffset: {
+     *       x: 0,
+     *       y: 0
+     *     },
      *     // If labels should be shown or not
      *     showLabel: true,
      *     // If the axis grid should be drawn or not
@@ -1626,13 +1628,16 @@
      *   // Options for Y-Axis
      *   axisY: {
      *     // The offset of the labels to the chart area
-     *     offset: 15,
+     *     offset: 40,
+     *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+     *     labelOffset: {
+     *       x: 0,
+     *       y: 0
+     *     },
      *     // If labels should be shown or not
      *     showLabel: true,
      *     // If the axis grid should be drawn or not
      *     showGrid: true,
-     *     // For the Y-Axis you can set a label alignment property of right or left
-     *     labelAlign: 'right',
      *     // Interpolation function that allows you to intercept the value from the axis label
      *     labelInterpolationFnc: function(value){return value;},
      *     // This value specifies the minimum height in pixel of the scale steps
@@ -1755,18 +1760,25 @@
 
     var defaultOptions = {
       axisX: {
-        offset: 10,
+        offset: 30,
+        labelOffset: {
+          x: 0,
+          y: 0
+        },
         showLabel: true,
         showGrid: true,
         labelInterpolationFnc: Chartist.noop
       },
       axisY: {
-        offset: 15,
+        offset: 40,
+        labelOffset: {
+          x: 0,
+          y: 0
+        },
         showLabel: true,
         showGrid: true,
-        labelAlign: 'right',
         labelInterpolationFnc: Chartist.noop,
-        scaleMinSpace: 40
+        scaleMinSpace: 30
       },
       width: undefined,
       height: undefined,
@@ -1779,8 +1791,6 @@
         label: 'ct-label',
         series: 'ct-series',
         bar: 'ct-bar',
-        thin: 'ct-thin',
-        thick: 'ct-thick',
         grid: 'ct-grid',
         vertical: 'ct-vertical',
         horizontal: 'ct-horizontal'
@@ -1788,9 +1798,7 @@
     };
 
     function createChart(options) {
-      var xAxisOffset,
-        yAxisOffset,
-        seriesGroups = [],
+      var seriesGroups = [],
         bounds,
         normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
 
@@ -1800,37 +1808,15 @@
       // initialize bounds
       bounds = Chartist.getBounds(this.svg, normalizedData, options, 0);
 
-      xAxisOffset = options.axisX.offset;
-      if (options.axisX.showLabel) {
-        xAxisOffset += Chartist.calculateLabelOffset(
-          this.svg,
-          this.data.labels,
-          [options.classNames.label, options.classNames.horizontal].join(' '),
-          options.axisX.labelInterpolationFnc,
-          'height'
-        );
-      }
-
-      yAxisOffset = options.axisY.offset;
-      if (options.axisY.showLabel) {
-        yAxisOffset += Chartist.calculateLabelOffset(
-          this.svg,
-          bounds.values,
-          [options.classNames.label, options.classNames.horizontal].join(' '),
-          options.axisY.labelInterpolationFnc,
-          'width'
-        );
-      }
-
-      var chartRect = Chartist.createChartRect(this.svg, options, xAxisOffset, yAxisOffset);
+      var chartRect = Chartist.createChartRect(this.svg, options);
       // Start drawing
       var labels = this.svg.elem('g'),
         grid = this.svg.elem('g'),
       // Projected 0 point
         zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
-      Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter);
-      Chartist.createYAxis(chartRect, bounds, grid, labels, yAxisOffset, options, this.eventEmitter);
+      Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
+      Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
 
       // Draw the series
       // initialize series groups
@@ -1898,12 +1884,17 @@
      * @return {Object} An object which exposes the API for the created chart
      *
      * @example
-     * // These are the default options of the line chart
+     * // These are the default options of the bar chart
      * var options = {
      *   // Options for X-Axis
      *   axisX: {
-     *     // The offset of the labels to the chart area
-     *     offset: 10,
+     *     // The offset of the chart drawing area to the border of the container
+     *     offset: 30,
+     *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+     *     labelOffset: {
+     *       x: 0,
+     *       y: 0
+     *     },
      *     // If labels should be shown or not
      *     showLabel: true,
      *     // If the axis grid should be drawn or not
@@ -1913,14 +1904,17 @@
      *   },
      *   // Options for Y-Axis
      *   axisY: {
-     *     // The offset of the labels to the chart area
-     *     offset: 15,
+     *     // The offset of the chart drawing area to the border of the container
+     *     offset: 40,
+     *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
+     *     labelOffset: {
+     *       x: 0,
+     *       y: 0
+     *     },
      *     // If labels should be shown or not
      *     showLabel: true,
      *     // If the axis grid should be drawn or not
      *     showGrid: true,
-     *     // For the Y-Axis you can set a label alignment property of right or left
-     *     labelAlign: 'right',
      *     // Interpolation function that allows you to intercept the value from the axis label
      *     labelInterpolationFnc: function(value){return value;},
      *     // This value specifies the minimum height in pixel of the scale steps
@@ -1930,12 +1924,6 @@
      *   width: undefined,
      *   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
      *   height: undefined,
-     *   // If the line should be drawn or not
-     *   showLine: true,
-     *   // If dots should be drawn or not
-     *   showPoint: true,
-     *   // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
-     *   lineSmooth: true,
      *   // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
      *   low: undefined,
      *   // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
@@ -1950,7 +1938,6 @@
      *     label: 'ct-label',
      *     series: 'ct-series',
      *     bar: 'ct-bar',
-     *     point: 'ct-point',
      *     grid: 'ct-grid',
      *     vertical: 'ct-vertical',
      *     horizontal: 'ct-horizontal'
@@ -1980,7 +1967,7 @@
      * }, {
      *   seriesBarDistance: 12,
      *   low: -10,
-     *   heigh: 10
+     *   high: 10
      * });
      *
      */
