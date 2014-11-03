@@ -637,6 +637,81 @@ Chartist.version = '0.3.1';
     };
   };
 
+  //TODO: For arrays it would be better to take the sequence into account and try to minimize modify deltas
+  /**
+   * This method will analyze deltas recursively in two objects. The returned object will contain a __delta__ property
+   * where deltas for specific object properties can be found for the given object nesting level. For nested objects the
+   * resulting delta descriptor object will contain properties to reflect the nesting. Nested descriptor objects also
+   * contain a __delta__ property with the deltas of their level.
+   *
+   * @param {Object|Array} a Object that should be used to analyzed delta to object b
+   * @param {Object|Array} b The second object where the deltas from a should be analyzed
+   * @returns {Object} Delta descriptor object or null
+   */
+  Chartist.deltaDescriptor = function(a, b) {
+    var summary = {
+      added: 0,
+      removed: 0,
+      modified: 0
+    };
+
+    function findDeltasRecursively(a, b) {
+      var descriptor = {
+        __delta__: {}
+      };
+
+      // First check for removed and modified properties
+      Object.keys(a).forEach(function(property) {
+        if(!b.hasOwnProperty(property)) {
+          descriptor.__delta__[property] = {
+            type: 'remove',
+            property: property,
+            ours: a[property]
+          };
+          summary.removed++;
+        } else {
+          if(typeof a[property] === 'object') {
+            var subDescriptor = findDeltasRecursively(a[property], b[property]);
+            if(subDescriptor) {
+              descriptor[property] = subDescriptor;
+            }
+          } else {
+            if(a[property] !== b[property]) {
+              descriptor.__delta__[property] = {
+                type: 'modify',
+                property: property,
+                ours: a[property],
+                theirs: b[property]
+              };
+              summary.modified++;
+            }
+          }
+        }
+      });
+
+      // Check for added properties
+      Object.keys(b).forEach(function(property) {
+        if(!a.hasOwnProperty(property)) {
+          descriptor.__delta__[property] = {
+            type: 'added',
+            property: property,
+            theirs: b[property]
+          };
+          summary.added++;
+        }
+      });
+
+      return (Object.keys(descriptor).length !== 1 || Object.keys(descriptor.__delta__).length > 0) ? descriptor : null;
+    }
+
+    var delta = findDeltasRecursively(a, b);
+    if(delta) {
+      delta.__delta__.summary = summary;
+    }
+
+    return delta;
+  };
+
   //http://schepers.cc/getting-to-the-point
   Chartist.catmullRom2bezier = function (crp, z) {
     var d = [];
