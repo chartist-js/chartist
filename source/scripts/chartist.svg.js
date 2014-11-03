@@ -28,7 +28,8 @@
 
     var svgNs = 'http://www.w3.org/2000/svg',
       xmlNs = 'http://www.w3.org/2000/xmlns/',
-      xhtmlNs = 'http://www.w3.org/1999/xhtml';
+      xhtmlNs = 'http://www.w3.org/1999/xhtml',
+      element = this;
 
     /**
      * Set attributes on the current SVG element of the wrapper you're currently working on.
@@ -258,6 +259,39 @@
       return node.clientWidth || Math.round(node.getBBox().width) || node.parentNode.clientWidth;
     }
 
+    function animate(node, animations, eventEmitter) {
+      Object.keys(animations).forEach(function createAnimateForAttributes(attribute) {
+        var animate = elem('animate', {
+          attributeName: attribute,
+          from: animations[attribute].from,
+          to: animations[attribute].to,
+          dur: animations[attribute].duration
+        }, null, node);
+
+        if(eventEmitter) {
+          animate.addEventListener('beginEvent', function handleBeginEvent() {
+            eventEmitter.emit('animationBegin', {
+              element: element,
+              animate: animate,
+              params: animations[attribute]
+            });
+          });
+        }
+
+        animate.addEventListener('endEvent', function handleBeginEvent() {
+          if(eventEmitter) {
+            eventEmitter.emit('animationBegin', {
+              element: element,
+              animate: animate,
+              params: animations[attribute]
+            });
+          }
+
+          remove(animate);
+        });
+      });
+    }
+
     return {
       _node: elem(name, attributes, className, parent ? parent._node : undefined, insertFirst),
       _parent: parent,
@@ -316,6 +350,10 @@
       },
       width: function() {
         return width(this._node);
+      },
+      animate: function(animations) {
+        animate(this._node, animations);
+        return this;
       }
     };
   };
