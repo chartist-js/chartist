@@ -71,7 +71,13 @@
     this.eventEmitter = Chartist.EventEmitter();
     this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
 
-    window.addEventListener('resize', this.update.bind(this));
+    if(this.container) {
+      this.container.__chartist__ = this;
+    }
+
+    window.addEventListener('resize', function(){
+      this.update();
+    }.bind(this));
 
     // Using event loop for first draw to make it possible to register event listeners in the same call stack where
     // the chart was created.

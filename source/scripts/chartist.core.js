@@ -95,8 +95,8 @@ Chartist.version = '0.3.1';
     height = height || '100%';
 
     // If already contains our svg object we clear it, set width / height and return
-    if (container.chartistSvg !== undefined) {
-      svg = container.chartistSvg.attr({
+    if (container.__chartist__ && container.__chartist__.svg) {
+      svg = container.__chartist__.svg.attr({
         width: width,
         height: height
       }).removeAllClasses().addClass(className).attr({
@@ -116,7 +116,6 @@ Chartist.version = '0.3.1';
 
       // Add the DOM node to our container
       container.appendChild(svg._node);
-      container.chartistSvg = svg;
     }
 
     return svg;
