@@ -59,6 +59,13 @@
           handler(data);
         });
       }
+
+      // Emit event to star event handlers
+      if(handlers['*']) {
+        handlers['*'].forEach(function(starHandler) {
+          starHandler(event, data);
+        });
+      }
     }
 
     return {
