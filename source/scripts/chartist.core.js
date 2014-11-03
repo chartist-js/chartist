@@ -94,29 +94,21 @@ Chartist.version = '0.3.1';
     width = width || '100%';
     height = height || '100%';
 
-    // If already contains our svg object we clear it, set width / height and return
-    if (container.__chartist__ && container.__chartist__.svg) {
-      svg = container.__chartist__.svg.attr({
-        width: width,
-        height: height
-      }).removeAllClasses().addClass(className).attr({
-        style: 'width: ' + width + '; height: ' + height + ';'
-      });
-      // Clear the draw if its already used before so we start fresh
-      svg.empty();
-
-    } else {
-      // Create svg object with width and height or use 100% as default
-      svg = Chartist.Svg('svg').attr({
-        width: width,
-        height: height
-      }).addClass(className).attr({
-        style: 'width: ' + width + '; height: ' + height + ';'
-      });
-
-      // Add the DOM node to our container
-      container.appendChild(svg._node);
+    svg = container.querySelector('svg');
+    if(svg) {
+      container.removeChild(svg);
     }
+
+    // Create svg object with width and height or use 100% as default
+    svg = Chartist.Svg('svg').attr({
+      width: width,
+      height: height
+    }).addClass(className).attr({
+      style: 'width: ' + width + '; height: ' + height + ';'
+    });
+
+    // Add the DOM node to our container
+    container.appendChild(svg._node);
 
     return svg;
   };
