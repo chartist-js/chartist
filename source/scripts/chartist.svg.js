@@ -293,7 +293,7 @@
     }
 
     return {
-      _node: elem(name, attributes, className, parent ? parent._node : undefined, insertFirst),
+      _node: name instanceof Node ? name : elem(name, attributes, className, parent ? parent._node : undefined, insertFirst),
       _parent: parent,
       parent: function() {
         return this._parent;
