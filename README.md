@@ -4,7 +4,7 @@
 
 *Checkout the documentation site at http://gionkunz.github.io/chartist-js/*
 
-*Checkout this lightening talk that gives you an overview of Chartist in 5 minutes https://www.youtube.com/watch?v=WdYzPhOB_c8*
+*Checkout this lightning talk that gives you an overview of Chartist in 5 minutes https://www.youtube.com/watch?v=WdYzPhOB_c8*
 
 *Guest talk of the Chartist.js Guy at the Treehouse Show https://www.youtube.com/watch?v=h9oH0iDaZDQ&t=2m40s*
 
