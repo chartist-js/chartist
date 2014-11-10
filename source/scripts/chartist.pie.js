@@ -185,6 +185,12 @@
       // (except for last slice)
       startAngle = endAngle;
     }
+
+    this.eventEmitter.emit('created', {
+      type: 'Chartist.Pie',
+      labels: seriesGroups,
+      svg: this.svg
+    });
   }
 
   /**

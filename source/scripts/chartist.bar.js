@@ -120,6 +120,12 @@
         });
       }
     }
+
+    this.eventEmitter.emit('created', {
+      type: 'Chartist.Bar',
+      labels: labels,
+      svg: this.svg
+    });
   }
 
   /**

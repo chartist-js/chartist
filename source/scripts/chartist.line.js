@@ -173,6 +173,12 @@
         }
       }
     }
+
+    this.eventEmitter.emit('created', {
+      type: 'Chartist.Line',
+      labels: labels,
+      svg: this.svg
+    });
   }
 
   /**
