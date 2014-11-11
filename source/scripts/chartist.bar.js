@@ -122,9 +122,10 @@
     }
 
     this.eventEmitter.emit('created', {
-      type: 'Chartist.Bar',
-      labels: labels,
-      svg: this.svg
+      bounds: bounds,
+      chartRect: chartRect,
+      svg: this.svg,
+      options: options
     });
   }
 

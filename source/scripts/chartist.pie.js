@@ -187,9 +187,9 @@
     }
 
     this.eventEmitter.emit('created', {
-      type: 'Chartist.Pie',
-      labels: seriesGroups,
-      svg: this.svg
+      chartRect: chartRect,
+      svg: this.svg,
+      options: options
     });
   }
 

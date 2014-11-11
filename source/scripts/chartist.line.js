@@ -175,9 +175,10 @@
     }
 
     this.eventEmitter.emit('created', {
-      type: 'Chartist.Line',
-      labels: labels,
-      svg: this.svg
+      bounds: bounds,
+      chartRect: chartRect,
+      svg: this.svg,
+      options: options
     });
   }
 
