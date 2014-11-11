@@ -120,6 +120,13 @@
         });
       }
     }
+
+    this.eventEmitter.emit('created', {
+      bounds: bounds,
+      chartRect: chartRect,
+      svg: this.svg,
+      options: options
+    });
   }
 
   /**

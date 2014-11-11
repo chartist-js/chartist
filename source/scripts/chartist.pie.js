@@ -185,6 +185,12 @@
       // (except for last slice)
       startAngle = endAngle;
     }
+
+    this.eventEmitter.emit('created', {
+      chartRect: chartRect,
+      svg: this.svg,
+      options: options
+    });
   }
 
   /**
