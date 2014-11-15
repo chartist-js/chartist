@@ -303,7 +303,7 @@ Chartist.version = '0.3.1';
         newMin += bounds.step;
       }
 
-      if (i - bounds.step > bounds.high) {
+      if (i - bounds.step >= bounds.high) {
         newMax -= bounds.step;
       }
     }
