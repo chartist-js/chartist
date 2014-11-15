@@ -28,7 +28,7 @@
    * @memberof Chartist.Base
    */
   function detach() {
-    window.removeEventListener('resize', this.update);
+    window.removeEventListener('resize', this.resizeListener);
     this.optionsProvider.removeMediaQueryListeners();
   }
 
@@ -70,14 +70,20 @@
     this.responsiveOptions = responsiveOptions;
     this.eventEmitter = Chartist.EventEmitter();
     this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
+    this.resizeListener = function resizeListener(){
+      this.update();
+    }.bind(this);
 
     if(this.container) {
+      // If chartist was already initialized in this container we are detaching all event listeners first
+      if(this.container.__chartist__) {
+        this.container.__chartist__.detach();
+      }
+
       this.container.__chartist__ = this;
     }
 
-    window.addEventListener('resize', function(){
-      this.update();
-    }.bind(this));
+    window.addEventListener('resize', this.resizeListener);
 
     // Using event loop for first draw to make it possible to register event listeners in the same call stack where
     // the chart was created.
