@@ -396,3 +396,37 @@ sections:
                 id: behavior-with-jquery
                 classes: ct-golden-section
                 show-code-button: Show code
+
+      - type: sub-section
+        data:
+          title: Animations using Chartist.Svg
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Usually we recommend using CSS for animations as it's closer to a clean separation of concerns.
+                        However, sometimes you would want to animate SVG properties that are not available in CSS to animate.
+                        For this purpose we have added a simple but powerful animation API that allows you to create SMIL
+                        animations in a more convenient way.
+            - type: text
+              data:
+                text: >
+                        In combination with the draw events of Chartist the animations are a very powerful and
+                        flexible tool. You can intercept almost any step in chartist and if there is an SVG element
+                        involved you can animate it using
+                        <a href="api-documentation.html#chartistsvg-function-animate">Chartist.Svg.animate</a>.
+            - type: text
+              data:
+                text: >
+                        The following simple example shows you how to created a delayed fade in effect for the a scatter chart.
+                        You can also edit the example to play around with the settings.
+
+            - type: live-example
+              data:
+                title: Some SVG Animations can only be done with SMIL
+                level: 5
+                id: example-simple-svg-animation
+                classes: ct-golden-section
+                intro: >
+                         Edit this example to figure out how to tweak animations. The force is strong in you young padawan!

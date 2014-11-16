@@ -132,6 +132,41 @@ sections:
                 - name: iOS Safari 7
                   status: supported
                   text: Supported
+            - name: SVG Animations with SMIL
+              browsers:
+                - name: IE9
+                  status: not-supported
+                  text: Not supported
+                - name: IE10
+                  status: not-supported
+                  text: Not supported
+                - name: IE11
+                  status: not-supported
+                  text: Not supported
+                - name: Firefox 31
+                  status: supported
+                  text: Supported
+                - name: Chrome 35
+                  status: supported
+                  text: Supported
+                - name: Safari 7
+                  status: supported
+                  text: Supported
+                - name: Safari 8
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.3
+                  status: supported
+                  text: Supported
+                - name: Andorid 4.4
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 6
+                  status: supported
+                  text: Supported
+                - name: iOS Safari 7
+                  status: supported
+                  text: Supported
             - name: Reponsive Options Override
               browsers:
                 - name: IE9*
@@ -184,17 +219,20 @@ sections:
         data:
           text: Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!
 
-  - title: New bar chart type!
+  - title: Crazy Animations with SMIL!
     level: 3
     items:
       - type: example-chart
         data:
-          id: example-simple-bar
+          id: example-line-svg-animation
           classes: ct-golden-section
     side-notes:
       - type: text
         data:
-          text: We are constantly working on enhancements of our existing charts and adding new chart types. While we only have two chart types currently available you can customize them to your own needs while getting a huge vaiarity of configurations and designs.
+          text: >
+                  Almost limitless animation possibilities with the Chartist.Svg animation API. Checkout the
+                  <a href="getting-started.html#animations-using-chartistsvg">advanced getting stated guide about SVG
+                  animations</a> with SMIL.
 
   - title: Responsive charts configuration
     level: 3

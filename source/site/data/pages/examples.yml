@@ -60,6 +60,16 @@ sections:
                    provide a high level of separation of the concerns. However, sometimes you probably would like to use
                    different shapes or even images for your charts. One way to achieve this is by using the draw events and replace
                    or add custom SVG shapes.
+      - type: live-example
+        data:
+          title: Advanced SMIL Animations
+          level: 4
+          id: example-line-svg-animation
+          classes: ct-golden-section
+          intro: >
+                   Chartist provides a simple API to animate the elements on the Chart using SMIL. Usually you can achieve most
+                   animation with CSS3 animations but in some cases you'd like to animate SVG properties that are not available
+                   in CSS.
   - title: Bar chart examples
     level: 3
     items:
