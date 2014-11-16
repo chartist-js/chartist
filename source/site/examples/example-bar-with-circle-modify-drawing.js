@@ -19,7 +19,7 @@ chart.on('draw', function(data) {
   // If this draw event is of type bar we can use the data to create additional content
   if(data.type === 'bar') {
     // We use the group element of the current series to append a simple circle with the bar peek coordinates and a circle radius that is depending on the value
-    data.group.append(Chartist.Svg('circle', {
+    data.group.append(new Chartist.Svg('circle', {
       cx: data.x2,
       cy: data.y2,
       r: Math.abs(data.value) * 2 + 5

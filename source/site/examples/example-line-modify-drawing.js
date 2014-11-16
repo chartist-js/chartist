@@ -10,7 +10,7 @@ chart.on('draw', function(data) {
   // If the draw event was triggered from drawing a point on the line chart
   if(data.type === 'point') {
     // We are creating a new path SVG element that draws a triangle around the point coordinates
-    var triangle = Chartist.Svg('path', {
+    var triangle = new Chartist.Svg('path', {
       d: ['M',
         data.x,
         data.y - 15,

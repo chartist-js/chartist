@@ -100,7 +100,7 @@ Chartist.version = '0.3.1';
     }
 
     // Create svg object with width and height or use 100% as default
-    svg = Chartist.Svg('svg').attr({
+    svg = new Chartist.Svg('svg').attr({
       width: width,
       height: height
     }).addClass(className).attr({
