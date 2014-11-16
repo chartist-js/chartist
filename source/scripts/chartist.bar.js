@@ -27,7 +27,7 @@
       showLabel: true,
       showGrid: true,
       labelInterpolationFnc: Chartist.noop,
-      scaleMinSpace: 30
+      scaleMinSpace: 20
     },
     width: undefined,
     height: undefined,
