@@ -1,7 +1,7 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/libdist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-method-svg">Chartist.Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>chartist.bar.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbar">Module Chartist.Bar</h4><div class="module-description"><p>The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbar-function-bar"><span class="member-tag">function</span> Bar()</h5><button class="api-code-button" data-toggle-visible="#chartistbar-function-bar-code">Show code</button></header><pre id="chartistbar-function-bar-code">
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/libdist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-function-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li><li><a class="text-clipping" href="#chartistsvg-declaration-easingcubicbeziers">easingCubicBeziers</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>chartist.bar.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbar">Module Chartist.Bar</h4><div class="module-description"><p>The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbar-function-bar"><span class="member-tag">function</span> Bar()</h5><button class="api-code-button" data-toggle-visible="#chartistbar-function-bar-code">Show code</button></header><pre id="chartistbar-function-bar-code">
     <code class="javascript">function Bar(query, data, options, responsiveOptions) {
     Chartist.Bar.super.constructor.call(this,
       query,
@@ -103,7 +103,7 @@ new Chartist.Bar(&#x27;.ct-chart&#x27;, {
   }</code>
   </pre><div class="member-content"><div class="description"><p>Updates the chart which currently does a full reconstruction of the SVG DOM</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-detach"><span class="member-tag">function</span> detach()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-detach-code">Show code</button></header><pre id="chartistbase-function-detach-code">
     <code class="javascript">function detach() {
-    window.removeEventListener(&#x27;resize&#x27;, this.update);
+    window.removeEventListener(&#x27;resize&#x27;, this.resizeListener);
     this.optionsProvider.removeMediaQueryListeners();
   }</code>
   </pre><div class="member-content"><div class="description"><p>This method can be called on the API object of each chart and will un-register all event listeners that were added to other components. This currently includes a window.resize listener as well as media query listeners if any responsive options have been provided. Use this function if you need to destroy and recreate Chartist charts dynamically.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-on"><span class="member-tag">function</span> on()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-on-code">Show code</button></header><pre id="chartistbase-function-on-code">
@@ -168,7 +168,7 @@ var Banana = Fruit.extend({
 var banana = new Banana(20, 40);
 console.log(&#x27;banana instanceof Fruit&#x27;, banana instanceof Fruit);
 console.log(&#x27;Fruit is prototype of banana&#x27;, Fruit.prototype.isPrototypeOf(banana));
-console.log(&#x27;bananasundefined&#x27;s prototype is Fruit&#x27;, Object.getPrototypeOf(banana) === Fruit.prototype);
+console.log(&#x27;bananas prototype is Fruit&#x27;, Object.getPrototypeOf(banana) === Fruit.prototype);
 console.log(banana.sugar);
 console.log(banana.eat().sugar);
 console.log(banana.color);</code></pre></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistclass-function-mix"><span class="member-tag">function</span> mix()</h5><button class="api-code-button" data-toggle-visible="#chartistclass-function-mix-code">Show code</button></header><pre id="chartistclass-function-mix-code">
@@ -242,7 +242,7 @@ var Banana = Fruit.extend({
 var banana = new Banana(20, 40);
 console.log(&#x27;banana instanceof Fruit&#x27;, banana instanceof Fruit);
 console.log(&#x27;Fruit is prototype of banana&#x27;, Fruit.prototype.isPrototypeOf(banana));
-console.log(&#x27;bananasundefined&#x27;s prototype is Fruit&#x27;, Object.getPrototypeOf(banana) === Fruit.prototype);
+console.log(&#x27;bananas prototype is Fruit&#x27;, Object.getPrototypeOf(banana) === Fruit.prototype);
 console.log(banana.sugar);
 console.log(banana.eat().sugar);
 console.log(banana.color);
@@ -284,7 +284,7 @@ var NameableKCalBanana = Class.mix([Banana, KCal, Nameable], {
 var banana = new Banana(20, 40);
 console.log(&#x27;banana instanceof Fruit&#x27;, banana instanceof Fruit);
 console.log(&#x27;Fruit is prototype of banana&#x27;, Fruit.prototype.isPrototypeOf(banana));
-console.log(&#x27;bananasundefined&#x27;s prototype is Fruit&#x27;, Object.getPrototypeOf(banana) === Fruit.prototype);
+console.log(&#x27;bananas prototype is Fruit&#x27;, Object.getPrototypeOf(banana) === Fruit.prototype);
 console.log(banana.sugar);
 console.log(banana.eat().sugar);
 console.log(banana.color);
@@ -313,7 +313,23 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     }
     return target;
   };</code>
-  </pre><div class="member-content"><div class="description"><p>Simple recursive object extend</p></div><h6>Parameters</h6><div class="param"><code>target</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Target object where the source will be merged into</div></div><div class="param"><code>source</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">This object will be merged into target and then target is returned</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that has the same reference as target but is extended and merged with the properties of source</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-queryselector"><span class="member-tag">method</span> Chartist.querySelector()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-queryselector-code">Show code</button></header><pre id="chartistcore-method-queryselector-code">
+  </pre><div class="member-content"><div class="description"><p>Simple recursive object extend</p></div><h6>Parameters</h6><div class="param"><code>target</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Target object where the source will be merged into</div></div><div class="param"><code>source</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">This object will be merged into target and then target is returned</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that has the same reference as target but is extended and merged with the properties of source</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-stripunit"><span class="member-tag">method</span> Chartist.stripUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-stripunit-code">Show code</button></header><pre id="chartistcore-method-stripunit-code">
+    <code class="javascript">Chartist.stripUnit = function(value) {
+    if(typeof value === &#x27;string&#x27;) {
+      value = value.replace(/[^0-9undefined+-undefined.]/, &#x27;&#x27;);
+    }
+
+    return +value;
+  };</code>
+  </pre><div class="member-content"><div class="description"><p>Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-ensureunit"><span class="member-tag">method</span> Chartist.ensureUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-ensureunit-code">Show code</button></header><pre id="chartistcore-method-ensureunit-code">
+    <code class="javascript">Chartist.ensureUnit = function(value, unit) {
+    if(typeof value === &#x27;number&#x27;) {
+      value = value + unit;
+    }
+
+    return value;
+  };</code>
+  </pre><div class="member-content"><div class="description"><p>Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><div class="param"><code>unit</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-queryselector"><span class="member-tag">method</span> Chartist.querySelector()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-queryselector-code">Show code</button></header><pre id="chartistcore-method-queryselector-code">
     <code class="javascript">Chartist.querySelector = function(query) {
     return query instanceof Node ? query : document.querySelector(query);
   };</code>
@@ -324,30 +340,21 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     width = width || &#x27;100%&#x27;;
     height = height || &#x27;100%&#x27;;
 
-    // If already contains our svg object we clear it, set width / height and return
-    if (container.chartistSvg !== undefined) {
-      svg = container.chartistSvg.attr({
-        width: width,
-        height: height
-      }).removeAllClasses().addClass(className).attr({
-        style: &#x27;width: &#x27; + width + &#x27;; height: &#x27; + height + &#x27;;&#x27;
-      });
-      // Clear the draw if its already used before so we start fresh
-      svg.empty();
-
-    } else {
-      // Create svg object with width and height or use 100% as default
-      svg = Chartist.Svg(&#x27;svg&#x27;).attr({
-        width: width,
-        height: height
-      }).addClass(className).attr({
-        style: &#x27;width: &#x27; + width + &#x27;; height: &#x27; + height + &#x27;;&#x27;
-      });
-
-      // Add the DOM node to our container
-      container.appendChild(svg._node);
-      container.chartistSvg = svg;
+    svg = container.querySelector(&#x27;svg&#x27;);
+    if(svg) {
+      container.removeChild(svg);
     }
+
+    // Create svg object with width and height or use 100% as default
+    svg = new Chartist.Svg(&#x27;svg&#x27;).attr({
+      width: width,
+      height: height
+    }).addClass(className).attr({
+      style: &#x27;width: &#x27; + width + &#x27;; height: &#x27; + height + &#x27;;&#x27;
+    });
+
+    // Add the DOM node to our container
+    container.appendChild(svg._node);
 
     return svg;
   };</code>
@@ -394,7 +401,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   };</code>
   </pre><div class="member-content"><div class="description"><p>Project a data length into screen coordinates (pixels)</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>length</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Single data value from a series array</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The projected data length in pixels</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getavailableheight"><span class="member-tag">method</span> Chartist.getAvailableHeight()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getavailableheight-code">Show code</button></header><pre id="chartistcore-method-getavailableheight-code">
     <code class="javascript">Chartist.getAvailableHeight = function (svg, options) {
-    return Math.max((Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
+    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
   };</code>
   </pre><div class="member-content"><div class="description"><p>Get the height of the area in the chart for the data series</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The height of the area in the chart for the data series</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-gethighlow"><span class="member-tag">method</span> Chartist.getHighLow()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-gethighlow-code">Show code</button></header><pre id="chartistcore-method-gethighlow-code">
     <code class="javascript">Chartist.getHighLow = function (dataArray) {
@@ -486,7 +493,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
         newMin += bounds.step;
       }
 
-      if (i - bounds.step &gt; bounds.high) {
+      if (i - bounds.step &gt;= bounds.high) {
         newMax -= bounds.step;
       }
     }
@@ -517,8 +524,8 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
     return {
       x1: options.chartPadding + yOffset,
-      y1: Math.max((Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
-      x2: Math.max((Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
+      y1: Math.max((Chartist.stripUnit(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
+      x2: Math.max((Chartist.stripUnit(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
@@ -732,48 +739,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     };
   };
 
-  //http://schepers.cc/getting-to-the-point
-  Chartist.catmullRom2bezier = function (crp, z) {
-    var d = [];
-    for (var i = 0, iLen = crp.length; iLen - 2 * !z &gt; i; i += 2) {
-      var p = [
-        {x: +crp[i - 2], y: +crp[i - 1]},
-        {x: +crp[i], y: +crp[i + 1]},
-        {x: +crp[i + 2], y: +crp[i + 3]},
-        {x: +crp[i + 4], y: +crp[i + 5]}
-      ];
-      if (z) {
-        if (!i) {
-          p[0] = {x: +crp[iLen - 2], y: +crp[iLen - 1]};
-        } else if (iLen - 4 === i) {
-          p[3] = {x: +crp[0], y: +crp[1]};
-        } else if (iLen - 2 === i) {
-          p[2] = {x: +crp[0], y: +crp[1]};
-          p[3] = {x: +crp[2], y: +crp[3]};
-        }
-      } else {
-        if (iLen - 4 === i) {
-          p[3] = p[2];
-        } else if (!i) {
-          p[0] = {x: +crp[i], y: +crp[i + 1]};
-        }
-      }
-      d.push(
-        [
-          (-p[0].x + 6 * p[1].x + p[2].x) / 6,
-          (-p[0].y + 6 * p[1].y + p[2].y) / 6,
-          (p[1].x + 6 * p[2].x - p[3].x) / 6,
-          (p[1].y + 6 * p[2].y - p[3].y) / 6,
-          p[2].x,
-          p[2].y
-        ]
-      );
-    }
-
-    return d;
-  };
-
-}(window, document, Chartist));</code>
+  //TODO: For arrays it would be better to take the sequence into account and try to minimize modify deltas</code>
   </pre><div class="member-content"><div class="description"><p>Provides options handling functionality with callback for options changes triggered by responsive options and media query matches</p></div><h6>Parameters</h6><div class="param"><code>defaultOptions</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Default options from Chartist</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Options set by user</div></div><div class="param"><code>responsiveOptions</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Optional functions to add responsive behavior to chart</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The event emitter that will be used to emit the options changed events</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The consolidated options object from the defaults, base and matching responsive options</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.event.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistevent">Module Chartist.Event</h4><div class="module-description"><p>A very basic event module that helps to generate and catch events.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistevent-function-addeventhandler"><span class="member-tag">function</span> addEventHandler()</h5><button class="api-code-button" data-toggle-visible="#chartistevent-function-addeventhandler-code">Show code</button></header><pre id="chartistevent-function-addeventhandler-code">
     <code class="javascript">function addEventHandler(event, handler) {
       handlers[event] = handlers[event] || [];
@@ -801,6 +767,13 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
       if(handlers[event]) {
         handlers[event].forEach(function(handler) {
           handler(data);
+        });
+      }
+
+      // Emit event to star event handlers
+      if(handlers[&#x27;*&#x27;]) {
+        handlers[&#x27;*&#x27;].forEach(function(starHandler) {
+          starHandler(event, data);
         });
       }
     }
@@ -1025,141 +998,305 @@ new Chartist.Pie(&#x27;.ct-chart&#x27;, {
   chartPadding: 30,
   labelOffset: 50,
   labelDirection: &#x27;explode&#x27;
-});</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.svg.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvg">Module Chartist.Svg</h4><div class="module-description"><p>Chartist SVG module for simple SVG DOM abstraction</p></div><div class="module-members"><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistsvg-method-svg"><span class="member-tag">method</span> Chartist.Svg()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-method-svg-code">Show code</button></header><pre id="chartistsvg-method-svg-code">
-    <code class="javascript">Chartist.Svg = function(name, attributes, className, parent, insertFirst) {
+});</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>chartist.svg.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvg">Module Chartist.Svg</h4><div class="module-description"><p>Chartist SVG module for simple SVG DOM abstraction</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-svg"><span class="member-tag">function</span> Svg()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-svg-code">Show code</button></header><pre id="chartistsvg-function-svg-code">
+    <code class="javascript">function Svg(name, attributes, className, parent, insertFirst) {
+    this._node = document.createElementNS(svgNs, name);
 
-    var svgNs = &#x27;http://www.w3.org/2000/svg&#x27;,
-      xmlNs = &#x27;http://www.w3.org/2000/xmlns/&#x27;,
-      xhtmlNs = &#x27;http://www.w3.org/1999/xhtml&#x27;;</code>
-  </pre><div class="member-content"><div class="description"><p>Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.</p></div><h6>Parameters</h6><div class="param"><code>name</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The name of the SVG element to create</div></div><div class="param"><code>attributes</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>className</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>parent</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The parent SVG wrapper object where this newly created wrapper and it&#x27;s element will be attached to as child</div></div><div class="param"><code>insertFirst</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-attr"><span class="member-tag">function</span> attr()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-attr-code">Show code</button></header><pre id="chartistsvg-function-attr-code">
-    <code class="javascript">function attr(node, attributes, ns) {
-      Object.keys(attributes).forEach(function(key) {
-        // If the attribute value is undefined we can skip this one
-        if(attributes[key] === undefined) {
-          return;
-        }
+    // If this is an SVG element created then custom namespace
+    if(name === &#x27;svg&#x27;) {
+      this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
+    }
 
-        if(ns) {
-          node.setAttributeNS(ns, [Chartist.xmlNs.prefix, &#x27;:&#x27;, key].join(&#x27;&#x27;), attributes[key]);
-        } else {
-          node.setAttribute(key, attributes[key]);
-        }
-      });
+    if(attributes) {
+      this.attr(attributes);
+    }
 
-      return node;
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>Set attributes on the current SVG element of the wrapper you&#39;re currently working on.</p></div><h6>Parameters</h6><div class="param"><code>attributes</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>ns</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">If specified, the attributes will be set as namespace attributes with ns as prefix.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-elem"><span class="member-tag">function</span> elem()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-elem-code">Show code</button></header><pre id="chartistsvg-function-elem-code">
-    <code class="javascript">function elem(name, attributes, className, parentNode, insertFirst) {
-      var node = document.createElementNS(svgNs, name);
+    if(className) {
+      this.addClass(className);
+    }
 
-      // If this is an SVG element created then custom namespace
-      if(name === &#x27;svg&#x27;) {
-        node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
-      }
-
-      if(parentNode) {
-        if(insertFirst &amp;&amp; parentNode.firstChild) {
-          parentNode.insertBefore(node, parentNode.firstChild);
-        } else {
-          parentNode.appendChild(node);
-        }
-      }
-
-      if(attributes) {
-        attr(node, attributes);
-      }
-
-      if(className) {
-        addClass(node, className);
-      }
-
-      return node;
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.</p></div><h6>Parameters</h6><div class="param"><code>name</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The name of the SVG element that should be created as child element of the currently selected element wrapper</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-foreignobject"><span class="member-tag">function</span> foreignObject()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-foreignobject-code">Show code</button></header><pre id="chartistsvg-function-foreignobject-code">
-    <code class="javascript">function foreignObject(content, attributes, className, parent, insertFirst) {
-      // If content is string then we convert it to DOM
-      // TODO: Handle case where content is not a string nor a DOM Node
-      if(typeof content === &#x27;string&#x27;) {
-        var container = document.createElement(&#x27;div&#x27;);
-        container.innerHTML = content;
-        content = container.firstChild;
-      }
-
-      // Adding namespace to content element
-      content.setAttribute(&#x27;xmlns&#x27;, xhtmlNs);
-
-      // Creating the foreignObject without required extension attribute (as described here
-      // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
-      var fnObj = parent.elem(&#x27;foreignObject&#x27;, attributes, className, insertFirst);
-
-      // Add content to foreignObjectElement
-      fnObj._node.appendChild(content);
-
-      return fnObj;
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>This method creates a foreignObject (see <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject">https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject</a>) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.</p></div><h6>Parameters</h6><div class="param"><code>content</code> ( <span class="param-type"><code>Node</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the foreignObject should be inserted as first child</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-text"><span class="member-tag">function</span> text()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-text-code">Show code</button></header><pre id="chartistsvg-function-text-code">
-    <code class="javascript">function text(node, t) {
-      node.appendChild(document.createTextNode(t));
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>This method adds a new text element to the current Chartist.Svg wrapper.</p></div><h6>Parameters</h6><div class="param"><code>t</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The text that should be added to the text element that is created</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-empty"><span class="member-tag">function</span> empty()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-empty-code">Show code</button></header><pre id="chartistsvg-function-empty-code">
-    <code class="javascript">function empty(node) {
-      while (node.firstChild) {
-        node.removeChild(node.firstChild);
-      }
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will clear all child nodes of the current wrapper object.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-remove"><span class="member-tag">function</span> remove()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-remove-code">Show code</button></header><pre id="chartistsvg-function-remove-code">
-    <code class="javascript">function remove(node) {
-      node.parentNode.removeChild(node);
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you&#39;d like to get rid of an element in a given DOM structure.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-replace"><span class="member-tag">function</span> replace()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-replace-code">Show code</button></header><pre id="chartistsvg-function-replace-code">
-    <code class="javascript">function replace(node, newChild) {
-      node.parentNode.replaceChild(newChild, node);
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will replace the element with a new element that can be created outside of the current DOM.</p></div><h6>Parameters</h6><div class="param"><code>newElement</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The new wrapper object that will be used to replace the current wrapper object</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-append"><span class="member-tag">function</span> append()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-append-code">Show code</button></header><pre id="chartistsvg-function-append-code">
-    <code class="javascript">function append(node, child, insertFirst) {
-      if(insertFirst &amp;&amp; node.firstChild) {
-        node.insertBefore(child, node.firstChild);
+    if(parent) {
+      if (insertFirst &amp;&amp; parent._node.firstChild) {
+        parent._node.insertBefore(this._node, parent._node.firstChild);
       } else {
-        node.appendChild(child);
+        parent._node.appendChild(this._node);
       }
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will append an element to the current element as a child.</p></div><h6>Parameters</h6><div class="param"><code>element</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The element that should be added as a child</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the element should be inserted as first child</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-classes"><span class="member-tag">function</span> classes()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-classes-code">Show code</button></header><pre id="chartistsvg-function-classes-code">
-    <code class="javascript">function classes(node) {
-      return node.getAttribute(&#x27;class&#x27;) ? node.getAttribute(&#x27;class&#x27;).trim().split(/undefineds+/) : [];
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-addclass"><span class="member-tag">function</span> addClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-addclass-code">Show code</button></header><pre id="chartistsvg-function-addclass-code">
-    <code class="javascript">function addClass(node, names) {
-      node.setAttribute(&#x27;class&#x27;,
-        classes(node)
-          .concat(names.trim().split(/undefineds+/))
-          .filter(function(elem, pos, self) {
-            return self.indexOf(elem) === pos;
-          }).join(&#x27; &#x27;)
-      );
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeclass"><span class="member-tag">function</span> removeClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeclass-code">Show code</button></header><pre id="chartistsvg-function-removeclass-code">
-    <code class="javascript">function removeClass(node, names) {
-      var removedClasses = names.trim().split(/undefineds+/);
 
-      node.setAttribute(&#x27;class&#x27;, classes(node).filter(function(name) {
-        return removedClasses.indexOf(name) === -1;
-      }).join(&#x27; &#x27;));
-    }</code>
+      this._parent = parent;
+    }
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.</p></div><h6>Parameters</h6><div class="param"><code>name</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The name of the SVG element to create</div></div><div class="param"><code>attributes</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>className</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>parent</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The parent SVG wrapper object where this newly created wrapper and it&#x27;s element will be attached to as child</div></div><div class="param"><code>insertFirst</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-attr"><span class="member-tag">function</span> attr()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-attr-code">Show code</button></header><pre id="chartistsvg-function-attr-code">
+    <code class="javascript">function attr(attributes, ns) {
+    Object.keys(attributes).forEach(function(key) {
+      // If the attribute value is undefined we can skip this one
+      if(attributes[key] === undefined) {
+        return;
+      }
+
+      if(ns) {
+        this._node.setAttributeNS(ns, [Chartist.xmlNs.prefix, &#x27;:&#x27;, key].join(&#x27;&#x27;), attributes[key]);
+      } else {
+        this._node.setAttribute(key, attributes[key]);
+      }
+    }.bind(this));
+
+    return this;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>Set attributes on the current SVG element of the wrapper you&#39;re currently working on.</p></div><h6>Parameters</h6><div class="param"><code>attributes</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>ns</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">If specified, the attributes will be set as namespace attributes with ns as prefix.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-elem"><span class="member-tag">function</span> elem()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-elem-code">Show code</button></header><pre id="chartistsvg-function-elem-code">
+    <code class="javascript">function elem(name, attributes, className, insertFirst) {
+    return new Chartist.Svg(name, attributes, className, this, insertFirst);
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.</p></div><h6>Parameters</h6><div class="param"><code>name</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The name of the SVG element that should be created as child element of the currently selected element wrapper</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-foreignobject"><span class="member-tag">function</span> foreignObject()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-foreignobject-code">Show code</button></header><pre id="chartistsvg-function-foreignobject-code">
+    <code class="javascript">function foreignObject(content, attributes, className, insertFirst) {
+    // If content is string then we convert it to DOM
+    // TODO: Handle case where content is not a string nor a DOM Node
+    if(typeof content === &#x27;string&#x27;) {
+      var container = document.createElement(&#x27;div&#x27;);
+      container.innerHTML = content;
+      content = container.firstChild;
+    }
+
+    // Adding namespace to content element
+    content.setAttribute(&#x27;xmlns&#x27;, xhtmlNs);
+
+    // Creating the foreignObject without required extension attribute (as described here
+    // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
+    var fnObj = this.elem(&#x27;foreignObject&#x27;, attributes, className, insertFirst);
+
+    // Add content to foreignObjectElement
+    fnObj._node.appendChild(content);
+
+    return fnObj;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>This method creates a foreignObject (see <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject">https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject</a>) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.</p></div><h6>Parameters</h6><div class="param"><code>content</code> ( <span class="param-type"><code>Node</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the foreignObject should be inserted as first child</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-text"><span class="member-tag">function</span> text()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-text-code">Show code</button></header><pre id="chartistsvg-function-text-code">
+    <code class="javascript">function text(t) {
+    this._node.appendChild(document.createTextNode(t));
+    return this;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>This method adds a new text element to the current Chartist.Svg wrapper.</p></div><h6>Parameters</h6><div class="param"><code>t</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The text that should be added to the text element that is created</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-empty"><span class="member-tag">function</span> empty()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-empty-code">Show code</button></header><pre id="chartistsvg-function-empty-code">
+    <code class="javascript">function empty() {
+    while (this._node.firstChild) {
+      this._node.removeChild(this._node.firstChild);
+    }
+
+    return this;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>This method will clear all child nodes of the current wrapper object.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-remove"><span class="member-tag">function</span> remove()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-remove-code">Show code</button></header><pre id="chartistsvg-function-remove-code">
+    <code class="javascript">function remove() {
+    this._node.parentNode.removeChild(this._node);
+    return this._parent;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you&#39;d like to get rid of an element in a given DOM structure.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-replace"><span class="member-tag">function</span> replace()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-replace-code">Show code</button></header><pre id="chartistsvg-function-replace-code">
+    <code class="javascript">function replace(newElement) {
+    this._node.parentNode.replaceChild(newElement._node, this._node);
+    newElement._parent = this._parent;
+    this._parent = null;
+    return newElement;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>This method will replace the element with a new element that can be created outside of the current DOM.</p></div><h6>Parameters</h6><div class="param"><code>newElement</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The new Chartist.Svg object that will be used to replace the current wrapper object</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-append"><span class="member-tag">function</span> append()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-append-code">Show code</button></header><pre id="chartistsvg-function-append-code">
+    <code class="javascript">function append(element, insertFirst) {
+    if(insertFirst &amp;&amp; this._node.firstChild) {
+      this._node.insertBefore(element._node, this._node.firstChild);
+    } else {
+      this._node.appendChild(element._node);
+    }
+
+    return this;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>This method will append an element to the current element as a child.</p></div><h6>Parameters</h6><div class="param"><code>element</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Chartist.Svg element that should be added as a child</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the element should be inserted as first child</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-classes"><span class="member-tag">function</span> classes()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-classes-code">Show code</button></header><pre id="chartistsvg-function-classes-code">
+    <code class="javascript">function classes() {
+    return this._node.getAttribute(&#x27;class&#x27;) ? this._node.getAttribute(&#x27;class&#x27;).trim().split(/undefineds+/) : [];
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-addclass"><span class="member-tag">function</span> addClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-addclass-code">Show code</button></header><pre id="chartistsvg-function-addclass-code">
+    <code class="javascript">function addClass(names) {
+    this._node.setAttribute(&#x27;class&#x27;,
+      this.classes(this._node)
+        .concat(names.trim().split(/undefineds+/))
+        .filter(function(elem, pos, self) {
+          return self.indexOf(elem) === pos;
+        }).join(&#x27; &#x27;)
+    );
+
+    return this;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeclass"><span class="member-tag">function</span> removeClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeclass-code">Show code</button></header><pre id="chartistsvg-function-removeclass-code">
+    <code class="javascript">function removeClass(names) {
+    var removedClasses = names.trim().split(/undefineds+/);
+
+    this._node.setAttribute(&#x27;class&#x27;, this.classes(this._node).filter(function(name) {
+      return removedClasses.indexOf(name) === -1;
+    }).join(&#x27; &#x27;));
+
+    return this;
+  }</code>
   </pre><div class="member-content"><div class="description"><p>Removes one or a space separated list of classes from the current element.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeallclasses"><span class="member-tag">function</span> removeAllClasses()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeallclasses-code">Show code</button></header><pre id="chartistsvg-function-removeallclasses-code">
-    <code class="javascript">function removeAllClasses(node) {
-      node.setAttribute(&#x27;class&#x27;, &#x27;&#x27;);
-    }</code>
+    <code class="javascript">function removeAllClasses() {
+    this._node.setAttribute(&#x27;class&#x27;, &#x27;&#x27;);
+  }</code>
   </pre><div class="member-content"><div class="description"><p>Removes all classes from the current element.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-height"><span class="member-tag">function</span> height()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-height-code">Show code</button></header><pre id="chartistsvg-function-height-code">
-    <code class="javascript">function height(node) {
-      return node.clientHeight || Math.round(node.getBBox().height) || node.parentNode.clientHeight;
-    }</code>
-  </pre><div class="member-content"><div class="description"><p>Get element height with fallback to svg BoundingBox or parent container dimensions:<br>See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=530985">bugzilla.mozilla.org</a></p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The elements height in pixels</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistsvg-method-issupported"><span class="member-tag">method</span> Chartist.Svg.isSupported()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-method-issupported-code">Show code</button></header><pre id="chartistsvg-method-issupported-code">
+    <code class="javascript">function height() {
+    return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
+  }</code>
+  </pre><div class="member-content"><div class="description"><p>Get element height with fallback to svg BoundingBox or parent container dimensions:<br>See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=530985">bugzilla.mozilla.org</a></p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The elements height in pixels</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-animate"><span class="member-tag">function</span> animate()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-animate-code">Show code</button></header><pre id="chartistsvg-function-animate-code">
+    <code class="javascript">function animate(animations, guided, eventEmitter) {
+    if(guided === undefined) {
+      guided = true;
+    }
+
+    Object.keys(animations).forEach(function createAnimateForAttributes(attribute) {
+
+      function createAnimate(animationDefinition, guided) {
+        var attributeProperties = {},
+          animate,
+          easing;
+
+        // Check if an easing is specified in the definition object and delete it from the object as it will not
+        // be part of the animate element attributes.
+        if(animationDefinition.easing) {
+          // If already an easing Bézier curve array we take it or we lookup a easing array in the Easing object
+          easing = animationDefinition.easing instanceof Array ?
+            animationDefinition.easing :
+            Chartist.Svg.Easing[animationDefinition.easing];
+          delete animationDefinition.easing;
+        }
+
+        // Adding &quot;fill: freeze&quot; if we are in guided mode and set initial attribute values
+        if(guided) {
+          animationDefinition.fill = &#x27;freeze&#x27;;
+          // Animated property on our element should already be set to the animation from value in guided mode
+          attributeProperties[attribute] = animationDefinition.from;
+          this.attr(attributeProperties);
+        }
+
+        if(easing) {
+          animationDefinition.calcMode = &#x27;spline&#x27;;
+          animationDefinition.keySplines = easing.join(&#x27; &#x27;);
+          animationDefinition.keyTimes = &#x27;0;1&#x27;;
+        }
+
+        // If numeric dur or begin was provided we assume milli seconds
+        animationDefinition.begin = Chartist.ensureUnit(animationDefinition.begin, &#x27;ms&#x27;);
+        animationDefinition.dur = Chartist.ensureUnit(animationDefinition.dur, &#x27;ms&#x27;);
+
+        animate = this.elem(&#x27;animate&#x27;, Chartist.extend({
+          attributeName: attribute
+        }, animationDefinition));
+
+        if(eventEmitter) {
+          animate._node.addEventListener(&#x27;beginEvent&#x27;, function handleBeginEvent() {
+            eventEmitter.emit(&#x27;animationBegin&#x27;, {
+              element: this,
+              animate: animate._node,
+              params: animationDefinition
+            });
+          }.bind(this));
+        }
+
+        animate._node.addEventListener(&#x27;endEvent&#x27;, function handleEndEvent() {
+          if(eventEmitter) {
+            eventEmitter.emit(&#x27;animationEnd&#x27;, {
+              element: this,
+              animate: animate._node,
+              params: animationDefinition
+            });
+          }
+
+          if(guided) {
+            // Set animated attribute to current animated value
+            attributeProperties[attribute] = animationDefinition.to;
+            this.attr(attributeProperties);
+            // Remove the animate element as it&#x27;s no longer required
+            animate.remove();
+          }
+        }.bind(this));
+      }
+
+      // If current attribute is an array of definition objects we create an animate for each and disable guided mode
+      if(animations[attribute] instanceof Array) {
+        animations[attribute].forEach(function(animationDefinition) {
+          createAnimate.bind(this)(animationDefinition, false);
+        }.bind(this));
+      } else {
+        createAnimate.bind(this)(animations[attribute], guided);
+      }
+
+    }.bind(this));
+
+    return this;
+  }
+
+  Chartist.Svg = Chartist.Class.extend({
+    constructor: Svg,
+    attr: attr,
+    elem: elem,
+    foreignObject: foreignObject,
+    text: text,
+    empty: empty,
+    remove: remove,
+    replace: replace,
+    append: append,
+    classes: classes,
+    addClass: addClass,
+    removeClass: removeClass,
+    removeAllClasses: removeAllClasses,
+    height: height,
+    width: width,
+    animate: animate
+  });</code>
+  </pre><div class="member-content"><div class="description"><p>The animate function lets you animate the current element with SMIL animations. You can add animations for multiple attributes at the same time by using an animation definition object. This object should contain SMIL animation attributes. Please refer to <a href="http://www.w3.org/TR/SVG/animate.html">http://www.w3.org/TR/SVG/animate.html</a> for a detailed specification about the available animation attributes. Additionally an easing property can be passed in the animation definition object. This can be a string with a name of an easing function in <code>Chartist.Svg.Easing</code> or an array with four values specifying a cubic Bézier curve.<br><strong>An animations object could look like this:</strong></p><pre><code class="lang-javascript">element.animate({
+  opacity: {
+    dur: 1000,
+    from: 0,
+    to: 1
+  },
+  x1: {
+    dur: &#39;1000ms&#39;,
+    from: 100,
+    to: 200,
+    easing: &#39;easeOutQuart&#39;
+  },
+  y1: {
+    dur: &#39;2s&#39;,
+    from: 0,
+    to: 100
+  }
+});
+</code></pre><p><strong>Automatic unit conversion</strong><br>For the <code>dur</code> and the <code>begin</code> animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.<br><strong>Guided mode</strong><br>The default behavior of SMIL animations with offset using the <code>begin</code> attribute, is that the attribute will keep it&#39;s original value until the animation starts. Mostly this behavior is not desired as you&#39;d like to have your element attributes already initialized with the animation <code>from</code> value even before the animation starts. Also if you don&#39;t specify <code>fill=&quot;freeze&quot;</code> on an animate element or if you delete the animation after it&#39;s done (which is done in guided mode) the attribute will switch back to the initial value. This behavior is also not desired when performing simple one-time animations. If you&#39;re using multiple SMIL definition objects for an attribute (in an array), guided mode will be disabled for this attribute, even if you explicitly enabled it.<br>If guided mode is enabled the following behavior is added:</p><ul><li>Before the animation starts (even when delayed with <code>begin</code>) the animated attribute will be set already to the <code>from</code> value of the animation</li><li>The animate element will be forced to use <code>fill=&quot;freeze&quot;</code></li><li>After the animation the element attribute value will be set to the <code>to</code> value of the animation</li><li>The animate element is deleted from the DOM</li></ul></div><h6>Parameters</h6><div class="param"><code>animations</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An animations object where the property keys are the attributes you&#x27;d like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.</div></div><div class="param"><code>guided</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">If specified, this event emitter will be notified when an animation starts or ends.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistsvg-method-issupported"><span class="member-tag">method</span> Chartist.Svg.isSupported()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-method-issupported-code">Show code</button></header><pre id="chartistsvg-method-issupported-code">
     <code class="javascript">Chartist.Svg.isSupported = function(feature) {
     return document.implementation.hasFeature(&#x27;www.http://w3.org/TR/SVG11/feature#&#x27; + feature, &#x27;1.1&#x27;);
+  };</code>
+  </pre><div class="member-content"><div class="description"><p>This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check <a href="http://www.w3.org/TR/SVG11/feature">http://www.w3.org/TR/SVG11/feature</a> for a detailed list.</p></div><h6>Parameters</h6><div class="param"><code>feature</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The SVG 1.1 feature that should be checked for support.</div></div></div></article><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistsvg-declaration-easingcubicbeziers"><span class="member-tag">declaration</span> easingCubicBeziers</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-declaration-easingcubicbeziers-code">Show code</button></header><pre id="chartistsvg-declaration-easingcubicbeziers-code">
+    <code class="javascript">var easingCubicBeziers = {
+    easeInSine: [0.47, 0, 0.745, 0.715],
+    easeOutSine: [0.39, 0.575, 0.565, 1],
+    easeInOutSine: [0.445, 0.05, 0.55, 0.95],
+    easeInQuad: [0.55, 0.085, 0.68, 0.53],
+    easeOutQuad: [0.25, 0.46, 0.45, 0.94],
+    easeInOutQuad: [0.455, 0.03, 0.515, 0.955],
+    easeInCubic: [0.55, 0.055, 0.675, 0.19],
+    easeOutCubic: [0.215, 0.61, 0.355, 1],
+    easeInOutCubic: [0.645, 0.045, 0.355, 1],
+    easeInQuart: [0.895, 0.03, 0.685, 0.22],
+    easeOutQuart: [0.165, 0.84, 0.44, 1],
+    easeInOutQuart: [0.77, 0, 0.175, 1],
+    easeInQuint: [0.755, 0.05, 0.855, 0.06],
+    easeOutQuint: [0.23, 1, 0.32, 1],
+    easeInOutQuint: [0.86, 0, 0.07, 1],
+    easeInExpo: [0.95, 0.05, 0.795, 0.035],
+    easeOutExpo: [0.19, 1, 0.22, 1],
+    easeInOutExpo: [1, 0, 0, 1],
+    easeInCirc: [0.6, 0.04, 0.98, 0.335],
+    easeOutCirc: [0.075, 0.82, 0.165, 1],
+    easeInOutCirc: [0.785, 0.135, 0.15, 0.86],
+    easeInBack: [0.6, -0.28, 0.735, 0.045],
+    easeOutBack: [0.175, 0.885, 0.32, 1.275],
+    easeInOutBack: [0.68, -0.55, 0.265, 1.55]
   };
 
+  Chartist.Svg.Easing = easingCubicBeziers;
+
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check <a href="http://www.w3.org/TR/SVG11/feature">http://www.w3.org/TR/SVG11/feature</a> for a detailed list.</p></div><h6>Parameters</h6><div class="param"><code>feature</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The SVG 1.1 feature that should be checked for support.</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  </pre><div class="member-content"><div class="description"><p>This Object contains some standard easing cubic bezier curves. Then can be used with their name in the <code>Chartist.Svg.animate</code>. You can also extend the list and use your own name in the <code>animate</code> function. Click the show code button to see the available bezier functions.</p></div></div></article></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
