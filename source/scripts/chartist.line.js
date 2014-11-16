@@ -157,19 +157,35 @@
           areaPathElements.push('L' + pathCoordinates[pathCoordinates.length - 2] + ',' + areaBaseProjected.y);
 
           // Create the new path for the area shape with the area class from the options
-          seriesGroups[i].elem('path', {
+          var area = seriesGroups[i].elem('path', {
             d: areaPathElements.join('')
           }, options.classNames.area, true).attr({
             'values': normalizedData[i]
           }, Chartist.xmlNs.uri);
+
+          this.eventEmitter.emit('draw', {
+            type: 'area',
+            values: normalizedData[i],
+            index: i,
+            group: seriesGroups[i],
+            element: area
+          });
         }
 
         if(options.showLine) {
-          seriesGroups[i].elem('path', {
+          var line = seriesGroups[i].elem('path', {
             d: pathElements.join('')
           }, options.classNames.line, true).attr({
             'values': normalizedData[i]
           }, Chartist.xmlNs.uri);
+
+          this.eventEmitter.emit('draw', {
+            type: 'line',
+            values: normalizedData[i],
+            index: i,
+            group: seriesGroups[i],
+            element: line
+          });
         }
       }
     }
