@@ -70,6 +70,7 @@
     this.responsiveOptions = responsiveOptions;
     this.eventEmitter = Chartist.EventEmitter();
     this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
+    this.supportsAnimations = Chartist.Svg.isSupported('AnimationEventsAttribute');
     this.resizeListener = function resizeListener(){
       this.update();
     }.bind(this);
