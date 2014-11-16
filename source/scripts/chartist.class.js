@@ -53,7 +53,7 @@
    * var banana = new Banana(20, 40);
    * console.log('banana instanceof Fruit', banana instanceof Fruit);
    * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
-   * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+   * console.log('bananas prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
    * console.log(banana.sugar);
    * console.log(banana.eat().sugar);
    * console.log(banana.color);
@@ -121,7 +121,7 @@
    * var banana = new Banana(20, 40);
    * console.log('banana instanceof Fruit', banana instanceof Fruit);
    * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
-   * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+   * console.log('bananas prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
    * console.log(banana.sugar);
    * console.log(banana.eat().sugar);
    * console.log(banana.color);
@@ -163,7 +163,7 @@
    * var banana = new Banana(20, 40);
    * console.log('banana instanceof Fruit', banana instanceof Fruit);
    * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
-   * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+   * console.log('bananas prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
    * console.log(banana.sugar);
    * console.log(banana.eat().sugar);
    * console.log(banana.color);
