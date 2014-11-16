@@ -29,6 +29,12 @@
   .description {
     margin-top: 1em;
     margin-bottom: 2em;
+
+    strong {
+      display: inline-block;
+      padding-top: 1em;
+      padding-bottom: 0.5em;
+    }
   }
 
   .member-title {
