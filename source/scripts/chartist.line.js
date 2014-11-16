@@ -144,7 +144,7 @@
         if(options.showArea) {
           // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
           // the area is not drawn outside the chart area.
-          var areaBase = Math.max(Math.min(options.areaBase, bounds.high), bounds.low);
+          var areaBase = Math.max(Math.min(options.areaBase, bounds.max), bounds.min);
 
           // If we need to draw area shapes we just make a copy of our pathElements SVG path array
           var areaPathElements = pathElements.slice();
