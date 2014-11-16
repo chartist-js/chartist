@@ -54,17 +54,34 @@ Chartist.version = '0.3.1';
   };
 
   /**
-   * Converts a string to a number while removing the unit px if present. If a number is passed then this will be returned unmodified.
+   * Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.
    *
-   * @param {String|Number} length
-   * @returns {Number} Returns the pixel as number or NaN if the passed length could not be converted to pixel
+   * @memberof Chartist.Core
+   * @param {String|Number} value
+   * @returns {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
    */
-  Chartist.getPixelLength = function(length) {
-    if(typeof length === 'string') {
-      length = length.replace(/px/i, '');
+  Chartist.stripUnit = function(value) {
+    if(typeof value === 'string') {
+      value = value.replace(/[^0-9\+-\.]/, '');
     }
 
-    return +length;
+    return +value;
+  };
+
+  /**
+   * Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.
+   *
+   * @memberof Chartist.Core
+   * @param {Number} value
+   * @param {String} unit
+   * @returns {String} Returns the passed number value with unit.
+   */
+  Chartist.ensureUnit = function(value, unit) {
+    if(typeof value === 'number') {
+      value = value + unit;
+    }
+
+    return value;
   };
 
   /**
@@ -195,7 +212,7 @@ Chartist.version = '0.3.1';
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return Math.max((Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
+    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
   };
 
   /**
@@ -352,8 +369,8 @@ Chartist.version = '0.3.1';
 
     return {
       x1: options.chartPadding + yOffset,
-      y1: Math.max((Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
-      x2: Math.max((Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
+      y1: Math.max((Chartist.stripUnit(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
+      x2: Math.max((Chartist.stripUnit(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
       y2: options.chartPadding,
       width: function () {
         return this.x2 - this.x1;
