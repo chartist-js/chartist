@@ -10,7 +10,7 @@
     }
 }(this, function() {
 
-  /* Chartist.js 0.3.1
+  /* Chartist.js 0.4.0
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -71,17 +71,34 @@
     };
 
     /**
-     * Converts a string to a number while removing the unit px if present. If a number is passed then this will be returned unmodified.
+     * Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.
      *
-     * @param {String|Number} length
-     * @returns {Number} Returns the pixel as number or NaN if the passed length could not be converted to pixel
+     * @memberof Chartist.Core
+     * @param {String|Number} value
+     * @returns {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
      */
-    Chartist.getPixelLength = function(length) {
-      if(typeof length === 'string') {
-        length = length.replace(/px/i, '');
+    Chartist.stripUnit = function(value) {
+      if(typeof value === 'string') {
+        value = value.replace(/[^0-9\+-\.]/, '');
       }
 
-      return +length;
+      return +value;
+    };
+
+    /**
+     * Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.
+     *
+     * @memberof Chartist.Core
+     * @param {Number} value
+     * @param {String} unit
+     * @returns {String} Returns the passed number value with unit.
+     */
+    Chartist.ensureUnit = function(value, unit) {
+      if(typeof value === 'number') {
+        value = value + unit;
+      }
+
+      return value;
     };
 
     /**
@@ -111,30 +128,21 @@
       width = width || '100%';
       height = height || '100%';
 
-      // If already contains our svg object we clear it, set width / height and return
-      if (container.chartistSvg !== undefined) {
-        svg = container.chartistSvg.attr({
-          width: width,
-          height: height
-        }).removeAllClasses().addClass(className).attr({
-          style: 'width: ' + width + '; height: ' + height + ';'
-        });
-        // Clear the draw if its already used before so we start fresh
-        svg.empty();
-
-      } else {
-        // Create svg object with width and height or use 100% as default
-        svg = Chartist.Svg('svg').attr({
-          width: width,
-          height: height
-        }).addClass(className).attr({
-          style: 'width: ' + width + '; height: ' + height + ';'
-        });
-
-        // Add the DOM node to our container
-        container.appendChild(svg._node);
-        container.chartistSvg = svg;
+      svg = container.querySelector('svg');
+      if(svg) {
+        container.removeChild(svg);
       }
+
+      // Create svg object with width and height or use 100% as default
+      svg = new Chartist.Svg('svg').attr({
+        width: width,
+        height: height
+      }).addClass(className).attr({
+        style: 'width: ' + width + '; height: ' + height + ';'
+      });
+
+      // Add the DOM node to our container
+      container.appendChild(svg._node);
 
       return svg;
     };
@@ -221,7 +229,7 @@
      * @return {Number} The height of the area in the chart for the data series
      */
     Chartist.getAvailableHeight = function (svg, options) {
-      return Math.max((Chartist.getPixelLength(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
+      return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
     };
 
     /**
@@ -329,7 +337,7 @@
           newMin += bounds.step;
         }
 
-        if (i - bounds.step > bounds.high) {
+        if (i - bounds.step >= bounds.high) {
           newMax -= bounds.step;
         }
       }
@@ -378,8 +386,8 @@
 
       return {
         x1: options.chartPadding + yOffset,
-        y1: Math.max((Chartist.getPixelLength(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
-        x2: Math.max((Chartist.getPixelLength(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
+        y1: Math.max((Chartist.stripUnit(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
+        x2: Math.max((Chartist.stripUnit(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
         y2: options.chartPadding,
         width: function () {
           return this.x2 - this.x1;
@@ -655,6 +663,81 @@
       };
     };
 
+    //TODO: For arrays it would be better to take the sequence into account and try to minimize modify deltas
+    /**
+     * This method will analyze deltas recursively in two objects. The returned object will contain a __delta__ property
+     * where deltas for specific object properties can be found for the given object nesting level. For nested objects the
+     * resulting delta descriptor object will contain properties to reflect the nesting. Nested descriptor objects also
+     * contain a __delta__ property with the deltas of their level.
+     *
+     * @param {Object|Array} a Object that should be used to analyzed delta to object b
+     * @param {Object|Array} b The second object where the deltas from a should be analyzed
+     * @returns {Object} Delta descriptor object or null
+     */
+    Chartist.deltaDescriptor = function(a, b) {
+      var summary = {
+        added: 0,
+        removed: 0,
+        modified: 0
+      };
+
+      function findDeltasRecursively(a, b) {
+        var descriptor = {
+          __delta__: {}
+        };
+
+        // First check for removed and modified properties
+        Object.keys(a).forEach(function(property) {
+          if(!b.hasOwnProperty(property)) {
+            descriptor.__delta__[property] = {
+              type: 'remove',
+              property: property,
+              ours: a[property]
+            };
+            summary.removed++;
+          } else {
+            if(typeof a[property] === 'object') {
+              var subDescriptor = findDeltasRecursively(a[property], b[property]);
+              if(subDescriptor) {
+                descriptor[property] = subDescriptor;
+              }
+            } else {
+              if(a[property] !== b[property]) {
+                descriptor.__delta__[property] = {
+                  type: 'modify',
+                  property: property,
+                  ours: a[property],
+                  theirs: b[property]
+                };
+                summary.modified++;
+              }
+            }
+          }
+        });
+
+        // Check for added properties
+        Object.keys(b).forEach(function(property) {
+          if(!a.hasOwnProperty(property)) {
+            descriptor.__delta__[property] = {
+              type: 'added',
+              property: property,
+              theirs: b[property]
+            };
+            summary.added++;
+          }
+        });
+
+        return (Object.keys(descriptor).length !== 1 || Object.keys(descriptor.__delta__).length > 0) ? descriptor : null;
+      }
+
+      var delta = findDeltasRecursively(a, b);
+      if(delta) {
+        delta.__delta__.summary = summary;
+      }
+
+      return delta;
+    };
+
     //http://schepers.cc/getting-to-the-point
     Chartist.catmullRom2bezier = function (crp, z) {
       var d = [];
@@ -696,7 +779,8 @@
       return d;
     };
 
-  }(window, document, Chartist));;/**
+  }(window, document, Chartist));
+  ;/**
    * A very basic event module that helps to generate and catch events.
    *
    * @module Chartist.Event
@@ -757,6 +841,13 @@
             handler(data);
           });
         }
+
+        // Emit event to star event handlers
+        if(handlers['*']) {
+          handlers['*'].forEach(function(starHandler) {
+            starHandler(event, data);
+          });
+        }
       }
 
       return {
@@ -766,7 +857,8 @@
       };
     };
 
-  }(window, document, Chartist));;/**
+  }(window, document, Chartist));
+  ;/**
    * This module provides some basic prototype inheritance utilities.
    *
    * @module Chartist.Class
@@ -821,7 +913,7 @@
      * var banana = new Banana(20, 40);
      * console.log('banana instanceof Fruit', banana instanceof Fruit);
      * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
-     * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+     * console.log('bananas prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
      * console.log(banana.sugar);
      * console.log(banana.eat().sugar);
      * console.log(banana.color);
@@ -889,7 +981,7 @@
      * var banana = new Banana(20, 40);
      * console.log('banana instanceof Fruit', banana instanceof Fruit);
      * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
-     * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+     * console.log('bananas prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
      * console.log(banana.sugar);
      * console.log(banana.eat().sugar);
      * console.log(banana.color);
@@ -931,7 +1023,7 @@
      * var banana = new Banana(20, 40);
      * console.log('banana instanceof Fruit', banana instanceof Fruit);
      * console.log('Fruit is prototype of banana', Fruit.prototype.isPrototypeOf(banana));
-     * console.log('bananas\'s prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
+     * console.log('bananas prototype is Fruit', Object.getPrototypeOf(banana) === Fruit.prototype);
      * console.log(banana.sugar);
      * console.log(banana.eat().sugar);
      * console.log(banana.color);
@@ -982,7 +1074,8 @@
       cloneDefinitions: cloneDefinitions
     };
 
-  }(window, document, Chartist));;/**
+  }(window, document, Chartist));
+  ;/**
    * Base for all chart types. The methods in Chartist.Base are inherited to all chart types.
    *
    * @module Chartist.Base
@@ -1012,7 +1105,7 @@
      * @memberof Chartist.Base
      */
     function detach() {
-      window.removeEventListener('resize', this.update);
+      window.removeEventListener('resize', this.resizeListener);
       this.optionsProvider.removeMediaQueryListeners();
     }
 
@@ -1054,8 +1147,21 @@
       this.responsiveOptions = responsiveOptions;
       this.eventEmitter = Chartist.EventEmitter();
       this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
+      this.supportsAnimations = Chartist.Svg.isSupported('AnimationEventsAttribute');
+      this.resizeListener = function resizeListener(){
+        this.update();
+      }.bind(this);
 
-      window.addEventListener('resize', this.update.bind(this));
+      if(this.container) {
+        // If chartist was already initialized in this container we are detaching all event listeners first
+        if(this.container.__chartist__) {
+          this.container.__chartist__.detach();
+        }
+
+        this.container.__chartist__ = this;
+      }
+
+      window.addEventListener('resize', this.resizeListener);
 
       // Using event loop for first draw to make it possible to register event listeners in the same call stack where
       // the chart was created.
@@ -1086,7 +1192,8 @@
       supportsForeignObject: false
     });
 
-  }(window, document, Chartist));;/**
+  }(window, document, Chartist));
+  ;/**
    * Chartist SVG module for simple SVG DOM abstraction
    *
    * @module Chartist.Svg
@@ -1094,6 +1201,10 @@
   /* global Chartist */
   (function(window, document, Chartist) {
     'use strict';
+
+    var svgNs = 'http://www.w3.org/2000/svg',
+      xmlNs = 'http://www.w3.org/2000/xmlns/',
+      xhtmlNs = 'http://www.w3.org/1999/xhtml';
 
     Chartist.xmlNs = {
       qualifiedName: 'xmlns:ct',
@@ -1112,301 +1223,395 @@
      * @param {Boolean} insertFirst If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element
      * @returns {Object} Returns a Chartist.Svg wrapper object that can be used to modify the containing SVG data
      */
-    Chartist.Svg = function(name, attributes, className, parent, insertFirst) {
+    function Svg(name, attributes, className, parent, insertFirst) {
+      this._node = document.createElementNS(svgNs, name);
 
-      var svgNs = 'http://www.w3.org/2000/svg',
-        xmlNs = 'http://www.w3.org/2000/xmlns/',
-        xhtmlNs = 'http://www.w3.org/1999/xhtml';
-
-      /**
-       * Set attributes on the current SVG element of the wrapper you're currently working on.
-       *
-       * @memberof Chartist.Svg
-       * @param {Object} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
-       * @param {String} ns If specified, the attributes will be set as namespace attributes with ns as prefix.
-       * @returns {Object} The current wrapper object will be returned so it can be used for chaining.
-       */
-      function attr(node, attributes, ns) {
-        Object.keys(attributes).forEach(function(key) {
-          // If the attribute value is undefined we can skip this one
-          if(attributes[key] === undefined) {
-            return;
-          }
-
-          if(ns) {
-            node.setAttributeNS(ns, [Chartist.xmlNs.prefix, ':', key].join(''), attributes[key]);
-          } else {
-            node.setAttribute(key, attributes[key]);
-          }
-        });
-
-        return node;
+      // If this is an SVG element created then custom namespace
+      if(name === 'svg') {
+        this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
       }
 
-      /**
-       * Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.
-       *
-       * @memberof Chartist.Svg
-       * @param {String} name The name of the SVG element that should be created as child element of the currently selected element wrapper
-       * @param {Object} [attributes] An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
-       * @param {String} [className] This class or class list will be added to the SVG element
-       * @param {Boolean} [insertFirst] If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element
-       * @returns {Object} Returns a Chartist.Svg wrapper object that can be used to modify the containing SVG data
-       */
-      function elem(name, attributes, className, parentNode, insertFirst) {
-        var node = document.createElementNS(svgNs, name);
-
-        // If this is an SVG element created then custom namespace
-        if(name === 'svg') {
-          node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
-        }
-
-        if(parentNode) {
-          if(insertFirst && parentNode.firstChild) {
-            parentNode.insertBefore(node, parentNode.firstChild);
-          } else {
-            parentNode.appendChild(node);
-          }
-        }
-
-        if(attributes) {
-          attr(node, attributes);
-        }
-
-        if(className) {
-          addClass(node, className);
-        }
-
-        return node;
+      if(attributes) {
+        this.attr(attributes);
       }
 
-      /**
-       * This method creates a foreignObject (see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.
-       *
-       * @memberof Chartist.Svg
-       * @param {Node|String} content The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject
-       * @param {String} [attributes] An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.
-       * @param {String} [className] This class or class list will be added to the SVG element
-       * @param {Boolean} [insertFirst] Specifies if the foreignObject should be inserted as first child
-       * @returns {Object} New wrapper object that wraps the foreignObject element
-       */
-      function foreignObject(content, attributes, className, parent, insertFirst) {
-        // If content is string then we convert it to DOM
-        // TODO: Handle case where content is not a string nor a DOM Node
-        if(typeof content === 'string') {
-          var container = document.createElement('div');
-          container.innerHTML = content;
-          content = container.firstChild;
-        }
-
-        // Adding namespace to content element
-        content.setAttribute('xmlns', xhtmlNs);
-
-        // Creating the foreignObject without required extension attribute (as described here
-        // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
-        var fnObj = parent.elem('foreignObject', attributes, className, insertFirst);
-
-        // Add content to foreignObjectElement
-        fnObj._node.appendChild(content);
-
-        return fnObj;
+      if(className) {
+        this.addClass(className);
       }
 
-      /**
-       * This method adds a new text element to the current Chartist.Svg wrapper.
-       *
-       * @memberof Chartist.Svg
-       * @param {String} t The text that should be added to the text element that is created
-       * @returns {Object} The same wrapper object that was used to add the newly created element
-       */
-      function text(node, t) {
-        node.appendChild(document.createTextNode(t));
-      }
-
-      /**
-       * This method will clear all child nodes of the current wrapper object.
-       *
-       * @memberof Chartist.Svg
-       * @returns {Object} The same wrapper object that got emptied
-       */
-      function empty(node) {
-        while (node.firstChild) {
-          node.removeChild(node.firstChild);
-        }
-      }
-
-      /**
-       * This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you'd like to get rid of an element in a given DOM structure.
-       *
-       * @memberof Chartist.Svg
-       * @returns {Object} The parent wrapper object of the element that got removed
-       */
-      function remove(node) {
-        node.parentNode.removeChild(node);
-      }
-
-      /**
-       * This method will replace the element with a new element that can be created outside of the current DOM.
-       *
-       * @memberof Chartist.Svg
-       * @param {Object} newElement The new wrapper object that will be used to replace the current wrapper object
-       * @returns {Object} The wrapper of the new element
-       */
-      function replace(node, newChild) {
-        node.parentNode.replaceChild(newChild, node);
-      }
-
-      /**
-       * This method will append an element to the current element as a child.
-       *
-       * @memberof Chartist.Svg
-       * @param {Object} element The element that should be added as a child
-       * @param {Boolean} [insertFirst] Specifies if the element should be inserted as first child
-       * @returns {Object} The wrapper of the appended object
-       */
-      function append(node, child, insertFirst) {
-        if(insertFirst && node.firstChild) {
-          node.insertBefore(child, node.firstChild);
+      if(parent) {
+        if (insertFirst && parent._node.firstChild) {
+          parent._node.insertBefore(this._node, parent._node.firstChild);
         } else {
-          node.appendChild(child);
+          parent._node.appendChild(this._node);
         }
+
+        this._parent = parent;
       }
+    }
 
-      /**
-       * Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.
-       *
-       * @memberof Chartist.Svg
-       * @returns {Array} A list of classes or an empty array if there are no classes on the current element
-       */
-      function classes(node) {
-        return node.getAttribute('class') ? node.getAttribute('class').trim().split(/\s+/) : [];
-      }
-
-      /**
-       * Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.
-       *
-       * @memberof Chartist.Svg
-       * @param {String} names A white space separated list of class names
-       * @returns {Object} The wrapper of the current element
-       */
-      function addClass(node, names) {
-        node.setAttribute('class',
-          classes(node)
-            .concat(names.trim().split(/\s+/))
-            .filter(function(elem, pos, self) {
-              return self.indexOf(elem) === pos;
-            }).join(' ')
-        );
-      }
-
-      /**
-       * Removes one or a space separated list of classes from the current element.
-       *
-       * @memberof Chartist.Svg
-       * @param {String} names A white space separated list of class names
-       * @returns {Object} The wrapper of the current element
-       */
-      function removeClass(node, names) {
-        var removedClasses = names.trim().split(/\s+/);
-
-        node.setAttribute('class', classes(node).filter(function(name) {
-          return removedClasses.indexOf(name) === -1;
-        }).join(' '));
-      }
-
-      /**
-       * Removes all classes from the current element.
-       *
-       * @memberof Chartist.Svg
-       * @returns {Object} The wrapper of the current element
-       */
-      function removeAllClasses(node) {
-        node.setAttribute('class', '');
-      }
-
-      /**
-       * Get element height with fallback to svg BoundingBox or parent container dimensions:
-       * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
-       *
-       * @memberof Chartist.Svg
-       * @return {Number} The elements height in pixels
-       */
-      function height(node) {
-        return node.clientHeight || Math.round(node.getBBox().height) || node.parentNode.clientHeight;
-      }
-
-      /**
-       * Get element width with fallback to svg BoundingBox or parent container dimensions:
-       * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
-       *
-       * @memberof Chartist.Core
-       * @return {Number} The elements width in pixels
-       */
-      function width(node) {
-        return node.clientWidth || Math.round(node.getBBox().width) || node.parentNode.clientWidth;
-      }
-
-      return {
-        _node: elem(name, attributes, className, parent ? parent._node : undefined, insertFirst),
-        _parent: parent,
-        parent: function() {
-          return this._parent;
-        },
-        attr: function(attributes, ns) {
-          attr(this._node, attributes, ns);
-          return this;
-        },
-        empty: function() {
-          empty(this._node);
-          return this;
-        },
-        remove: function() {
-          remove(this._node);
-          return this.parent();
-        },
-        replace: function(newElement) {
-          newElement._parent = this._parent;
-          replace(this._node, newElement._node);
-          return newElement;
-        },
-        append: function(element, insertFirst) {
-          element._parent = this;
-          append(this._node, element._node, insertFirst);
-          return element;
-        },
-        elem: function(name, attributes, className, insertFirst) {
-          return Chartist.Svg(name, attributes, className, this, insertFirst);
-        },
-        foreignObject: function(content, attributes, className, insertFirst) {
-          return foreignObject(content, attributes, className, this, insertFirst);
-        },
-        text: function(t) {
-          text(this._node, t);
-          return this;
-        },
-        addClass: function(names) {
-          addClass(this._node, names);
-          return this;
-        },
-        removeClass: function(names) {
-          removeClass(this._node, names);
-          return this;
-        },
-        removeAllClasses: function() {
-          removeAllClasses(this._node);
-          return this;
-        },
-        classes: function() {
-          return classes(this._node);
-        },
-        height: function() {
-          return height(this._node);
-        },
-        width: function() {
-          return width(this._node);
+    /**
+     * Set attributes on the current SVG element of the wrapper you're currently working on.
+     *
+     * @memberof Chartist.Svg
+     * @param {Object} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
+     * @param {String} ns If specified, the attributes will be set as namespace attributes with ns as prefix.
+     * @returns {Object} The current wrapper object will be returned so it can be used for chaining.
+     */
+    function attr(attributes, ns) {
+      Object.keys(attributes).forEach(function(key) {
+        // If the attribute value is undefined we can skip this one
+        if(attributes[key] === undefined) {
+          return;
         }
-      };
-    };
+
+        if(ns) {
+          this._node.setAttributeNS(ns, [Chartist.xmlNs.prefix, ':', key].join(''), attributes[key]);
+        } else {
+          this._node.setAttribute(key, attributes[key]);
+        }
+      }.bind(this));
+
+      return this;
+    }
+
+    /**
+     * Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.
+     *
+     * @memberof Chartist.Svg
+     * @param {String} name The name of the SVG element that should be created as child element of the currently selected element wrapper
+     * @param {Object} [attributes] An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
+     * @param {String} [className] This class or class list will be added to the SVG element
+     * @param {Boolean} [insertFirst] If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element
+     * @returns {Object} Returns a Chartist.Svg wrapper object that can be used to modify the containing SVG data
+     */
+    function elem(name, attributes, className, insertFirst) {
+      return new Chartist.Svg(name, attributes, className, this, insertFirst);
+    }
+
+    /**
+     * This method creates a foreignObject (see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.
+     *
+     * @memberof Chartist.Svg
+     * @param {Node|String} content The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject
+     * @param {String} [attributes] An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.
+     * @param {String} [className] This class or class list will be added to the SVG element
+     * @param {Boolean} [insertFirst] Specifies if the foreignObject should be inserted as first child
+     * @returns {Object} New wrapper object that wraps the foreignObject element
+     */
+    function foreignObject(content, attributes, className, insertFirst) {
+      // If content is string then we convert it to DOM
+      // TODO: Handle case where content is not a string nor a DOM Node
+      if(typeof content === 'string') {
+        var container = document.createElement('div');
+        container.innerHTML = content;
+        content = container.firstChild;
+      }
+
+      // Adding namespace to content element
+      content.setAttribute('xmlns', xhtmlNs);
+
+      // Creating the foreignObject without required extension attribute (as described here
+      // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
+      var fnObj = this.elem('foreignObject', attributes, className, insertFirst);
+
+      // Add content to foreignObjectElement
+      fnObj._node.appendChild(content);
+
+      return fnObj;
+    }
+
+    /**
+     * This method adds a new text element to the current Chartist.Svg wrapper.
+     *
+     * @memberof Chartist.Svg
+     * @param {String} t The text that should be added to the text element that is created
+     * @returns {Object} The same wrapper object that was used to add the newly created element
+     */
+    function text(t) {
+      this._node.appendChild(document.createTextNode(t));
+      return this;
+    }
+
+    /**
+     * This method will clear all child nodes of the current wrapper object.
+     *
+     * @memberof Chartist.Svg
+     * @returns {Object} The same wrapper object that got emptied
+     */
+    function empty() {
+      while (this._node.firstChild) {
+        this._node.removeChild(this._node.firstChild);
+      }
+
+      return this;
+    }
+
+    /**
+     * This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you'd like to get rid of an element in a given DOM structure.
+     *
+     * @memberof Chartist.Svg
+     * @returns {Object} The parent wrapper object of the element that got removed
+     */
+    function remove() {
+      this._node.parentNode.removeChild(this._node);
+      return this._parent;
+    }
+
+    /**
+     * This method will replace the element with a new element that can be created outside of the current DOM.
+     *
+     * @memberof Chartist.Svg
+     * @param {Object} newElement The new Chartist.Svg object that will be used to replace the current wrapper object
+     * @returns {Object} The wrapper of the new element
+     */
+    function replace(newElement) {
+      this._node.parentNode.replaceChild(newElement._node, this._node);
+      newElement._parent = this._parent;
+      this._parent = null;
+      return newElement;
+    }
+
+    /**
+     * This method will append an element to the current element as a child.
+     *
+     * @memberof Chartist.Svg
+     * @param {Object} element The Chartist.Svg element that should be added as a child
+     * @param {Boolean} [insertFirst] Specifies if the element should be inserted as first child
+     * @returns {Object} The wrapper of the appended object
+     */
+    function append(element, insertFirst) {
+      if(insertFirst && this._node.firstChild) {
+        this._node.insertBefore(element._node, this._node.firstChild);
+      } else {
+        this._node.appendChild(element._node);
+      }
+
+      return this;
+    }
+
+    /**
+     * Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.
+     *
+     * @memberof Chartist.Svg
+     * @returns {Array} A list of classes or an empty array if there are no classes on the current element
+     */
+    function classes() {
+      return this._node.getAttribute('class') ? this._node.getAttribute('class').trim().split(/\s+/) : [];
+    }
+
+    /**
+     * Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.
+     *
+     * @memberof Chartist.Svg
+     * @param {String} names A white space separated list of class names
+     * @returns {Object} The wrapper of the current element
+     */
+    function addClass(names) {
+      this._node.setAttribute('class',
+        this.classes(this._node)
+          .concat(names.trim().split(/\s+/))
+          .filter(function(elem, pos, self) {
+            return self.indexOf(elem) === pos;
+          }).join(' ')
+      );
+
+      return this;
+    }
+
+    /**
+     * Removes one or a space separated list of classes from the current element.
+     *
+     * @memberof Chartist.Svg
+     * @param {String} names A white space separated list of class names
+     * @returns {Object} The wrapper of the current element
+     */
+    function removeClass(names) {
+      var removedClasses = names.trim().split(/\s+/);
+
+      this._node.setAttribute('class', this.classes(this._node).filter(function(name) {
+        return removedClasses.indexOf(name) === -1;
+      }).join(' '));
+
+      return this;
+    }
+
+    /**
+     * Removes all classes from the current element.
+     *
+     * @memberof Chartist.Svg
+     * @returns {Object} The wrapper of the current element
+     */
+    function removeAllClasses() {
+      this._node.setAttribute('class', '');
+    }
+
+    /**
+     * Get element height with fallback to svg BoundingBox or parent container dimensions:
+     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+     *
+     * @memberof Chartist.Svg
+     * @return {Number} The elements height in pixels
+     */
+    function height() {
+      return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
+    }
+
+    /**
+     * Get element width with fallback to svg BoundingBox or parent container dimensions:
+     * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+     *
+     * @memberof Chartist.Core
+     * @return {Number} The elements width in pixels
+     */
+    function width() {
+      return this._node.clientWidth || Math.round(this._node.getBBox().width) || this._node.parentNode.clientWidth;
+    }
+
+    /**
+     * The animate function lets you animate the current element with SMIL animations. You can add animations for multiple attributes at the same time by using an animation definition object. This object should contain SMIL animation attributes. Please refer to http://www.w3.org/TR/SVG/animate.html for a detailed specification about the available animation attributes. Additionally an easing property can be passed in the animation definition object. This can be a string with a name of an easing function in `Chartist.Svg.Easing` or an array with four values specifying a cubic Bézier curve.
+     * **An animations object could look like this:**
+     * ```javascript
+     * element.animate({
+     *   opacity: {
+     *     dur: 1000,
+     *     from: 0,
+     *     to: 1
+     *   },
+     *   x1: {
+     *     dur: '1000ms',
+     *     from: 100,
+     *     to: 200,
+     *     easing: 'easeOutQuart'
+     *   },
+     *   y1: {
+     *     dur: '2s',
+     *     from: 0,
+     *     to: 100
+     *   }
+     * });
+     * ```
+     * **Automatic unit conversion**
+     * For the `dur` and the `begin` animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.
+     * **Guided mode**
+     * The default behavior of SMIL animations with offset using the `begin` attribute, is that the attribute will keep it's original value until the animation starts. Mostly this behavior is not desired as you'd like to have your element attributes already initialized with the animation `from` value even before the animation starts. Also if you don't specify `fill="freeze"` on an animate element or if you delete the animation after it's done (which is done in guided mode) the attribute will switch back to the initial value. This behavior is also not desired when performing simple one-time animations. If you're using multiple SMIL definition objects for an attribute (in an array), guided mode will be disabled for this attribute, even if you explicitly enabled it.
+     * If guided mode is enabled the following behavior is added:
+     * - Before the animation starts (even when delayed with `begin`) the animated attribute will be set already to the `from` value of the animation
+     * - The animate element will be forced to use `fill="freeze"`
+     * - After the animation the element attribute value will be set to the `to` value of the animation
+     * - The animate element is deleted from the DOM
+     *
+     * @memberof Chartist.Svg
+     * @param {Object} animations An animations object where the property keys are the attributes you'd like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.
+     * @param {Boolean} guided Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.
+     * @param {Object} eventEmitter If specified, this event emitter will be notified when an animation starts or ends.
+     * @returns {Object} The current element where the animation was added
+     */
+    function animate(animations, guided, eventEmitter) {
+      if(guided === undefined) {
+        guided = true;
+      }
+
+      Object.keys(animations).forEach(function createAnimateForAttributes(attribute) {
+
+        function createAnimate(animationDefinition, guided) {
+          var attributeProperties = {},
+            animate,
+            easing;
+
+          // Check if an easing is specified in the definition object and delete it from the object as it will not
+          // be part of the animate element attributes.
+          if(animationDefinition.easing) {
+            // If already an easing Bézier curve array we take it or we lookup a easing array in the Easing object
+            easing = animationDefinition.easing instanceof Array ?
+              animationDefinition.easing :
+              Chartist.Svg.Easing[animationDefinition.easing];
+            delete animationDefinition.easing;
+          }
+
+          // Adding "fill: freeze" if we are in guided mode and set initial attribute values
+          if(guided) {
+            animationDefinition.fill = 'freeze';
+            // Animated property on our element should already be set to the animation from value in guided mode
+            attributeProperties[attribute] = animationDefinition.from;
+            this.attr(attributeProperties);
+          }
+
+          if(easing) {
+            animationDefinition.calcMode = 'spline';
+            animationDefinition.keySplines = easing.join(' ');
+            animationDefinition.keyTimes = '0;1';
+          }
+
+          // If numeric dur or begin was provided we assume milli seconds
+          animationDefinition.begin = Chartist.ensureUnit(animationDefinition.begin, 'ms');
+          animationDefinition.dur = Chartist.ensureUnit(animationDefinition.dur, 'ms');
+
+          animate = this.elem('animate', Chartist.extend({
+            attributeName: attribute
+          }, animationDefinition));
+
+          if(eventEmitter) {
+            animate._node.addEventListener('beginEvent', function handleBeginEvent() {
+              eventEmitter.emit('animationBegin', {
+                element: this,
+                animate: animate._node,
+                params: animationDefinition
+              });
+            }.bind(this));
+          }
+
+          animate._node.addEventListener('endEvent', function handleEndEvent() {
+            if(eventEmitter) {
+              eventEmitter.emit('animationEnd', {
+                element: this,
+                animate: animate._node,
+                params: animationDefinition
+              });
+            }
+
+            if(guided) {
+              // Set animated attribute to current animated value
+              attributeProperties[attribute] = animationDefinition.to;
+              this.attr(attributeProperties);
+              // Remove the animate element as it's no longer required
+              animate.remove();
+            }
+          }.bind(this));
+        }
+
+        // If current attribute is an array of definition objects we create an animate for each and disable guided mode
+        if(animations[attribute] instanceof Array) {
+          animations[attribute].forEach(function(animationDefinition) {
+            createAnimate.bind(this)(animationDefinition, false);
+          }.bind(this));
+        } else {
+          createAnimate.bind(this)(animations[attribute], guided);
+        }
+
+      }.bind(this));
+
+      return this;
+    }
+
+    Chartist.Svg = Chartist.Class.extend({
+      constructor: Svg,
+      attr: attr,
+      elem: elem,
+      foreignObject: foreignObject,
+      text: text,
+      empty: empty,
+      remove: remove,
+      replace: replace,
+      append: append,
+      classes: classes,
+      addClass: addClass,
+      removeClass: removeClass,
+      removeAllClasses: removeAllClasses,
+      height: height,
+      width: width,
+      animate: animate
+    });
 
     /**
      * This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check http://www.w3.org/TR/SVG11/feature for a detailed list.
@@ -1419,7 +1624,42 @@
       return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
     };
 
-  }(window, document, Chartist));;/**
+    /**
+     * This Object contains some standard easing cubic bezier curves. Then can be used with their name in the `Chartist.Svg.animate`. You can also extend the list and use your own name in the `animate` function. Click the show code button to see the available bezier functions.
+     *
+     * @memberof Chartist.Svg
+     */
+    var easingCubicBeziers = {
+      easeInSine: [0.47, 0, 0.745, 0.715],
+      easeOutSine: [0.39, 0.575, 0.565, 1],
+      easeInOutSine: [0.445, 0.05, 0.55, 0.95],
+      easeInQuad: [0.55, 0.085, 0.68, 0.53],
+      easeOutQuad: [0.25, 0.46, 0.45, 0.94],
+      easeInOutQuad: [0.455, 0.03, 0.515, 0.955],
+      easeInCubic: [0.55, 0.055, 0.675, 0.19],
+      easeOutCubic: [0.215, 0.61, 0.355, 1],
+      easeInOutCubic: [0.645, 0.045, 0.355, 1],
+      easeInQuart: [0.895, 0.03, 0.685, 0.22],
+      easeOutQuart: [0.165, 0.84, 0.44, 1],
+      easeInOutQuart: [0.77, 0, 0.175, 1],
+      easeInQuint: [0.755, 0.05, 0.855, 0.06],
+      easeOutQuint: [0.23, 1, 0.32, 1],
+      easeInOutQuint: [0.86, 0, 0.07, 1],
+      easeInExpo: [0.95, 0.05, 0.795, 0.035],
+      easeOutExpo: [0.19, 1, 0.22, 1],
+      easeInOutExpo: [1, 0, 0, 1],
+      easeInCirc: [0.6, 0.04, 0.98, 0.335],
+      easeOutCirc: [0.075, 0.82, 0.165, 1],
+      easeInOutCirc: [0.785, 0.135, 0.15, 0.86],
+      easeInBack: [0.6, -0.28, 0.735, 0.045],
+      easeOutBack: [0.175, 0.885, 0.32, 1.275],
+      easeInOutBack: [0.68, -0.55, 0.265, 1.55]
+    };
+
+    Chartist.Svg.Easing = easingCubicBeziers;
+
+  }(window, document, Chartist));
+  ;/**
    * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
    *
    * For examples on how to use the line chart please check the examples of the `Chartist.Line` method.
@@ -1450,7 +1690,7 @@
         showLabel: true,
         showGrid: true,
         labelInterpolationFnc: Chartist.noop,
-        scaleMinSpace: 30
+        scaleMinSpace: 20
       },
       width: undefined,
       height: undefined,
@@ -1565,7 +1805,7 @@
           if(options.showArea) {
             // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
             // the area is not drawn outside the chart area.
-            var areaBase = Math.max(Math.min(options.areaBase, bounds.high), bounds.low);
+            var areaBase = Math.max(Math.min(options.areaBase, bounds.max), bounds.min);
 
             // If we need to draw area shapes we just make a copy of our pathElements SVG path array
             var areaPathElements = pathElements.slice();
@@ -1578,22 +1818,45 @@
             areaPathElements.push('L' + pathCoordinates[pathCoordinates.length - 2] + ',' + areaBaseProjected.y);
 
             // Create the new path for the area shape with the area class from the options
-            seriesGroups[i].elem('path', {
+            var area = seriesGroups[i].elem('path', {
               d: areaPathElements.join('')
             }, options.classNames.area, true).attr({
               'values': normalizedData[i]
             }, Chartist.xmlNs.uri);
+
+            this.eventEmitter.emit('draw', {
+              type: 'area',
+              values: normalizedData[i],
+              index: i,
+              group: seriesGroups[i],
+              element: area
+            });
           }
 
           if(options.showLine) {
-            seriesGroups[i].elem('path', {
+            var line = seriesGroups[i].elem('path', {
               d: pathElements.join('')
             }, options.classNames.line, true).attr({
               'values': normalizedData[i]
             }, Chartist.xmlNs.uri);
+
+            this.eventEmitter.emit('draw', {
+              type: 'line',
+              values: normalizedData[i],
+              index: i,
+              group: seriesGroups[i],
+              element: line
+            });
           }
         }
       }
+
+      this.eventEmitter.emit('created', {
+        bounds: bounds,
+        chartRect: chartRect,
+        svg: this.svg,
+        options: options
+      });
     }
 
     /**
@@ -1778,7 +2041,7 @@
         showLabel: true,
         showGrid: true,
         labelInterpolationFnc: Chartist.noop,
-        scaleMinSpace: 30
+        scaleMinSpace: 20
       },
       width: undefined,
       height: undefined,
@@ -1871,6 +2134,13 @@
           });
         }
       }
+
+      this.eventEmitter.emit('created', {
+        bounds: bounds,
+        chartRect: chartRect,
+        svg: this.svg,
+        options: options
+      });
     }
 
     /**
@@ -2173,6 +2443,12 @@
         // (except for last slice)
         startAngle = endAngle;
       }
+
+      this.eventEmitter.emit('created', {
+        chartRect: chartRect,
+        svg: this.svg,
+        options: options
+      });
     }
 
     /**
