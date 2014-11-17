@@ -20,6 +20,7 @@
    */
   function update() {
     this.createChart(this.optionsProvider.currentOptions);
+    return this;
   }
 
   /**
@@ -30,6 +31,7 @@
   function detach() {
     window.removeEventListener('resize', this.resizeListener);
     this.optionsProvider.removeMediaQueryListeners();
+    return this;
   }
 
   /**
@@ -41,6 +43,7 @@
    */
   function on(event, handler) {
     this.eventEmitter.addEventHandler(event, handler);
+    return this;
   }
 
   /**
@@ -52,6 +55,7 @@
    */
   function off(event, handler) {
     this.eventEmitter.removeEventHandler(event, handler);
+    return this;
   }
 
   /**
