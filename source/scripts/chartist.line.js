@@ -44,11 +44,13 @@
     classNames: {
       chart: 'ct-chart-line',
       label: 'ct-label',
+      labelGroup: 'ct-labels',
       series: 'ct-series',
       line: 'ct-line',
       point: 'ct-point',
       area: 'ct-area',
       grid: 'ct-grid',
+      gridGroup: 'ct-grids',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal'
     }
@@ -67,8 +69,8 @@
 
     var chartRect = Chartist.createChartRect(this.svg, options);
     // Start drawing
-    var labels = this.svg.elem('g'),
-      grid = this.svg.elem('g');
+    var labels = this.svg.elem('g').addClass(options.classNames.labelGroup),
+      grid = this.svg.elem('g').addClass(options.classNames.gridGroup);
 
     Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
     Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
@@ -269,11 +271,13 @@
    *   classNames: {
    *     chart: 'ct-chart-line',
    *     label: 'ct-label',
+   *     labelGroup: 'ct-labels',
    *     series: 'ct-series',
    *     line: 'ct-line',
    *     point: 'ct-point',
    *     area: 'ct-area',
    *     grid: 'ct-grid',
+   *     gridGroup: 'ct-grids',
    *     vertical: 'ct-vertical',
    *     horizontal: 'ct-horizontal'
    *   }

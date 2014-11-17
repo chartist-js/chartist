@@ -38,9 +38,11 @@
     classNames: {
       chart: 'ct-chart-bar',
       label: 'ct-label',
+      labelGroup: 'ct-labels',
       series: 'ct-series',
       bar: 'ct-bar',
       grid: 'ct-grid',
+      gridGroup: 'ct-grids',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal'
     }
@@ -59,8 +61,8 @@
 
     var chartRect = Chartist.createChartRect(this.svg, options);
     // Start drawing
-    var labels = this.svg.elem('g'),
-      grid = this.svg.elem('g'),
+    var labels = this.svg.elem('g').addClass(options.classNames.labelGroup),
+      grid = this.svg.elem('g').addClass(options.classNames.gridGroup),
     // Projected 0 point
       zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
@@ -192,9 +194,11 @@
    *   classNames: {
    *     chart: 'ct-chart-bar',
    *     label: 'ct-label',
+   *     labelGroup: 'ct-labels',
    *     series: 'ct-series',
    *     bar: 'ct-bar',
    *     grid: 'ct-grid',
+   *     gridGroup: 'ct-grids',
    *     vertical: 'ct-vertical',
    *     horizontal: 'ct-horizontal'
    *   }
