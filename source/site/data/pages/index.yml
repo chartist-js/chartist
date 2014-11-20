@@ -202,6 +202,37 @@ sections:
                 - name: iOS Safari 7
                   status: supported
                   text: Supported
+
+  - title: Projects / Wrapper libraries
+    level: 4
+    items:
+      - type: text
+        data:
+          text: These projects and wrapper libraries are known to me right now that either use Chartist.js or wrap them into a library for usage in a framework. <strong>If you know other projects that use Chartist.js please let us know or make a <a href="https://github.com/gionkunz/chartist-js/blob/develop/source/site/data/pages/index.yml#L206" target="_blank">pull request for this file</a>.</strong>
+      - type: table
+        data:
+          id: chartist-projects-table
+          header:
+            - Project
+            - Type
+            - Website
+          rows:
+            -
+              - ng-chartist.js
+              - Angular Directive
+              - '<a href="https://github.com/paradox41/ng-chartist.js" target="_blank">https://github.com/paradox41/ng-chartist.js</a>'
+            -
+              - react-chartist
+              - React Component
+              - '<a href="https://fraserxu.me/react-chartist" target="_blank">https://fraserxu.me/react-chartist</a>'
+            -
+              - meteor-chartist-js
+              - Meteor Package
+              - '<a href="https://github.com/mfpierre/meteor-chartist-js" target="_blank">https://github.com/mfpierre/meteor-chartist-js</a>'
+            -
+              - tablepress_chartist
+              - Wordpress / Tablepress Extension
+              - '<a href="https://github.com/soderlind/tablepress_chartist" target="_blank">https://github.com/soderlind/tablepress_chartist</a>'
   - title: Chart CSS animation example
     level: 3
     items:
