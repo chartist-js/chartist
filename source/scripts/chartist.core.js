@@ -62,7 +62,7 @@ Chartist.version = '0.3.1';
    */
   Chartist.stripUnit = function(value) {
     if(typeof value === 'string') {
-      value = value.replace(/[^0-9\+-\.]/, '');
+      value = value.replace(/[^0-9\+-\.]/g, '');
     }
 
     return +value;
