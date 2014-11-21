@@ -1,0 +1,37 @@
+# Grunt Commands
+# ==============
+#
+# Use `grunt` in the root directory to select and run a specific task.
+
+default:
+  - 'newer:jshint'
+  - 'test'
+  - 'build'
+
+libdist:
+  - 'copy:libdist'
+  - 'concat:libdist'
+  - 'umd:libdist'
+  - 'uglify:libdist'
+  - 'sass:dist'
+  - 'cssmin:libdist'
+
+build:
+  - 'clean:dist'
+  - 'doxication'
+  - 'assemble'
+  - 'useminPrepare'
+  - 'concurrent:dist'
+  - 'concat:generated'
+  - 'copy:dist'
+  - 'cssmin:generated'
+  - 'uglify:generated'
+  - 'usemin'
+  - 'critical'
+  - 'htmlmin'
+
+test:
+  - 'clean:server'
+  - 'concurrent:test'
+  - 'connect:test'
+  - 'jasmine'
