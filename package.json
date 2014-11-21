@@ -49,6 +49,7 @@
     "grunt-contrib-jshint": "~0.7.1",
     "grunt-contrib-uglify": "^0.6.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-conventional-changelog": "^1.1.0",
     "grunt-critical": "0.0.3",
     "grunt-doxication": "0.0.4",
     "grunt-newer": "^0.8.0",
