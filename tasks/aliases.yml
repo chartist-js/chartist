@@ -36,3 +36,15 @@ test:
   - 'concurrent:test'
   - 'connect:test'
   - 'jasmine'
+
+live:
+  - 'clean:server'
+  - 'doxication'
+  - 'assemble'
+  - 'concurrent:server'
+  - 'connect:livereload'
+  - 'watch'
+
+preview:
+  - 'build'
+  - 'connect:dist:keepalive'
