@@ -53,7 +53,7 @@
     "grunt-critical": "0.0.3",
     "grunt-doxication": "0.0.4",
     "grunt-newer": "^0.8.0",
-    "grunt-sass": "^0.16.1",
+    "grunt-sass": "~0.14.2",
     "grunt-svgmin": "~0.2.0",
     "grunt-umd": "^2.0.1",
     "grunt-usemin": "~2.3.0",
