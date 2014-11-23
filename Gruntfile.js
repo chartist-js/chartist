@@ -24,7 +24,8 @@ module.exports = function (grunt) {
     jitGrunt: {
       staticMappings: {
         'useminPrepare': 'grunt-usemin',
-        'assemble': 'assemble'
+        'assemble': 'assemble',
+        'changelog': 'grunt-conventional-changelog'
       }
     }
   });
