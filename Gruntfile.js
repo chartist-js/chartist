@@ -28,25 +28,4 @@ module.exports = function (grunt) {
       }
     }
   });
-
-  // Custom task
-  grunt.registerTask('server', 'Warning: deprecated task "server"', function(){
-    grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
-    grunt.task.run(['serve']);
-  });
-
-  // Custom task
-  grunt.registerTask('serve', 'Start a localserver and serve the files', function (target) {
-    if (target === 'dist') {
-      return grunt.task.run(['build', 'connect:dist:keepalive']);
-    }
-    grunt.task.run([
-      'clean:server',
-      'doxication',
-      'assemble',
-      'concurrent:server',
-      'connect:livereload',
-      'watch'
-    ]);
-  });
 };
