@@ -12,13 +12,13 @@
 module.exports = function (grunt) {
   return {
     options: {
-      helpers: ['<%= pkg.config.site %>/templates/helpers/**/*.js'],
-      partials: ['<%= pkg.config.site %>/templates/partials/**/*.hbs'],
-      layoutdir: '<%= pkg.config.site %>/templates/layouts',
+      helpers: ['<%= pkg.config.site %>/helpers/**/*.js'],
+      partials: ['<%= pkg.config.site %>/partials/**/*.hbs'],
+      layoutdir: '<%= pkg.config.site %>/layouts',
       layoutext: '.hbs',
       layout: ['default'],
       data: [
-        '<%= pkg.config.site %>/templates/data/**/*.{json,yml}',
+        '<%= pkg.config.site %>/data/**/*.{json,yml}',
         '<%= pkg.config.tmp %>/data/**/*.{json,yml}'
       ]
     },
