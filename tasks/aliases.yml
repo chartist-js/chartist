@@ -44,7 +44,8 @@ test:
 
 # local version with livereload
 dev:
-  - 'public'
+  - 'assemble'
+  - 'sass:tmp'
   - 'connect:livereload'
   - 'watch'
 
