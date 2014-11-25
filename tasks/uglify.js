@@ -20,14 +20,6 @@ module.exports = function (grunt) {
       files: {
         '<%= pkg.config.dist %>/chartist.min.js': ['<%= pkg.config.dist %>/chartist.js']
       }
-    },
-    public: {
-      options: {
-        banner: '<%= pkg.config.banner %>',
-      },
-      files: {
-        '<%= pkg.config.public %>/scripts/all.js': ['<%= pkg.config.public %>/scripts/all.js']
-      }
     }
   };
 };

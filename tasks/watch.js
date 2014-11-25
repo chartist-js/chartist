@@ -13,11 +13,11 @@ module.exports = function (grunt) {
   return {
     assemble: {
       files: ['<%= pkg.config.site %>/**/*.{hbs,yml,json,js}'],
-      tasks: ['doxication', 'assemble']
+      tasks: ['assemble']
     },
     doxication: {
       files: ['<%= pkg.config.tmp %>/data/**/*.{yml,json}'],
-      tasks: ['doxication', 'assemble']
+      tasks: ['assemble']
     },
     js: {
       files: [

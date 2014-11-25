@@ -32,8 +32,6 @@ public:
   - 'usemin'
   - 'critical'
   - 'htmlmin'
-  - 'concat:public'
-  - 'uglify:public'
 
 # tests
 test:

@@ -22,7 +22,7 @@ module.exports = function (grunt) {
         open: true,
         base: [
           '<%= pkg.config.tmp %>',
-          '<%= pkg.config.src %>/scripts',
+          '<%= pkg.config.src %>',
           '<%= pkg.config.site %>'
         ]
       }
