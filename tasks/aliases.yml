@@ -51,6 +51,5 @@ dev:
 
 # online version
 preview:
-  - 'build'
   - 'public'
   - 'connect:public'
