@@ -1,5 +1,14 @@
-node_modules
-sitedist
-.tmp
+# modules
+node_modules/
+site/bower_components/
+
+# build
+.tmp/
+.public/
+# dist/
+
+# generated
 .sass-cache
-source/bower_components
+
+# debug
+npm-debug.log
