@@ -25,8 +25,8 @@
     "package.json",
     "README.md"
   ],
-  "main": "libdist/chartist.js",
-  "browser": "libdist/chartist.js",
+  "main": "dist/chartist.js",
+  "browser": "dist/chartist.js",
   "licenses": [
     {
       "type": "WTFPL",
@@ -54,7 +54,7 @@
     "grunt-newer": "^0.8.0",
     "grunt-sass": "~0.14.2",
     "grunt-svgmin": "~0.2.0",
-    "grunt-umd": "^2.0.1",
+    "grunt-umd": "~2.0.0",
     "grunt-usemin": "~2.3.0",
     "handlebars-helpers": "~0.5.5",
     "jasmine-fixture": "~1.0.8",
@@ -72,7 +72,11 @@
   },
   "config": {
     "banner": "/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under the WTFPL license.\n * http://www.wtfpl.net/\n */\n",
-    "source": "source",
-    "dist": "sitedist"
+    "src": "src",
+    "dist": "dist",
+    "site": "site",
+    "tmp": ".tmp",
+    "public": ".public",
+    "test": "test"
   }
 }

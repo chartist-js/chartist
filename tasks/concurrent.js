@@ -12,13 +12,13 @@
 module.exports = function (grunt) {
   return {
     server: [
-      'sass:server'
+      'sass:public'
     ],
     test: [
-      'sass'
+      'sass' // tmp
     ],
-    dist: [
-      'sass:dist',
+    public: [
+      'sass:public',
       'imagemin',
       'svgmin'
     ]

@@ -11,15 +11,15 @@
 
 module.exports = function (grunt) {
   return {
-    dist: {
+    public: {
       options: {
         base: './',
-        css: '<%= pkg.config.dist %>/styles/main.css',
+        css: '<%= pkg.config.public %>/styles/main.css',
         width: 320,
         height: 3000
       },
-      src: '<%= pkg.config.dist %>/index.html',
-      dest: '<%= pkg.config.dist %>/index.html'
+      src: '<%= pkg.config.public %>/index.html',
+      dest: '<%= pkg.config.public %>/index.html'
     }
   };
 };

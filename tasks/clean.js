@@ -11,18 +11,19 @@
 
 module.exports = function (grunt) {
   return {
-    dist: {
+    public: {
       files: [
         {
           dot: true,
           src: [
-            '.tmp',
-            '<%= pkg.config.dist %>/*',
-            '!<%= pkg.config.dist %>/.git*'
+            '<%= pkg.config.tmp %>',
+            '<%= pkg.config.public %>/*',
+            '!<%= pkg.config.public %>/.git*'
           ]
         }
       ]
     },
-    server: '.tmp'
+    tmp: '<%= pkg.config.tmp %>',
+    dist: '<%= pkg.config.dist %>'
   };
 };

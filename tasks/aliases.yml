@@ -7,43 +7,50 @@ default:
   - 'newer:jshint'
   - 'test'
   - 'build'
+  - 'dev'
 
-libdist:
-  - 'copy:libdist'
-  - 'concat:libdist'
-  - 'umd:libdist'
-  - 'uglify:libdist'
-  - 'sass:dist'
-  - 'cssmin:libdist'
-
+# create the library
 build:
   - 'clean:dist'
+  - 'copy:dist'
+  - 'concat:dist'
+  - 'umd'
+  - 'uglify:dist'
+  - 'sass:dist'
+  - 'cssmin'
+
+# prepare the website
+public:
+  - 'clean:public'
   - 'doxication'
   - 'assemble'
   - 'useminPrepare'
-  - 'concurrent:dist'
+  - 'concurrent:public'
   - 'concat:generated'
-  - 'copy:dist'
+  - 'copy:public'
   - 'cssmin:generated'
   - 'uglify:generated'
   - 'usemin'
   - 'critical'
   - 'htmlmin'
+  - 'concat:public'
+  - 'uglify:public'
 
+# tests
 test:
-  - 'clean:server'
+  - 'clean:tmp'
   - 'concurrent:test'
   - 'connect:test'
   - 'jasmine'
 
-live:
-  - 'clean:server'
-  - 'doxication'
-  - 'assemble'
-  - 'concurrent:server'
+# local version with livereload
+dev:
+  - 'public'
   - 'connect:livereload'
   - 'watch'
 
+# online version
 preview:
   - 'build'
-  - 'connect:dist:keepalive'
+  - 'public'
+  - 'connect:public'

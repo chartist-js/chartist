@@ -12,34 +12,48 @@
 module.exports = function (grunt) {
   return {
     options: {
-      includePaths: ['<%= pkg.config.source %>/bower_components'],
-      imagePath: '<%= pkg.config.source %>/images'
+      includePaths: ['<%= pkg.config.site %>/bower_components'],
+      imagePath: '<%= pkg.config.site %>/images'
     },
-    dist: {
+    public: { // without sourcemaps
       options: {
         sourceMap: false
       },
       files: [
         {
           expand: true,
-          cwd: '<%= pkg.config.source %>/styles',
+          cwd: '<%= pkg.config.site %>/styles',
           src: '{,*/}*.{scss,sass}',
           ext: '.css',
-          dest: '.tmp/styles'
+          dest: '<%= pkg.config.tmp %>/styles'
         }
       ]
     },
-    server: {
+    dist: {
       options: {
         sourceMap: true
       },
       files: [
         {
           expand: true,
-          cwd: '<%= pkg.config.source %>/styles',
+          cwd: '<%= pkg.config.src %>/styles',
           src: '{,*/}*.{scss,sass}',
           ext: '.css',
-          dest: '.tmp/styles'
+          dest: '<%= pkg.config.tmp %>/styles'
+        }
+      ]
+    },
+    tmp: { // with sourcemaps
+      options: {
+        sourceMap: true
+      },
+      files: [
+        {
+          expand: true,
+          cwd: '<%= pkg.config.site %>/styles',
+          src: '{,*/}*.{scss,sass}',
+          ext: '.css',
+          dest: '<%= pkg.config.tmp %>/styles'
         }
       ]
     }

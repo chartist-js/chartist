@@ -14,8 +14,8 @@
 module.exports = function (grunt) {
   return {
     options: {
-      dest: '<%= pkg.config.dist %>'
+      dest: '<%= pkg.config.public %>'
     },
-    html: '.tmp/index.html'
+    html: '<%= pkg.config.tmp %>/index.html'
   }
 };

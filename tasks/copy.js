@@ -11,13 +11,13 @@
 
 module.exports = function (grunt) {
   return {
-    dist: {
+    public: {
       files: [
         {
           expand: true,
           dot: true,
-          cwd: '<%= pkg.config.source %>',
-          dest: '<%= pkg.config.dist %>',
+          cwd: '<%= pkg.config.site %>',
+          dest: '<%= pkg.config.public %>',
           src: [
             '*.{ico,png,txt}',
             '.htaccess',
@@ -29,26 +29,26 @@ module.exports = function (grunt) {
         },
         {
           expand: true,
-          cwd: '.tmp/images',
-          dest: '<%= pkg.config.dist %>/images',
+          cwd: '<%= pkg.config.tmp %>/images',
+          dest: '<%= pkg.config.public %>/images',
           src: ['generated/*']
         },
         {
           expand: true,
-          cwd: '.tmp',
-          dest: '<%= pkg.config.dist %>',
+          cwd: '<%= pkg.config.tmp %>',
+          dest: '<%= pkg.config.public %>',
           src: [
             '*.html'
           ]
         }
       ]
     },
-    libdist: {
+    dist: {
       files: [
         {
           expand: true,
-          cwd: '<%= pkg.config.source %>/styles',
-          dest: 'libdist/scss/',
+          cwd: '<%= pkg.config.src %>/styles',
+          dest: '<%= pkg.config.dist %>/scss/',
           src: [
             'modules/**/*.scss',
             'settings/**/*.scss',
@@ -56,7 +56,7 @@ module.exports = function (grunt) {
           ]
         },
         {
-          dest: 'libdist/',
+          dest: '<%= pkg.config.dist %>/',
           src: 'LICENSE'
         }
       ]

@@ -11,8 +11,8 @@
 
 module.exports = function (grunt) {
   return {
-    libdist: {
-      src: 'libdist/chartist.js',
+    dist: {
+      src: '<%= pkg.config.dist %>/chartist.js',
       objectToExport: 'Chartist',
       globalAlias: 'Chartist',
       indent: '  '

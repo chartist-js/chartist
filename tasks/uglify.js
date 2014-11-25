@@ -11,14 +11,22 @@
 
 module.exports = function (grunt) {
   return {
-    libdist: {
+    dist: {
       options: {
-        banner: '<%= pkg.config.banner %>', //pkg.config.banner,
+        banner: '<%= pkg.config.banner %>',
         sourceMap: true,
         sourceMapIncludeSources: true
       },
       files: {
-        'libdist/chartist.min.js': ['libdist/chartist.js']
+        '<%= pkg.config.dist %>/chartist.min.js': ['<%= pkg.config.dist %>/chartist.js']
+      }
+    },
+    public: {
+      options: {
+        banner: '<%= pkg.config.banner %>',
+      },
+      files: {
+        '<%= pkg.config.public %>/scripts/all.js': ['<%= pkg.config.public %>/scripts/all.js']
       }
     }
   };

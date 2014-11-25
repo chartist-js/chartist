@@ -13,18 +13,18 @@ module.exports = function (grunt) {
   return {
     dist: {
       src: [
-        'source/scripts/chartist.core.js',
-        'source/scripts/chartist.event.js',
-        'source/scripts/chartist.class.js',
-        'source/scripts/chartist.base.js',
-        'source/scripts/chartist.svg.js',
-        'source/scripts/chartist.line.js',
-        'source/scripts/chartist.bar.js',
-        'source/scripts/chartist.pie.js'
+        '<%= pkg.config.src %>/core.js',
+        '<%= pkg.config.src %>/event.js',
+        '<%= pkg.config.src %>/class.js',
+        '<%= pkg.config.src %>/base.js',
+        '<%= pkg.config.src %>/svg.js',
+        '<%= pkg.config.src %>/types/line.js',
+        '<%= pkg.config.src %>/types/bar.js',
+        '<%= pkg.config.src %>/types/pie.js'
       ],
       options: {
-        specs: 'test/spec/**/spec-*.js',
-        helpers: 'test/spec/**/helper-*.js',
+        specs: '<%= pkg.config.test %>/spec/**/spec-*.js',
+        helpers: '<%= pkg.config.test %>/spec/**/helper-*.js',
         phantomjs: {
           'ignore-ssl-errors': true
         }

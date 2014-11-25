@@ -11,10 +11,10 @@
 
 module.exports = function (grunt) {
   return {
-    html: ['<%= pkg.config.dist %>/{,*/}*.html'],
-    css: ['<%= pkg.config.dist %>/styles/{,*/}*.css'],
+    html: ['<%= pkg.config.public %>/{,*/}*.html'],
+    css: ['<%= pkg.config.public %>/styles/{,*/}*.css'],
     options: {
-      assetsDirs: ['<%= pkg.config.dist %>'],
+      assetsDirs: ['<%= pkg.config.public %>'],
       blockReplacements: {
         js: function (block) {
 

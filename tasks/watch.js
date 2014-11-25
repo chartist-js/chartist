@@ -12,27 +12,33 @@
 module.exports = function (grunt) {
   return {
     assemble: {
-      files: ['<%= pkg.config.source %>/site/**/*.{hbs,yml,json,js}'],
+      files: ['<%= pkg.config.site %>/**/*.{hbs,yml,json,js}'],
       tasks: ['doxication', 'assemble']
     },
     doxication: {
-      files: ['.tmp/data/**/*.{yml,json}'],
+      files: ['<%= pkg.config.tmp %>/data/**/*.{yml,json}'],
       tasks: ['doxication', 'assemble']
     },
     js: {
-      files: ['<%= pkg.config.source %>/scripts/{,*/}*.js'],
+      files: [
+        '<%= pkg.config.site %>/scripts/{,*/}*.js',
+        '<%= pkg.config.src %>/{,*/}*.js'
+      ],
       tasks: ['newer:jshint:all'],
       options: {
         livereload: true
       }
     },
     jsTest: {
-      files: ['test/spec/{,*/}*.js'],
+      files: ['<%= pkg.config.test %>/spec/{,*/}*.js'],
       tasks: ['newer:jshint:test', 'jasmine']
     },
     sass: {
-      files: ['<%= pkg.config.source %>/styles/**/*.{scss,sass}'],
-      tasks: ['sass:server']
+      files: [
+        '<%= pkg.config.site %>/styles/{,*/}*.{scss,sass}',
+        '<%= pkg.config.src %>/styles/{,*/}*.{scss,sass}'
+      ],
+      tasks: ['sass:public']
     },
     gruntfile: {
       files: ['Gruntfile.js']
@@ -42,9 +48,9 @@ module.exports = function (grunt) {
         livereload: '<%= connect.options.livereload %>'
       },
       files: [
-        '.tmp/{,*/}*.html',
-        '.tmp/styles/{,*/}*.css',
-        '<%= pkg.config.source %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+        '<%= pkg.config.tmp %>/{,*/}*.html',
+        '<%= pkg.config.tmp %>/styles/{,*/}*.css',
+        '<%= pkg.config.site %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
       ]
     }
   };

@@ -11,21 +11,32 @@
 
 module.exports = function (grunt) {
   return {
-    libdist: {
+    dist: {
       options: {
         separator: ';',
         banner: '<%= pkg.config.banner %>'
       },
       files: {
-        'libdist/chartist.js': [
-          'source/scripts/chartist.core.js',
-          'source/scripts/chartist.event.js',
-          'source/scripts/chartist.class.js',
-          'source/scripts/chartist.base.js',
-          'source/scripts/chartist.svg.js',
-          'source/scripts/chartist.line.js',
-          'source/scripts/chartist.bar.js',
-          'source/scripts/chartist.pie.js'
+        '<%= pkg.config.dist %>/chartist.js': [
+          '<%= pkg.config.src %>/core.js',
+          '<%= pkg.config.src %>/event.js',
+          '<%= pkg.config.src %>/class.js',
+          '<%= pkg.config.src %>/base.js',
+          '<%= pkg.config.src %>/svg.js',
+          '<%= pkg.config.src %>/types/line.js',
+          '<%= pkg.config.src %>/types/bar.js',
+          '<%= pkg.config.src %>/types/pie.js'
+        ]
+      }
+    },
+    public: {
+      options: {
+        separator: ';',
+      },
+      files: {
+        '<%= pkg.config.public %>/scripts/all.js': [
+          '<%= pkg.config.dist %>/chartist.js',
+          '<%= pkg.config.public %>/scripts/all.js'
         ]
       }
     }

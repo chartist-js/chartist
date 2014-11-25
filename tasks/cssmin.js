@@ -11,12 +11,12 @@
 
 module.exports = function (grunt) {
   return {
-   libdist: {
+    dist: {
       options: {
         'banner': '<%= pkg.config.banner %>'
       },
       files: {
-        'libdist/chartist.min.css': ['.tmp/styles/chartist.css']
+        '<%= pkg.config.dist %>/chartist.min.css': ['<%= pkg.config.tmp %>/styles/chartist.css']
       }
     }
   };

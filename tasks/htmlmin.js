@@ -11,7 +11,7 @@
 
 module.exports = function(){
   return {
-    dist: {
+    public: {
       options: {
         collapseWhitespace: true,
         collapseBooleanAttributes: true,
@@ -21,9 +21,9 @@ module.exports = function(){
       files: [
         {
           expand: true,
-          cwd: '<%= pkg.config.dist %>',
+          cwd: '<%= pkg.config.public %>',
           src: ['*.html'],
-          dest: '<%= pkg.config.dist %>'
+          dest: '<%= pkg.config.public %>'
         }
       ]
     }

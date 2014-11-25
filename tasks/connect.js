@@ -14,15 +14,16 @@ module.exports = function (grunt) {
     options: {
       port: 9000,
       // Change this to '0.0.0.0' to access the server from outside.
-      hostname: '0.0.0.0',
+      hostname: 'localhost',
       livereload: 35729
     },
     livereload: {
       options: {
         open: true,
         base: [
-          '.tmp',
-          '<%= pkg.config.source %>'
+          '<%= pkg.config.tmp %>',
+          '<%= pkg.config.src %>',
+          '<%= pkg.config.site %>'
         ]
       }
     },
@@ -30,15 +31,17 @@ module.exports = function (grunt) {
       options: {
         port: 9001,
         base: [
-          '.tmp',
-          'test',
-          '<%= pkg.config.source %>'
+          '<%= pkg.config.tmp %>',
+          '<%= pkg.config.test %>',
+          '<%= pkg.config.site %>'
         ]
       }
     },
-    dist: {
+    public: {
       options: {
-        base: '<%= pkg.config.dist %>'
+        open: true,
+        keepalive: true,
+        base: '<%= pkg.config.public %>'
       }
     }
   };

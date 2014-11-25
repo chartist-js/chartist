@@ -11,12 +11,14 @@
 
 module.exports = function (grunt) {
   return {
-      all: {
-        options: {
-          format: 'yml'
-        },
-        src: ['source/scripts/*.js'],
-        dest: '.tmp/data/apidox.yml'
-      }
+    all: {
+      options: {
+        format: 'yml'
+      },
+      src: [
+        '<%= pkg.config.src %>/{,*/}*.js'
+      ],
+      dest: '<%= pkg.config.tmp %>/data/apidox.yml'
+    }
   };
 };
