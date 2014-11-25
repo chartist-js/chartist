@@ -189,6 +189,14 @@ code {
               content: "\2013\00A0";
             }
           }
+
+          > li a:not(.button) {
+            padding: 0;
+
+            &:hover {
+              background: none;
+            }
+          }
         }
       }
     }
