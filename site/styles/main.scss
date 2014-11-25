@@ -1,0 +1,327 @@
+@import "settings/chartist-docs";
+@import "settings/foundation";
+@import "settings/font-awesome-variables";
+
+@import "modules";
+
+@import "../../src/styles/settings/chartist-settings";
+@import "../../src/styles/chartist";
+
+@import "compass-mixins/lib/compass/css3";
+@import "foundation/scss/normalize";
+@import "foundation/scss/foundation";
+@import "base";
+@import "landing";
+@import "highlight";
+@import "code-mirror-theme";
+@import "api-doc";
+@import "live-example";
+@import "example-charts";
+
+.button {
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.invisible {
+  display: block !important;
+  max-height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.text-clipping {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.hint {
+  position: relative;
+  margin-top: rem-calc(nth($modular-scale, 5));
+  margin-bottom: rem-calc(nth($modular-scale, 5));
+  padding: rem-calc(nth($modular-scale, 5));
+  background: $color-gray;
+  color: lighten($color-white, 10%);
+
+  > .title {
+    font-size: rem-calc(nth($modular-scale, 4));
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: lighten($color-black, 20%);
+  }
+
+  a {
+    color: $color-yellow;
+    &:hover {
+      color: lighten($color-yellow, 10%);
+    }
+  }
+
+  &[class*="hint-"] {
+    padding-left: 5.2rem;
+
+    &.hint-cross-browser {
+      @include icon($fa-var-arrows-alt, 3rem);
+    }
+
+    &:before {
+      position: absolute;
+      left: rem-calc(nth($modular-scale, 5));
+      top: rem-calc(nth($modular-scale, 5));
+      font-size: 3rem;
+      color: lighten($color-black, 5%);
+    }
+  }
+}
+
+.tooltip {
+  position: absolute;
+  display: inline-block;
+  min-width: 5em;
+  padding: 0.5em;
+  background: $color-yellow;
+  color: $color-black;
+  font-weight: 700;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    margin-left: -15px;
+    border: 15px solid transparent;
+    border-top-color: $color-yellow;
+  }
+}
+
+code {
+  font-family: "Source Code Pro", "Courier New", monospace !important;
+  word-wrap: break-word;
+}
+
+.sticky.contain-to-grid {
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+
+  &.fixed, .page-content & {
+    .top-bar .name h1 a:before {
+      content: "";
+      display: inline-block;
+      width: 34px;
+      height: 34px;
+      margin-top: -4px;
+      margin-right: 10px;
+      vertical-align: middle;
+      border-radius: 50%;
+      border: 2px solid #F4C63D;
+      background-size: 32px 32px;
+      background: #F4C63D url("../../images/chartist-icon.svg") no-repeat center;
+    }
+  }
+}
+
+.ct-chart {
+  margin-bottom: 1rem;
+}
+
+.ct-chart-pie {
+  .ct-label {
+    font-size: 1em;
+
+    @media #{$small-only} {
+      fill: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+.main {
+  @include grid-row();
+
+  @media #{$medium-up} {
+    margin-top: rem-calc(nth($modular-scale, 8));
+  }
+
+  > header {
+    @include grid-column(12);
+    margin-top: rem-calc(nth($modular-scale, 5));
+
+    .page-content & {
+      margin-bottom: rem-calc(nth($modular-scale, 8));
+    }
+  }
+
+  > .side-navigation {
+    display: none;
+
+    @media #{$medium-up} {
+      display: block;
+      @include grid-column(4);
+
+      > nav {
+        max-width: 250px;
+
+        > .side-nav {
+          background-color: mix(black, $color-white, 5%);
+          box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+
+          > .heading {
+            font-size: rem-calc(nth($modular-scale, 4));
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: rem-calc(nth($modular-scale, 7));
+            margin-bottom: rem-calc(nth($modular-scale, 4));
+            color: $color-black;
+
+            &:first-child {
+              margin-top: 0;
+            }
+          }
+
+          > li:not(.heading) > a {
+
+            &:before {
+              content: "\2013\00A0";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > .content {
+    @include grid-column(12);
+
+    @media #{$medium-up} {
+      @include grid-column(8);
+    }
+
+    > .documentation-section {
+      @include grid-row(nest);
+
+      margin-top: rem-calc(nth($modular-scale, 4));
+      margin-bottom: rem-calc(nth($modular-scale, 6));
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      @media #{$medium-up} {
+        margin-top: rem-calc(nth($modular-scale, 6));
+        margin-bottom: rem-calc(nth($modular-scale, 8));
+      }
+
+      > header {
+        @include grid-column(12);
+      }
+
+      > .content {
+        @include grid-column(12);
+
+        @media #{$medium-up} {
+          @include grid-column(8);
+        }
+
+        @media #{$large-up} {
+          @include grid-column(9);
+        }
+
+        .sub-section {
+          margin-bottom: 3rem;
+        }
+
+        > .ct-chart {
+          &.dark {
+            background-color: $color-gray;
+          }
+        }
+      }
+
+      > .side-notes {
+        @include grid-column(12);
+
+        @media #{$medium-up} {
+          @include grid-column(4);
+        }
+
+        @media #{$large-up} {
+          @include grid-column(3);
+        }
+      }
+
+      &.full {
+        > .content {
+          @media #{$medium-up} {
+            @include grid-column(12);
+          }
+        }
+
+        > .side-notes {
+          @media #{$medium-up} {
+            @include grid-column(12);
+          }
+        }
+      }
+    }
+
+    > ul.example-gallery {
+      @include block-grid(1);
+
+      @media #{$medium-up} {
+        @include block-grid(2);
+      }
+    }
+  }
+
+  .full & {
+    > .side-navigation {
+      @include grid-column(12);
+    }
+
+    > .content {
+      @include grid-column(12);
+    }
+  }
+}
+
+@include keyframes(dashoffset) {
+  0% {
+    stroke-dashoffset: 0px;
+  }
+
+  100% {
+    stroke-dashoffset: -20px;
+  }
+}
+
+@include keyframes(bouncing-stroke) {
+  0% {
+    stroke-width: 5px;
+  }
+
+  50% {
+    stroke-width: 10px;
+  }
+
+  100% {
+    stroke-width: 5px;
+  }
+}
+
+@include keyframes(exploding-stroke) {
+  0% {
+    stroke-width: 2px;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-width: 20px;
+    opacity: 0;
+  }
+}
+

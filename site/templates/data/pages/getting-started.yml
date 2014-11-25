@@ -1,0 +1,432 @@
+sections:
+  - title: Download and set-up
+    level: 3
+    items:
+      - type: sub-section
+        data:
+          title: Bower
+          level: 4
+          items:
+            - type: text
+              data:
+                text: 'The easiest way to get started with Chartist.js is by using <a href="http://bower.io/" target="_blank">bower</a>:'
+
+            - type: code
+              data:
+                lang: bash
+                code: bower install chartist --save
+
+            - type: text
+              data:
+                text: >
+                        The bower package contains the JavaScript library, CSS as well as the Sass (SCSS) files.
+                        You can then integrate the desired dependencies in your project and start using them
+                        immediately.
+
+      - type: sub-section
+        data:
+          title: One, two, three, CSS!
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The quickest way to get things up and running is by using the Chartist.js CSS files.
+                        The CSS is compiled from the Sass files with the default class names which are also
+                        configured in the JavaScript library. You can then override the default styles or
+                        modify the CSS file, however, for customization it's recommended to use the Sass
+                        version of Chartist.js.
+
+            - type: code-snippet
+              data:
+                id: simple-start
+                lang: html
+
+            - type: heading
+              data:
+                level: 5
+                title: Use a CDN alternatively
+
+            - type: text
+              data:
+                text: >
+                        If you'd like to get started even faster you can also use a CDN to load Chartist.js. The
+                        awesome people at jsDelivr provide a fantastic job in hosting libraries from over 42 POP Locations
+                        around the world! They always update Chartist.js to the latest version immediately and
+                        they do all that for free! Check out the <a href="http://www.jsdelivr.com/" target="_blank">jsDeliver website</a>
+                        for more information.
+
+            - type: code-snippet
+              data:
+                id: simple-start-cdn
+                lang: html
+                button: Show CDN Code
+
+      - type: sub-section
+        data:
+          title: The Sass way
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        If you like to customize your charts you can either remove the CSS fully and write your
+                        own selectors using the Chartist.js Sass mixins or you just use the Chartist.js Sass
+                        settings file to customize the look and feel of your charts.
+
+            - type: text
+              data:
+                text: >
+                        Styling inline SVG with CSS is a breeze and you should also consider writing your own
+                        selectors for your charts and using the Sass mixins. You can read more about using the
+                        Sass mixins in the <a href="#advanced">advanced</a> section.
+
+            - type: text
+              data:
+                text: >
+                        To customize the style of your charts using the Sass settings file you should copy the
+                        settings file to your own Sass folder.
+
+            - type: code
+              data:
+                lang: bash
+                code: cp bower_components/chartist/libdist/scss/settings/_chartist-settings.scss styles
+
+            - type: text
+              data:
+                text: >
+                        Then just import your copy of the settings file before you import the chartist.scss
+                        file and change the settings in your copy as desired.
+
+            - type: code-snippet
+              data:
+                id: custom-include
+                lang: scss
+
+            - type: heading
+              data:
+                level: 5
+                title: Default settings
+
+            - type: text
+              data:
+                text: >
+                        The settings file contains all relevant variables used in the mixins and while
+                        generating the default classes. You can simply change the settings for styling your
+                        own charts. If you want to override certain settings based on state or pseeudo
+                        selectors, you can use the individual mixins to only override specific styles.
+
+            - type: text
+              data:
+                text: >
+                        Take a look at the settings to see how to customize the style of the defalt Chartist.js
+                        class selectors.
+
+            - type: code-snippet
+              data:
+                id: default-Sass-settings
+                button: Show default settings
+                path: site/styles/settings/_chartist-settings.scss
+                lang: scss
+
+  - title: Create your first chart
+    level: 3
+    items:
+      - type: text
+        data:
+          text: >
+                  In this section you'll go through a simple example of how to use Chartist.js in your project.
+                  You'll learn the default stages you go through when creating and customizing a basic line chart.
+                  If you'd like to see more in depth and advanced examples you should check out
+                  the <a href="#advanced">advanced</a> section or the <a href="examples.html">examples page</a>.
+
+      - type: sub-section
+        data:
+          title: As simple as it can get
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Chartist provides you a very simple API to get started, however, while trying to follow the
+                         best practice of relying on standards and clear separation of concerns it sometimes needs a small mind
+                         shift in order to understand how things are meant to work within Chartist. Instead of specifying
+                         your colors, line width and other style related things in the JavaScript API, you'll need to use
+                         CSS in order to control your appearance.
+
+            - type: sub-section
+              data:
+                title: Creating a chart using aspect ratios
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              Because of the nature of responsive design it's important to understand that blocks in design like images,
+                              videos and similar content need to be able to scale and adapt to the media. In order for an element to scale, you
+                              need to rely on a certain aspect ratios (like 4:3, 3:2, 16:9 etc.) rather than specifying a fixed width and height.
+
+                  - type: text
+                    data:
+                      text: >
+                              To designers this Idea is absolutely not new, but to developers this might be at first. However, when a designer talks
+                              to a developer about the images being 320x240 on this page and 300x200 on that element, he actually just
+                              translated his idea of using 4:3 and 3:2 images into pixels.
+
+                  - type: text
+                    data:
+                      text: >
+                              With Chartist you can specify those ratios directly on containers without the need to calculate any fixed dimensions.
+                              In order to create a chart that is using the aspect ratio of a golden section you can just add the class .ct-golden-section
+                              to your container where you initialize Chartist.
+
+                  - type: text
+                    data:
+                      text: >
+                              Here is a list of all available container ratios (If using the Sass version of Chartist you can also easily add others):
+
+                  - type: table
+                    data:
+                      id: container-aspect-ratio-classes
+                      button: Show available aspect ratios
+                      header:
+                        - Container class
+                        - Ratio
+                      rows:
+                        -
+                          - .ct-square
+                          - '1'
+                        -
+                          - .ct-minor-second
+                          - '15:16'
+                        -
+                          - .ct-major-second
+                          - '8:9'
+                        -
+                          - .ct-minor-third
+                          - '5:6'
+                        -
+                          - .ct-major-third
+                          - '4:5'
+                        -
+                          - .ct-perfect-fourth
+                          - '3:4'
+                        -
+                          - .ct-perfect-fifth
+                          - '2:3'
+                        -
+                          - .ct-minor-sixth
+                          - '5:8'
+                        -
+                          - .ct-golden-section
+                          - '1:1.618'
+                        -
+                          - .ct-major-sixth
+                          - '3:5'
+                        -
+                          - .ct-minor-seventh
+                          - '9:16'
+                        -
+                          - .ct-major-seventh
+                          - '8:15'
+                        -
+                          - .ct-octave
+                          - '1:2'
+                        -
+                          - .ct-major-tenth
+                          - '2:5'
+                        -
+                          - .ct-major-eleventh
+                          - '3:8'
+                        -
+                          - .ct-major-twelfth
+                          - '1:3'
+                        -
+                          - .ct-double-octave
+                          - '1:4'
+
+                  - type: text
+                    data:
+                      text: >
+                              Use the following HTML code to specify a container with one of the above aspect ratio classes.
+
+                  - type: code
+                    data:
+                      code: '<div class="ct-chart ct-perfect-fourth"></div>'
+                      lang: html
+
+                  - type: text
+                    data:
+                      text: >
+                              When using a fixed aspect ratio container you can then simply initialize your chart without
+                              specifying any width or height in the options.
+
+                  - type: code-snippet
+                    data:
+                      id: simple-start-aspect-ratio-chart
+                      lang: js
+
+            - type: sub-section
+              data:
+                title: Creating a chart with fixed dimensions
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              In order to create a simple line chart with fixed width and height you only need to have a
+                              container element and initialize Chartist.js on it.
+                              Give the container the class ct-chart so that it will get the default styles (if you don't
+                              use your own classes).
+
+                  - type: code-snippet
+                    data:
+                      id: simple-start-fixed-chart
+                      lang: js
+
+      - type: sub-section
+        data:
+          title: The configuration of your chart
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Chartist.js is built very flexible and almost everything within your charts can be configured.
+                        In the default settings (that you can check in the <a href="api-documentation.html">API Documentation</a>)
+                        you'll get some predefined defaults applied to your charts.
+
+            - type: text
+              data:
+                text: >
+                        You can always override the default settings of your charts by passing in a configuration
+                        object at creation time.
+
+            - type: example-chart
+              data:
+                id: simple-configuration-chart
+                classes: ct-golden-section
+                show-code-button: Show code and comments
+
+      - type: sub-section
+        data:
+          title: Responsive sugar topping
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Responsive web design is all based on
+                        <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Media_queries" taget="_blank">media queries</a>
+                        as you are probably already aware. Media queries are great and they help you to define media related
+                        conditions that you can use to apply different styles for different media.
+            - type: text
+              data:
+                text: >
+                        Sometimes it's also required to have different behavior on certain media and it's possible that
+                        a specific component of your web site should behave in an other way on a small media than on a
+                        large one. Luckily there is window.matchMedia in your browser that comes to the rescue. With
+                        matchMedia it's possible to let your javascript react differently based on CSS3 media queries.
+
+            - type: heading
+              data:
+                level: 5
+                title: Responsive setting overrides
+
+            - type: text
+              data:
+                text: >
+                        Configuring different chart behavior for various media is made simple with an override
+                        mechanism. The priority of the override mechanism is based on order of specification of
+                        the matching media queries.
+
+            - type: text
+              data:
+                text: >
+                        The following example uses different label interpolations (to save some space) on small media
+                        as well as different spacing between the bars of the bar chart series. Resize your browser window
+                        to see the effect.
+
+            - type: example-chart
+              data:
+                id: example-simple-bar
+                classes: ct-golden-section
+                type: Bar
+                show-code-button: Show code and comments
+
+            - type: hint
+              data:
+                title: Cross-browser support
+                classes: hint-cross-browser
+                text: >
+                        For IE9 you need to use a matchMedia polyfill. You should take a look at
+                        <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.
+
+  - title: Advanced
+    level: 3
+    items:
+      - type: text
+        data:
+          text: >
+                  In the following chapter you'll find some advanced usage examples that might be of interesst for you.
+                  Chartist is very flexible because it relies on standard technology. This also means that you will need
+                  to implement certain things yourself. This topic should cover some of these use-cases and give you some
+                  basic idea why and how to implement certain functionality.
+
+      - type: sub-section
+        data:
+          title: Adding behavior to your charts
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        This example shows you how you can easily build a tool tip on top of Chartist using jQuery and some
+                        basic styling. It makes use of the ct-series-name and ct-value custom attributes that are present
+                        on all SVG elements generated by Chartist.
+            - type: text
+              data:
+                text: >
+                        We actually do a few things here that would go against a proper style guide (like animating with
+                        JavaScript and changing styles instead of switching classes etc.), but this example is only for
+                        illustrating how easy behavior could be attached to Chartist.
+
+            - type: example-chart
+              data:
+                id: behavior-with-jquery
+                classes: ct-golden-section
+                show-code-button: Show code
+
+      - type: sub-section
+        data:
+          title: Animations using Chartist.Svg
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Usually we recommend using CSS for animations as it's closer to a clean separation of concerns.
+                        However, sometimes you would want to animate SVG properties that are not available in CSS to animate.
+                        For this purpose we have added a simple but powerful animation API that allows you to create SMIL
+                        animations in a more convenient way.
+            - type: text
+              data:
+                text: >
+                        In combination with the draw events of Chartist the animations are a very powerful and
+                        flexible tool. You can intercept almost any step in chartist and if there is an SVG element
+                        involved you can animate it using
+                        <a href="api-documentation.html#chartistsvg-function-animate">Chartist.Svg.animate</a>.
+            - type: text
+              data:
+                text: >
+                        The following simple example shows you how to created a delayed fade in effect for the a scatter chart.
+                        You can also edit the example to play around with the settings.
+
+            - type: live-example
+              data:
+                title: Some SVG Animations can only be done with SMIL
+                level: 5
+                id: example-simple-svg-animation
+                classes: ct-golden-section
+                intro: >
+                         Edit this example to figure out how to tweak animations. The force is strong in you young padawan!
