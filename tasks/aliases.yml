@@ -22,7 +22,6 @@ build:
 # prepare the website
 public:
   - 'clean:public'
-  - 'doxication'
   - 'assemble'
   - 'useminPrepare'
   - 'concurrent:public'

@@ -20,7 +20,12 @@ module.exports = function (grunt) {
       data: [
         '<%= pkg.config.site %>/data/**/*.{json,yml}',
         '<%= pkg.config.tmp %>/data/**/*.{json,yml}'
-      ]
+      ],
+      plugins: ['assemble-dox'],
+      dox: {
+        sourceFiles: ['<%= pkg.config.src %>/**/*.js'],
+        contextRoot: 'apidox'
+      }
     },
     pages: {
       expand: true,

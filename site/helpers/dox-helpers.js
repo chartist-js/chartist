@@ -39,7 +39,7 @@ module.exports.register = function (Handlebars, opt, params)  {
       return dox.map(function(doxFile) {
         return {
           fileName: path.basename(doxFile.file),
-          modules: doxFile.dox.reduce(function(arr, doxElement) {
+          modules: doxFile.comments.reduce(function(arr, doxElement) {
             var doxModuleName = helpers.doxTagProperty(doxElement, 'module', 'string');
 
             if(doxModuleName) {
@@ -47,7 +47,7 @@ module.exports.register = function (Handlebars, opt, params)  {
                 name: doxModuleName,
                 description: doxElement.description.summary,
                 isPrivate: doxElement.isPrivate,
-                members: doxFile.dox.filter(function(doxFilterElement) {
+                members: doxFile.comments.filter(function(doxFilterElement) {
                   return helpers.doxTagProperty(doxFilterElement, 'memberof', 'string') === doxModuleName;
                 })
               });
