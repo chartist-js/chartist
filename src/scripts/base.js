@@ -95,8 +95,20 @@
     setTimeout(function() {
       // Obtain current options based on matching media queries (if responsive options are given)
       // This will also register a listener that is re-creating the chart based on media changes
-      // TODO: Remove default options parameter from optionsProvider
-      this.optionsProvider = Chartist.optionsProvider({}, this.options, this.responsiveOptions, this.eventEmitter);
+      this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+
+      // Before the first chart creation we need to register us with all plugins that are configured
+      // Initialize all relevant plugins with our chart object and the plugin options specified in the config
+      if(this.options.plugins) {
+        this.options.plugins.forEach(function(plugin) {
+          var pluginFnc = Chartist.plugins[plugin.name];
+          if(pluginFnc) {
+            pluginFnc(this, plugin.options);
+          }
+        }.bind(this));
+      }
+
+      // Create the first chart
       this.createChart(this.optionsProvider.currentOptions);
     }.bind(this), 0);
   }

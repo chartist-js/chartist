@@ -651,6 +651,9 @@ var Chartist = {
     };
   };
 
+  // Plugin registry for plugin authors to register their plugins
+  Chartist.plugins = {};
+
   //http://schepers.cc/getting-to-the-point
   Chartist.catmullRom2bezier = function (crp, z) {
     var d = [];
