@@ -1,3 +1,3 @@
-function myChartistPlugin(chart, options) {
+function myChartistPlugin(chart) {
 
 }

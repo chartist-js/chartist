@@ -591,7 +591,6 @@ var Chartist = {
    * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
    *
    * @memberof Chartist.Core
-   * @param {Object} defaultOptions Default options from Chartist
    * @param {Object} options Options set by user
    * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
    * @param {Object} eventEmitter The event emitter that will be used to emit the options changed events
@@ -650,9 +649,6 @@ var Chartist = {
       removeMediaQueryListeners: removeMediaQueryListeners
     };
   };
-
-  // Plugin registry for plugin authors to register their plugins
-  Chartist.plugins = {};
 
   //http://schepers.cc/getting-to-the-point
   Chartist.catmullRom2bezier = function (crp, z) {

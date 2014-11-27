@@ -21,9 +21,8 @@ sections:
             - type: text
               data:
                 text: >
-                        Once you have included a plugin in your project it will register itself in the Chartist.js plugin
-                        registry. You can use registered plugins in your chart by specifying them explicitly in the plugins
-                        section of your chart configuration. Check the <a href="#list-of-plugins">List of plugins</a>
+                        Once you have included a plugin in your project you can use it in your chart by specifying it explicitly
+                        in the plugins section of your chart configuration. Check the <a href="#list-of-plugins">List of plugins</a>
                         section to see what plugins you can use.
 
             - type: code-snippet
@@ -41,8 +40,9 @@ sections:
             - type: text
               data:
                 text: >
-                        Besides the name of the plugins you would like to use in your chart you can pass an optional
-                        options object to the plugin. Check the individual plugin documentation for a list of valid options.
+                        Chartist.js expects an array of plugin functions to be present in the <code>plugins</code> array
+                        of the chart configuration. Usually plugins should be written as function factories so you
+                        can pass additional parameters and options to the factory which is creating the plugin function and returns it.
 
   - title: Available plugins
     level: 3
@@ -72,20 +72,15 @@ sections:
   - title: Develop a plugin
     level: 3
     items:
-      - type: text
-        data:
-          text: >
-                  Plugins can be registered in this object with their name as property name and a plugin function as
-                  value. Plugin names need to be chosen carefully as they can clash with each other. It's recommended
-                  to use a prefix for plugin names.
 
       - type: text
         data:
           text: >
                   Plugins are functions that will be called for each chart that is created with the plugin enabled
-                  (specified in the <code>plugins</code> configuration of a chart). The plugin function will be called with two
-                  arguments where the first one is the chart that is registering itself for the plugin and the second
-                  argument which is the plugin options specified in the <code>plugins</code> section of the chart configuration.
+                  (specified in the <code>plugins</code> configuration of a chart). The plugin function will be called with one
+                  argument which is the chart that is registering itself for the plugin. If you wish to use some additional
+                  parameters or configuration for your plugin initialization, it's recommended to use a function factory.
+                  You can check the example plugin for an implementation using a function factory.
 
       - type: code-snippet
         data:
@@ -111,8 +106,9 @@ sections:
         data:
           text: >
                   Plugins should contain their own default settings and use <code>Chartist.extend</code> to override
-                  the settings specified in the options passed to the plugin function. Using
-                  the <code>optionsProvider</code> of the chart object one could also implement responsive behaviour.
+                  the settings specified in the options passed to the plugin factory function. Using
+                  the <code>optionsProvider</code> of the chart object one could also implement functioanlity based on
+                  the chart configuration as well as responsive configuration.
 
       - type: sub-section
         data:

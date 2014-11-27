@@ -5,10 +5,9 @@ var chart = new Chartist.Line('.ct-chart', {
     [2, 4, 2, 5, 4, 3, 6]
   ]
 }, {
-  plugins: [{
-    name: 'chartist-plugin-pointlabels',
-    options: {
+  plugins: [
+    ctPointLabels({
       textAnchor: 'middle'
-    }
-  }]
+    })
+  ]
 });
