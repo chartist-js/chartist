@@ -1,6 +1,8 @@
+// Foundation by ZURB
+// foundation.zurb.com
+// Licensed under MIT Open Source
+
 @import "global";
-
-
 
 //
 // @name _thumbs.scss
@@ -16,8 +18,8 @@ $include-html-media-classes: $include-html-classes !default;
 // We use these to control border styles
 $thumb-border-style: solid !default;
 $thumb-border-width: 4px !default;
-$thumb-border-color: #fff !default;
-$thumb-box-shadow: 0 0 0 1px rgba(#000,.2) !default;
+$thumb-border-color: $white !default;
+$thumb-box-shadow: 0 0 0 1px rgba($black,.2) !default;
 $thumb-box-shadow-hover: 0 0 6px 1px rgba($primary-color,0.5) !default;
 
 // Radius and transition speed for thumbs
@@ -41,16 +43,10 @@ $thumb-transition-speed: 200ms !default;
   display: inline-block;
   border: $thumb-border-style $border-width $thumb-border-color;
   max-width: 100%;
-  @if $experimental {
-    -webkit-box-shadow: $box-shadow;
-  }
   box-shadow: $box-shadow;
 
   &:hover,
   &:focus {
-    @if $experimental {
-      -webkit-box-shadow: $box-shadow-hover;
-    }
     box-shadow: $box-shadow-hover;
   }
 }

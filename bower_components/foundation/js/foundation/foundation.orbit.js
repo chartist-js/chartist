@@ -40,7 +40,7 @@
     };
 
     self.update_active_link = function(index) {
-      var link = $('a[data-orbit-link="'+self.slides().eq(index).attr('data-orbit-slide')+'"]');
+      var link = $('[data-orbit-link="'+self.slides().eq(index).attr('data-orbit-slide')+'"]');
       link.siblings().removeClass(settings.bullets_active_class);
       link.addClass(settings.bullets_active_class);
     };
@@ -49,7 +49,11 @@
       slides_container.wrap('<div class="'+settings.container_class+'"></div>');
       container = slides_container.parent();
       slides_container.addClass(settings.slides_container_class);
-      
+
+      if (settings.stack_on_small) {
+        container.addClass(settings.stack_on_small_class);
+      }
+
       if (settings.navigation_arrows) {
         container.append($('<a href="#"><span></span></a>').addClass(settings.prev_class));
         container.append($('<a href="#"><span></span></a>').addClass(settings.next_class));
@@ -74,14 +78,11 @@
         container.append(bullets_container);
         bullets_container.wrap('<div class="orbit-bullets-container"></div>');
         self.slides().each(function(idx, el) {
-          var bullet = $('<li>').attr('data-orbit-slide', idx);
+          var bullet = $('<li>').attr('data-orbit-slide', idx).on('click', self.link_bullet);;
           bullets_container.append(bullet);
         });
       }
 
-      if (settings.stack_on_small) {
-        container.addClass(settings.stack_on_small_class);
-      }
     };
 
     self._goto = function(next_idx, start_timer) {
@@ -100,7 +101,7 @@
         if (!settings.circular) return false;
         next_idx = slides.length - 1;
       }
-      
+
       var current = $(slides.get(idx));
       var next = $(slides.get(next_idx));
 
@@ -111,7 +112,7 @@
       slides_container.trigger('before-slide-change.fndtn.orbit');
       settings.before_slide_change();
       self.update_active_link(next_idx);
-      
+
       var callback = function() {
         var unlock = function() {
           idx = next_idx;
@@ -132,7 +133,7 @@
 
       var start_animation = function() {
         if (dir === 'next') {animate.next(current, next, callback);}
-        if (dir === 'prev') {animate.prev(current, next, callback);}        
+        if (dir === 'prev') {animate.prev(current, next, callback);}
       };
 
       if (next.height() > slides_container.height() && settings.variable_height) {
@@ -141,13 +142,13 @@
         start_animation();
       }
     };
-    
+
     self.next = function(e) {
       e.stopImmediatePropagation();
       e.preventDefault();
       self._goto(idx + 1);
     };
-    
+
     self.prev = function(e) {
       e.stopImmediatePropagation();
       e.preventDefault();
@@ -163,7 +164,7 @@
       }
     };
 
-    self.link_bullet = function(e) {    
+    self.link_bullet = function(e) {
       var index = $(this).attr('data-orbit-slide');
       if ((typeof index === 'string') && (index = $.trim(index)) != "") {
         if(isNaN(parseInt(index)))
@@ -182,7 +183,7 @@
     self.timer_callback = function() {
       self._goto(idx + 1, true);
     }
-    
+
     self.compute_dimensions = function() {
       var current = $(self.slides().get(idx));
       var h = current.height();
@@ -196,8 +197,8 @@
 
     self.create_timer = function() {
       var t = new Timer(
-        container.find('.'+settings.timer_container_class), 
-        settings, 
+        container.find('.'+settings.timer_container_class),
+        settings,
         self.timer_callback
       );
       return t;
@@ -211,7 +212,7 @@
       var t = container.find('.'+settings.timer_container_class);
       if (t.hasClass(settings.timer_paused_class)) {
         if (typeof timer === 'undefined') {timer = self.create_timer();}
-        timer.start();     
+        timer.start();
       }
       else {
         if (typeof timer === 'object') {timer.stop();}
@@ -221,15 +222,20 @@
     self.init = function() {
       self.build_markup();
       if (settings.timer) {
-        timer = self.create_timer(); 
+        timer = self.create_timer();
         Foundation.utils.image_loaded(this.slides().children('img'), timer.start);
       }
       animate = new FadeAnimation(settings, slides_container);
-      if (settings.animation === 'slide') 
-        animate = new SlideAnimation(settings, slides_container);        
+      if (settings.animation === 'slide')
+        animate = new SlideAnimation(settings, slides_container);
+
       container.on('click', '.'+settings.next_class, self.next);
       container.on('click', '.'+settings.prev_class, self.prev);
-      container.on('click', '[data-orbit-slide]', self.link_bullet);
+
+      if (settings.next_on_click) {
+        container.on('click', '.'+settings.slides_container_class+' [data-orbit-slide]', self.link_bullet);
+      }
+
       container.on('click', self.toggle_timer);
       if (settings.swipe) {
         container.on('touchstart.fndtn.orbit', function(e) {
@@ -280,12 +286,12 @@
           timer.start();
         }
       });
-      
+
       $(document).on('click', '[data-orbit-link]', self.link_custom);
-      $(window).on('resize', self.compute_dimensions);
+      $(window).on('load resize', self.compute_dimensions);
       Foundation.utils.image_loaded(this.slides().children('img'), self.compute_dimensions);
       Foundation.utils.image_loaded(this.slides().children('img'), function() {
-        container.prev('.preloader').css('display', 'none');
+        container.prev('.'+settings.preloader_class).css('display', 'none');
         self.update_slide_number(0);
         self.update_active_link(0);
         slides_container.trigger('ready.fndtn.orbit');
@@ -299,7 +305,7 @@
     var self = this,
         duration = settings.timer_speed,
         progress = el.find('.'+settings.timer_progress_class),
-        start, 
+        start,
         timeout,
         left = -1;
 
@@ -342,7 +348,7 @@
       el.trigger('timer-stopped.fndtn.orbit');
     };
   };
-  
+
   var SlideAnimation = function(settings, container) {
     var duration = settings.animation_speed;
     var is_rtl = ($('html[dir=rtl]').length === 1);
@@ -396,13 +402,14 @@
   Foundation.libs.orbit = {
     name: 'orbit',
 
-    version: '5.1.1',
+    version: '5.4.7',
 
     settings: {
       animation: 'slide',
       timer_speed: 10000,
       pause_on_hover: true,
       resume_on_mouseout: false,
+      next_on_click: true,
       animation_speed: 500,
       stack_on_small: false,
       navigation_arrows: true,
@@ -416,6 +423,7 @@
       timer_paused_class: 'paused',
       timer_progress_class: 'orbit-progress',
       slides_container_class: 'orbit-slides-container',
+      preloader_class: 'preloader',
       slide_selector: '*',
       bullets_container_class: 'orbit-bullets',
       bullets_active_class: 'active',
@@ -439,7 +447,7 @@
 
     events : function (instance) {
       var orbit_instance = new Orbit(this.S(instance), this.S(instance).data('orbit-init'));
-      this.S(instance).data(self.name + '-instance', orbit_instance);
+      this.S(instance).data(this.name + '-instance', orbit_instance);
     },
 
     reflow : function () {
@@ -460,5 +468,5 @@
     }
   };
 
-    
-}(jQuery, this, this.document));
+
+}(jQuery, window, window.document));

@@ -1,6 +1,6 @@
 {
   "name": "Snap.svg",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "http://snapsvg.io",
   "authors": [
     "Dmitry Baranovskiy <dmitry@baranovskiy.com>"
@@ -22,13 +22,13 @@
     "demos",
     "src"
   ],
-  "_release": "0.2.0",
+  "_release": "0.3.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.2.0",
-    "commit": "001ea911ca0c3c1c7c68dd5603217f963e1e3b6d"
+    "tag": "v0.3.0",
+    "commit": "445bd2a50cdda4f9db9281fbed1151ee7983b264"
   },
   "_source": "git://github.com/adobe-webplatform/Snap.svg.git",
-  "_target": "~0.2.0",
+  "_target": "*",
   "_originalSource": "snap.svg"
 }

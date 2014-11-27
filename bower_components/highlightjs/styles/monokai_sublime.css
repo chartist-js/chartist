@@ -6,8 +6,10 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 
 .hljs {
   display: block;
+  overflow-x: auto;
   padding: 0.5em;
   background: #23241f;
+  -webkit-text-size-adjust: none;
 }
 
 .hljs,
@@ -65,8 +67,6 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 .hljs-change,
 .hljs-winutils,
 .hljs-flow,
-.lisp .hljs-title,
-.clojure .hljs-built_in,
 .nginx .hljs-title,
 .tex .hljs-special,
 .hljs-header,
@@ -79,7 +79,7 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 .css .hljs-tag,
 .css .unit,
 .css .hljs-important {
-  color: #F92672;
+  color: #f92672;
 }
 
 .hljs-function .hljs-keyword,
@@ -98,10 +98,9 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 .hljs-string,
 .css .hljs-id,
 .hljs-subst,
-.haskell .hljs-type,
+.hljs-type,
 .ruby .hljs-class .hljs-parent,
 .hljs-built_in,
-.sql .hljs-aggregate,
 .django .hljs-template_tag,
 .django .hljs-variable,
 .smalltalk .hljs-class,
@@ -124,8 +123,8 @@ Monokai Sublime style. Derived from Monokai by noformnocontent http://nn.mit-lic
 
 .hljs-comment,
 .hljs-javadoc,
-.java .hljs-annotation,
-.python .hljs-decorator,
+.hljs-annotation,
+.hljs-decorator,
 .hljs-template_comment,
 .hljs-pi,
 .hljs-doctype,

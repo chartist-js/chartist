@@ -1,3 +1,7 @@
+// Foundation by ZURB
+// foundation.zurb.com
+// Licensed under MIT Open Source
+
 @import "global";
 
 //
@@ -6,8 +10,8 @@
 $include-html-button-classes: $include-html-classes !default;
 
 // We use these to set the color of the pip in dropdown buttons
-$dropdown-button-pip-color: #fff !default;
-$dropdown-button-pip-color-alt: #333 !default;
+$dropdown-button-pip-color: $white !default;
+$dropdown-button-pip-color-alt: $oil !default;
 
 $button-pip-tny: rem-calc(6) !default;
 $button-pip-sml: rem-calc(7) !default;
@@ -45,17 +49,18 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
 // We use this mixin to build off of the button mixin and add dropdown button styles
 //
 // $padding - Determines the size of button you're working with. Default: medium. Options [tiny, small, medium, large]
-// $pip-color - Color of the little triangle that points to the dropdown. Default: #fff.
+// $pip-color - Color of the little triangle that points to the dropdown. Default: $white.
 // $base-style - Add in base-styles. This can be set to false. Default:true
 
-@mixin dropdown-button($padding:medium, $pip-color:#fff, $base-style:true) {
+@mixin dropdown-button($padding:medium, $pip-color:$white, $base-style:true) {
 
   // We add in base styles, but they can be negated by setting to 'false'.
   @if $base-style {
     position: relative;
+    outline: none;
 
     // This creates the base styles for the triangle pip
-    &:before {
+    &::after {
       position: absolute;
       content: "";
       width: 0;
@@ -70,7 +75,7 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
   // If we're dealing with tiny buttons, use these styles
   @if $padding == tiny {
     padding-#{$opposite-direction}: $dropdown-button-padding-tny;
-    &:before {
+    &:after {
       border-width: $dropdown-button-pip-size-tny;
       #{$opposite-direction}: $dropdown-button-pip-opposite-tny;
       margin-top: $dropdown-button-pip-top-tny;
@@ -80,7 +85,7 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
   // If we're dealing with small buttons, use these styles
   @if $padding == small {
     padding-#{$opposite-direction}: $dropdown-button-padding-sml;
-    &:before {
+    &::after {
       border-width: $dropdown-button-pip-size-sml;
       #{$opposite-direction}: $dropdown-button-pip-opposite-sml;
       margin-top: $dropdown-button-pip-top-sml;
@@ -90,7 +95,7 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
   // If we're dealing with default (medium) buttons, use these styles
   @if $padding == medium {
     padding-#{$opposite-direction}: $dropdown-button-padding-med;
-    &:before {
+    &::after {
       border-width: $dropdown-button-pip-size-med;
       #{$opposite-direction}: $dropdown-button-pip-opposite-med;
       margin-top: $dropdown-button-pip-top-med;
@@ -100,7 +105,7 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
   // If we're dealing with large buttons, use these styles
   @if $padding == large {
     padding-#{$opposite-direction}: $dropdown-button-padding-lrg;
-    &:before {
+    &::after {
       border-width: $dropdown-button-pip-size-lrg;
       #{$opposite-direction}: $dropdown-button-pip-opposite-lrg;
       margin-top: $dropdown-button-pip-top-lrg;
@@ -109,7 +114,7 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
 
   // We can control the pip color. We didn't use logic in this case, just set it and forget it.
   @if $pip-color {
-    &:before { border-color: $pip-color transparent transparent transparent; }
+    &::after { border-color: $pip-color transparent transparent transparent; }
   }
 }
 
@@ -119,7 +124,7 @@ $dropdown-button-pip-top-lrg: -$button-pip-lrg / 2 + rem-calc(3) !default;
       &.tiny { @include dropdown-button(tiny,$base-style:false); }
       &.small { @include dropdown-button(small,$base-style:false); }
       &.large { @include dropdown-button(large,$base-style:false); }
-      &.secondary:before { border-color: $dropdown-button-pip-color-alt transparent transparent transparent; }
+      &.secondary:after { border-color: $dropdown-button-pip-color-alt transparent transparent transparent; }
     }
   }
 }

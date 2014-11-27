@@ -1,7 +1,7 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>base.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbase">Module Chartist.Base</h4><div class="module-description"><p>Base for all chart types. The methods in Chartist.Base are inherited to all chart types.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-update"><span class="member-tag">function</span> update()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-update-code">Show code</button></header><pre id="chartistbase-function-update-code">
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>base.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbase">Module Chartist.Base</h4><div class="module-description"><p>Base for all chart types. The methods in Chartist.Base are inherited to all chart types.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-update"><span class="member-tag">function</span> update()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-update-code">Show code</button></header><pre id="chartistbase-function-update-code">
     <code class="javascript">function update() {
   this.createChart(this.optionsProvider.currentOptions);
   return this;
@@ -27,7 +27,7 @@
   Chartist.Bar.super.constructor.call(this,
     query,
     data,
-    Chartist.extend(Chartist.extend({}, defaultOptions), options),
+    Chartist.extend({}, defaultOptions, options),
     responsiveOptions);
 }
 
@@ -125,7 +125,7 @@ new Chartist.Bar(&#x27;.ct-chart&#x27;, {
   Chartist.Line.super.constructor.call(this,
     query,
     data,
-    Chartist.extend(Chartist.extend({}, defaultOptions), options),
+    Chartist.extend({}, defaultOptions, options),
     responsiveOptions);
 }
 
@@ -263,7 +263,7 @@ new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code><
   Chartist.Pie.super.constructor.call(this,
     query,
     data,
-    Chartist.extend(Chartist.extend({}, defaultOptions), options),
+    Chartist.extend({}, defaultOptions, options),
     responsiveOptions);
 }
 
@@ -518,22 +518,25 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     <code class="javascript">Chartist.alphaNumerate = function (n) {
   // Limit to a-z
   return String.fromCharCode(97 + n % 26);
-};
-
-// TODO: Make it possible to call extend with var args</code>
+};</code>
   </pre><div class="member-content"><div class="description"><p>Generates a-z from a number 0 to 26</p></div><h6>Parameters</h6><div class="param"><code>n</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">A number from 0 to 26 that will result in a letter a-z</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description">A character from a-z based on the input number n</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-extend"><span class="member-tag">method</span> Chartist.extend()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-extend-code">Show code</button></header><pre id="chartistcore-method-extend-code">
-    <code class="javascript">Chartist.extend = function (target, source) {
+    <code class="javascript">Chartist.extend = function (target) {
   target = target || {};
-  for (var prop in source) {
-    if (typeof source[prop] === &#x27;object&#x27;) {
-      target[prop] = Chartist.extend(target[prop], source[prop]);
-    } else {
-      target[prop] = source[prop];
+
+  var sources = Array.prototype.slice.call(arguments, 1);
+  sources.forEach(function(source) {
+    for (var prop in source) {
+      if (typeof source[prop] === &#x27;object&#x27; &amp;&amp; !(source[prop] instanceof Array)) {
+        target[prop] = Chartist.extend(target[prop], source[prop]);
+      } else {
+        target[prop] = source[prop];
+      }
     }
-  }
+  });
+
   return target;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Simple recursive object extend</p></div><h6>Parameters</h6><div class="param"><code>target</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Target object where the source will be merged into</div></div><div class="param"><code>source</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">This object will be merged into target and then target is returned</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that has the same reference as target but is extended and merged with the properties of source</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-stripunit"><span class="member-tag">method</span> Chartist.stripUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-stripunit-code">Show code</button></header><pre id="chartistcore-method-stripunit-code">
+  </pre><div class="member-content"><div class="description"><p>Simple recursive object extend</p></div><h6>Parameters</h6><div class="param"><code>target</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Target object where the source will be merged into</div></div><div class="param"><code>sources</code> ( <span class="param-type"><code>Object...</code></span> )<div class="param-description">This object (objects) will be merged into target and then target is returned</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that has the same reference as target but is extended and merged with the properties of source</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-stripunit"><span class="member-tag">method</span> Chartist.stripUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-stripunit-code">Show code</button></header><pre id="chartistcore-method-stripunit-code">
     <code class="javascript">Chartist.stripUnit = function(value) {
   if(typeof value === &#x27;string&#x27;) {
     value = value.replace(/[^0-9\+-\.]/g, &#x27;&#x27;);
@@ -905,8 +908,8 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
 // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one</code>
   </pre><div class="member-content"><div class="description"><p>Determine the current point on the svg element to draw the data series</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><div class="param"><code>index</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The index of the current project point</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The coordinates object of the current project point containing an x and y number property</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-optionsprovider"><span class="member-tag">method</span> Chartist.optionsProvider()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-optionsprovider-code">Show code</button></header><pre id="chartistcore-method-optionsprovider-code">
-    <code class="javascript">Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, eventEmitter) {
-  var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
+    <code class="javascript">Chartist.optionsProvider = function (options, responsiveOptions, eventEmitter) {
+  var baseOptions = Chartist.extend({}, options),
     currentOptions,
     mediaQueryListeners = [],
     i;
@@ -959,80 +962,8 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   };
 };
 
-//TODO: For arrays it would be better to take the sequence into account and try to minimize modify deltas
-/**
- * This method will analyze deltas recursively in two objects. The returned object will contain a __delta__ property
- * where deltas for specific object properties can be found for the given object nesting level. For nested objects the
- * resulting delta descriptor object will contain properties to reflect the nesting. Nested descriptor objects also
- * contain a __delta__ property with the deltas of their level.
- *
- * @param {Object|Array} a Object that should be used to analyzed delta to object b
- * @param {Object|Array} b The second object where the deltas from a should be analyzed
- * @returns {Object} Delta descriptor object or null
- */
-Chartist.deltaDescriptor = function(a, b) {
-  var summary = {
-    added: 0,
-    removed: 0,
-    modified: 0
-  };
-
-  function findDeltasRecursively(a, b) {
-    var descriptor = {
-      __delta__: {}
-    };
-
-    // First check for removed and modified properties
-    Object.keys(a).forEach(function(property) {
-      if(!b.hasOwnProperty(property)) {
-        descriptor.__delta__[property] = {
-          type: &#x27;remove&#x27;,
-          property: property,
-          ours: a[property]
-        };
-        summary.removed++;
-      } else {
-        if(typeof a[property] === &#x27;object&#x27;) {
-          var subDescriptor = findDeltasRecursively(a[property], b[property]);
-          if(subDescriptor) {
-            descriptor[property] = subDescriptor;
-          }
-        } else {
-          if(a[property] !== b[property]) {
-            descriptor.__delta__[property] = {
-              type: &#x27;modify&#x27;,
-              property: property,
-              ours: a[property],
-              theirs: b[property]
-            };
-            summary.modified++;
-          }
-        }
-      }
-    });
-
-    // Check for added properties
-    Object.keys(b).forEach(function(property) {
-      if(!a.hasOwnProperty(property)) {
-        descriptor.__delta__[property] = {
-          type: &#x27;added&#x27;,
-          property: property,
-          theirs: b[property]
-        };
-        summary.added++;
-      }
-    });
-
-    return (Object.keys(descriptor).length !== 1 || Object.keys(descriptor.__delta__).length &gt; 0) ? descriptor : null;
-  }
-
-  var delta = findDeltasRecursively(a, b);
-  if(delta) {
-    delta.__delta__.summary = summary;
-  }
-
-  return delta;
-};
+// Plugin registry for plugin authors to register their plugins
+Chartist.plugins = {};
 
 //http://schepers.cc/getting-to-the-point
 Chartist.catmullRom2bezier = function (crp, z) {
