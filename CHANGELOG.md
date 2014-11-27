@@ -1,3 +1,6 @@
+v0.4.3 - 27 Nov 2014
+- Updated plugin architecture for convenience reasons and better support for modularization
+
 v0.4.2 - 27 Nov 2014
 --------------------
 

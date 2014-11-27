@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-  /* Chartist.js 0.4.2
+  /* Chartist.js 0.4.3
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
    * @module Chartist.Core
    */
   var Chartist = {
-    version: '0.4.2'
+    version: '0.4.3'
   };
 
   (function (window, document, Chartist) {
@@ -612,7 +612,6 @@
      * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
      *
      * @memberof Chartist.Core
-     * @param {Object} defaultOptions Default options from Chartist
      * @param {Object} options Options set by user
      * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
      * @param {Object} eventEmitter The event emitter that will be used to emit the options changed events
@@ -671,9 +670,6 @@
         removeMediaQueryListeners: removeMediaQueryListeners
       };
     };
-
-    // Plugin registry for plugin authors to register their plugins
-    Chartist.plugins = {};
 
     //http://schepers.cc/getting-to-the-point
     Chartist.catmullRom2bezier = function (crp, z) {
@@ -1115,9 +1111,10 @@
         // Initialize all relevant plugins with our chart object and the plugin options specified in the config
         if(this.options.plugins) {
           this.options.plugins.forEach(function(plugin) {
-            var pluginFnc = Chartist.plugins[plugin.name];
-            if(pluginFnc) {
-              pluginFnc(this, plugin.options);
+            if(plugin instanceof Array) {
+              plugin[0](this, plugin[1]);
+            } else {
+              plugin(this);
             }
           }.bind(this));
         }
