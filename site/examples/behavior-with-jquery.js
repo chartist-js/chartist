@@ -41,7 +41,7 @@ $chart.on('mouseleave', '.ct-point', function() {
 
 $chart.on('mousemove', function(event) {
   $toolTip.css({
-    left: event.offsetX - $toolTip.width() / 2 - 10,
-    top: event.offsetY - $toolTip.height() - 40
+    left: (event.offsetX || event.originalEvent.layerX) - $toolTip.width() / 2 - 10,
+    top: (event.offsetY || event.originalEvent.layerY) - $toolTip.height() - 40
   });
 });
