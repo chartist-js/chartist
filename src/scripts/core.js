@@ -33,24 +33,28 @@ var Chartist = {
     return String.fromCharCode(97 + n % 26);
   };
 
-  // TODO: Make it possible to call extend with var args
   /**
    * Simple recursive object extend
    *
    * @memberof Chartist.Core
    * @param {Object} target Target object where the source will be merged into
-   * @param {Object} source This object will be merged into target and then target is returned
+   * @param {Object...} sources This object (objects) will be merged into target and then target is returned
    * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
    */
-  Chartist.extend = function (target, source) {
+  Chartist.extend = function (target) {
     target = target || {};
-    for (var prop in source) {
-      if (typeof source[prop] === 'object') {
-        target[prop] = Chartist.extend(target[prop], source[prop]);
-      } else {
-        target[prop] = source[prop];
+
+    var sources = Array.prototype.slice.call(arguments, 1);
+    sources.forEach(function(source) {
+      for (var prop in source) {
+        if (typeof source[prop] === 'object' && !(source[prop] instanceof Array)) {
+          target[prop] = Chartist.extend(target[prop], source[prop]);
+        } else {
+          target[prop] = source[prop];
+        }
       }
-    }
+    });
+
     return target;
   };
 
@@ -593,8 +597,8 @@ var Chartist = {
    * @param {Object} eventEmitter The event emitter that will be used to emit the options changed events
    * @return {Object} The consolidated options object from the defaults, base and matching responsive options
    */
-  Chartist.optionsProvider = function (defaultOptions, options, responsiveOptions, eventEmitter) {
-    var baseOptions = Chartist.extend(Chartist.extend({}, defaultOptions), options),
+  Chartist.optionsProvider = function (options, responsiveOptions, eventEmitter) {
+    var baseOptions = Chartist.extend({}, options),
       currentOptions,
       mediaQueryListeners = [],
       i;
