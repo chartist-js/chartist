@@ -19,8 +19,7 @@
     "charting"
   ],
   "files": [
-    "libdist",
-    "sitedist",
+    "dist",
     "LICENSE",
     "package.json",
     "README.md"
