@@ -38,7 +38,7 @@ sections:
           intro: >
                    This chart uses the showArea option to draw line, dots but also an area shape. Use the low option to
                    specify a fixed lower bound that will make the area expand. You can also use the areaBase property
-                   to specify a data value that will be used to determine the area shap base position (this is 0 by default).
+                   to specify a data value that will be used to determine the area shape base position (this is 0 by default).
       - type: live-example
         data:
           title: Bi-polar Line chart with area only
@@ -90,16 +90,16 @@ sections:
           classes: ct-golden-section
           intro: >
                     This example makes use of label interpolation and the seriesBarDistance property that allows you
-                    to make bars overlap over each other. This then can be used to use the avialable space on mobile better.
+                    to make bars overlap over each other. This then can be used to use the available space on mobile better.
                     Resize your browser to see the effect of the responsive configuration.
       - type: live-example
         data:
-          title: Add peek cricles using the draw events
+          title: Add peak circles using the draw events
           level: 4
           id: example-bar-with-circle-modify-drawing
           classes: ct-golden-section
           intro: >
-                    With the help of draw events we are able to add a custom SVG shape to the peek of our bars.
+                    With the help of draw events we are able to add a custom SVG shape to the peak of our bars.
       - type: live-example
         data:
           title: Multi-line labels
