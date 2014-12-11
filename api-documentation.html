@@ -275,7 +275,7 @@ Chartist.Pie = Chartist.Base.extend({
 });
 
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method creates a new pie chart and returns an object that can be used to redraw the chart.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don&#x27;t necessarily need to be in percentage.</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// Default options of the pie chart
+  </pre><div class="member-content"><div class="description"><p>This method creates a new pie chart and returns an object that can be used to redraw the chart.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don&#x27;t necessarily need to be in percentage. The series property can also be an array of objects that contain a data property with the value and a className property to override the CSS class name for the series group.</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// Default options of the pie chart
 var defaultOptions = {
   // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
   width: undefined,
@@ -334,6 +334,19 @@ new Chartist.Pie(&#x27;.ct-chart&#x27;, {
   chartPadding: 30,
   labelOffset: 50,
   labelDirection: &#x27;explode&#x27;
+});
+</code></pre><pre class="api-example"><code class="js">// Overriding the class names for individual series
+new Chartist.Pie(&#x27;.ct-chart&#x27;, {
+  series: [{
+    data: 20,
+    className: &#x27;my-custom-class-one&#x27;
+  }, {
+    data: 10,
+    className: &#x27;my-custom-class-two&#x27;
+  }, {
+    data: 70,
+    className: &#x27;my-custom-class-three&#x27;
+  }]
 });</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>class.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistclass">Module Chartist.Class</h4><div class="module-description"><p>This module provides some basic prototype inheritance utilities.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistclass-function-extend"><span class="member-tag">function</span> extend()</h5><button class="api-code-button" data-toggle-visible="#chartistclass-function-extend-code">Show code</button></header><pre id="chartistclass-function-extend-code">
     <code class="javascript">function extend(properties, superProtoOverride) {
   var superProto = superProtoOverride || this.prototype || Chartist.Class;
@@ -1147,7 +1160,7 @@ return {
   </pre><div class="member-content"><div class="description"><p>This method will clear all child nodes of the current wrapper object.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-remove"><span class="member-tag">function</span> remove()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-remove-code">Show code</button></header><pre id="chartistsvg-function-remove-code">
     <code class="javascript">function remove() {
   this._node.parentNode.removeChild(this._node);
-  return new Chartist.Svg(this._node.parentNode);
+  return this.parent();
 }</code>
   </pre><div class="member-content"><div class="description"><p>This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you&#39;d like to get rid of an element in a given DOM structure.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-replace"><span class="member-tag">function</span> replace()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-replace-code">Show code</button></header><pre id="chartistsvg-function-replace-code">
     <code class="javascript">function replace(newElement) {
@@ -1254,8 +1267,19 @@ return {
       if(guided) {
         // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
         setTimeout(function() {
-          animate._node.beginElement();
-        }, timeout);
+          // If beginElement fails we set the animated attribute to the end position and remove the animate element
+          // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occured in
+          // the browser. (Currently FF 34 does not support animate elements in foreignObjects)
+          try {
+            animate._node.beginElement();
+          } catch(err) {
+            // Set animated attribute to current animated value
+            attributeProperties[attribute] = animationDefinition.to;
+            this.attr(attributeProperties);
+            // Remove the animate element as it&#x27;s no longer required
+            animate.remove();
+          }
+        }.bind(this), timeout);
       }
 
       if(eventEmitter) {
