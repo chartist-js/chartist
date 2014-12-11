@@ -422,8 +422,19 @@
         if(guided) {
           // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
           setTimeout(function() {
-            animate._node.beginElement();
-          }, timeout);
+            // If beginElement fails we set the animated attribute to the end position and remove the animate element
+            // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occured in
+            // the browser. (Currently FF 34 does not support animate elements in foreignObjects)
+            try {
+              animate._node.beginElement();
+            } catch(err) {
+              // Set animated attribute to current animated value
+              attributeProperties[attribute] = animationDefinition.to;
+              this.attr(attributeProperties);
+              // Remove the animate element as it's no longer required
+              animate.remove();
+            }
+          }.bind(this), timeout);
         }
 
         if(eventEmitter) {

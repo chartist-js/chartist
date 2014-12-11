@@ -46,7 +46,7 @@ chart.on('draw', function(data) {
         from: data.y + 100,
         to: data.y,
         // We can specify an easing function from Chartist.Svg.Easing
-        easing: 'easeInOutBack'
+        easing: 'easeOutQuart'
       }
     });
   } else if(data.type === 'label' && data.axis === 'y') {
@@ -56,7 +56,7 @@ chart.on('draw', function(data) {
         dur: durations,
         from: data.x - 100,
         to: data.x,
-        easing: 'easeInOutBack'
+        easing: 'easeOutQuart'
       }
     });
   } else if(data.type === 'point') {
