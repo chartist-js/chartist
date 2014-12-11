@@ -215,7 +215,7 @@
    */
   function remove() {
     this._node.parentNode.removeChild(this._node);
-    return new Chartist.Svg(this._node.parentNode);
+    return this.parent();
   }
 
   /**
