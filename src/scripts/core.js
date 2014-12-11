@@ -4,7 +4,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.4.3'
+  version: '0.4.4'
 };
 
 (function (window, document, Chartist) {

@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-  /* Chartist.js 0.4.3
+  /* Chartist.js 0.4.4
    * Copyright © 2014 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
    * @module Chartist.Core
    */
   var Chartist = {
-    version: '0.4.3'
+    version: '0.4.4'
   };
 
   (function (window, document, Chartist) {
@@ -1360,7 +1360,7 @@
      */
     function remove() {
       this._node.parentNode.removeChild(this._node);
-      return new Chartist.Svg(this._node.parentNode);
+      return this.parent();
     }
 
     /**
@@ -1567,8 +1567,19 @@
           if(guided) {
             // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
             setTimeout(function() {
-              animate._node.beginElement();
-            }, timeout);
+              // If beginElement fails we set the animated attribute to the end position and remove the animate element
+              // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occured in
+              // the browser. (Currently FF 34 does not support animate elements in foreignObjects)
+              try {
+                animate._node.beginElement();
+              } catch(err) {
+                // Set animated attribute to current animated value
+                attributeProperties[attribute] = animationDefinition.to;
+                this.attr(attributeProperties);
+                // Remove the animate element as it's no longer required
+                animate.remove();
+              }
+            }.bind(this), timeout);
           }
 
           if(eventEmitter) {
@@ -2530,7 +2541,7 @@
      *
      * @memberof Chartist.Pie
      * @param {String|Node} query A selector query string or directly a DOM element
-     * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
+     * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage. The series property can also be an array of objects that contain a data property with the value and a className property to override the CSS class name for the series group.
      * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
      * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
      * @return {Object} An object with a version and an update method to manually redraw the chart
@@ -2603,6 +2614,21 @@
      *   chartPadding: 30,
      *   labelOffset: 50,
      *   labelDirection: 'explode'
+     * });
+     *
+     * @example
+     * // Overriding the class names for individual series
+     * new Chartist.Pie('.ct-chart', {
+     *   series: [{
+     *     data: 20,
+     *     className: 'my-custom-class-one'
+     *   }, {
+     *     data: 10,
+     *     className: 'my-custom-class-two'
+     *   }, {
+     *     data: 70,
+     *     className: 'my-custom-class-three'
+     *   }]
      * });
      */
     function Pie(query, data, options, responsiveOptions) {
