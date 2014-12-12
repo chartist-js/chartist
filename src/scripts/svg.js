@@ -18,7 +18,8 @@
   };
 
   /**
-   * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
+   * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create
+   * sub-elements and modify them.
    *
    * @memberof Chartist.Svg
    * @constructor
@@ -35,7 +36,7 @@
     } else {
       this._node = document.createElementNS(svgNs, name);
 
-      // If this is an SVG element created then custom namespace
+      // If this is a SVG element created then custom namespace
       if(name === 'svg') {
         this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
       }
@@ -92,7 +93,8 @@
   }
 
   /**
-   * Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.
+   * Create a new SVG element whose wrapper object will be selected for further operations.
+   * This way you can also create nested groups easily.
    *
    * @memberof Chartist.Svg
    * @param {String} name The name of the SVG element that should be created as child element of the currently selected element wrapper
@@ -106,7 +108,7 @@
   }
 
   /**
-   * Returns the parent Chartist.SVG wrapper object
+   * Returns the parent Chartist.SVG wrapper object.
    *
    * @returns {Chartist.Svg} Returns a Chartist.Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
    */
@@ -128,7 +130,8 @@
   }
 
   /**
-   * Find the first child SVG element of the current element that matches a CSS selector. The returned object is a Chartist.Svg wrapper.
+   * Find the first child SVG element of the current element that matches a CSS selector.
+   * The returned object is a Chartist.Svg wrapper.
    *
    * @param {String} selector A CSS selector that is used to query for child SVG elements
    * @returns {Chartist.Svg} The SVG wrapper for the element found or null if no element was found
@@ -139,7 +142,8 @@
   }
 
   /**
-   * Find the all child SVG elements of the current element that match a CSS selector. The returned object is a Chartist.Svg.List wrapper.
+   * Find the all child SVG elements of the current element that match a CSS selector.
+   * The returned object is a Chartist.Svg.List wrapper.
    *
    * @param {String} selector A CSS selector that is used to query for child SVG elements
    * @returns {Chartist.Svg.List} The SVG wrapper list for the element found or null if no element was found
@@ -150,7 +154,10 @@
   }
 
   /**
-   * This method creates a foreignObject (see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.
+   * This method creates a foreignObject (see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject)
+   * that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage
+   * of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the
+   * browser will use the HTML rendering capabilities for the containing DOM.
    *
    * @memberof Chartist.Svg
    * @param {Node|String} content The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject
@@ -160,7 +167,7 @@
    * @returns {Chartist.Svg} New wrapper object that wraps the foreignObject element
    */
   function foreignObject(content, attributes, className, insertFirst) {
-    // If content is string then we convert it to DOM
+    // If content is a string we convert it to DOM
     // TODO: Handle case where content is not a string nor a DOM Node
     if(typeof content === 'string') {
       var container = document.createElement('div');
@@ -171,8 +178,8 @@
     // Adding namespace to content element
     content.setAttribute('xmlns', xhtmlNs);
 
-    // Creating the foreignObject without required extension attribute (as described here
-    // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
+    // Creating the foreignObject without required extension attribute
+    // (as described here http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
     var fnObj = this.elem('foreignObject', attributes, className, insertFirst);
 
     // Add content to foreignObjectElement
@@ -208,7 +215,8 @@
   }
 
   /**
-   * This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you'd like to get rid of an element in a given DOM structure.
+   * This method will cause the current wrapper to remove itself from its parent wrapper.
+   * Use this method if you'd like to get rid of an element in a given DOM structure.
    *
    * @memberof Chartist.Svg
    * @returns {Chartist.Svg} The parent wrapper object of the element that got removed
@@ -249,7 +257,8 @@
   }
 
   /**
-   * Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.
+   * Returns an array of class names that are attached to the current wrapper element.
+   * This method can not be chained further.
    *
    * @memberof Chartist.Svg
    * @returns {Array} A list of classes or an empty array if there are no classes on the current element
@@ -262,7 +271,7 @@
    * Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.
    *
    * @memberof Chartist.Svg
-   * @param {String} names A white space separated list of class names
+   * @param {String} names A whitespace separated list of class names
    * @returns {Chartist.Svg} The wrapper of the current element
    */
   function addClass(names) {
@@ -281,7 +290,7 @@
    * Removes one or a space separated list of classes from the current element.
    *
    * @memberof Chartist.Svg
-   * @param {String} names A white space separated list of class names
+   * @param {String} names A whitespace separated list of class names
    * @returns {Chartist.Svg} The wrapper of the current element
    */
   function removeClass(names) {
@@ -307,7 +316,7 @@
   }
 
   /**
-   * Get element height with fallback to svg BoundingBox or parent container dimensions:
+   * Get element height with fallback to SVG BoundingBox or parent container dimensions:
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
    * @memberof Chartist.Svg
@@ -318,7 +327,7 @@
   }
 
   /**
-   * Get element width with fallback to svg BoundingBox or parent container dimensions:
+   * Get element width with fallback to SVG BoundingBox or parent container dimensions:
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
    * @memberof Chartist.Core
@@ -329,7 +338,14 @@
   }
 
   /**
-   * The animate function lets you animate the current element with SMIL animations. You can add animations for multiple attributes at the same time by using an animation definition object. This object should contain SMIL animation attributes. Please refer to http://www.w3.org/TR/SVG/animate.html for a detailed specification about the available animation attributes. Additionally an easing property can be passed in the animation definition object. This can be a string with a name of an easing function in `Chartist.Svg.Easing` or an array with four numbers specifying a cubic Bézier curve.
+   * The animate function lets you animate the current element with SMIL animations.
+   * You can add animations for multiple attributes at the same time by using an animation definition object.
+   * This object should contain SMIL animation attributes. Please refer to http://www.w3.org/TR/SVG/animate.html
+   * for a detailed specification about the available animation attributes.
+   * Additionally an easing property can be passed in the animation definition object.
+   * This can be a string with a name of an easing function in `Chartist.Svg.Easing` or an array with four numbers
+   * specifying a cubic Bézier curve.
+   *
    * **An animations object could look like this:**
    * ```javascript
    * element.animate({
@@ -504,7 +520,8 @@
   });
 
   /**
-   * This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check http://www.w3.org/TR/SVG11/feature for a detailed list.
+   * This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like.
+   * Check http://www.w3.org/TR/SVG11/feature for a detailed list.
    *
    * @memberof Chartist.Svg
    * @param {String} feature The SVG 1.1 feature that should be checked for support.
@@ -515,7 +532,9 @@
   };
 
   /**
-   * This Object contains some standard easing cubic bezier curves. Then can be used with their name in the `Chartist.Svg.animate`. You can also extend the list and use your own name in the `animate` function. Click the show code button to see the available bezier functions.
+   * This Object contains some standard easing cubic bezier curves. Then can be used with their name in the
+   * `Chartist.Svg.animate`. You can also extend the list and use your own name in the `animate` function.
+   * Click the show code button to see the available bezier functions.
    *
    * @memberof Chartist.Svg
    */
@@ -549,11 +568,14 @@
   Chartist.Svg.Easing = easingCubicBeziers;
 
   /**
-   * This helper class is to wrap multiple `Chartist.Svg` elements into a list where you can call the `Chartist.Svg` functions on all elements in the list with one call. This is helpful when you'd like to perform calls with `Chartist.Svg` on multiple elements.
+   * This helper class is to wrap multiple `Chartist.Svg` elements into a list where you can call the `Chartist.Svg`
+   * functions on all elements in the list with one call. This is helpful when you'd like to perform calls with
+   * `Chartist.Svg` on multiple elements.
    * An instance of this class is also returned by `Chartist.Svg.querySelectorAll`.
    *
    * @memberof Chartist.Svg
-   * @param {Array<Node>|NodeList} nodeList An Array of SVG DOM nodes or a SVG DOM NodeList (as returned by document.querySelectorAll)
+   * @param {Array<Node>|NodeList} nodeList An Array of SVG DOM nodes or a SVG DOM NodeList (as returned by
+   * document.querySelectorAll)
    * @constructor
    */
   function SvgList(nodeList) {

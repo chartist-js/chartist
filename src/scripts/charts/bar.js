@@ -53,24 +53,24 @@
       bounds,
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
 
-    // Create new svg element
+    // Create new SVG element
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
 
-    // initialize bounds
+    // Initialize bounds
     bounds = Chartist.getBounds(this.svg, normalizedData, options, 0);
 
     var chartRect = Chartist.createChartRect(this.svg, options);
     // Start drawing
     var labels = this.svg.elem('g').addClass(options.classNames.labelGroup),
       grid = this.svg.elem('g').addClass(options.classNames.gridGroup),
-    // Projected 0 point
+      // Projected 0 point
       zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0);
 
     Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
     Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
 
     // Draw the series
-    // initialize series groups
+    // Initialize series groups
     for (var i = 0; i < this.data.series.length; i++) {
       // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
       var biPol = i - (this.data.series.length - 1) / 2,
@@ -97,7 +97,8 @@
           bar;
 
         // Offset to center bar between grid lines and using bi-polar offset for multiple series
-        // TODO: Check if we should really be able to add classes to the series. Should be handles with Sass and semantic / specific selectors
+        // TODO: Check if we should really be able to add classes to the series.
+        // Should be handled with Sass and semantic / specific selectors
         p.x += periodHalfWidth + (biPol * options.seriesBarDistance);
 
         bar = seriesGroups[i].elem('line', {

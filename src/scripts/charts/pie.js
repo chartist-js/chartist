@@ -1,5 +1,5 @@
 /**
- * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts
+ * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts.
  *
  * @module Chartist.Pie
  */
@@ -63,12 +63,12 @@
       return previousValue + currentValue;
     }, 0);
 
-    // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
-    // Unfortunately this is not possible with the current SVG Spec
+    // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside.
+    // Unfortunately this is not possible with the current SVG spec.
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
     radius -= options.donut ? options.donutWidth / 2  : 0;
 
-    // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
+    // If it's a donut chart then the label position is at the radius, if it's a regular pie chart it's half of the radius
     // see https://github.com/gionkunz/chartist-js/issues/21
     labelRadius = options.donut ? radius : radius / 2;
     // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
@@ -80,13 +80,13 @@
       y: chartRect.y2 + chartRect.height() / 2
     };
 
-    // Check if there is only one non-zero value in the series array.
+    // Check if there is only one non-zero value in the series array
     var hasSingleValInSeries = this.data.series.filter(function(val) {
       return val !== 0;
     }).length === 1;
 
     // Draw the series
-    // initialize series groups
+    // Initialize series groups
     for (var i = 0; i < this.data.series.length; i++) {
       seriesGroups[i] = this.svg.elem('g', null, null, true);
 
@@ -181,8 +181,8 @@
         });
       }
 
-      // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
-      // (except for last slice)
+      // Set next startAngle to current endAngle.
+      // Use slight offset so there are no transparent hairline issues (except for last slice)
       startAngle = endAngle;
     }
 
