@@ -11,7 +11,7 @@ var Chartist = {
   'use strict';
 
   /**
-   * Helps to simplify functional style code
+   * Helps to simplify functional style code.
    *
    * @memberof Chartist.Core
    * @param {*} n This exact value will be returned by the noop function
@@ -22,7 +22,7 @@ var Chartist = {
   };
 
   /**
-   * Generates a-z from a number 0 to 26
+   * Generates a-z from a number 0 to 26.
    *
    * @memberof Chartist.Core
    * @param {Number} n A number from 0 to 26 that will result in a letter a-z
@@ -34,7 +34,7 @@ var Chartist = {
   };
 
   /**
-   * Simple recursive object extend
+   * Simple recursive object extend.
    *
    * @memberof Chartist.Core
    * @param {Object} target Target object where the source will be merged into
@@ -90,7 +90,7 @@ var Chartist = {
   };
 
   /**
-   * This is a wrapper around document.querySelector that will return the query if it's already of type Node
+   * This is a wrapper around document.querySelector that will return the query if it's already of type Node.
    *
    * @memberof Chartist.Core
    * @param {String|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
@@ -121,7 +121,7 @@ var Chartist = {
       container.removeChild(svg);
     }
 
-    // Create svg object with width and height or use 100% as default
+    // Create SVG object with width and height or use 100% as default
     svg = new Chartist.Svg('svg').attr({
       width: width,
       height: height
@@ -136,7 +136,7 @@ var Chartist = {
   };
 
   /**
-   * Convert data series into plain array
+   * Convert data series into plain array.
    *
    * @memberof Chartist.Core
    * @param {Object} data The series object that contains the data to be visualized in the chart
@@ -161,7 +161,7 @@ var Chartist = {
   };
 
   /**
-   * Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart
+   * Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart.
    *
    * @memberof Chartist.Core
    * @param {Array} dataArray The array that contains the data to be visualized in the chart. The array in this parameter will be modified by function.
@@ -183,7 +183,7 @@ var Chartist = {
   };
 
   /**
-   * Calculate the order of magnitude for the chart scale
+   * Calculate the order of magnitude for the chart scale.
    *
    * @memberof Chartist.Core
    * @param {Number} value The value Range of the chart
@@ -194,7 +194,7 @@ var Chartist = {
   };
 
   /**
-   * Project a data length into screen coordinates (pixels)
+   * Project a data length into screen coordinates (pixels).
    *
    * @memberof Chartist.Core
    * @param {Object} svg The svg element for the chart
@@ -209,7 +209,7 @@ var Chartist = {
   };
 
   /**
-   * Get the height of the area in the chart for the data series
+   * Get the height of the area in the chart for the data series.
    *
    * @memberof Chartist.Core
    * @param {Object} svg The svg element for the chart
@@ -342,7 +342,7 @@ var Chartist = {
   };
 
   /**
-   * Calculate cartesian coordinates of polar coordinates
+   * Calculate cartesian coordinates of polar coordinates.
    *
    * @memberof Chartist.Core
    * @param {Number} centerX X-axis coordinates of center point of circle segment
@@ -387,7 +387,8 @@ var Chartist = {
   };
 
   /**
-   * Creates a label with text and based on support of SVG1.1 extensibility will use a foreignObject with a SPAN element or a fallback to a regular SVG text element.
+   * Creates a label with text and based on support of SVG1.1 extensibility will use a foreignObject
+   * with a SPAN element or a fallback to a regular SVG text element.
    *
    * @param {Object} parent The SVG element where the label should be created as a child
    * @param {String} text The label text
@@ -406,7 +407,7 @@ var Chartist = {
   };
 
   /**
-   * Generate grid lines and labels for the x-axis into grid and labels group SVG elements
+   * Generate grid lines and labels for the x-axis into grid and labels group SVG elements.
    *
    * @memberof Chartist.Core
    * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
@@ -425,7 +426,7 @@ var Chartist = {
         height = options.axisX.offset,
         pos = chartRect.x1 + width * index;
 
-      // If interpolated value returns falsey (except 0) we don't draw the grid line
+      // If interpolated value returns falsy (except 0) we don't draw the grid line
       if (!interpolatedValue && interpolatedValue !== 0) {
         return;
       }
@@ -488,7 +489,7 @@ var Chartist = {
   };
 
   /**
-   * Generate grid lines and labels for the y-axis into grid and labels group SVG elements
+   * Generate grid lines and labels for the y-axis into grid and labels group SVG elements.
    *
    * @memberof Chartist.Core
    * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
@@ -570,10 +571,10 @@ var Chartist = {
   };
 
   /**
-   * Determine the current point on the svg element to draw the data series
+   * Determine the current point on the SVG element to draw the data series.
    *
    * @memberof Chartist.Core
-   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the svg element
+   * @param {Object} chartRect The rectangle that sets the bounds for the chart in the SVG element
    * @param {Object} bounds All the values to set the bounds of the chart
    * @param {Array} data The array that contains the data to be visualized in the chart
    * @param {Number} index The index of the current project point
@@ -588,7 +589,8 @@ var Chartist = {
 
   // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one
   /**
-   * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+   * Provides options handling functionality with callback for options changes triggered by responsive options
+   * and media query matches.
    *
    * @memberof Chartist.Core
    * @param {Object} options Options set by user

@@ -1,5 +1,7 @@
 /**
- * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
+ * The Chartist line chart can be used to draw Line or Scatter charts.
+ * If used in the browser you can access the global `Chartist` namespace where you find the `Line` function
+ * as a main entry point.
  *
  * For examples on how to use the line chart please check the examples of the `Chartist.Line` method.
  *
@@ -61,10 +63,10 @@
       bounds,
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
 
-    // Create new svg object
+    // Create new SVG object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
 
-    // initialize bounds
+    // Initialize bounds
     bounds = Chartist.getBounds(this.svg, normalizedData, options);
 
     var chartRect = Chartist.createChartRect(this.svg, options);
@@ -76,7 +78,7 @@
     Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
 
     // Draw the series
-    // initialize series groups
+    // Initialize series groups
     for (var i = 0; i < this.data.series.length; i++) {
       seriesGroups[i] = this.svg.elem('g');
 
@@ -97,13 +99,13 @@
         pathCoordinates = [],
         point;
 
-      for (var j = 0; j < normalizedData[i].length; j++) {
+      for(var j = 0; j < normalizedData[i].length; j++) {
         p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
         pathCoordinates.push(p.x, p.y);
 
-        //If we should show points we need to create them now to avoid secondary loop
+        // If we should show points we need to create them now to avoid a secondary loop
         // Small offset for Firefox to render squares correctly
-        if (options.showPoint) {
+        if(options.showPoint) {
           point = seriesGroups[i].elem('line', {
             x1: p.x,
             y1: p.y,
@@ -126,12 +128,12 @@
       }
 
       // TODO: Nicer handling of conditions, maybe composition?
-      if (options.showLine || options.showArea) {
+      if(options.showLine || options.showArea) {
         // TODO: We should add a path API in the SVG library for easier path creation
         var pathElements = ['M' + pathCoordinates[0] + ',' + pathCoordinates[1]];
 
         // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
-        if (options.lineSmooth && pathCoordinates.length > 4) {
+        if(options.lineSmooth && pathCoordinates.length > 4) {
 
           var cr = Chartist.catmullRom2bezier(pathCoordinates);
           for(var k = 0; k < cr.length; k++) {

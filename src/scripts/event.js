@@ -11,7 +11,7 @@
     var handlers = [];
 
     /**
-     * Add an event handler for a specific event
+     * Add an event handler for a specific event.
      *
      * @memberof Chartist.Event
      * @param {String} event The event name
@@ -46,7 +46,8 @@
     }
 
     /**
-     * Use this function to emit an event. All handlers that are listening for this event will be triggered with the data parameter.
+     * Use this function to emit an event. All handlers that are listening for this event will be triggered
+     * with the data parameter.
      *
      * @memberof Chartist.Event
      * @param {String} event The event name that should be triggered
