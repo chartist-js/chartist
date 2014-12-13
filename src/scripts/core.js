@@ -421,7 +421,7 @@ var Chartist = {
     // Create X-Axis
     data.labels.forEach(function (value, index) {
       var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-        width = chartRect.width() / data.labels.length,
+        width = chartRect.width() / (data.labels.length - (options.fullWidth ? 1 : 0)),
         height = options.axisX.offset,
         pos = chartRect.x1 + width * index;
 
@@ -577,11 +577,12 @@ var Chartist = {
    * @param {Object} bounds All the values to set the bounds of the chart
    * @param {Array} data The array that contains the data to be visualized in the chart
    * @param {Number} index The index of the current project point
+   * @param {Object} options The chart options that are used to influence the calculations
    * @return {Object} The coordinates object of the current project point containing an x and y number property
    */
-  Chartist.projectPoint = function (chartRect, bounds, data, index) {
+  Chartist.projectPoint = function (chartRect, bounds, data, index, options) {
     return {
-      x: chartRect.x1 + chartRect.width() / data.length * index,
+      x: chartRect.x1 + chartRect.width() / (data.length - (data.length > 1 && options.fullWidth ? 1 : 0)) * index,
       y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
     };
   };

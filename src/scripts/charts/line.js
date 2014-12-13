@@ -9,38 +9,69 @@
 (function(window, document, Chartist){
   'use strict';
 
+  /**
+   * Default options in line charts. Expand the code view to see a detailed list of options with comments.
+   *
+   * @memberof Chartist.Line
+   */
   var defaultOptions = {
+    // Options for X-Axis
     axisX: {
+      // The offset of the labels to the chart area
       offset: 30,
+      // Allows you to correct label positioning on this axis by positive or negative x and y offset.
       labelOffset: {
         x: 0,
         y: 0
       },
+      // If labels should be shown or not
       showLabel: true,
+      // If the axis grid should be drawn or not
       showGrid: true,
+      // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop
     },
+    // Options for Y-Axis
     axisY: {
+      // The offset of the labels to the chart area
       offset: 40,
+      // Allows you to correct label positioning on this axis by positive or negative x and y offset.
       labelOffset: {
         x: 0,
         y: 0
       },
+      // If labels should be shown or not
       showLabel: true,
+      // If the axis grid should be drawn or not
       showGrid: true,
+      // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
+      // This value specifies the minimum height in pixel of the scale steps
       scaleMinSpace: 20
     },
+    // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
     width: undefined,
+    // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
     height: undefined,
+    // If the line should be drawn or not
     showLine: true,
+    // If dots should be drawn or not
     showPoint: true,
+    // If the line chart should draw an area
     showArea: false,
+    // The base for the area chart that will be used to close the area shape (is normally 0)
     areaBase: 0,
+    // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
     lineSmooth: true,
+    // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
+    // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
     high: undefined,
+    // Padding of the chart drawing area to the container element and labels
     chartPadding: 5,
+    // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler.
+    fullWidth: false,
+    // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-line',
       label: 'ct-label',
@@ -56,6 +87,10 @@
     }
   };
 
+  /**
+   * Creates a new chart
+   *
+   */
   function createChart(options) {
     var seriesGroups = [],
       bounds,
@@ -98,7 +133,7 @@
         point;
 
       for (var j = 0; j < normalizedData[i].length; j++) {
-        p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j);
+        p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j, options);
         pathCoordinates.push(p.x, p.y);
 
         //If we should show points we need to create them now to avoid secondary loop
@@ -152,7 +187,7 @@
           var areaPathElements = pathElements.slice();
 
           // We project the areaBase value into screen coordinates
-          var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [areaBase], 0);
+          var areaBaseProjected = Chartist.projectPoint(chartRect, bounds, [areaBase], 0, options);
           // And splice our new area path array to add the missing path elements to close the area shape
           areaPathElements.splice(0, 0, 'M' + areaBaseProjected.x + ',' + areaBaseProjected.y);
           areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
@@ -209,79 +244,6 @@
    * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
    * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    * @return {Object} An object which exposes the API for the created chart
-   *
-   * @example
-   * // These are the default options of the line chart
-   * var options = {
-   *   // Options for X-Axis
-   *   axisX: {
-   *     // The offset of the labels to the chart area
-   *     offset: 30,
-   *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
-   *     labelOffset: {
-   *       x: 0,
-   *       y: 0
-   *     },
-   *     // If labels should be shown or not
-   *     showLabel: true,
-   *     // If the axis grid should be drawn or not
-   *     showGrid: true,
-   *     // Interpolation function that allows you to intercept the value from the axis label
-   *     labelInterpolationFnc: function(value){return value;}
-   *   },
-   *   // Options for Y-Axis
-   *   axisY: {
-   *     // The offset of the labels to the chart area
-   *     offset: 40,
-   *     // Allows you to correct label positioning on this axis by positive or negative x and y offset.
-   *     labelOffset: {
-   *       x: 0,
-   *       y: 0
-   *     },
-   *     // If labels should be shown or not
-   *     showLabel: true,
-   *     // If the axis grid should be drawn or not
-   *     showGrid: true,
-   *     // Interpolation function that allows you to intercept the value from the axis label
-   *     labelInterpolationFnc: function(value){return value;},
-   *     // This value specifies the minimum height in pixel of the scale steps
-   *     scaleMinSpace: 30
-   *   },
-   *   // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
-   *   width: undefined,
-   *   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
-   *   height: undefined,
-   *   // If the line should be drawn or not
-   *   showLine: true,
-   *   // If dots should be drawn or not
-   *   showPoint: true,
-   *   // If the line chart should draw an area
-   *   showArea: false,
-   *   // The base for the area chart that will be used to close the area shape (is normally 0)
-   *   areaBase: 0,
-   *   // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
-   *   lineSmooth: true,
-   *   // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
-   *   low: undefined,
-   *   // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
-   *   high: undefined,
-   *   // Padding of the chart drawing area to the container element and labels
-   *   chartPadding: 5,
-   *   // Override the class names that get used to generate the SVG structure of the chart
-   *   classNames: {
-   *     chart: 'ct-chart-line',
-   *     label: 'ct-label',
-   *     labelGroup: 'ct-labels',
-   *     series: 'ct-series',
-   *     line: 'ct-line',
-   *     point: 'ct-point',
-   *     area: 'ct-area',
-   *     grid: 'ct-grid',
-   *     gridGroup: 'ct-grids',
-   *     vertical: 'ct-vertical',
-   *     horizontal: 'ct-horizontal'
-   *   }
-   * };
    *
    * @example
    * // Create a simple line chart

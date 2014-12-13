@@ -12,6 +12,7 @@ new Chartist.Line('.ct-chart', {
   showArea: true,
   showLine: false,
   showPoint: false,
+  fullWidth: true,
   axisX: {
     showLabel: false,
     showGrid: false
