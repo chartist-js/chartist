@@ -11,7 +11,9 @@
     "highlightjs": "~8.3.0",
     "compass-mixins": "~1.0.2",
     "codemirror": "~4.8.0",
-    "base64": "~0.3.0"
+    "base64": "~0.3.0",
+    "chartist-plugin-pointlabels": "~0.0.2",
+    "chartist-plugin-sketchy": "~0.0.1"
   },
   "ignore": [
     ".*",
