@@ -16,9 +16,11 @@
   /**
    * Updates the chart which currently does a full reconstruction of the SVG DOM
    *
+   * @param {Object} [data] Optional data you'd like to set for the chart before it will update. If not specified the update method will use the data that is already configured with the chart.
    * @memberof Chartist.Base
    */
-  function update() {
+  function update(data) {
+    this.data = data || this.data;
     this.createChart(this.optionsProvider.currentOptions);
     return this;
   }
