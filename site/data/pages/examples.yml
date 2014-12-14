@@ -110,6 +110,15 @@ sections:
                     Chartist will figure out if your browser supports foreignObject and it will use them to create labels
                     that re based on regular HTML text elements. Multi-line and regular CSS styles are just two of many
                     benefits while using foreignObjects!
+      - type: live-example
+        data:
+          title: Stacked bar chart
+          level: 4
+          id: stacked-bar
+          classes: ct-golden-section
+          intro: >
+                    You can also set your bar chart to stack the series bars on top of each other easily by using the
+                    <code>stackBars</code> property in your configuration.
   - title: Pie chart examples
     level: 3
     items:
