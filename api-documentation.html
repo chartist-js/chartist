@@ -1,12 +1,13 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>base.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbase">Module Chartist.Base</h4><div class="module-description"><p>Base for all chart types. The methods in Chartist.Base are inherited to all chart types.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-update"><span class="member-tag">function</span> update()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-update-code">Show code</button></header><pre id="chartistbase-function-update-code">
-    <code class="javascript">function update() {
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>base.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbase">Module Chartist.Base</h4><div class="module-description"><p>Base for all chart types. The methods in Chartist.Base are inherited to all chart types.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-update"><span class="member-tag">function</span> update()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-update-code">Show code</button></header><pre id="chartistbase-function-update-code">
+    <code class="javascript">function update(data) {
+  this.data = data || this.data;
   this.createChart(this.optionsProvider.currentOptions);
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Updates the chart which currently does a full reconstruction of the SVG DOM</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-detach"><span class="member-tag">function</span> detach()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-detach-code">Show code</button></header><pre id="chartistbase-function-detach-code">
+  </pre><div class="member-content"><div class="description"><p>Updates the chart which currently does a full reconstruction of the SVG DOM</p></div><h6>Parameters</h6><div class="param"><code>[data]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Optional data you&#x27;d like to set for the chart before it will update. If not specified the update method will use the data that is already configured with the chart.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-detach"><span class="member-tag">function</span> detach()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-detach-code">Show code</button></header><pre id="chartistbase-function-detach-code">
     <code class="javascript">function detach() {
   window.removeEventListener(&#x27;resize&#x27;, this.resizeListener);
   this.optionsProvider.removeMediaQueryListeners();
@@ -21,25 +22,37 @@
     <code class="javascript">function off(event, handler) {
   this.eventEmitter.removeEventHandler(event, handler);
   return this;
-}</code>
-  </pre><div class="member-content"><div class="description"><p>Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.</p></div><h6>Parameters</h6><div class="param"><code>event</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Name of the event for which a handler should be removed</div></div><div class="param"><code>[handler]</code> ( <span class="param-type"><code>Function</code></span> )<div class="param-description">The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>bar.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbar">Module Chartist.Bar</h4><div class="module-description"><p>The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbar-function-bar"><span class="member-tag">function</span> Bar()</h5><button class="api-code-button" data-toggle-visible="#chartistbar-function-bar-code">Show code</button></header><pre id="chartistbar-function-bar-code">
-    <code class="javascript">function Bar(query, data, options, responsiveOptions) {
-  Chartist.Bar.super.constructor.call(this,
-    query,
-    data,
-    Chartist.extend({}, defaultOptions, options),
-    responsiveOptions);
 }
 
-// Creating bar chart type in Chartist namespace
-Chartist.Bar = Chartist.Base.extend({
-  constructor: Bar,
-  createChart: createChart
-});
+function initialize() {
+  // Add window resize listener that re-creates the chart
+  window.addEventListener(&#x27;resize&#x27;, this.resizeListener);
 
-}(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method creates a new bar chart and returns API object that you can use for later changes.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object that needs to consist of a labels and a series array</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object which exposes the API for the created chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// These are the default options of the bar chart
-var options = {
+  // Obtain current options based on matching media queries (if responsive options are given)
+  // This will also register a listener that is re-creating the chart based on media changes
+  this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+
+  // Before the first chart creation we need to register us with all plugins that are configured
+  // Initialize all relevant plugins with our chart object and the plugin options specified in the config
+  if(this.options.plugins) {
+    this.options.plugins.forEach(function(plugin) {
+      if(plugin instanceof Array) {
+        plugin[0](this, plugin[1]);
+      } else {
+        plugin(this);
+      }
+    }.bind(this));
+  }
+
+  // Create the first chart
+  this.createChart(this.optionsProvider.currentOptions);
+
+  // As chart is initialized from the event loop now we can reset our timeout reference
+  // This is important if the chart gets initialized on the same element twice
+  this.initializeTimeoutId = undefined;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Use this function to un-register event handlers. If the handler function parameter is omitted all handlers for the given event will be un-registered.</p></div><h6>Parameters</h6><div class="param"><code>event</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Name of the event for which a handler should be removed</div></div><div class="param"><code>[handler]</code> ( <span class="param-type"><code>Function</code></span> )<div class="param-description">The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>bar.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbar">Module Chartist.Bar</h4><div class="module-description"><p>The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.</p></div><div class="module-members"><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistbar-declaration-defaultoptions"><span class="member-tag">declaration</span> defaultOptions</h5><button class="api-code-button" data-toggle-visible="#chartistbar-declaration-defaultoptions-code">Show code</button></header><pre id="chartistbar-declaration-defaultoptions-code">
+    <code class="javascript">var defaultOptions = {
   // Options for X-Axis
   axisX: {
     // The offset of the chart drawing area to the border of the container
@@ -54,7 +67,7 @@ var options = {
     // If the axis grid should be drawn or not
     showGrid: true,
     // Interpolation function that allows you to intercept the value from the axis label
-    labelInterpolationFnc: function(value){return value;}
+    labelInterpolationFnc: Chartist.noop
   },
   // Options for Y-Axis
   axisY: {
@@ -70,22 +83,28 @@ var options = {
     // If the axis grid should be drawn or not
     showGrid: true,
     // Interpolation function that allows you to intercept the value from the axis label
-    labelInterpolationFnc: function(value){return value;},
+    labelInterpolationFnc: Chartist.noop,
     // This value specifies the minimum height in pixel of the scale steps
-    scaleMinSpace: 30
+    scaleMinSpace: 20
   },
   // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
   width: undefined,
   // Specify a fixed height for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
   height: undefined,
-  // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
-  low: undefined,
   // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
   high: undefined,
+  // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+  low: undefined,
   // Padding of the chart drawing area to the container element and labels
   chartPadding: 5,
   // Specify the distance in pixel of bars in a group
   seriesBarDistance: 15,
+  // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler. For bar charts this might be used in conjunction with the centerBars property set to false.
+  fullWidth: false,
+  // This property will cause the bars of the bar chart to be drawn on the grid line rather than between two grid lines. This is useful for single series bar charts and might be used in conjunction with the fullWidth property.
+  centerBars: true,
+  // If set to true this property will cause the series bars to be stacked and form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+  stackBars: false,
   // Override the class names that get used to generate the SVG structure of the chart
   classNames: {
     chart: &#x27;ct-chart-bar&#x27;,
@@ -98,8 +117,24 @@ var options = {
     vertical: &#x27;ct-vertical&#x27;,
     horizontal: &#x27;ct-horizontal&#x27;
   }
-};
-</code></pre><pre class="api-example"><code class="js">// Create a simple bar chart
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Default options in bar charts. Expand the code view to see a detailed list of options with comments.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbar-function-bar"><span class="member-tag">function</span> Bar()</h5><button class="api-code-button" data-toggle-visible="#chartistbar-function-bar-code">Show code</button></header><pre id="chartistbar-function-bar-code">
+    <code class="javascript">function Bar(query, data, options, responsiveOptions) {
+  Chartist.Bar.super.constructor.call(this,
+    query,
+    data,
+    Chartist.extend({}, defaultOptions, options),
+    responsiveOptions);
+}
+
+// Creating bar chart type in Chartist namespace
+Chartist.Bar = Chartist.Base.extend({
+  constructor: Bar,
+  createChart: createChart
+});
+
+}(window, document, Chartist));</code>
+  </pre><div class="member-content"><div class="description"><p>This method creates a new bar chart and returns API object that you can use for later changes.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object that needs to consist of a labels and a series array</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object which exposes the API for the created chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// Create a simple bar chart
 var data = {
   labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
   series: [
@@ -120,24 +155,8 @@ new Chartist.Bar(&#x27;.ct-chart&#x27;, {
   seriesBarDistance: 12,
   low: -10,
   high: 10
-});</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>line.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistline">Module Chartist.Line</h4><div class="module-description"><p>The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global <code>Chartist</code> namespace where you find the <code>Line</code> function as a main entry point.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistline-function-line"><span class="member-tag">function</span> Line()</h5><button class="api-code-button" data-toggle-visible="#chartistline-function-line-code">Show code</button></header><pre id="chartistline-function-line-code">
-    <code class="javascript">function Line(query, data, options, responsiveOptions) {
-  Chartist.Line.super.constructor.call(this,
-    query,
-    data,
-    Chartist.extend({}, defaultOptions, options),
-    responsiveOptions);
-}
-
-// Creating line chart type in Chartist namespace
-Chartist.Line = Chartist.Base.extend({
-  constructor: Line,
-  createChart: createChart
-});
-
-}(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method creates a new line chart.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object that needs to consist of a labels and a series array</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object which exposes the API for the created chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// These are the default options of the line chart
-var options = {
+});</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>line.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistline">Module Chartist.Line</h4><div class="module-description"><p>The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global <code>Chartist</code> namespace where you find the <code>Line</code> function as a main entry point.</p></div><div class="module-members"><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistline-declaration-defaultoptions"><span class="member-tag">declaration</span> defaultOptions</h5><button class="api-code-button" data-toggle-visible="#chartistline-declaration-defaultoptions-code">Show code</button></header><pre id="chartistline-declaration-defaultoptions-code">
+    <code class="javascript">var defaultOptions = {
   // Options for X-Axis
   axisX: {
     // The offset of the labels to the chart area
@@ -152,7 +171,7 @@ var options = {
     // If the axis grid should be drawn or not
     showGrid: true,
     // Interpolation function that allows you to intercept the value from the axis label
-    labelInterpolationFnc: function(value){return value;}
+    labelInterpolationFnc: Chartist.noop
   },
   // Options for Y-Axis
   axisY: {
@@ -168,9 +187,9 @@ var options = {
     // If the axis grid should be drawn or not
     showGrid: true,
     // Interpolation function that allows you to intercept the value from the axis label
-    labelInterpolationFnc: function(value){return value;},
+    labelInterpolationFnc: Chartist.noop,
     // This value specifies the minimum height in pixel of the scale steps
-    scaleMinSpace: 30
+    scaleMinSpace: 20
   },
   // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
   width: undefined,
@@ -192,6 +211,8 @@ var options = {
   high: undefined,
   // Padding of the chart drawing area to the container element and labels
   chartPadding: 5,
+  // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler.
+  fullWidth: false,
   // Override the class names that get used to generate the SVG structure of the chart
   classNames: {
     chart: &#x27;ct-chart-line&#x27;,
@@ -206,8 +227,24 @@ var options = {
     vertical: &#x27;ct-vertical&#x27;,
     horizontal: &#x27;ct-horizontal&#x27;
   }
-};
-</code></pre><pre class="api-example"><code class="js">// Create a simple line chart
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Default options in line charts. Expand the code view to see a detailed list of options with comments.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistline-function-line"><span class="member-tag">function</span> Line()</h5><button class="api-code-button" data-toggle-visible="#chartistline-function-line-code">Show code</button></header><pre id="chartistline-function-line-code">
+    <code class="javascript">function Line(query, data, options, responsiveOptions) {
+  Chartist.Line.super.constructor.call(this,
+    query,
+    data,
+    Chartist.extend({}, defaultOptions, options),
+    responsiveOptions);
+}
+
+// Creating line chart type in Chartist namespace
+Chartist.Line = Chartist.Base.extend({
+  constructor: Line,
+  createChart: createChart
+});
+
+}(window, document, Chartist));</code>
+  </pre><div class="member-content"><div class="description"><p>This method creates a new line chart.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object that needs to consist of a labels and a series array</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object which exposes the API for the created chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// Create a simple line chart
 var data = {
   // A labels array that can contain any sort of values
   labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
@@ -258,7 +295,40 @@ var responsiveOptions = [
   }]
 ];
 
-new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>pie.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistpie">Module Chartist.Pie</h4><div class="module-description"><p>The pie chart module of Chartist that can be used to draw pie, donut or gauge charts</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistpie-function-pie"><span class="member-tag">function</span> Pie()</h5><button class="api-code-button" data-toggle-visible="#chartistpie-function-pie-code">Show code</button></header><pre id="chartistpie-function-pie-code">
+new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>pie.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistpie">Module Chartist.Pie</h4><div class="module-description"><p>The pie chart module of Chartist that can be used to draw pie, donut or gauge charts</p></div><div class="module-members"><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistpie-declaration-defaultoptions"><span class="member-tag">declaration</span> defaultOptions</h5><button class="api-code-button" data-toggle-visible="#chartistpie-declaration-defaultoptions-code">Show code</button></header><pre id="chartistpie-declaration-defaultoptions-code">
+    <code class="javascript">var defaultOptions = {
+  // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  width: undefined,
+  // Specify a fixed height for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
+  height: undefined,
+  // Padding of the chart drawing area to the container element and labels
+  chartPadding: 5,
+  // Override the class names that get used to generate the SVG structure of the chart
+  classNames: {
+    chart: &#x27;ct-chart-pie&#x27;,
+    series: &#x27;ct-series&#x27;,
+    slice: &#x27;ct-slice&#x27;,
+    donut: &#x27;ct-donut&#x27;,
+    label: &#x27;ct-label&#x27;
+  },
+  // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
+  startAngle: 0,
+  // An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
+  total: undefined,
+  // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
+  donut: false,
+  // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
+  donutWidth: 60,
+  // If a label should be shown or not
+  showLabel: true,
+  // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
+  labelOffset: 0,
+  // An interpolation function for the label value
+  labelInterpolationFnc: Chartist.noop,
+  // Label direction can be &#x27;neutral&#x27;, &#x27;explode&#x27; or &#x27;implode&#x27;. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
+  labelDirection: &#x27;neutral&#x27;
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Default options in line charts. Expand the code view to see a detailed list of options with comments.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistpie-function-pie"><span class="member-tag">function</span> Pie()</h5><button class="api-code-button" data-toggle-visible="#chartistpie-function-pie-code">Show code</button></header><pre id="chartistpie-function-pie-code">
     <code class="javascript">function Pie(query, data, options, responsiveOptions) {
   Chartist.Pie.super.constructor.call(this,
     query,
@@ -275,40 +345,7 @@ Chartist.Pie = Chartist.Base.extend({
 });
 
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method creates a new pie chart and returns an object that can be used to redraw the chart.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don&#x27;t necessarily need to be in percentage. The series property can also be an array of objects that contain a data property with the value and a className property to override the CSS class name for the series group.</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// Default options of the pie chart
-var defaultOptions = {
-  // Specify a fixed width for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
-  width: undefined,
-  // Specify a fixed height for the chart as a string (i.e. &#x27;100px&#x27; or &#x27;50%&#x27;)
-  height: undefined,
-  // Padding of the chart drawing area to the container element and labels
-  chartPadding: 5,
-  // Override the class names that get used to generate the SVG structure of the chart
-  classNames: {
-    chart: &#x27;ct-chart-pie&#x27;,
-    series: &#x27;ct-series&#x27;,
-    slice: &#x27;ct-slice&#x27;,
-    donut: &#x27;ct-donut&#x27;,
-         label: &#x27;ct-label&#x27;
-  },
-  // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
-  startAngle: 0,
-  // An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
-  total: undefined,
-  // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
-  donut: false,
-  // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
-  donutWidth: 60,
-  // If a label should be shown or not
-  showLabel: true,
-  // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
-  labelOffset: 0,
-  // An interpolation function for the label value
-  labelInterpolationFnc: function(value, index) {return value;},
-  // Label direction can be &#x27;neutral&#x27;, &#x27;explode&#x27; or &#x27;implode&#x27;. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
-  labelDirection: &#x27;neutral&#x27;
-};
-</code></pre><pre class="api-example"><code class="js">// Simple pie chart example with four series
+  </pre><div class="member-content"><div class="description"><p>This method creates a new pie chart and returns an object that can be used to redraw the chart.</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">A selector query string or directly a DOM element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don&#x27;t necessarily need to be in percentage. The series property can also be an array of objects that contain a data property with the value and a className property to override the CSS class name for the series group.</div></div><div class="param"><code>[options]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The options object with options that override the default options. Check the examples for a detailed list.</div></div><div class="param"><code>[responsiveOptions]</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Specify an array of responsive option arrays which are a media query and options object pair =&gt; [[mediaQueryString, optionsObject],[more...]]</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with a version and an update method to manually redraw the chart</div></div><h6>Examples</h6><pre class="api-example"><code class="js">// Simple pie chart example with four series
 new Chartist.Pie(&#x27;.ct-chart&#x27;, {
   series: [10, 2, 4, 3]
 });
@@ -569,7 +606,32 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     <code class="javascript">Chartist.querySelector = function(query) {
   return query instanceof Node ? query : document.querySelector(query);
 };</code>
-  </pre><div class="member-content"><div class="description"><p>This is a wrapper around document.querySelector that will return the query if it&#39;s already of type Node</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">The query to use for selecting a Node or a DOM node that will be returned directly</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Node</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createsvg"><span class="member-tag">method</span> Chartist.createSvg()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createsvg-code">Show code</button></header><pre id="chartistcore-method-createsvg-code">
+  </pre><div class="member-content"><div class="description"><p>This is a wrapper around document.querySelector that will return the query if it&#39;s already of type Node</p></div><h6>Parameters</h6><div class="param"><code>query</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Node</code></span> )<div class="param-description">The query to use for selecting a Node or a DOM node that will be returned directly</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Node</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-times"><span class="member-tag">method</span> Chartist.times()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-times-code">Show code</button></header><pre id="chartistcore-method-times-code">
+    <code class="javascript">Chartist.times = function(length) {
+  return Array.apply(null, new Array(length));
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Functional style helper to produce array with given length initialized with undefined values</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-sum"><span class="member-tag">method</span> Chartist.sum()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-sum-code">Show code</button></header><pre id="chartistcore-method-sum-code">
+    <code class="javascript">Chartist.sum = function(previous, current) {
+  return previous + current;
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Sum helper to be used in reduce functions</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>previous</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>current</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-serialmap"><span class="member-tag">method</span> Chartist.serialMap()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-serialmap-code">Show code</button></header><pre id="chartistcore-method-serialmap-code">
+    <code class="javascript">Chartist.serialMap = function(arr, cb) {
+  var result = [],
+      length = Math.max.apply(null, arr.map(function(e) {
+        return e.length;
+      }));
+
+  Chartist.times(length).forEach(function(e, index) {
+    var args = arr.map(function(e) {
+      return e[index];
+    });
+
+    result[index] = cb.apply(null, args);
+  });
+
+  return result;
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Map for multi dimensional arrays where their nested arrays will be mapped in serial. The output array will have the length of the largest nested array. The callback function is called with variable arguments where each argument is the nested array value (or undefined if there are no more values).</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>arr</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>cb</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createsvg"><span class="member-tag">method</span> Chartist.createSvg()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createsvg-code">Show code</button></header><pre id="chartistcore-method-createsvg-code">
     <code class="javascript">Chartist.createSvg = function (container, width, height, className) {
   var svg;
 
@@ -661,15 +723,16 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   }
 
   return highLow;
-};
-
-// Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude</code>
-  </pre><div class="member-content"><div class="description"><p>Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.</p></div><h6>Parameters</h6><div class="param"><code>dataArray</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the highest and lowest value that will be visualized on the chart.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getbounds"><span class="member-tag">method</span> Chartist.getBounds()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getbounds-code">Show code</button></header><pre id="chartistcore-method-getbounds-code">
-    <code class="javascript">Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.</p></div><h6>Parameters</h6><div class="param"><code>dataArray</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that contains the highest and lowest value that will be visualized on the chart.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getbounds"><span class="member-tag">method</span> Chartist.getBounds()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getbounds-code">Show code</button></header><pre id="chartistcore-method-getbounds-code">
+    <code class="javascript">Chartist.getBounds = function (svg, highLow, options, referenceValue) {
   var i,
     newMin,
     newMax,
-    bounds = Chartist.getHighLow(normalizedData);
+    bounds = {
+      high: highLow.high,
+      low: highLow.low
+    };
 
   // Overrides of high / low from settings
   bounds.high = +options.high || (options.high === 0 ? 0 : bounds.high);
@@ -744,7 +807,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return bounds;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Calculate and retrieve all the bounds for the chart and return them in one array</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>normalizedData</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that got updated with missing values.</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>referenceValue</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The reference value for the chart.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-polartocartesian"><span class="member-tag">method</span> Chartist.polarToCartesian()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-polartocartesian-code">Show code</button></header><pre id="chartistcore-method-polartocartesian-code">
+  </pre><div class="member-content"><div class="description"><p>Calculate and retrieve all the bounds for the chart and return them in one array</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>highLow</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object containing a high and low property indicating the value range of the chart.</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>referenceValue</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The reference value for the chart.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-polartocartesian"><span class="member-tag">method</span> Chartist.polarToCartesian()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-polartocartesian-code">Show code</button></header><pre id="chartistcore-method-polartocartesian-code">
     <code class="javascript">Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
   var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
 
@@ -776,7 +839,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   // Create X-Axis
   data.labels.forEach(function (value, index) {
     var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-      width = chartRect.width() / data.labels.length,
+      width = chartRect.width() / (data.labels.length - (options.fullWidth ? 1 : 0)),
       height = options.axisX.offset,
       pos = chartRect.x1 + width * index;
 
@@ -912,15 +975,15 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   });
 };</code>
   </pre><div class="member-content"><div class="description"><p>Generate grid lines and labels for the y-axis into grid and labels group SVG elements</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>grid</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Chartist.Svg wrapper object to be filled with the grid lines of the chart</div></div><div class="param"><code>labels</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Chartist.Svg wrapper object to be filled with the lables of the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The passed event emitter will be used to emit draw events for labels and gridlines</div></div><div class="param"><code>supportsForeignObject</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this is true then a foreignObject will be used instead of a text element</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-projectpoint"><span class="member-tag">method</span> Chartist.projectPoint()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-projectpoint-code">Show code</button></header><pre id="chartistcore-method-projectpoint-code">
-    <code class="javascript">Chartist.projectPoint = function (chartRect, bounds, data, index) {
+    <code class="javascript">Chartist.projectPoint = function (chartRect, bounds, data, index, options) {
   return {
-    x: chartRect.x1 + chartRect.width() / data.length * index,
+    x: chartRect.x1 + chartRect.width() / (data.length - (data.length &gt; 1 &amp;&amp; options.fullWidth ? 1 : 0)) * index,
     y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
   };
 };
 
 // TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one</code>
-  </pre><div class="member-content"><div class="description"><p>Determine the current point on the svg element to draw the data series</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><div class="param"><code>index</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The index of the current project point</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The coordinates object of the current project point containing an x and y number property</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-optionsprovider"><span class="member-tag">method</span> Chartist.optionsProvider()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-optionsprovider-code">Show code</button></header><pre id="chartistcore-method-optionsprovider-code">
+  </pre><div class="member-content"><div class="description"><p>Determine the current point on the svg element to draw the data series</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><div class="param"><code>index</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The index of the current project point</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The chart options that are used to influence the calculations</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The coordinates object of the current project point containing an x and y number property</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-optionsprovider"><span class="member-tag">method</span> Chartist.optionsProvider()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-optionsprovider-code">Show code</button></header><pre id="chartistcore-method-optionsprovider-code">
     <code class="javascript">Chartist.optionsProvider = function (options, responsiveOptions, eventEmitter) {
   var baseOptions = Chartist.extend({}, options),
     currentOptions,
