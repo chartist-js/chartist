@@ -101,6 +101,54 @@ var Chartist = {
   };
 
   /**
+   * Functional style helper to produce array with given length initialized with undefined values
+   *
+   * @memberof Chartist.Core
+   * @param length
+   * @returns {Array}
+   */
+  Chartist.times = function(length) {
+    return Array.apply(null, new Array(length));
+  };
+
+  /**
+   * Sum helper to be used in reduce functions
+   *
+   * @memberof Chartist.Core
+   * @param previous
+   * @param current
+   * @returns {*}
+   */
+  Chartist.sum = function(previous, current) {
+    return previous + current;
+  };
+
+  /**
+   * Map for multi dimensional arrays where their nested arrays will be mapped in serial. The output array will have the length of the largest nested array. The callback function is called with variable arguments where each argument is the nested array value (or undefined if there are no more values).
+   *
+   * @memberof Chartist.Core
+   * @param arr
+   * @param cb
+   * @returns {Array}
+   */
+  Chartist.serialMap = function(arr, cb) {
+    var result = [],
+        length = Math.max.apply(null, arr.map(function(e) {
+          return e.length;
+        }));
+
+    Chartist.times(length).forEach(function(e, index) {
+      var args = arr.map(function(e) {
+        return e[index];
+      });
+
+      result[index] = cb.apply(null, args);
+    });
+
+    return result;
+  };
+
+  /**
    * Create or reinitialize the SVG element for the chart
    *
    * @memberof Chartist.Core
@@ -225,7 +273,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {Array} dataArray The array that contains the data to be visualized in the chart
-   * @return {Array} The array that contains the highest and lowest value that will be visualized on the chart.
+   * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
    */
   Chartist.getHighLow = function (dataArray) {
     var i,
@@ -250,22 +298,24 @@ var Chartist = {
     return highLow;
   };
 
-  // Find the highest and lowest values in a two dimensional array and calculate scale based on order of magnitude
   /**
    * Calculate and retrieve all the bounds for the chart and return them in one array
    *
    * @memberof Chartist.Core
    * @param {Object} svg The svg element for the chart
-   * @param {Array} normalizedData The array that got updated with missing values.
+   * @param {Object} highLow An object containing a high and low property indicating the value range of the chart.
    * @param {Object} options The Object that contains all the optional values for the chart
    * @param {Number} referenceValue The reference value for the chart.
    * @return {Object} All the values to set the bounds of the chart
    */
-  Chartist.getBounds = function (svg, normalizedData, options, referenceValue) {
+  Chartist.getBounds = function (svg, highLow, options, referenceValue) {
     var i,
       newMin,
       newMax,
-      bounds = Chartist.getHighLow(normalizedData);
+      bounds = {
+        high: highLow.high,
+        low: highLow.low
+      };
 
     // Overrides of high / low from settings
     bounds.high = +options.high || (options.high === 0 ? 0 : bounds.high);

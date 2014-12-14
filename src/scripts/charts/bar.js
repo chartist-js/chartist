@@ -63,6 +63,8 @@
     fullWidth: false,
     // This property will cause the bars of the bar chart to be drawn on the grid line rather than between two grid lines. This is useful for single series bar charts and might be used in conjunction with the fullWidth property.
     centerBars: true,
+    // If set to true this property will cause the series bars to be stacked and form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+    stackBars: false,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-bar',
@@ -84,20 +86,34 @@
   function createChart(options) {
     var seriesGroups = [],
       bounds,
-      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
+      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length),
+      highLow;
 
     // Create new svg element
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
 
+    if(options.stackBars) {
+      // If stacked bars we need to calculate the high low from stacked values from each series
+      var serialSums = Chartist.serialMap(normalizedData, function serialSums() {
+        return Array.prototype.slice.call(arguments).reduce(Chartist.sum, 0);
+      });
+
+      highLow = Chartist.getHighLow([serialSums]);
+    } else {
+      highLow = Chartist.getHighLow(normalizedData);
+    }
+
     // initialize bounds
-    bounds = Chartist.getBounds(this.svg, normalizedData, options, 0);
+    bounds = Chartist.getBounds(this.svg, highLow, options, 0);
 
     var chartRect = Chartist.createChartRect(this.svg, options);
     // Start drawing
     var labels = this.svg.elem('g').addClass(options.classNames.labelGroup),
       grid = this.svg.elem('g').addClass(options.classNames.gridGroup),
-    // Projected 0 point
-      zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0, options);
+      // Projected 0 point
+      zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0, options),
+      // Used to track the screen coordinates of stacked bars
+      stackedBarValues = [];
 
     Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
     Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
@@ -127,16 +143,29 @@
 
       for(var j = 0; j < normalizedData[i].length; j++) {
         var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j, options),
-          bar;
+          bar,
+          previousStack,
+          y1,
+          y2;
 
-        // Offset to center bar between grid lines and using bi-polar offset for multiple series
-        p.x += (options.centerBars ? periodHalfWidth : 0) + (biPol * options.seriesBarDistance);
+        // Offset to center bar between grid lines
+        p.x += (options.centerBars ? periodHalfWidth : 0);
+        // Using bi-polar offset for multiple series if no stacked bars are used
+        p.x += options.stackBars ? 0 : biPol * options.seriesBarDistance;
+
+        // Enter value in stacked bar values used to remember previous screen value for stacking up bars
+        previousStack = stackedBarValues[j] || zeroPoint.y;
+        stackedBarValues[j] = previousStack - (zeroPoint.y - p.y);
+
+        // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
+        y1 = options.stackBars ? previousStack : zeroPoint.y;
+        y2 = options.stackBars ? stackedBarValues[j] : p.y;
 
         bar = seriesGroups[i].elem('line', {
           x1: p.x,
-          y1: zeroPoint.y,
+          y1: y1,
           x2: p.x,
-          y2: p.y
+          y2: y2
         }, options.classNames.bar).attr({
           'value': normalizedData[i][j]
         }, Chartist.xmlNs.uri);
@@ -148,9 +177,9 @@
           group: seriesGroups[i],
           element: bar,
           x1: p.x,
-          y1: zeroPoint.y,
+          y1: y1,
           x2: p.x,
-          y2: p.y
+          y2: y2
         });
       }
     }

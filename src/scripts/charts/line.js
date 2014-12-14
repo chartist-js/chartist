@@ -100,7 +100,7 @@
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
 
     // initialize bounds
-    bounds = Chartist.getBounds(this.svg, normalizedData, options);
+    bounds = Chartist.getBounds(this.svg, Chartist.getHighLow(normalizedData), options);
 
     var chartRect = Chartist.createChartRect(this.svg, options);
     // Start drawing
