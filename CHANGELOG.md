@@ -1,3 +1,10 @@
+v0.5.0 - 14 Dec 2014
+--------------------
+- Added new option for line and bar chart to use full width of the chart area by skipping the last grid line
+- Added new option for bar chart to create stacked bar charts
+- All chart update functions now accepts an optional data parameter that allows to update an existing chart with new data
+- Fix for an error when charts get re-constructed on the same element and in the same call stack
+
 v0.4.4 - 11 Dec 2014
 --------------------
 - Fixed NS_ERROR_FAILURE error in Firefox and added graceful handling of unsupported SMIL animations (i.e. in foreignObjects)
