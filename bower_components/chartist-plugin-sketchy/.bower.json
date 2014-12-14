@@ -1,0 +1,28 @@
+{
+  "name": "chartist-plugin-sketchy",
+  "version": "0.0.1",
+  "main": [
+    "./dist/chartist-plugin-sketchy.min.js"
+  ],
+  "devDependencies": {
+    "chartist": "~0.5.0"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ],
+  "homepage": "https://github.com/gionkunz/chartist-plugin-sketchy",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "f14cab132ebb1a76d46128a893ff83993f10ac19"
+  },
+  "_source": "git://github.com/gionkunz/chartist-plugin-sketchy.git",
+  "_target": "~0.0.1",
+  "_originalSource": "chartist-plugin-sketchy"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "chartist-plugin-pointlabels",
+  "version": "0.0.2",
+  "main": [
+    "./dist/chartist-plugin-pointlabels.min.js"
+  ],
+  "dependencies": {
+    "chartist": "~0.5.0"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ],
+  "homepage": "https://github.com/gionkunz/chartist-plugin-pointlabels",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "18419496289fb3707d1652458a694beb9c8a8fe2"
+  },
+  "_source": "git://github.com/gionkunz/chartist-plugin-pointlabels.git",
+  "_target": "~0.0.2",
+  "_originalSource": "chartist-plugin-pointlabels"
+}

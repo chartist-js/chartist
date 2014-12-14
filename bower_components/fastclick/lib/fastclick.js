@@ -1,7 +1,7 @@
 /**
  * @preserve FastClick: polyfill to remove click delays on browsers with touch UIs.
  *
- * @version 0.6.12
+ * @version 1.0.3
  * @codingstandard ftlabs-jsv2
  * @copyright The Financial Times Limited [All Rights Reserved]
  * @license MIT License (see LICENSE.txt)
@@ -12,15 +12,17 @@
 
 
 /**
- * Instantiate fast-clicking listeners on the specificed layer.
+ * Instantiate fast-clicking listeners on the specified layer.
  *
  * @constructor
  * @param {Element} layer The layer to listen on
+ * @param {Object} options The options to override the defaults
  */
-function FastClick(layer) {
+function FastClick(layer, options) {
 	'use strict';
-	var oldOnClick, self = this;
+	var oldOnClick;
 
+	options = options || {};
 
 	/**
 	 * Whether a click is currently being tracked.
@@ -31,7 +33,7 @@ function FastClick(layer) {
 
 
 	/**
-	 * Timestamp for when when click tracking started.
+	 * Timestamp for when click tracking started.
 	 *
 	 * @type number
 	 */
@@ -75,7 +77,7 @@ function FastClick(layer) {
 	 *
 	 * @type number
 	 */
-	this.touchBoundary = 10;
+	this.touchBoundary = options.touchBoundary || 10;
 
 
 	/**
@@ -85,34 +87,31 @@ function FastClick(layer) {
 	 */
 	this.layer = layer;
 
-	if (!layer || !layer.nodeType) {
-		throw new TypeError('Layer must be a document node');
-	}
-
-	/** @type function() */
-	this.onClick = function() { return FastClick.prototype.onClick.apply(self, arguments); };
-
-	/** @type function() */
-	this.onMouse = function() { return FastClick.prototype.onMouse.apply(self, arguments); };
-
-	/** @type function() */
-	this.onTouchStart = function() { return FastClick.prototype.onTouchStart.apply(self, arguments); };
-
-	/** @type function() */
-	this.onTouchMove = function() { return FastClick.prototype.onTouchMove.apply(self, arguments); };
-
-	/** @type function() */
-	this.onTouchEnd = function() { return FastClick.prototype.onTouchEnd.apply(self, arguments); };
-
-	/** @type function() */
-	this.onTouchCancel = function() { return FastClick.prototype.onTouchCancel.apply(self, arguments); };
+	/**
+	 * The minimum time between tap(touchstart and touchend) events
+	 *
+	 * @type number
+	 */
+	this.tapDelay = options.tapDelay || 200;
 
 	if (FastClick.notNeeded(layer)) {
 		return;
 	}
 
+	// Some old versions of Android don't have Function.prototype.bind
+	function bind(method, context) {
+		return function() { return method.apply(context, arguments); };
+	}
+
+
+	var methods = ['onMouse', 'onClick', 'onTouchStart', 'onTouchMove', 'onTouchEnd', 'onTouchCancel'];
+	var context = this;
+	for (var i = 0, l = methods.length; i < l; i++) {
+		context[methods[i]] = bind(context[methods[i]], context);
+	}
+
 	// Set up event handlers as required
-	if (this.deviceIsAndroid) {
+	if (deviceIsAndroid) {
 		layer.addEventListener('mouseover', this.onMouse, true);
 		layer.addEventListener('mousedown', this.onMouse, true);
 		layer.addEventListener('mouseup', this.onMouse, true);
@@ -172,7 +171,7 @@ function FastClick(layer) {
  *
  * @type boolean
  */
-FastClick.prototype.deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0;
+var deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0;
 
 
 /**
@@ -180,7 +179,7 @@ FastClick.prototype.deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0
  *
  * @type boolean
  */
-FastClick.prototype.deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
+var deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
 
 
 /**
@@ -188,7 +187,7 @@ FastClick.prototype.deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent);
  *
  * @type boolean
  */
-FastClick.prototype.deviceIsIOS4 = FastClick.prototype.deviceIsIOS && (/OS 4_\d(_\d)?/).test(navigator.userAgent);
+var deviceIsIOS4 = deviceIsIOS && (/OS 4_\d(_\d)?/).test(navigator.userAgent);
 
 
 /**
@@ -196,8 +195,14 @@ FastClick.prototype.deviceIsIOS4 = FastClick.prototype.deviceIsIOS && (/OS 4_\d(
  *
  * @type boolean
  */
-FastClick.prototype.deviceIsIOSWithBadTarget = FastClick.prototype.deviceIsIOS && (/OS ([6-9]|\d{2})_\d/).test(navigator.userAgent);
+var deviceIsIOSWithBadTarget = deviceIsIOS && (/OS ([6-9]|\d{2})_\d/).test(navigator.userAgent);
 
+/**
+ * BlackBerry requires exceptions.
+ *
+ * @type boolean
+ */
+var deviceIsBlackBerry10 = navigator.userAgent.indexOf('BB10') > 0;
 
 /**
  * Determine whether a given element requires a native click.
@@ -221,7 +226,7 @@ FastClick.prototype.needsClick = function(target) {
 	case 'input':
 
 		// File inputs need real clicks on iOS 6 due to a browser bug (issue #68)
-		if ((this.deviceIsIOS && target.type === 'file') || target.disabled) {
+		if ((deviceIsIOS && target.type === 'file') || target.disabled) {
 			return true;
 		}
 
@@ -247,7 +252,7 @@ FastClick.prototype.needsFocus = function(target) {
 	case 'textarea':
 		return true;
 	case 'select':
-		return !this.deviceIsAndroid;
+		return !deviceIsAndroid;
 	case 'input':
 		switch (target.type) {
 		case 'button':
@@ -295,7 +300,7 @@ FastClick.prototype.determineEventType = function(targetElement) {
 	'use strict';
 
 	//Issue #159: Android Chrome Select Box does not open with a synthetic click event
-	if (this.deviceIsAndroid && targetElement.tagName.toLowerCase() === 'select') {
+	if (deviceIsAndroid && targetElement.tagName.toLowerCase() === 'select') {
 		return 'mousedown';
 	}
 
@@ -311,7 +316,7 @@ FastClick.prototype.focus = function(targetElement) {
 	var length;
 
 	// Issue #160: on iOS 7, some input elements (e.g. date datetime) throw a vague TypeError on setSelectionRange. These elements don't have an integer value for the selectionStart and selectionEnd properties, but unfortunately that can't be used for detection because accessing the properties also throws a TypeError. Just check the type instead. Filed as Apple bug #15122724.
-	if (this.deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time') {
+	if (deviceIsIOS && targetElement.setSelectionRange && targetElement.type.indexOf('date') !== 0 && targetElement.type !== 'time') {
 		length = targetElement.value.length;
 		targetElement.setSelectionRange(length, length);
 	} else {
@@ -387,7 +392,7 @@ FastClick.prototype.onTouchStart = function(event) {
 	targetElement = this.getTargetElementFromEventTarget(event.target);
 	touch = event.targetTouches[0];
 
-	if (this.deviceIsIOS) {
+	if (deviceIsIOS) {
 
 		// Only trusted events will deselect text on iOS (issue #49)
 		selection = window.getSelection();
@@ -395,14 +400,17 @@ FastClick.prototype.onTouchStart = function(event) {
 			return true;
 		}
 
-		if (!this.deviceIsIOS4) {
+		if (!deviceIsIOS4) {
 
 			// Weird things happen on iOS when an alert or confirm dialog is opened from a click event callback (issue #23):
 			// when the user next taps anywhere else on the page, new touchstart and touchend events are dispatched
 			// with the same identifier as the touch event that previously triggered the click that triggered the alert.
 			// Sadly, there is an issue on iOS 4 that causes some normal touch events to have the same identifier as an
 			// immediately preceeding touch event (issue #52), so this fix is unavailable on that platform.
-			if (touch.identifier === this.lastTouchIdentifier) {
+			// Issue 120: touch.identifier is 0 when Chrome dev tools 'Emulate touch events' is set with an iOS device UA string,
+			// which causes all touch events to be ignored. As this block only applies to iOS, and iOS identifiers are always long,
+			// random integers, it's safe to to continue if the identifier is 0 here.
+			if (touch.identifier && touch.identifier === this.lastTouchIdentifier) {
 				event.preventDefault();
 				return false;
 			}
@@ -427,7 +435,7 @@ FastClick.prototype.onTouchStart = function(event) {
 	this.touchStartY = touch.pageY;
 
 	// Prevent phantom clicks on fast double-tap (issue #36)
-	if ((event.timeStamp - this.lastClickTime) < 200) {
+	if ((event.timeStamp - this.lastClickTime) < this.tapDelay) {
 		event.preventDefault();
 	}
 
@@ -515,7 +523,7 @@ FastClick.prototype.onTouchEnd = function(event) {
 	}
 
 	// Prevent phantom clicks on fast double-tap (issue #36)
-	if ((event.timeStamp - this.lastClickTime) < 200) {
+	if ((event.timeStamp - this.lastClickTime) < this.tapDelay) {
 		this.cancelNextClick = true;
 		return true;
 	}
@@ -533,7 +541,7 @@ FastClick.prototype.onTouchEnd = function(event) {
 	// is performing a transition or scroll, and has to be re-detected manually. Note that
 	// for this to function correctly, it must be called *after* the event target is checked!
 	// See issue #57; also filed as rdar://13048589 .
-	if (this.deviceIsIOSWithBadTarget) {
+	if (deviceIsIOSWithBadTarget) {
 		touch = event.changedTouches[0];
 
 		// In certain cases arguments of elementFromPoint can be negative, so prevent setting targetElement to null
@@ -546,7 +554,7 @@ FastClick.prototype.onTouchEnd = function(event) {
 		forElement = this.findControl(targetElement);
 		if (forElement) {
 			this.focus(targetElement);
-			if (this.deviceIsAndroid) {
+			if (deviceIsAndroid) {
 				return false;
 			}
 
@@ -556,7 +564,7 @@ FastClick.prototype.onTouchEnd = function(event) {
 
 		// Case 1: If the touch started a while ago (best guess is 100ms based on tests for issue #36) then focus will be triggered anyway. Return early and unset the target element reference so that the subsequent click will be allowed through.
 		// Case 2: Without this exception for input elements tapped when the document is contained in an iframe, then any inputted text won't be visible even though the value attribute is updated as the user types (issue #37).
-		if ((event.timeStamp - trackingClickStart) > 100 || (this.deviceIsIOS && window.top !== window && targetTagName === 'input')) {
+		if ((event.timeStamp - trackingClickStart) > 100 || (deviceIsIOS && window.top !== window && targetTagName === 'input')) {
 			this.targetElement = null;
 			return false;
 		}
@@ -565,7 +573,8 @@ FastClick.prototype.onTouchEnd = function(event) {
 		this.sendClick(targetElement, event);
 
 		// Select elements need the event to go through on iOS 4, otherwise the selector menu won't open.
-		if (!this.deviceIsIOS4 || targetTagName !== 'select') {
+		// Also this breaks opening selects when VoiceOver is active on iOS6, iOS7 (and possibly others)
+		if (!deviceIsIOS || targetTagName !== 'select') {
 			this.targetElement = null;
 			event.preventDefault();
 		}
@@ -573,7 +582,7 @@ FastClick.prototype.onTouchEnd = function(event) {
 		return false;
 	}
 
-	if (this.deviceIsIOS && !this.deviceIsIOS4) {
+	if (deviceIsIOS && !deviceIsIOS4) {
 
 		// Don't send a synthetic click event if the target element is contained within a parent layer that was scrolled
 		// and this tap is being used to stop the scrolling (usually initiated by a fling - issue #42).
@@ -700,7 +709,7 @@ FastClick.prototype.destroy = function() {
 	'use strict';
 	var layer = this.layer;
 
-	if (this.deviceIsAndroid) {
+	if (deviceIsAndroid) {
 		layer.removeEventListener('mouseover', this.onMouse, true);
 		layer.removeEventListener('mousedown', this.onMouse, true);
 		layer.removeEventListener('mouseup', this.onMouse, true);
@@ -723,6 +732,7 @@ FastClick.notNeeded = function(layer) {
 	'use strict';
 	var metaViewport;
 	var chromeVersion;
+	var blackberryVersion;
 
 	// Devices that don't support touch don't need FastClick
 	if (typeof window.ontouchstart === 'undefined') {
@@ -734,16 +744,16 @@ FastClick.notNeeded = function(layer) {
 
 	if (chromeVersion) {
 
-		if (FastClick.prototype.deviceIsAndroid) {
+		if (deviceIsAndroid) {
 			metaViewport = document.querySelector('meta[name=viewport]');
-			
+
 			if (metaViewport) {
 				// Chrome on Android with user-scalable="no" doesn't need FastClick (issue #89)
 				if (metaViewport.content.indexOf('user-scalable=no') !== -1) {
 					return true;
 				}
 				// Chrome 32 and above with width=device-width or less don't need FastClick
-				if (chromeVersion > 31 && window.innerWidth <= window.screen.width) {
+				if (chromeVersion > 31 && document.documentElement.scrollWidth <= window.outerWidth) {
 					return true;
 				}
 			}
@@ -751,6 +761,27 @@ FastClick.notNeeded = function(layer) {
 		// Chrome desktop doesn't need FastClick (issue #15)
 		} else {
 			return true;
+		}
+	}
+
+	if (deviceIsBlackBerry10) {
+		blackberryVersion = navigator.userAgent.match(/Version\/([0-9]*)\.([0-9]*)/);
+
+		// BlackBerry 10.3+ does not require Fastclick library.
+		// https://github.com/ftlabs/fastclick/issues/251
+		if (blackberryVersion[1] >= 10 && blackberryVersion[2] >= 3) {
+			metaViewport = document.querySelector('meta[name=viewport]');
+
+			if (metaViewport) {
+				// user-scalable=no eliminates click delay.
+				if (metaViewport.content.indexOf('user-scalable=no') !== -1) {
+					return true;
+				}
+				// width=device-width (or less than device-width) eliminates click delay.
+				if (document.documentElement.scrollWidth <= window.outerWidth) {
+					return true;
+				}
+			}
 		}
 	}
 
@@ -767,14 +798,15 @@ FastClick.notNeeded = function(layer) {
  * Factory method for creating a FastClick object
  *
  * @param {Element} layer The layer to listen on
+ * @param {Object} options The options to override the defaults
  */
-FastClick.attach = function(layer) {
+FastClick.attach = function(layer, options) {
 	'use strict';
-	return new FastClick(layer);
+	return new FastClick(layer, options);
 };
 
 
-if (typeof define !== 'undefined' && define.amd) {
+if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
 
 	// AMD. Register as an anonymous module.
 	define(function() {
