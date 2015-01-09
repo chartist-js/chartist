@@ -24,6 +24,7 @@
     this.data = data || this.data;
     if (typeof options !== 'undefined') {
       this.options = Chartist.extend({}, this.options, options);
+      this.optionsProvider.removeMediaQueryListeners();
       this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
     }
     this.createChart(this.optionsProvider.currentOptions);
