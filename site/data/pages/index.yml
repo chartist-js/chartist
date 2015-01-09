@@ -228,6 +228,9 @@ sections:
             -
               - '<a href="https://github.com/soderlind/tablepress_chartist" target="_blank">tablepress_chartist</a>'
               - Wordpress / Tablepress Extension
+            - 
+              - '<a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a>'
+              - Ember Addon
   - title: Chart CSS animation example
     level: 3
     items:
