@@ -18,6 +18,7 @@
   "ignore": [
     ".*",
     "Gruntfile.js",
+    "tasks",
     "package.json",
     "node_modules",
     "public",
