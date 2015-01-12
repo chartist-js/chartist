@@ -22,6 +22,7 @@
     "package.json",
     "node_modules",
     "public",
+    "site",
     "src",
     "test"
   ]
