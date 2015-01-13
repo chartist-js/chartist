@@ -165,7 +165,7 @@ var Chartist = {
     height = height || '100%';
 
     svg = container.querySelector('svg');
-    if(svg) {
+    if(svg && container === svg.parentElement) {
       container.removeChild(svg);
     }
 
