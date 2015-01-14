@@ -25,6 +25,9 @@ module.exports = function (grunt) {
       options: {
         specs: '<%= pkg.config.test %>/spec/**/spec-*.js',
         helpers: '<%= pkg.config.test %>/spec/**/helper-*.js',
+        vendor: [
+          'http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'
+        ],
         phantomjs: {
           'ignore-ssl-errors': true
         }
