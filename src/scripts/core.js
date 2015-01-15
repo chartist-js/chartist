@@ -164,8 +164,10 @@ var Chartist = {
     width = width || '100%';
     height = height || '100%';
 
-    svg = container.querySelector('svg');
-    if(svg) {
+    // Append the className so we only remove the Chartist svg element, not
+    // any other svg elements in the container.
+    svg = container.querySelector('svg.' + className);
+    if (svg) {
       container.removeChild(svg);
     }
 
