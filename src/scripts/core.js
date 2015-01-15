@@ -164,12 +164,13 @@ var Chartist = {
     width = width || '100%';
     height = height || '100%';
 
-    // Append the className so we only remove the Chartist svg element, not
-    // any other svg elements in the container.
-    svg = container.querySelector('svg.' + className);
-    if (svg) {
+    // Check if there is a previous SVG element in the container that contains the Chartist XML namespace and remove it
+    // Since the DOM API does not support namespaces we need to manually search the returned list http://www.w3.org/TR/selectors-api/
+    Array.prototype.slice.call(container.querySelectorAll('svg')).filter(function filterChartistSvgObjects(svg) {
+      return svg.getAttribute(Chartist.xmlNs.qualifiedName);
+    }).forEach(function removePreviousElement(svg) {
       container.removeChild(svg);
-    }
+    });
 
     // Create svg object with width and height or use 100% as default
     svg = new Chartist.Svg('svg').attr({
