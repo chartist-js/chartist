@@ -25,6 +25,10 @@ module.exports = function (grunt) {
       options: {
         specs: '<%= pkg.config.test %>/spec/**/spec-*.js',
         helpers: '<%= pkg.config.test %>/spec/**/helper-*.js',
+        vendor: [
+          'http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+          'node_modules/jasmine-jquery/lib/jasmine-jquery.js'
+        ],
         phantomjs: {
           'ignore-ssl-errors': true
         }
