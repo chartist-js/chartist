@@ -21,12 +21,21 @@
    * @memberof Chartist.Base
    */
   function update(data, options) {
-    this.data = data || this.data;
-    if (typeof options !== 'undefined') {
+    if(data) {
+      this.data = data;
+      // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
+      this.eventEmitter.emit('data', {
+        type: 'update',
+        data: this.data
+      });
+    }
+
+    if(options) {
       this.options = Chartist.extend({}, this.options, options);
       this.optionsProvider.removeMediaQueryListeners();
       this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
     }
+
     this.createChart(this.optionsProvider.currentOptions);
     return this;
   }
@@ -114,6 +123,12 @@
     this.resizeListener = function resizeListener(){
       this.update();
     }.bind(this);
+
+    // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
+    this.eventEmitter.emit('data', {
+      type: 'initial',
+      data: this.data
+    });
 
     if(this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
