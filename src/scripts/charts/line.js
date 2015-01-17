@@ -180,6 +180,22 @@
           }
         }
 
+        if(options.showLine) {
+          var line = seriesGroups[i].elem('path', {
+            d: pathElements.join('')
+          }, options.classNames.line, true).attr({
+            'values': normalizedData[i]
+          }, Chartist.xmlNs.uri);
+
+          this.eventEmitter.emit('draw', {
+            type: 'line',
+            values: normalizedData[i],
+            index: i,
+            group: seriesGroups[i],
+            element: line
+          });
+        }
+
         if(options.showArea) {
           // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
           // the area is not drawn outside the chart area.
@@ -208,22 +224,6 @@
             index: i,
             group: seriesGroups[i],
             element: area
-          });
-        }
-
-        if(options.showLine) {
-          var line = seriesGroups[i].elem('path', {
-            d: pathElements.join('')
-          }, options.classNames.line, true).attr({
-            'values': normalizedData[i]
-          }, Chartist.xmlNs.uri);
-
-          this.eventEmitter.emit('draw', {
-            type: 'line',
-            values: normalizedData[i],
-            index: i,
-            group: seriesGroups[i],
-            element: line
           });
         }
       }
