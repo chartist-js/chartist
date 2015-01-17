@@ -2088,7 +2088,7 @@
               pathElements.push('L' + pathCoordinates[l - 1] + ',' + pathCoordinates[l]);
             }
           }
-          
+
           if(options.showLine) {
             var line = seriesGroups[i].elem('path', {
               d: pathElements.join('')
@@ -2104,7 +2104,7 @@
               element: line
             });
           }
-          
+
           if(options.showArea) {
             // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
             // the area is not drawn outside the chart area.
