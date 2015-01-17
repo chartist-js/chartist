@@ -1,3 +1,12 @@
+v0.6.0 - 17 Jan 2015
+--------------------
+- Added 14 default colors for colored series
+- Added data event that allows you to transform the data before it gets rendered in Chartist. This is also useful for plugin authors that would like to create plugins which modify data.
+- Possibility to specify meta data in the data object passed to Chartist that will be written to custom attributes into the DOM.
+- Possibility to specify options when calling chart.update in order to override the current options with new ones
+- Fixed some missing entries in the bower ignore section to exclude the documentation site as well as the grunt tasks
+- Fixed issue when Chartist is initialized in a container that already contains SVG
+
 v0.5.0 - 14 Dec 2014
 --------------------
 - Added new option for line and bar chart to use full width of the chart area by skipping the last grid line
