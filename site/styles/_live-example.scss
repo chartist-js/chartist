@@ -1,7 +1,7 @@
 .live-example {
   @include grid-row(nest);
 
-  margin-bottom: rem-calc(nth($modular-scale, 8));
+  margin-bottom: rem-calc(nth($modular-scale, 4));
 
   &.edit-mode {
     .chart {

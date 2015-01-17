@@ -22,7 +22,7 @@ sections:
               data:
                 text: >
                         Once you have included a plugin in your project you can use it in your chart by specifying it explicitly
-                        in the plugins section of your chart configuration. Check the <a href="#list-of-plugins">List of plugins</a>
+                        in the plugins section of your chart configuration. Check the <a href="#available-plugins">List of plugins</a>
                         section to see what plugins you can use.
 
             - type: code-snippet
@@ -57,18 +57,57 @@ sections:
 
       - type: sub-section
         data:
-          title: List of Plugins
+          title: Point Label Plugin
           level: 4
           items:
+            - type: text
+              data:
+                text: >
+                        The point label plugin can be used if you like to add simple labels on top of your data points
+                        on line charts. This is usefull if you'd like the user to see the exact values of the data without
+                        any additional interaction.
+            - type: live-example
+              data:
+                id: example-plugin-pointlabel
+                classes: ct-golden-section
+                intro: >
+                         The point label plugin draws labels on top of your line chart points.
             - type: table
               data:
-                id: chartist-plugin-list
-                header:
-                  - Name and link
                 rows:
                   -
-                    - <a href="https://github.com/gionkunz/chartist-plugin-pointlabels" target="_blanl">chartist-plugin-pointlabels</a>
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-pointlabels" target="_blank">chartist-plugin-pointlabels</a>'
 
+      - type: sub-section
+        data:
+          title: Sketchy Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The sketchy plugin makes your charts look like they have been drawn by hand. This plugin makes use
+                        of SVG filters and works on IE10+, Safari 7+ and Android 4.4+. Also note that SVG filters are not
+                        very performant and they will eat your users mobile battery quickly for sure.
+            - type: live-example
+              data:
+                id: example-plugin-sketchy
+                classes: ct-golden-section
+                intro: >
+                         Create beautiful hand drawn charts using the Chartist Sketchy plugin.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-sketchy" target="_blank">chartist-plugin-sketchy</a>'
   - title: Develop a plugin
     level: 3
     items:
