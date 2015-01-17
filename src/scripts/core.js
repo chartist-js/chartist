@@ -263,13 +263,22 @@ var Chartist = {
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
   Chartist.getDataArray = function (data) {
-    var array = [];
+    var array = [],
+      value,
+      localData;
 
     for (var i = 0; i < data.series.length; i++) {
       // If the series array contains an object with a data property we will use the property
-      // otherwise the value directly (array or number)
-      array[i] = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ?
-        data.series[i].data : data.series[i];
+      // otherwise the value directly (array or number).
+      // We create a copy of the original data array with Array.prototype.push.apply
+      localData = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ? data.series[i].data : data.series[i];
+      if(localData instanceof Array) {
+        array[i] = [];
+        Array.prototype.push.apply(array[i], localData);
+      } else {
+        array[i] = localData;
+      }
+
 
       // Convert values to number
       for (var j = 0; j < array[i].length; j++) {
