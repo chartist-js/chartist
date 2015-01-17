@@ -280,9 +280,11 @@ var Chartist = {
       }
 
 
-      // Convert values to number
+      // Convert object values to numbers
       for (var j = 0; j < array[i].length; j++) {
-        array[i][j] = +array[i][j];
+        value = array[i][j];
+        value = value.value || value;
+        array[i][j] = +value;
       }
     }
 

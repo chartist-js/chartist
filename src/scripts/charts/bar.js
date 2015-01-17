@@ -128,12 +128,11 @@
 
       seriesGroups[i] = this.svg.elem('g');
 
-      // If the series is an object and contains a name we add a custom attribute
-      if(this.data.series[i].name) {
-        seriesGroups[i].attr({
-          'series-name': this.data.series[i].name
-        }, Chartist.xmlNs.uri);
-      }
+      // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
+      seriesGroups[i].attr({
+        'series-name': this.data.series[i].name,
+        'meta': Chartist.serialize(this.data.series[i].meta)
+      }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
       seriesGroups[i].addClass([
@@ -167,7 +166,10 @@
           x2: p.x,
           y2: y2
         }, options.classNames.bar).attr({
-          'value': normalizedData[i][j]
+          'value': normalizedData[i][j],
+          'meta': this.data.series[i].data ?
+            Chartist.serialize(this.data.series[i].data[j].meta) :
+            Chartist.serialize(this.data.series[i][j].meta)
         }, Chartist.xmlNs.uri);
 
         this.eventEmitter.emit('draw', {

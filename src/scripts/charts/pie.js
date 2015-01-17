@@ -122,7 +122,8 @@
       // If the series is an object and contains a name we add a custom attribute
       if(this.data.series[i].name) {
         seriesGroups[i].attr({
-          'series-name': this.data.series[i].name
+          'series-name': this.data.series[i].name,
+          'meta': Chartist.serialize(this.data.series[i].meta)
         }, Chartist.xmlNs.uri);
       }
 
