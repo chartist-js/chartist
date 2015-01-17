@@ -39,4 +39,47 @@ describe('Chartist core', function() {
       expect(container).toContainElement('.ct-snake-bar');
     });
   });
+
+  describe('serialization tests', function () {
+    it('should serialize and deserialize regular strings', function() {
+      var input = 'String test';
+      expect(input).toMatch(Chartist.deserialize(Chartist.serialize(input)));
+    });
+
+    it('should serialize and deserialize strings with critical characters', function() {
+      var input = 'String test with critical characters " < > \' & &amp;';
+      expect(input).toMatch(Chartist.deserialize(Chartist.serialize(input)));
+    });
+
+    it('should serialize and deserialize numbers', function() {
+      var input = 12345.6789;
+      expect(input).toMatch(Chartist.deserialize(Chartist.serialize(input)));
+    });
+
+    it('should serialize and deserialize dates', function() {
+      var input = new Date(0);
+      expect(+input).toMatch(+new Date(Chartist.deserialize(Chartist.serialize(input))));
+    });
+
+    it('should serialize and deserialize complex object types', function() {
+      var input = {
+        a: {
+          b: 100,
+          c: 'String test',
+          d: 'String test with critical characters " < > \' & &amp;',
+          e: {
+            f: 'String test'
+          }
+        }
+      };
+
+      expect(input).toMatch(Chartist.deserialize(Chartist.serialize(input)));
+    });
+
+    it('should serialize and deserialize null, undefined and NaN', function() {
+      expect(null).toMatch(Chartist.deserialize(Chartist.serialize(null)));
+      expect(undefined).toMatch(Chartist.deserialize(Chartist.serialize(undefined)));
+      expect(NaN).toMatch(Chartist.deserialize(Chartist.serialize('NaN')));
+    });
+  });
 });
