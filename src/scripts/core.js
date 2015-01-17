@@ -234,6 +234,24 @@ var Chartist = {
   };
 
   /**
+   * Extracts metadata from series into multi-dimenional array
+   *
+   * @ Charits.Core
+   * @param {Object} series The Object contains series data, names, and metadata
+   * @return {Array} The array containing meta data
+   */ 
+
+  Chartist.extractMetaData = function (series) {
+    var meta = [];
+
+    for (var i = 0; i < series.length; i++) {
+      meta[i] = series[i].meta;
+    }
+
+    return meta;
+  };
+
+  /**
    * Calculate the order of magnitude for the chart scale
    *
    * @memberof Chartist.Core

@@ -94,7 +94,8 @@
   function createChart(options) {
     var seriesGroups = [],
       bounds,
-      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
+      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length),
+      metaData = Chartist.extractMetaData(this.data.series);
 
     // Create new svg object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
@@ -129,6 +130,7 @@
       ].join(' '));
 
       var p,
+        attrs,
         pathCoordinates = [],
         point;
 
@@ -139,14 +141,25 @@
         //If we should show points we need to create them now to avoid secondary loop
         // Small offset for Firefox to render squares correctly
         if (options.showPoint) {
+
+          if (metaData[0]) {
+            attrs = {
+              'value': normalizedData[i][j],
+              'meta': metaData[i][j]
+            }
+          }
+          else {
+            attrs = {
+              'value': normalizedData[i][j]
+            }
+          }
+
           point = seriesGroups[i].elem('line', {
             x1: p.x,
             y1: p.y,
             x2: p.x + 0.01,
             y2: p.y
-          }, options.classNames.point).attr({
-            'value': normalizedData[i][j]
-          }, Chartist.xmlNs.uri);
+          }, options.classNames.point).attr(attrs, Chartist.xmlNs.uri);
 
           this.eventEmitter.emit('draw', {
             type: 'point',
@@ -177,7 +190,23 @@
             pathElements.push('L' + pathCoordinates[l - 1] + ',' + pathCoordinates[l]);
           }
         }
+        
+        if(options.showLine) {
+          var line = seriesGroups[i].elem('path', {
+            d: pathElements.join('')
+          }, options.classNames.line, true).attr({
+            'values': normalizedData[i]
+          }, Chartist.xmlNs.uri);
 
+          this.eventEmitter.emit('draw', {
+            type: 'line',
+            values: normalizedData[i],
+            index: i,
+            group: seriesGroups[i],
+            element: line
+          });
+        }
+        
         if(options.showArea) {
           // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
           // the area is not drawn outside the chart area.
@@ -206,22 +235,6 @@
             index: i,
             group: seriesGroups[i],
             element: area
-          });
-        }
-
-        if(options.showLine) {
-          var line = seriesGroups[i].elem('path', {
-            d: pathElements.join('')
-          }, options.classNames.line, true).attr({
-            'values': normalizedData[i]
-          }, Chartist.xmlNs.uri);
-
-          this.eventEmitter.emit('draw', {
-            type: 'line',
-            values: normalizedData[i],
-            index: i,
-            group: seriesGroups[i],
-            element: line
           });
         }
       }
