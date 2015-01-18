@@ -61,6 +61,7 @@ var Chartist = {
   /**
    * Replaces all occurrences of subStr in str with newSubStr and returns a new string.
    *
+   * @memberof Chartist.Core
    * @param {String} str
    * @param {String} subStr
    * @param {String} newSubStr
@@ -163,6 +164,7 @@ var Chartist = {
   /**
    * A map with characters to escape for strings to be safely used as attribute values.
    *
+   * @memberof Chartist.Core
    * @type {Object}
    */
   Chartist.escapingMap = {
@@ -177,6 +179,7 @@ var Chartist = {
    * This function serializes arbitrary data to a string. In case of data that can't be easily converted to a string, this function will create a wrapper object and serialize the data using JSON.stringify. The outcoming string will always be escaped using Chartist.escapingMap.
    * If called with null or undefined the function will return immediately with null or undefined.
    *
+   * @memberof Chartist.Core
    * @param {Number|String|Object} data
    * @returns {String}
    */
@@ -197,6 +200,7 @@ var Chartist = {
   /**
    * This function de-serializes a string previously serialized with Chartist.serialize. The string will always be unescaped using Chartist.escapingMap before it's returned. Based on the input value the return type can be Number, String or Object. JSON.parse is used with try / catch to see if the unescaped string can be parsed into an Object and this Object will be returned on success.
    *
+   * @memberof Chartist.Core
    * @param {String} data
    * @returns {String|Number|Object}
    */
