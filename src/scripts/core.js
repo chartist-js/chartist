@@ -722,8 +722,9 @@ var Chartist = {
     return delta;
   };
 
-  //http://schepers.cc/getting-to-the-point
-  Chartist.catmullRom2bezier = function (crp, z) {
+  // http://schepers.cc/getting-to-the-point
+  // https://en.wikipedia.org/wiki/Cubic_Hermite_spline#Cardinal_spline
+  Chartist.catmullRom2bezier = function (crp, c, z) {
     var d = [];
     for (var i = 0, iLen = crp.length; iLen - 2 * !z > i; i += 2) {
       var p = [
@@ -748,12 +749,13 @@ var Chartist = {
           p[0] = {x: +crp[i], y: +crp[i + 1]};
         }
       }
+      var t = (1 - c);
       d.push(
         [
-          (-p[0].x + 6 * p[1].x + p[2].x) / 6,
-          (-p[0].y + 6 * p[1].y + p[2].y) / 6,
-          (p[1].x + 6 * p[2].x - p[3].x) / 6,
-          (p[1].y + 6 * p[2].y - p[3].y) / 6,
+          (t * (-p[0].x + 6 * p[1].x + p[2].x) / 6) + (c * p[2].x),
+          (t * (-p[0].y + 6 * p[1].y + p[2].y) / 6) + (c * p[2].y),
+          (t * (p[1].x + 6 * p[2].x - p[3].x) / 6) + (c * p[2].x),
+          (t * (p[1].y + 6 * p[2].y - p[3].y) / 6) + (c * p[2].y),
           p[2].x,
           p[2].y
         ]
