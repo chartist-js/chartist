@@ -95,6 +95,12 @@
       }.bind(this));
     }
 
+    // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
+    this.eventEmitter.emit('data', {
+      type: 'initial',
+      data: this.data
+    });
+
     // Create the first chart
     this.createChart(this.optionsProvider.currentOptions);
 
@@ -123,12 +129,6 @@
     this.resizeListener = function resizeListener(){
       this.update();
     }.bind(this);
-
-    // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
-    this.eventEmitter.emit('data', {
-      type: 'initial',
-      data: this.data
-    });
 
     if(this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
