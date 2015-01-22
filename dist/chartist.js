@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-  /* Chartist.js 0.6.0
+  /* Chartist.js 0.6.1
    * Copyright © 2015 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
    * @module Chartist.Core
    */
   var Chartist = {
-    version: '0.6.0'
+    version: '0.6.1'
   };
 
   (function (window, document, Chartist) {
@@ -82,6 +82,7 @@
     /**
      * Replaces all occurrences of subStr in str with newSubStr and returns a new string.
      *
+     * @memberof Chartist.Core
      * @param {String} str
      * @param {String} subStr
      * @param {String} newSubStr
@@ -184,6 +185,7 @@
     /**
      * A map with characters to escape for strings to be safely used as attribute values.
      *
+     * @memberof Chartist.Core
      * @type {Object}
      */
     Chartist.escapingMap = {
@@ -198,6 +200,7 @@
      * This function serializes arbitrary data to a string. In case of data that can't be easily converted to a string, this function will create a wrapper object and serialize the data using JSON.stringify. The outcoming string will always be escaped using Chartist.escapingMap.
      * If called with null or undefined the function will return immediately with null or undefined.
      *
+     * @memberof Chartist.Core
      * @param {Number|String|Object} data
      * @returns {String}
      */
@@ -218,6 +221,7 @@
     /**
      * This function de-serializes a string previously serialized with Chartist.serialize. The string will always be unescaped using Chartist.escapingMap before it's returned. Based on the input value the return type can be Number, String or Object. JSON.parse is used with try / catch to see if the unescaped string can be parsed into an Object and this Object will be returned on success.
      *
+     * @memberof Chartist.Core
      * @param {String} data
      * @returns {String|Number|Object}
      */
@@ -1162,9 +1166,10 @@
      *
      * @param {Object} [data] Optional data you'd like to set for the chart before it will update. If not specified the update method will use the data that is already configured with the chart.
      * @param {Object} [options] Optional options you'd like to add to the previous options for the chart before it will update. If not specified the update method will use the options that have been already configured with the chart.
+     * @param {Boolean} [extendObjects] If set to true, the passed options will be used to extend the options that have been configured already.
      * @memberof Chartist.Base
      */
-    function update(data, options) {
+    function update(data, options, extendObjects) {
       if(data) {
         this.data = data;
         // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
@@ -1175,12 +1180,21 @@
       }
 
       if(options) {
-        this.options = Chartist.extend({}, this.options, options);
-        this.optionsProvider.removeMediaQueryListeners();
-        this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+        this.options = Chartist.extend({}, extendObjects ? this.options : {}, options);
+
+        // If chartist was not initialized yet, we just set the options and leave the rest to the initialization
+        if(!this.initializeTimeoutId) {
+          this.optionsProvider.removeMediaQueryListeners();
+          this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+        }
       }
 
-      this.createChart(this.optionsProvider.currentOptions);
+      // Only re-created the chart if it has been initialized yet
+      if(!this.initializeTimeoutId) {
+        this.createChart(this.optionsProvider.currentOptions);
+      }
+
+      // Return a reference to the chart object to chain up calls
       return this;
     }
 
@@ -1239,6 +1253,12 @@
         }.bind(this));
       }
 
+      // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
+      this.eventEmitter.emit('data', {
+        type: 'initial',
+        data: this.data
+      });
+
       // Create the first chart
       this.createChart(this.optionsProvider.currentOptions);
 
@@ -1267,12 +1287,6 @@
       this.resizeListener = function resizeListener(){
         this.update();
       }.bind(this);
-
-      // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
-      this.eventEmitter.emit('data', {
-        type: 'initial',
-        data: this.data
-      });
 
       if(this.container) {
         // If chartist was already initialized in this container we are detaching all event listeners first

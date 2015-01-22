@@ -1,3 +1,8 @@
+v0.6.1 - 23 Jan 2015
+--------------------
+- Fixed bug that prevented data events to be captured
+- Fixed bug with update function called in the same call stack as chart constructor
+
 v0.6.0 - 17 Jan 2015
 --------------------
 - Added 14 default colors for colored series
