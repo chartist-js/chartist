@@ -29,6 +29,9 @@ module.exports = function (grunt) {
           'http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
           'node_modules/jasmine-jquery/lib/jasmine-jquery.js'
         ],
+        styles: [
+          '.tmp/styles/main.css'
+        ],
         phantomjs: {
           'ignore-ssl-errors': true
         }
