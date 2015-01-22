@@ -18,9 +18,10 @@
    *
    * @param {Object} [data] Optional data you'd like to set for the chart before it will update. If not specified the update method will use the data that is already configured with the chart.
    * @param {Object} [options] Optional options you'd like to add to the previous options for the chart before it will update. If not specified the update method will use the options that have been already configured with the chart.
+   * @param {Boolean} [extendObjects] If set to true, the passed options will be used to extend the options that have been configured already.
    * @memberof Chartist.Base
    */
-  function update(data, options) {
+  function update(data, options, extendObjects) {
     if(data) {
       this.data = data;
       // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
@@ -31,12 +32,21 @@
     }
 
     if(options) {
-      this.options = Chartist.extend({}, this.options, options);
-      this.optionsProvider.removeMediaQueryListeners();
-      this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+      this.options = Chartist.extend({}, extendObjects ? this.options : {}, options);
+
+      // If chartist was not initialized yet, we just set the options and leave the rest to the initialization
+      if(!this.initializeTimeoutId) {
+        this.optionsProvider.removeMediaQueryListeners();
+        this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+      }
     }
 
-    this.createChart(this.optionsProvider.currentOptions);
+    // Only re-created the chart if it has been initialized yet
+    if(!this.initializeTimeoutId) {
+      this.createChart(this.optionsProvider.currentOptions);
+    }
+
+    // Return a reference to the chart object to chain up calls
     return this;
   }
 
