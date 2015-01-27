@@ -1,4 +1,4 @@
-describe('Line chart tests', function() {
+describe('Bar chart tests', function() {
   'use strict';
 
   beforeEach(function() {
@@ -27,10 +27,10 @@ describe('Line chart tests', function() {
         ]
       };
 
-      var chart = new Chartist.Line('.ct-chart', data);
+      var chart = new Chartist.Bar('.ct-chart', data);
 
       chart.on('created', function() {
-        expect(Chartist.deserialize($('.ct-point').eq(3).attr('ct:meta'))).toEqual(meta);
+        expect(Chartist.deserialize($('.ct-bar').eq(3).attr('ct:meta'))).toEqual(meta);
         done();
       });
     });
@@ -52,10 +52,10 @@ describe('Line chart tests', function() {
         ]
       };
 
-      var chart = new Chartist.Line('.ct-chart', data);
+      var chart = new Chartist.Bar('.ct-chart', data);
 
       chart.on('created', function() {
-        expect(Chartist.deserialize($('.ct-point').eq(3).attr('ct:meta'))).toEqual(meta);
+        expect(Chartist.deserialize($('.ct-bar').eq(3).attr('ct:meta'))).toEqual(meta);
         done();
       });
     });
@@ -85,12 +85,12 @@ describe('Line chart tests', function() {
         ]
       };
 
-      var chart = new Chartist.Line('.ct-chart', data);
+      var chart = new Chartist.Bar('.ct-chart', data);
 
       chart.on('created', function() {
-        expect(Chartist.deserialize($('.ct-series-a .ct-point').eq(3).attr('ct:meta'))).toEqual(valueMeta);
+        expect(Chartist.deserialize($('.ct-series-a .ct-bar').eq(3).attr('ct:meta'))).toEqual(valueMeta);
         expect(Chartist.deserialize($('.ct-series-b')).attr('ct:meta')).toEqual(''+seriesMeta);
-        expect(Chartist.deserialize($('.ct-series-b .ct-point').eq(2).attr('ct:meta'))).toEqual(valueMeta);
+        expect(Chartist.deserialize($('.ct-series-b .ct-bar').eq(2).attr('ct:meta'))).toEqual(valueMeta);
         done();
       });
     });

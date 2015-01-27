@@ -223,9 +223,7 @@
           y2: y2
         }, options.classNames.bar).attr({
           'value': value,
-          'meta': series.data ?
-            Chartist.serialize(series.data[valueIndex].meta) :
-            Chartist.serialize(series[valueIndex].meta)
+          'meta': Chartist.getMetaData(series, valueIndex)
         }, Chartist.xmlNs.uri);
 
         this.eventEmitter.emit('draw', {

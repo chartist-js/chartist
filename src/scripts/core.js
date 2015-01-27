@@ -317,6 +317,11 @@ var Chartist = {
     return dataArray;
   };
 
+  Chartist.getMetaData = function(series, index) {
+    var value = series.data ? series.data[index] : series[index];
+    return value ? Chartist.serialize(value.meta) : undefined;
+  };
+
   /**
    * Calculate the order of magnitude for the chart scale
    *
