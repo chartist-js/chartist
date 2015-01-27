@@ -169,6 +169,12 @@
     this.data.series.forEach(function(series, seriesIndex) {
       seriesGroups[seriesIndex] = this.svg.elem('g');
 
+      // Allow chart options to be overridden on a per series basis
+      var showLine = (series.showLine !== undefined ? series.showLine : options.showLine),
+          showArea = (series.showArea !== undefined ? series.showArea : options.showArea),
+          showPoint = (series.showPoint !== undefined ? series.showPoint : options.showPoint),
+          lineSmooth = (series.lineSmooth !== undefined ? series.lineSmooth : options.lineSmooth);
+
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
       seriesGroups[seriesIndex].attr({
         'series-name': series.name,
@@ -192,7 +198,7 @@
 
         //If we should show points we need to create them now to avoid secondary loop
         // Small offset for Firefox to render squares correctly
-        if (options.showPoint) {
+        if (showPoint) {
           var point = seriesGroups[seriesIndex].elem('line', {
             x1: p.x,
             y1: p.y,
@@ -216,12 +222,12 @@
       }.bind(this));
 
       // TODO: Nicer handling of conditions, maybe composition?
-      if (options.showLine || options.showArea) {
+      if (showLine || showArea) {
         // TODO: We should add a path API in the SVG library for easier path creation
         var pathElements = ['M' + pathCoordinates[0] + ',' + pathCoordinates[1]];
 
         // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
-        if (options.lineSmooth && pathCoordinates.length > 4) {
+        if (lineSmooth && pathCoordinates.length > 4) {
 
           var cr = Chartist.catmullRom2bezier(pathCoordinates);
           for(var k = 0; k < cr.length; k++) {
@@ -233,7 +239,7 @@
           }
         }
 
-        if(options.showLine) {
+        if(showLine) {
           var line = seriesGroups[seriesIndex].elem('path', {
             d: pathElements.join('')
           }, options.classNames.line, true).attr({
@@ -249,7 +255,7 @@
           });
         }
 
-        if(options.showArea) {
+        if(showArea) {
           // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
           // the area is not drawn outside the chart area.
           var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
