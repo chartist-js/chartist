@@ -85,7 +85,7 @@
    */
   function createChart(options) {
     var seriesGroups = [],
-      bounds,
+      projectedValues,
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length),
       highLow;
 
@@ -102,46 +102,102 @@
     } else {
       highLow = Chartist.getHighLow(normalizedData);
     }
-
-    // initialize bounds
-    bounds = Chartist.getBounds(this.svg, highLow, options, 0);
+    // Overrides of high / low from settings
+    highLow.high = +options.high || (options.high === 0 ? 0 : highLow.high);
+    highLow.low = +options.low || (options.low === 0 ? 0 : highLow.low);
 
     var chartRect = Chartist.createChartRect(this.svg, options);
+
+    var axisX = new Chartist.StepAxis(
+      Chartist.Axis.units.x,
+      chartRect.x2 - chartRect.x1, {
+        stepCount: this.data.labels.length,
+        stretch: options.fullWidth
+      }
+    );
+
+    var axisY = new Chartist.LinearScaleAxis(
+      Chartist.Axis.units.y,
+      chartRect.y1 - chartRect.y2, {
+        highLow: highLow,
+        scaleMinSpace: options.axisY.scaleMinSpace,
+        referenceValue: 0
+      }
+    );
+
     // Start drawing
-    var labels = this.svg.elem('g').addClass(options.classNames.labelGroup),
-      grid = this.svg.elem('g').addClass(options.classNames.gridGroup),
+    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
+      gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup),
       // Projected 0 point
-      zeroPoint = Chartist.projectPoint(chartRect, bounds, [0], 0, options),
+      zeroPoint = chartRect.y1 - axisY.projectValue(0).pos,
       // Used to track the screen coordinates of stacked bars
       stackedBarValues = [];
 
-    Chartist.createXAxis(chartRect, this.data, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
-    Chartist.createYAxis(chartRect, bounds, grid, labels, options, this.eventEmitter, this.supportsForeignObject);
+    Chartist.drawAxis(
+      axisX,
+      this.data.labels,
+      function(projectedValue) {
+        projectedValue.pos = chartRect.x1 + projectedValue.pos;
+        return projectedValue;
+      },
+      chartRect,
+      gridGroup,
+      chartRect.y2,
+      labelGroup,
+      {
+        x: options.axisX.labelOffset.x,
+        y: chartRect.y1 + options.axisX.labelOffset.y + (this.supportsForeignObject ? 5 : 20)
+      },
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
+
+    Chartist.drawAxis(
+      axisY,
+      axisY.bounds.values,
+      function(projectedValue) {
+        projectedValue.pos = chartRect.y1 - projectedValue.pos;
+        return projectedValue;
+      },
+      chartRect,
+      gridGroup,
+      chartRect.x1,
+      labelGroup, {
+        x: options.chartPadding + options.axisY.labelOffset.x + (this.supportsForeignObject ? -10 : 0),
+        y: options.axisY.labelOffset.y + (this.supportsForeignObject ? -15 : 0)
+      },
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
 
     // Draw the series
-    // initialize series groups
-    for (var i = 0; i < this.data.series.length; i++) {
+    this.data.series.forEach(function(series, seriesIndex) {
       // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
-      var biPol = i - (this.data.series.length - 1) / 2,
+      var biPol = seriesIndex - (this.data.series.length - 1) / 2,
       // Half of the period width between vertical grid lines used to position bars
-        periodHalfWidth = chartRect.width() / (normalizedData[i].length - (options.fullWidth ? 1 : 0)) / 2;
+        periodHalfWidth = chartRect.width() / (normalizedData[seriesIndex].length - (options.fullWidth ? 1 : 0)) / 2;
 
-      seriesGroups[i] = this.svg.elem('g');
+      seriesGroups[seriesIndex] = this.svg.elem('g');
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
-      seriesGroups[i].attr({
-        'series-name': this.data.series[i].name,
-        'meta': Chartist.serialize(this.data.series[i].meta)
+      seriesGroups[seriesIndex].attr({
+        'series-name': series.name,
+        'meta': Chartist.serialize(series.meta)
       }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
-      seriesGroups[i].addClass([
+      seriesGroups[seriesIndex].addClass([
         options.classNames.series,
-        (this.data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(seriesIndex))
       ].join(' '));
 
-      for(var j = 0; j < normalizedData[i].length; j++) {
-        var p = Chartist.projectPoint(chartRect, bounds, normalizedData[i], j, options),
+      normalizedData[seriesIndex].forEach(function(value, valueIndex) {
+        var p = {
+              x: chartRect.x1 + axisX.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
+              y: chartRect.y1 - axisY.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+            },
           bar,
           previousStack,
           y1,
@@ -153,41 +209,41 @@
         p.x += options.stackBars ? 0 : biPol * options.seriesBarDistance;
 
         // Enter value in stacked bar values used to remember previous screen value for stacking up bars
-        previousStack = stackedBarValues[j] || zeroPoint.y;
-        stackedBarValues[j] = previousStack - (zeroPoint.y - p.y);
+        previousStack = stackedBarValues[valueIndex] || zeroPoint;
+        stackedBarValues[valueIndex] = previousStack - (zeroPoint - p.y);
 
         // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
-        y1 = options.stackBars ? previousStack : zeroPoint.y;
-        y2 = options.stackBars ? stackedBarValues[j] : p.y;
+        y1 = options.stackBars ? previousStack : zeroPoint;
+        y2 = options.stackBars ? stackedBarValues[valueIndex] : p.y;
 
-        bar = seriesGroups[i].elem('line', {
+        bar = seriesGroups[seriesIndex].elem('line', {
           x1: p.x,
           y1: y1,
           x2: p.x,
           y2: y2
         }, options.classNames.bar).attr({
-          'value': normalizedData[i][j],
-          'meta': this.data.series[i].data ?
-            Chartist.serialize(this.data.series[i].data[j].meta) :
-            Chartist.serialize(this.data.series[i][j].meta)
+          'value': value,
+          'meta': series.data ?
+            Chartist.serialize(series.data[valueIndex].meta) :
+            Chartist.serialize(series[valueIndex].meta)
         }, Chartist.xmlNs.uri);
 
         this.eventEmitter.emit('draw', {
           type: 'bar',
-          value: normalizedData[i][j],
-          index: j,
-          group: seriesGroups[i],
+          value: value,
+          index: valueIndex,
+          group: seriesGroups[seriesIndex],
           element: bar,
           x1: p.x,
           y1: y1,
           x2: p.x,
           y2: y2
         });
-      }
-    }
+      }.bind(this));
+    }.bind(this));
 
     this.eventEmitter.emit('created', {
-      bounds: bounds,
+      bounds: axisY.bounds,
       chartRect: chartRect,
       svg: this.svg,
       options: options
