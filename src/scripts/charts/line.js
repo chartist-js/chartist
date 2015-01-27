@@ -181,12 +181,10 @@
         (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(seriesIndex))
       ].join(' '));
 
-      var p,
-        pathCoordinates = [],
-        point;
+      var pathCoordinates = [];
 
       normalizedData[seriesIndex].forEach(function(value, valueIndex) {
-        p = {
+        var p = {
           x: chartRect.x1 + axisX.projectValue(value, valueIndex,  normalizedData[seriesIndex]).pos,
           y: chartRect.y1 - axisY.projectValue(value, valueIndex,  normalizedData[seriesIndex]).pos
         };
@@ -195,7 +193,7 @@
         //If we should show points we need to create them now to avoid secondary loop
         // Small offset for Firefox to render squares correctly
         if (options.showPoint) {
-          point = seriesGroups[seriesIndex].elem('line', {
+          var point = seriesGroups[seriesIndex].elem('line', {
             x1: p.x,
             y1: p.y,
             x2: p.x + 0.01,
