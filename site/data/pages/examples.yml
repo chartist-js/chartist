@@ -119,6 +119,24 @@ sections:
           intro: >
                     You can also set your bar chart to stack the series bars on top of each other easily by using the
                     <code>stackBars</code> property in your configuration.
+      - type: live-example
+        data:
+          title: Horizontal bar chart
+          level: 4
+          id: example-bar-horizontal
+          classes: ct-golden-section
+          intro: >
+                    Guess what! Creating horizontal bar charts is as simple as it can get. There's no new chart type
+                    you need to learn, just passing an additional option is enough.
+      - type: live-example
+        data:
+          title: Extreme responsive configuration
+          level: 4
+          id: example-bar-extreme-responsive
+          classes: ct-golden-section
+          intro: >
+                    As all settings of a chart can be customized with the responsive configuration override mechanism of
+                    Chartist, you can create a chart that adopts to every media condition!
   - title: Pie chart examples
     level: 3
     items:

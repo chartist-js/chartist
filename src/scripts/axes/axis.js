@@ -11,19 +11,29 @@
     x: {
       pos: 'x',
       len: 'width',
-      dir: 'horizontal'
+      dir: 'horizontal',
+      rectStart: 'x1',
+      rectEnd: 'x2',
+      rectOffset: 'y2'
     },
     y: {
       pos: 'y',
       len: 'height',
-      dir: 'vertical'
+      dir: 'vertical',
+      rectStart: 'y2',
+      rectEnd: 'y1',
+      rectOffset: 'x1'
     }
   };
 
-  function Axis(units, axisLength, options) {
+  function Axis(units, chartRect, transform, labelOffset, options) {
     this.units = units;
     this.counterUnits = units === axisUnits.x ? axisUnits.y : axisUnits.x;
-    this.axisLength = axisLength;
+    this.chartRect = chartRect;
+    this.axisLength = chartRect[units.rectEnd] - chartRect[units.rectStart];
+    this.gridOffset = chartRect[units.rectOffset];
+    this.transform = transform;
+    this.labelOffset = labelOffset;
     this.options = options;
   }
 

@@ -7,10 +7,12 @@
 (function (window, document, Chartist) {
   'use strict';
 
-  function StepAxis(axisUnit, axisLength, options) {
+  function StepAxis(axisUnit, chartRect, transform, labelOffset, options) {
     Chartist.StepAxis.super.constructor.call(this,
       axisUnit,
-      axisLength,
+      chartRect,
+      transform,
+      labelOffset,
       options);
 
     this.stepLength = this.axisLength / (options.stepCount - (options.stretch ? 1 : 0));

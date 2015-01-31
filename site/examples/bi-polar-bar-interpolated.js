@@ -12,9 +12,7 @@ var options = {
     labelInterpolationFnc: function(value, index) {
       return index % 2 === 0 ? value : null;
     }
-  },
-  fullWidth: true,
-  centerBars: false
+  }
 };
 
 new Chartist.Bar('.ct-chart', data, options);

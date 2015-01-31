@@ -71,6 +71,8 @@
     chartPadding: 5,
     // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler.
     fullWidth: false,
+    // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
+    reverseData: false,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-line',
@@ -93,7 +95,7 @@
    */
   function createChart(options) {
     var seriesGroups = [],
-      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data), this.data.labels.length);
+      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length);
 
     // Create new svg object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
@@ -107,7 +109,16 @@
 
     var axisX = new Chartist.StepAxis(
       Chartist.Axis.units.x,
-      chartRect.x2 - chartRect.x1, {
+      chartRect,
+      function xAxisTransform(projectedValue) {
+        projectedValue.pos = chartRect.x1 + projectedValue.pos;
+        return projectedValue;
+      },
+      {
+        x: options.axisX.labelOffset.x,
+        y: chartRect.y1 + options.axisX.labelOffset.y + (this.supportsForeignObject ? 5 : 20)
+      },
+      {
         stepCount: this.data.labels.length,
         stretch: options.fullWidth
       }
@@ -115,7 +126,16 @@
 
     var axisY = new Chartist.LinearScaleAxis(
       Chartist.Axis.units.y,
-      chartRect.y1 - chartRect.y2, {
+      chartRect,
+      function yAxisTransform(projectedValue) {
+        projectedValue.pos = chartRect.y1 - projectedValue.pos;
+        return projectedValue;
+      },
+      {
+        x: options.chartPadding + options.axisY.labelOffset.x + (this.supportsForeignObject ? -10 : 0),
+        y: options.axisY.labelOffset.y + (this.supportsForeignObject ? -15 : 0)
+      },
+      {
         highLow: highLow,
         scaleMinSpace: options.axisY.scaleMinSpace
       }
@@ -125,41 +145,23 @@
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
       gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
 
-    Chartist.drawAxis(
+    Chartist.createAxis(
       axisX,
       this.data.labels,
-      function(projectedValue) {
-        projectedValue.pos = chartRect.x1 + projectedValue.pos;
-        return projectedValue;
-      },
       chartRect,
       gridGroup,
-      chartRect.y2,
       labelGroup,
-      {
-        x: options.axisX.labelOffset.x,
-        y: chartRect.y1 + options.axisX.labelOffset.y + (this.supportsForeignObject ? 5 : 20)
-      },
       this.supportsForeignObject,
       options,
       this.eventEmitter
     );
 
-    Chartist.drawAxis(
+    Chartist.createAxis(
       axisY,
       axisY.bounds.values,
-      function(projectedValue) {
-        projectedValue.pos = chartRect.y1 - projectedValue.pos;
-        return projectedValue;
-      },
       chartRect,
       gridGroup,
-      chartRect.x1,
       labelGroup,
-      {
-        x: options.chartPadding + options.axisY.labelOffset.x + (this.supportsForeignObject ? -10 : 0),
-        y: options.axisY.labelOffset.y + (this.supportsForeignObject ? -15 : 0)
-      },
       this.supportsForeignObject,
       options,
       this.eventEmitter

@@ -1,16 +1,18 @@
 /**
- * Step axis for step based charts like bar chart or step based line chart
+ * The linear scale axis uses standard linear scale projection of values along an axis.
  *
- * @module Chartist.StepAxis
+ * @module Chartist.LinearScaleAxis
  */
 /* global Chartist */
 (function (window, document, Chartist) {
   'use strict';
 
-  function LinearScaleAxis(axisUnit, axisLength, options) {
+  function LinearScaleAxis(axisUnit, chartRect, transform, labelOffset, options) {
     Chartist.LinearScaleAxis.super.constructor.call(this,
       axisUnit,
-      axisLength,
+      chartRect,
+      transform,
+      labelOffset,
       options);
 
     this.bounds = Chartist.getBounds(this.axisLength, options.highLow, options.scaleMinSpace, options.referenceValue);
