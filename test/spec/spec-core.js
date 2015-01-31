@@ -82,4 +82,64 @@ describe('Chartist core', function() {
       expect(NaN).toMatch(Chartist.deserialize(Chartist.serialize('NaN')));
     });
   });
+
+  describe('data normalization tests', function () {
+    it('should normalize based on label length', function() {
+      var data = {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          [1, 2, 3, 4, 5, 6],
+          [1, 2, 3, 4, 5, 6, 7, 8],
+          [1, 2, 3]
+        ]
+      };
+
+      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
+        [
+          [1, 2, 3, 4, 5, 6, 0, 0, 0, 0],
+          [1, 2, 3, 4, 5, 6, 7, 8, 0, 0],
+          [1, 2, 3, 0, 0, 0, 0, 0, 0, 0]
+        ]
+      );
+    });
+
+    it('normalize mixed series types correctly', function() {
+      var data = {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          {data: [1, 0, 3, 4, 5, 6]},
+          [1, {value: 0}, 3, {value: 4}, 5, 6, 7, 8],
+          {data: [1, 0, {value: 3}]}
+        ]
+      };
+
+      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
+        [
+          [1, 0, 3, 4, 5, 6, 0, 0, 0, 0],
+          [1, 0, 3, 4, 5, 6, 7, 8, 0, 0],
+          [1, 0, 3, 0, 0, 0, 0, 0, 0, 0]
+        ]
+      );
+    });
+
+    it('should normalize correctly with 0 values in data series array objects', function() {
+      var data = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        series: [{
+          data: [
+            { value: 1 },
+            { value: 4 },
+            { value: 2 },
+            { value: 7 },
+            { value: 2 },
+            { value: 0 }
+          ]
+        }]
+      };
+
+      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data))).toEqual(
+        [[1, 4, 2, 7, 2, 0]]
+      );
+    });
+  });
 });

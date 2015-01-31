@@ -311,11 +311,10 @@ var Chartist = {
         array[i] = localData;
       }
 
-
       // Convert object values to numbers
       for (var j = 0; j < array[i].length; j++) {
         value = array[i][j];
-        value = value.value || value;
+        value = value.value === 0 ? 0 : (value.value || value);
         array[i][j] = +value;
       }
     }
