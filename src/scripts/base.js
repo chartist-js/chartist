@@ -92,6 +92,10 @@
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes
     this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+    // Register options change listener that will trigger a chart update
+    this.eventEmitter.addEventHandler('optionsChanged', function() {
+      this.update();
+    }.bind(this));
 
     // Before the first chart creation we need to register us with all plugins that are configured
     // Initialize all relevant plugins with our chart object and the plugin options specified in the config
