@@ -24,7 +24,7 @@ var options = {
   // Y-Axis specific configuration
   axisY: {
     // Lets offset the chart a bit from the labels
-    offset: 40,
+    offset: 60,
     // The label interpolation function enables you to modify the values
     // used for the labels on each axis. Here we are converting the
     // values into million pound.
