@@ -1,3 +1,12 @@
+v0.7.0 - 01 Feb 2015
+--------------------
+- This version introduces a new option in the bar charts to draw them horizontally
+- Underlying changes for axis model that allows flexible value projection and removes code duplication
+- Added SVG Path API for manipulating SVG paths. This can be used in animations or to transform the output by Chartist further.
+- The fullWidth and centerBars options were removed from the bar chart
+- Updating chart after options update enables the use of 'print' media query in responsive options to have a quick redraw before printing. This only works in Chrome 40 so far
+- Fixed issues with 0 values in series object data notation
+
 v0.6.1 - 23 Jan 2015
 --------------------
 - Fixed bug that prevented data events to be captured
