@@ -1,7 +1,7 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-replaceall">Chartist.replaceAll()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a></li><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-createxaxis">Chartist.createXAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-createyaxis">Chartist.createYAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectpoint">Chartist.projectPoint()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>base.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbase">Module Chartist.Base</h4><div class="module-description"><p>Base for all chart types. The methods in Chartist.Base are inherited to all chart types.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-update"><span class="member-tag">function</span> update()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-update-code">Show code</button></header><pre id="chartistbase-function-update-code">
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.Axis</li><li class="heading">Chartist.LinearScaleAxis</li><li class="heading">Chartist.StepAxis</li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li><a class="text-clipping" href="#chartistclass-function-mix">mix()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-replaceall">Chartist.replaceAll()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a></li><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-reversedata">Chartist.reverseData()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizedataarray">Chartist.normalizeDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-creategrid">Chartist.createGrid()</a></li><li><a class="text-clipping" href="#chartistcore-method-createlabel">Chartist.createLabel()</a></li><li><a class="text-clipping" href="#chartistcore-method-createaxis">Chartist.createAxis()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Svg.Path</li><li><a class="text-clipping" href="#chartistsvgpath-declaration-elementdescriptions">elementDescriptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-constructor-svgpath">SvgPath()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-position">position()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-move">move()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-line">line()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-curve">curve()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-parse">parse()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-stringify">stringify()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-scale">scale()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-translate">translate()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-transform">transform()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-clone">clone()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistaxis">Module Chartist.Axis</h4><div class="module-description"><p>Axis base class used to implement different axis types</p></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>linear-scale-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistlinearscaleaxis">Module Chartist.LinearScaleAxis</h4><div class="module-description"><p>The linear scale axis uses standard linear scale projection of values along an axis.</p></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>step-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartiststepaxis">Module Chartist.StepAxis</h4><div class="module-description"><p>Step axis for step based charts like bar chart or step based line chart</p></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>base.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistbase">Module Chartist.Base</h4><div class="module-description"><p>Base for all chart types. The methods in Chartist.Base are inherited to all chart types.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistbase-function-update"><span class="member-tag">function</span> update()</h5><button class="api-code-button" data-toggle-visible="#chartistbase-function-update-code">Show code</button></header><pre id="chartistbase-function-update-code">
     <code class="javascript">function update(data, options, extendObjects) {
   if(data) {
     this.data = data;
@@ -54,6 +54,10 @@ function initialize() {
   // Obtain current options based on matching media queries (if responsive options are given)
   // This will also register a listener that is re-creating the chart based on media changes
   this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+  // Register options change listener that will trigger a chart update
+  this.eventEmitter.addEventHandler(&#x27;optionsChanged&#x27;, function() {
+    this.update();
+  }.bind(this));
 
   // Before the first chart creation we need to register us with all plugins that are configured
   // Initialize all relevant plugins with our chart object and the plugin options specified in the config
@@ -96,7 +100,9 @@ function initialize() {
     // If the axis grid should be drawn or not
     showGrid: true,
     // Interpolation function that allows you to intercept the value from the axis label
-    labelInterpolationFnc: Chartist.noop
+    labelInterpolationFnc: Chartist.noop,
+    // This value specifies the minimum width in pixel of the scale steps
+    scaleMinSpace: 40
   },
   // Options for Y-Axis
   axisY: {
@@ -128,12 +134,12 @@ function initialize() {
   chartPadding: 5,
   // Specify the distance in pixel of bars in a group
   seriesBarDistance: 15,
-  // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler. For bar charts this might be used in conjunction with the centerBars property set to false.
-  fullWidth: false,
-  // This property will cause the bars of the bar chart to be drawn on the grid line rather than between two grid lines. This is useful for single series bar charts and might be used in conjunction with the fullWidth property.
-  centerBars: true,
   // If set to true this property will cause the series bars to be stacked and form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
   stackBars: false,
+  // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
+  horizontalBars: false,
+  // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
+  reverseData: false,
   // Override the class names that get used to generate the SVG structure of the chart
   classNames: {
     chart: &#x27;ct-chart-bar&#x27;,
@@ -242,6 +248,8 @@ new Chartist.Bar(&#x27;.ct-chart&#x27;, {
   chartPadding: 5,
   // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler.
   fullWidth: false,
+  // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
+  reverseData: false,
   // Override the class names that get used to generate the SVG structure of the chart
   classNames: {
     chart: &#x27;ct-chart-line&#x27;,
@@ -355,7 +363,9 @@ new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code><
   // An interpolation function for the label value
   labelInterpolationFnc: Chartist.noop,
   // Label direction can be &#x27;neutral&#x27;, &#x27;explode&#x27; or &#x27;implode&#x27;. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
-  labelDirection: &#x27;neutral&#x27;
+  labelDirection: &#x27;neutral&#x27;,
+  // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
+  reverseData: false
 };</code>
   </pre><div class="member-content"><div class="description"><p>Default options in line charts. Expand the code view to see a detailed list of options with comments.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistpie-function-pie"><span class="member-tag">function</span> Pie()</h5><button class="api-code-button" data-toggle-visible="#chartistpie-function-pie-code">Show code</button></header><pre id="chartistpie-function-pie-code">
     <code class="javascript">function Pie(query, data, options, responsiveOptions) {
@@ -440,7 +450,7 @@ new Chartist.Pie(&#x27;.ct-chart&#x27;, {
 
   return constr;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Method to extend from current prototype.</p></div><h6>Parameters</h6><div class="param"><code>properties</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.</div></div><div class="param"><code>[superProtoOverride]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">By default extens will use the current class prototype or Chartist.class. With this parameter you can specify any super prototype that will be used.</div></div><h6>Examples</h6><pre class="api-example"><code class="js">var Fruit = Class.extend({
+  </pre><div class="member-content"><div class="description"><p>Method to extend from current prototype.</p></div><h6>Parameters</h6><div class="param"><code>properties</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.</div></div><div class="param"><code>[superProtoOverride]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">By default extens will use the current class prototype or Chartist.class. With this parameter you can specify any super prototype that will be used.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Function</code></span> )<div class="param-description">Constructor function of the new class</div></div><h6>Examples</h6><pre class="api-example"><code class="js">var Fruit = Class.extend({
 color: undefined,
   sugar: undefined,
 
@@ -514,7 +524,7 @@ Chartist.Class = {
 };
 
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>Creates a mixin from multiple super prototypes.</p></div><h6>Parameters</h6><div class="param"><code>mixProtoArr</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">An array of super prototypes or an array of super prototype constructors.</div></div><div class="param"><code>properties</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.</div></div><h6>Examples</h6><pre class="api-example"><code class="js">var Fruit = Class.extend({
+  </pre><div class="member-content"><div class="description"><p>Creates a mixin from multiple super prototypes.</p></div><h6>Parameters</h6><div class="param"><code>mixProtoArr</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">An array of super prototypes or an array of super prototype constructors.</div></div><div class="param"><code>properties</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Function</code></span> )<div class="param-description">Constructor function of the newly created mixin class</div></div><h6>Examples</h6><pre class="api-example"><code class="js">var Fruit = Class.extend({
 color: undefined,
   sugar: undefined,
 
@@ -619,7 +629,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     <code class="javascript">Chartist.replaceAll = function(str, subStr, newSubStr) {
   return str.replace(new RegExp(subStr, &#x27;g&#x27;), newSubStr);
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Replaces all occurrences of subStr in str with newSubStr and returns a new string.</p></div><h6>Parameters</h6><div class="param"><code>str</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>subStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>newSubStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-stripunit"><span class="member-tag">method</span> Chartist.stripUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-stripunit-code">Show code</button></header><pre id="chartistcore-method-stripunit-code">
+  </pre><div class="member-content"><div class="description"><p>Replaces all occurrences of subStr in str with newSubStr and returns a new string.</p></div><h6>Parameters</h6><div class="param"><code>str</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>subStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>newSubStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-stripunit"><span class="member-tag">method</span> Chartist.stripUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-stripunit-code">Show code</button></header><pre id="chartistcore-method-stripunit-code">
     <code class="javascript">Chartist.stripUnit = function(value) {
   if(typeof value === &#x27;string&#x27;) {
     value = value.replace(/[^0-9\+-\.]/g, &#x27;&#x27;);
@@ -627,7 +637,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return +value;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-ensureunit"><span class="member-tag">method</span> Chartist.ensureUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-ensureunit-code">Show code</button></header><pre id="chartistcore-method-ensureunit-code">
+  </pre><div class="member-content"><div class="description"><p>Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">Returns the string as number or NaN if the passed length could not be converted to pixel</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-ensureunit"><span class="member-tag">method</span> Chartist.ensureUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-ensureunit-code">Show code</button></header><pre id="chartistcore-method-ensureunit-code">
     <code class="javascript">Chartist.ensureUnit = function(value, unit) {
   if(typeof value === &#x27;number&#x27;) {
     value = value + unit;
@@ -635,7 +645,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return value;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><div class="param"><code>unit</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-queryselector"><span class="member-tag">method</span> Chartist.querySelector()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-queryselector-code">Show code</button></header><pre id="chartistcore-method-queryselector-code">
+  </pre><div class="member-content"><div class="description"><p>Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><div class="param"><code>unit</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description">Returns the passed number value with unit.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-queryselector"><span class="member-tag">method</span> Chartist.querySelector()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-queryselector-code">Show code</button></header><pre id="chartistcore-method-queryselector-code">
     <code class="javascript">Chartist.querySelector = function(query) {
   return query instanceof Node ? query : document.querySelector(query);
 };</code>
@@ -643,11 +653,11 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     <code class="javascript">Chartist.times = function(length) {
   return Array.apply(null, new Array(length));
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Functional style helper to produce array with given length initialized with undefined values</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-sum"><span class="member-tag">method</span> Chartist.sum()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-sum-code">Show code</button></header><pre id="chartistcore-method-sum-code">
+  </pre><div class="member-content"><div class="description"><p>Functional style helper to produce array with given length initialized with undefined values</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-sum"><span class="member-tag">method</span> Chartist.sum()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-sum-code">Show code</button></header><pre id="chartistcore-method-sum-code">
     <code class="javascript">Chartist.sum = function(previous, current) {
   return previous + current;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Sum helper to be used in reduce functions</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>previous</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>current</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-serialmap"><span class="member-tag">method</span> Chartist.serialMap()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-serialmap-code">Show code</button></header><pre id="chartistcore-method-serialmap-code">
+  </pre><div class="member-content"><div class="description"><p>Sum helper to be used in reduce functions</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>previous</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>current</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>*</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-serialmap"><span class="member-tag">method</span> Chartist.serialMap()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-serialmap-code">Show code</button></header><pre id="chartistcore-method-serialmap-code">
     <code class="javascript">Chartist.serialMap = function(arr, cb) {
   var result = [],
       length = Math.max.apply(null, arr.map(function(e) {
@@ -664,7 +674,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return result;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Map for multi dimensional arrays where their nested arrays will be mapped in serial. The output array will have the length of the largest nested array. The callback function is called with variable arguments where each argument is the nested array value (or undefined if there are no more values).</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>arr</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>cb</code></span> )<div class="param-description"></div></div></div></article><article class="module-member property"><header class="member-header"><h5 class="member-title" id="chartistcore-property-escapingmap"><span class="member-tag">property</span> Chartist.escapingMap</h5><button class="api-code-button" data-toggle-visible="#chartistcore-property-escapingmap-code">Show code</button></header><pre id="chartistcore-property-escapingmap-code">
+  </pre><div class="member-content"><div class="description"><p>Map for multi dimensional arrays where their nested arrays will be mapped in serial. The output array will have the length of the largest nested array. The callback function is called with variable arguments where each argument is the nested array value (or undefined if there are no more values).</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>arr</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>cb</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description"></div></div></div></article><article class="module-member property"><header class="member-header"><h5 class="member-title" id="chartistcore-property-escapingmap"><span class="member-tag">property</span> Chartist.escapingMap</h5><button class="api-code-button" data-toggle-visible="#chartistcore-property-escapingmap-code">Show code</button></header><pre id="chartistcore-property-escapingmap-code">
     <code class="javascript">Chartist.escapingMap = {
   &#x27;&amp;&#x27;: &#x27;&amp;amp;&#x27;,
   &#x27;&lt;&#x27;: &#x27;&amp;lt;&#x27;,
@@ -686,7 +696,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     return Chartist.replaceAll(result, key, Chartist.escapingMap[key]);
   }, data);
 };</code>
-  </pre><div class="member-content"><div class="description"><p>This function serializes arbitrary data to a string. In case of data that can&#39;t be easily converted to a string, this function will create a wrapper object and serialize the data using JSON.stringify. The outcoming string will always be escaped using Chartist.escapingMap.<br>If called with null or undefined the function will return immediately with null or undefined.</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>Number</code></span> <span class="param-type"><code>String</code></span> <span class="param-type"><code>Object</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-deserialize"><span class="member-tag">method</span> Chartist.deserialize()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-deserialize-code">Show code</button></header><pre id="chartistcore-method-deserialize-code">
+  </pre><div class="member-content"><div class="description"><p>This function serializes arbitrary data to a string. In case of data that can&#39;t be easily converted to a string, this function will create a wrapper object and serialize the data using JSON.stringify. The outcoming string will always be escaped using Chartist.escapingMap.<br>If called with null or undefined the function will return immediately with null or undefined.</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>Number</code></span> <span class="param-type"><code>String</code></span> <span class="param-type"><code>Object</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-deserialize"><span class="member-tag">method</span> Chartist.deserialize()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-deserialize-code">Show code</button></header><pre id="chartistcore-method-deserialize-code">
     <code class="javascript">Chartist.deserialize = function(data) {
   if(typeof data !== &#x27;string&#x27;) {
     return data;
@@ -703,7 +713,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return data;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>This function de-serializes a string previously serialized with Chartist.serialize. The string will always be unescaped using Chartist.escapingMap before it&#39;s returned. Based on the input value the return type can be Number, String or Object. JSON.parse is used with try / catch to see if the unescaped string can be parsed into an Object and this Object will be returned on success.</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createsvg"><span class="member-tag">method</span> Chartist.createSvg()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createsvg-code">Show code</button></header><pre id="chartistcore-method-createsvg-code">
+  </pre><div class="member-content"><div class="description"><p>This function de-serializes a string previously serialized with Chartist.serialize. The string will always be unescaped using Chartist.escapingMap before it&#39;s returned. Based on the input value the return type can be Number, String or Object. JSON.parse is used with try / catch to see if the unescaped string can be parsed into an Object and this Object will be returned on success.</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Number</code></span> <span class="param-type"><code>Object</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createsvg"><span class="member-tag">method</span> Chartist.createSvg()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createsvg-code">Show code</button></header><pre id="chartistcore-method-createsvg-code">
     <code class="javascript">Chartist.createSvg = function (container, width, height, className) {
   var svg;
 
@@ -731,11 +741,31 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return svg;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Create or reinitialize the SVG element for the chart</p></div><h6>Parameters</h6><div class="param"><code>container</code> ( <span class="param-type"><code>Node</code></span> )<div class="param-description">The containing DOM Node object that will be used to plant the SVG element</div></div><div class="param"><code>width</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the width of the SVG element. Default is 100%</div></div><div class="param"><code>height</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the height of the SVG element. Default is 100%</div></div><div class="param"><code>className</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Specify a class to be added to the SVG element</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The created/reinitialized SVG element</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getdataarray"><span class="member-tag">method</span> Chartist.getDataArray()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getdataarray-code">Show code</button></header><pre id="chartistcore-method-getdataarray-code">
-    <code class="javascript">Chartist.getDataArray = function (data) {
+  </pre><div class="member-content"><div class="description"><p>Create or reinitialize the SVG element for the chart</p></div><h6>Parameters</h6><div class="param"><code>container</code> ( <span class="param-type"><code>Node</code></span> )<div class="param-description">The containing DOM Node object that will be used to plant the SVG element</div></div><div class="param"><code>width</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the width of the SVG element. Default is 100%</div></div><div class="param"><code>height</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the height of the SVG element. Default is 100%</div></div><div class="param"><code>className</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Specify a class to be added to the SVG element</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The created/reinitialized SVG element</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-reversedata"><span class="member-tag">method</span> Chartist.reverseData()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-reversedata-code">Show code</button></header><pre id="chartistcore-method-reversedata-code">
+    <code class="javascript">Chartist.reverseData = function(data) {
+  data.labels.reverse();
+  data.series.reverse();
+  for (var i = 0; i &lt; data.series.length; i++) {
+    if(typeof(data.series[i]) === &#x27;object&#x27; &amp;&amp; data.series[i].data !== undefined) {
+      data.series[i].data.reverse();
+    } else {
+      data.series[i].reverse();
+    }
+  }
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Reverses the series, labels and series data arrays.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>data</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getdataarray"><span class="member-tag">method</span> Chartist.getDataArray()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getdataarray-code">Show code</button></header><pre id="chartistcore-method-getdataarray-code">
+    <code class="javascript">Chartist.getDataArray = function (data, reverse) {
   var array = [],
     value,
     localData;
+
+  // If the data should be reversed but isn&#x27;t we need to reverse it
+  // If it&#x27;s reversed but it shouldn&#x27;t we need to reverse it back
+  // That&#x27;s required to handle data updates correctly and to reflect the responsive configurations
+  if(reverse &amp;&amp; !data.reversed || !reverse &amp;&amp; data.reversed) {
+    Chartist.reverseData(data);
+    data.reversed = !data.reversed;
+  }
 
   for (var i = 0; i &lt; data.series.length; i++) {
     // If the series array contains an object with a data property we will use the property
@@ -749,18 +779,17 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
       array[i] = localData;
     }
 
-
     // Convert object values to numbers
     for (var j = 0; j &lt; array[i].length; j++) {
       value = array[i][j];
-      value = value.value || value;
+      value = value.value === 0 ? 0 : (value.value || value);
       array[i][j] = +value;
     }
   }
 
   return array;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Convert data series into plain array</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The series object that contains the data to be visualized in the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description">A plain array that contains the data to be visualized in the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-normalizedataarray"><span class="member-tag">method</span> Chartist.normalizeDataArray()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-normalizedataarray-code">Show code</button></header><pre id="chartistcore-method-normalizedataarray-code">
+  </pre><div class="member-content"><div class="description"><p>Convert data series into plain array</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The series object that contains the data to be visualized in the chart</div></div><div class="param"><code>reverse</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description">A plain array that contains the data to be visualized in the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-normalizedataarray"><span class="member-tag">method</span> Chartist.normalizeDataArray()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-normalizedataarray-code">Show code</button></header><pre id="chartistcore-method-normalizedataarray-code">
     <code class="javascript">Chartist.normalizeDataArray = function (dataArray, length) {
   for (var i = 0; i &lt; dataArray.length; i++) {
     if (dataArray[i].length === length) {
@@ -773,17 +802,21 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   }
 
   return dataArray;
+};
+
+Chartist.getMetaData = function(series, index) {
+  var value = series.data ? series.data[index] : series[index];
+  return value ? Chartist.serialize(value.meta) : undefined;
 };</code>
   </pre><div class="member-content"><div class="description"><p>Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart</p></div><h6>Parameters</h6><div class="param"><code>dataArray</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart. The array in this parameter will be modified by function.</div></div><div class="param"><code>length</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The length of the x-axis data array.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that got updated with missing values.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-orderofmagnitude"><span class="member-tag">method</span> Chartist.orderOfMagnitude()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-orderofmagnitude-code">Show code</button></header><pre id="chartistcore-method-orderofmagnitude-code">
     <code class="javascript">Chartist.orderOfMagnitude = function (value) {
   return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
 };</code>
   </pre><div class="member-content"><div class="description"><p>Calculate the order of magnitude for the chart scale</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The value Range of the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The order of magnitude</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-projectlength"><span class="member-tag">method</span> Chartist.projectLength()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-projectlength-code">Show code</button></header><pre id="chartistcore-method-projectlength-code">
-    <code class="javascript">Chartist.projectLength = function (svg, length, bounds, options) {
-  var availableHeight = Chartist.getAvailableHeight(svg, options);
-  return (length / bounds.range * availableHeight);
+    <code class="javascript">Chartist.projectLength = function (axisLength, length, bounds) {
+  return length / bounds.range * axisLength;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Project a data length into screen coordinates (pixels)</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>length</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Single data value from a series array</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The projected data length in pixels</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getavailableheight"><span class="member-tag">method</span> Chartist.getAvailableHeight()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getavailableheight-code">Show code</button></header><pre id="chartistcore-method-getavailableheight-code">
+  </pre><div class="member-content"><div class="description"><p>Project a data length into screen coordinates (pixels)</p></div><h6>Parameters</h6><div class="param"><code>axisLength</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>length</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Single data value from a series array</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The projected data length in pixels</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getavailableheight"><span class="member-tag">method</span> Chartist.getAvailableHeight()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getavailableheight-code">Show code</button></header><pre id="chartistcore-method-getavailableheight-code">
     <code class="javascript">Chartist.getAvailableHeight = function (svg, options) {
   return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
 };</code>
@@ -811,7 +844,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
   return highLow;
 };</code>
   </pre><div class="member-content"><div class="description"><p>Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.</p></div><h6>Parameters</h6><div class="param"><code>dataArray</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that contains the highest and lowest value that will be visualized on the chart.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getbounds"><span class="member-tag">method</span> Chartist.getBounds()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getbounds-code">Show code</button></header><pre id="chartistcore-method-getbounds-code">
-    <code class="javascript">Chartist.getBounds = function (svg, highLow, options, referenceValue) {
+    <code class="javascript">Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, referenceValue) {
   var i,
     newMin,
     newMax,
@@ -819,10 +852,6 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
       high: highLow.high,
       low: highLow.low
     };
-
-  // Overrides of high / low from settings
-  bounds.high = +options.high || (options.high === 0 ? 0 : bounds.high);
-  bounds.low = +options.low || (options.low === 0 ? 0 : bounds.low);
 
   // If high and low are the same because of misconfiguration or flat data (only the same value) we need
   // to set the high or low to 0 depending on the polarity
@@ -857,13 +886,13 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
   // If we are already below the scaleMinSpace value we will scale up
-  var length = Chartist.projectLength(svg, bounds.step, bounds, options),
-    scaleUp = length &lt; options.axisY.scaleMinSpace;
+  var length = Chartist.projectLength(axisLength, bounds.step, bounds),
+    scaleUp = length &lt; scaleMinSpace;
 
   while (true) {
-    if (scaleUp &amp;&amp; Chartist.projectLength(svg, bounds.step, bounds, options) &lt;= options.axisY.scaleMinSpace) {
+    if (scaleUp &amp;&amp; Chartist.projectLength(axisLength, bounds.step, bounds) &lt;= scaleMinSpace) {
       bounds.step *= 2;
-    } else if (!scaleUp &amp;&amp; Chartist.projectLength(svg, bounds.step / 2, bounds, options) &gt;= options.axisY.scaleMinSpace) {
+    } else if (!scaleUp &amp;&amp; Chartist.projectLength(axisLength, bounds.step / 2, bounds) &gt;= scaleMinSpace) {
       bounds.step /= 2;
     } else {
       break;
@@ -893,7 +922,7 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 
   return bounds;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Calculate and retrieve all the bounds for the chart and return them in one array</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>highLow</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object containing a high and low property indicating the value range of the chart.</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>referenceValue</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The reference value for the chart.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-polartocartesian"><span class="member-tag">method</span> Chartist.polarToCartesian()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-polartocartesian-code">Show code</button></header><pre id="chartistcore-method-polartocartesian-code">
+  </pre><div class="member-content"><div class="description"><p>Calculate and retrieve all the bounds for the chart and return them in one array</p></div><h6>Parameters</h6><div class="param"><code>axisLength</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The length of the Axis used for</div></div><div class="param"><code>highLow</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object containing a high and low property indicating the value range of the chart.</div></div><div class="param"><code>scaleMinSpace</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The minimum projected length a step should result in</div></div><div class="param"><code>referenceValue</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The reference value for the chart.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-polartocartesian"><span class="member-tag">method</span> Chartist.polarToCartesian()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-polartocartesian-code">Show code</button></header><pre id="chartistcore-method-polartocartesian-code">
     <code class="javascript">Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
   var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
 
@@ -904,13 +933,15 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
 };</code>
   </pre><div class="member-content"><div class="description"><p>Calculate cartesian coordinates of polar coordinates</p></div><h6>Parameters</h6><div class="param"><code>centerX</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">X-axis coordinates of center point of circle segment</div></div><div class="param"><code>centerY</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">X-axis coordinates of center point of circle segment</div></div><div class="param"><code>radius</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Radius of circle segment</div></div><div class="param"><code>angleInDegrees</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Angle of circle segment in degrees</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">Coordinates of point on circumference</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createchartrect"><span class="member-tag">method</span> Chartist.createChartRect()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createchartrect-code">Show code</button></header><pre id="chartistcore-method-createchartrect-code">
     <code class="javascript">Chartist.createChartRect = function (svg, options) {
-  var yOffset = options.axisY ? options.axisY.offset : 0,
-    xOffset = options.axisX ? options.axisX.offset : 0;
+  var yOffset = options.axisY ? options.axisY.offset || 0 : 0,
+    xOffset = options.axisX ? options.axisX.offset || 0 : 0,
+    w = Chartist.stripUnit(options.width) || svg.width(),
+    h = Chartist.stripUnit(options.height) || svg.height();
 
   return {
     x1: options.chartPadding + yOffset,
-    y1: Math.max((Chartist.stripUnit(options.height) || svg.height()) - options.chartPadding - xOffset, options.chartPadding),
-    x2: Math.max((Chartist.stripUnit(options.width) || svg.width()) - options.chartPadding, options.chartPadding + yOffset),
+    y1: Math.max(h - options.chartPadding - xOffset, options.chartPadding),
+    x2: Math.max(w - options.chartPadding, options.chartPadding + yOffset),
     y2: options.chartPadding,
     width: function () {
       return this.x2 - this.x1;
@@ -920,156 +951,82 @@ console.log(superBanana.toString());</code></pre></div></article></div></header>
     }
   };
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The chart rectangles coordinates inside the svg element plus the rectangles measurements</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createxaxis"><span class="member-tag">method</span> Chartist.createXAxis()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createxaxis-code">Show code</button></header><pre id="chartistcore-method-createxaxis-code">
-    <code class="javascript">Chartist.createXAxis = function (chartRect, data, grid, labels, options, eventEmitter, supportsForeignObject) {
-  // Create X-Axis
-  data.labels.forEach(function (value, index) {
-    var interpolatedValue = options.axisX.labelInterpolationFnc(value, index),
-      width = chartRect.width() / (data.labels.length - (options.fullWidth ? 1 : 0)),
-      height = options.axisX.offset,
-      pos = chartRect.x1 + width * index;
+  </pre><div class="member-content"><div class="description"><p>Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The chart rectangles coordinates inside the svg element plus the rectangles measurements</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-creategrid"><span class="member-tag">method</span> Chartist.createGrid()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-creategrid-code">Show code</button></header><pre id="chartistcore-method-creategrid-code">
+    <code class="javascript">Chartist.createGrid = function(projectedValue, index, axis, offset, length, group, classes, eventEmitter) {
+  var positionalData = {};
+  positionalData[axis.units.pos + &#x27;1&#x27;] = projectedValue.pos;
+  positionalData[axis.units.pos + &#x27;2&#x27;] = projectedValue.pos;
+  positionalData[axis.counterUnits.pos + &#x27;1&#x27;] = offset;
+  positionalData[axis.counterUnits.pos + &#x27;2&#x27;] = offset + length;
 
-    // If interpolated value returns falsey (except 0) we don&#x27;t draw the grid line
-    if (!interpolatedValue &amp;&amp; interpolatedValue !== 0) {
+  var gridElement = group.elem(&#x27;line&#x27;, positionalData, classes.join(&#x27; &#x27;));
+
+  // Event for grid draw
+  eventEmitter.emit(&#x27;draw&#x27;,
+    Chartist.extend({
+      type: &#x27;grid&#x27;,
+      axis: axis.units.pos,
+      index: index,
+      group: group,
+      element: gridElement
+    }, positionalData)
+  );
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Creates a grid line based on a projected value.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>projectedValue</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>index</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>axis</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>offset</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>group</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>classes</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>eventEmitter</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createlabel"><span class="member-tag">method</span> Chartist.createLabel()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createlabel-code">Show code</button></header><pre id="chartistcore-method-createlabel-code">
+    <code class="javascript">Chartist.createLabel = function(projectedValue, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
+  var labelElement,
+    positionalData = {};
+  positionalData[axis.units.pos] = projectedValue.pos + labelOffset[axis.units.pos];
+  positionalData[axis.counterUnits.pos] = labelOffset[axis.counterUnits.pos];
+  positionalData[axis.units.len] = projectedValue.len;
+  positionalData[axis.counterUnits.len] = axisOffset;
+
+  if(useForeignObject) {
+    var content = &#x27;&lt;span class=&quot;&#x27; + classes.join(&#x27; &#x27;) + &#x27;&quot;&gt;&#x27; + labels[index] + &#x27;&lt;/span&gt;&#x27;;
+    labelElement = group.foreignObject(content, Chartist.extend({
+      style: &#x27;overflow: visible;&#x27;
+    }, positionalData));
+  } else {
+    labelElement = group.elem(&#x27;text&#x27;, positionalData, classes.join(&#x27; &#x27;)).text(labels[index]);
+  }
+
+  eventEmitter.emit(&#x27;draw&#x27;, Chartist.extend({
+    type: &#x27;label&#x27;,
+    axis: axis,
+    index: index,
+    group: group,
+    element: labelElement,
+    text: labels[index]
+  }, positionalData));
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Creates a label based on a projected value and an axis.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>projectedValue</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>index</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>labels</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>axis</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>axisOffset</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>labelOffset</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>group</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>classes</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>useForeignObject</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>eventEmitter</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createaxis"><span class="member-tag">method</span> Chartist.createAxis()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createaxis-code">Show code</button></header><pre id="chartistcore-method-createaxis-code">
+    <code class="javascript">Chartist.createAxis = function(axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
+  var axisOptions = options[&#x27;axis&#x27; + axis.units.pos.toUpperCase()],
+    projectedValues = data.map(axis.projectValue.bind(axis)).map(axis.transform),
+    labelValues = data.map(axisOptions.labelInterpolationFnc);
+
+  projectedValues.forEach(function(projectedValue, index) {
+    // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
+    if(!labelValues[index] &amp;&amp; labelValues[index] !== 0) {
       return;
     }
 
-    if (options.axisX.showGrid) {
-      var gridElement = grid.elem(&#x27;line&#x27;, {
-        x1: pos,
-        y1: chartRect.y1,
-        x2: pos,
-        y2: chartRect.y2
-      }, [options.classNames.grid, options.classNames.horizontal].join(&#x27; &#x27;));
-
-      // Event for grid draw
-      eventEmitter.emit(&#x27;draw&#x27;, {
-        type: &#x27;grid&#x27;,
-        axis: &#x27;x&#x27;,
-        index: index,
-        group: grid,
-        element: gridElement,
-        x1: pos,
-        y1: chartRect.y1,
-        x2: pos,
-        y2: chartRect.y2
-      });
+    if(axisOptions.showGrid) {
+      Chartist.createGrid(projectedValue, index, axis, axis.gridOffset, chartRect[axis.counterUnits.len](), gridGroup, [
+        options.classNames.grid,
+        options.classNames[axis.units.dir]
+      ], eventEmitter);
     }
 
-    if (options.axisX.showLabel) {
-      var labelPosition = {
-        x: pos + options.axisX.labelOffset.x,
-        y: chartRect.y1 + options.axisX.labelOffset.y + (supportsForeignObject ? 5 : 20)
-      };
-
-      var labelElement = Chartist.createLabel(labels, &#x27;&#x27; + interpolatedValue, {
-        x: labelPosition.x,
-        y: labelPosition.y,
-        width: width,
-        height: height,
-        style: &#x27;overflow: visible;&#x27;
-      }, [options.classNames.label, options.classNames.horizontal].join(&#x27; &#x27;), supportsForeignObject);
-
-      eventEmitter.emit(&#x27;draw&#x27;, {
-        type: &#x27;label&#x27;,
-        axis: &#x27;x&#x27;,
-        index: index,
-        group: labels,
-        element: labelElement,
-        text: &#x27;&#x27; + interpolatedValue,
-        x: labelPosition.x,
-        y: labelPosition.y,
-        width: width,
-        height: height,
-        // TODO: Remove in next major release
-        get space() {
-          window.console.warn(&#x27;EventEmitter: space is deprecated, use width or height instead.&#x27;);
-          return this.width;
-        }
-      });
+    if(axisOptions.showLabel) {
+      Chartist.createLabel(projectedValue, index, labelValues, axis, axisOptions.offset, axis.labelOffset, labelGroup, [
+        options.classNames.label,
+        options.classNames[axis.units.dir]
+      ], useForeignObject, eventEmitter);
     }
   });
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Generate grid lines and labels for the x-axis into grid and labels group SVG elements</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains the data to be visualized in the chart</div></div><div class="param"><code>grid</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Chartist.Svg wrapper object to be filled with the grid lines of the chart</div></div><div class="param"><code>labels</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Chartist.Svg wrapper object to be filled with the lables of the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The passed event emitter will be used to emit draw events for labels and gridlines</div></div><div class="param"><code>supportsForeignObject</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this is true then a foreignObject will be used instead of a text element</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createyaxis"><span class="member-tag">method</span> Chartist.createYAxis()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createyaxis-code">Show code</button></header><pre id="chartistcore-method-createyaxis-code">
-    <code class="javascript">Chartist.createYAxis = function (chartRect, bounds, grid, labels, options, eventEmitter, supportsForeignObject) {
-  // Create Y-Axis
-  bounds.values.forEach(function (value, index) {
-    var interpolatedValue = options.axisY.labelInterpolationFnc(value, index),
-      width = options.axisY.offset,
-      height = chartRect.height() / bounds.values.length,
-      pos = chartRect.y1 - height * index;
-
-    // If interpolated value returns falsey (except 0) we don&#x27;t draw the grid line
-    if (!interpolatedValue &amp;&amp; interpolatedValue !== 0) {
-      return;
-    }
-
-    if (options.axisY.showGrid) {
-      var gridElement = grid.elem(&#x27;line&#x27;, {
-        x1: chartRect.x1,
-        y1: pos,
-        x2: chartRect.x2,
-        y2: pos
-      }, [options.classNames.grid, options.classNames.vertical].join(&#x27; &#x27;));
-
-      // Event for grid draw
-      eventEmitter.emit(&#x27;draw&#x27;, {
-        type: &#x27;grid&#x27;,
-        axis: &#x27;y&#x27;,
-        index: index,
-        group: grid,
-        element: gridElement,
-        x1: chartRect.x1,
-        y1: pos,
-        x2: chartRect.x2,
-        y2: pos
-      });
-    }
-
-    if (options.axisY.showLabel) {
-      var labelPosition = {
-        x: options.chartPadding + options.axisY.labelOffset.x + (supportsForeignObject ? -10 : 0),
-        y: pos + options.axisY.labelOffset.y + (supportsForeignObject ? -15 : 0)
-      };
-
-      var labelElement = Chartist.createLabel(labels, &#x27;&#x27; + interpolatedValue, {
-        x: labelPosition.x,
-        y: labelPosition.y,
-        width: width,
-        height: height,
-        style: &#x27;overflow: visible;&#x27;
-      }, [options.classNames.label, options.classNames.vertical].join(&#x27; &#x27;), supportsForeignObject);
-
-      eventEmitter.emit(&#x27;draw&#x27;, {
-        type: &#x27;label&#x27;,
-        axis: &#x27;y&#x27;,
-        index: index,
-        group: labels,
-        element: labelElement,
-        text: &#x27;&#x27; + interpolatedValue,
-        x: labelPosition.x,
-        y: labelPosition.y,
-        width: width,
-        height: height,
-        // TODO: Remove in next major release
-        get space() {
-          window.console.warn(&#x27;EventEmitter: space is deprecated, use width or height instead.&#x27;);
-          return this.height;
-        }
-      });
-    }
-  });
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Generate grid lines and labels for the y-axis into grid and labels group SVG elements</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>grid</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Chartist.Svg wrapper object to be filled with the grid lines of the chart</div></div><div class="param"><code>labels</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Chartist.Svg wrapper object to be filled with the lables of the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The passed event emitter will be used to emit draw events for labels and gridlines</div></div><div class="param"><code>supportsForeignObject</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this is true then a foreignObject will be used instead of a text element</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-projectpoint"><span class="member-tag">method</span> Chartist.projectPoint()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-projectpoint-code">Show code</button></header><pre id="chartistcore-method-projectpoint-code">
-    <code class="javascript">Chartist.projectPoint = function (chartRect, bounds, data, index, options) {
-  return {
-    x: chartRect.x1 + chartRect.width() / (data.length - (data.length &gt; 1 &amp;&amp; options.fullWidth ? 1 : 0)) * index,
-    y: chartRect.y1 - chartRect.height() * (data[index] - bounds.min) / (bounds.range + bounds.step)
-  };
-};
-
-// TODO: With multiple media queries the handleMediaChange function is triggered too many times, only need one</code>
-  </pre><div class="member-content"><div class="description"><p>Determine the current point on the svg element to draw the data series</p></div><h6>Parameters</h6><div class="param"><code>chartRect</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The rectangle that sets the bounds for the chart in the svg element</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><div class="param"><code>index</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The index of the current project point</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The chart options that are used to influence the calculations</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The coordinates object of the current project point containing an x and y number property</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-optionsprovider"><span class="member-tag">method</span> Chartist.optionsProvider()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-optionsprovider-code">Show code</button></header><pre id="chartistcore-method-optionsprovider-code">
+  </pre><div class="member-content"><div class="description"><p>This function creates a whole axis with its grid lines and labels based on an axis model and a chartRect.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>axis</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>data</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>chartRect</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>gridGroup</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>labelGroup</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>useForeignObject</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>options</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>eventEmitter</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-optionsprovider"><span class="member-tag">method</span> Chartist.optionsProvider()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-optionsprovider-code">Show code</button></header><pre id="chartistcore-method-optionsprovider-code">
     <code class="javascript">Chartist.optionsProvider = function (options, responsiveOptions, eventEmitter) {
   var baseOptions = Chartist.extend({}, options),
     currentOptions,
@@ -1212,7 +1169,191 @@ return {
   };
 
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>Use this function to emit an event. All handlers that are listening for this event will be triggered with the data parameter.</p></div><h6>Parameters</h6><div class="param"><code>event</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The event name that should be triggered</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>*</code></span> )<div class="param-description">Arbitrary data that will be passed to the event handler callback functions</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>svg.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvg">Module Chartist.Svg</h4><div class="module-description"><p>Chartist SVG module for simple SVG DOM abstraction</p></div><div class="module-members"><article class="module-member constructor"><header class="member-header"><h5 class="member-title" id="chartistsvg-constructor-svg"><span class="member-tag">constructor</span> Svg()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-constructor-svg-code">Show code</button></header><pre id="chartistsvg-constructor-svg-code">
+  </pre><div class="member-content"><div class="description"><p>Use this function to emit an event. All handlers that are listening for this event will be triggered with the data parameter.</p></div><h6>Parameters</h6><div class="param"><code>event</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The event name that should be triggered</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>*</code></span> )<div class="param-description">Arbitrary data that will be passed to the event handler callback functions</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>svg-path.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvgpath">Module Chartist.Svg.Path</h4><div class="module-description"><p>Chartist SVG path module for SVG path description creation and modification.</p></div><div class="module-members"><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-declaration-elementdescriptions"><span class="member-tag">declaration</span> elementDescriptions</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-declaration-elementdescriptions-code">Show code</button></header><pre id="chartistsvgpath-declaration-elementdescriptions-code">
+    <code class="javascript">var elementDescriptions = {
+  m: [&#x27;x&#x27;, &#x27;y&#x27;],
+  l: [&#x27;x&#x27;, &#x27;y&#x27;],
+  c: [&#x27;x1&#x27;, &#x27;y1&#x27;, &#x27;x2&#x27;, &#x27;y2&#x27;, &#x27;x&#x27;, &#x27;y&#x27;]
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Contains the descriptors of supported element types in a SVG path. Currently only move, line and curve are supported.</p></div></div></article><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-declaration-defaultoptions"><span class="member-tag">declaration</span> defaultOptions</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-declaration-defaultoptions-code">Show code</button></header><pre id="chartistsvgpath-declaration-defaultoptions-code">
+    <code class="javascript">var defaultOptions = {
+  // The accuracy in digit count after the decimal point. This will be used to round numbers in the SVG path. If this option is set to false then no rounding will be performed.
+  accuracy: 3
+};
+
+function element(command, params, pathElements, pos, relative) {
+  pathElements.splice(pos, 0, Chartist.extend({
+    command: relative ? command.toLowerCase() : command.toUpperCase()
+  }, params));
+}
+
+function forEachParam(pathElements, cb) {
+  pathElements.forEach(function(pathElement, pathElementIndex) {
+    elementDescriptions[pathElement.command.toLowerCase()].forEach(function(paramName, paramIndex) {
+      cb(pathElement, paramName, pathElementIndex, paramIndex, pathElements);
+    });
+  });
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Default options for newly created SVG path objects.</p></div></div></article><article class="module-member constructor"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-constructor-svgpath"><span class="member-tag">constructor</span> SvgPath()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-constructor-svgpath-code">Show code</button></header><pre id="chartistsvgpath-constructor-svgpath-code">
+    <code class="javascript">function SvgPath(close, options) {
+  this.pathElements = [];
+  this.pos = 0;
+  this.close = close;
+  this.options = Chartist.extend({}, defaultOptions, options);
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Used to construct a new path object.</p></div><h6>Parameters</h6><div class="param"><code>close</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If set to true then this path will be closed when stringified (with a Z at the end)</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Options object that overrides the default objects. See default options for more details.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-position"><span class="member-tag">function</span> position()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-position-code">Show code</button></header><pre id="chartistsvgpath-function-position-code">
+    <code class="javascript">function position(pos) {
+  if(pos !== undefined) {
+    this.pos = Math.max(0, Math.min(this.pathElements.length, pos));
+    return this;
+  } else {
+    return this.pos;
+  }
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Gets or sets the current position (cursor) inside of the path. You can move around the cursor freely but limited to 0 or the count of existing elements. All modifications with element functions will insert new elements at the position of this cursor.</p></div><h6>Parameters</h6><div class="param"><code>[position]</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">If a number is passed then the cursor is set to this position in the path element array.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description">If the position parameter was passed then the return value will be the path object for easy call chaining. If no position parameter was passed then the current position is returned.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-remove"><span class="member-tag">function</span> remove()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-remove-code">Show code</button></header><pre id="chartistsvgpath-function-remove-code">
+    <code class="javascript">function remove(count) {
+  this.pathElements.splice(this.pos, count);
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Removes elements from the path starting at the current position.</p></div><h6>Parameters</h6><div class="param"><code>count</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Number of path elements that should be removed from the current position.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-move"><span class="member-tag">function</span> move()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-move-code">Show code</button></header><pre id="chartistsvgpath-function-move-code">
+    <code class="javascript">function move(x, y, relative) {
+  element(&#x27;M&#x27;, {
+    x: +x,
+    y: +y
+  }, this.pathElements, this.pos++, relative);
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Use this function to add a new move SVG path element.</p></div><h6>Parameters</h6><div class="param"><code>x</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The x coordinate for the move element.</div></div><div class="param"><code>y</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The y coordinate for the move element.</div></div><div class="param"><code>relative</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If set to true the move element will be created with relative coordinates (lowercase letter)</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-line"><span class="member-tag">function</span> line()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-line-code">Show code</button></header><pre id="chartistsvgpath-function-line-code">
+    <code class="javascript">function line(x, y, relative) {
+  element(&#x27;L&#x27;, {
+    x: +x,
+    y: +y
+  }, this.pathElements, this.pos++, relative);
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Use this function to add a new line SVG path element.</p></div><h6>Parameters</h6><div class="param"><code>x</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The x coordinate for the line element.</div></div><div class="param"><code>y</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The y coordinate for the line element.</div></div><div class="param"><code>relative</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If set to true the line element will be created with relative coordinates (lowercase letter)</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-curve"><span class="member-tag">function</span> curve()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-curve-code">Show code</button></header><pre id="chartistsvgpath-function-curve-code">
+    <code class="javascript">function curve(x1, y1, x2, y2, x, y, relative) {
+  element(&#x27;C&#x27;, {
+    x1: +x1,
+    y1: +y1,
+    x2: +x2,
+    y2: +y2,
+    x: +x,
+    y: +y
+  }, this.pathElements, this.pos++, relative);
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Use this function to add a new curve SVG path element.</p></div><h6>Parameters</h6><div class="param"><code>x1</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The x coordinate for the first control point of the bezier curve.</div></div><div class="param"><code>y1</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The y coordinate for the first control point of the bezier curve.</div></div><div class="param"><code>x2</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The x coordinate for the second control point of the bezier curve.</div></div><div class="param"><code>y2</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The y coordinate for the second control point of the bezier curve.</div></div><div class="param"><code>x</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The x coordinate for the target point of the curve element.</div></div><div class="param"><code>y</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The y coordinate for the target point of the curve element.</div></div><div class="param"><code>relative</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If set to true the curve element will be created with relative coordinates (lowercase letter)</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-parse"><span class="member-tag">function</span> parse()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-parse-code">Show code</button></header><pre id="chartistsvgpath-function-parse-code">
+    <code class="javascript">function parse(path) {
+  // Parsing the SVG path string into an array of arrays [[&#x27;M&#x27;, &#x27;10&#x27;, &#x27;10&#x27;], [&#x27;L&#x27;, &#x27;100&#x27;, &#x27;100&#x27;]]
+  var chunks = path.replace(/([A-Za-z])([0-9])/g, &#x27;$1 $2&#x27;)
+    .replace(/([0-9])([A-Za-z])/g, &#x27;$1 $2&#x27;)
+    .split(/[\s,]+/)
+    .reduce(function(result, element) {
+      if(element.match(/[A-Za-z]/)) {
+        result.push([]);
+      }
+
+      result[result.length - 1].push(element);
+      return result;
+    }, []);
+
+  // If this is a closed path we remove the Z at the end because this is determined by the close option
+  if(chunks[chunks.length - 1][0].toUpperCase() === &#x27;Z&#x27;) {
+    chunks.pop();
+  }
+
+  // Using svgPathElementDescriptions to map raw path arrays into objects that contain the command and the parameters
+  // For example {command: &#x27;M&#x27;, x: &#x27;10&#x27;, y: &#x27;10&#x27;}
+  var elements = chunks.map(function(chunk) {
+      var command = chunk.shift(),
+        description = elementDescriptions[command.toLowerCase()];
+
+      return Chartist.extend({
+        command: command
+      }, description.reduce(function(result, paramName, index) {
+        result[paramName] = +chunk[index];
+        return result;
+      }, {}));
+    });
+
+  // Preparing a splice call with the elements array as var arg params and insert the parsed elements at the current position
+  var spliceArgs = [this.pos, 0];
+  Array.prototype.push.apply(spliceArgs, elements);
+  Array.prototype.splice.apply(this.pathElements, spliceArgs);
+  // Increase the internal position by the element count
+  this.pos += elements.length;
+
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Parses an SVG path seen in the d attribute of path elements, and inserts the parsed elements into the existing path object at the current cursor position. Any closing path indicators (Z at the end of the path) will be ignored by the parser as this is provided by the close option in the options of the path object.</p></div><h6>Parameters</h6><div class="param"><code>path</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Any SVG path that contains move (m), line (l) or curve (c) components.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-stringify"><span class="member-tag">function</span> stringify()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-stringify-code">Show code</button></header><pre id="chartistsvgpath-function-stringify-code">
+    <code class="javascript">function stringify() {
+  var accuracyMultiplier = Math.pow(10, this.options.accuracy);
+
+  return this.pathElements.reduce(function(path, pathElement) {
+      var params = elementDescriptions[pathElement.command.toLowerCase()].map(function(paramName) {
+        return this.options.accuracy ?
+          (Math.round(pathElement[paramName] * accuracyMultiplier) / accuracyMultiplier) :
+          pathElement[paramName];
+      }.bind(this));
+
+      return path + pathElement.command + params.join(&#x27;,&#x27;);
+    }.bind(this), &#x27;&#x27;) + (this.close ? &#x27;Z&#x27; : &#x27;&#x27;);
+}</code>
+  </pre><div class="member-content"><div class="description"><p>This function renders to current SVG path object into a final SVG string that can be used in the d attribute of SVG path elements. It uses the accuracy option to round big decimals. If the close parameter was set in the constructor of this path object then a path closing Z will be appended to the output string.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-scale"><span class="member-tag">function</span> scale()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-scale-code">Show code</button></header><pre id="chartistsvgpath-function-scale-code">
+    <code class="javascript">function scale(x, y) {
+  forEachParam(this.pathElements, function(pathElement, paramName) {
+    pathElement[paramName] *= paramName[0] === &#x27;x&#x27; ? x : y;
+  });
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Scales all elements in the current SVG path object. There is an individual parameter for each coordinate. Scaling will also be done for control points of curves, affecting the given coordinate.</p></div><h6>Parameters</h6><div class="param"><code>x</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The number which will be used to scale the x, x1 and x2 of all path elements.</div></div><div class="param"><code>y</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The number which will be used to scale the y, y1 and y2 of all path elements.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-translate"><span class="member-tag">function</span> translate()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-translate-code">Show code</button></header><pre id="chartistsvgpath-function-translate-code">
+    <code class="javascript">function translate(x, y) {
+  forEachParam(this.pathElements, function(pathElement, paramName) {
+    pathElement[paramName] += paramName[0] === &#x27;x&#x27; ? x : y;
+  });
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>Translates all elements in the current SVG path object. The translation is relative and there is an individual parameter for each coordinate. Translation will also be done for control points of curves, affecting the given coordinate.</p></div><h6>Parameters</h6><div class="param"><code>x</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The number which will be used to translate the x, x1 and x2 of all path elements.</div></div><div class="param"><code>y</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The number which will be used to translate the y, y1 and y2 of all path elements.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-transform"><span class="member-tag">function</span> transform()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-transform-code">Show code</button></header><pre id="chartistsvgpath-function-transform-code">
+    <code class="javascript">function transform(transformFnc) {
+  forEachParam(this.pathElements, function(pathElement, paramName, pathElementIndex, paramIndex, pathElements) {
+    var transformed = transformFnc(pathElement, paramName, pathElementIndex, paramIndex, pathElements);
+    if(transformed || transformed === 0) {
+      pathElement[paramName] = transformed;
+    }
+  });
+  return this;
+}</code>
+  </pre><div class="member-content"><div class="description"><p>This function will run over all existing path elements and then loop over their attributes. The callback function will be called for every path element attribute that exists in the current path.<br>The method signature of the callback function looks like this:</p><pre><code class="lang-javascript">function(pathElement, paramName, pathElementIndex, paramIndex, pathElements)
+</code></pre><p>If something else than undefined is returned by the callback function, this value will be used to replace the old value. This allows you to build custom transformations of path objects that can&#39;t be achieved using the basic transformation functions scale and translate.</p></div><h6>Parameters</h6><div class="param"><code>transformFnc</code> ( <span class="param-type"><code>Function</code></span> )<div class="param-description">The callback function for the transformation. Check the signature in the function description.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description">The current path object for easy call chaining.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-function-clone"><span class="member-tag">function</span> clone()</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-function-clone-code">Show code</button></header><pre id="chartistsvgpath-function-clone-code">
+    <code class="javascript">function clone() {
+  var c = new Chartist.Svg.Path(this.close);
+  c.pos = this.pos;
+  c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
+    return Chartist.extend({}, pathElement);
+  });
+  c.options = Chartist.extend({}, this.options);
+  return c;
+}
+
+Chartist.Svg.Path = Chartist.Class.extend({
+  constructor: SvgPath,
+  position: position,
+  remove: remove,
+  move: move,
+  line: line,
+  curve: curve,
+  scale: scale,
+  translate: translate,
+  transform: transform,
+  parse: parse,
+  stringify: stringify,
+  clone: clone
+});
+
+Chartist.Svg.Path.elementDescriptions = elementDescriptions;
+}(window, document, Chartist));</code>
+  </pre><div class="member-content"><div class="description"><p>This function clones a whole path object with all its properties. This is a deep clone and path element objects will also be cloned.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg.Path</code></span> )<div class="param-description"></div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>svg.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvg">Module Chartist.Svg</h4><div class="module-description"><p>Chartist SVG module for simple SVG DOM abstraction</p></div><div class="module-members"><article class="module-member constructor"><header class="member-header"><h5 class="member-title" id="chartistsvg-constructor-svg"><span class="member-tag">constructor</span> Svg()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-constructor-svg-code">Show code</button></header><pre id="chartistsvg-constructor-svg-code">
     <code class="javascript">function Svg(name, attributes, className, parent, insertFirst) {
   // If Svg is getting called with an SVG element we just return the wrapper
   if(name instanceof SVGElement) {
@@ -1267,11 +1408,11 @@ return {
 
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Set attributes on the current SVG element of the wrapper you&#39;re currently working on.</p></div><h6>Parameters</h6><div class="param"><code>attributes</code> ( <span class="param-type"><code>Object</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.</div></div><div class="param"><code>ns</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">If specified, the attributes will be set as namespace attributes with ns as prefix.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-elem"><span class="member-tag">function</span> elem()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-elem-code">Show code</button></header><pre id="chartistsvg-function-elem-code">
+  </pre><div class="member-content"><div class="description"><p>Set attributes on the current SVG element of the wrapper you&#39;re currently working on.</p></div><h6>Parameters</h6><div class="param"><code>attributes</code> ( <span class="param-type"><code>Object</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.</div></div><div class="param"><code>ns</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">If specified, the attributes will be set as namespace attributes with ns as prefix.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-elem"><span class="member-tag">function</span> elem()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-elem-code">Show code</button></header><pre id="chartistsvg-function-elem-code">
     <code class="javascript">function elem(name, attributes, className, insertFirst) {
   return new Chartist.Svg(name, attributes, className, this, insertFirst);
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.</p></div><h6>Parameters</h6><div class="param"><code>name</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The name of the SVG element that should be created as child element of the currently selected element wrapper</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-foreignobject"><span class="member-tag">function</span> foreignObject()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-foreignobject-code">Show code</button></header><pre id="chartistsvg-function-foreignobject-code">
+  </pre><div class="member-content"><div class="description"><p>Create a new SVG element whose wrapper object will be selected for further operations. This way you can also create nested groups easily.</p></div><h6>Parameters</h6><div class="param"><code>name</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The name of the SVG element that should be created as child element of the currently selected element wrapper</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">Returns a Chartist.Svg wrapper object that can be used to modify the containing SVG data</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-foreignobject"><span class="member-tag">function</span> foreignObject()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-foreignobject-code">Show code</button></header><pre id="chartistsvg-function-foreignobject-code">
     <code class="javascript">function foreignObject(content, attributes, className, insertFirst) {
   // If content is string then we convert it to DOM
   // TODO: Handle case where content is not a string nor a DOM Node
@@ -1293,12 +1434,12 @@ return {
 
   return fnObj;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>This method creates a foreignObject (see <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject">https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject</a>) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.</p></div><h6>Parameters</h6><div class="param"><code>content</code> ( <span class="param-type"><code>Node</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the foreignObject should be inserted as first child</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-text"><span class="member-tag">function</span> text()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-text-code">Show code</button></header><pre id="chartistsvg-function-text-code">
+  </pre><div class="member-content"><div class="description"><p>This method creates a foreignObject (see <a href="https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject">https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject</a>) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.</p></div><h6>Parameters</h6><div class="param"><code>content</code> ( <span class="param-type"><code>Node</code></span> <span class="param-type"><code>String</code></span> )<div class="param-description">The DOM Node, or HTML string that will be converted to a DOM Node, that is then placed into and wrapped by the foreignObject</div></div><div class="param"><code>[attributes]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.</div></div><div class="param"><code>[className]</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">This class or class list will be added to the SVG element</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the foreignObject should be inserted as first child</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">New wrapper object that wraps the foreignObject element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-text"><span class="member-tag">function</span> text()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-text-code">Show code</button></header><pre id="chartistsvg-function-text-code">
     <code class="javascript">function text(t) {
   this._node.appendChild(document.createTextNode(t));
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>This method adds a new text element to the current Chartist.Svg wrapper.</p></div><h6>Parameters</h6><div class="param"><code>t</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The text that should be added to the text element that is created</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-empty"><span class="member-tag">function</span> empty()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-empty-code">Show code</button></header><pre id="chartistsvg-function-empty-code">
+  </pre><div class="member-content"><div class="description"><p>This method adds a new text element to the current Chartist.Svg wrapper.</p></div><h6>Parameters</h6><div class="param"><code>t</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The text that should be added to the text element that is created</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The same wrapper object that was used to add the newly created element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-empty"><span class="member-tag">function</span> empty()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-empty-code">Show code</button></header><pre id="chartistsvg-function-empty-code">
     <code class="javascript">function empty() {
   while (this._node.firstChild) {
     this._node.removeChild(this._node.firstChild);
@@ -1306,17 +1447,17 @@ return {
 
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will clear all child nodes of the current wrapper object.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-remove"><span class="member-tag">function</span> remove()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-remove-code">Show code</button></header><pre id="chartistsvg-function-remove-code">
+  </pre><div class="member-content"><div class="description"><p>This method will clear all child nodes of the current wrapper object.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The same wrapper object that got emptied</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-remove"><span class="member-tag">function</span> remove()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-remove-code">Show code</button></header><pre id="chartistsvg-function-remove-code">
     <code class="javascript">function remove() {
   this._node.parentNode.removeChild(this._node);
   return this.parent();
 }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you&#39;d like to get rid of an element in a given DOM structure.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-replace"><span class="member-tag">function</span> replace()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-replace-code">Show code</button></header><pre id="chartistsvg-function-replace-code">
+  </pre><div class="member-content"><div class="description"><p>This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you&#39;d like to get rid of an element in a given DOM structure.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The parent wrapper object of the element that got removed</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-replace"><span class="member-tag">function</span> replace()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-replace-code">Show code</button></header><pre id="chartistsvg-function-replace-code">
     <code class="javascript">function replace(newElement) {
   this._node.parentNode.replaceChild(newElement._node, this._node);
   return newElement;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will replace the element with a new element that can be created outside of the current DOM.</p></div><h6>Parameters</h6><div class="param"><code>newElement</code> ( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The new Chartist.Svg object that will be used to replace the current wrapper object</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-append"><span class="member-tag">function</span> append()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-append-code">Show code</button></header><pre id="chartistsvg-function-append-code">
+  </pre><div class="member-content"><div class="description"><p>This method will replace the element with a new element that can be created outside of the current DOM.</p></div><h6>Parameters</h6><div class="param"><code>newElement</code> ( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The new Chartist.Svg object that will be used to replace the current wrapper object</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The wrapper of the new element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-append"><span class="member-tag">function</span> append()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-append-code">Show code</button></header><pre id="chartistsvg-function-append-code">
     <code class="javascript">function append(element, insertFirst) {
   if(insertFirst &amp;&amp; this._node.firstChild) {
     this._node.insertBefore(element._node, this._node.firstChild);
@@ -1326,11 +1467,11 @@ return {
 
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>This method will append an element to the current element as a child.</p></div><h6>Parameters</h6><div class="param"><code>element</code> ( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The Chartist.Svg element that should be added as a child</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the element should be inserted as first child</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-classes"><span class="member-tag">function</span> classes()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-classes-code">Show code</button></header><pre id="chartistsvg-function-classes-code">
+  </pre><div class="member-content"><div class="description"><p>This method will append an element to the current element as a child.</p></div><h6>Parameters</h6><div class="param"><code>element</code> ( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The Chartist.Svg element that should be added as a child</div></div><div class="param"><code>[insertFirst]</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specifies if the element should be inserted as first child</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The wrapper of the appended object</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-classes"><span class="member-tag">function</span> classes()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-classes-code">Show code</button></header><pre id="chartistsvg-function-classes-code">
     <code class="javascript">function classes() {
   return this._node.getAttribute(&#x27;class&#x27;) ? this._node.getAttribute(&#x27;class&#x27;).trim().split(/\s+/) : [];
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-addclass"><span class="member-tag">function</span> addClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-addclass-code">Show code</button></header><pre id="chartistsvg-function-addclass-code">
+  </pre><div class="member-content"><div class="description"><p>Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description">A list of classes or an empty array if there are no classes on the current element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-addclass"><span class="member-tag">function</span> addClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-addclass-code">Show code</button></header><pre id="chartistsvg-function-addclass-code">
     <code class="javascript">function addClass(names) {
   this._node.setAttribute(&#x27;class&#x27;,
     this.classes(this._node)
@@ -1342,7 +1483,7 @@ return {
 
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeclass"><span class="member-tag">function</span> removeClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeclass-code">Show code</button></header><pre id="chartistsvg-function-removeclass-code">
+  </pre><div class="member-content"><div class="description"><p>Adds one or a space separated list of classes to the current element and ensures the classes are only existing once.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The wrapper of the current element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeclass"><span class="member-tag">function</span> removeClass()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeclass-code">Show code</button></header><pre id="chartistsvg-function-removeclass-code">
     <code class="javascript">function removeClass(names) {
   var removedClasses = names.trim().split(/\s+/);
 
@@ -1352,13 +1493,13 @@ return {
 
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Removes one or a space separated list of classes from the current element.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeallclasses"><span class="member-tag">function</span> removeAllClasses()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeallclasses-code">Show code</button></header><pre id="chartistsvg-function-removeallclasses-code">
+  </pre><div class="member-content"><div class="description"><p>Removes one or a space separated list of classes from the current element.</p></div><h6>Parameters</h6><div class="param"><code>names</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">A white space separated list of class names</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The wrapper of the current element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-removeallclasses"><span class="member-tag">function</span> removeAllClasses()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-removeallclasses-code">Show code</button></header><pre id="chartistsvg-function-removeallclasses-code">
     <code class="javascript">function removeAllClasses() {
   this._node.setAttribute(&#x27;class&#x27;, &#x27;&#x27;);
 
   return this;
 }</code>
-  </pre><div class="member-content"><div class="description"><p>Removes all classes from the current element.</p></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-height"><span class="member-tag">function</span> height()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-height-code">Show code</button></header><pre id="chartistsvg-function-height-code">
+  </pre><div class="member-content"><div class="description"><p>Removes all classes from the current element.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The wrapper of the current element</div></div></div></article><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistsvg-function-height"><span class="member-tag">function</span> height()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-function-height-code">Show code</button></header><pre id="chartistsvg-function-height-code">
     <code class="javascript">function height() {
   return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
 }</code>
@@ -1514,7 +1655,7 @@ Chartist.Svg = Chartist.Class.extend({
     to: 100
   }
 });
-</code></pre><p><strong>Automatic unit conversion</strong><br>For the <code>dur</code> and the <code>begin</code> animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.<br><strong>Guided mode</strong><br>The default behavior of SMIL animations with offset using the <code>begin</code> attribute is that the attribute will keep it&#39;s original value until the animation starts. Mostly this behavior is not desired as you&#39;d like to have your element attributes already initialized with the animation <code>from</code> value even before the animation starts. Also if you don&#39;t specify <code>fill=&quot;freeze&quot;</code> on an animate element or if you delete the animation after it&#39;s done (which is done in guided mode) the attribute will switch back to the initial value. This behavior is also not desired when performing simple one-time animations. For one-time animations you&#39;d want to trigger animations immediately instead of relative to the document begin time. That&#39;s why in guided mode Chartist.Svg will also use the <code>begin</code> property to schedule a timeout and manually start the animation after the timeout. If you&#39;re using multiple SMIL definition objects for an attribute (in an array), guided mode will be disabled for this attribute, even if you explicitly enabled it.<br>If guided mode is enabled the following behavior is added:</p><ul><li>Before the animation starts (even when delayed with <code>begin</code>) the animated attribute will be set already to the <code>from</code> value of the animation</li><li><code>begin</code> is explicitly set to <code>indefinite</code> so it can be started manually without relying on document begin time (creation)</li><li>The animate element will be forced to use <code>fill=&quot;freeze&quot;</code></li><li>The animation will be triggered with <code>beginElement()</code> in a timeout where <code>begin</code> of the definition object is interpreted in milli seconds. If no <code>begin</code> was specified the timeout is triggered immediately.</li><li>After the animation the element attribute value will be set to the <code>to</code> value of the animation</li><li>The animate element is deleted from the DOM</li></ul></div><h6>Parameters</h6><div class="param"><code>animations</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An animations object where the property keys are the attributes you&#x27;d like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.</div></div><div class="param"><code>guided</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">If specified, this event emitter will be notified when an animation starts or ends.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistsvg-method-issupported"><span class="member-tag">method</span> Chartist.Svg.isSupported()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-method-issupported-code">Show code</button></header><pre id="chartistsvg-method-issupported-code">
+</code></pre><p><strong>Automatic unit conversion</strong><br>For the <code>dur</code> and the <code>begin</code> animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.<br><strong>Guided mode</strong><br>The default behavior of SMIL animations with offset using the <code>begin</code> attribute is that the attribute will keep it&#39;s original value until the animation starts. Mostly this behavior is not desired as you&#39;d like to have your element attributes already initialized with the animation <code>from</code> value even before the animation starts. Also if you don&#39;t specify <code>fill=&quot;freeze&quot;</code> on an animate element or if you delete the animation after it&#39;s done (which is done in guided mode) the attribute will switch back to the initial value. This behavior is also not desired when performing simple one-time animations. For one-time animations you&#39;d want to trigger animations immediately instead of relative to the document begin time. That&#39;s why in guided mode Chartist.Svg will also use the <code>begin</code> property to schedule a timeout and manually start the animation after the timeout. If you&#39;re using multiple SMIL definition objects for an attribute (in an array), guided mode will be disabled for this attribute, even if you explicitly enabled it.<br>If guided mode is enabled the following behavior is added:</p><ul><li>Before the animation starts (even when delayed with <code>begin</code>) the animated attribute will be set already to the <code>from</code> value of the animation</li><li><code>begin</code> is explicitly set to <code>indefinite</code> so it can be started manually without relying on document begin time (creation)</li><li>The animate element will be forced to use <code>fill=&quot;freeze&quot;</code></li><li>The animation will be triggered with <code>beginElement()</code> in a timeout where <code>begin</code> of the definition object is interpreted in milli seconds. If no <code>begin</code> was specified the timeout is triggered immediately.</li><li>After the animation the element attribute value will be set to the <code>to</code> value of the animation</li><li>The animate element is deleted from the DOM</li></ul></div><h6>Parameters</h6><div class="param"><code>animations</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An animations object where the property keys are the attributes you&#x27;d like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.</div></div><div class="param"><code>guided</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">If specified, this event emitter will be notified when an animation starts or ends.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The current element where the animation was added</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistsvg-method-issupported"><span class="member-tag">method</span> Chartist.Svg.isSupported()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-method-issupported-code">Show code</button></header><pre id="chartistsvg-method-issupported-code">
     <code class="javascript">Chartist.Svg.isSupported = function(feature) {
   return document.implementation.hasFeature(&#x27;www.http://w3.org/TR/SVG11/feature#&#x27; + feature, &#x27;1.1&#x27;);
 };
@@ -1594,9 +1735,8 @@ function SvgList(nodeList) {
 Chartist.Svg.List = Chartist.Class.extend({
   constructor: SvgList
 });
-
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check <a href="http://www.w3.org/TR/SVG11/feature">http://www.w3.org/TR/SVG11/feature</a> for a detailed list.</p></div><h6>Parameters</h6><div class="param"><code>feature</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The SVG 1.1 feature that should be checked for support.</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  </pre><div class="member-content"><div class="description"><p>This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check <a href="http://www.w3.org/TR/SVG11/feature">http://www.w3.org/TR/SVG11/feature</a> for a detailed list.</p></div><h6>Parameters</h6><div class="param"><code>feature</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The SVG 1.1 feature that should be checked for support.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">True of false if the feature is supported or not</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
