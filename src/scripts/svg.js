@@ -64,7 +64,7 @@
    * @memberof Chartist.Svg
    * @param {Object|String} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.
    * @param {String} ns If specified, the attributes will be set as namespace attributes with ns as prefix.
-   * @returns {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
+   * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
   function attr(attributes, ns) {
     if(typeof attributes === 'string') {
@@ -99,7 +99,7 @@
    * @param {Object} [attributes] An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
    * @param {String} [className] This class or class list will be added to the SVG element
    * @param {Boolean} [insertFirst] If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element
-   * @returns {Chartist.Svg} Returns a Chartist.Svg wrapper object that can be used to modify the containing SVG data
+   * @return {Chartist.Svg} Returns a Chartist.Svg wrapper object that can be used to modify the containing SVG data
    */
   function elem(name, attributes, className, insertFirst) {
     return new Chartist.Svg(name, attributes, className, this, insertFirst);
@@ -108,7 +108,7 @@
   /**
    * Returns the parent Chartist.SVG wrapper object
    *
-   * @returns {Chartist.Svg} Returns a Chartist.Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
+   * @return {Chartist.Svg} Returns a Chartist.Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
    */
   function parent() {
     return this._node.parentNode instanceof SVGElement ? new Chartist.Svg(this._node.parentNode) : null;
@@ -117,7 +117,7 @@
   /**
    * This method returns a Chartist.Svg wrapper around the root SVG element of the current tree.
    *
-   * @returns {Chartist.Svg} The root SVG element wrapped in a Chartist.Svg element
+   * @return {Chartist.Svg} The root SVG element wrapped in a Chartist.Svg element
    */
   function root() {
     var node = this._node;
@@ -131,7 +131,7 @@
    * Find the first child SVG element of the current element that matches a CSS selector. The returned object is a Chartist.Svg wrapper.
    *
    * @param {String} selector A CSS selector that is used to query for child SVG elements
-   * @returns {Chartist.Svg} The SVG wrapper for the element found or null if no element was found
+   * @return {Chartist.Svg} The SVG wrapper for the element found or null if no element was found
    */
   function querySelector(selector) {
     var foundNode = this._node.querySelector(selector);
@@ -142,7 +142,7 @@
    * Find the all child SVG elements of the current element that match a CSS selector. The returned object is a Chartist.Svg.List wrapper.
    *
    * @param {String} selector A CSS selector that is used to query for child SVG elements
-   * @returns {Chartist.Svg.List} The SVG wrapper list for the element found or null if no element was found
+   * @return {Chartist.Svg.List} The SVG wrapper list for the element found or null if no element was found
    */
   function querySelectorAll(selector) {
     var foundNodes = this._node.querySelectorAll(selector);
@@ -157,7 +157,7 @@
    * @param {String} [attributes] An object with properties that will be added as attributes to the foreignObject element that is created. Attributes with undefined values will not be added.
    * @param {String} [className] This class or class list will be added to the SVG element
    * @param {Boolean} [insertFirst] Specifies if the foreignObject should be inserted as first child
-   * @returns {Chartist.Svg} New wrapper object that wraps the foreignObject element
+   * @return {Chartist.Svg} New wrapper object that wraps the foreignObject element
    */
   function foreignObject(content, attributes, className, insertFirst) {
     // If content is string then we convert it to DOM
@@ -186,7 +186,7 @@
    *
    * @memberof Chartist.Svg
    * @param {String} t The text that should be added to the text element that is created
-   * @returns {Chartist.Svg} The same wrapper object that was used to add the newly created element
+   * @return {Chartist.Svg} The same wrapper object that was used to add the newly created element
    */
   function text(t) {
     this._node.appendChild(document.createTextNode(t));
@@ -197,7 +197,7 @@
    * This method will clear all child nodes of the current wrapper object.
    *
    * @memberof Chartist.Svg
-   * @returns {Chartist.Svg} The same wrapper object that got emptied
+   * @return {Chartist.Svg} The same wrapper object that got emptied
    */
   function empty() {
     while (this._node.firstChild) {
@@ -211,7 +211,7 @@
    * This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you'd like to get rid of an element in a given DOM structure.
    *
    * @memberof Chartist.Svg
-   * @returns {Chartist.Svg} The parent wrapper object of the element that got removed
+   * @return {Chartist.Svg} The parent wrapper object of the element that got removed
    */
   function remove() {
     this._node.parentNode.removeChild(this._node);
@@ -223,7 +223,7 @@
    *
    * @memberof Chartist.Svg
    * @param {Chartist.Svg} newElement The new Chartist.Svg object that will be used to replace the current wrapper object
-   * @returns {Chartist.Svg} The wrapper of the new element
+   * @return {Chartist.Svg} The wrapper of the new element
    */
   function replace(newElement) {
     this._node.parentNode.replaceChild(newElement._node, this._node);
@@ -236,7 +236,7 @@
    * @memberof Chartist.Svg
    * @param {Chartist.Svg} element The Chartist.Svg element that should be added as a child
    * @param {Boolean} [insertFirst] Specifies if the element should be inserted as first child
-   * @returns {Chartist.Svg} The wrapper of the appended object
+   * @return {Chartist.Svg} The wrapper of the appended object
    */
   function append(element, insertFirst) {
     if(insertFirst && this._node.firstChild) {
@@ -252,7 +252,7 @@
    * Returns an array of class names that are attached to the current wrapper element. This method can not be chained further.
    *
    * @memberof Chartist.Svg
-   * @returns {Array} A list of classes or an empty array if there are no classes on the current element
+   * @return {Array} A list of classes or an empty array if there are no classes on the current element
    */
   function classes() {
     return this._node.getAttribute('class') ? this._node.getAttribute('class').trim().split(/\s+/) : [];
@@ -263,7 +263,7 @@
    *
    * @memberof Chartist.Svg
    * @param {String} names A white space separated list of class names
-   * @returns {Chartist.Svg} The wrapper of the current element
+   * @return {Chartist.Svg} The wrapper of the current element
    */
   function addClass(names) {
     this._node.setAttribute('class',
@@ -282,7 +282,7 @@
    *
    * @memberof Chartist.Svg
    * @param {String} names A white space separated list of class names
-   * @returns {Chartist.Svg} The wrapper of the current element
+   * @return {Chartist.Svg} The wrapper of the current element
    */
   function removeClass(names) {
     var removedClasses = names.trim().split(/\s+/);
@@ -298,7 +298,7 @@
    * Removes all classes from the current element.
    *
    * @memberof Chartist.Svg
-   * @returns {Chartist.Svg} The wrapper of the current element
+   * @return {Chartist.Svg} The wrapper of the current element
    */
   function removeAllClasses() {
     this._node.setAttribute('class', '');
@@ -367,7 +367,7 @@
    * @param {Object} animations An animations object where the property keys are the attributes you'd like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.
    * @param {Boolean} guided Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.
    * @param {Object} eventEmitter If specified, this event emitter will be notified when an animation starts or ends.
-   * @returns {Chartist.Svg} The current element where the animation was added
+   * @return {Chartist.Svg} The current element where the animation was added
    */
   function animate(animations, guided, eventEmitter) {
     if(guided === undefined) {
@@ -508,7 +508,7 @@
    *
    * @memberof Chartist.Svg
    * @param {String} feature The SVG 1.1 feature that should be checked for support.
-   * @returns {Boolean} True of false if the feature is supported or not
+   * @return {Boolean} True of false if the feature is supported or not
    */
   Chartist.Svg.isSupported = function(feature) {
     return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
@@ -589,5 +589,4 @@
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-
 }(window, document, Chartist));

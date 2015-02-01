@@ -53,7 +53,7 @@
    * @param center
    * @param label
    * @param direction
-   * @returns {string}
+   * @return {string}
    */
   function determineAnchorPosition(center, label, direction) {
     var toTheRight = label.x > center.x;

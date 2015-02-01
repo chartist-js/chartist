@@ -65,7 +65,7 @@ var Chartist = {
    * @param {String} str
    * @param {String} subStr
    * @param {String} newSubStr
-   * @returns {String}
+   * @return {String}
    */
   Chartist.replaceAll = function(str, subStr, newSubStr) {
     return str.replace(new RegExp(subStr, 'g'), newSubStr);
@@ -76,7 +76,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {String|Number} value
-   * @returns {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
+   * @return {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
    */
   Chartist.stripUnit = function(value) {
     if(typeof value === 'string') {
@@ -92,7 +92,7 @@ var Chartist = {
    * @memberof Chartist.Core
    * @param {Number} value
    * @param {String} unit
-   * @returns {String} Returns the passed number value with unit.
+   * @return {String} Returns the passed number value with unit.
    */
   Chartist.ensureUnit = function(value, unit) {
     if(typeof value === 'number') {
@@ -118,7 +118,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param length
-   * @returns {Array}
+   * @return {Array}
    */
   Chartist.times = function(length) {
     return Array.apply(null, new Array(length));
@@ -130,7 +130,7 @@ var Chartist = {
    * @memberof Chartist.Core
    * @param previous
    * @param current
-   * @returns {*}
+   * @return {*}
    */
   Chartist.sum = function(previous, current) {
     return previous + current;
@@ -142,7 +142,7 @@ var Chartist = {
    * @memberof Chartist.Core
    * @param arr
    * @param cb
-   * @returns {Array}
+   * @return {Array}
    */
   Chartist.serialMap = function(arr, cb) {
     var result = [],
@@ -181,7 +181,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {Number|String|Object} data
-   * @returns {String}
+   * @return {String}
    */
   Chartist.serialize = function(data) {
     if(data === null || data === undefined) {
@@ -202,7 +202,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {String} data
-   * @returns {String|Number|Object}
+   * @return {String|Number|Object}
    */
   Chartist.deserialize = function(data) {
     if(typeof data !== 'string') {
