@@ -219,25 +219,24 @@
 
       // TODO: Nicer handling of conditions, maybe composition?
       if (options.showLine || options.showArea) {
-        // TODO: We should add a path API in the SVG library for easier path creation
-        var pathElements = ['M' + pathCoordinates[0] + ',' + pathCoordinates[1]];
+        var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]);
 
         // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
         if (options.lineSmooth && pathCoordinates.length > 4) {
 
           var cr = Chartist.catmullRom2bezier(pathCoordinates);
           for(var k = 0; k < cr.length; k++) {
-            pathElements.push('C' + cr[k].join());
+            Chartist.Svg.Path.prototype.curve.apply(path, cr[k]);
           }
         } else {
           for(var l = 3; l < pathCoordinates.length; l += 2) {
-            pathElements.push('L' + pathCoordinates[l - 1] + ',' + pathCoordinates[l]);
+            path.line(pathCoordinates[l - 1], pathCoordinates[l]);
           }
         }
 
         if(options.showLine) {
           var line = seriesGroups[seriesIndex].elem('path', {
-            d: pathElements.join('')
+            d: path.stringify()
           }, options.classNames.line, true).attr({
             'values': normalizedData[seriesIndex]
           }, Chartist.xmlNs.uri);
@@ -245,6 +244,8 @@
           this.eventEmitter.emit('draw', {
             type: 'line',
             values: normalizedData[seriesIndex],
+            path: path.clone(),
+            chartRect: chartRect,
             index: seriesIndex,
             group: seriesGroups[seriesIndex],
             element: line
@@ -256,19 +257,22 @@
           // the area is not drawn outside the chart area.
           var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
 
-          // If we need to draw area shapes we just make a copy of our pathElements SVG path array
-          var areaPathElements = pathElements.slice();
-
           // We project the areaBase value into screen coordinates
           var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase).pos;
-          // And splice our new area path array to add the missing path elements to close the area shape
-          areaPathElements.splice(0, 0, 'M' + chartRect.x1 + ',' + areaBaseProjected);
-          areaPathElements[1] = 'L' + pathCoordinates[0] + ',' + pathCoordinates[1];
-          areaPathElements.push('L' + pathCoordinates[pathCoordinates.length - 2] + ',' + areaBaseProjected);
+
+          // Clone original path and splice our new area path to add the missing path elements to close the area shape
+          var areaPath = path.clone();
+          // Modify line path and add missing elements for area
+          areaPath.position(0)
+            .remove(1)
+            .move(chartRect.x1, areaBaseProjected)
+            .line(pathCoordinates[0], pathCoordinates[1])
+            .position(areaPath.pathElements.length)
+            .line(pathCoordinates[pathCoordinates.length - 2], areaBaseProjected);
 
           // Create the new path for the area shape with the area class from the options
           var area = seriesGroups[seriesIndex].elem('path', {
-            d: areaPathElements.join('')
+            d: areaPath.stringify()
           }, options.classNames.area, true).attr({
             'values': normalizedData[seriesIndex]
           }, Chartist.xmlNs.uri);
@@ -276,6 +280,8 @@
           this.eventEmitter.emit('draw', {
             type: 'area',
             values: normalizedData[seriesIndex],
+            path: areaPath.clone(),
+            chartRect: chartRect,
             index: seriesIndex,
             group: seriesGroups[seriesIndex],
             element: area

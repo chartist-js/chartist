@@ -70,6 +70,15 @@ sections:
                    Chartist provides a simple API to animate the elements on the Chart using SMIL. Usually you can achieve most
                    animation with CSS3 animations but in some cases you'd like to animate SVG properties that are not available
                    in CSS.
+      - type: live-example
+        data:
+          title: SVG Path animation
+          level: 4
+          id: example-line-path-animation
+          classes: ct-golden-section
+          intro: >
+                   Path animation is made easy with the <a href="api-documentation.html#module-chartistsvgpath">SVG Path API</a>.
+                   The API allows you to modify complex SVG paths and transform them for different animation morphing states.
   - title: Bar chart examples
     level: 3
     items:

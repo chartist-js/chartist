@@ -267,6 +267,7 @@
           type: 'bar',
           value: value,
           index: valueIndex,
+          chartRect: chartRect,
           group: seriesGroups[seriesIndex],
           element: bar
         }, positions));
