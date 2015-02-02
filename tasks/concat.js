@@ -19,6 +19,7 @@ module.exports = function (grunt) {
       files: {
         '<%= pkg.config.dist %>/chartist.js': [
           '<%= pkg.config.src %>/scripts/core.js',
+          '<%= pkg.config.src %>/scripts/interpolation.js',
           '<%= pkg.config.src %>/scripts/event.js',
           '<%= pkg.config.src %>/scripts/class.js',
           '<%= pkg.config.src %>/scripts/base.js',

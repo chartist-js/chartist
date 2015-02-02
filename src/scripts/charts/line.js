@@ -61,7 +61,7 @@
     showArea: false,
     // The base for the area chart that will be used to close the area shape (is normally 0)
     areaBase: 0,
-    // Specify if the lines should be smoothed (Catmull-Rom-Splines will be used)
+    // Specify if the lines should be smoothed. This value can be true or false where true will result in smoothing using the default smoothing interpolation function Chartist.Interpolation.cardinal and false results in Chartist.Interpolation.none. You can also choose other smoothing / interpolation functions available in the Chartist.Interpolation module, or write your own interpolation function. Check the examples for a brief description.
     lineSmooth: true,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
@@ -219,20 +219,9 @@
 
       // TODO: Nicer handling of conditions, maybe composition?
       if (options.showLine || options.showArea) {
-        var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]);
-
-        // If smoothed path and path has more than two points then use catmull rom to bezier algorithm
-        if (options.lineSmooth && pathCoordinates.length > 4) {
-
-          var cr = Chartist.catmullRom2bezier(pathCoordinates);
-          for(var k = 0; k < cr.length; k++) {
-            Chartist.Svg.Path.prototype.curve.apply(path, cr[k]);
-          }
-        } else {
-          for(var l = 3; l < pathCoordinates.length; l += 2) {
-            path.line(pathCoordinates[l - 1], pathCoordinates[l]);
-          }
-        }
+        var smoothing = typeof options.lineSmooth === 'function' ?
+          options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
+          path = smoothing(pathCoordinates);
 
         if(options.showLine) {
           var line = seriesGroups[seriesIndex].elem('path', {
@@ -327,6 +316,20 @@
    *
    * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
    * new Chartist.Line('.ct-chart', data, options);
+   *
+   * @example
+   * // Use specific interpolation function with configuration from the Chartist.Interpolation module
+   *
+   * var chart = new Chartist.Line('.ct-chart', {
+   *   labels: [1, 2, 3, 4, 5],
+   *   series: [
+   *     [1, 1, 8, 1, 7]
+   *   ]
+   * }, {
+   *   lineSmooth: Chartist.Interpolation.cardinal({
+   *     tension: 0.2
+   *   })
+   * });
    *
    * @example
    * // Create a line chart with responsive options
