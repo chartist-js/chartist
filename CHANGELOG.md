@@ -1,3 +1,7 @@
+v0.7.1 - 02 Feb 2015
+--------------------
+- Bug fix where some files where not included in dist version of Chartist which made v0.7.0 unusable.
+
 v0.7.0 - 01 Feb 2015
 --------------------
 - This version introduces a new option in the bar charts to draw them horizontally

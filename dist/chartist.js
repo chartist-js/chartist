@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-  /* Chartist.js 0.7.0
+  /* Chartist.js 0.7.1
    * Copyright © 2015 Gion Kunz
    * Free to use under the WTFPL license.
    * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
    * @module Chartist.Core
    */
   var Chartist = {
-    version: '0.7.0'
+    version: '0.7.1'
   };
 
   (function (window, document, Chartist) {
@@ -2168,6 +2168,121 @@
     });
 
     Chartist.Svg.Path.elementDescriptions = elementDescriptions;
+  }(window, document, Chartist));
+  ;/**
+   * Axis base class used to implement different axis types
+   *
+   * @module Chartist.Axis
+   */
+  /* global Chartist */
+  (function (window, document, Chartist) {
+    'use strict';
+
+    var axisUnits = {
+      x: {
+        pos: 'x',
+        len: 'width',
+        dir: 'horizontal',
+        rectStart: 'x1',
+        rectEnd: 'x2',
+        rectOffset: 'y2'
+      },
+      y: {
+        pos: 'y',
+        len: 'height',
+        dir: 'vertical',
+        rectStart: 'y2',
+        rectEnd: 'y1',
+        rectOffset: 'x1'
+      }
+    };
+
+    function Axis(units, chartRect, transform, labelOffset, options) {
+      this.units = units;
+      this.counterUnits = units === axisUnits.x ? axisUnits.y : axisUnits.x;
+      this.chartRect = chartRect;
+      this.axisLength = chartRect[units.rectEnd] - chartRect[units.rectStart];
+      this.gridOffset = chartRect[units.rectOffset];
+      this.transform = transform;
+      this.labelOffset = labelOffset;
+      this.options = options;
+    }
+
+    Chartist.Axis = Chartist.Class.extend({
+      constructor: Axis,
+      projectValue: function(value, index, data) {
+        throw new Error('Base axis can\'t be instantiated!');
+      }
+    });
+
+    Chartist.Axis.units = axisUnits;
+
+  }(window, document, Chartist));
+  ;/**
+   * The linear scale axis uses standard linear scale projection of values along an axis.
+   *
+   * @module Chartist.LinearScaleAxis
+   */
+  /* global Chartist */
+  (function (window, document, Chartist) {
+    'use strict';
+
+    function LinearScaleAxis(axisUnit, chartRect, transform, labelOffset, options) {
+      Chartist.LinearScaleAxis.super.constructor.call(this,
+        axisUnit,
+        chartRect,
+        transform,
+        labelOffset,
+        options);
+
+      this.bounds = Chartist.getBounds(this.axisLength, options.highLow, options.scaleMinSpace, options.referenceValue);
+    }
+
+    function projectValue(value) {
+      return {
+        pos: this.axisLength * (value - this.bounds.min) / (this.bounds.range + this.bounds.step),
+        len: Chartist.projectLength(this.axisLength, this.bounds.step, this.bounds)
+      };
+    }
+
+    Chartist.LinearScaleAxis = Chartist.Axis.extend({
+      constructor: LinearScaleAxis,
+      projectValue: projectValue
+    });
+
+  }(window, document, Chartist));
+  ;/**
+   * Step axis for step based charts like bar chart or step based line chart
+   *
+   * @module Chartist.StepAxis
+   */
+  /* global Chartist */
+  (function (window, document, Chartist) {
+    'use strict';
+
+    function StepAxis(axisUnit, chartRect, transform, labelOffset, options) {
+      Chartist.StepAxis.super.constructor.call(this,
+        axisUnit,
+        chartRect,
+        transform,
+        labelOffset,
+        options);
+
+      this.stepLength = this.axisLength / (options.stepCount - (options.stretch ? 1 : 0));
+    }
+
+    function projectValue(value, index) {
+      return {
+        pos: this.stepLength * index,
+        len: this.stepLength
+      };
+    }
+
+    Chartist.StepAxis = Chartist.Axis.extend({
+      constructor: StepAxis,
+      projectValue: projectValue
+    });
+
   }(window, document, Chartist));
   ;/**
    * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
