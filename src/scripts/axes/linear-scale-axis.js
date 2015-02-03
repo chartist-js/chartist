@@ -20,7 +20,7 @@
 
   function projectValue(value) {
     return {
-      pos: this.axisLength * (value - this.bounds.min) / (this.bounds.range + this.bounds.step),
+      pos: this.units.pos == 'x' ? this.axisLength * (value - this.bounds.low) / (this.bounds.valueRange) : this.axisLength * (value - this.bounds.min) / (this.bounds.range + this.bounds.step),
       len: Chartist.projectLength(this.axisLength, this.bounds.step, this.bounds)
     };
   }
