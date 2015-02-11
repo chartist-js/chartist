@@ -27,6 +27,47 @@
     };
   };
 
+  Chartist.Interpolation.simple = function(options) {
+    var defaultOptions = {
+      divisor: 2
+    };
+    options = Chartist.extend({}, defaultOptions, options);
+
+    if (options.divisor == 0) {
+      var d = 1;
+    } else {
+      var d = 1 / options.divisor;
+    }
+
+    return function simple(pathCoordinates) {
+      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]);
+
+      // copy last coordinate so it's not undefined
+      pathCoordinates.push(pathCoordinates[pathCoordinates.length-1]);
+      pathCoordinates.push(pathCoordinates[pathCoordinates.length-3]);
+
+      for(var i = 2; i <= pathCoordinates.length - 4; i += 2) {
+        // path.line(pathCoordinates[i - 1], pathCoordinates[i]);
+        var p = [
+          {x: pathCoordinates[i - 2], y: pathCoordinates[i - 1]},
+          {x: pathCoordinates[i],     y: pathCoordinates[i + 1]},
+          {x: pathCoordinates[i + 2], y: pathCoordinates[i + 3]}
+        ];
+
+        path.curve(
+          (p[0].x + ((p[1].x - p[0].x) * d)),
+          (p[0].y),
+          (p[1].x - ((p[1].x - p[0].x) * d)),
+          (p[1].y),
+          p[1].x,
+          p[1].y
+        );
+      }
+
+      return path;
+    };
+  };
+
   /**
    * Cardinal / Catmull-Rome spline interpolation is the default smoothing function in Chartist. It produces nice results where the splines will always meet the points. It produces some artifacts though when data values are increased or decreased rapidly. The line may not follow a very accurate path and if the line should be accurate this smoothing function does not produce the best results.
    *
