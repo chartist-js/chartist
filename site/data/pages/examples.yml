@@ -38,7 +38,7 @@ sections:
           intro: >
                    This chart uses the showArea option to draw line, dots but also an area shape. Use the low option to
                    specify a fixed lower bound that will make the area expand. You can also use the areaBase property
-                   to specify a data value that will be used to determine the area shap base position (this is 0 by default).
+                   to specify a data value that will be used to determine the area shape base position (this is 0 by default).
       - type: live-example
         data:
           title: Bi-polar Line chart with area only
@@ -70,6 +70,15 @@ sections:
                    Chartist provides a simple API to animate the elements on the Chart using SMIL. Usually you can achieve most
                    animation with CSS3 animations but in some cases you'd like to animate SVG properties that are not available
                    in CSS.
+      - type: live-example
+        data:
+          title: SVG Path animation
+          level: 4
+          id: example-line-path-animation
+          classes: ct-golden-section
+          intro: >
+                   Path animation is made easy with the <a href="api-documentation.html#module-chartistsvgpath">SVG Path API</a>.
+                   The API allows you to modify complex SVG paths and transform them for different animation morphing states.
   - title: Bar chart examples
     level: 3
     items:
@@ -90,16 +99,16 @@ sections:
           classes: ct-golden-section
           intro: >
                     This example makes use of label interpolation and the seriesBarDistance property that allows you
-                    to make bars overlap over each other. This then can be used to use the avialable space on mobile better.
+                    to make bars overlap over each other. This then can be used to use the available space on mobile better.
                     Resize your browser to see the effect of the responsive configuration.
       - type: live-example
         data:
-          title: Add peek cricles using the draw events
+          title: Add peak circles using the draw events
           level: 4
           id: example-bar-with-circle-modify-drawing
           classes: ct-golden-section
           intro: >
-                    With the help of draw events we are able to add a custom SVG shape to the peek of our bars.
+                    With the help of draw events we are able to add a custom SVG shape to the peak of our bars.
       - type: live-example
         data:
           title: Multi-line labels
@@ -110,6 +119,33 @@ sections:
                     Chartist will figure out if your browser supports foreignObject and it will use them to create labels
                     that re based on regular HTML text elements. Multi-line and regular CSS styles are just two of many
                     benefits while using foreignObjects!
+      - type: live-example
+        data:
+          title: Stacked bar chart
+          level: 4
+          id: stacked-bar
+          classes: ct-golden-section
+          intro: >
+                    You can also set your bar chart to stack the series bars on top of each other easily by using the
+                    <code>stackBars</code> property in your configuration.
+      - type: live-example
+        data:
+          title: Horizontal bar chart
+          level: 4
+          id: example-bar-horizontal
+          classes: ct-golden-section
+          intro: >
+                    Guess what! Creating horizontal bar charts is as simple as it can get. There's no new chart type
+                    you need to learn, just passing an additional option is enough.
+      - type: live-example
+        data:
+          title: Extreme responsive configuration
+          level: 4
+          id: example-bar-extreme-responsive
+          classes: ct-golden-section
+          intro: >
+                    As all settings of a chart can be customized with the responsive configuration override mechanism of
+                    Chartist, you can create a chart that adopts to every media condition!
   - title: Pie chart examples
     level: 3
     items:

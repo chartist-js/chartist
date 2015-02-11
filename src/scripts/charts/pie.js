@@ -7,10 +7,19 @@
 (function(window, document, Chartist) {
   'use strict';
 
+  /**
+   * Default options in line charts. Expand the code view to see a detailed list of options with comments.
+   *
+   * @memberof Chartist.Pie
+   */
   var defaultOptions = {
+    // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
     width: undefined,
+    // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
     height: undefined,
+    // Padding of the chart drawing area to the container element and labels
     chartPadding: 5,
+    // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-pie',
       series: 'ct-series',
@@ -18,17 +27,34 @@
       donut: 'ct-donut',
       label: 'ct-label'
     },
+    // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
     startAngle: 0,
+    // An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
     total: undefined,
+    // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
     donut: false,
+    // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
     donutWidth: 60,
+    // If a label should be shown or not
     showLabel: true,
+    // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
     labelOffset: 0,
+    // An interpolation function for the label value
     labelInterpolationFnc: Chartist.noop,
-    labelOverflow: false,
-    labelDirection: 'neutral'
+    // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
+    labelDirection: 'neutral',
+    // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
+    reverseData: false
   };
 
+  /**
+   * Determines SVG anchor position based on direction and center parameter
+   *
+   * @param center
+   * @param label
+   * @param direction
+   * @return {string}
+   */
   function determineAnchorPosition(center, label, direction) {
     var toTheRight = label.x > center.x;
 
@@ -43,6 +69,11 @@
     }
   }
 
+  /**
+   * Creates the pie chart
+   *
+   * @param options
+   */
   function createChart(options) {
     var seriesGroups = [],
       chartRect,
@@ -50,7 +81,7 @@
       labelRadius,
       totalDataSum,
       startAngle = options.startAngle,
-      dataArray = Chartist.getDataArray(this.data);
+      dataArray = Chartist.getDataArray(this.data, options.reverseData);
 
     // Create SVG.js draw
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
@@ -93,7 +124,8 @@
       // If the series is an object and contains a name we add a custom attribute
       if(this.data.series[i].name) {
         seriesGroups[i].attr({
-          'series-name': this.data.series[i].name
+          'series-name': this.data.series[i].name,
+          'meta': Chartist.serialize(this.data.series[i].meta)
         }, Chartist.xmlNs.uri);
       }
 
@@ -198,45 +230,10 @@
    *
    * @memberof Chartist.Pie
    * @param {String|Node} query A selector query string or directly a DOM element
-   * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage.
+   * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage. The series property can also be an array of objects that contain a data property with the value and a className property to override the CSS class name for the series group.
    * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
    * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    * @return {Object} An object with a version and an update method to manually redraw the chart
-   *
-   * @example
-   * // Default options of the pie chart
-   * var defaultOptions = {
-   *   // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
-   *   width: undefined,
-   *   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
-   *   height: undefined,
-   *   // Padding of the chart drawing area to the container element and labels
-   *   chartPadding: 5,
-   *   // Override the class names that get used to generate the SVG structure of the chart
-   *   classNames: {
-   *     chart: 'ct-chart-pie',
-   *     series: 'ct-series',
-   *     slice: 'ct-slice',
-   *     donut: 'ct-donut',
-         label: 'ct-label'
-   *   },
-   *   // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
-   *   startAngle: 0,
-   *   // An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
-   *   total: undefined,
-   *   // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
-   *   donut: false,
-   *   // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
-   *   donutWidth: 60,
-   *   // If a label should be shown or not
-   *   showLabel: true,
-   *   // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
-   *   labelOffset: 0,
-   *   // An interpolation function for the label value
-   *   labelInterpolationFnc: function(value, index) {return value;},
-   *   // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
-   *   labelDirection: 'neutral'
-   * };
    *
    * @example
    * // Simple pie chart example with four series
@@ -272,12 +269,27 @@
    *   labelOffset: 50,
    *   labelDirection: 'explode'
    * });
+   *
+   * @example
+   * // Overriding the class names for individual series
+   * new Chartist.Pie('.ct-chart', {
+   *   series: [{
+   *     data: 20,
+   *     className: 'my-custom-class-one'
+   *   }, {
+   *     data: 10,
+   *     className: 'my-custom-class-two'
+   *   }, {
+   *     data: 70,
+   *     className: 'my-custom-class-three'
+   *   }]
+   * });
    */
   function Pie(query, data, options, responsiveOptions) {
     Chartist.Pie.super.constructor.call(this,
       query,
       data,
-      Chartist.extend(Chartist.extend({}, defaultOptions), options),
+      Chartist.extend({}, defaultOptions, options),
       responsiveOptions);
   }
 

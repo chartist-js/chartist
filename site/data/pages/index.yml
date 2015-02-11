@@ -22,8 +22,8 @@ sections:
             - Chrome 35
             - Safari 7
             - Safari 8
-            - Andorid 4.3
-            - Andorid 4.4
+            - Android 4.3
+            - Android 4.4
             - iOS Safari 6
             - iOS Safari 7
           features:
@@ -50,10 +50,10 @@ sections:
                 - name: Safari 8
                   status: supported
                   text: Supported
-                - name: Andorid 4.3
+                - name: Android 4.3
                   status: supported
                   text: Supported
-                - name: Andorid 4.4
+                - name: Android 4.4
                   status: supported
                   text: Supported
                 - name: iOS Safari 6
@@ -85,10 +85,10 @@ sections:
                 - name: Safari 8
                   status: supported
                   text: Supported
-                - name: Andorid 4.3
+                - name: Android 4.3
                   status: not-supported
                   text: Not supported
-                - name: Andorid 4.4
+                - name: Android 4.4
                   status: supported
                   text: Supported
                 - name: iOS Safari 6
@@ -120,10 +120,10 @@ sections:
                 - name: Safari 8
                   status: supported
                   text: Supported
-                - name: Andorid 4.3
+                - name: Android 4.3
                   status: not-supported
                   text: Not supported
-                - name: Andorid 4.4
+                - name: Android 4.4
                   status: supported
                   text: Supported
                 - name: iOS Safari 6
@@ -155,10 +155,10 @@ sections:
                 - name: Safari 8
                   status: supported
                   text: Supported
-                - name: Andorid 4.3
+                - name: Android 4.3
                   status: supported
                   text: Supported
-                - name: Andorid 4.4
+                - name: Android 4.4
                   status: supported
                   text: Supported
                 - name: iOS Safari 6
@@ -190,10 +190,10 @@ sections:
                 - name: Safari 8
                   status: supported
                   text: Supported
-                - name: Andorid 4.3
+                - name: Android 4.3
                   status: supported
                   text: Supported
-                - name: Andorid 4.4
+                - name: Android 4.4
                   status: supported
                   text: Supported
                 - name: iOS Safari 6
@@ -228,6 +228,9 @@ sections:
             -
               - '<a href="https://github.com/soderlind/tablepress_chartist" target="_blank">tablepress_chartist</a>'
               - Wordpress / Tablepress Extension
+            - 
+              - '<a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a>'
+              - Ember Addon
   - title: Chart CSS animation example
     level: 3
     items:

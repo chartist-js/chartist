@@ -18,14 +18,19 @@ module.exports = function (grunt) {
       },
       files: {
         '<%= pkg.config.dist %>/chartist.js': [
-          '<%= pkg.config.src %>/core.js',
-          '<%= pkg.config.src %>/event.js',
-          '<%= pkg.config.src %>/class.js',
-          '<%= pkg.config.src %>/base.js',
-          '<%= pkg.config.src %>/svg.js',
-          '<%= pkg.config.src %>/charts/line.js',
-          '<%= pkg.config.src %>/charts/bar.js',
-          '<%= pkg.config.src %>/charts/pie.js'
+          '<%= pkg.config.src %>/scripts/core.js',
+          '<%= pkg.config.src %>/scripts/interpolation.js',
+          '<%= pkg.config.src %>/scripts/event.js',
+          '<%= pkg.config.src %>/scripts/class.js',
+          '<%= pkg.config.src %>/scripts/base.js',
+          '<%= pkg.config.src %>/scripts/svg.js',
+          '<%= pkg.config.src %>/scripts/svg-path.js',
+          '<%= pkg.config.src %>/scripts/axes/axis.js',
+          '<%= pkg.config.src %>/scripts/axes/linear-scale-axis.js',
+          '<%= pkg.config.src %>/scripts/axes/step-axis.js',
+          '<%= pkg.config.src %>/scripts/charts/line.js',
+          '<%= pkg.config.src %>/scripts/charts/bar.js',
+          '<%= pkg.config.src %>/scripts/charts/pie.js'
         ]
       }
     }

@@ -12,10 +12,6 @@ new Chartist.Line('.ct-chart', {
   ]
 });
 
-var easeOutQuad = function (x, t, b, c, d) {
-  return -c * (t /= d) * (t - 2) + b;
-};
-
 var $chart = $('.ct-chart');
 
 var $toolTip = $chart
@@ -27,21 +23,16 @@ $chart.on('mouseenter', '.ct-point', function() {
   var $point = $(this),
     value = $point.attr('ct:value'),
     seriesName = $point.parent().attr('ct:series-name');
-
-  $point.animate({'stroke-width': '50px'}, 300, easeOutQuad);
   $toolTip.html(seriesName + '<br>' + value).show();
 });
 
 $chart.on('mouseleave', '.ct-point', function() {
-  var $point = $(this);
-
-  $point.animate({'stroke-width': '20px'}, 300, easeOutQuad);
   $toolTip.hide();
 });
 
 $chart.on('mousemove', function(event) {
   $toolTip.css({
-    left: event.offsetX - $toolTip.width() / 2 - 10,
-    top: event.offsetY - $toolTip.height() - 40
+    left: (event.offsetX || event.originalEvent.layerX) - $toolTip.width() / 2 - 10,
+    top: (event.offsetY || event.originalEvent.layerY) - $toolTip.height() - 40
   });
 });

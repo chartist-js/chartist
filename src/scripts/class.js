@@ -23,7 +23,7 @@
    * @memberof Chartist.Class
    * @param {Object} properties The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.
    * @param {Object} [superProtoOverride] By default extens will use the current class prototype or Chartist.class. With this parameter you can specify any super prototype that will be used.
-   * @returns {Function} Constructor function of the new class
+   * @return {Function} Constructor function of the new class
    *
    * @example
    * var Fruit = Class.extend({
@@ -91,7 +91,7 @@
    * @memberof Chartist.Class
    * @param {Array} mixProtoArr An array of super prototypes or an array of super prototype constructors.
    * @param {Object} properties The object that serves as definition for the prototype that gets created for the new class. This object should always contain a constructor property that is the desired constructor for the newly created class.
-   * @returns {Function} Constructor function of the newly created mixin class
+   * @return {Function} Constructor function of the newly created mixin class
    *
    * @example
    * var Fruit = Class.extend({

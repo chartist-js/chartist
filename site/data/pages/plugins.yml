@@ -1,0 +1,167 @@
+sections:
+  - title: Overview
+    level: 3
+    items:
+      - type: sub-section
+        data:
+          title: What's a plugin?
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Plugins allow you to extend the basic functionality of your charts. You can develop your own
+                        plugins or use plugins that others have already developed.
+
+      - type: sub-section
+        data:
+          title: How to use plugins
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Once you have included a plugin in your project you can use it in your chart by specifying it explicitly
+                        in the plugins section of your chart configuration. Check the <a href="#available-plugins">List of plugins</a>
+                        section to see what plugins you can use.
+
+            - type: code-snippet
+              data:
+                id: plugin-include
+                lang: js
+
+            - type: hint
+              data:
+                title: Order of specification
+                text: >
+                        Plugins are chainable and the order of specification in the plugins array of your configuration
+                        is important for the end result.
+
+            - type: text
+              data:
+                text: >
+                        Chartist.js expects an array of plugin functions to be present in the <code>plugins</code> array
+                        of the chart configuration. Usually plugins should be written as function factories so you
+                        can pass additional parameters and options to the factory which is creating the plugin function and returns it.
+
+  - title: Available plugins
+    level: 3
+    items:
+      - type: text
+        data:
+          text: >
+                  Here you can find a list of known plugins. Usually plugins should be available from both Bower and NPM for
+                  installation. If you have developed your own plugin but can't find it here, you should create a
+                  <a href="https://github.com/gionkunz/chartist-js/blob/develop/site/data/pages/examples.yml" target="_blank">pull request
+                  for this page</a> and add your plugin to the list.
+
+      - type: sub-section
+        data:
+          title: Point Label Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The point label plugin can be used if you like to add simple labels on top of your data points
+                        on line charts. This is usefull if you'd like the user to see the exact values of the data without
+                        any additional interaction.
+            - type: live-example
+              data:
+                id: example-plugin-pointlabel
+                classes: ct-golden-section
+                intro: >
+                         The point label plugin draws labels on top of your line chart points.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-pointlabels" target="_blank">chartist-plugin-pointlabels</a>'
+
+      - type: sub-section
+        data:
+          title: Sketchy Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The sketchy plugin makes your charts look like they have been drawn by hand. This plugin makes use
+                        of SVG filters and works on IE10+, Safari 7+ and Android 4.4+. Also note that SVG filters are not
+                        very performant and they will eat your users mobile battery quickly for sure.
+            - type: live-example
+              data:
+                id: example-plugin-sketchy
+                classes: ct-golden-section
+                intro: >
+                         Create beautiful hand drawn charts using the Chartist Sketchy plugin.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-sketchy" target="_blank">chartist-plugin-sketchy</a>'
+  - title: Develop a plugin
+    level: 3
+    items:
+
+      - type: text
+        data:
+          text: >
+                  Plugins are functions that will be called for each chart that is created with the plugin enabled
+                  (specified in the <code>plugins</code> configuration of a chart). The plugin function will be called with one
+                  argument which is the chart that is registering itself for the plugin. If you wish to use some additional
+                  parameters or configuration for your plugin initialization, it's recommended to use a function factory.
+                  You can check the example plugin for an implementation using a function factory.
+
+      - type: code-snippet
+        data:
+          id: plugin-signature
+          lang: js
+
+      - type: text
+        data:
+          text: >
+                  From the chart object <code>options</code>, <code>svg</code> (root SVG element) and the
+                  <code>eventEmitter</code> can be used to manipulate the behaviour of the chart. It's the
+                  responsibility of the plugin to decide if it should be activated on a given chart (i.e. by checking
+                  the chart type <code>chart instanceof Chartist.Line</code> etc.).
+
+      - type: text
+        data:
+          text: >
+                  It's recommended to use the events of Chartist.js (like <code>draw</code>) to manipulate the
+                  underlying elements. Using the events, plugins can chain up in a natural way and work independently
+                   on extending the functionality of the chart.
+
+      - type: text
+        data:
+          text: >
+                  Plugins should contain their own default settings and use <code>Chartist.extend</code> to override
+                  the settings specified in the options passed to the plugin factory function. Using
+                  the <code>optionsProvider</code> of the chart object one could also implement functioanlity based on
+                  the chart configuration as well as responsive configuration.
+
+      - type: sub-section
+        data:
+          title: Example Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The following code shows an example plugin that is also available for download and installation.
+                        You can also use the <a href="https://github.com/gionkunz/chartist-plugin-pointlabels" target="_blank">repository
+                        of the example plugin</a> to start your own awesome Chartist.js plugin.
+
+      - type: code-snippet
+        data:
+          id: plugin-example
+          lang: js
