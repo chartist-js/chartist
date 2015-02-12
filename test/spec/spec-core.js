@@ -53,12 +53,12 @@ describe('Chartist core', function() {
 
     it('should serialize and deserialize numbers', function() {
       var input = 12345.6789;
-      expect(input).toMatch(Chartist.deserialize(Chartist.serialize(input)));
+      expect(input).toEqual(Chartist.deserialize(Chartist.serialize(input)));
     });
 
     it('should serialize and deserialize dates', function() {
       var input = new Date(0);
-      expect(+input).toMatch(+new Date(Chartist.deserialize(Chartist.serialize(input))));
+      expect(+input).toEqual(+new Date(Chartist.deserialize(Chartist.serialize(input))));
     });
 
     it('should serialize and deserialize complex object types', function() {
@@ -73,12 +73,12 @@ describe('Chartist core', function() {
         }
       };
 
-      expect(input).toMatch(Chartist.deserialize(Chartist.serialize(input)));
+      expect(input).toEqual(Chartist.deserialize(Chartist.serialize(input)));
     });
 
     it('should serialize and deserialize null, undefined and NaN', function() {
-      expect(null).toMatch(Chartist.deserialize(Chartist.serialize(null)));
-      expect(undefined).toMatch(Chartist.deserialize(Chartist.serialize(undefined)));
+      expect(null).toEqual(Chartist.deserialize(Chartist.serialize(null)));
+      expect(undefined).toEqual(Chartist.deserialize(Chartist.serialize(undefined)));
       expect(NaN).toMatch(Chartist.deserialize(Chartist.serialize('NaN')));
     });
   });
