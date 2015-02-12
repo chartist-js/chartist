@@ -14,10 +14,12 @@ module.exports = function (grunt) {
     dist: {
       src: [
         '<%= pkg.config.src %>/scripts/core.js',
+        '<%= pkg.config.src %>/scripts/interpolation.js',
         '<%= pkg.config.src %>/scripts/event.js',
         '<%= pkg.config.src %>/scripts/class.js',
         '<%= pkg.config.src %>/scripts/base.js',
         '<%= pkg.config.src %>/scripts/svg.js',
+        '<%= pkg.config.src %>/scripts/svg-path.js',
         '<%= pkg.config.src %>/scripts/axes/axis.js',
         '<%= pkg.config.src %>/scripts/axes/step-axis.js',
         '<%= pkg.config.src %>/scripts/axes/linear-scale-axis.js',
