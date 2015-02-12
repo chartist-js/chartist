@@ -2,6 +2,8 @@
 
 ![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/site/images/chartist-guy.gif "The Chartist Guy")
 
+[![Inline docs](http://inch-ci.org/github/gionkunz/chartist-js.svg?branch=develop)](http://inch-ci.org/github/gionkunz/chartist-js)
+
 *Checkout the documentation site at http://gionkunz.github.io/chartist-js/*
 
 *Checkout this lightning talk that gives you an overview of Chartist in 5 minutes https://www.youtube.com/watch?v=WdYzPhOB_c8*
