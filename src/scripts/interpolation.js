@@ -27,40 +27,53 @@
     };
   };
 
+  /**
+   * Simple smoothing creates horizontal handles that are positioned with a fraction of the length between two data points. You can use the divisor option to specify the amount of smoothing.
+   *
+   * Simple smoothing can be used instead of `Chartist.Smoothing.cardinal` if you'd like to get rid of the artifacts it produces sometimes. Simple smoothing produces less flowing lines but is accurate by hitting the points and it also doesn't swing below or above the given data point.
+   *
+   * All smoothing functions within Chartist are factory functions that accept an options parameter. The simple interpolation function accepts one configuration parameter `divisor`, between 1 and ∞, which controls the smoothing characteristics.
+   *
+   * @example
+   * var chart = new Chartist.Line('.ct-chart', {
+   *   labels: [1, 2, 3, 4, 5],
+   *   series: [[1, 2, 8, 1, 7]]
+   * }, {
+   *   lineSmooth: Chartist.Interpolation.simple({
+   *     divisor: 2
+   *   })
+   * });
+   *
+   *
+   * @memberof Chartist.Interpolation
+   * @param {Object} options The options of the simple interpolation factory function.
+   * @return {Function}
+   */
   Chartist.Interpolation.simple = function(options) {
     var defaultOptions = {
       divisor: 2
     };
     options = Chartist.extend({}, defaultOptions, options);
 
-    if (options.divisor == 0) {
-      var d = 1;
-    } else {
-      var d = 1 / options.divisor;
-    }
+    var d = 1 / Math.max(1, options.divisor);
 
     return function simple(pathCoordinates) {
       var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]);
 
-      // copy last coordinate so it's not undefined
-      pathCoordinates.push(pathCoordinates[pathCoordinates.length-1]);
-      pathCoordinates.push(pathCoordinates[pathCoordinates.length-3]);
-
-      for(var i = 2; i <= pathCoordinates.length - 4; i += 2) {
-        // path.line(pathCoordinates[i - 1], pathCoordinates[i]);
-        var p = [
-          {x: pathCoordinates[i - 2], y: pathCoordinates[i - 1]},
-          {x: pathCoordinates[i],     y: pathCoordinates[i + 1]},
-          {x: pathCoordinates[i + 2], y: pathCoordinates[i + 3]}
-        ];
+      for(var i = 2; i < pathCoordinates.length; i += 2) {
+        var prevX = pathCoordinates[i - 2],
+            prevY = pathCoordinates[i - 1],
+            currX = pathCoordinates[i],
+            currY = pathCoordinates[i + 1],
+            length = (currX - prevX) * d;
 
         path.curve(
-          (p[0].x + ((p[1].x - p[0].x) * d)),
-          (p[0].y),
-          (p[1].x - ((p[1].x - p[0].x) * d)),
-          (p[1].y),
-          p[1].x,
-          p[1].y
+          prevX + length,
+          prevY,
+          currX - length,
+          currY,
+          currX,
+          currY
         );
       }
 
@@ -75,12 +88,15 @@
    *
    * All smoothing functions within Chartist are factory functions that accept an options parameter. The cardinal interpolation function accepts one configuration parameter `tension`, between 0 and 1, which controls the smoothing intensity.
    *
-   * The default configuration:
-   * ```javascript
-   * var defaultOptions = {
-   *   tension: 1
-   * };
-   * ```
+   * @example
+   * var chart = new Chartist.Line('.ct-chart', {
+   *   labels: [1, 2, 3, 4, 5],
+   *   series: [[1, 2, 8, 1, 7]]
+   * }, {
+   *   lineSmooth: Chartist.Interpolation.cardinal({
+   *     tension: 1
+   *   })
+   * });
    *
    * @memberof Chartist.Interpolation
    * @param {Object} options The options of the cardinal factory function.

@@ -79,6 +79,17 @@ sections:
           intro: >
                    Path animation is made easy with the <a href="api-documentation.html#module-chartistsvgpath">SVG Path API</a>.
                    The API allows you to modify complex SVG paths and transform them for different animation morphing states.
+      - type: live-example
+        data:
+          title: Line Interpolation / Smoothing
+          level: 4
+          id: example-line-simple-smoothing
+          classes: ct-golden-section
+          intro: >
+                   By default Chartist uses a cardinal spline algorithm to smooth the lines. However, like all other
+                   things in Chartist, this can be customized easily! Check out
+                   <a href="api-documentation.html#module-chartistinterpolation">the API Documentation</a> for more
+                   smoothing options.
   - title: Bar chart examples
     level: 3
     items:
