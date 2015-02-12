@@ -260,7 +260,7 @@ sections:
         data:
           text: >
                   Almost limitless animation possibilities with the Chartist.Svg animation API. Checkout the
-                  <a href="getting-started.html#animations-using-chartistsvg">advanced getting stated guide about SVG
+                  <a href="getting-started.html#animations-using-chartistsvg">advanced getting started guide about SVG
                   animations</a> with SMIL.
 
   - title: Responsive charts configuration
