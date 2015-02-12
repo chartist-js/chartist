@@ -1,0 +1,32 @@
+---
+page-class: examples
+title: Chartist - Examples
+description: Demos and examples of Chartist.js with live editing functionality
+---
+<h2>Testseite mit einer Grafik</h2>
+<p>Dies ist eine einfache Testseite mit einer Grafik generiert mit Chartist.</p>
+<div class="ct-chart ct-golden-section"></div>
+<script>
+  setTimeout(function() {
+
+    var chart = new Chartist.Line('.ct-chart', {
+      labels: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'],
+      series: [
+        {name: 'Johannes', data: [8, 9, 9, 10, 8]},
+        {name: 'Anna', data: [9, 8, 6, 12, 9]}
+      ]
+    }, {
+      plugins: [
+        Chartist.plugins.ctAccessibility({
+          caption: 'Arbeitszeiten der Mitarbeiter',
+          seriesHeader: 'Mitarbeiter Name',
+          summary: 'Tabelle mit den aktuellen Arbeitszeiten unserer Mittarbeiter',
+          valueTransform: function(value) {
+            return value + ' Uhr';
+          }
+        })
+      ]
+    });
+
+  }, 1000);
+</script>
