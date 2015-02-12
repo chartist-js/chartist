@@ -56,7 +56,7 @@ to the masses.
 5. Richer Sass / CSS framework
 6. Other charts types (spider etc.)
 
-## Contribution
+## Contribution [![Inline docs](http://inch-ci.org/github/gionkunz/chartist-js.svg?branch=develop)](http://inch-ci.org/github/gionkunz/chartist-js)
 
 We are looking for people who share the idea of having a simple, flexible charting library that is responsive and uses
 modern and future-proof technologies. The goal of this project is to create a responsive charting library where developers
