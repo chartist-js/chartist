@@ -1,3 +1,9 @@
+v0.7.2 - 12 Feb 2015
+--------------------
+- Added new line smoothing / interpolation module for configurable line smoothing
+- Added simple line smoothing. Thanks @danieldiekmeier !
+- Removed some unused internal code
+
 v0.7.1 - 02 Feb 2015
 --------------------
 - Bug fix where some files where not included in dist version of Chartist which made v0.7.0 unusable.
