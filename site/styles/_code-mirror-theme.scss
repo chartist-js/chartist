@@ -1,3 +1,7 @@
+.CodeMirror-scroll {
+  overflow: auto !important;
+}
+
 .cm-s-chartist.CodeMirror {
   background: $color-black;
   color: lighten($color-white, 10%);
