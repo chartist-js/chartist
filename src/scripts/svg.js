@@ -314,7 +314,14 @@
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
+    var h = this._node.clientHeight;
+
+    if (!h) {
+      try { h = Math.round(this._node.getBBox().height); } catch(e) {}
+    }
+
+
+    return h || this._node.parentNode.clientHeight;
   }
 
   /**
@@ -325,7 +332,13 @@
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.clientWidth || Math.round(this._node.getBBox().width) || this._node.parentNode.clientWidth;
+    var w = this._node.clientWidth;
+
+    if (!w) {
+      try { w = Math.round(this._node.getBBox().width); } catch(e) {}
+    }
+
+    return w || this._node.parentNode.clientWidth;
   }
 
   /**
