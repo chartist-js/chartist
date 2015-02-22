@@ -3246,6 +3246,7 @@
           index: i,
           group: seriesGroups[i],
           element: path,
+          path: path.clone(),
           center: center,
           radius: radius,
           startAngle: startAngle,
