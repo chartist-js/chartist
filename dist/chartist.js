@@ -2069,6 +2069,32 @@
       }, this.pathElements, this.pos++, relative);
       return this;
     }
+    
+    
+    /**
+     * Use this function to add a new non-bezier curve SVG path element.
+     *
+     * @memberof Chartist.Svg.Path
+     * @param {Number} rx The radius to be used for the x-axis of the arc.
+     * @param {Number} ry The radius to be used for the y-axis of the arc.
+     * @param {Number} x The x coordinate for the target point of the curve element.
+     * @param {Number} y The y coordinate for the target point of the curve element.
+     * @param {Boolean} relative If set to true the curve element will be created with relative coordinates (lowercase letter)
+     * @return {Chartist.Svg.Path} The current path object for easy call chaining.
+     */
+    function arc(rx, ry, x, y, relative){
+	    element('A', {
+		    rx: +rx,
+		    ry: +ry,
+		    xAr: 0,
+		    lAf: 0,
+		    sf: 0,
+		    x: +x,
+		    y: +y
+	    }, this.pathElements, this.pos++, relative);
+		return this;
+    }
+    
 
     /**
      * Parses an SVG path seen in the d attribute of path elements, and inserts the parsed elements into the existing path object at the current cursor position. Any closing path indicators (Z at the end of the path) will be ignored by the parser as this is provided by the close option in the options of the path object.
@@ -2215,6 +2241,7 @@
       move: move,
       line: line,
       curve: curve,
+      arc: arc,
       scale: scale,
       translate: translate,
       transform: transform,
@@ -3214,10 +3241,16 @@
             // Draw arc
             'A', radius, radius, 0, arcSweep, 0, start.x, start.y
           ];
-
+		
+		//Create a path object
+		//This allows access to the Chartist.SVG.Path manipulation fuctions needed for animation
+		var pathObj = new Chartist.Svg.Path( (options.donut ? false : true) ).move(start.x, start.y, false).arc(1, 1, end.x, end.y, false);
+		
         // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
+        // close the slice in Path obj too
         if(options.donut === false) {
           d.push('L', center.x, center.y);
+          pathObj.line(center.x, center.y, false); // The close param was set when constructed, so no need to draw out to circumfrence explicitly.
         }
 
         // Create the SVG path
@@ -3246,6 +3279,7 @@
           index: i,
           group: seriesGroups[i],
           element: path,
+          path: pathObj,
           center: center,
           radius: radius,
           startAngle: startAngle,
