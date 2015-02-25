@@ -1932,7 +1932,7 @@
     'use strict';
 
     /**
-     * Contains the descriptors of supported element types in a SVG path. Currently only move, line and curve are supported.
+     * Contains the descriptors of supported element types in a SVG path. Currently only move, line, curve, and arc are supported.
      *
      * @memberof Chartist.Svg.Path
      * @type {Object}
@@ -1940,7 +1940,8 @@
     var elementDescriptions = {
       m: ['x', 'y'],
       l: ['x', 'y'],
-      c: ['x1', 'y1', 'x2', 'y2', 'x', 'y']
+      c: ['x1', 'y1', 'x2', 'y2', 'x', 'y'],
+      a: ['rx', 'ry', 'xAr', 'lAf', 'sf', 'x', 'y']
     };
 
     /**
