@@ -34,7 +34,7 @@ $button-font-align: center !default;
 $button-function-factor: -20% !default;
 
 // We use these to control button border styles.
-$button-border-width: 0px !default;
+$button-border-width: 0 !default;
 $button-border-style: solid !default;
 $button-bg-color: $primary-color !default;
 $button-bg-hover: scale-color($button-bg-color, $lightness: $button-function-factor) !default;
@@ -80,7 +80,8 @@ $button-disabled-cursor: $cursor-default-value !default;
     text-decoration: none;
     text-align: $button-font-align;
     -webkit-appearance: none;
-    -webkit-border-radius:0;
+    -moz-appearance: none;
+    border-radius:0;
   }
   @if $display { display: $display; }
 }
@@ -133,8 +134,8 @@ $button-disabled-cursor: $cursor-default-value !default;
 //
 // We use this mixin to add button color styles
 //
-// $bg - Primary color set in settings file. Default: $button-bg.
-// $radius - If true, set to button radius which is $global-radius || explicitly set radius amount in px (ex. $radius:10px). Default: true
+// $bg - Background color. We can set $bg:false for a transparent background. Default: $primary-color.
+// $radius - If true, set to button radius which is $button-radius || explicitly set radius amount in px (ex. $radius:10px). Default: false
 // $disabled - We can set $disabled:true to create a disabled transparent button. Default: false
 // $bg-hover - Button Hover Background Color. Default: $button-bg-hover
 // $border-color - Button Border Color. Default: $button-border-color

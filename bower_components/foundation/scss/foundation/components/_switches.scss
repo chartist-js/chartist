@@ -55,7 +55,7 @@ $switch-active-color: $primary-color !default;
   // Default label styles for type and transition
   label {
     display: block;
-    margin-bottom: $switch-height-med / 2;
+    margin-bottom: ($switch-height-med / 2);
     position: relative;
     color: transparent;
     background: $switch-bg;
@@ -87,15 +87,20 @@ $switch-active-color: $primary-color !default;
     content: "";
     display: block;
     background: $switch-paddle-bg;
-    position: absolute; top: .25rem; left: .25rem;
-    width: $switch-height-med - 0.5rem; height: $switch-height-med - 0.5rem;
+    position: absolute;
+    top: .25rem;
+    left: .25rem;
+    width: $switch-height-med - 0.5rem;
+    height: $switch-height-med - 0.5rem;
 
     -webkit-transition: left $transition-speed $transition-ease;
     -moz-transition: left $transition-speed $transition-ease;
+    -o-transition: translate3d(0,0,0);
     transition: left $transition-speed $transition-ease;
 
     -webkit-transform: translate3d(0,0,0);
     -moz-transform: translate3d(0,0,0);
+    -o-transform: translate3d(0,0,0);
     transform: translate3d(0,0,0);
   }
 
@@ -116,11 +121,13 @@ $switch-active-color: $primary-color !default;
 @mixin switch-size($height: $switch-height-med) {
 
   label {
-    width: $height * 2; height: $height;
+    width: $height * 2;
+    height: $height;
   }
 
   label:after {
-    width: $height - 0.5rem; height: $height - 0.5rem;
+    width: $height - 0.5rem;
+    height: $height - 0.5rem;
   }
 
   input:checked + label:after {
@@ -138,6 +145,7 @@ $switch-active-color: $primary-color !default;
 // $base-style - Apply base styles? Default: true.
 @mixin switch-style(
   $paddle-bg:$switch-paddle-bg,
+  $active-color:$switch-active-color,
   $radius:false,
   $base-style:true) {
 
@@ -153,7 +161,7 @@ $switch-active-color: $primary-color !default;
     }
 
     input:checked + label {
-      background: $switch-active-color;
+      background: $active-color;
     }
   }
 
@@ -196,7 +204,7 @@ $switch-active-color: $primary-color !default;
   $base-style:true) {
     @include switch-base($transition-speed, $transition-ease);
     @include switch-size($height);
-    @include switch-style($paddle-bg, $radius, $base-style);
+    @include switch-style($paddle-bg, $active-color, $radius, $base-style);
 }
 
 @include exports("switch") {
@@ -214,7 +222,7 @@ $switch-active-color: $primary-color !default;
         &.tiny { @include switch-size($switch-height-tny); }
 
         // Add a radius to the switch
-        &.radius { 
+        &.radius {
           label { @include radius(4px); }
           label:after { @include radius(3px); }
         }

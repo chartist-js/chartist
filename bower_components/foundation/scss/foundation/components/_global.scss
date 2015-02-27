@@ -138,7 +138,7 @@ $base-line-height: 1.5 !default;
       }
       @else {
         top: 50%;
-        margin-top: -$width/2;
+        margin-top: (-$width/2);
       }
       @if $left {
         left: $left;
@@ -154,14 +154,14 @@ $base-line-height: 1.5 !default;
     }
 
     box-shadow:
-      0 0px 0 $thickness $color,
+      0 0 0 $thickness $color,
       0 $gap + $thickness 0 $thickness $color,
       0 (2 * $gap + 2*$thickness) 0 $thickness $color;
     width: $width;
   }
   span:hover:after {
     box-shadow:
-      0 0px 0 $thickness $hover-color,
+      0 0 0 $thickness $hover-color,
       0 $gap + $thickness 0 $thickness $hover-color,
       0 (2 * $gap + 2*$thickness) 0 $thickness $hover-color;
   }
@@ -296,7 +296,7 @@ $include-html-global-classes: $include-html-classes !default;
 $column-gutter: rem-calc(30) !default;
 
 // Media Query Ranges
-$small-range: (0em, 40em) !default;
+$small-range: (0, 40em) !default;
 $medium-range: (40.063em, 64em) !default;
 $large-range: (64.063em, 90em) !default;
 $xlarge-range: (90.063em, 120em) !default;
@@ -333,6 +333,7 @@ $large: $large-up;
 $cursor-auto-value: auto !default;
 $cursor-crosshair-value: crosshair !default;
 $cursor-default-value: default !default;
+$cursor-disabled-value: not-allowed !default;
 $cursor-pointer-value: pointer !default;
 $cursor-help-value: help !default;
 $cursor-text-value: text !default;
@@ -345,11 +346,16 @@ $cursor-text-value: text !default;
   // Forward slash placed around everything to convince PhantomJS to read the value.
 
   meta.foundation-version {
-    font-family: "/5.4.7/";
+    font-family: "/5.5.1/";
   }
 
   meta.foundation-mq-small {
     font-family: "/" + unquote($small-up) + "/";
+    width: lower-bound($small-range);
+  }
+
+  meta.foundation-mq-small-only {
+    font-family: "/" + unquote($small-only) + "/";
     width: lower-bound($small-range);
   }
 
@@ -358,13 +364,28 @@ $cursor-text-value: text !default;
     width: lower-bound($medium-range);
   }
 
+  meta.foundation-mq-medium-only {
+    font-family: "/" + unquote($medium-only) + "/";
+    width: lower-bound($medium-range);
+  }
+
   meta.foundation-mq-large {
     font-family: "/" + unquote($large-up) + "/";
     width: lower-bound($large-range);
   }
 
+  meta.foundation-mq-large-only {
+    font-family: "/" + unquote($large-only) + "/";
+    width: lower-bound($large-range);
+  }
+
   meta.foundation-mq-xlarge {
     font-family: "/" + unquote($xlarge-up) + "/";
+    width: lower-bound($xlarge-range);
+  }
+
+  meta.foundation-mq-xlarge-only {
+    font-family: "/" + unquote($xlarge-only) + "/";
     width: lower-bound($xlarge-range);
   }
 
@@ -428,8 +449,7 @@ $cursor-text-value: text !default;
 
     // Hide visually and from screen readers
     .hide {
-      display: none !important;
-      visibility: hidden;
+      display: none;
     }
 
     // Hide visually and from screen readers, but maintain layout

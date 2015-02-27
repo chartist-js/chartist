@@ -10,9 +10,6 @@
             "homepage": "http://softwaremaniacs.org"
         }
     ],
-    "require": {
-        "robloach/component-installer": "*"
-    },
     "extra": {
         "component": {
             "scripts": [

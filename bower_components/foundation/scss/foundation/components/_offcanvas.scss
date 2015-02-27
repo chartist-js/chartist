@@ -117,11 +117,11 @@ $menu-slide: "transform 500ms ease" !default;
   -ms-overflow-style: -ms-autohiding-scrollbar;
 
   @if $position == left {
-    @include translate3d(-100.5%,0,0);
+    @include translate3d(-100%,0,0);
     left: 0;
   }
   @if $position == right {
-    @include translate3d(100.5%,0,0);
+    @include translate3d(100%,0,0);
     right: 0;
   }
 }
@@ -139,7 +139,8 @@ $menu-slide: "transform 500ms ease" !default;
 // INNER WRAP
 // Main content area that moves to reveal the off-canvas nav
 @mixin inner-wrap {
-  @include kill-flicker;
+  // @include kill-flicker;
+  // removed for now till chrome fixes backface issue
   @include wrap-base;
   @include clearfix;
   -webkit-transition: -webkit-#{$menu-slide};
@@ -200,7 +201,8 @@ $menu-slide: "transform 500ms ease" !default;
   height: $tabbar-height;
   top: 0;
   @media #{$medium-up} {
-    &.left, &.right { text-align: left; }
+    &.left { text-align: left; }
+    &.right { text-align: right; }
   }
 
   // still need to make these non-presentational
@@ -483,14 +485,14 @@ $menu-slide: "transform 500ms ease" !default;
 @if $include-html-off-canvas-classes {
   .left-submenu {
     @include off-canvas-submenu($position: left);
-    &.move-right {
+    &.move-right, &.offcanvas-overlap-right, &.offcanvas-overlap {
       @include translate3d(0%,0,0);
     }
   }
 
   .right-submenu {
     @include off-canvas-submenu($position: right);
-    &.move-left {
+    &.move-left, &.offcanvas-overlap-left, &.offcanvas-overlap {
       @include translate3d(0%,0,0);
     }
   }

@@ -4,7 +4,7 @@
   Foundation.libs.interchange = {
     name : 'interchange',
 
-    version : '5.4.7',
+    version : '5.5.1',
 
     cache : {},
 
@@ -15,15 +15,19 @@
       load_attr : 'interchange',
 
       named_queries : {
-        'default' : 'only screen',
-        small : Foundation.media_queries.small,
-        medium : Foundation.media_queries.medium,
-        large : Foundation.media_queries.large,
-        xlarge : Foundation.media_queries.xlarge,
-        xxlarge: Foundation.media_queries.xxlarge,
-        landscape : 'only screen and (orientation: landscape)',
-        portrait : 'only screen and (orientation: portrait)',
-        retina : 'only screen and (-webkit-min-device-pixel-ratio: 2),' +
+        'default'     : 'only screen',
+        'small'       : Foundation.media_queries['small'],
+        'small-only'  : Foundation.media_queries['small-only'],
+        'medium'      : Foundation.media_queries['medium'],
+        'medium-only' : Foundation.media_queries['medium-only'],
+        'large'       : Foundation.media_queries['large'],
+        'large-only'  : Foundation.media_queries['large-only'],
+        'xlarge'      : Foundation.media_queries['xlarge'],
+        'xlarge-only' : Foundation.media_queries['xlarge-only'],
+        'xxlarge'     : Foundation.media_queries['xxlarge'],
+        'landscape'   : 'only screen and (orientation: landscape)',
+        'portrait'    : 'only screen and (orientation: portrait)',
+        'retina'      : 'only screen and (-webkit-min-device-pixel-ratio: 2),' +
           'only screen and (min--moz-device-pixel-ratio: 2),' +
           'only screen and (-o-min-device-pixel-ratio: 2/1),' +
           'only screen and (min-device-pixel-ratio: 2),' +
@@ -32,7 +36,7 @@
       },
 
       directives : {
-        replace: function (el, path, trigger) {
+        replace : function (el, path, trigger) {
           // The trigger argument, if called within the directive, fires
           // an event named after the directive on the element, passing
           // any parameters along to the event that you pass to trigger.
@@ -47,7 +51,9 @@
           if (/IMG/.test(el[0].nodeName)) {
             var orig_path = el[0].src;
 
-            if (new RegExp(path, 'i').test(orig_path)) return;
+            if (new RegExp(path, 'i').test(orig_path)) {
+              return;
+            }
 
             el[0].src = path;
 
@@ -56,10 +62,12 @@
           var last_path = el.data(this.data_attr + '-last-path'),
               self = this;
 
-          if (last_path == path) return;
+          if (last_path == path) {
+            return;
+          }
 
           if (/\.(gif|jpg|jpeg|tiff|png)([?#].*)?/i.test(path)) {
-            $(el).css('background-image', 'url('+path+')');
+            $(el).css('background-image', 'url(' + path + ')');
             el.data('interchange-last-path', path);
             return trigger(path);
           }
@@ -84,8 +92,8 @@
       this.load('nodes');
     },
 
-    get_media_hash : function() {
-        var mediaHash='';
+    get_media_hash : function () {
+        var mediaHash = '';
         for (var queryName in this.settings.named_queries ) {
             mediaHash += matchMedia(this.settings.named_queries[queryName]).matches.toString();
         }
@@ -111,7 +119,7 @@
     resize : function () {
       var cache = this.cache;
 
-      if(!this.images_loaded || !this.nodes_loaded) {
+      if (!this.images_loaded || !this.nodes_loaded) {
         setTimeout($.proxy(this.resize, this), 50);
         return;
       }
@@ -122,15 +130,17 @@
 
           if (passed) {
             this.settings.directives[passed
-              .scenario[1]].call(this, passed.el, passed.scenario[0], function () {
+              .scenario[1]].call(this, passed.el, passed.scenario[0], (function (passed) {
                 if (arguments[0] instanceof Array) { 
                   var args = arguments[0];
-                } else { 
+                } else {
                   var args = Array.prototype.slice.call(arguments, 0);
                 }
 
-                passed.el.trigger(passed.scenario[1], args);
-              });
+                return function() {
+                  passed.el.trigger(passed.scenario[1], args);
+                }
+              }(passed)));
           }
         }
       }
@@ -151,7 +161,7 @@
             mq = matchMedia(rule);
           }
           if (mq.matches) {
-            return {el: el, scenario: scenarios[count]};
+            return {el : el, scenario : scenarios[count]};
           }
         }
       }
@@ -207,7 +217,6 @@
       this.cached_nodes = [];
       this.nodes_loaded = (count === 0);
 
-
       while (i--) {
         loaded_count++;
         var str = nodes[i].getAttribute(data_attr) || '';
@@ -216,7 +225,7 @@
           this.cached_nodes.push(nodes[i]);
         }
 
-        if(loaded_count === count) {
+        if (loaded_count === count) {
           this.nodes_loaded = true;
           this.enhance('nodes');
         }
@@ -255,24 +264,23 @@
       if (directive_match) {
         var path  = directive_match[1],
         directive = directive_match[2];
-      }
-      else {
+      } else {
         var cached_split = scenario[0].split(/,\s*$/),
         path             = cached_split[0],
-        directive        = '';               
+        directive        = '';
       }
 
       return [this.trim(path), this.convert_directive(directive), this.trim(media_query)];
     },
 
-    object : function(el) {
+    object : function (el) {
       var raw_arr = this.parse_data_attr(el),
-          scenarios = [], 
+          scenarios = [],
           i = raw_arr.length;
 
       if (i > 0) {
         while (i--) {
-          var split = raw_arr[i].split(/\((.*?)(\))$/);
+          var split = raw_arr[i].split(/\(([^\)]*?)(\))$/);
 
           if (split.length > 1) {
             var params = this.parse_scenario(split);
@@ -288,14 +296,16 @@
       var uuid = this.random_str(),
           current_uuid = el.data(this.add_namespace('uuid', true));
 
-      if (this.cache[current_uuid]) return this.cache[current_uuid];
+      if (this.cache[current_uuid]) {
+        return this.cache[current_uuid];
+      }
 
       el.attr(this.add_namespace('data-uuid'), uuid);
 
       return this.cache[uuid] = scenarios;
     },
 
-    trim : function(str) {
+    trim : function (str) {
 
       if (typeof str === 'string') {
         return $.trim(str);
@@ -304,7 +314,7 @@
       return str;
     },
 
-    set_data_attr: function (init) {
+    set_data_attr : function (init) {
       if (init) {
         if (this.namespace.length > 0) {
           return this.namespace + '-' + this.settings.load_attr;
@@ -322,7 +332,7 @@
 
     parse_data_attr : function (el) {
       var raw = el.attr(this.attr_name()).split(/\[(.*?)\]/),
-          i = raw.length, 
+          i = raw.length,
           output = [];
 
       while (i--) {

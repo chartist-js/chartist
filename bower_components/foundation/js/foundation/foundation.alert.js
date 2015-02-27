@@ -4,10 +4,10 @@
   Foundation.libs.alert = {
     name : 'alert',
 
-    version : '5.4.7',
+    version : '5.5.1',
 
     settings : {
-      callback: function (){}
+      callback : function () {}
     },
 
     init : function (scope, method, options) {
@@ -19,13 +19,13 @@
           S = this.S;
 
       $(this.scope).off('.alert').on('click.fndtn.alert', '[' + this.attr_name() + '] .close', function (e) {
-          var alertBox = S(this).closest('[' + self.attr_name() + ']'),
-              settings = alertBox.data(self.attr_name(true) + '-init') || self.settings;
+        var alertBox = S(this).closest('[' + self.attr_name() + ']'),
+            settings = alertBox.data(self.attr_name(true) + '-init') || self.settings;
 
         e.preventDefault();
         if (Modernizr.csstransitions) {
-          alertBox.addClass("alert-close");
-          alertBox.on('transitionend webkitTransitionEnd oTransitionEnd', function(e) {
+          alertBox.addClass('alert-close');
+          alertBox.on('transitionend webkitTransitionEnd oTransitionEnd', function (e) {
             S(this).trigger('close').trigger('close.fndtn.alert').remove();
             settings.callback();
           });
