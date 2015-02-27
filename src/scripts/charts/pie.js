@@ -289,6 +289,7 @@
     Chartist.Pie.super.constructor.call(this,
       query,
       data,
+      defaultOptions,
       Chartist.extend({}, defaultOptions, options),
       responsiveOptions);
   }

@@ -682,7 +682,7 @@ var Chartist = {
       mediaQueryListeners = [],
       i;
 
-    function updateCurrentOptions() {
+    function updateCurrentOptions(preventChangedEvent) {
       var previousOptions = currentOptions;
       currentOptions = Chartist.extend({}, baseOptions);
 
@@ -695,7 +695,7 @@ var Chartist = {
         }
       }
 
-      if(eventEmitter) {
+      if(eventEmitter && !preventChangedEvent) {
         eventEmitter.emit('optionsChanged', {
           previousOptions: previousOptions,
           currentOptions: currentOptions
@@ -720,7 +720,7 @@ var Chartist = {
       }
     }
     // Execute initially so we get the correct options
-    updateCurrentOptions();
+    updateCurrentOptions(true);
 
     return {
       get currentOptions() {

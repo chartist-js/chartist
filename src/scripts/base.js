@@ -18,10 +18,10 @@
    *
    * @param {Object} [data] Optional data you'd like to set for the chart before it will update. If not specified the update method will use the data that is already configured with the chart.
    * @param {Object} [options] Optional options you'd like to add to the previous options for the chart before it will update. If not specified the update method will use the options that have been already configured with the chart.
-   * @param {Boolean} [extendObjects] If set to true, the passed options will be used to extend the options that have been configured already.
+   * @param {Boolean} [override] If set to true, the passed options will be used to extend the options that have been configured already. Otherwise the chart default options will be used as the base
    * @memberof Chartist.Base
    */
-  function update(data, options, extendObjects) {
+  function update(data, options, override) {
     if(data) {
       this.data = data;
       // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
@@ -32,9 +32,10 @@
     }
 
     if(options) {
-      this.options = Chartist.extend({}, extendObjects ? this.options : {}, options);
+      this.options = Chartist.extend({}, override ? this.options : this.defaultOptions, options);
 
       // If chartist was not initialized yet, we just set the options and leave the rest to the initialization
+      // Otherwise we re-create the optionsProvider at this point
       if(!this.initializeTimeoutId) {
         this.optionsProvider.removeMediaQueryListeners();
         this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
@@ -128,13 +129,15 @@
    *
    * @param query
    * @param data
+   * @param defaultOptions
    * @param options
    * @param responsiveOptions
    * @constructor
    */
-  function Base(query, data, options, responsiveOptions) {
+  function Base(query, data, defaultOptions, options, responsiveOptions) {
     this.container = Chartist.querySelector(query);
     this.data = data;
+    this.defaultOptions = defaultOptions;
     this.options = options;
     this.responsiveOptions = responsiveOptions;
     this.eventEmitter = Chartist.EventEmitter();
