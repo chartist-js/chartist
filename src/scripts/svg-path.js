@@ -147,31 +147,31 @@
     return this;
   }
     
-+    
-+    /**
-+     * Use this function to add a new non-bezier curve SVG path element.
-+     *
-+     * @memberof Chartist.Svg.Path
-+     * @param {Number} rx The radius to be used for the x-axis of the arc.
-+     * @param {Number} ry The radius to be used for the y-axis of the arc.
-+     * @param {Number} x The x coordinate for the target point of the curve element.
-+     * @param {Number} y The y coordinate for the target point of the curve element.
-+     * @param {Boolean} relative If set to true the curve element will be created with relative coordinates (lowercase letter)
-+     * @return {Chartist.Svg.Path} The current path object for easy call chaining.
-+     */
-+    function arc(rx, ry, x, y, relative){
-+	    element('A', {
-+		    rx: +rx,
-+		    ry: +ry,
-+		    xAr: 0,
-+		    lAf: 0,
-+		    sf: 0,
-+		    x: +x,
-+		    y: +y
-+	    }, this.pathElements, this.pos++, relative);
-+		return this;
-+    }
-+    
+    
+    /**
+     * Use this function to add a new non-bezier curve SVG path element.
+     *
+     * @memberof Chartist.Svg.Path
+     * @param {Number} rx The radius to be used for the x-axis of the arc.
+     * @param {Number} ry The radius to be used for the y-axis of the arc.
+     * @param {Number} x The x coordinate for the target point of the curve element.
+     * @param {Number} y The y coordinate for the target point of the curve element.
+     * @param {Boolean} relative If set to true the curve element will be created with relative coordinates (lowercase letter)
+     * @return {Chartist.Svg.Path} The current path object for easy call chaining.
+     */
+    function arc(rx, ry, x, y, relative){
+	    element('A', {
+		    rx: +rx,
+		    ry: +ry,
+		    xAr: 0,
+		    lAf: 0,
+		    sf: 0,
+		    x: +x,
+		    y: +y
+	    }, this.pathElements, this.pos++, relative);
+		return this;
+    }
+    
 
 
   /**
