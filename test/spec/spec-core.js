@@ -142,4 +142,68 @@ describe('Chartist core', function() {
       );
     });
   });
+
+  describe('padding normalization tests', function () {
+    it('should normalize number padding', function() {
+      expect(Chartist.normalizePadding(10)).toEqual({
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
+      });
+    });
+
+    it('should normalize number padding when 0 is passed', function() {
+      expect(Chartist.normalizePadding(0)).toEqual({
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      });
+    });
+
+    it('should normalize empty padding object with default fallback', function() {
+      expect(Chartist.normalizePadding({})).toEqual({
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0
+      });
+    });
+
+    it('should normalize empty padding object with specified fallback', function() {
+      expect(Chartist.normalizePadding({}, 10)).toEqual({
+        top: 10,
+        right: 10,
+        bottom: 10,
+        left: 10
+      });
+    });
+
+    it('should normalize partial padding object with specified fallback', function() {
+      expect(Chartist.normalizePadding({
+        top: 5,
+        left: 5
+      }, 10)).toEqual({
+        top: 5,
+        right: 10,
+        bottom: 10,
+        left: 5
+      });
+    });
+
+    it('should not modify complete padding object', function() {
+      expect(Chartist.normalizePadding({
+        top: 5,
+        right: 5,
+        bottom: 5,
+        left: 5
+      }, 10)).toEqual({
+        top: 5,
+        right: 5,
+        bottom: 5,
+        left: 5
+      });
+    });
+  });
 });

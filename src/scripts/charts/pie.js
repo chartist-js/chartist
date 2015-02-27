@@ -17,7 +17,7 @@
     width: undefined,
     // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
     height: undefined,
-    // Padding of the chart drawing area to the container element and labels
+    // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: 5,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
@@ -86,7 +86,7 @@
     // Create SVG.js draw
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
     // Calculate charting rect
-    chartRect = Chartist.createChartRect(this.svg, options, 0, 0);
+    chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
     // Get biggest circle radius possible within chartRect
     radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
     // Calculate total of all series to get reference value or use total reference from optional options

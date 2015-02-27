@@ -344,6 +344,30 @@ var Chartist = {
   };
 
   /**
+   * Converts a number into a padding object.
+   *
+   * @memberof Chartist.Core
+   * @param {Object|Number} padding
+   * @param {Number} [fallback] This value is used to fill missing values if a incomplete padding object was passed
+   * @returns {Object} Returns a padding object containing top, right, bottom, left properties filled with the padding number passed in as argument. If the argument is something else than a number (presumably already a correct padding object) then this argument is directly returned.
+   */
+  Chartist.normalizePadding = function(padding, fallback) {
+    fallback = fallback || 0;
+
+    return typeof padding === 'number' ? {
+      top: padding,
+      right: padding,
+      bottom: padding,
+      left: padding
+    } : {
+      top: typeof padding.top === 'number' ? padding.top : fallback,
+      right: typeof padding.right === 'number' ? padding.right : fallback,
+      bottom: typeof padding.bottom === 'number' ? padding.bottom : fallback,
+      left: typeof padding.left === 'number' ? padding.left : fallback
+    };
+  };
+
+  /**
    * Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart
    *
    * @memberof Chartist.Core
@@ -403,7 +427,7 @@ var Chartist = {
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding * 2) - options.axisX.offset, 0);
+    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
   };
 
   /**
@@ -550,19 +574,21 @@ var Chartist = {
    * @memberof Chartist.Core
    * @param {Object} svg The svg element for the chart
    * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Number} [fallbackPadding] The fallback padding if partial padding objects are used
    * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
    */
-  Chartist.createChartRect = function (svg, options) {
+  Chartist.createChartRect = function (svg, options, fallbackPadding) {
     var yOffset = options.axisY ? options.axisY.offset || 0 : 0,
       xOffset = options.axisX ? options.axisX.offset || 0 : 0,
       w = Chartist.stripUnit(options.width) || svg.width(),
-      h = Chartist.stripUnit(options.height) || svg.height();
+      h = Chartist.stripUnit(options.height) || svg.height(),
+      normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     return {
-      x1: options.chartPadding + yOffset,
-      y1: Math.max(h - options.chartPadding - xOffset, options.chartPadding),
-      x2: Math.max(w - options.chartPadding, options.chartPadding + yOffset),
-      y2: options.chartPadding,
+      x1: normalizedPadding.left + yOffset,
+      y1: Math.max(h - normalizedPadding.bottom - xOffset, normalizedPadding.bottom),
+      x2: Math.max(w - normalizedPadding.right, normalizedPadding.right + yOffset),
+      y2: normalizedPadding.top,
       width: function () {
         return this.x2 - this.x1;
       },
