@@ -162,6 +162,27 @@ var Chartist = {
   };
 
   /**
+   * This helper function can be used to round values with certain precision level after decimal. This is used to prevent rounding errors near float point precision limit.
+   *
+   * @memberof Chartist.Core
+   * @param {Number} value The value that should be rounded with precision
+   * @param {Number} [digits] The number of digits after decimal used to do the rounding
+   * @returns {number} Rounded value
+   */
+  Chartist.roundWithPrecision = function(value, digits) {
+    var precision = Math.pow(10, digits || Chartist.precision);
+    return Math.round(value * precision) / precision;
+  };
+
+  /**
+   * Precision level used internally in Chartist for rounding. If you require more decimal places you can increase this number.
+   *
+   * @memberof Chartist.Core
+   * @type {number}
+   */
+  Chartist.precision = 8;
+
+  /**
    * A map with characters to escape for strings to be safely used as attribute values.
    *
    * @memberof Chartist.Core
@@ -498,7 +519,7 @@ var Chartist = {
 
     bounds.values = [];
     for (i = bounds.min; i <= bounds.max; i += bounds.step) {
-      bounds.values.push(i);
+      bounds.values.push(Chartist.roundWithPrecision(i));
     }
 
     return bounds;
