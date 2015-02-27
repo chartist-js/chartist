@@ -48,7 +48,7 @@ var Chartist = {
     sources.forEach(function(source) {
       for (var prop in source) {
         if (typeof source[prop] === 'object' && !(source[prop] instanceof Array)) {
-          target[prop] = Chartist.extend(target[prop], source[prop]);
+          target[prop] = Chartist.extend({}, target[prop], source[prop]);
         } else {
           target[prop] = source[prop];
         }
