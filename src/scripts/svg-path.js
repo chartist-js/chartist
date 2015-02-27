@@ -8,7 +8,7 @@
   'use strict';
 
   /**
-   * Contains the descriptors of supported element types in a SVG path. Currently only move, line and curve are supported.
+   * Contains the descriptors of supported element types in a SVG path. Currently only move, line, curve, and arc are supported.
    *
    * @memberof Chartist.Svg.Path
    * @type {Object}
@@ -16,7 +16,8 @@
   var elementDescriptions = {
     m: ['x', 'y'],
     l: ['x', 'y'],
-    c: ['x1', 'y1', 'x2', 'y2', 'x', 'y']
+    c: ['x1', 'y1', 'x2', 'y2', 'x', 'y'],
+    a: ['rx', 'ry', 'xAr', 'lAf', 'sf', 'x', 'y']
   };
 
   /**
@@ -145,6 +146,33 @@
     }, this.pathElements, this.pos++, relative);
     return this;
   }
+    
+    
+    /**
+     * Use this function to add a new non-bezier curve SVG path element.
+     *
+     * @memberof Chartist.Svg.Path
+     * @param {Number} rx The radius to be used for the x-axis of the arc.
+     * @param {Number} ry The radius to be used for the y-axis of the arc.
+     * @param {Number} x The x coordinate for the target point of the curve element.
+     * @param {Number} y The y coordinate for the target point of the curve element.
+     * @param {Boolean} relative If set to true the curve element will be created with relative coordinates (lowercase letter)
+     * @return {Chartist.Svg.Path} The current path object for easy call chaining.
+     */
+    function arc(rx, ry, x, y, relative){
+	    element('A', {
+		    rx: +rx,
+		    ry: +ry,
+		    xAr: 0,
+		    lAf: 0,
+		    sf: 0,
+		    x: +x,
+		    y: +y
+	    }, this.pathElements, this.pos++, relative);
+		return this;
+    }
+    
+
 
   /**
    * Parses an SVG path seen in the d attribute of path elements, and inserts the parsed elements into the existing path object at the current cursor position. Any closing path indicators (Z at the end of the path) will be ignored by the parser as this is provided by the close option in the options of the path object.
@@ -291,6 +319,7 @@
     move: move,
     line: line,
     curve: curve,
+    arc: arc,
     scale: scale,
     translate: translate,
     transform: transform,

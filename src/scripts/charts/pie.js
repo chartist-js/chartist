@@ -152,9 +152,15 @@
           'A', radius, radius, 0, arcSweep, 0, start.x, start.y
         ];
 
+	  //Create a path object
+	  //This allows access to the Chartist.SVG.Path manipulation fuctions needed for animation
+	  var pathObj = new Chartist.Svg.Path( (options.donut ? false : true) ).move(start.x, start.y, false).arc(1, 1, end.x, end.y, false);
+
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
+      // close the slice in Path obj too
       if(options.donut === false) {
         d.push('L', center.x, center.y);
+        pathObj.line(center.x, center.y, false); // The close param was set when constructed, so no need to draw out to circumfrence explicitly.
       }
 
       // Create the SVG path
@@ -183,6 +189,7 @@
         index: i,
         group: seriesGroups[i],
         element: path,
+        path: pathObj,
         center: center,
         radius: radius,
         startAngle: startAngle,
