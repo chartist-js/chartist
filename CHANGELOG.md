@@ -1,3 +1,10 @@
+v0.7.3 - 27 Feb 2015
+--------------------
+- Fixed bugs in the chart.update method 
+- Fixed rounding precision issues in order of magnitude calculation
+- Fixed bug in Chartist.extend which caused merge problems from object properties into non-objects
+- Added possibility to use chartPadding with a padding object that contains top, right, bottom and left properties
+
 v0.7.2 - 12 Feb 2015
 --------------------
 - Added new line smoothing / interpolation module for configurable line smoothing
