@@ -4,7 +4,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.7.1'
+  version: '<%= pkg.version %>'
 };
 
 (function (window, document, Chartist) {

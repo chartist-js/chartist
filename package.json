@@ -53,6 +53,7 @@
     "grunt-newer": "^1.1.0",
     "grunt-sass": "^0.18.0",
     "grunt-svgmin": "~2.0.0",
+    "grunt-template": "^0.2.3",
     "grunt-umd": "~2.3.1",
     "grunt-usemin": "~3.0.0",
     "handlebars-helpers": "~0.5.8",
