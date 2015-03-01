@@ -1,28 +1,82 @@
 ---
 page-class: examples
-title: Chartist - Examples
+title: Chartist Accessibility Test
 description: Demos and examples of Chartist.js with live editing functionality
 ---
-<h2>Testseite mit einer Grafik</h2>
-<p>Dies ist eine einfache Testseite mit einer Grafik generiert mit Chartist.</p>
-<div class="ct-chart ct-golden-section"></div>
+<h2>Accessibility in Chartist</h2>
+<p>Dies ist eine einfache Seite um die Accessibility Erweiterung von Chartist zu testen.</p>
+<h3>Mitarbeiter Kaffeekonsum</h3>
+<div id="chart-1" class="ct-chart"></div>
+<h3>Umsatzzahlen 2015</h3>
+<div id="chart-2" class="ct-chart"></div>
+<h3>Lebensmittel</h3>
+<div id="chart-3" class="ct-chart"></div>
+<p>Ende des Dokuments</p>
 <script>
   setTimeout(function() {
 
-    var chart = new Chartist.Line('.ct-chart', {
+    var chart1 = new Chartist.Bar('#chart-1', {
       labels: ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag'],
       series: [
-        {name: 'Johannes', data: [8, 9, 9, 10, 8]},
-        {name: 'Anna', data: [9, 8, 6, 12, 9]}
+        {name: 'Martin', data: [6, 4, 3, 4, 3]},
+        {name: 'Anna', data: [4, 3, 3, 3, 2]}
       ]
     }, {
+      width: '640px',
+      height: '240px',
       plugins: [
         Chartist.plugins.ctAccessibility({
-          caption: 'Arbeitszeiten der Mitarbeiter',
-          seriesHeader: 'Mitarbeiter Name',
-          summary: 'Tabelle mit den aktuellen Arbeitszeiten unserer Mittarbeiter',
+          caption: 'Kaffeekonsum unter der Woche',
+          seriesHeader: 'Mitarbeiter',
+          summary: 'Eine simple Tabelle welche den Kaffeekonsum von Martin und Anna unter der Woche aufzeigt',
           valueTransform: function(value) {
-            return value + ' Uhr';
+            return value + ' Kaffee pro Tag';
+          }
+        })
+      ]
+    });
+
+    var chart2 = new Chartist.Line('#chart-2', {
+      labels: ['Januar', 'Februar', 'März', 'April', 'May', 'Juni', 'July', 'August', 'September', 'Oktober', 'November', 'Dezember'],
+      series: [
+        {name: 'Umsatz', data: [20000, 30000, 35000, 32000, 40000, 42000, 50000, 62000, 80000, 94000, 100000, 120000]},
+        {name: 'Ausgaben', data: [10000, 15000, 12000, 14000, 20000, 23000, 22000, 24000, 21000, 18000, 30000, 32000]}
+      ]
+    }, {
+      width: '640px',
+      height: '240px',
+      axisX: {
+        labelInterpolationFnc: function(value) {
+          return value.split('').slice(0, 3).join('');
+        }
+      },
+      plugins: [
+        Chartist.plugins.ctAccessibility({
+          caption: 'Geschäftsjahr 2015',
+          seriesHeader: 'Geschäftszahlen',
+          summary: 'Eine Tabelle mit den Geschäftszahlen 2015',
+          valueTransform: function(value) {
+            return value + '$$';
+          }
+        })
+      ]
+    });
+
+    var chart3 = new Chartist.Pie('#chart-3', {
+      labels: ['Kohlenhydrate', 'Protein', 'Fett'],
+      series: [24, 8, 12]
+    }, {
+      width: '240px',
+      height: '240px',
+      plugins: [
+        Chartist.plugins.ctAccessibility({
+          caption: 'Nährstofftabelle Bananen',
+          summary: 'Eine Tabelle mit den Nährstoffangaben für Bananen',
+          valueTransform: function(value) {
+            var total = chart3.data.series.reduce(function(prev, current) {
+              return prev + current;
+            }, 0);
+            return Math.round(value / total * 100) + '%' + ' mit ' + value + ' Gramm';
           }
         })
       ]
