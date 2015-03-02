@@ -1,8 +1,8 @@
 var chart = new Chartist.Line('.ct-chart', {
   labels: [1, 2, 3, 4, 5],
   series: [
-    [1, 5, 10, 0, 1, 2],
-    [10, 15, 0, 1, 2, 3]
+    [1, 5, 10, 0, 1],
+    [10, 15, 0, 1, 2]
   ]
 }, {
   // Remove this configuration to see that chart rendered with cardinal spline interpolation
@@ -11,5 +11,8 @@ var chart = new Chartist.Line('.ct-chart', {
     divisor: 2
   }),
   fullWidth: true,
+  chartPadding: {
+    right: 20
+  },
   low: 0
 });

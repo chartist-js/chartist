@@ -57,6 +57,46 @@ sections:
 
       - type: sub-section
         data:
+          title: Accessibility Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        285 million people are estimated to be visually impaired worldwide: 39 million are blind and 246 have low vision.
+                        We should stop the discrimination against our fellow human and, by fairly little effort and following best
+                        practices, make our content on the web accessible.
+            - type: text
+              data:
+                text: >
+                        The accessibility plugin makes your chart accessible for blind people. It automatically generates
+                        visually hidden accessibility tables that allow you to describe your chart for blind people easily.
+                        This plugin was tested with NVDA and JAWS, and provides all necessary things for building an accessible chart.
+            - type: text
+              data:
+                text: >
+                        By simply including this plugin with default configurations you will already make your charts
+                        accessible to blind people! If you put in 5 minutes effort in customizing the configuration with
+                        meaningful content, you will actually even make them enjoy your charts!
+            - type: live-example
+              data:
+                id: example-plugin-accessibility
+                classes: ct-golden-section
+                intro: >
+                         Creating an accessible chart that shows some fiscal year figures. This example overrides the visuallyHiddenStyles
+                         configuration property so you can actually see the "invisible" table.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-accessibility" target="_blank">chartist-plugin-accessibility</a>'
+
+      - type: sub-section
+        data:
           title: Point Label Plugin
           level: 4
           items:
