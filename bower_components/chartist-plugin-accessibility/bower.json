@@ -1,0 +1,19 @@
+{
+  "name": "chartist-plugin-accessibility",
+  "version": "0.0.1",
+  "main": [
+    "./dist/chartist-plugin-accessibility.min.js"
+  ],
+  "dependencies": {
+    "chartist": "~0.7.3"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "tasks",
+    "src",
+    "test"
+  ]
+}

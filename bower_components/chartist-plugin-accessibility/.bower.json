@@ -1,0 +1,30 @@
+{
+  "name": "chartist-plugin-accessibility",
+  "version": "0.0.1",
+  "main": [
+    "./dist/chartist-plugin-accessibility.min.js"
+  ],
+  "dependencies": {
+    "chartist": "~0.7.3"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "tasks",
+    "src",
+    "test"
+  ],
+  "homepage": "https://github.com/gionkunz/chartist-plugin-accessibility",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "2a8c68ccaee5c0176736f678a3deb089c2931135"
+  },
+  "_source": "git://github.com/gionkunz/chartist-plugin-accessibility.git",
+  "_target": "~0.0.1",
+  "_originalSource": "chartist-plugin-accessibility",
+  "_direct": true
+}

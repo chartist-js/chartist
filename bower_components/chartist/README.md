@@ -1,4 +1,5 @@
 # Big welcome by the Chartist Guy
+[![npm version](http://img.shields.io/npm/v/chartist.svg)](https://npmjs.org/package/chartist) [![build status](http://img.shields.io/travis/gionkunz/chartist-js.svg)](https://travis-ci.org/gionkunz/chartist-js) [![Inline docs](http://inch-ci.org/github/gionkunz/chartist-js.svg?branch=develop)](http://inch-ci.org/github/gionkunz/chartist-js)
 
 ![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/site/images/chartist-guy.gif "The Chartist Guy")
 
