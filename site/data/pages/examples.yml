@@ -100,7 +100,7 @@ sections:
           id: bi-polar-bar-interpolated
           classes: ct-golden-section
           intro: >
-                    A bi-plar bar chart with a range limit set with low and high. There is also an interpolation
+                    A bi-polar bar chart with a range limit set with low and high. There is also an interpolation
                     function used to skip every odd grid line / label.
       - type: live-example
         data:
