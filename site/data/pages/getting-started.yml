@@ -90,7 +90,7 @@ sections:
             - type: code
               data:
                 lang: bash
-                code: cp bower_components/chartist/libdist/scss/settings/_chartist-settings.scss styles
+                code: cp bower_components/chartist/dist/scss/settings/_chartist-settings.scss styles
 
             - type: text
               data:
