@@ -21,8 +21,8 @@ module.exports = function (grunt) {
     },
     js: {
       files: [
-        '<%= pkg.config.site %>/scripts/{,*/}*.js',
-        '<%= pkg.config.src %>/{,*/}*.js'
+        '<%= pkg.config.site %>/scripts/**/*.js',
+        '<%= pkg.config.src %>/scripts/**/*.js'
       ],
       tasks: ['newer:jshint:all'],
       options: {
