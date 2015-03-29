@@ -283,6 +283,8 @@
     this.eventEmitter.emit('created', {
       bounds: axisY.bounds,
       chartRect: chartRect,
+      axisX: axisX,
+      axisY: axisY,
       svg: this.svg,
       options: options
     });

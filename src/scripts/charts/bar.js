@@ -111,10 +111,12 @@
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
 
     var valueAxis,
-      labelAxis;
+      labelAxis,
+      axisX,
+      axisY;
 
     if(options.horizontalBars) {
-      labelAxis = new Chartist.StepAxis(
+      labelAxis = axisY = new Chartist.StepAxis(
         Chartist.Axis.units.y,
         chartRect,
         function timeAxisTransform(projectedValue) {
@@ -131,7 +133,7 @@
         }
       );
 
-      valueAxis = new Chartist.LinearScaleAxis(
+      valueAxis = axisX = new Chartist.LinearScaleAxis(
         Chartist.Axis.units.x,
         chartRect,
         function valueAxisTransform(projectedValue) {
@@ -149,7 +151,7 @@
         }
       );
     } else {
-      labelAxis = new Chartist.StepAxis(
+      labelAxis = axisX = new Chartist.StepAxis(
         Chartist.Axis.units.x,
         chartRect,
         function timeAxisTransform(projectedValue) {
@@ -165,7 +167,7 @@
         }
       );
 
-      valueAxis = new Chartist.LinearScaleAxis(
+      valueAxis = axisY = new Chartist.LinearScaleAxis(
         Chartist.Axis.units.y,
         chartRect,
         function valueAxisTransform(projectedValue) {
@@ -278,6 +280,8 @@
     this.eventEmitter.emit('created', {
       bounds: valueAxis.bounds,
       chartRect: chartRect,
+      axisX: axisX,
+      axisY: axisY,
       svg: this.svg,
       options: options
     });
