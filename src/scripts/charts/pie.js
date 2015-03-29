@@ -145,7 +145,8 @@
       var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
-      var path = new Chartist.Svg.Path()
+      // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
+      var path = new Chartist.Svg.Path(!options.donut)
         .move(end.x, end.y)
         .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
@@ -166,7 +167,7 @@
       }, Chartist.xmlNs.uri);
 
       // If this is a donut, we add the stroke-width as style attribute
-      if(options.donut === true) {
+      if(options.donut) {
         pathElement.attr({
           'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
         });
