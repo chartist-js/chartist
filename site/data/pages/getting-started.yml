@@ -126,7 +126,7 @@ sections:
               data:
                 id: default-Sass-settings
                 button: Show default settings
-                path: site/styles/settings/_chartist-settings.scss
+                path: src/styles/settings/_chartist-settings.scss
                 lang: scss
 
   - title: Create your first chart
