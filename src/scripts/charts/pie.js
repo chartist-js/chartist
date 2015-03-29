@@ -143,34 +143,31 @@
       }
 
       var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
-        end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
-        arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
-        d = [
-          // Start at the end point from the cartesian coordinates
-          'M', end.x, end.y,
-          // Draw arc
-          'A', radius, radius, 0, arcSweep, 0, start.x, start.y
-        ];
+        end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
+
+      var path = new Chartist.Svg.Path()
+        .move(end.x, end.y)
+        .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
-      if(options.donut === false) {
-        d.push('L', center.x, center.y);
+      if(!options.donut) {
+        path.line(center.x, center.y);
       }
 
       // Create the SVG path
       // If this is a donut chart we add the donut class, otherwise just a regular slice
-      var path = seriesGroups[i].elem('path', {
-        d: d.join(' ')
+      var pathElement = seriesGroups[i].elem('path', {
+        d: path.stringify()
       }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
 
       // Adding the pie series value to the path
-      path.attr({
+      pathElement.attr({
         'value': dataArray[i]
       }, Chartist.xmlNs.uri);
 
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut === true) {
-        path.attr({
+        pathElement.attr({
           'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
         });
       }
@@ -182,7 +179,8 @@
         totalDataSum: totalDataSum,
         index: i,
         group: seriesGroups[i],
-        element: path,
+        element: pathElement,
+        path: path.clone(),
         center: center,
         radius: radius,
         startAngle: startAngle,

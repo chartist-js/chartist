@@ -16,7 +16,8 @@
   var elementDescriptions = {
     m: ['x', 'y'],
     l: ['x', 'y'],
-    c: ['x1', 'y1', 'x2', 'y2', 'x', 'y']
+    c: ['x1', 'y1', 'x2', 'y2', 'x', 'y'],
+    a: ['rx', 'ry', 'xAr', 'lAf', 'sf', 'x', 'y']
   };
 
   /**
@@ -63,7 +64,7 @@
    * Gets or sets the current position (cursor) inside of the path. You can move around the cursor freely but limited to 0 or the count of existing elements. All modifications with element functions will insert new elements at the position of this cursor.
    *
    * @memberof Chartist.Svg.Path
-   * @param {Number} [position] If a number is passed then the cursor is set to this position in the path element array.
+   * @param {Number} [pos] If a number is passed then the cursor is set to this position in the path element array.
    * @return {Chartist.Svg.Path|Number} If the position parameter was passed then the return value will be the path object for easy call chaining. If no position parameter was passed then the current position is returned.
    */
   function position(pos) {
@@ -93,7 +94,7 @@
    * @memberof Chartist.Svg.Path
    * @param {Number} x The x coordinate for the move element.
    * @param {Number} y The y coordinate for the move element.
-   * @param {Boolean} relative If set to true the move element will be created with relative coordinates (lowercase letter)
+   * @param {Boolean} [relative] If set to true the move element will be created with relative coordinates (lowercase letter)
    * @return {Chartist.Svg.Path} The current path object for easy call chaining.
    */
   function move(x, y, relative) {
@@ -110,7 +111,7 @@
    * @memberof Chartist.Svg.Path
    * @param {Number} x The x coordinate for the line element.
    * @param {Number} y The y coordinate for the line element.
-   * @param {Boolean} relative If set to true the line element will be created with relative coordinates (lowercase letter)
+   * @param {Boolean} [relative] If set to true the line element will be created with relative coordinates (lowercase letter)
    * @return {Chartist.Svg.Path} The current path object for easy call chaining.
    */
   function line(x, y, relative) {
@@ -131,7 +132,7 @@
    * @param {Number} y2 The y coordinate for the second control point of the bezier curve.
    * @param {Number} x The x coordinate for the target point of the curve element.
    * @param {Number} y The y coordinate for the target point of the curve element.
-   * @param {Boolean} relative If set to true the curve element will be created with relative coordinates (lowercase letter)
+   * @param {Boolean} [relative] If set to true the curve element will be created with relative coordinates (lowercase letter)
    * @return {Chartist.Svg.Path} The current path object for easy call chaining.
    */
   function curve(x1, y1, x2, y2, x, y, relative) {
@@ -140,6 +141,33 @@
       y1: +y1,
       x2: +x2,
       y2: +y2,
+      x: +x,
+      y: +y
+    }, this.pathElements, this.pos++, relative);
+    return this;
+  }
+
+  /**
+   * Use this function to add a new non-bezier curve SVG path element.
+   *
+   * @memberof Chartist.Svg.Path
+   * @param {Number} rx The radius to be used for the x-axis of the arc.
+   * @param {Number} ry The radius to be used for the y-axis of the arc.
+   * @param {Number} xAr Defines the orientation of the arc
+   * @param {Number} lAf Large arc flag
+   * @param {Number} sf Sweep flag
+   * @param {Number} x The x coordinate for the target point of the curve element.
+   * @param {Number} y The y coordinate for the target point of the curve element.
+   * @param {Boolean} [relative] If set to true the curve element will be created with relative coordinates (lowercase letter)
+   * @return {Chartist.Svg.Path} The current path object for easy call chaining.
+   */
+  function arc(rx, ry, xAr, lAf, sf, x, y, relative) {
+    element('A', {
+      rx: +rx,
+      ry: +ry,
+      xAr: +xAr,
+      lAf: +lAf,
+      sf: +sf,
       x: +x,
       y: +y
     }, this.pathElements, this.pos++, relative);
@@ -291,6 +319,7 @@
     move: move,
     line: line,
     curve: curve,
+    arc: arc,
     scale: scale,
     translate: translate,
     transform: transform,
