@@ -360,7 +360,9 @@ sections:
                 classes: hint-cross-browser
                 text: >
                         For IE9 you need to use a matchMedia polyfill. You should take a look at
-                        <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.
+                        <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>. Make
+                        sure you include matchMedia.js as well as matchMedia.addListener.js as always both are needed
+                        to polyfill the full specification of window.matchMedia.
 
   - title: Advanced
     level: 3

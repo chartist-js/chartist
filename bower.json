@@ -14,7 +14,8 @@
     "base64": "~0.3.0",
     "chartist-plugin-pointlabels": "~0.0.2",
     "chartist-plugin-sketchy": "~0.0.1",
-    "chartist-plugin-accessibility": "~0.0.1"
+    "chartist-plugin-accessibility": "~0.0.1",
+    "matchMedia": "~0.2.0"
   },
   "ignore": [
     ".*",
