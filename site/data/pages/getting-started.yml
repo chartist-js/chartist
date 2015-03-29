@@ -284,6 +284,23 @@ sections:
                       id: simple-start-fixed-chart
                       lang: js
 
+            - type: sub-section
+              data:
+                title: More than one chart on my page?
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              The example above uses the chartist default class to select the element where the chart should
+                              be created. This class is important for applying the right styles in the CSS of Chartist. If
+                              you need to create individual charts on one page, you should use IDs to initialize them separately.
+
+                  - type: code-snippet
+                    data:
+                      id: two-charts
+                      lang: html
+
       - type: sub-section
         data:
           title: The configuration of your chart
