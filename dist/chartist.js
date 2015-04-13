@@ -1949,7 +1949,8 @@ var Chartist = {
   var elementDescriptions = {
     m: ['x', 'y'],
     l: ['x', 'y'],
-    c: ['x1', 'y1', 'x2', 'y2', 'x', 'y']
+    c: ['x1', 'y1', 'x2', 'y2', 'x', 'y'],
+    a: ['rx', 'ry', 'xAr', 'lAf', 'sf', 'x', 'y']
   };
 
   /**
@@ -1996,7 +1997,7 @@ var Chartist = {
    * Gets or sets the current position (cursor) inside of the path. You can move around the cursor freely but limited to 0 or the count of existing elements. All modifications with element functions will insert new elements at the position of this cursor.
    *
    * @memberof Chartist.Svg.Path
-   * @param {Number} [position] If a number is passed then the cursor is set to this position in the path element array.
+   * @param {Number} [pos] If a number is passed then the cursor is set to this position in the path element array.
    * @return {Chartist.Svg.Path|Number} If the position parameter was passed then the return value will be the path object for easy call chaining. If no position parameter was passed then the current position is returned.
    */
   function position(pos) {
@@ -2026,7 +2027,7 @@ var Chartist = {
    * @memberof Chartist.Svg.Path
    * @param {Number} x The x coordinate for the move element.
    * @param {Number} y The y coordinate for the move element.
-   * @param {Boolean} relative If set to true the move element will be created with relative coordinates (lowercase letter)
+   * @param {Boolean} [relative] If set to true the move element will be created with relative coordinates (lowercase letter)
    * @return {Chartist.Svg.Path} The current path object for easy call chaining.
    */
   function move(x, y, relative) {
@@ -2043,7 +2044,7 @@ var Chartist = {
    * @memberof Chartist.Svg.Path
    * @param {Number} x The x coordinate for the line element.
    * @param {Number} y The y coordinate for the line element.
-   * @param {Boolean} relative If set to true the line element will be created with relative coordinates (lowercase letter)
+   * @param {Boolean} [relative] If set to true the line element will be created with relative coordinates (lowercase letter)
    * @return {Chartist.Svg.Path} The current path object for easy call chaining.
    */
   function line(x, y, relative) {
@@ -2064,7 +2065,7 @@ var Chartist = {
    * @param {Number} y2 The y coordinate for the second control point of the bezier curve.
    * @param {Number} x The x coordinate for the target point of the curve element.
    * @param {Number} y The y coordinate for the target point of the curve element.
-   * @param {Boolean} relative If set to true the curve element will be created with relative coordinates (lowercase letter)
+   * @param {Boolean} [relative] If set to true the curve element will be created with relative coordinates (lowercase letter)
    * @return {Chartist.Svg.Path} The current path object for easy call chaining.
    */
   function curve(x1, y1, x2, y2, x, y, relative) {
@@ -2073,6 +2074,33 @@ var Chartist = {
       y1: +y1,
       x2: +x2,
       y2: +y2,
+      x: +x,
+      y: +y
+    }, this.pathElements, this.pos++, relative);
+    return this;
+  }
+
+  /**
+   * Use this function to add a new non-bezier curve SVG path element.
+   *
+   * @memberof Chartist.Svg.Path
+   * @param {Number} rx The radius to be used for the x-axis of the arc.
+   * @param {Number} ry The radius to be used for the y-axis of the arc.
+   * @param {Number} xAr Defines the orientation of the arc
+   * @param {Number} lAf Large arc flag
+   * @param {Number} sf Sweep flag
+   * @param {Number} x The x coordinate for the target point of the curve element.
+   * @param {Number} y The y coordinate for the target point of the curve element.
+   * @param {Boolean} [relative] If set to true the curve element will be created with relative coordinates (lowercase letter)
+   * @return {Chartist.Svg.Path} The current path object for easy call chaining.
+   */
+  function arc(rx, ry, xAr, lAf, sf, x, y, relative) {
+    element('A', {
+      rx: +rx,
+      ry: +ry,
+      xAr: +xAr,
+      lAf: +lAf,
+      sf: +sf,
       x: +x,
       y: +y
     }, this.pathElements, this.pos++, relative);
@@ -2224,6 +2252,7 @@ var Chartist = {
     move: move,
     line: line,
     curve: curve,
+    arc: arc,
     scale: scale,
     translate: translate,
     transform: transform,
@@ -2634,6 +2663,8 @@ var Chartist = {
     this.eventEmitter.emit('created', {
       bounds: axisY.bounds,
       chartRect: chartRect,
+      axisX: axisX,
+      axisY: axisY,
       svg: this.svg,
       options: options
     });
@@ -2849,10 +2880,12 @@ var Chartist = {
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
 
     var valueAxis,
-      labelAxis;
+      labelAxis,
+      axisX,
+      axisY;
 
     if(options.horizontalBars) {
-      labelAxis = new Chartist.StepAxis(
+      labelAxis = axisY = new Chartist.StepAxis(
         Chartist.Axis.units.y,
         chartRect,
         function timeAxisTransform(projectedValue) {
@@ -2869,7 +2902,7 @@ var Chartist = {
         }
       );
 
-      valueAxis = new Chartist.LinearScaleAxis(
+      valueAxis = axisX = new Chartist.LinearScaleAxis(
         Chartist.Axis.units.x,
         chartRect,
         function valueAxisTransform(projectedValue) {
@@ -2887,7 +2920,7 @@ var Chartist = {
         }
       );
     } else {
-      labelAxis = new Chartist.StepAxis(
+      labelAxis = axisX = new Chartist.StepAxis(
         Chartist.Axis.units.x,
         chartRect,
         function timeAxisTransform(projectedValue) {
@@ -2903,7 +2936,7 @@ var Chartist = {
         }
       );
 
-      valueAxis = new Chartist.LinearScaleAxis(
+      valueAxis = axisY = new Chartist.LinearScaleAxis(
         Chartist.Axis.units.y,
         chartRect,
         function valueAxisTransform(projectedValue) {
@@ -3016,6 +3049,8 @@ var Chartist = {
     this.eventEmitter.emit('created', {
       bounds: valueAxis.bounds,
       chartRect: chartRect,
+      axisX: axisX,
+      axisY: axisY,
       svg: this.svg,
       options: options
     });
@@ -3219,34 +3254,32 @@ var Chartist = {
       }
 
       var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
-        end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle),
-        arcSweep = endAngle - startAngle <= 180 ? '0' : '1',
-        d = [
-          // Start at the end point from the cartesian coordinates
-          'M', end.x, end.y,
-          // Draw arc
-          'A', radius, radius, 0, arcSweep, 0, start.x, start.y
-        ];
+        end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
+
+      // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
+      var path = new Chartist.Svg.Path(!options.donut)
+        .move(end.x, end.y)
+        .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
-      if(options.donut === false) {
-        d.push('L', center.x, center.y);
+      if(!options.donut) {
+        path.line(center.x, center.y);
       }
 
       // Create the SVG path
       // If this is a donut chart we add the donut class, otherwise just a regular slice
-      var path = seriesGroups[i].elem('path', {
-        d: d.join(' ')
+      var pathElement = seriesGroups[i].elem('path', {
+        d: path.stringify()
       }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
 
       // Adding the pie series value to the path
-      path.attr({
+      pathElement.attr({
         'value': dataArray[i]
       }, Chartist.xmlNs.uri);
 
       // If this is a donut, we add the stroke-width as style attribute
-      if(options.donut === true) {
-        path.attr({
+      if(options.donut) {
+        pathElement.attr({
           'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
         });
       }
@@ -3258,7 +3291,8 @@ var Chartist = {
         totalDataSum: totalDataSum,
         index: i,
         group: seriesGroups[i],
-        element: path,
+        element: pathElement,
+        path: path.clone(),
         center: center,
         radius: radius,
         startAngle: startAngle,
