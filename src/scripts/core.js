@@ -624,7 +624,7 @@ var Chartist = {
     eventEmitter.emit('draw',
       Chartist.extend({
         type: 'grid',
-        axis: axis.units.pos,
+        axis: axis,
         index: index,
         group: group,
         element: gridElement
