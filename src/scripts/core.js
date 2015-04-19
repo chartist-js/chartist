@@ -47,7 +47,7 @@ var Chartist = {
     var sources = Array.prototype.slice.call(arguments, 1);
     sources.forEach(function(source) {
       for (var prop in source) {
-        if (typeof source[prop] === 'object' && !(source[prop] instanceof Array)) {
+        if (typeof source[prop] === 'object' && source[prop] !== null && !(source[prop] instanceof Array)) {
           target[prop] = Chartist.extend({}, target[prop], source[prop]);
         } else {
           target[prop] = source[prop];
