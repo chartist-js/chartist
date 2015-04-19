@@ -1,0 +1,18 @@
+{
+  "name": "chartist-plugin-tooltip",
+  "version": "0.0.9",
+  "main": [
+    "./dist/chartist-plugin-tooltip.min.js"
+  ],
+  "dependencies": {
+    "chartist": "~0.7.3"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ]
+}
