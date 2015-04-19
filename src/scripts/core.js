@@ -331,6 +331,11 @@ var Chartist = {
       } else {
         array[i] = localData;
       }
+      
+      // if value is a string rather than a number (or object), just convert it implicitly
+      if (typeof(array[i]) === 'string') {
+        array[i] = +array[i]
+      }
 
       // Convert object values to numbers
       for (var j = 0; j < array[i].length; j++) {
