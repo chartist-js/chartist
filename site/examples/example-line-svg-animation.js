@@ -88,22 +88,22 @@ chart.on('draw', function(data) {
     var pos1Animation = {
       begin: seq * delays,
       dur: durations,
-      from: data[data.axis + '1'] - 30,
-      to: data[data.axis + '1'],
+      from: data[data.axis.units.pos + '1'] - 30,
+      to: data[data.axis.units.pos + '1'],
       easing: 'easeOutQuart'
     };
 
     var pos2Animation = {
       begin: seq * delays,
       dur: durations,
-      from: data[data.axis + '2'] - 100,
-      to: data[data.axis + '2'],
+      from: data[data.axis.units.pos + '2'] - 100,
+      to: data[data.axis.units.pos + '2'],
       easing: 'easeOutQuart'
     };
 
     var animations = {};
-    animations[data.axis + '1'] = pos1Animation;
-    animations[data.axis + '2'] = pos2Animation;
+    animations[data.axis.units.pos + '1'] = pos1Animation;
+    animations[data.axis.units.pos + '2'] = pos2Animation;
     animations['opacity'] = {
       begin: seq * delays,
       dur: durations,
