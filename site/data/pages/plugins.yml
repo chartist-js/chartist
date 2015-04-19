@@ -95,38 +95,36 @@ sections:
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/gionkunz/chartist-plugin-accessibility" target="_blank">chartist-plugin-accessibility</a>'
 
-
-            - type: sub-section
+      - type: sub-section
+        data:
+          title: Tooltip Plugin
+          level: 4
+          items:
+            - type: text
               data:
-                title: Tooltip Plugin
-                level: 4
-                items:
-                  - type: text
-                    data:
-                      text: >
-                              The tooltip plugin makes it super simple to add tooltips to most of your charts which can often
-                              increase it's usability.
-                  - type: text
-                    data:
-                      text: >
-                              By simply including this plugin with default configurations you will already make your charts
-                              get some tooltips showing.
-                  - type: live-example
-                    data:
-                      id: example-plugin-tooltip
-                      classes: ct-golden-section
-                      intro: >
-                               Creating a simple line chart showing how the tooltips work.
-                  - type: table
-                    data:
-                      rows:
-                        -
-                          - '<strong>Author:</strong>'
-                          - Markus Padourek
-                        -
-                          - '<strong>Link:</strong>'
-                          - '<a href="https://github.com/Globegitter/chartist-plugin-tooltip" target="_blank">chartist-plugin-tooltip</a>'
-
+                text: >
+                        The tooltip plugin makes it super simple to add tooltips to most of your charts which can often
+                        increase it's usability.
+            - type: text
+              data:
+                text: >
+                        By simply including this plugin with default configurations you will already make your charts
+                        get some tooltips showing.
+            - type: live-example
+              data:
+                id: example-plugin-tooltip
+                classes: ct-golden-section
+                intro: >
+                         Creating a simple line chart showing how the tooltips work.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Markus Padourek
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/Globegitter/chartist-plugin-tooltip" target="_blank">chartist-plugin-tooltip</a>'
 
       - type: sub-section
         data:

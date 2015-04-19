@@ -11,7 +11,11 @@ var chart = new Chartist.Line('.ct-chart', {
       {meta: 'other description', value: 4},
       {meta: 'other description', value: 2}
     ]
+  ]
 }, {
+  low: 0,
+  high: 8,
+  fullWidth: true,
   plugins: [
     Chartist.plugins.tooltip()
   ]
