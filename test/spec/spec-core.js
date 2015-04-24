@@ -122,6 +122,64 @@ describe('Chartist core', function() {
       );
     });
 
+    it('normalize mixed series for pie chart correctly', function() {
+      var data = {
+        series: [1, {value: 0}, 3, {value: 4}, 5, 6, 7, 8]
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [1, 0, 3, 4, 5, 6, 7, 8]
+      );
+    });
+
+    it('normalize mixed series with string values for pie chart correctly', function() {
+      var data = {
+        series: ['1', {value: '0'}, '3', {value: '4'}, '5', '6', '7', '8']
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [1, 0, 3, 4, 5, 6, 7, 8]
+      );
+    });
+
+    it('normalize mixed series types with string values correctly', function() {
+      var data = {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          {data: ['1', '0', '3', '4', '5', '6']},
+          ['1', {value: '0'}, '3', {value: '4'}, '5', '6', '7', '8'],
+          {data: ['1', '0', {value: '3'}]}
+        ]
+      };
+
+      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
+        [
+          [1, 0, 3, 4, 5, 6, 0, 0, 0, 0],
+          [1, 0, 3, 4, 5, 6, 7, 8, 0, 0],
+          [1, 0, 3, 0, 0, 0, 0, 0, 0, 0]
+        ]
+      );
+    });
+
+    it('normalize mixed series types with weird values correctly', function() {
+      var data = {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          {data: [null, NaN, undefined, '4', '5', '6']},
+          ['1', {value: null}, '3', {value: NaN}, '5', '6', '7', '8'],
+          {data: ['1', '0', {value: undefined}]}
+        ]
+      };
+
+      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
+        [
+          [0, 0, 0, 4, 5, 6, 0, 0, 0, 0],
+          [1, 0, 3, 0, 5, 6, 7, 8, 0, 0],
+          [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ]
+      );
+    });
+
     it('should normalize correctly with 0 values in data series array objects', function() {
       var data = {
         labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],

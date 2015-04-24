@@ -308,10 +308,6 @@ var Chartist = {
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
   Chartist.getDataArray = function (data, reverse) {
-    var array = [],
-      value,
-      localData;
-
     // If the data should be reversed but isn't we need to reverse it
     // If it's reversed but it shouldn't we need to reverse it back
     // That's required to handle data updates correctly and to reflect the responsive configurations
@@ -320,27 +316,21 @@ var Chartist = {
       data.reversed = !data.reversed;
     }
 
-    for (var i = 0; i < data.series.length; i++) {
-      // If the series array contains an object with a data property we will use the property
-      // otherwise the value directly (array or number).
-      // We create a copy of the original data array with Array.prototype.push.apply
-      localData = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ? data.series[i].data : data.series[i];
-      if(localData instanceof Array) {
-        array[i] = [];
-        Array.prototype.push.apply(array[i], localData);
+    // Rcursively walks through nested arrays and convert string values to numbers and objects with value properties
+    // to values. Check the tests in data core -> data normalization for a detailed specification of expected values
+    function recursiveConvert(value) {
+      if(value === undefined || value === null || (typeof value === 'number' && isNaN(value))) {
+        return 0;
+      } else if((value.data || value) instanceof Array) {
+        return (value.data || value).map(recursiveConvert);
+      } else if(value.hasOwnProperty('value')) {
+        return recursiveConvert(value.value);
       } else {
-        array[i] = localData;
-      }
-
-      // Convert object values to numbers
-      for (var j = 0; j < array[i].length; j++) {
-        value = array[i][j];
-        value = value.value === 0 ? 0 : (value.value || value);
-        array[i][j] = +value;
+        return +value;
       }
     }
 
-    return array;
+    return data.series.map(recursiveConvert);
   };
 
   /**
