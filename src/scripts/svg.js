@@ -307,6 +307,24 @@
   }
 
   /**
+   * "Save" way to get property value from svg BoundingBox.
+   * This is a workaround. Firefox throws an NS_ERROR_FAILURE error if getBBox() is called on an invisible node.
+   * See [NS_ERROR_FAILURE: Component returned failure code: 0x80004005](http://jsfiddle.net/sym3tri/kWWDK/)
+   *
+   * @memberof Chartist.Svg
+   * @param {SVGElement} node The svg node to
+   * @param {String} prop The property to fetch (ex.: height, width, ...)
+   * @returns {Number} The value of the given bbox property
+   */
+  function getBBoxProperty(node, prop) {
+    try {
+      return node.getBBox()[prop];
+    } catch(e) {}
+
+    return 0;
+  }
+
+  /**
    * Get element height with fallback to svg BoundingBox or parent container dimensions:
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
@@ -314,7 +332,7 @@
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
+    return this._node.clientHeight || Math.round(getBBoxProperty(this._node, 'height')) || this._node.parentNode.clientHeight;
   }
 
   /**
@@ -325,7 +343,7 @@
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.clientWidth || Math.round(this._node.getBBox().width) || this._node.parentNode.clientWidth;
+    return this._node.clientWidth || Math.round(getBBoxProperty(this._node, 'width')) || this._node.parentNode.clientWidth;
   }
 
   /**
