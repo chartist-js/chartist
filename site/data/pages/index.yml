@@ -220,6 +220,9 @@ sections:
               - '<a href="https://github.com/paradox41/ng-chartist.js" target="_blank">ng-chartist.js</a>'
               - Angular Directive
             -
+              - '<a href="https://github.com/gruberb/chartistAngularDirective" target="_blank">chartistAngularDirective.js</a>'
+              - Angular Directive
+            -
               - '<a href="https://fraserxu.me/react-chartist" target="_blank">react-chartist</a>'
               - React Component
             -
@@ -228,7 +231,7 @@ sections:
             -
               - '<a href="https://github.com/soderlind/tablepress_chartist" target="_blank">tablepress_chartist</a>'
               - Wordpress / Tablepress Extension
-            - 
+            -
               - '<a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a>'
               - Ember Addon
   - title: Chart CSS animation example
