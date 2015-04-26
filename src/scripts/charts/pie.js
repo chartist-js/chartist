@@ -268,18 +268,23 @@
    * });
    *
    * @example
-   * // Overriding the class names for individual series and include meta data
+   * // Overriding the class names for individual series as well as a name and meta data.
+   * // The name will be written as ct:series-name attribute and the meta data will be serialized and written
+   * // to a ct:meta attribute.
    * new Chartist.Pie('.ct-chart', {
    *   series: [{
    *     value: 20,
+   *     name: 'Series 1',
    *     className: 'my-custom-class-one',
    *     meta: 'Meta One'
    *   }, {
    *     value: 10,
+   *     name: 'Series 2',
    *     className: 'my-custom-class-two',
    *     meta: 'Meta Two'
    *   }, {
    *     value: 70,
+   *     name: 'Series 3',
    *     className: 'my-custom-class-three',
    *     meta: 'Meta Three'
    *   }]
