@@ -100,9 +100,9 @@
         return Array.prototype.slice.call(arguments).reduce(Chartist.sum, 0);
       });
 
-      highLow = Chartist.getHighLow([serialSums]);
+      highLow = Chartist.getHighLow([serialSums], options);
     } else {
-      highLow = Chartist.getHighLow(normalizedData);
+      highLow = Chartist.getHighLow(normalizedData, options);
     }
     // Overrides of high / low from settings
     highLow.high = +options.high || (options.high === 0 ? 0 : highLow.high);

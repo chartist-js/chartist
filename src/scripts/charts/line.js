@@ -103,10 +103,7 @@
 
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
 
-    var highLow = Chartist.getHighLow(normalizedData);
-    // Overrides of high / low from settings
-    highLow.high = +options.high || (options.high === 0 ? 0 : highLow.high);
-    highLow.low = +options.low || (options.low === 0 ? 0 : highLow.low);
+    var highLow = Chartist.getHighLow(normalizedData, options);
 
     var axisX = new Chartist.StepAxis(
       Chartist.Axis.units.x,

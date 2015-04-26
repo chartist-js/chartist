@@ -435,25 +435,43 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {Array} dataArray The array that contains the data to be visualized in the chart
+   * @param {Object} options The Object that contains all the optional values for the chart
    * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
    */
-  Chartist.getHighLow = function (dataArray) {
+  Chartist.getHighLow = function (dataArray, options) {
     var i,
       j,
       highLow = {
-        high: -Number.MAX_VALUE,
-        low: Number.MAX_VALUE
-      };
+        high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
+        low: options.low === undefined ? Number.MAX_VALUE : +options.low
+      },
+      findHigh = options.high === undefined,
+      findLow = options.low === undefined;
 
     for (i = 0; i < dataArray.length; i++) {
       for (j = 0; j < dataArray[i].length; j++) {
-        if (dataArray[i][j] > highLow.high) {
+        if (findHigh && dataArray[i][j] > highLow.high) {
           highLow.high = dataArray[i][j];
         }
 
-        if (dataArray[i][j] < highLow.low) {
+        if (findLow && dataArray[i][j] < highLow.low) {
           highLow.low = dataArray[i][j];
         }
+      }
+    }
+
+    // If high and low are the same because of misconfiguration or flat data (only the same value) we need
+    // to set the high or low to 0 depending on the polarity
+    if (highLow.high <= highLow.low) {
+      // If both values are 0 we set high to 1
+      if (highLow.low === 0) {
+        highLow.high = 1;
+      } else if (highLow.low < 0) {
+        // If we have the same negative value for the bounds we set bounds.high to 0
+        highLow.high = 0;
+      } else {
+        // If we have the same positive value for the bounds we set bounds.low to 0
+        highLow.low = 0;
       }
     }
 
@@ -478,21 +496,6 @@ var Chartist = {
         high: highLow.high,
         low: highLow.low
       };
-
-    // If high and low are the same because of misconfiguration or flat data (only the same value) we need
-    // to set the high or low to 0 depending on the polarity
-    if(bounds.high === bounds.low) {
-      // If both values are 0 we set high to 1
-      if(bounds.low === 0) {
-        bounds.high = 1;
-      } else if(bounds.low < 0) {
-        // If we have the same negative value for the bounds we set bounds.high to 0
-        bounds.high = 0;
-      } else {
-        // If we have the same positive value for the bounds we set bounds.low to 0
-        bounds.low = 0;
-      }
-    }
 
     // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
     // used to generate the chart. This is useful when the chart always needs to contain the position of the
