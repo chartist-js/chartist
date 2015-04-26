@@ -19,7 +19,7 @@
     height: undefined,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: 5,
-    // Override the class names that get used to generate the SVG structure of the chart
+    // Override the class names that are used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-pie',
       series: 'ct-series',
@@ -229,7 +229,7 @@
    *
    * @memberof Chartist.Pie
    * @param {String|Node} query A selector query string or directly a DOM element
-   * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage. The series property can also be an array of objects that contain a data property with the value and a className property to override the CSS class name for the series group.
+   * @param {Object} data The data object in the pie chart needs to have a series property with a one dimensional data array. The values will be normalized against each other and don't necessarily need to be in percentage. The series property can also be an array of value objects that contain a value property and a className property to override the CSS class name for the series group.
    * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
    * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    * @return {Object} An object with a version and an update method to manually redraw the chart
@@ -270,17 +270,20 @@
    * });
    *
    * @example
-   * // Overriding the class names for individual series
+   * // Overriding the class names for individual series and include meta data
    * new Chartist.Pie('.ct-chart', {
    *   series: [{
-   *     data: 20,
-   *     className: 'my-custom-class-one'
+   *     value: 20,
+   *     className: 'my-custom-class-one',
+   *     meta: 'Meta One'
    *   }, {
-   *     data: 10,
-   *     className: 'my-custom-class-two'
+   *     value: 10,
+   *     className: 'my-custom-class-two',
+   *     meta: 'Meta Two'
    *   }, {
-   *     data: 70,
-   *     className: 'my-custom-class-three'
+   *     value: 70,
+   *     className: 'my-custom-class-three',
+   *     meta: 'Meta Three'
    *   }]
    * });
    */
