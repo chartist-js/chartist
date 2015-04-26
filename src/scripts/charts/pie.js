@@ -121,13 +121,11 @@
     for (var i = 0; i < this.data.series.length; i++) {
       seriesGroups[i] = this.svg.elem('g', null, null, true);
 
-      // If the series is an object and contains a name we add a custom attribute
-      if(this.data.series[i].name) {
-        seriesGroups[i].attr({
-          'series-name': this.data.series[i].name,
-          'meta': Chartist.serialize(this.data.series[i].meta)
-        }, Chartist.xmlNs.uri);
-      }
+      // If the series is an object and contains a name or meta data we add a custom attribute
+      seriesGroups[i].attr({
+        'series-name': this.data.series[i].name,
+        'meta': Chartist.serialize(this.data.series[i].meta)
+      }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
       seriesGroups[i].addClass([
