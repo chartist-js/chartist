@@ -113,7 +113,7 @@
 
     // Check if there is only one non-zero value in the series array.
     var hasSingleValInSeries = this.data.series.filter(function(val) {
-      return val !== 0;
+      return val.hasOwnProperty('value') ? val.value !== 0 : val !== 0;
     }).length === 1;
 
     // Draw the series
