@@ -234,6 +234,9 @@ sections:
             -
               - '<a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a>'
               - Ember Addon
+            -
+              - '<a href="https://github.com/hatemalimam/ChartistJSF" target="_blank">ChartistJSF</a>'
+              - Java Server Faces (Prime Faces) Component
   - title: Chart CSS animation example
     level: 3
     items:

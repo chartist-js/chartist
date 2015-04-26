@@ -570,9 +570,14 @@ var Chartist = {
   Chartist.createChartRect = function (svg, options, fallbackPadding) {
     var yOffset = options.axisY ? options.axisY.offset || 0 : 0,
       xOffset = options.axisX ? options.axisX.offset || 0 : 0,
-      w = Chartist.stripUnit(options.width) || svg.width(),
-      h = Chartist.stripUnit(options.height) || svg.height(),
+      // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
+      w = svg.width() || Chartist.stripUnit(options.width) || 0,
+      h = svg.height() || Chartist.stripUnit(options.height) || 0,
       normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
+
+    // If settings were to small to cope with offset (legacy) and padding, we'll adjust
+    w = Math.max(w, xOffset + normalizedPadding.left + normalizedPadding.right);
+    h = Math.max(h, yOffset + normalizedPadding.top + normalizedPadding.bottom);
 
     return {
       x1: normalizedPadding.left + yOffset,
