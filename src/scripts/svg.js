@@ -22,7 +22,7 @@
    *
    * @memberof Chartist.Svg
    * @constructor
-   * @param {String|SVGElement} name The name of the SVG element to create or an SVG dom element which should be wrapped into Chartist.Svg
+   * @param {String|Element} name The name of the SVG element to create or an SVG dom element which should be wrapped into Chartist.Svg
    * @param {Object} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
    * @param {String} className This class or class list will be added to the SVG element
    * @param {Object} parent The parent SVG wrapper object where this newly created wrapper and it's element will be attached to as child
@@ -30,7 +30,7 @@
    */
   function Svg(name, attributes, className, parent, insertFirst) {
     // If Svg is getting called with an SVG element we just return the wrapper
-    if(name instanceof SVGElement) {
+    if(name instanceof Element) {
       this._node = name;
     } else {
       this._node = document.createElementNS(svgNs, name);
