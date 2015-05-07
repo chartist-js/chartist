@@ -768,10 +768,10 @@ var Chartist = {
     updateCurrentOptions(true);
 
     return {
-      get currentOptions() {
+      removeMediaQueryListeners: removeMediaQueryListeners,
+      getCurrentOptions: function getCurrentOptions() {
         return Chartist.extend({}, currentOptions);
-      },
-      removeMediaQueryListeners: removeMediaQueryListeners
+      }
     };
   };
 

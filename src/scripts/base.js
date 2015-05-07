@@ -44,7 +44,7 @@
 
     // Only re-created the chart if it has been initialized yet
     if(!this.initializeTimeoutId) {
-      this.createChart(this.optionsProvider.currentOptions);
+      this.createChart(this.optionsProvider.getCurrentOptions());
     }
 
     // Return a reference to the chart object to chain up calls
@@ -117,7 +117,7 @@
     });
 
     // Create the first chart
-    this.createChart(this.optionsProvider.currentOptions);
+    this.createChart(this.optionsProvider.getCurrentOptions());
 
     // As chart is initialized from the event loop now we can reset our timeout reference
     // This is important if the chart gets initialized on the same element twice
