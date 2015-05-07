@@ -181,99 +181,108 @@
         (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(seriesIndex))
       ].join(' '));
 
-      var pathCoordinates = [];
+      var pathCoordinates = [],
+        pathData = [];
 
       normalizedData[seriesIndex].forEach(function(value, valueIndex) {
         var p = {
-          x: chartRect.x1 + axisX.projectValue(value, valueIndex,  normalizedData[seriesIndex]).pos,
-          y: chartRect.y1 - axisY.projectValue(value, valueIndex,  normalizedData[seriesIndex]).pos
+          x: chartRect.x1 + axisX.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
+          y: chartRect.y1 - axisY.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
         };
         pathCoordinates.push(p.x, p.y);
+        pathData.push({
+          value: value,
+          valueIndex: valueIndex,
+          meta: Chartist.getMetaData(series, valueIndex)
+        });
+      }.bind(this));
 
-        //If we should show points we need to create them now to avoid secondary loop
-        // Small offset for Firefox to render squares correctly
-        if (options.showPoint) {
+      var smoothing = typeof options.lineSmooth === 'function' ?
+          options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none());
+      // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
+      // index, value and meta data
+      var path = smoothing(pathCoordinates, pathData);
+
+      // If we should show points we need to create them now to avoid secondary loop
+      // Points are drawn from the pathElements returned by the interpolation function
+      // Small offset for Firefox to render squares correctly
+      if (options.showPoint) {
+
+        path.pathElements.forEach(function(pathElement) {
           var point = seriesGroups[seriesIndex].elem('line', {
-            x1: p.x,
-            y1: p.y,
-            x2: p.x + 0.01,
-            y2: p.y
+            x1: pathElement.x,
+            y1: pathElement.y,
+            x2: pathElement.x + 0.01,
+            y2: pathElement.y
           }, options.classNames.point).attr({
-            'value': value,
-            'meta': Chartist.getMetaData(series, valueIndex)
+            'value': pathElement.data.value,
+            'meta': pathElement.data.meta
           }, Chartist.xmlNs.uri);
 
           this.eventEmitter.emit('draw', {
             type: 'point',
-            value: value,
-            index: valueIndex,
+            value: pathElement.data.value,
+            index: pathElement.data.valueIndex,
             group: seriesGroups[seriesIndex],
             element: point,
-            x: p.x,
-            y: p.y
+            x: pathElement.x,
+            y: pathElement.y
           });
-        }
-      }.bind(this));
+        }.bind(this));
+      }
 
-      // TODO: Nicer handling of conditions, maybe composition?
-      if (options.showLine || options.showArea) {
-        var smoothing = typeof options.lineSmooth === 'function' ?
-          options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
-          path = smoothing(pathCoordinates);
+      if(options.showLine) {
+        var line = seriesGroups[seriesIndex].elem('path', {
+          d: path.stringify()
+        }, options.classNames.line, true).attr({
+          'values': normalizedData[seriesIndex]
+        }, Chartist.xmlNs.uri);
 
-        if(options.showLine) {
-          var line = seriesGroups[seriesIndex].elem('path', {
-            d: path.stringify()
-          }, options.classNames.line, true).attr({
-            'values': normalizedData[seriesIndex]
-          }, Chartist.xmlNs.uri);
+        this.eventEmitter.emit('draw', {
+          type: 'line',
+          values: normalizedData[seriesIndex],
+          path: path.clone(),
+          chartRect: chartRect,
+          index: seriesIndex,
+          group: seriesGroups[seriesIndex],
+          element: line
+        });
+      }
 
-          this.eventEmitter.emit('draw', {
-            type: 'line',
-            values: normalizedData[seriesIndex],
-            path: path.clone(),
-            chartRect: chartRect,
-            index: seriesIndex,
-            group: seriesGroups[seriesIndex],
-            element: line
-          });
-        }
+      if(options.showArea) {
+        // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
+        // the area is not drawn outside the chart area.
+        var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
 
-        if(options.showArea) {
-          // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
-          // the area is not drawn outside the chart area.
-          var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
+        // We project the areaBase value into screen coordinates
+        var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase).pos;
 
-          // We project the areaBase value into screen coordinates
-          var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase).pos;
+        // Clone original path and splice our new area path to add the missing path elements to close the area shape
+        var areaPath = path.clone();
+        // Modify line path and add missing elements for area
+        areaPath.position(0)
+          .remove(1)
+          .move(chartRect.x1, areaBaseProjected)
+          .line(pathCoordinates[0], pathCoordinates[1])
+          .position(areaPath.pathElements.length)
+          .line(pathCoordinates[pathCoordinates.length - 2], areaBaseProjected);
 
-          // Clone original path and splice our new area path to add the missing path elements to close the area shape
-          var areaPath = path.clone();
-          // Modify line path and add missing elements for area
-          areaPath.position(0)
-            .remove(1)
-            .move(chartRect.x1, areaBaseProjected)
-            .line(pathCoordinates[0], pathCoordinates[1])
-            .position(areaPath.pathElements.length)
-            .line(pathCoordinates[pathCoordinates.length - 2], areaBaseProjected);
+        // Create the new path for the area shape with the area class from the options
+        var area = seriesGroups[seriesIndex].elem('path', {
+          d: areaPath.stringify()
+        }, options.classNames.area, true).attr({
+          'values': normalizedData[seriesIndex]
+        }, Chartist.xmlNs.uri);
 
-          // Create the new path for the area shape with the area class from the options
-          var area = seriesGroups[seriesIndex].elem('path', {
-            d: areaPath.stringify()
-          }, options.classNames.area, true).attr({
-            'values': normalizedData[seriesIndex]
-          }, Chartist.xmlNs.uri);
-
-          this.eventEmitter.emit('draw', {
-            type: 'area',
-            values: normalizedData[seriesIndex],
-            path: areaPath.clone(),
-            chartRect: chartRect,
-            index: seriesIndex,
-            group: seriesGroups[seriesIndex],
-            element: area
-          });
-        }
+        this.eventEmitter.emit('draw', {
+          type: 'area',
+          values: normalizedData[seriesIndex],
+          path: areaPath.clone(),
+          chartRect: chartRect,
+          index: seriesIndex,
+          group: seriesGroups[seriesIndex],
+          element: area
+        });
       }
     }.bind(this));
 

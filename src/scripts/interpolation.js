@@ -16,11 +16,11 @@
    * @return {Function}
    */
   Chartist.Interpolation.none = function() {
-    return function cardinal(pathCoordinates) {
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]);
+    return function none(pathCoordinates, valueData) {
+      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
 
       for(var i = 3; i < pathCoordinates.length; i += 2) {
-        path.line(pathCoordinates[i - 1], pathCoordinates[i]);
+        path.line(pathCoordinates[i - 1], pathCoordinates[i], false, valueData[(i - 1) / 2]);
       }
 
       return path;
@@ -57,8 +57,8 @@
 
     var d = 1 / Math.max(1, options.divisor);
 
-    return function simple(pathCoordinates) {
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]);
+    return function simple(pathCoordinates, valueData) {
+      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
 
       for(var i = 2; i < pathCoordinates.length; i += 2) {
         var prevX = pathCoordinates[i - 2],
@@ -73,7 +73,9 @@
           currX - length,
           currY,
           currX,
-          currY
+          currY,
+          false,
+          valueData[i / 2]
         );
       }
 
@@ -112,13 +114,13 @@
     var t = Math.min(1, Math.max(0, options.tension)),
       c = 1 - t;
 
-    return function cardinal(pathCoordinates) {
+    return function cardinal(pathCoordinates, valueData) {
       // If less than two points we need to fallback to no smoothing
       if(pathCoordinates.length <= 4) {
-        return Chartist.Interpolation.none()(pathCoordinates);
+        return Chartist.Interpolation.none()(pathCoordinates, valueData);
       }
 
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1]),
+      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]),
         z;
 
       for (var i = 0, iLen = pathCoordinates.length; iLen - 2 * !z > i; i += 2) {
@@ -151,8 +153,59 @@
           (t * (p[1].x + 6 * p[2].x - p[3].x) / 6) + (c * p[2].x),
           (t * (p[1].y + 6 * p[2].y - p[3].y) / 6) + (c * p[2].y),
           p[2].x,
-          p[2].y
+          p[2].y,
+          false,
+          valueData[(i + 2) / 2]
         );
+      }
+
+      return path;
+    };
+  };
+
+  /**
+   * Step interpolation will cause the line chart to move in steps rather than diagonal or smoothed lines. This interpolation will create additional points that will also be drawn when the `showPoint` option is enabled.
+   *
+   * All smoothing functions within Chartist are factory functions that accept an options parameter. The step interpolation function accepts one configuration parameter `postpone`, that can be `true` or `false`. The default value is `true` and will cause the step to occur where the value actually changes. If a different behaviour is needed where the step is shifted to the left and happens before the actual value, this option can be set to `false`.
+   *
+   * @example
+   * var chart = new Chartist.Line('.ct-chart', {
+   *   labels: [1, 2, 3, 4, 5],
+   *   series: [[1, 2, 8, 1, 7]]
+   * }, {
+   *   lineSmooth: Chartist.Interpolation.step({
+   *     postpone: true
+   *   })
+   * });
+   *
+   * @memberof Chartist.Interpolation
+   * @param options
+   * @returns {Function}
+   */
+  Chartist.Interpolation.step = function(options) {
+    var defaultOptions = {
+      postpone: true
+    };
+
+    options = Chartist.extend({}, defaultOptions, options);
+
+    return function step(pathCoordinates, valueData) {
+      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
+
+      for (var i = 2; i < pathCoordinates.length; i += 2) {
+        var prevX = pathCoordinates[i - 2],
+          prevY = pathCoordinates[i - 1],
+          currX = pathCoordinates[i],
+          currY = pathCoordinates[i + 1];
+
+        if(options.postpone) {
+          path.line(currX, prevY, false, valueData[(i - 2) / 2]);
+        } else {
+          path.line(prevX, currY, false, valueData[i / 2]);
+        }
+
+
+        path.line(currX, currY, false, valueData[i / 2]);
       }
 
       return path;
