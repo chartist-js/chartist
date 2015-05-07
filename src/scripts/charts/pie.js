@@ -123,8 +123,7 @@
 
       // If the series is an object and contains a name or meta data we add a custom attribute
       seriesGroups[i].attr({
-        'series-name': this.data.series[i].name,
-        'meta': Chartist.serialize(this.data.series[i].meta)
+        'series-name': this.data.series[i].name
       }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
@@ -161,7 +160,8 @@
 
       // Adding the pie series value to the path
       pathElement.attr({
-        'value': dataArray[i]
+        'value': dataArray[i],
+        'meta': Chartist.serialize(this.data.series[i].meta)
       }, Chartist.xmlNs.uri);
 
       // If this is a donut, we add the stroke-width as style attribute
