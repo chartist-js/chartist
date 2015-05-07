@@ -166,8 +166,8 @@ describe('Base chart tests', function() {
       expect(optionsChangedEventsSpy.calls.count()).toBe(0);
 
       // Updated options should be present as we updated it in same call stack before chart creation
-      expect(chart.optionsProvider.currentOptions.showArea).toBe(false);
-      expect(chart.optionsProvider.currentOptions.showPoint).toBe(true);
+      expect(chart.optionsProvider.getCurrentOptions().showArea).toBe(false);
+      expect(chart.optionsProvider.getCurrentOptions().showPoint).toBe(true);
       done();
     });
   });
@@ -239,8 +239,8 @@ describe('Base chart tests', function() {
     chart.on('created', function() {
       // showArea is false in the default settings and as we didn't use current options and override option it should
       // be back to default.
-      expect(chart.optionsProvider.currentOptions.showArea).toBe(false);
-      expect(chart.optionsProvider.currentOptions.showPoint).toBe(false);
+      expect(chart.optionsProvider.getCurrentOptions().showArea).toBe(false);
+      expect(chart.optionsProvider.getCurrentOptions().showPoint).toBe(false);
       done();
     });
   });
@@ -263,8 +263,8 @@ describe('Base chart tests', function() {
     chart.update(null, updatedOptions, true);
 
     chart.on('created', function() {
-      expect(chart.optionsProvider.currentOptions.showArea).toBe(true);
-      expect(chart.optionsProvider.currentOptions.showPoint).toBe(false);
+      expect(chart.optionsProvider.getCurrentOptions().showArea).toBe(true);
+      expect(chart.optionsProvider.getCurrentOptions().showPoint).toBe(false);
       done();
     });
   });
