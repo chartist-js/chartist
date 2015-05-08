@@ -223,6 +223,9 @@
             type: 'point',
             value: pathElement.data.value,
             index: pathElement.data.valueIndex,
+            meta: pathElement.data.meta,
+            series: series,
+            seriesIndex: seriesIndex,
             group: seriesGroups[seriesIndex],
             element: point,
             x: pathElement.x,
@@ -244,6 +247,8 @@
           path: path.clone(),
           chartRect: chartRect,
           index: seriesIndex,
+          series: series,
+          seriesIndex: seriesIndex,
           group: seriesGroups[seriesIndex],
           element: line
         });
@@ -278,6 +283,8 @@
           type: 'area',
           values: normalizedData[seriesIndex],
           path: areaPath.clone(),
+          series: series,
+          seriesIndex: seriesIndex,
           chartRect: chartRect,
           index: seriesIndex,
           group: seriesGroups[seriesIndex],

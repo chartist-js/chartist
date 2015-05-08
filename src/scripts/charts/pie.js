@@ -119,17 +119,18 @@
     // Draw the series
     // initialize series groups
     for (var i = 0; i < this.data.series.length; i++) {
+      var series = this.data.series[i];
       seriesGroups[i] = this.svg.elem('g', null, null, true);
 
       // If the series is an object and contains a name or meta data we add a custom attribute
       seriesGroups[i].attr({
-        'series-name': this.data.series[i].name
+        'series-name': series.name
       }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
       seriesGroups[i].addClass([
         options.classNames.series,
-        (this.data.series[i].className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
+        (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
       ].join(' '));
 
       var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
@@ -161,7 +162,7 @@
       // Adding the pie series value to the path
       pathElement.attr({
         'value': dataArray[i],
-        'meta': Chartist.serialize(this.data.series[i].meta)
+        'meta': Chartist.serialize(series.meta)
       }, Chartist.xmlNs.uri);
 
       // If this is a donut, we add the stroke-width as style attribute
@@ -177,6 +178,8 @@
         value: dataArray[i],
         totalDataSum: totalDataSum,
         index: i,
+        meta: series.meta,
+        series: series,
         group: seriesGroups[i],
         element: pathElement,
         path: path.clone(),

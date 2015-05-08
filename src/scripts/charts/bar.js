@@ -270,6 +270,9 @@
           type: 'bar',
           value: value,
           index: valueIndex,
+          meta: Chartist.getMetaData(series, valueIndex),
+          series: series,
+          seriesIndex: seriesIndex,
           chartRect: chartRect,
           group: seriesGroups[seriesIndex],
           element: bar
