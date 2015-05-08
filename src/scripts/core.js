@@ -372,7 +372,7 @@ var Chartist = {
       }
 
       for (var j = dataArray[i].length; j < length; j++) {
-        dataArray[i][j] = 0;
+        dataArray[i][j] = undefined;
       }
     }
 

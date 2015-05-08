@@ -193,7 +193,10 @@
         // Join the segment path data into a single path and return
         return Chartist.Svg.Path.join(paths);
       } else {
-        // If there was only one segment we can proceed regularly by using pathCoordinates and valueData directly
+        // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first
+        // segment
+        pathCoordinates = segments[0].pathCoordinates;
+        valueData = segments[0].valueData;
 
         // If less than two points we need to fallback to no smoothing
         if(pathCoordinates.length <= 4) {

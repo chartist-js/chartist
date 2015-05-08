@@ -96,9 +96,9 @@ describe('Chartist core', function() {
 
       expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
         [
-          [1, 2, 3, 4, 5, 6, 0, 0, 0, 0],
-          [1, 2, 3, 4, 5, 6, 7, 8, 0, 0],
-          [1, 2, 3, 0, 0, 0, 0, 0, 0, 0]
+          [1, 2, 3, 4, 5, 6, undefined, undefined, undefined, undefined],
+          [1, 2, 3, 4, 5, 6, 7, 8, undefined, undefined],
+          [1, 2, 3, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
         ]
       );
     });
@@ -115,9 +115,9 @@ describe('Chartist core', function() {
 
       expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
         [
-          [1, 0, 3, 4, 5, 6, 0, 0, 0, 0],
-          [1, 0, 3, 4, 5, 6, 7, 8, 0, 0],
-          [1, 0, 3, 0, 0, 0, 0, 0, 0, 0]
+          [1, 0, 3, 4, 5, 6, undefined, undefined, undefined, undefined],
+          [1, 0, 3, 4, 5, 6, 7, 8, undefined, undefined],
+          [1, 0, 3, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
         ]
       );
     });
@@ -154,9 +154,9 @@ describe('Chartist core', function() {
 
       expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
         [
-          [1, 0, 3, 4, 5, 6, 0, 0, 0, 0],
-          [1, 0, 3, 4, 5, 6, 7, 8, 0, 0],
-          [1, 0, 3, 0, 0, 0, 0, 0, 0, 0]
+          [1, 0, 3, 4, 5, 6, undefined, undefined, undefined, undefined],
+          [1, 0, 3, 4, 5, 6, 7, 8, undefined, undefined],
+          [1, 0, 3, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
         ]
       );
     });
@@ -173,9 +173,9 @@ describe('Chartist core', function() {
 
       expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
         [
-          [undefined, undefined, undefined, 4, 5, 6, 0, 0, 0, 0],
-          [1, undefined, 3, undefined, 5, 6, 7, 8, 0, 0],
-          [1, 0, undefined, 0, 0, 0, 0, 0, 0, 0]
+          [undefined, undefined, undefined, 4, 5, 6, undefined, undefined, undefined, undefined],
+          [1, undefined, 3, undefined, 5, 6, 7, 8, undefined, undefined],
+          [1, 0, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined]
         ]
       );
     });
