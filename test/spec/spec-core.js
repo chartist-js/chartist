@@ -173,9 +173,9 @@ describe('Chartist core', function() {
 
       expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
         [
-          [0, 0, 0, 4, 5, 6, 0, 0, 0, 0],
-          [1, 0, 3, 0, 5, 6, 7, 8, 0, 0],
-          [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          [undefined, undefined, undefined, 4, 5, 6, 0, 0, 0, 0],
+          [1, undefined, 3, undefined, 5, 6, 7, 8, 0, 0],
+          [1, 0, undefined, 0, 0, 0, 0, 0, 0, 0]
         ]
       );
     });

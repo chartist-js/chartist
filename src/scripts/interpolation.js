@@ -17,10 +17,26 @@
    */
   Chartist.Interpolation.none = function() {
     return function none(pathCoordinates, valueData) {
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
+      var path = new Chartist.Svg.Path();
+      // We need to assume that the first value is a "hole"
+      var hole = true;
 
-      for(var i = 3; i < pathCoordinates.length; i += 2) {
-        path.line(pathCoordinates[i - 1], pathCoordinates[i], false, valueData[(i - 1) / 2]);
+      for(var i = 1; i < pathCoordinates.length; i += 2) {
+        var data = valueData[(i - 1) / 2];
+
+        // If the current value is undefined we should treat it as a hole start
+        if(data.value === undefined) {
+          hole = true;
+        } else {
+          // If this value is valid we need to check if we're coming out of a hole
+          if(hole) {
+            // If we are coming out of a hole we should first make a move and also reset the hole flag
+            path.move(pathCoordinates[i - 1], pathCoordinates[i], false, data);
+            hole = false;
+          } else {
+            path.line(pathCoordinates[i - 1], pathCoordinates[i], false, data);
+          }
+        }
       }
 
       return path;
@@ -58,25 +74,41 @@
     var d = 1 / Math.max(1, options.divisor);
 
     return function simple(pathCoordinates, valueData) {
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
+      var path = new Chartist.Svg.Path();
+      var hole = true;
 
       for(var i = 2; i < pathCoordinates.length; i += 2) {
-        var prevX = pathCoordinates[i - 2],
-            prevY = pathCoordinates[i - 1],
-            currX = pathCoordinates[i],
-            currY = pathCoordinates[i + 1],
-            length = (currX - prevX) * d;
+        var prevX = pathCoordinates[i - 2];
+        var prevY = pathCoordinates[i - 1];
+        var currX = pathCoordinates[i];
+        var currY = pathCoordinates[i + 1];
+        var length = (currX - prevX) * d;
+        var prevData = valueData[(i / 2) - 1];
+        var currData = valueData[i / 2];
 
-        path.curve(
-          prevX + length,
-          prevY,
-          currX - length,
-          currY,
-          currX,
-          currY,
-          false,
-          valueData[i / 2]
-        );
+        if(prevData.value === undefined) {
+          hole = true;
+        } else {
+
+          if(hole) {
+            path.move(prevX, prevY, false, prevData);
+          }
+
+          if(currData.value !== undefined) {
+            path.curve(
+              prevX + length,
+              prevY,
+              currX - length,
+              currY,
+              currX,
+              currY,
+              false,
+              currData
+            );
+
+            hole = false;
+          }
+        }
       }
 
       return path;
@@ -114,52 +146,101 @@
     var t = Math.min(1, Math.max(0, options.tension)),
       c = 1 - t;
 
-    return function cardinal(pathCoordinates, valueData) {
-      // If less than two points we need to fallback to no smoothing
-      if(pathCoordinates.length <= 4) {
-        return Chartist.Interpolation.none()(pathCoordinates, valueData);
+    // This function will help us to split pathCoordinates and valueData into segments that also contain pathCoordinates
+    // and valueData. This way the existing functions can be reused and the segment paths can be joined afterwards.
+    // This functionality is necessary to treat "holes" in the line charts
+    function splitIntoSegments(pathCoordinates, valueData) {
+      var segments = [];
+      var hole = true;
+
+      for(var i = 0; i < pathCoordinates.length; i += 2) {
+        // If this value is a "hole" we set the hole flag
+        if(valueData[i / 2].value === undefined) {
+          hole = true;
+        } else {
+          // If it's a valid value we need to check if we're coming out of a hole and create a new empty segment
+          if(hole) {
+            segments.push({
+              pathCoordinates: [],
+              valueData: []
+            });
+            // As we have a valid value now, we are not in a "hole" anymore
+            hole = false;
+          }
+
+          // Add to the segment pathCoordinates and valueData
+          segments[segments.length - 1].pathCoordinates.push(pathCoordinates[i], pathCoordinates[i + 1]);
+          segments[segments.length - 1].valueData.push(valueData[i / 2]);
+        }
       }
 
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]),
-        z;
+      return segments;
+    }
 
-      for (var i = 0, iLen = pathCoordinates.length; iLen - 2 * !z > i; i += 2) {
-        var p = [
-          {x: +pathCoordinates[i - 2], y: +pathCoordinates[i - 1]},
-          {x: +pathCoordinates[i], y: +pathCoordinates[i + 1]},
-          {x: +pathCoordinates[i + 2], y: +pathCoordinates[i + 3]},
-          {x: +pathCoordinates[i + 4], y: +pathCoordinates[i + 5]}
-        ];
-        if (z) {
-          if (!i) {
-            p[0] = {x: +pathCoordinates[iLen - 2], y: +pathCoordinates[iLen - 1]};
-          } else if (iLen - 4 === i) {
-            p[3] = {x: +pathCoordinates[0], y: +pathCoordinates[1]};
-          } else if (iLen - 2 === i) {
-            p[2] = {x: +pathCoordinates[0], y: +pathCoordinates[1]};
-            p[3] = {x: +pathCoordinates[2], y: +pathCoordinates[3]};
-          }
-        } else {
-          if (iLen - 4 === i) {
-            p[3] = p[2];
-          } else if (!i) {
-            p[0] = {x: +pathCoordinates[i], y: +pathCoordinates[i + 1]};
-          }
+    return function cardinal(pathCoordinates, valueData) {
+      // First we try to split the coordinates into segments
+      // This is necessary to treat "holes" in line charts
+      var segments = splitIntoSegments(pathCoordinates, valueData);
+
+      // If the split resulted in more that one segment we need to interpolate each segment individually and join them
+      // afterwards together into a single path.
+      if(segments.length > 1) {
+        var paths = [];
+        // For each segment we will recurse the cardinal function
+        segments.forEach(function(segment) {
+          paths.push(cardinal(segment.pathCoordinates, segment.valueData));
+        });
+        // Join the segment path data into a single path and return
+        return Chartist.Svg.Path.join(paths);
+      } else {
+        // If there was only one segment we can proceed regularly by using pathCoordinates and valueData directly
+
+        // If less than two points we need to fallback to no smoothing
+        if(pathCoordinates.length <= 4) {
+          return Chartist.Interpolation.none()(pathCoordinates, valueData);
         }
 
-        path.curve(
-          (t * (-p[0].x + 6 * p[1].x + p[2].x) / 6) + (c * p[2].x),
-          (t * (-p[0].y + 6 * p[1].y + p[2].y) / 6) + (c * p[2].y),
-          (t * (p[1].x + 6 * p[2].x - p[3].x) / 6) + (c * p[2].x),
-          (t * (p[1].y + 6 * p[2].y - p[3].y) / 6) + (c * p[2].y),
-          p[2].x,
-          p[2].y,
-          false,
-          valueData[(i + 2) / 2]
-        );
-      }
+        var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]),
+          z;
 
-      return path;
+        for (var i = 0, iLen = pathCoordinates.length; iLen - 2 * !z > i; i += 2) {
+          var p = [
+            {x: +pathCoordinates[i - 2], y: +pathCoordinates[i - 1]},
+            {x: +pathCoordinates[i], y: +pathCoordinates[i + 1]},
+            {x: +pathCoordinates[i + 2], y: +pathCoordinates[i + 3]},
+            {x: +pathCoordinates[i + 4], y: +pathCoordinates[i + 5]}
+          ];
+          if (z) {
+            if (!i) {
+              p[0] = {x: +pathCoordinates[iLen - 2], y: +pathCoordinates[iLen - 1]};
+            } else if (iLen - 4 === i) {
+              p[3] = {x: +pathCoordinates[0], y: +pathCoordinates[1]};
+            } else if (iLen - 2 === i) {
+              p[2] = {x: +pathCoordinates[0], y: +pathCoordinates[1]};
+              p[3] = {x: +pathCoordinates[2], y: +pathCoordinates[3]};
+            }
+          } else {
+            if (iLen - 4 === i) {
+              p[3] = p[2];
+            } else if (!i) {
+              p[0] = {x: +pathCoordinates[i], y: +pathCoordinates[i + 1]};
+            }
+          }
+
+          path.curve(
+            (t * (-p[0].x + 6 * p[1].x + p[2].x) / 6) + (c * p[2].x),
+            (t * (-p[0].y + 6 * p[1].y + p[2].y) / 6) + (c * p[2].y),
+            (t * (p[1].x + 6 * p[2].x - p[3].x) / 6) + (c * p[2].x),
+            (t * (p[1].y + 6 * p[2].y - p[3].y) / 6) + (c * p[2].y),
+            p[2].x,
+            p[2].y,
+            false,
+            valueData[(i + 2) / 2]
+          );
+        }
+
+        return path;
+      }
     };
   };
 
@@ -190,22 +271,41 @@
     options = Chartist.extend({}, defaultOptions, options);
 
     return function step(pathCoordinates, valueData) {
-      var path = new Chartist.Svg.Path().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
+      var path = new Chartist.Svg.Path();
+      var hole = true;
 
       for (var i = 2; i < pathCoordinates.length; i += 2) {
-        var prevX = pathCoordinates[i - 2],
-          prevY = pathCoordinates[i - 1],
-          currX = pathCoordinates[i],
-          currY = pathCoordinates[i + 1];
+        var prevX = pathCoordinates[i - 2];
+        var prevY = pathCoordinates[i - 1];
+        var currX = pathCoordinates[i];
+        var currY = pathCoordinates[i + 1];
+        var prevData = valueData[(i / 2) - 1];
+        var currData = valueData[i / 2];
 
-        if(options.postpone) {
-          path.line(currX, prevY, false, valueData[(i - 2) / 2]);
+        // If last point is a "hole"
+        if(prevData.value === undefined) {
+          hole = true;
         } else {
-          path.line(prevX, currY, false, valueData[i / 2]);
+          // If last point is not a "hole" but we just came back out of a "hole" we need to move first
+          if(hole) {
+            path.move(prevX, prevY, false, prevData);
+          }
+
+          // If the current point is also not a hole we can draw the step lines
+          if(currData.value !== undefined) {
+            if(options.postpone) {
+              // If postponed we should draw the step line with the value of the previous value
+              path.line(currX, prevY, false, prevData);
+            } else {
+              // If not postponed we should draw the step line with the value of the current value
+              path.line(prevX, currY, false, currData);
+            }
+            // Line to the actual point (this should only be a Y-Axis movement
+            path.line(currX, currY, false, currData);
+            // Reset the "hole" flag as previous and current point have valid values
+            hole = false;
+          }
         }
-
-
-        path.line(currX, currY, false, valueData[i / 2]);
       }
 
       return path;

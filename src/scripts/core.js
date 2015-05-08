@@ -320,7 +320,7 @@ var Chartist = {
     // to values. Check the tests in data core -> data normalization for a detailed specification of expected values
     function recursiveConvert(value) {
       if(value === undefined || value === null || (typeof value === 'number' && isNaN(value))) {
-        return 0;
+        return undefined;
       } else if((value.data || value) instanceof Array) {
         return (value.data || value).map(recursiveConvert);
       } else if(value.hasOwnProperty('value')) {

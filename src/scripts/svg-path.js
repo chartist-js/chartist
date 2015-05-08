@@ -318,6 +318,27 @@
     return c;
   }
 
+  /**
+   * This static function on `Chartist.Svg.Path` is joining multiple paths together into one paths.
+   *
+   * @memberof Chartist.Svg.Path
+   * @param {Array<Chartist.Svg.Path>} paths A list of paths to be joined together. The order is important.
+   * @param {boolean} close If the newly created path should be a closed path
+   * @param {Object} options Path options for the newly created path.
+   * @return {Chartist.Svg.Path}
+   */
+
+  function join(paths, close, options) {
+    var joinedPath = new Chartist.Svg.Path(close, options);
+    for(var i = 0; i < paths.length; i++) {
+      var path = paths[i];
+      for(var j = 0; j < path.pathElements.length; j++) {
+        joinedPath.pathElements.push(path.pathElements[j]);
+      }
+    }
+    return joinedPath;
+  }
+
   Chartist.Svg.Path = Chartist.Class.extend({
     constructor: SvgPath,
     position: position,
@@ -335,4 +356,5 @@
   });
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;
+  Chartist.Svg.Path.join = join;
 }(window, document, Chartist));
