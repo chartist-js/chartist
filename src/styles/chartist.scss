@@ -99,6 +99,20 @@
     @include ct-chart-label($ct-text-color, $ct-text-size, $ct-vertical-text-align);
   }
 
+  .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal} {
+    text-align: center;
+  }
+
+  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal} {
+    text-align: left;
+  }
+
+  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-vertical} {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .#{$ct-class-grid} {
     @include ct-chart-grid($ct-grid-color, $ct-grid-width, $ct-grid-dasharray);
   }

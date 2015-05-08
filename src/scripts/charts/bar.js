@@ -70,6 +70,7 @@
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-bar',
+      horizontalBars: 'ct-horizontal-bars',
       label: 'ct-label',
       labelGroup: 'ct-labels',
       series: 'ct-series',
@@ -92,7 +93,12 @@
       highLow;
 
     // Create new svg element
-    this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+    this.svg = Chartist.createSvg(
+      this.container,
+      options.width,
+      options.height,
+      options.classNames.chart + (options.horizontalBars ? ' ' + options.classNames.horizontalBars : '')
+    );
 
     if(options.stackBars) {
       // If stacked bars we need to calculate the high low from stacked values from each series
