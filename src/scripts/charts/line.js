@@ -197,8 +197,15 @@
         });
       }.bind(this));
 
-      var smoothing = typeof options.lineSmooth === 'function' ?
-          options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none());
+      var seriesOptions = {
+        lineSmooth: Chartist.getSeriesOption(series, options, 'lineSmooth'),
+        showPoint: Chartist.getSeriesOption(series, options, 'showPoint'),
+        showLine: Chartist.getSeriesOption(series, options, 'showLine'),
+        showArea: Chartist.getSeriesOption(series, options, 'showArea')
+      };
+
+      var smoothing = typeof seriesOptions.lineSmooth === 'function' ?
+        seriesOptions.lineSmooth : (seriesOptions.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none());
       // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
       // index, value and meta data
       var path = smoothing(pathCoordinates, pathData);
@@ -206,7 +213,7 @@
       // If we should show points we need to create them now to avoid secondary loop
       // Points are drawn from the pathElements returned by the interpolation function
       // Small offset for Firefox to render squares correctly
-      if (options.showPoint) {
+      if (seriesOptions.showPoint) {
 
         path.pathElements.forEach(function(pathElement) {
           var point = seriesGroups[seriesIndex].elem('line', {
@@ -234,7 +241,7 @@
         }.bind(this));
       }
 
-      if(options.showLine) {
+      if(seriesOptions.showLine) {
         var line = seriesGroups[seriesIndex].elem('path', {
           d: path.stringify()
         }, options.classNames.line, true).attr({
@@ -254,7 +261,7 @@
         });
       }
 
-      if(options.showArea) {
+      if(seriesOptions.showArea) {
         // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
         // the area is not drawn outside the chart area.
         var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
