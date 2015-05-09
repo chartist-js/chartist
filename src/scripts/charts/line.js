@@ -29,7 +29,9 @@
       // If the axis grid should be drawn or not
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
-      labelInterpolationFnc: Chartist.noop
+      labelInterpolationFnc: Chartist.noop,
+      // This value specifies the minimum height in pixel of the scale steps
+      scaleMinSpace: 20
     },
     // Options for Y-Axis
     axisY: {
@@ -38,7 +40,7 @@
       // Allows you to correct label positioning on this axis by positive or negative x and y offset.
       labelOffset: {
         x: 0,
-        y: 0
+        y: 5
       },
       // If labels should be shown or not
       showLabel: true,
@@ -68,7 +70,12 @@
     // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
     high: undefined,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
-    chartPadding: 5,
+    chartPadding: {
+      top: 15,
+      right: 15,
+      bottom: 5,
+      left: 10
+    },
     // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler.
     fullWidth: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.

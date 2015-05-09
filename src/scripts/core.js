@@ -497,10 +497,10 @@ var Chartist = {
 
     bounds.valueRange = bounds.high - bounds.low;
     bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);
-    bounds.min = Math.floor(bounds.low / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
-    bounds.max = Math.ceil(bounds.high / Math.pow(10, bounds.oom)) * Math.pow(10, bounds.oom);
-    bounds.range = bounds.max - bounds.min;
     bounds.step = Math.pow(10, bounds.oom);
+    bounds.min = Math.floor(bounds.low / bounds.step) * bounds.step;
+    bounds.max = Math.ceil(bounds.high / bounds.step) * bounds.step;
+    bounds.range = bounds.max - bounds.min;
     bounds.numberOfSteps = Math.round(bounds.range / bounds.step);
 
     // Optimize scale step by checking if subdivision is possible based on horizontalGridMinSpace
@@ -508,6 +508,7 @@ var Chartist = {
     var length = Chartist.projectLength(axisLength, bounds.step, bounds),
       scaleUp = length < scaleMinSpace;
 
+    // Trying to divide or multiply by 2 and find the best step value
     while (true) {
       if (scaleUp && Chartist.projectLength(axisLength, bounds.step, bounds) <= scaleMinSpace) {
         bounds.step *= 2;
@@ -521,14 +522,11 @@ var Chartist = {
     // Narrow min and max based on new step
     newMin = bounds.min;
     newMax = bounds.max;
-    for (i = bounds.min; i <= bounds.max; i += bounds.step) {
-      if (i + bounds.step < bounds.low) {
-        newMin += bounds.step;
-      }
-
-      if (i - bounds.step >= bounds.high) {
-        newMax -= bounds.step;
-      }
+    while(newMin + bounds.step <= bounds.low) {
+      newMin += bounds.step;
+    }
+    while(newMax - bounds.step >= bounds.high) {
+      newMax -= bounds.step;
     }
     bounds.min = newMin;
     bounds.max = newMax;
@@ -717,7 +715,7 @@ var Chartist = {
       } else {
         projectedValue.pos = chartRect.y1 - projectedValue.pos;
         labelOffset.x = useForeignObject ? chartRect.padding.left + options.axisY.labelOffset.x : chartRect.x1 - 10;
-        labelOffset.y = options.axisY.labelOffset.y - (useForeignObject ? chartRect.height() / labelValues.length : 0);
+        labelOffset.y = options.axisY.labelOffset.y - (useForeignObject ? projectedValue.len : 0);
       }
 
       if(axisOptions.showGrid) {
