@@ -89,7 +89,6 @@
   function createChart(options) {
     var seriesGroups = [],
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length),
-      normalizedPadding = Chartist.normalizePadding(options.chartPadding, defaultOptions.padding),
       highLow;
 
     // Create new svg element
@@ -125,14 +124,6 @@
       labelAxis = axisY = new Chartist.StepAxis(
         Chartist.Axis.units.y,
         chartRect,
-        function timeAxisTransform(projectedValue) {
-          projectedValue.pos = chartRect.y1 - projectedValue.pos;
-          return projectedValue;
-        },
-        {
-          x: normalizedPadding.left + options.axisY.labelOffset.x + (this.supportsForeignObject ? -10 : 0),
-          y: options.axisY.labelOffset.y - chartRect.height() / this.data.labels.length
-        },
         {
           stepCount: this.data.labels.length,
           stretch: options.fullHeight
@@ -142,14 +133,6 @@
       valueAxis = axisX = new Chartist.LinearScaleAxis(
         Chartist.Axis.units.x,
         chartRect,
-        function valueAxisTransform(projectedValue) {
-          projectedValue.pos = chartRect.x1 + projectedValue.pos;
-          return projectedValue;
-        },
-        {
-          x: options.axisX.labelOffset.x,
-          y: chartRect.y1 + options.axisX.labelOffset.y + (this.supportsForeignObject ? 5 : 20)
-        },
         {
           highLow: highLow,
           scaleMinSpace: options.axisX.scaleMinSpace,
@@ -160,14 +143,6 @@
       labelAxis = axisX = new Chartist.StepAxis(
         Chartist.Axis.units.x,
         chartRect,
-        function timeAxisTransform(projectedValue) {
-          projectedValue.pos = chartRect.x1 + projectedValue.pos;
-          return projectedValue;
-        },
-        {
-          x: options.axisX.labelOffset.x,
-          y: chartRect.y1 + options.axisX.labelOffset.y + (this.supportsForeignObject ? 5 : 20)
-        },
         {
           stepCount: this.data.labels.length
         }
@@ -176,14 +151,6 @@
       valueAxis = axisY = new Chartist.LinearScaleAxis(
         Chartist.Axis.units.y,
         chartRect,
-        function valueAxisTransform(projectedValue) {
-          projectedValue.pos = chartRect.y1 - projectedValue.pos;
-          return projectedValue;
-        },
-        {
-          x: normalizedPadding.left + options.axisY.labelOffset.x + (this.supportsForeignObject ? -10 : 0),
-          y: options.axisY.labelOffset.y + (this.supportsForeignObject ? -15 : 0)
-        },
         {
           highLow: highLow,
           scaleMinSpace: options.axisY.scaleMinSpace,

@@ -94,28 +94,18 @@
    *
    */
   function createChart(options) {
-    var seriesGroups = [],
-      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length),
-      normalizedPadding = Chartist.normalizePadding(options.chartPadding, defaultOptions.padding);
+    var seriesGroups = [];
+    var normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length);
 
     // Create new svg object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
 
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
-
     var highLow = Chartist.getHighLow(normalizedData, options);
 
     var axisX = new Chartist.StepAxis(
       Chartist.Axis.units.x,
       chartRect,
-      function xAxisTransform(projectedValue) {
-        projectedValue.pos = chartRect.x1 + projectedValue.pos;
-        return projectedValue;
-      },
-      {
-        x: options.axisX.labelOffset.x,
-        y: chartRect.y1 + options.axisX.labelOffset.y + (this.supportsForeignObject ? 5 : 20)
-      },
       {
         stepCount: this.data.labels.length,
         stretch: options.fullWidth
@@ -125,14 +115,6 @@
     var axisY = new Chartist.LinearScaleAxis(
       Chartist.Axis.units.y,
       chartRect,
-      function yAxisTransform(projectedValue) {
-        projectedValue.pos = chartRect.y1 - projectedValue.pos;
-        return projectedValue;
-      },
-      {
-        x: normalizedPadding.left + options.axisY.labelOffset.x + (this.supportsForeignObject ? -10 : 0),
-        y: options.axisY.labelOffset.y + (this.supportsForeignObject ? -15 : 0)
-      },
       {
         highLow: highLow,
         scaleMinSpace: options.axisY.scaleMinSpace

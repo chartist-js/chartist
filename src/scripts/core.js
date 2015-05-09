@@ -587,6 +587,7 @@ var Chartist = {
       y1: Math.max(h - normalizedPadding.bottom - xOffset, normalizedPadding.bottom),
       x2: Math.max(w - normalizedPadding.right, normalizedPadding.right + yOffset),
       y2: normalizedPadding.top,
+      padding: normalizedPadding,
       width: function () {
         return this.x2 - this.x1;
       },
@@ -651,10 +652,16 @@ var Chartist = {
     positionalData[axis.units.pos] = projectedValue.pos + labelOffset[axis.units.pos];
     positionalData[axis.counterUnits.pos] = labelOffset[axis.counterUnits.pos];
     positionalData[axis.units.len] = projectedValue.len;
-    positionalData[axis.counterUnits.len] = axisOffset;
+    positionalData[axis.counterUnits.len] = axisOffset - 10;
 
     if(useForeignObject) {
-      var content = '<span class="' + classes.join(' ') + '">' + labels[index] + '</span>';
+      // We need to set width and height explicitly to px as span will not expand with width and height being
+      // 100% in all browsers
+      var content = '<span class="' + classes.join(' ') + '" style="' +
+        axis.units.len + ': ' + Math.round(positionalData[axis.units.len]) + 'px; ' +
+        axis.counterUnits.len + ': ' + Math.round(positionalData[axis.counterUnits.len]) + 'px">' +
+        labels[index] + '</span>';
+
       labelElement = group.foreignObject(content, Chartist.extend({
         style: 'overflow: visible;'
       }, positionalData));
@@ -687,13 +694,30 @@ var Chartist = {
    */
   Chartist.createAxis = function(axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
     var axisOptions = options['axis' + axis.units.pos.toUpperCase()],
-      projectedValues = data.map(axis.projectValue.bind(axis)).map(axis.transform),
+      projectedValues = data.map(axis.projectValue.bind(axis)),
       labelValues = data.map(axisOptions.labelInterpolationFnc);
 
     projectedValues.forEach(function(projectedValue, index) {
+      var labelOffset = {
+        x: 0,
+        y: 0
+      };
+
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
       if(!labelValues[index] && labelValues[index] !== 0) {
         return;
+      }
+
+      // Transform to global coordinates using the chartRect
+      // We also need to set the label offset for the createLabel function
+      if(axis.units.pos === 'x') {
+        projectedValue.pos = chartRect.x1 + projectedValue.pos;
+        labelOffset.x = options.axisX.labelOffset.x;
+        labelOffset.y = chartRect.y1 + options.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+      } else {
+        projectedValue.pos = chartRect.y1 - projectedValue.pos;
+        labelOffset.x = useForeignObject ? chartRect.padding.left + options.axisY.labelOffset.x : chartRect.x1 - 10;
+        labelOffset.y = options.axisY.labelOffset.y - (useForeignObject ? chartRect.height() / labelValues.length : 0);
       }
 
       if(axisOptions.showGrid) {
@@ -704,7 +728,7 @@ var Chartist = {
       }
 
       if(axisOptions.showLabel) {
-        Chartist.createLabel(projectedValue, index, labelValues, axis, axisOptions.offset, axis.labelOffset, labelGroup, [
+        Chartist.createLabel(projectedValue, index, labelValues, axis, axisOptions.offset, labelOffset, labelGroup, [
           options.classNames.label,
           options.classNames[axis.units.dir]
         ], useForeignObject, eventEmitter);

@@ -26,14 +26,12 @@
     }
   };
 
-  function Axis(units, chartRect, transform, labelOffset, options) {
+  function Axis(units, chartRect, options) {
     this.units = units;
     this.counterUnits = units === axisUnits.x ? axisUnits.y : axisUnits.x;
     this.chartRect = chartRect;
     this.axisLength = chartRect[units.rectEnd] - chartRect[units.rectStart];
     this.gridOffset = chartRect[units.rectOffset];
-    this.transform = transform;
-    this.labelOffset = labelOffset;
     this.options = options;
   }
 
