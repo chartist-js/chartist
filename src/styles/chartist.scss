@@ -47,7 +47,7 @@
   }
 }
 
-@mixin ct-chart-label($ct-text-color: $ct-text-color, $ct-text-size: $ct-text-size, $ct-text-line-height: $ct-text-line-height) {
+@mixin ct-flex() {
   // Fallback to block
   display: block;
   display: -webkit-box;
@@ -55,7 +55,9 @@
   display: -ms-flexbox;
   display: -webkit-flex;
   display: flex;
+}
 
+@mixin ct-chart-label($ct-text-color: $ct-text-color, $ct-text-size: $ct-text-size, $ct-text-line-height: $ct-text-line-height) {
   fill: $ct-text-color;
   color: $ct-text-color;
   font-size: $ct-text-size;
@@ -114,9 +116,11 @@
 
   .#{$ct-class-label} {
     @include ct-chart-label($ct-text-color, $ct-text-size);
-    @include ct-align-justify($ct-text-align, $ct-text-justify);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
+  }
+
+  .#{$ct-class-chart-line} .#{$ct-class-label},
+  .#{$ct-class-chart-bar} .#{$ct-class-label} {
+    @include ct-flex();
   }
 
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
