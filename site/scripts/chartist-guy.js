@@ -5,7 +5,12 @@
   var optionsChartistGuy = {
     width: 195,
     height: 137,
-    chartPadding: 10,
+    chartPadding: {
+      top: 15,
+      right: 10,
+      bottom: 10,
+      left: 10
+    },
     axisX: {
       offset: 15,
       showLabel: true,
@@ -17,6 +22,9 @@
     axisY: {
       offset: 25,
       showLabel: true,
+      labelOffset: {
+        y: 5
+      },
       showGrid: true,
       scaleMinSpace: 15,
       labelInterpolationFnc: function(n) {
