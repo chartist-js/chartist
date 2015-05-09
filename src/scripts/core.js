@@ -619,22 +619,19 @@ var Chartist = {
    * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
    */
   Chartist.createChartRect = function (svg, options, fallbackPadding) {
-    var yOffset = options.axisY ? options.axisY.offset || 0 : 0,
-      xOffset = options.axisX ? options.axisX.offset || 0 : 0,
-      // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
-      w = svg.width() || Chartist.stripUnit(options.width) || 0,
-      h = svg.height() || Chartist.stripUnit(options.height) || 0,
-      normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
+    var hasAxis = !!(options.axisX || options.axisY);
+    var yAxisOffset = hasAxis ? options.axisY.offset : 0;
+    var xAxisOffset = hasAxis ? options.axisX.offset : 0;
+    // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
+    var width = svg.width() || Chartist.stripUnit(options.width) || 0;
+    var height = svg.height() || Chartist.stripUnit(options.height) || 0;
+    var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     // If settings were to small to cope with offset (legacy) and padding, we'll adjust
-    w = Math.max(w, xOffset + normalizedPadding.left + normalizedPadding.right);
-    h = Math.max(h, yOffset + normalizedPadding.top + normalizedPadding.bottom);
+    width = Math.max(width, xAxisOffset + normalizedPadding.left + normalizedPadding.right);
+    height = Math.max(height, yAxisOffset + normalizedPadding.top + normalizedPadding.bottom);
 
-    return {
-      x1: normalizedPadding.left + yOffset,
-      y1: Math.max(h - normalizedPadding.bottom - xOffset, normalizedPadding.bottom),
-      x2: Math.max(w - normalizedPadding.right, normalizedPadding.right + yOffset),
-      y2: normalizedPadding.top,
+    var chartRect = {
       padding: normalizedPadding,
       width: function () {
         return this.x2 - this.x1;
@@ -643,6 +640,31 @@ var Chartist = {
         return this.y1 - this.y2;
       }
     };
+
+    if(hasAxis) {
+      if (options.axisX.position === 'start') {
+        chartRect.y2 = normalizedPadding.top + xAxisOffset;
+        chartRect.y1 = Math.max(height - normalizedPadding.bottom, chartRect.y2 + 1);
+      } else {
+        chartRect.y2 = normalizedPadding.top;
+        chartRect.y1 = Math.max(height - normalizedPadding.bottom - xAxisOffset, chartRect.y2 + 1);
+      }
+
+      if (options.axisY.position === 'start') {
+        chartRect.x1 = normalizedPadding.left + yAxisOffset;
+        chartRect.x2 = Math.max(width - normalizedPadding.right, chartRect.x1 + 1);
+      } else {
+        chartRect.x1 = normalizedPadding.left;
+        chartRect.x2 = Math.max(width - normalizedPadding.right - yAxisOffset, chartRect.x1 + 1);
+      }
+    } else {
+      chartRect.x1 = normalizedPadding.left;
+      chartRect.x2 = Math.max(width - normalizedPadding.right, chartRect.x1 + 1);
+      chartRect.y2 = normalizedPadding.top;
+      chartRect.y1 = Math.max(height - normalizedPadding.bottom, chartRect.y2 + 1);
+    }
+
+    return chartRect;
   };
 
   /**
@@ -695,8 +717,9 @@ var Chartist = {
    * @param eventEmitter
    */
   Chartist.createLabel = function(projectedValue, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
-    var labelElement,
-      positionalData = {};
+    var labelElement;
+    var positionalData = {};
+
     positionalData[axis.units.pos] = projectedValue.pos + labelOffset[axis.units.pos];
     positionalData[axis.counterUnits.pos] = labelOffset[axis.counterUnits.pos];
     positionalData[axis.units.len] = projectedValue.len;
@@ -741,9 +764,9 @@ var Chartist = {
    * @param eventEmitter
    */
   Chartist.createAxis = function(axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
-    var axisOptions = options['axis' + axis.units.pos.toUpperCase()],
-      projectedValues = data.map(axis.projectValue.bind(axis)),
-      labelValues = data.map(axisOptions.labelInterpolationFnc);
+    var axisOptions = options['axis' + axis.units.pos.toUpperCase()];
+    var projectedValues = data.map(axis.projectValue.bind(axis));
+    var labelValues = data.map(axisOptions.labelInterpolationFnc);
 
     projectedValues.forEach(function(projectedValue, index) {
       var labelOffset = {
@@ -761,11 +784,25 @@ var Chartist = {
       if(axis.units.pos === 'x') {
         projectedValue.pos = chartRect.x1 + projectedValue.pos;
         labelOffset.x = options.axisX.labelOffset.x;
-        labelOffset.y = chartRect.y1 + options.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+
+        // If the labels should be positioned in start position (top side for vertical axis) we need to set a
+        // different offset as for positioned with end (bottom)
+        if(options.axisX.position === 'start') {
+          labelOffset.y = chartRect.padding.top + options.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+        } else {
+          labelOffset.y = chartRect.y1 + options.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+        }
       } else {
         projectedValue.pos = chartRect.y1 - projectedValue.pos;
-        labelOffset.x = useForeignObject ? chartRect.padding.left + options.axisY.labelOffset.x : chartRect.x1 - 10;
         labelOffset.y = options.axisY.labelOffset.y - (useForeignObject ? projectedValue.len : 0);
+
+        // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
+        // different offset as for positioned with end (right side)
+        if(options.axisY.position === 'start') {
+          labelOffset.x = useForeignObject ? chartRect.padding.left + options.axisY.labelOffset.x : chartRect.x1 - 10;
+        } else {
+          labelOffset.x = chartRect.x2 + options.axisY.labelOffset.x + 10;
+        }
       }
 
       if(axisOptions.showGrid) {
@@ -778,7 +815,8 @@ var Chartist = {
       if(axisOptions.showLabel) {
         Chartist.createLabel(projectedValue, index, labelValues, axis, axisOptions.offset, labelOffset, labelGroup, [
           options.classNames.label,
-          options.classNames[axis.units.dir]
+          options.classNames[axis.units.dir],
+          options.classNames[axisOptions.position]
         ], useForeignObject, eventEmitter);
       }
     });

@@ -19,6 +19,8 @@
     axisX: {
       // The offset of the labels to the chart area
       offset: 30,
+      // Position where labels are placed. Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
+      position: 'end',
       // Allows you to correct label positioning on this axis by positive or negative x and y offset.
       labelOffset: {
         x: 0,
@@ -39,10 +41,12 @@
     axisY: {
       // The offset of the labels to the chart area
       offset: 40,
+      // Position where labels are placed. Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
+      position: 'start',
       // Allows you to correct label positioning on this axis by positive or negative x and y offset.
       labelOffset: {
         x: 0,
-        y: 5
+        y: 0
       },
       // If labels should be shown or not
       showLabel: true,
@@ -96,7 +100,9 @@
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
       vertical: 'ct-vertical',
-      horizontal: 'ct-horizontal'
+      horizontal: 'ct-horizontal',
+      start: 'ct-start',
+      end: 'ct-end'
     }
   };
 

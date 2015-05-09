@@ -19,6 +19,8 @@ $ct-class-donut: ct-donut !default;
 $ct-class-grid: ct-grid !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
+$ct-class-start: ct-start !default;
+$ct-class-end: ct-end !default;
 
 // Container ratio
 $ct-container-ratio: (1/1.618) !default;
@@ -28,10 +30,7 @@ $ct-text-color: rgba(0, 0, 0, 0.4) !default;
 $ct-text-size: 0.75rem !default;
 $ct-text-align: flex-start !default;
 $ct-text-justify: flex-start !default;
-$ct-horizontal-text-align: flex-start !default;
-$ct-horizontal-text-justify: flex-start !default;
-$ct-vertical-text-align: flex-end !default;
-$ct-vertical-text-justify: flex-end !default;
+$ct-text-line-height: 1;
 
 // Grid styles
 $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
