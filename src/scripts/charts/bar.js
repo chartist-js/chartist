@@ -29,7 +29,9 @@
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
       // This value specifies the minimum width in pixel of the scale steps
-      scaleMinSpace: 20
+      scaleMinSpace: 30,
+      // Use only integer values (whole numbers) for the scale steps
+      onlyInteger: false
     },
     // Options for Y-Axis
     axisY: {
@@ -47,7 +49,9 @@
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
       // This value specifies the minimum height in pixel of the scale steps
-      scaleMinSpace: 20
+      scaleMinSpace: 20,
+      // Use only integer values (whole numbers) for the scale steps
+      onlyInteger: false
     },
     // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
     width: undefined,
@@ -57,6 +61,8 @@
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
+    // Use only integer values (whole numbers) for the scale steps
+    onlyInteger: false,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
@@ -134,6 +140,7 @@
       valueAxis = axisX = new Chartist.LinearScaleAxis(Chartist.Axis.units.x, chartRect, {
         highLow: highLow,
         scaleMinSpace: options.axisX.scaleMinSpace,
+        onlyInteger: options.axisX.onlyInteger,
         referenceValue: 0
       });
     } else {
@@ -144,6 +151,7 @@
       valueAxis = axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, chartRect, {
         highLow: highLow,
         scaleMinSpace: options.axisY.scaleMinSpace,
+        onlyInteger: options.axisY.onlyInteger,
         referenceValue: 0
       });
     }

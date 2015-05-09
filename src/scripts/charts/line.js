@@ -31,7 +31,9 @@
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
       // This value specifies the minimum height in pixel of the scale steps
-      scaleMinSpace: 20
+      scaleMinSpace: 30,
+      // Use only integer values (whole numbers) for the scale steps
+      onlyInteger: false
     },
     // Options for Y-Axis
     axisY: {
@@ -49,7 +51,9 @@
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
       // This value specifies the minimum height in pixel of the scale steps
-      scaleMinSpace: 20
+      scaleMinSpace: 20,
+      // Use only integer values (whole numbers) for the scale steps
+      onlyInteger: false
     },
     // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
     width: undefined,
@@ -117,7 +121,8 @@
 
     var axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, chartRect, {
       highLow: highLow,
-      scaleMinSpace: options.axisY.scaleMinSpace
+      scaleMinSpace: options.axisY.scaleMinSpace,
+      onlyInteger: options.axisY.onlyInteger
     });
 
     // Start drawing
