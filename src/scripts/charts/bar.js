@@ -121,42 +121,26 @@
       axisY;
 
     if(options.horizontalBars) {
-      labelAxis = axisY = new Chartist.StepAxis(
-        Chartist.Axis.units.y,
-        chartRect,
-        {
-          stepCount: this.data.labels.length,
-          stretch: options.fullHeight
-        }
-      );
+      labelAxis = axisY = new Chartist.StepAxis(Chartist.Axis.units.y, chartRect, {
+        stepCount: this.data.labels.length,
+        stretch: options.fullHeight
+      });
 
-      valueAxis = axisX = new Chartist.LinearScaleAxis(
-        Chartist.Axis.units.x,
-        chartRect,
-        {
-          highLow: highLow,
-          scaleMinSpace: options.axisX.scaleMinSpace,
-          referenceValue: 0
-        }
-      );
+      valueAxis = axisX = new Chartist.LinearScaleAxis(Chartist.Axis.units.x, chartRect, {
+        highLow: highLow,
+        scaleMinSpace: options.axisX.scaleMinSpace,
+        referenceValue: 0
+      });
     } else {
-      labelAxis = axisX = new Chartist.StepAxis(
-        Chartist.Axis.units.x,
-        chartRect,
-        {
-          stepCount: this.data.labels.length
-        }
-      );
+      labelAxis = axisX = new Chartist.StepAxis(Chartist.Axis.units.x, chartRect, {
+        stepCount: this.data.labels.length
+      });
 
-      valueAxis = axisY = new Chartist.LinearScaleAxis(
-        Chartist.Axis.units.y,
-        chartRect,
-        {
-          highLow: highLow,
-          scaleMinSpace: options.axisY.scaleMinSpace,
-          referenceValue: 0
-        }
-      );
+      valueAxis = axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, chartRect, {
+        highLow: highLow,
+        scaleMinSpace: options.axisY.scaleMinSpace,
+        referenceValue: 0
+      });
     }
 
     // Start drawing

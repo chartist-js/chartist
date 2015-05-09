@@ -103,23 +103,15 @@
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
     var highLow = Chartist.getHighLow(normalizedData, options);
 
-    var axisX = new Chartist.StepAxis(
-      Chartist.Axis.units.x,
-      chartRect,
-      {
-        stepCount: this.data.labels.length,
-        stretch: options.fullWidth
-      }
-    );
+    var axisX = new Chartist.StepAxis(Chartist.Axis.units.x, chartRect, {
+      stepCount: this.data.labels.length,
+      stretch: options.fullWidth
+    });
 
-    var axisY = new Chartist.LinearScaleAxis(
-      Chartist.Axis.units.y,
-      chartRect,
-      {
-        highLow: highLow,
-        scaleMinSpace: options.axisY.scaleMinSpace
-      }
-    );
+    var axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, chartRect, {
+      highLow: highLow,
+      scaleMinSpace: options.axisY.scaleMinSpace
+    });
 
     // Start drawing
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
