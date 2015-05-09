@@ -293,7 +293,7 @@ var Chartist = {
     for (var i = 0; i < data.series.length; i++) {
       if(typeof(data.series[i]) === 'object' && data.series[i].data !== undefined) {
         data.series[i].data.reverse();
-      } else {
+      } else if(data.series[i] instanceof Array) {
         data.series[i].reverse();
       }
     }

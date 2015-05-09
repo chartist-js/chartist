@@ -80,6 +80,8 @@
     stackBars: false,
     // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
     horizontalBars: false,
+    // If set to true then each bar will represent a series and the data array is expected to be a one dimensional array of data values rather than a series array of series. This is useful if the bar chart should represent a profile rather than some data over time.
+    distributeSeries: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
     // Override the class names that get used to generate the SVG structure of the chart
@@ -104,9 +106,12 @@
    *
    */
   function createChart(options) {
-    var seriesGroups = [],
-      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length),
-      highLow;
+    var seriesGroups = [];
+    var data = Chartist.getDataArray(this.data, options.reverseData);
+    var normalizedData = options.distributeSeries ? data.map(function(value) {
+      return [value];
+    }) : Chartist.normalizeDataArray(data, this.data.labels.length);
+    var highLow;
 
     // Create new svg element
     this.svg = Chartist.createSvg(
@@ -133,14 +138,30 @@
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
 
     var valueAxis,
+      labelAxisStepCount,
       labelAxis,
       axisX,
       axisY;
 
+    // We need to set step count based on some options combinations
+    if(options.distributeSeries && !options.stackBars) {
+      // If distributed series are enabled but stacked bars aren't, we need to use the one dimensional series array
+      // length as step count for the label axis
+      labelAxisStepCount = normalizedData.length;
+    } else if(options.distributeSeries && options.stackBars) {
+      // If distributed series are enabled and bars need to be stacked, we'll only have one bar and therefore set step
+      // count to 1
+      labelAxisStepCount = 1;
+    } else {
+      // If we are drawing a regular bar chart with two dimensional series data, we just use the labels array length
+      // as the bars are normalized
+      labelAxisStepCount = this.data.labels.length;
+    }
+
+    // Set labelAxis and valueAxis based on the horizontalBars setting. This setting will flip the axes if necessary.
     if(options.horizontalBars) {
       labelAxis = axisY = new Chartist.StepAxis(Chartist.Axis.units.y, chartRect, {
-        stepCount: this.data.labels.length,
-        stretch: options.fullHeight
+        stepCount: labelAxisStepCount
       });
 
       valueAxis = axisX = new Chartist.LinearScaleAxis(Chartist.Axis.units.x, chartRect, {
@@ -151,7 +172,7 @@
       });
     } else {
       labelAxis = axisX = new Chartist.StepAxis(Chartist.Axis.units.x, chartRect, {
-        stepCount: this.data.labels.length
+        stepCount: labelAxisStepCount
       });
 
       valueAxis = axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, chartRect, {
@@ -197,7 +218,21 @@
       // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
       var biPol = seriesIndex - (this.data.series.length - 1) / 2,
       // Half of the period width between vertical grid lines used to position bars
-        periodHalfLength = chartRect[labelAxis.units.len]() / normalizedData[seriesIndex].length / 2;
+        periodHalfLength;
+
+      // We need to set periodHalfLength based on some options combinations
+      if(options.distributeSeries && !options.stackBars) {
+        // If distributed series are enabled but stacked bars aren't, we need to use the length of the normaizedData array
+        // which is the series count and divide by 2
+        periodHalfLength = labelAxis.axisLength / normalizedData.length / 2;
+      } else if(options.distributeSeries && options.stackBars) {
+        // If distributed series and stacked bars are enabled we'll only get one bar so we should just divide the axis
+        // length by 2
+        periodHalfLength = labelAxis.axisLength / 2;
+      } else {
+        // On regular bar charts we should just use the series length
+        periodHalfLength = labelAxis.axisLength / normalizedData[seriesIndex].length / 2;
+      }
 
       seriesGroups[seriesIndex] = this.svg.elem('g');
 
@@ -214,17 +249,42 @@
       ].join(' '));
 
       normalizedData[seriesIndex].forEach(function(value, valueIndex) {
-        var projected = {
-            x: chartRect.x1 + (options.horizontalBars ? valueAxis : labelAxis).projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
-            y: chartRect.y1 - (options.horizontalBars ? labelAxis : valueAxis).projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
-          },
+        var projected,
           bar,
-          previousStack;
+          previousStack,
+          labelAxisValueIndex;
+
+        // We need to set labelAxisValueIndex based on some options combinations
+        if(options.distributeSeries && !options.stackBars) {
+          // If distributed series are enabled but stacked bars aren't, we can use the seriesIndex for later projection
+          // on the step axis for label positioning
+          labelAxisValueIndex = seriesIndex;
+        } else if(options.distributeSeries && options.stackBars) {
+          // If distributed series and stacked bars are enabled, we will only get one bar and therefore always use
+          // 0 for projection on the label step axis
+          labelAxisValueIndex = 0;
+        } else {
+          // On regular bar charts we just use the value index to project on the label step axis
+          labelAxisValueIndex = valueIndex;
+        }
+
+        // We need to transform coordinates differently based on the chart layout
+        if(options.horizontalBars) {
+          projected = {
+            x: chartRect.x1 + valueAxis.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - labelAxis.projectValue(value, labelAxisValueIndex, normalizedData[seriesIndex]).pos
+          };
+        } else {
+          projected = {
+            x: chartRect.x1 + labelAxis.projectValue(value, labelAxisValueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - valueAxis.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+          }
+        }
 
         // Offset to center bar between grid lines
         projected[labelAxis.units.pos] += periodHalfLength * (options.horizontalBars ? -1 : 1);
-        // Using bi-polar offset for multiple series if no stacked bars are used
-        projected[labelAxis.units.pos] += options.stackBars ? 0 : biPol * options.seriesBarDistance * (options.horizontalBars ? -1 : 1);
+        // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
+        projected[labelAxis.units.pos] += (options.stackBars || options.distributeSeries) ? 0 : biPol * options.seriesBarDistance * (options.horizontalBars ? -1 : 1);
 
         // Enter value in stacked bar values used to remember previous screen value for stacking up bars
         previousStack = stackedBarValues[valueIndex] || zeroPoint;
