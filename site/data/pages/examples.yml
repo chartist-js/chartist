@@ -11,6 +11,16 @@ sections:
           intro: An example of a simple line chart with three series. You can edit this example in realtime.
       - type: live-example
         data:
+          title: Holes in data
+          level: 4
+          id: example-line-data-holes
+          classes: ct-golden-section
+          intro: >
+                   Chartist does not freak out if you have holes in your data. Instead it will render the lines in
+                   segments and handles these holes gracefully. This also allows you to introduce a line at a later
+                   point or to terminate the series before others.
+      - type: live-example
+        data:
           title: Line scatter diagram with responsive settings
           level: 4
           id: line-scatter-random
