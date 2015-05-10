@@ -1,262 +1,314 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - Getting started</title><meta name="description" content="Learn how to use Chartist.js"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content getting-started"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples (live coding!)</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Getting started</h2></header><aside class="side-navigation" data-sticky="100"><nav><ul class="side-nav"><li class="heading">Download and set-up</li><li><a class="text-clipping" href="#bower">Bower</a></li><li><a class="text-clipping" href="#one-two-three-css">One, two, three, CSS!</a></li><li><a class="text-clipping" href="#the-sass-way">The Sass way</a></li><li class="heading">Create your first chart</li><li><a class="text-clipping" href="#as-simple-as-it-can-get">As simple as it can get</a></li><li><a class="text-clipping" href="#the-configuration-of-your-chart">The configuration of your chart</a></li><li><a class="text-clipping" href="#responsive-sugar-topping">Responsive sugar topping</a></li><li class="heading">Advanced</li><li><a class="text-clipping" href="#adding-behavior-to-your-charts">Adding behavior to your charts</a></li><li><a class="text-clipping" href="#animations-using-chartistsvg">Animations using Chartist.Svg</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3 id="download-and-setup">Download and set-up</h3></header><div class="content"><div class="sub-section"><h4 id="bower">Bower</h4><p>The easiest way to get started with Chartist.js is by using <a href="http://bower.io/" target="_blank">bower</a>:</p><pre><code class="bash">bower install chartist --save</code></pre><p>The bower package contains the JavaScript library, CSS as well as the Sass (SCSS) files. You can then integrate the desired dependencies in your project and start using them immediately.</p></div><div class="sub-section"><h4 id="one-two-three-css">One, two, three, CSS!</h4><p>The quickest way to get things up and running is by using the Chartist.js CSS files. The CSS is compiled from the Sass files with the default class names which are also configured in the JavaScript library. You can then override the default styles or modify the CSS file, however, for customization it's recommended to use the Sass version of Chartist.js.</p><pre id="simple-start"><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;title&gt;My first Chartist Tests&lt;/title&gt;
-    &lt;link rel=&quot;stylesheet&quot;
-          href=&quot;bower_components/chartist/dist/chartist.min.css&quot;&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    &lt;!-- Site content goes here !--&gt;
-    &lt;script src=&quot;bower_components/chartist/dist/chartist.min.js&quot;&gt;&lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</code></pre><h5 id="use-a-cdn-alternatively">Use a CDN alternatively</h5><p>If you'd like to get started even faster you can also use a CDN to load Chartist.js. The awesome people at jsDelivr provide a fantastic job in hosting libraries from over 42 POP Locations around the world! They always update Chartist.js to the latest version immediately and they do all that for free! Check out the <a href="http://www.jsdelivr.com/" target="_blank">jsDeliver website</a> for more information.</p><button class="button" data-toggle-visible="#simple-start-cdn">Show CDN Code</button><pre id="simple-start-cdn"><code class="html">&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-    &lt;link rel=&quot;stylesheet&quot; href=&quot;//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css&quot;&gt;
-    &lt;script src=&quot;//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js&quot;&gt;&lt;/script&gt;
-  &lt;/head&gt;
-&lt;/html&gt;</code></pre></div><div class="sub-section"><h4 id="the-sass-way">The Sass way</h4><p>If you like to customize your charts you can either remove the CSS fully and write your own selectors using the Chartist.js Sass mixins or you just use the Chartist.js Sass settings file to customize the look and feel of your charts.</p><p>Styling inline SVG with CSS is a breeze and you should also consider writing your own selectors for your charts and using the Sass mixins. You can read more about using the Sass mixins in the <a href="#advanced">advanced</a> section.</p><p>To customize the style of your charts using the Sass settings file you should copy the settings file to your own Sass folder.</p><pre><code class="bash">cp bower_components/chartist/dist/scss/settings/_chartist-settings.scss styles</code></pre><p>Then just import your copy of the settings file before you import the chartist.scss file and change the settings in your copy as desired.</p><pre id="custom-include"><code class="scss">@import &quot;_my-chartist-settings.scss&quot;;
-@import &quot;chartist/dist/scss/chartist.scss&quot;;
-</code></pre><h5 id="default-settings">Default settings</h5><p>The settings file contains all relevant variables used in the mixins and while generating the default classes. You can simply change the settings for styling your own charts. If you want to override certain settings based on state or pseeudo selectors, you can use the individual mixins to only override specific styles.</p><p>Take a look at the settings to see how to customize the style of the defalt Chartist.js class selectors.</p><button class="button" data-toggle-visible="#default-Sass-settings">Show default settings</button><pre id="default-Sass-settings"><code class="scss">// Scales for responsive SVG containers
-$ct-scales: ((1), (15/16), (8/9), (5/6), (4/5), (3/4), (2/3), (5/8), (1/1.618), (3/5), (9/16), (8/15), (1/2), (2/5), (3/8), (1/3), (1/4)) !default;
-$ct-scales-names: (ct-square, ct-minor-second, ct-major-second, ct-minor-third, ct-major-third, ct-perfect-fourth, ct-perfect-fifth, ct-minor-sixth, ct-golden-section, ct-major-sixth, ct-minor-seventh, ct-major-seventh, ct-octave, ct-major-tenth, ct-major-eleventh, ct-major-twelfth, ct-double-octave) !default;
-
-// Class names to be used when generating CSS
-$ct-class-chart: ct-chart !default;
-$ct-class-chart-line: ct-chart-line !default;
-$ct-class-chart-bar: ct-chart-bar !default;
-$ct-class-chart-pie: ct-chart-pie !default;
-$ct-class-label: ct-label !default;
-$ct-class-series: ct-series !default;
-$ct-class-line: ct-line !default;
-$ct-class-point: ct-point !default;
-$ct-class-area: ct-area !default;
-$ct-class-bar: ct-bar !default;
-$ct-class-slice: ct-slice !default;
-$ct-class-donut: ct-donut !default;
-$ct-class-grid: ct-grid !default;
-$ct-class-vertical: ct-vertical !default;
-$ct-class-horizontal: ct-horizontal !default;
-
-// Container ratio
-$ct-container-ratio: (1/1.618) !default;
-
-// Text styles for labels
-$ct-text-color: rgba(0, 0, 0, 0.4) !default;
-$ct-text-size: 0.75rem !default;
-$ct-text-align: left !default;
-$ct-horizontal-text-align: left !default;
-$ct-vertical-text-align: right !default;
-
-// Grid styles
-$ct-grid-color: rgba(0, 0, 0, 0.2) !default;
-$ct-grid-dasharray: 2px !default;
-$ct-grid-width: 1px !default;
-
-// Line chart properties
-$ct-line-width: 4px !default;
-$ct-line-dasharray: false !default;
-$ct-point-size: 10px !default;
-// Line chart point, can be either round or square
-$ct-point-shape: round !default;
-// Area fill transparency between 0 and 1
-$ct-area-opacity: 0.1 !default;
-
-// Bar chart bar width
-$ct-bar-width: 10px !default;
-
-// Donut width (If donut width is to big it can cause issues where the shape gets distorted)
-$ct-donut-width: 60px !default;
-
-// If set to true it will include the default classes and generate CSS output. If you&#x27;re planning to use the mixins you
-// should set this property to false
-$ct-include-classes: true !default;
-
-// If this is set to true the CSS will contain colored series. You can extend or change the color with the
-// properties below
-$ct-include-colored-series: $ct-include-classes !default;
-
-// If set to true this will include all responsive container variations using the scales defined at the top of the script
-$ct-include-alternative-responsive-containers: $ct-include-classes !default;
-
-// Series names and colors. This can be extended or customized as desired. Just add more series and colors.
-$ct-series-names: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) !default;
-$ct-series-colors: (
-  #d70206,
-  #f05b4f,
-  #f4c63d,
-  #d17905,
-  #453d3f,
-  #59922b,
-  #0544d3,
-  #6b0392,
-  #f05b4f,
-  #dda458,
-  #eacf7d,
-  #86797d,
-  #b2c326,
-  #6188e2,
-  #a748ca
-) !default;
-</code></pre></div></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>In this section you'll go through a simple example of how to use Chartist.js in your project. You'll learn the default stages you go through when creating and customizing a basic line chart. If you'd like to see more in depth and advanced examples you should check out the <a href="#advanced">advanced</a> section or the <a href="examples.html">examples page</a>.</p><div class="sub-section"><h4 id="as-simple-as-it-can-get">As simple as it can get</h4><p>Chartist provides you a very simple API to get started, however, while trying to follow the best practice of relying on standards and clear separation of concerns it sometimes needs a small mind shift in order to understand how things are meant to work within Chartist. Instead of specifying your colors, line width and other style related things in the JavaScript API, you'll need to use CSS in order to control your appearance.</p><div class="sub-section"><h5 id="creating-a-chart-using-aspect-ratios">Creating a chart using aspect ratios</h5><p>Because of the nature of responsive design it's important to understand that blocks in design like images, videos and similar content need to be able to scale and adapt to the media. In order for an element to scale, you need to rely on a certain aspect ratios (like 4:3, 3:2, 16:9 etc.) rather than specifying a fixed width and height.</p><p>To designers this Idea is absolutely not new, but to developers this might be at first. However, when a designer talks to a developer about the images being 320x240 on this page and 300x200 on that element, he actually just translated his idea of using 4:3 and 3:2 images into pixels.</p><p>With Chartist you can specify those ratios directly on containers without the need to calculate any fixed dimensions. In order to create a chart that is using the aspect ratio of a golden section you can just add the class .ct-golden-section to your container where you initialize Chartist.</p><p>Here is a list of all available container ratios (If using the Sass version of Chartist you can also easily add others):</p><a href="#" class="button" data-toggle-visible="#container-aspect-ratio-classes">Show available aspect ratios</a><table id="container-aspect-ratio-classes" role="presentation"><thead><tr><th>Container class<th>Ratio<tbody><tr><td>.ct-square<td>1<tr><td>.ct-minor-second<td>15:16<tr><td>.ct-major-second<td>8:9<tr><td>.ct-minor-third<td>5:6<tr><td>.ct-major-third<td>4:5<tr><td>.ct-perfect-fourth<td>3:4<tr><td>.ct-perfect-fifth<td>2:3<tr><td>.ct-minor-sixth<td>5:8<tr><td>.ct-golden-section<td>1:1.618<tr><td>.ct-major-sixth<td>3:5<tr><td>.ct-minor-seventh<td>9:16<tr><td>.ct-major-seventh<td>8:15<tr><td>.ct-octave<td>1:2<tr><td>.ct-major-tenth<td>2:5<tr><td>.ct-major-eleventh<td>3:8<tr><td>.ct-major-twelfth<td>1:3<tr><td>.ct-double-octave<td>1:4</table><p>Use the following HTML code to specify a container with one of the above aspect ratio classes.</p><pre><code class="html">&lt;div class=&quot;ct-chart ct-perfect-fourth&quot;&gt;&lt;/div&gt;</code></pre><p>When using a fixed aspect ratio container you can then simply initialize your chart without specifying any width or height in the options.</p><pre id="simple-start-aspect-ratio-chart"><code class="js">var data = {
-  // A labels array that can contain any sort of values
-  labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
-  // Our series array that contains series objects or in this case series data arrays
-  series: [
-    [5, 2, 4, 2, 0]
-  ]
-};
-
-// Create a new line chart object where as first parameter we pass in a selector
-// that is resolving to our chart container element. The Second parameter
-// is the actual data object.
-new Chartist.Line(&#x27;.ct-chart&#x27;, data);</code></pre></div><div class="sub-section"><h5 id="creating-a-chart-with-fixed-dimensions">Creating a chart with fixed dimensions</h5><p>In order to create a simple line chart with fixed width and height you only need to have a container element and initialize Chartist.js on it. Give the container the class ct-chart so that it will get the default styles (if you don't use your own classes).</p><pre id="simple-start-fixed-chart"><code class="js">var data = {
-  // A labels array that can contain any sort of values
-  labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
-  // Our series array that contains series objects or in this case series data arrays
-  series: [
-    [5, 2, 4, 2, 0]
-  ]
-};
-
-// As options we currently only set a static size of 300x200 px. We can also omit this and use aspect ratio containers
-// as you saw in the previous example
-var options = {
-  width: 300,
-  height: 200
-};
-
-// Create a new line chart object where as first parameter we pass in a selector
-// that is resolving to our chart container element. The Second parameter
-// is the actual data object. As a third parameter we pass in our custom options.
-new Chartist.Bar(&#x27;.ct-chart&#x27;, data, options);</code></pre></div><div class="sub-section"><h5 id="more-than-one-chart-on-my-page">More than one chart on my page?</h5><p>The example above uses the chartist default class to select the element where the chart should be created. This class is important for applying the right styles in the CSS of Chartist. If you need to create individual charts on one page, you should use IDs to initialize them separately.</p><pre id="two-charts"><code class="html">&lt;div class=&quot;ct-chart ct-golden-section&quot; id=&quot;chart1&quot;&gt;&lt;/div&gt;
-&lt;div class=&quot;ct-chart ct-golden-section&quot; id=&quot;chart2&quot;&gt;&lt;/div&gt;
-
-&lt;script&gt;
-  // Initialize a Line chart in the container with the ID chart1
-  new Chartist.Line(&#x27;#chart1&#x27;, {
-    labels: [1, 2, 3, 4],
-    series: [[100, 120, 180, 200]]
-  });
-
-  // Initialize a Line chart in the container with the ID chart2
-  new Chartist.Bar(&#x27;#chart2&#x27;, {
-    labels: [1, 2, 3, 4],
-    series: [[5, 2, 8, 3]]
-  });
-&lt;/script&gt;
-</code></pre></div></div><div class="sub-section"><h4 id="the-configuration-of-your-chart">The configuration of your chart</h4><p>Chartist.js is built very flexible and almost everything within your charts can be configured. In the default settings (that you can check in the <a href="api-documentation.html">API Documentation</a>) you'll get some predefined defaults applied to your charts.</p><p>You can always override the default settings of your charts by passing in a configuration object at creation time.</p><div id="simple-configuration-chart" class="ct-chart ct-golden-section" data-example="Ly8gT3VyIGxhYmVscyBhbmQgdGhyZWUgZGF0YSBzZXJpZXMKdmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ1dlZWsxJywgJ1dlZWsyJywgJ1dlZWszJywgJ1dlZWs0JywgJ1dlZWs1JywgJ1dlZWs2J10sCiAgc2VyaWVzOiBbCiAgICBbNSwgNCwgMywgNywgNSwgMTBdLAogICAgWzMsIDIsIDksIDUsIDQsIDZdLAogICAgWzIsIDEsIC0zLCAtNCwgLTIsIDBdCiAgXQp9OwoKLy8gV2UgYXJlIHNldHRpbmcgYSBmZXcgb3B0aW9ucyBmb3Igb3VyIGNoYXJ0IGFuZCBvdmVycmlkZSB0aGUgZGVmYXVsdHMKdmFyIG9wdGlvbnMgPSB7CiAgLy8gRG9uJ3QgZHJhdyB0aGUgbGluZSBjaGFydCBwb2ludHMKICBzaG93UG9pbnQ6IGZhbHNlLAogIC8vIERpc2FibGUgbGluZSBzbW9vdGhpbmcKICBsaW5lU21vb3RoOiBmYWxzZSwKICAvLyBYLUF4aXMgc3BlY2lmaWMgY29uZmlndXJhdGlvbgogIGF4aXNYOiB7CiAgICAvLyBXZSBjYW4gZGlzYWJsZSB0aGUgZ3JpZCBmb3IgdGhpcyBheGlzCiAgICBzaG93R3JpZDogZmFsc2UsCiAgICAvLyBhbmQgYWxzbyBkb24ndCBzaG93IHRoZSBsYWJlbAogICAgc2hvd0xhYmVsOiBmYWxzZQogIH0sCiAgLy8gWS1BeGlzIHNwZWNpZmljIGNvbmZpZ3VyYXRpb24KICBheGlzWTogewogICAgLy8gTGV0cyBvZmZzZXQgdGhlIGNoYXJ0IGEgYml0IGZyb20gdGhlIGxhYmVscwogICAgb2Zmc2V0OiA2MCwKICAgIC8vIFRoZSBsYWJlbCBpbnRlcnBvbGF0aW9uIGZ1bmN0aW9uIGVuYWJsZXMgeW91IHRvIG1vZGlmeSB0aGUgdmFsdWVzCiAgICAvLyB1c2VkIGZvciB0aGUgbGFiZWxzIG9uIGVhY2ggYXhpcy4gSGVyZSB3ZSBhcmUgY29udmVydGluZyB0aGUKICAgIC8vIHZhbHVlcyBpbnRvIG1pbGxpb24gcG91bmQuCiAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgIHJldHVybiAnJCcgKyB2YWx1ZSArICdtJzsKICAgIH0KICB9Cn07CgovLyBBbGwgeW91IG5lZWQgdG8gZG8gaXMgcGFzcyB5b3VyIGNvbmZpZ3VyYXRpb24gYXMgdGhpcmQgcGFyYW1ldGVyIHRvIHRoZSBjaGFydCBmdW5jdGlvbgpuZXcgQ2hhcnRpc3QuTGluZSgnLmN0LWNoYXJ0JywgZGF0YSwgb3B0aW9ucyk7Cg=="></div><button class="button" data-toggle-visible="#simple-configuration-chart-code">Show code and comments</button><pre id="simple-configuration-chart-code"><code class="js">// Our labels and three data series
-var data = {
-  labels: [&#x27;Week1&#x27;, &#x27;Week2&#x27;, &#x27;Week3&#x27;, &#x27;Week4&#x27;, &#x27;Week5&#x27;, &#x27;Week6&#x27;],
-  series: [
-    [5, 4, 3, 7, 5, 10],
-    [3, 2, 9, 5, 4, 6],
-    [2, 1, -3, -4, -2, 0]
-  ]
-};
-
-// We are setting a few options for our chart and override the defaults
-var options = {
-  // Don&#x27;t draw the line chart points
-  showPoint: false,
-  // Disable line smoothing
-  lineSmooth: false,
-  // X-Axis specific configuration
-  axisX: {
-    // We can disable the grid for this axis
-    showGrid: false,
-    // and also don&#x27;t show the label
-    showLabel: false
-  },
-  // Y-Axis specific configuration
-  axisY: {
-    // Lets offset the chart a bit from the labels
-    offset: 60,
-    // The label interpolation function enables you to modify the values
-    // used for the labels on each axis. Here we are converting the
-    // values into million pound.
-    labelInterpolationFnc: function(value) {
-      return &#x27;$&#x27; + value + &#x27;m&#x27;;
-    }
-  }
-};
-
-// All you need to do is pass your configuration as third parameter to the chart function
-new Chartist.Line(&#x27;.ct-chart&#x27;, data, options);
-</code></pre></div><div class="sub-section"><h4 id="responsive-sugar-topping">Responsive sugar topping</h4><p>Responsive web design is all based on <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Media_queries" taget="_blank">media queries</a> as you are probably already aware. Media queries are great and they help you to define media related conditions that you can use to apply different styles for different media.</p><p>Sometimes it's also required to have different behavior on certain media and it's possible that a specific component of your web site should behave in an other way on a small media than on a large one. Luckily there is window.matchMedia in your browser that comes to the rescue. With matchMedia it's possible to let your javascript react differently based on CSS3 media queries.</p><h5 id="responsive-setting-overrides">Responsive setting overrides</h5><p>Configuring different chart behavior for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.</p><p>The following example uses different label interpolations (to save some space) on small media as well as different spacing between the bars of the bar chart series. Resize your browser window to see the effect.</p><div id="example-simple-bar" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ0phbicsICdGZWInLCAnTWFyJywgJ0FwcicsICdNYWknLCAnSnVuJywgJ0p1bCcsICdBdWcnLCAnU2VwJywgJ09jdCcsICdOb3YnLCAnRGVjJ10sCiAgICBzZXJpZXM6IFsKICAgIFs1LCA0LCAzLCA3LCA1LCAxMCwgMywgNCwgOCwgMTAsIDYsIDhdLAogICAgWzMsIDIsIDksIDUsIDQsIDYsIDQsIDYsIDcsIDgsIDcsIDRdCiAgXQp9OwoKdmFyIG9wdGlvbnMgPSB7CiAgc2VyaWVzQmFyRGlzdGFuY2U6IDE1Cn07Cgp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWydzY3JlZW4gYW5kIChtaW4td2lkdGg6IDY0MXB4KSBhbmQgKG1heC13aWR0aDogMTAyNHB4KScsIHsKICAgIHNlcmllc0JhckRpc3RhbmNlOiAxMCwKICAgIGF4aXNYOiB7CiAgICAgIGxhYmVsSW50ZXJwb2xhdGlvbkZuYzogZnVuY3Rpb24gKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuIHZhbHVlOwogICAgICB9CiAgICB9CiAgfV0sCiAgWydzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDY0MHB4KScsIHsKICAgIHNlcmllc0JhckRpc3RhbmNlOiA1LAogICAgYXhpc1g6IHsKICAgICAgbGFiZWxJbnRlcnBvbGF0aW9uRm5jOiBmdW5jdGlvbiAodmFsdWUpIHsKICAgICAgICByZXR1cm4gdmFsdWVbMF07CiAgICAgIH0KICAgIH0KICB9XQpdOwoKbmV3IENoYXJ0aXN0LkJhcignLmN0LWNoYXJ0JywgZGF0YSwgb3B0aW9ucywgcmVzcG9uc2l2ZU9wdGlvbnMpOw=="></div><button class="button" data-toggle-visible="#example-simple-bar-code">Show code and comments</button><pre id="example-simple-bar-code"><code class="js">var data = {
-  labels: [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;Mai&#x27;, &#x27;Jun&#x27;, &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;],
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - Getting started</title><meta name="description" content="Learn how to use Chartist.js"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content getting-started"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Getting started</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Download and set-up</li><li><a class="text-clipping" href="#bower">Bower</a></li><li><a class="text-clipping" href="#one-two-three-css">One, two, three, CSS!</a></li><li><a class="text-clipping" href="#the-sass-way">The Sass way</a></li><li class="heading">Create your first chart</li><li><a class="text-clipping" href="#as-simple-as-it-can-get">As simple as it can get</a></li><li><a class="text-clipping" href="#the-configuration-of-your-chart">The configuration of your chart</a></li><li><a class="text-clipping" href="#responsive-sugar-topping">Responsive sugar topping</a></li><li><a class="text-clipping" href="#different-configuration-for-different-series">Different configuration for different series</a></li><li class="heading">Advanced</li><li><a class="text-clipping" href="#adding-behavior-to-your-charts">Adding behavior to your charts</a></li><li><a class="text-clipping" href="#animations-using-chartistsvg">Animations using Chartist.Svg</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3 id="download-and-setup">Download and set-up</h3></header><div class="content"><div class="sub-section"><h4 id="bower">Bower</h4><p>The easiest way to get started with Chartist.js is by using <a href="http://bower.io/" target="_blank">bower</a>:</p><pre><code class="bash">bower install chartist --save</code></pre><p>The bower package contains the JavaScript library, CSS as well as the Sass (SCSS) files. You can then integrate the desired dependencies in your project and start using them immediately.</p></div><div class="sub-section"><h4 id="one-two-three-css">One, two, three, CSS!</h4><p>The quickest way to get things up and running is by using the Chartist.js CSS files. The CSS is compiled from the Sass files with the default class names which are also configured in the JavaScript library. You can then override the default styles or modify the CSS file, however, for customization it's recommended to use the Sass version of Chartist.js.</p><pre id="simple-start"><code class="html">&lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;My first Chartist Tests&lt;/title&gt;
+      &lt;link rel=&quot;stylesheet&quot;
+            href=&quot;bower_components/chartist/dist/chartist.min.css&quot;&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+      &lt;!-- Site content goes here !--&gt;
+      &lt;script src=&quot;bower_components/chartist/dist/chartist.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+  </code></pre><h5 id="use-a-cdn-alternatively">Use a CDN alternatively</h5><p>If you'd like to get started even faster you can also use a CDN to load Chartist.js. The awesome people at jsDelivr provide a fantastic job in hosting libraries from over 42 POP Locations around the world! They always update Chartist.js to the latest version immediately and they do all that for free! Check out the <a href="http://www.jsdelivr.com/" target="_blank">jsDeliver website</a> for more information.</p><button class="button" data-toggle-visible="#simple-start-cdn">Show CDN Code</button><pre id="simple-start-cdn"><code class="html">&lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;link rel=&quot;stylesheet&quot; href=&quot;//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css&quot;&gt;
+      &lt;script src=&quot;//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js&quot;&gt;&lt;/script&gt;
+    &lt;/head&gt;
+  &lt;/html&gt;</code></pre></div><div class="sub-section"><h4 id="the-sass-way">The Sass way</h4><p>If you like to customize your charts you can either remove the CSS fully and write your own selectors using the Chartist.js Sass mixins or you just use the Chartist.js Sass settings file to customize the look and feel of your charts.</p><p>Styling inline SVG with CSS is a breeze and you should also consider writing your own selectors for your charts and using the Sass mixins. You can read more about using the Sass mixins in the <a href="#advanced">advanced</a> section.</p><p>To customize the style of your charts using the Sass settings file you should copy the settings file to your own Sass folder.</p><pre><code class="bash">cp bower_components/chartist/dist/scss/settings/_chartist-settings.scss styles</code></pre><p>Then just import your copy of the settings file before you import the chartist.scss file and change the settings in your copy as desired.</p><pre id="custom-include"><code class="scss">@import &quot;_my-chartist-settings.scss&quot;;
+  @import &quot;chartist/dist/scss/chartist.scss&quot;;
+  </code></pre><h5 id="default-settings">Default settings</h5><p>The settings file contains all relevant variables used in the mixins and while generating the default classes. You can simply change the settings for styling your own charts. If you want to override certain settings based on state or pseeudo selectors, you can use the individual mixins to only override specific styles.</p><p>Take a look at the settings to see how to customize the style of the defalt Chartist.js class selectors.</p><button class="button" data-toggle-visible="#default-Sass-settings">Show default settings</button><pre id="default-Sass-settings"><code class="scss">// Scales for responsive SVG containers
+  $ct-scales: ((1), (15/16), (8/9), (5/6), (4/5), (3/4), (2/3), (5/8), (1/1.618), (3/5), (9/16), (8/15), (1/2), (2/5), (3/8), (1/3), (1/4)) !default;
+  $ct-scales-names: (ct-square, ct-minor-second, ct-major-second, ct-minor-third, ct-major-third, ct-perfect-fourth, ct-perfect-fifth, ct-minor-sixth, ct-golden-section, ct-major-sixth, ct-minor-seventh, ct-major-seventh, ct-octave, ct-major-tenth, ct-major-eleventh, ct-major-twelfth, ct-double-octave) !default;
+  
+  // Class names to be used when generating CSS
+  $ct-class-chart: ct-chart !default;
+  $ct-class-chart-line: ct-chart-line !default;
+  $ct-class-chart-bar: ct-chart-bar !default;
+  $ct-class-horizontal-bars: ct-horizontal-bars !default;
+  $ct-class-chart-pie: ct-chart-pie !default;
+  $ct-class-label: ct-label !default;
+  $ct-class-series: ct-series !default;
+  $ct-class-line: ct-line !default;
+  $ct-class-point: ct-point !default;
+  $ct-class-area: ct-area !default;
+  $ct-class-bar: ct-bar !default;
+  $ct-class-slice: ct-slice !default;
+  $ct-class-donut: ct-donut !default;
+  $ct-class-grid: ct-grid !default;
+  $ct-class-vertical: ct-vertical !default;
+  $ct-class-horizontal: ct-horizontal !default;
+  $ct-class-start: ct-start !default;
+  $ct-class-end: ct-end !default;
+  
+  // Container ratio
+  $ct-container-ratio: (1/1.618) !default;
+  
+  // Text styles for labels
+  $ct-text-color: rgba(0, 0, 0, 0.4) !default;
+  $ct-text-size: 0.75rem !default;
+  $ct-text-align: flex-start !default;
+  $ct-text-justify: flex-start !default;
+  $ct-text-line-height: 1;
+  
+  // Grid styles
+  $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
+  $ct-grid-dasharray: 2px !default;
+  $ct-grid-width: 1px !default;
+  
+  // Line chart properties
+  $ct-line-width: 4px !default;
+  $ct-line-dasharray: false !default;
+  $ct-point-size: 10px !default;
+  // Line chart point, can be either round or square
+  $ct-point-shape: round !default;
+  // Area fill transparency between 0 and 1
+  $ct-area-opacity: 0.1 !default;
+  
+  // Bar chart bar width
+  $ct-bar-width: 10px !default;
+  
+  // Donut width (If donut width is to big it can cause issues where the shape gets distorted)
+  $ct-donut-width: 60px !default;
+  
+  // If set to true it will include the default classes and generate CSS output. If you&#x27;re planning to use the mixins you
+  // should set this property to false
+  $ct-include-classes: true !default;
+  
+  // If this is set to true the CSS will contain colored series. You can extend or change the color with the
+  // properties below
+  $ct-include-colored-series: $ct-include-classes !default;
+  
+  // If set to true this will include all responsive container variations using the scales defined at the top of the script
+  $ct-include-alternative-responsive-containers: $ct-include-classes !default;
+  
+  // Series names and colors. This can be extended or customized as desired. Just add more series and colors.
+  $ct-series-names: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) !default;
+  $ct-series-colors: (
+    #d70206,
+    #f05b4f,
+    #f4c63d,
+    #d17905,
+    #453d3f,
+    #59922b,
+    #0544d3,
+    #6b0392,
+    #f05b4f,
+    #dda458,
+    #eacf7d,
+    #86797d,
+    #b2c326,
+    #6188e2,
+    #a748ca
+  ) !default;
+  </code></pre></div></div></section><section class="documentation-section full"><header><h3 id="create-your-first-chart">Create your first chart</h3></header><div class="content"><p>In this section you'll go through a simple example of how to use Chartist.js in your project. You'll learn the default stages you go through when creating and customizing a basic line chart. If you'd like to see more in depth and advanced examples you should check out the <a href="#advanced">advanced</a> section or the <a href="examples.html">examples page</a>.</p><div class="sub-section"><h4 id="as-simple-as-it-can-get">As simple as it can get</h4><p>Chartist provides you a very simple API to get started, however, while trying to follow the best practice of relying on standards and clear separation of concerns it sometimes needs a small mind shift in order to understand how things are meant to work within Chartist. Instead of specifying your colors, line width and other style related things in the JavaScript API, you'll need to use CSS in order to control your appearance.</p><div class="sub-section"><h5 id="creating-a-chart-using-aspect-ratios">Creating a chart using aspect ratios</h5><p>Because of the nature of responsive design it's important to understand that blocks in design like images, videos and similar content need to be able to scale and adapt to the media. In order for an element to scale, you need to rely on a certain aspect ratios (like 4:3, 3:2, 16:9 etc.) rather than specifying a fixed width and height.</p><p>To designers this Idea is absolutely not new, but to developers this might be at first. However, when a designer talks to a developer about the images being 320x240 on this page and 300x200 on that element, he actually just translated his idea of using 4:3 and 3:2 images into pixels.</p><p>With Chartist you can specify those ratios directly on containers without the need to calculate any fixed dimensions. In order to create a chart that is using the aspect ratio of a golden section you can just add the class .ct-golden-section to your container where you initialize Chartist.</p><p>Here is a list of all available container ratios (If using the Sass version of Chartist you can also easily add others):</p><a href="#" class="button" data-toggle-visible="#container-aspect-ratio-classes">Show available aspect ratios</a><table id="container-aspect-ratio-classes" role="presentation"><thead><tr><th>Container class<th>Ratio<tbody><tr><td>.ct-square<td>1<tr><td>.ct-minor-second<td>15:16<tr><td>.ct-major-second<td>8:9<tr><td>.ct-minor-third<td>5:6<tr><td>.ct-major-third<td>4:5<tr><td>.ct-perfect-fourth<td>3:4<tr><td>.ct-perfect-fifth<td>2:3<tr><td>.ct-minor-sixth<td>5:8<tr><td>.ct-golden-section<td>1:1.618<tr><td>.ct-major-sixth<td>3:5<tr><td>.ct-minor-seventh<td>9:16<tr><td>.ct-major-seventh<td>8:15<tr><td>.ct-octave<td>1:2<tr><td>.ct-major-tenth<td>2:5<tr><td>.ct-major-eleventh<td>3:8<tr><td>.ct-major-twelfth<td>1:3<tr><td>.ct-double-octave<td>1:4</table><p>Use the following HTML code to specify a container with one of the above aspect ratio classes.</p><pre><code class="html">&lt;div class=&quot;ct-chart ct-perfect-fourth&quot;&gt;&lt;/div&gt;</code></pre><p>When using a fixed aspect ratio container you can then simply initialize your chart without specifying any width or height in the options.</p><pre id="simple-start-aspect-ratio-chart"><code class="js">var data = {
+    // A labels array that can contain any sort of values
+    labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
+    // Our series array that contains series objects or in this case series data arrays
     series: [
-    [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
-    [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
-  ]
-};
-
-var options = {
-  seriesBarDistance: 15
-};
-
-var responsiveOptions = [
-  [&#x27;screen and (min-width: 641px) and (max-width: 1024px)&#x27;, {
-    seriesBarDistance: 10,
+      [5, 2, 4, 2, 0]
+    ]
+  };
+  
+  // Create a new line chart object where as first parameter we pass in a selector
+  // that is resolving to our chart container element. The Second parameter
+  // is the actual data object.
+  new Chartist.Line(&#x27;.ct-chart&#x27;, data);</code></pre></div><div class="sub-section"><h5 id="creating-a-chart-with-fixed-dimensions">Creating a chart with fixed dimensions</h5><p>In order to create a simple line chart with fixed width and height you only need to have a container element and initialize Chartist.js on it. Give the container the class ct-chart so that it will get the default styles (if you don't use your own classes).</p><pre id="simple-start-fixed-chart"><code class="js">var data = {
+    // A labels array that can contain any sort of values
+    labels: [&#x27;Mon&#x27;, &#x27;Tue&#x27;, &#x27;Wed&#x27;, &#x27;Thu&#x27;, &#x27;Fri&#x27;],
+    // Our series array that contains series objects or in this case series data arrays
+    series: [
+      [5, 2, 4, 2, 0]
+    ]
+  };
+  
+  // As options we currently only set a static size of 300x200 px. We can also omit this and use aspect ratio containers
+  // as you saw in the previous example
+  var options = {
+    width: 300,
+    height: 200
+  };
+  
+  // Create a new line chart object where as first parameter we pass in a selector
+  // that is resolving to our chart container element. The Second parameter
+  // is the actual data object. As a third parameter we pass in our custom options.
+  new Chartist.Bar(&#x27;.ct-chart&#x27;, data, options);</code></pre></div><div class="sub-section"><h5 id="more-than-one-chart-on-my-page">More than one chart on my page?</h5><p>The example above uses the chartist default class to select the element where the chart should be created. This class is important for applying the right styles in the CSS of Chartist. If you need to create individual charts on one page, you should use IDs to initialize them separately.</p><pre id="two-charts"><code class="html">&lt;div class=&quot;ct-chart ct-golden-section&quot; id=&quot;chart1&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;ct-chart ct-golden-section&quot; id=&quot;chart2&quot;&gt;&lt;/div&gt;
+  
+  &lt;script&gt;
+    // Initialize a Line chart in the container with the ID chart1
+    new Chartist.Line(&#x27;#chart1&#x27;, {
+      labels: [1, 2, 3, 4],
+      series: [[100, 120, 180, 200]]
+    });
+  
+    // Initialize a Line chart in the container with the ID chart2
+    new Chartist.Bar(&#x27;#chart2&#x27;, {
+      labels: [1, 2, 3, 4],
+      series: [[5, 2, 8, 3]]
+    });
+  &lt;/script&gt;
+  </code></pre></div></div><div class="sub-section"><h4 id="the-configuration-of-your-chart">The configuration of your chart</h4><p>Chartist.js is built very flexible and almost everything within your charts can be configured. In the default settings (that you can check in the <a href="api-documentation.html">API Documentation</a>) you'll get some predefined defaults applied to your charts.</p><p>You can always override the default settings of your charts by passing in a configuration object at creation time.</p><div id="simple-configuration-chart" class="ct-chart ct-golden-section" data-example="Ly8gT3VyIGxhYmVscyBhbmQgdGhyZWUgZGF0YSBzZXJpZXMKdmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ1dlZWsxJywgJ1dlZWsyJywgJ1dlZWszJywgJ1dlZWs0JywgJ1dlZWs1JywgJ1dlZWs2J10sCiAgc2VyaWVzOiBbCiAgICBbNSwgNCwgMywgNywgNSwgMTBdLAogICAgWzMsIDIsIDksIDUsIDQsIDZdLAogICAgWzIsIDEsIC0zLCAtNCwgLTIsIDBdCiAgXQp9OwoKLy8gV2UgYXJlIHNldHRpbmcgYSBmZXcgb3B0aW9ucyBmb3Igb3VyIGNoYXJ0IGFuZCBvdmVycmlkZSB0aGUgZGVmYXVsdHMKdmFyIG9wdGlvbnMgPSB7CiAgLy8gRG9uJ3QgZHJhdyB0aGUgbGluZSBjaGFydCBwb2ludHMKICBzaG93UG9pbnQ6IGZhbHNlLAogIC8vIERpc2FibGUgbGluZSBzbW9vdGhpbmcKICBsaW5lU21vb3RoOiBmYWxzZSwKICAvLyBYLUF4aXMgc3BlY2lmaWMgY29uZmlndXJhdGlvbgogIGF4aXNYOiB7CiAgICAvLyBXZSBjYW4gZGlzYWJsZSB0aGUgZ3JpZCBmb3IgdGhpcyBheGlzCiAgICBzaG93R3JpZDogZmFsc2UsCiAgICAvLyBhbmQgYWxzbyBkb24ndCBzaG93IHRoZSBsYWJlbAogICAgc2hvd0xhYmVsOiBmYWxzZQogIH0sCiAgLy8gWS1BeGlzIHNwZWNpZmljIGNvbmZpZ3VyYXRpb24KICBheGlzWTogewogICAgLy8gTGV0cyBvZmZzZXQgdGhlIGNoYXJ0IGEgYml0IGZyb20gdGhlIGxhYmVscwogICAgb2Zmc2V0OiA2MCwKICAgIC8vIFRoZSBsYWJlbCBpbnRlcnBvbGF0aW9uIGZ1bmN0aW9uIGVuYWJsZXMgeW91IHRvIG1vZGlmeSB0aGUgdmFsdWVzCiAgICAvLyB1c2VkIGZvciB0aGUgbGFiZWxzIG9uIGVhY2ggYXhpcy4gSGVyZSB3ZSBhcmUgY29udmVydGluZyB0aGUKICAgIC8vIHZhbHVlcyBpbnRvIG1pbGxpb24gcG91bmQuCiAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgIHJldHVybiAnJCcgKyB2YWx1ZSArICdtJzsKICAgIH0KICB9Cn07CgovLyBBbGwgeW91IG5lZWQgdG8gZG8gaXMgcGFzcyB5b3VyIGNvbmZpZ3VyYXRpb24gYXMgdGhpcmQgcGFyYW1ldGVyIHRvIHRoZSBjaGFydCBmdW5jdGlvbgpuZXcgQ2hhcnRpc3QuTGluZSgnLmN0LWNoYXJ0JywgZGF0YSwgb3B0aW9ucyk7Cg=="></div><button class="button" data-toggle-visible="#simple-configuration-chart-code">Show code and comments</button><pre id="simple-configuration-chart-code"><code class="js">// Our labels and three data series
+  var data = {
+    labels: [&#x27;Week1&#x27;, &#x27;Week2&#x27;, &#x27;Week3&#x27;, &#x27;Week4&#x27;, &#x27;Week5&#x27;, &#x27;Week6&#x27;],
+    series: [
+      [5, 4, 3, 7, 5, 10],
+      [3, 2, 9, 5, 4, 6],
+      [2, 1, -3, -4, -2, 0]
+    ]
+  };
+  
+  // We are setting a few options for our chart and override the defaults
+  var options = {
+    // Don&#x27;t draw the line chart points
+    showPoint: false,
+    // Disable line smoothing
+    lineSmooth: false,
+    // X-Axis specific configuration
     axisX: {
-      labelInterpolationFnc: function (value) {
-        return value;
-      }
-    }
-  }],
-  [&#x27;screen and (max-width: 640px)&#x27;, {
-    seriesBarDistance: 5,
-    axisX: {
-      labelInterpolationFnc: function (value) {
-        return value[0];
-      }
-    }
-  }]
-];
-
-new Chartist.Bar(&#x27;.ct-chart&#x27;, data, options, responsiveOptions);</code></pre><div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>. Make sure you include matchMedia.js as well as matchMedia.addListener.js as always both are needed to polyfill the full specification of window.matchMedia.</div></div></div></div></section><section class="documentation-section full"><header><h3 id="advanced">Advanced</h3></header><div class="content"><p>In the following chapter you'll find some advanced usage examples that might be of interesst for you. Chartist is very flexible because it relies on standard technology. This also means that you will need to implement certain things yourself. This topic should cover some of these use-cases and give you some basic idea why and how to implement certain functionality.</p><div class="sub-section"><h4 id="adding-behavior-to-your-charts">Adding behavior to your charts</h4><p>This example shows you how you can easily build a tool tip on top of Chartist using jQuery and some basic styling. It makes use of the ct-series-name and ct-value custom attributes that are present on all SVG elements generated by Chartist.</p><p>We actually do a few things here that would go against a proper style guide (like animating with JavaScript and changing styles instead of switching classes etc.), but this example is only for illustrating how easy behavior could be attached to Chartist.</p><div id="behavior-with-jquery" class="ct-chart ct-golden-section" data-example="bmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnXSwKICBzZXJpZXM6IFsKICAgIHsKICAgICAgbmFtZTogJ0ZpYm9uYWNjaSBzZXF1ZW5jZScsCiAgICAgIGRhdGE6IFsxLCAyLCAzLCA1LCA4LCAxM10KICAgIH0sCiAgICB7CiAgICAgIG5hbWU6ICdHb2xkZW4gc2VjdGlvbicsCiAgICAgIGRhdGE6IFsxLCAxLjYxOCwgMi42MTgsIDQuMjM2LCA2Ljg1NCwgMTEuMDldCiAgICB9CiAgXQp9KTsKCnZhciAkY2hhcnQgPSAkKCcuY3QtY2hhcnQnKTsKCnZhciAkdG9vbFRpcCA9ICRjaGFydAogIC5hcHBlbmQoJzxkaXYgY2xhc3M9InRvb2x0aXAiPjwvZGl2PicpCiAgLmZpbmQoJy50b29sdGlwJykKICAuaGlkZSgpOwoKJGNoYXJ0Lm9uKCdtb3VzZWVudGVyJywgJy5jdC1wb2ludCcsIGZ1bmN0aW9uKCkgewogIHZhciAkcG9pbnQgPSAkKHRoaXMpLAogICAgdmFsdWUgPSAkcG9pbnQuYXR0cignY3Q6dmFsdWUnKSwKICAgIHNlcmllc05hbWUgPSAkcG9pbnQucGFyZW50KCkuYXR0cignY3Q6c2VyaWVzLW5hbWUnKTsKICAkdG9vbFRpcC5odG1sKHNlcmllc05hbWUgKyAnPGJyPicgKyB2YWx1ZSkuc2hvdygpOwp9KTsKCiRjaGFydC5vbignbW91c2VsZWF2ZScsICcuY3QtcG9pbnQnLCBmdW5jdGlvbigpIHsKICAkdG9vbFRpcC5oaWRlKCk7Cn0pOwoKJGNoYXJ0Lm9uKCdtb3VzZW1vdmUnLCBmdW5jdGlvbihldmVudCkgewogICR0b29sVGlwLmNzcyh7CiAgICBsZWZ0OiAoZXZlbnQub2Zmc2V0WCB8fCBldmVudC5vcmlnaW5hbEV2ZW50LmxheWVyWCkgLSAkdG9vbFRpcC53aWR0aCgpIC8gMiAtIDEwLAogICAgdG9wOiAoZXZlbnQub2Zmc2V0WSB8fCBldmVudC5vcmlnaW5hbEV2ZW50LmxheWVyWSkgLSAkdG9vbFRpcC5oZWlnaHQoKSAtIDQwCiAgfSk7Cn0pOwo="></div><button class="button" data-toggle-visible="#behavior-with-jquery-code">Show code</button><pre id="behavior-with-jquery-code"><code class="js">new Chartist.Line(&#x27;.ct-chart&#x27;, {
-  labels: [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;],
-  series: [
-    {
-      name: &#x27;Fibonacci sequence&#x27;,
-      data: [1, 2, 3, 5, 8, 13]
+      // We can disable the grid for this axis
+      showGrid: false,
+      // and also don&#x27;t show the label
+      showLabel: false
     },
-    {
-      name: &#x27;Golden section&#x27;,
-      data: [1, 1.618, 2.618, 4.236, 6.854, 11.09]
+    // Y-Axis specific configuration
+    axisY: {
+      // Lets offset the chart a bit from the labels
+      offset: 60,
+      // The label interpolation function enables you to modify the values
+      // used for the labels on each axis. Here we are converting the
+      // values into million pound.
+      labelInterpolationFnc: function(value) {
+        return &#x27;$&#x27; + value + &#x27;m&#x27;;
+      }
     }
-  ]
-});
-
-var $chart = $(&#x27;.ct-chart&#x27;);
-
-var $toolTip = $chart
-  .append(&#x27;&lt;div class=&quot;tooltip&quot;&gt;&lt;/div&gt;&#x27;)
-  .find(&#x27;.tooltip&#x27;)
-  .hide();
-
-$chart.on(&#x27;mouseenter&#x27;, &#x27;.ct-point&#x27;, function() {
-  var $point = $(this),
-    value = $point.attr(&#x27;ct:value&#x27;),
-    seriesName = $point.parent().attr(&#x27;ct:series-name&#x27;);
-  $toolTip.html(seriesName + &#x27;&lt;br&gt;&#x27; + value).show();
-});
-
-$chart.on(&#x27;mouseleave&#x27;, &#x27;.ct-point&#x27;, function() {
-  $toolTip.hide();
-});
-
-$chart.on(&#x27;mousemove&#x27;, function(event) {
-  $toolTip.css({
-    left: (event.offsetX || event.originalEvent.layerX) - $toolTip.width() / 2 - 10,
-    top: (event.offsetY || event.originalEvent.layerY) - $toolTip.height() - 40
+  };
+  
+  // All you need to do is pass your configuration as third parameter to the chart function
+  new Chartist.Line(&#x27;.ct-chart&#x27;, data, options);
+  </code></pre></div><div class="sub-section"><h4 id="responsive-sugar-topping">Responsive sugar topping</h4><p>Responsive web design is all based on <a href="https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Media_queries" taget="_blank">media queries</a> as you are probably already aware. Media queries are great and they help you to define media related conditions that you can use to apply different styles for different media.</p><p>Sometimes it's also required to have different behavior on certain media and it's possible that a specific component of your web site should behave in an other way on a small media than on a large one. Luckily there is window.matchMedia in your browser that comes to the rescue. With matchMedia it's possible to let your javascript react differently based on CSS3 media queries.</p><h5 id="responsive-setting-overrides">Responsive setting overrides</h5><p>Configuring different chart behavior for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.</p><p>The following example uses different label interpolations (to save some space) on small media as well as different spacing between the bars of the bar chart series. Resize your browser window to see the effect.</p><div id="example-simple-bar" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ0phbicsICdGZWInLCAnTWFyJywgJ0FwcicsICdNYWknLCAnSnVuJywgJ0p1bCcsICdBdWcnLCAnU2VwJywgJ09jdCcsICdOb3YnLCAnRGVjJ10sCiAgICBzZXJpZXM6IFsKICAgIFs1LCA0LCAzLCA3LCA1LCAxMCwgMywgNCwgOCwgMTAsIDYsIDhdLAogICAgWzMsIDIsIDksIDUsIDQsIDYsIDQsIDYsIDcsIDgsIDcsIDRdCiAgXQp9OwoKdmFyIG9wdGlvbnMgPSB7CiAgc2VyaWVzQmFyRGlzdGFuY2U6IDE1Cn07Cgp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWydzY3JlZW4gYW5kIChtaW4td2lkdGg6IDY0MXB4KSBhbmQgKG1heC13aWR0aDogMTAyNHB4KScsIHsKICAgIHNlcmllc0JhckRpc3RhbmNlOiAxMCwKICAgIGF4aXNYOiB7CiAgICAgIGxhYmVsSW50ZXJwb2xhdGlvbkZuYzogZnVuY3Rpb24gKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuIHZhbHVlOwogICAgICB9CiAgICB9CiAgfV0sCiAgWydzY3JlZW4gYW5kIChtYXgtd2lkdGg6IDY0MHB4KScsIHsKICAgIHNlcmllc0JhckRpc3RhbmNlOiA1LAogICAgYXhpc1g6IHsKICAgICAgbGFiZWxJbnRlcnBvbGF0aW9uRm5jOiBmdW5jdGlvbiAodmFsdWUpIHsKICAgICAgICByZXR1cm4gdmFsdWVbMF07CiAgICAgIH0KICAgIH0KICB9XQpdOwoKbmV3IENoYXJ0aXN0LkJhcignLmN0LWNoYXJ0JywgZGF0YSwgb3B0aW9ucywgcmVzcG9uc2l2ZU9wdGlvbnMpOw=="></div><button class="button" data-toggle-visible="#example-simple-bar-code">Show code and comments</button><pre id="example-simple-bar-code"><code class="js">var data = {
+    labels: [&#x27;Jan&#x27;, &#x27;Feb&#x27;, &#x27;Mar&#x27;, &#x27;Apr&#x27;, &#x27;Mai&#x27;, &#x27;Jun&#x27;, &#x27;Jul&#x27;, &#x27;Aug&#x27;, &#x27;Sep&#x27;, &#x27;Oct&#x27;, &#x27;Nov&#x27;, &#x27;Dec&#x27;],
+      series: [
+      [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
+      [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
+    ]
+  };
+  
+  var options = {
+    seriesBarDistance: 15
+  };
+  
+  var responsiveOptions = [
+    [&#x27;screen and (min-width: 641px) and (max-width: 1024px)&#x27;, {
+      seriesBarDistance: 10,
+      axisX: {
+        labelInterpolationFnc: function (value) {
+          return value;
+        }
+      }
+    }],
+    [&#x27;screen and (max-width: 640px)&#x27;, {
+      seriesBarDistance: 5,
+      axisX: {
+        labelInterpolationFnc: function (value) {
+          return value[0];
+        }
+      }
+    }]
+  ];
+  
+  new Chartist.Bar(&#x27;.ct-chart&#x27;, data, options, responsiveOptions);</code></pre><div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>. Make sure you include matchMedia.js as well as matchMedia.addListener.js as always both are needed to polyfill the full specification of window.matchMedia.</div></div></div><div class="sub-section"><h4 id="different-configuration-for-different-series">Different configuration for different series</h4><p>Chartist also allows you to add specific configuration overrides for your series. This is useful if you want to combine different looks for your series on the same chart.</p><p>You can even take this one step further by again overriding your series configuration in some responsive settings overrides. This sounds complicated but it actually is very simple. Check the example code with inline comments below to see how easy it is.</p><div id="example-line-series-override" class="ct-chart ct-golden-section" data-example="dmFyIGNoYXJ0ID0gbmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnLCAnNycsICc4J10sCiAgLy8gTmFtaW5nIHRoZSBzZXJpZXMgd2l0aCB0aGUgc2VyaWVzIG9iamVjdCBhcnJheSBub3RhdGlvbgogIHNlcmllczogW3sKICAgIG5hbWU6ICdzZXJpZXMtMScsCiAgICBkYXRhOiBbNSwgMiwgLTQsIDIsIDAsIC0yLCA1LCAtM10KICB9LCB7CiAgICBuYW1lOiAnc2VyaWVzLTInLAogICAgZGF0YTogWzQsIDMsIDUsIDMsIDEsIDMsIDYsIDRdCiAgfSwgewogICAgbmFtZTogJ3Nlcmllcy0zJywKICAgIGRhdGE6IFsyLCA0LCAzLCAxLCA0LCA1LCAzLCAyXQogIH1dCn0sIHsKICBmdWxsV2lkdGg6IHRydWUsCiAgLy8gV2l0aGluIHRoZSBzZXJpZXMgb3B0aW9ucyB5b3UgY2FuIHVzZSB0aGUgc2VyaWVzIG5hbWVzCiAgLy8gdG8gc3BlY2lmeSBjb25maWd1cmF0aW9uIHRoYXQgd2lsbCBvbmx5IGJlIHVzZWQgZm9yIHRoZQogIC8vIHNwZWNpZmljIHNlcmllcy4KICBzZXJpZXM6IHsKICAgICdzZXJpZXMtMSc6IHsKICAgICAgbGluZVNtb290aDogQ2hhcnRpc3QuSW50ZXJwb2xhdGlvbi5zdGVwKCkKICAgIH0sCiAgICAnc2VyaWVzLTInOiB7CiAgICAgIGxpbmVTbW9vdGg6IENoYXJ0aXN0LkludGVycG9sYXRpb24uc2ltcGxlKCksCiAgICAgIHNob3dBcmVhOiB0cnVlCiAgICB9LAogICAgJ3Nlcmllcy0zJzogewogICAgICBzaG93UG9pbnQ6IGZhbHNlCiAgICB9CiAgfQp9LCBbCiAgLy8gWW91IGNhbiBldmVuIHVzZSByZXNwb25zaXZlIGNvbmZpZ3VyYXRpb24gb3ZlcnJpZGVzIHRvCiAgLy8gY3VzdG9taXplIHlvdXIgc2VyaWVzIGNvbmZpZ3VyYXRpb24gZXZlbiBmdXJ0aGVyIQogIFsnc2NyZWVuIGFuZCAobWF4LXdpZHRoOiAzMjBweCknLCB7CiAgICBzZXJpZXM6IHsKICAgICAgJ3Nlcmllcy0xJzogewogICAgICAgIGxpbmVTbW9vdGg6IENoYXJ0aXN0LkludGVycG9sYXRpb24ubm9uZSgpCiAgICAgIH0sCiAgICAgICdzZXJpZXMtMic6IHsKICAgICAgICBsaW5lU21vb3RoOiBDaGFydGlzdC5JbnRlcnBvbGF0aW9uLm5vbmUoKSwKICAgICAgICBzaG93QXJlYTogZmFsc2UKICAgICAgfSwKICAgICAgJ3Nlcmllcy0zJzogewogICAgICAgIGxpbmVTbW9vdGg6IENoYXJ0aXN0LkludGVycG9sYXRpb24ubm9uZSgpLAogICAgICAgIHNob3dQb2ludDogdHJ1ZQogICAgICB9CiAgICB9CiAgfV0KXSk7Cg=="></div><button class="button" data-toggle-visible="#example-line-series-override-code">Show code</button><pre id="example-line-series-override-code"><code class="js">var chart = new Chartist.Line(&#x27;.ct-chart&#x27;, {
+    labels: [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;, &#x27;7&#x27;, &#x27;8&#x27;],
+    // Naming the series with the series object array notation
+    series: [{
+      name: &#x27;series-1&#x27;,
+      data: [5, 2, -4, 2, 0, -2, 5, -3]
+    }, {
+      name: &#x27;series-2&#x27;,
+      data: [4, 3, 5, 3, 1, 3, 6, 4]
+    }, {
+      name: &#x27;series-3&#x27;,
+      data: [2, 4, 3, 1, 4, 5, 3, 2]
+    }]
+  }, {
+    fullWidth: true,
+    // Within the series options you can use the series names
+    // to specify configuration that will only be used for the
+    // specific series.
+    series: {
+      &#x27;series-1&#x27;: {
+        lineSmooth: Chartist.Interpolation.step()
+      },
+      &#x27;series-2&#x27;: {
+        lineSmooth: Chartist.Interpolation.simple(),
+        showArea: true
+      },
+      &#x27;series-3&#x27;: {
+        showPoint: false
+      }
+    }
+  }, [
+    // You can even use responsive configuration overrides to
+    // customize your series configuration even further!
+    [&#x27;screen and (max-width: 320px)&#x27;, {
+      series: {
+        &#x27;series-1&#x27;: {
+          lineSmooth: Chartist.Interpolation.none()
+        },
+        &#x27;series-2&#x27;: {
+          lineSmooth: Chartist.Interpolation.none(),
+          showArea: false
+        },
+        &#x27;series-3&#x27;: {
+          lineSmooth: Chartist.Interpolation.none(),
+          showPoint: true
+        }
+      }
+    }]
+  ]);
+  </code></pre></div></div></section><section class="documentation-section full"><header><h3 id="advanced">Advanced</h3></header><div class="content"><p>In the following chapter you'll find some advanced usage examples that might be of interesst for you. Chartist is very flexible because it relies on standard technology. This also means that you will need to implement certain things yourself. This topic should cover some of these use-cases and give you some basic idea why and how to implement certain functionality.</p><div class="sub-section"><h4 id="adding-behavior-to-your-charts">Adding behavior to your charts</h4><p>This example shows you how you can easily build a tool tip on top of Chartist using jQuery and some basic styling. It makes use of the ct-series-name and ct-value custom attributes that are present on all SVG elements generated by Chartist.</p><p>We actually do a few things here that would go against a proper style guide (like animating with JavaScript and changing styles instead of switching classes etc.), but this example is only for illustrating how easy behavior could be attached to Chartist.</p><div id="behavior-with-jquery" class="ct-chart ct-golden-section" data-example="bmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnXSwKICBzZXJpZXM6IFsKICAgIHsKICAgICAgbmFtZTogJ0ZpYm9uYWNjaSBzZXF1ZW5jZScsCiAgICAgIGRhdGE6IFsxLCAyLCAzLCA1LCA4LCAxM10KICAgIH0sCiAgICB7CiAgICAgIG5hbWU6ICdHb2xkZW4gc2VjdGlvbicsCiAgICAgIGRhdGE6IFsxLCAxLjYxOCwgMi42MTgsIDQuMjM2LCA2Ljg1NCwgMTEuMDldCiAgICB9CiAgXQp9KTsKCnZhciAkY2hhcnQgPSAkKCcuY3QtY2hhcnQnKTsKCnZhciAkdG9vbFRpcCA9ICRjaGFydAogIC5hcHBlbmQoJzxkaXYgY2xhc3M9InRvb2x0aXAiPjwvZGl2PicpCiAgLmZpbmQoJy50b29sdGlwJykKICAuaGlkZSgpOwoKJGNoYXJ0Lm9uKCdtb3VzZWVudGVyJywgJy5jdC1wb2ludCcsIGZ1bmN0aW9uKCkgewogIHZhciAkcG9pbnQgPSAkKHRoaXMpLAogICAgdmFsdWUgPSAkcG9pbnQuYXR0cignY3Q6dmFsdWUnKSwKICAgIHNlcmllc05hbWUgPSAkcG9pbnQucGFyZW50KCkuYXR0cignY3Q6c2VyaWVzLW5hbWUnKTsKICAkdG9vbFRpcC5odG1sKHNlcmllc05hbWUgKyAnPGJyPicgKyB2YWx1ZSkuc2hvdygpOwp9KTsKCiRjaGFydC5vbignbW91c2VsZWF2ZScsICcuY3QtcG9pbnQnLCBmdW5jdGlvbigpIHsKICAkdG9vbFRpcC5oaWRlKCk7Cn0pOwoKJGNoYXJ0Lm9uKCdtb3VzZW1vdmUnLCBmdW5jdGlvbihldmVudCkgewogICR0b29sVGlwLmNzcyh7CiAgICBsZWZ0OiAoZXZlbnQub2Zmc2V0WCB8fCBldmVudC5vcmlnaW5hbEV2ZW50LmxheWVyWCkgLSAkdG9vbFRpcC53aWR0aCgpIC8gMiAtIDEwLAogICAgdG9wOiAoZXZlbnQub2Zmc2V0WSB8fCBldmVudC5vcmlnaW5hbEV2ZW50LmxheWVyWSkgLSAkdG9vbFRpcC5oZWlnaHQoKSAtIDQwCiAgfSk7Cn0pOwo="></div><button class="button" data-toggle-visible="#behavior-with-jquery-code">Show code</button><pre id="behavior-with-jquery-code"><code class="js">new Chartist.Line(&#x27;.ct-chart&#x27;, {
+    labels: [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;],
+    series: [
+      {
+        name: &#x27;Fibonacci sequence&#x27;,
+        data: [1, 2, 3, 5, 8, 13]
+      },
+      {
+        name: &#x27;Golden section&#x27;,
+        data: [1, 1.618, 2.618, 4.236, 6.854, 11.09]
+      }
+    ]
   });
-});
-</code></pre></div><div class="sub-section"><h4 id="animations-using-chartistsvg">Animations using Chartist.Svg</h4><p>Usually we recommend using CSS for animations as it's closer to a clean separation of concerns. However, sometimes you would want to animate SVG properties that are not available in CSS to animate. For this purpose we have added a simple but powerful animation API that allows you to create SMIL animations in a more convenient way.</p><p>In combination with the draw events of Chartist the animations are a very powerful and flexible tool. You can intercept almost any step in chartist and if there is an SVG element involved you can animate it using <a href="api-documentation.html#chartistsvg-function-animate">Chartist.Svg.animate</a>.</p><p>The following simple example shows you how to created a delayed fade in effect for the a scatter chart. You can also edit the example to play around with the settings.</p><section class="live-example" id="some-svg-animations-can-only-be-done-with-smil" data-live-example="dmFyIGNoYXJ0ID0gbmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnLCAnNycsICc4JywgJzknLCAnMTAnLCAnMTEnLCAnMTInXSwKICBzZXJpZXM6IFsKICAgIFsxMiwgNCwgMiwgOCwgNSwgNCwgNiwgMiwgMywgMywgNCwgNl0sCiAgICBbNCwgOCwgOSwgMywgNywgMiwgMTAsIDUsIDgsIDEsIDcsIDEwXQogIF0KfSwgewogIGxvdzogMCwKICBzaG93TGluZTogZmFsc2UsCiAgYXhpc1g6IHsKICAgIHNob3dMYWJlbDogZmFsc2UsCiAgICBvZmZzZXQ6IDAKICB9LAogIGF4aXNZOiB7CiAgICBzaG93TGFiZWw6IGZhbHNlLAogICAgb2Zmc2V0OiAwCiAgfQp9KTsKCi8vIExldCdzIHB1dCBhIHNlcXVlbmNlIG51bWJlciBhc2lkZSBzbyB3ZSBjYW4gdXNlIGl0IGluIHRoZSBldmVudCBjYWxsYmFja3MKdmFyIHNlcSA9IDA7CgovLyBPbmNlIHRoZSBjaGFydCBpcyBmdWxseSBjcmVhdGVkIHdlIHJlc2V0IHRoZSBzZXF1ZW5jZQpjaGFydC5vbignY3JlYXRlZCcsIGZ1bmN0aW9uKCkgewogIHNlcSA9IDA7Cn0pOwoKLy8gT24gZWFjaCBkcmF3biBlbGVtZW50IGJ5IENoYXJ0aXN0IHdlIHVzZSB0aGUgQ2hhcnRpc3QuU3ZnIEFQSSB0byB0cmlnZ2VyIFNNSUwgYW5pbWF0aW9ucwpjaGFydC5vbignZHJhdycsIGZ1bmN0aW9uKGRhdGEpIHsKICBpZihkYXRhLnR5cGUgPT09ICdwb2ludCcpIHsKICAgIC8vIElmIHRoZSBkcmF3biBlbGVtZW50IGlzIGEgbGluZSB3ZSBkbyBhIHNpbXBsZSBvcGFjaXR5IGZhZGUgaW4uIFRoaXMgY291bGQgYWxzbyBiZSBhY2hpZXZlZCB1c2luZyBDU1MzIGFuaW1hdGlvbnMuCiAgICBkYXRhLmVsZW1lbnQuYW5pbWF0ZSh7CiAgICAgIG9wYWNpdHk6IHsKICAgICAgICAvLyBUaGUgZGVsYXkgd2hlbiB3ZSBsaWtlIHRvIHN0YXJ0IHRoZSBhbmltYXRpb24KICAgICAgICBiZWdpbjogc2VxKysgKiA4MCwKICAgICAgICAvLyBEdXJhdGlvbiBvZiB0aGUgYW5pbWF0aW9uCiAgICAgICAgZHVyOiA1MDAsCiAgICAgICAgLy8gVGhlIHZhbHVlIHdoZXJlIHRoZSBhbmltYXRpb24gc2hvdWxkIHN0YXJ0CiAgICAgICAgZnJvbTogMCwKICAgICAgICAvLyBUaGUgdmFsdWUgd2hlcmUgaXQgc2hvdWxkIGVuZAogICAgICAgIHRvOiAxCiAgICAgIH0sCiAgICAgIHgxOiB7CiAgICAgICAgYmVnaW46IHNlcSsrICogODAsCiAgICAgICAgZHVyOiA1MDAsCiAgICAgICAgZnJvbTogZGF0YS54IC0gMTAwLAogICAgICAgIHRvOiBkYXRhLngsCiAgICAgICAgLy8gWW91IGNhbiBzcGVjaWZ5IGFuIGVhc2luZyBmdW5jdGlvbiBuYW1lIG9yIHVzZSBlYXNpbmcgZnVuY3Rpb25zIGZyb20gQ2hhcnRpc3QuU3ZnLkVhc2luZyBkaXJlY3RseQogICAgICAgIGVhc2luZzogQ2hhcnRpc3QuU3ZnLkVhc2luZy5lYXNlT3V0UXVhcnQKICAgICAgfQogICAgfSk7CiAgfQp9KTsKCi8vIEZvciB0aGUgc2FrZSBvZiB0aGUgZXhhbXBsZSB3ZSB1cGRhdGUgdGhlIGNoYXJ0IGV2ZXJ5IHRpbWUgaXQncyBjcmVhdGVkIHdpdGggYSBkZWxheSBvZiA4IHNlY29uZHMKY2hhcnQub24oJ2NyZWF0ZWQnLCBmdW5jdGlvbigpIHsKICBpZih3aW5kb3cuX19leGFtcGxlQW5pbWF0ZVRpbWVvdXQpIHsKICAgIGNsZWFyVGltZW91dCh3aW5kb3cuX19leGFtcGxlQW5pbWF0ZVRpbWVvdXQpOwogICAgd2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0ID0gbnVsbDsKICB9CiAgd2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0ID0gc2V0VGltZW91dChjaGFydC51cGRhdGUuYmluZChjaGFydCksIDgwMDApOwp9KTsKCg=="><header class="live-example-header"><h5>Some SVG Animations can only be done with SMIL</h5></header><div class="chart"><div class="ct-chart ct-golden-section"></div></div><aside class="live-code"><div class="introduction"><p class="text">Edit this example to figure out how to tweak animations. The force is strong in you young padawan!</p><button class="edit-button">Edit Example</button></div><div class="editor-area"><textarea class="code-editor"></textarea><button class="close-edit-button">Close Editor</button></div></aside></section></div></div></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  
+  var $chart = $(&#x27;.ct-chart&#x27;);
+  
+  var $toolTip = $chart
+    .append(&#x27;&lt;div class=&quot;tooltip&quot;&gt;&lt;/div&gt;&#x27;)
+    .find(&#x27;.tooltip&#x27;)
+    .hide();
+  
+  $chart.on(&#x27;mouseenter&#x27;, &#x27;.ct-point&#x27;, function() {
+    var $point = $(this),
+      value = $point.attr(&#x27;ct:value&#x27;),
+      seriesName = $point.parent().attr(&#x27;ct:series-name&#x27;);
+    $toolTip.html(seriesName + &#x27;&lt;br&gt;&#x27; + value).show();
+  });
+  
+  $chart.on(&#x27;mouseleave&#x27;, &#x27;.ct-point&#x27;, function() {
+    $toolTip.hide();
+  });
+  
+  $chart.on(&#x27;mousemove&#x27;, function(event) {
+    $toolTip.css({
+      left: (event.offsetX || event.originalEvent.layerX) - $toolTip.width() / 2 - 10,
+      top: (event.offsetY || event.originalEvent.layerY) - $toolTip.height() - 40
+    });
+  });
+  </code></pre></div><div class="sub-section"><h4 id="animations-using-chartistsvg">Animations using Chartist.Svg</h4><p>Usually we recommend using CSS for animations as it's closer to a clean separation of concerns. However, sometimes you would want to animate SVG properties that are not available in CSS to animate. For this purpose we have added a simple but powerful animation API that allows you to create SMIL animations in a more convenient way.</p><p>In combination with the draw events of Chartist the animations are a very powerful and flexible tool. You can intercept almost any step in chartist and if there is an SVG element involved you can animate it using <a href="api-documentation.html#chartistsvg-function-animate">Chartist.Svg.animate</a>.</p><p>The following simple example shows you how to created a delayed fade in effect for the a scatter chart. You can also edit the example to play around with the settings.</p><section class="live-example" id="some-svg-animations-can-only-be-done-with-smil" data-live-example="dmFyIGNoYXJ0ID0gbmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnLCAnNycsICc4JywgJzknLCAnMTAnLCAnMTEnLCAnMTInXSwKICBzZXJpZXM6IFsKICAgIFsxMiwgNCwgMiwgOCwgNSwgNCwgNiwgMiwgMywgMywgNCwgNl0sCiAgICBbNCwgOCwgOSwgMywgNywgMiwgMTAsIDUsIDgsIDEsIDcsIDEwXQogIF0KfSwgewogIGxvdzogMCwKICBzaG93TGluZTogZmFsc2UsCiAgYXhpc1g6IHsKICAgIHNob3dMYWJlbDogZmFsc2UsCiAgICBvZmZzZXQ6IDAKICB9LAogIGF4aXNZOiB7CiAgICBzaG93TGFiZWw6IGZhbHNlLAogICAgb2Zmc2V0OiAwCiAgfQp9KTsKCi8vIExldCdzIHB1dCBhIHNlcXVlbmNlIG51bWJlciBhc2lkZSBzbyB3ZSBjYW4gdXNlIGl0IGluIHRoZSBldmVudCBjYWxsYmFja3MKdmFyIHNlcSA9IDA7CgovLyBPbmNlIHRoZSBjaGFydCBpcyBmdWxseSBjcmVhdGVkIHdlIHJlc2V0IHRoZSBzZXF1ZW5jZQpjaGFydC5vbignY3JlYXRlZCcsIGZ1bmN0aW9uKCkgewogIHNlcSA9IDA7Cn0pOwoKLy8gT24gZWFjaCBkcmF3biBlbGVtZW50IGJ5IENoYXJ0aXN0IHdlIHVzZSB0aGUgQ2hhcnRpc3QuU3ZnIEFQSSB0byB0cmlnZ2VyIFNNSUwgYW5pbWF0aW9ucwpjaGFydC5vbignZHJhdycsIGZ1bmN0aW9uKGRhdGEpIHsKICBpZihkYXRhLnR5cGUgPT09ICdwb2ludCcpIHsKICAgIC8vIElmIHRoZSBkcmF3biBlbGVtZW50IGlzIGEgbGluZSB3ZSBkbyBhIHNpbXBsZSBvcGFjaXR5IGZhZGUgaW4uIFRoaXMgY291bGQgYWxzbyBiZSBhY2hpZXZlZCB1c2luZyBDU1MzIGFuaW1hdGlvbnMuCiAgICBkYXRhLmVsZW1lbnQuYW5pbWF0ZSh7CiAgICAgIG9wYWNpdHk6IHsKICAgICAgICAvLyBUaGUgZGVsYXkgd2hlbiB3ZSBsaWtlIHRvIHN0YXJ0IHRoZSBhbmltYXRpb24KICAgICAgICBiZWdpbjogc2VxKysgKiA4MCwKICAgICAgICAvLyBEdXJhdGlvbiBvZiB0aGUgYW5pbWF0aW9uCiAgICAgICAgZHVyOiA1MDAsCiAgICAgICAgLy8gVGhlIHZhbHVlIHdoZXJlIHRoZSBhbmltYXRpb24gc2hvdWxkIHN0YXJ0CiAgICAgICAgZnJvbTogMCwKICAgICAgICAvLyBUaGUgdmFsdWUgd2hlcmUgaXQgc2hvdWxkIGVuZAogICAgICAgIHRvOiAxCiAgICAgIH0sCiAgICAgIHgxOiB7CiAgICAgICAgYmVnaW46IHNlcSsrICogODAsCiAgICAgICAgZHVyOiA1MDAsCiAgICAgICAgZnJvbTogZGF0YS54IC0gMTAwLAogICAgICAgIHRvOiBkYXRhLngsCiAgICAgICAgLy8gWW91IGNhbiBzcGVjaWZ5IGFuIGVhc2luZyBmdW5jdGlvbiBuYW1lIG9yIHVzZSBlYXNpbmcgZnVuY3Rpb25zIGZyb20gQ2hhcnRpc3QuU3ZnLkVhc2luZyBkaXJlY3RseQogICAgICAgIGVhc2luZzogQ2hhcnRpc3QuU3ZnLkVhc2luZy5lYXNlT3V0UXVhcnQKICAgICAgfQogICAgfSk7CiAgfQp9KTsKCi8vIEZvciB0aGUgc2FrZSBvZiB0aGUgZXhhbXBsZSB3ZSB1cGRhdGUgdGhlIGNoYXJ0IGV2ZXJ5IHRpbWUgaXQncyBjcmVhdGVkIHdpdGggYSBkZWxheSBvZiA4IHNlY29uZHMKY2hhcnQub24oJ2NyZWF0ZWQnLCBmdW5jdGlvbigpIHsKICBpZih3aW5kb3cuX19leGFtcGxlQW5pbWF0ZVRpbWVvdXQpIHsKICAgIGNsZWFyVGltZW91dCh3aW5kb3cuX19leGFtcGxlQW5pbWF0ZVRpbWVvdXQpOwogICAgd2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0ID0gbnVsbDsKICB9CiAgd2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0ID0gc2V0VGltZW91dChjaGFydC51cGRhdGUuYmluZChjaGFydCksIDgwMDApOwp9KTsKCg=="><header class="live-example-header"><h5>Some SVG Animations can only be done with SMIL</h5></header><div class="chart"><div class="ct-chart ct-golden-section"></div></div><aside class="live-code"><div class="introduction"><p class="text">Edit this example to figure out how to tweak animations. The force is strong in you young padawan!</p><button class="edit-button">Edit Example</button></div><div class="editor-area"><textarea class="code-editor"></textarea><button class="close-edit-button">Close Editor</button></div></aside></section></div></div></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');

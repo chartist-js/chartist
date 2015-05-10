@@ -709,9 +709,9 @@ var Chartist = {
    * @param eventEmitter
    */
   Chartist.createAxis = function(axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
-    var axisOptions = options['axis' + axis.units.pos.toUpperCase()],
-      projectedValues = data.map(axis.projectValue.bind(axis)).map(axis.transform),
-      labelValues = data.map(axisOptions.labelInterpolationFnc);
+    var axisOptions = options['axis' + axis.units.pos.toUpperCase()];
+    var projectedValues = data.map(axis.projectValue.bind(axis));
+    var labelValues = data.map(axisOptions.labelInterpolationFnc);
 
     projectedValues.forEach(function(projectedValue, index) {
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
