@@ -32,8 +32,6 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
-      // This value specifies the minimum height in pixel of the scale steps
-      scaleMinSpace: 30,
       // Use only integer values (whole numbers) for the scale steps
       onlyInteger: false
     },
