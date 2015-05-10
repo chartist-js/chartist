@@ -27,6 +27,24 @@
     }
   }
 
+  .library-statement {
+    text-transform: uppercase;
+    font-size: rem-calc(nth($modular-scale, 5));
+    margin: 0;
+    display: inline-block;
+    width: 100%;
+    font-weight: 700;
+    color: white;
+
+    @include text-shadow(1px 1px mix(black, $color-yellow, 15%), 2px 2px mix(black, $color-yellow, 15%));
+
+    padding-bottom: $column-gutter;
+
+    .important {
+      text-decoration: underline;
+    }
+  }
+
   > .limiter {
     position: relative;
     max-width: 480px;
