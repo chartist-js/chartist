@@ -21,6 +21,16 @@ sections:
                    point or to terminate the series before others.
       - type: live-example
         data:
+          title: Only whole numbers
+          level: 4
+          id: example-line-only-integer
+          classes: ct-golden-section
+          intro: >
+                   You're dealing with series that contain only whole numbers? It looks weird that Chartist is creating
+                   a scale that contains fractions even if your data does not? No problem! Tell the Chartist guy to
+                   only use integers and he'll do the math!
+      - type: live-example
+        data:
           title: Line scatter diagram with responsive settings
           level: 4
           id: line-scatter-random
@@ -189,6 +199,16 @@ sections:
                     Sometime it's desired to have bar charts that show one bar per series distributed along the x-axis. If
                     this option is enabled, you need to make sure that you pass a single series array to Chartist that
                     contains the series values. In this example you can see T-shirt sales of a store categorized by size.
+      - type: live-example
+        data:
+          title: Label placement
+          level: 4
+          id: example-bar-label-position
+          classes: ct-golden-section
+          intro: >
+                    You can change the position of the labels on line and bar charts easily by using the <code>position</code>
+                    option inside of the axis configuration.
+
   - title: Pie chart examples
     level: 3
     items:
