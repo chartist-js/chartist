@@ -381,6 +381,28 @@ sections:
                         sure you include matchMedia.js as well as matchMedia.addListener.js as always both are needed
                         to polyfill the full specification of window.matchMedia.
 
+      - type: sub-section
+        data:
+          title: Different configuration for different series
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Chartist also allows you to add specific configuration overrides for your series. This is useful
+                        if you want to combine different looks for your series on the same chart.
+            - type: text
+              data:
+                text: >
+                        You can even take this one step further by again overriding your series configuration in some
+                        responsive settings overrides. This sounds complicated but it actually is very simple. Check the
+                        example code with inline comments below to see how easy it is.
+            - type: example-chart
+              data:
+                id: example-line-series-override
+                classes: ct-golden-section
+                show-code-button: Show code
+
   - title: Advanced
     level: 3
     items:

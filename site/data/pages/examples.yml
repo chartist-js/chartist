@@ -90,6 +90,18 @@ sections:
                    things in Chartist, this can be customized easily! Check out
                    <a href="api-documentation.html#module-chartistinterpolation">the API Documentation</a> for more
                    smoothing options.
+      - type: live-example
+        data:
+          title: Series Overrides
+          level: 4
+          id: example-line-series-override
+          classes: ct-golden-section
+          intro: >
+                   By naming your series using the series object notation with a name property, you can enable the
+                   individual configuration of series specific settings. <code>showLine</code>, <code>showPoint</code>,
+                   <code>showArea</code> and even the smoothing function can be overriden per series! And guess what?
+                   You can even override those series settings in the responsive configuration! Check the example code
+                   for more details.
   - title: Bar chart examples
     level: 3
     items:
@@ -157,6 +169,16 @@ sections:
           intro: >
                     As all settings of a chart can be customized with the responsive configuration override mechanism of
                     Chartist, you can create a chart that adopts to every media condition!
+      - type: live-example
+        data:
+          title: Distributed series
+          level: 4
+          id: example-bar-distributed-series
+          classes: ct-golden-section
+          intro: >
+                    Sometime it's desired to have bar charts that show one bar per series distributed along the x-axis. If
+                    this option is enabled, you need to make sure that you pass a single series array to Chartist that
+                    contains the series values. In this example you can see T-shirt sales of a store categorized by size.
   - title: Pie chart examples
     level: 3
     items:
