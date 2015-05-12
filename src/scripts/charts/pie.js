@@ -39,6 +39,8 @@
     showLabel: true,
     // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
     labelOffset: 0,
+    // This option can be set to 'inside', 'outside' or 'center'. Positioned with 'inside' the labels will be placed on half the distance of the radius to the border of the Pie by respecting the 'labelOffset'. The 'outside' option will place the labels at the border of the pie and 'center' will place the labels in the absolute center point of the chart. The 'center' option only makes sense in conjunction with the 'labelOffset' option.
+    labelPosition: 'inside',
     // An interpolation function for the label value
     labelInterpolationFnc: Chartist.noop,
     // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
@@ -99,9 +101,18 @@
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
     radius -= options.donut ? options.donutWidth / 2  : 0;
 
-    // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
-    // see https://github.com/gionkunz/chartist-js/issues/21
-    labelRadius = options.donut ? radius : radius / 2;
+    // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
+    // if regular pie chart it's half of the radius
+    if(options.labelPosition === 'outside' || options.donut) {
+      labelRadius = radius;
+    } else if(options.labelPosition === 'center') {
+      // If labelPosition is center we start with 0 and will later wait for the labelOffset
+      labelRadius = 0;
+    } else {
+      // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
+      // slice
+      labelRadius = radius / 2;
+    }
     // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
     labelRadius += options.labelOffset;
 
