@@ -195,22 +195,24 @@
         var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
           interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
 
-        var labelElement = seriesGroups[i].elem('text', {
-          dx: labelPosition.x,
-          dy: labelPosition.y,
-          'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-        }, options.classNames.label).text('' + interpolatedValue);
+        if(interpolatedValue || interpolatedValue === 0) {
+          var labelElement = seriesGroups[i].elem('text', {
+            dx: labelPosition.x,
+            dy: labelPosition.y,
+            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+          }, options.classNames.label).text('' + interpolatedValue);
 
-        // Fire off draw event
-        this.eventEmitter.emit('draw', {
-          type: 'label',
-          index: i,
-          group: seriesGroups[i],
-          element: labelElement,
-          text: '' + interpolatedValue,
-          x: labelPosition.x,
-          y: labelPosition.y
-        });
+          // Fire off draw event
+          this.eventEmitter.emit('draw', {
+            type: 'label',
+            index: i,
+            group: seriesGroups[i],
+            element: labelElement,
+            text: '' + interpolatedValue,
+            x: labelPosition.x,
+            y: labelPosition.y
+          });
+        }
       }
 
       // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
