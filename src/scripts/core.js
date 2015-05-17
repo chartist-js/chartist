@@ -261,7 +261,14 @@ var Chartist = {
     // Check if there is a previous SVG element in the container that contains the Chartist XML namespace and remove it
     // Since the DOM API does not support namespaces we need to manually search the returned list http://www.w3.org/TR/selectors-api/
     Array.prototype.slice.call(container.querySelectorAll('svg')).filter(function filterChartistSvgObjects(svg) {
-      return svg.getAttribute(Chartist.xmlNs.qualifiedName);
+      if (svg.getAttribute(Chartist.xmlNs.qualifiedName)) {
+        return true;
+      }
+
+      if (svg.getAttributeNode) {
+        var attr = svg.getAttributeNode('ct');
+        return attr && attr.name === Chartist.xmlNs.qualifiedName;
+      }
     }).forEach(function removePreviousElement(svg) {
       container.removeChild(svg);
     });
