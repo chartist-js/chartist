@@ -183,35 +183,13 @@
       });
     }
 
-    // Start drawing
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
-      gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup),
-      // Projected 0 point
-      zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(0).pos) : (chartRect.y1 - valueAxis.projectValue(0).pos),
+    // Start drawing: grid -> series -> labels
+    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+
+    // Projected 0 point
+    var zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(0).pos) : (chartRect.y1 - valueAxis.projectValue(0).pos),
       // Used to track the screen coordinates of stacked bars
       stackedBarValues = [];
-
-    Chartist.createAxis(
-      labelAxis,
-      this.data.labels,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
-
-    Chartist.createAxis(
-      valueAxis,
-      valueAxis.bounds.values,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
 
     // Draw the series
     this.data.series.forEach(function(series, seriesIndex) {
@@ -315,6 +293,33 @@
         }, positions));
       }.bind(this));
     }.bind(this));
+
+    // Draw labels
+    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
+
+    // Create grid
+    Chartist.createAxis(
+      valueAxis,
+      valueAxis.bounds.values,
+      chartRect,
+      gridGroup,
+      labelGroup,
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
+
+    // Create labels
+    Chartist.createAxis(
+      labelAxis,
+      this.data.labels,
+      chartRect,
+      gridGroup,
+      labelGroup,
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    ); 
 
     this.eventEmitter.emit('created', {
       bounds: valueAxis.bounds,
