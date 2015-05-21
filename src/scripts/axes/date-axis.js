@@ -32,7 +32,7 @@
     function projectValue(value) {
         return {
             pos: value * (this.axisLength / this.range) - this.min * (this.axisLength / this.range),
-            len: Chartist.projectLength(this.axisLength, 1, this)
+            len: Chartist.projectLength(this.axisLength, this.range / this.ticks.length , this)
         };
     }
 
