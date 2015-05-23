@@ -429,26 +429,32 @@ var Chartist = {
    * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
    */
   Chartist.getHighLow = function (dataArray, options) {
-    var i,
-      j,
-      highLow = {
+    var highLow = {
         high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
         low: options.low === undefined ? Number.MAX_VALUE : +options.low
       },
       findHigh = options.high === undefined,
       findLow = options.low === undefined;
 
-    for (i = 0; i < dataArray.length; i++) {
-      for (j = 0; j < dataArray[i].length; j++) {
-        if (findHigh && dataArray[i][j] > highLow.high) {
-          highLow.high = dataArray[i][j];
+    // Function to recursively walk through arrays and find highest and lowest number
+    function recursiveHighLow(data) {
+      if(data instanceof Array) {
+        for (var i = 0; i < data.length; i++) {
+          recursiveHighLow(data[i]);
+        }
+      } else {
+        if (findHigh && data > highLow.high) {
+          highLow.high = data;
         }
 
-        if (findLow && dataArray[i][j] < highLow.low) {
-          highLow.low = dataArray[i][j];
+        if (findLow && data < highLow.low) {
+          highLow.low = data;
         }
       }
     }
+
+    // Start to find highest and lowest number recursively
+    recursiveHighLow(dataArray);
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
     // to set the high or low to 0 depending on the polarity
