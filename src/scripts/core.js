@@ -476,6 +476,10 @@ var Chartist = {
    * @returns {Number} The smallest integer factor of the parameter num.
    */
   Chartist.rho = function(num) {
+    if(num === 1) {
+      return num;
+    }
+
     function gcd(p, q) {
       if (p % q === 0) {
         return q;
