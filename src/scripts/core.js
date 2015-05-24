@@ -133,7 +133,7 @@ var Chartist = {
    * @return {*}
    */
   Chartist.sum = function(previous, current) {
-    return previous + current;
+    return previous + (current ? current : 0);
   };
 
   /**

@@ -271,13 +271,13 @@
         // We need to transform coordinates differently based on the chart layout
         if(options.horizontalBars) {
           projected = {
-            x: chartRect.x1 + valueAxis.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
-            y: chartRect.y1 - labelAxis.projectValue(value, labelAxisValueIndex, normalizedData[seriesIndex]).pos
+            x: chartRect.x1 + valueAxis.projectValue(value || 0, valueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - labelAxis.projectValue(value || 0, labelAxisValueIndex, normalizedData[seriesIndex]).pos
           };
         } else {
           projected = {
-            x: chartRect.x1 + labelAxis.projectValue(value, labelAxisValueIndex, normalizedData[seriesIndex]).pos,
-            y: chartRect.y1 - valueAxis.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+            x: chartRect.x1 + labelAxis.projectValue(value || 0, labelAxisValueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - valueAxis.projectValue(value || 0, valueIndex, normalizedData[seriesIndex]).pos
           }
         }
 
@@ -289,6 +289,11 @@
         // Enter value in stacked bar values used to remember previous screen value for stacking up bars
         previousStack = stackedBarValues[valueIndex] || zeroPoint;
         stackedBarValues[valueIndex] = previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
+
+        // Skip if value is undefined
+        if(value === undefined) {
+          return;
+        }
 
         var positions = {};
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
