@@ -25,6 +25,7 @@
       series: 'ct-series',
       slice: 'ct-slice',
       donut: 'ct-donut',
+      donutShape: 'ct-donut-shape',
       label: 'ct-label'
     },
     // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
@@ -35,6 +36,11 @@
     donut: false,
     // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
     donutWidth: 60,
+    // If you want to construct a donut drawn with a shape rather than a stroke, specify the fraction of the total
+    // radius that will be take up by the donuts' "hole", i.e. a number greater than 0 and less than 1.
+    // If donutHoleFraction > 0 < 1 the donut will be drawn with a shape and donutWidth (above) will be ignored;
+    // if not, donutHoleFraction will be ignored the donut will be drawn with a stroke using donutWidth.
+    donutHoleFraction: 0,
     // If a label should be shown or not
     showLabel: true,
     // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
@@ -85,6 +91,8 @@
       startAngle = options.startAngle,
       dataArray = Chartist.getDataArray(this.data, options.reverseData);
 
+
+
     // Create SVG.js draw
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
     // Calculate charting rect
@@ -96,22 +104,38 @@
       return previousValue + currentValue;
     }, 0);
 
-    // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
+    // Normalize options.donutHoleFraction...
+    options.donutHoleFraction = parseFloat(options.donutHoleFraction);
+    if (isNaN(options.donutHoleFraction)){
+      options.donutHoleFraction = 0;
+    }
+    var useDonutHoleMethod = options.donut && options.donutHoleFraction > 0 && options.donutHoleFraction < 1;
+
+      // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
     // Unfortunately this is not possible with the current SVG Spec
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
-    radius -= options.donut ? options.donutWidth / 2  : 0;
+    radius -= options.donut && ! useDonutHoleMethod ? options.donutWidth / 2  : 0;
 
-    // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
-    // if regular pie chart it's half of the radius
-    if(options.labelPosition === 'outside' || options.donut) {
+    // If labelPosition is set to `outside` or we're drawing a donut chart with the stroke method then
+    // the label position is at the radius.
+    // If we're drawing regular pie chart it's half of the radius.
+    // If we're drawing a donut chart with a shape (donut hole method) then
+    // the label position is the width of the donut hole + half of the donut.
+    if(options.labelPosition === 'outside' || options.donut && ! useDonutHoleMethod) {
       labelRadius = radius;
     } else if(options.labelPosition === 'center') {
       // If labelPosition is center we start with 0 and will later wait for the labelOffset
       labelRadius = 0;
     } else {
-      // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
-      // slice
-      labelRadius = radius / 2;
+      if (! useDonutHoleMethod){
+        // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
+        // slice
+        labelRadius = radius / 2;
+      } else {
+        //The radius of the donut hole + half of the donut...
+        labelRadius = radius * (options.donutHoleFraction + (1 - options.donutHoleFraction)/2);
+      }
+
     }
     // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
     labelRadius += options.labelOffset;
@@ -124,8 +148,8 @@
 
     // Check if there is only one non-zero value in the series array.
     var hasSingleValInSeries = this.data.series.filter(function(val) {
-      return val.hasOwnProperty('value') ? val.value !== 0 : val !== 0;
-    }).length === 1;
+        return val.hasOwnProperty('value') ? val.value !== 0 : val !== 0;
+      }).length === 1;
 
     // Draw the series
     // initialize series groups
@@ -154,21 +178,47 @@
       var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
-      // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
-      var path = new Chartist.Svg.Path(!options.donut)
+      var innerStart;
+      var innerEnd;
+      var donutHoleRadius;
+
+      // Create a new path element for the pie chart.
+      // If this isn't a donut chart drawn with the stroke
+      // we should close the path for a correct stroke
+      var closed = true;
+      if (options.donut && ! useDonutHoleMethod) closed = false;
+      var path = new Chartist.Svg.Path(closed)
         .move(end.x, end.y)
         .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
       if(!options.donut) {
         path.line(center.x, center.y);
+      } else {
+        if (useDonutHoleMethod){
+          // Draw a line from start to the inside of the donut at the start angle,
+          // then an arc to the inside at end angle.
+          donutHoleRadius = radius * options.donutHoleFraction;
+          innerStart = Chartist.polarToCartesian(center.x, center.y, donutHoleRadius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2));
+          innerEnd = Chartist.polarToCartesian(center.x, center.y, donutHoleRadius, endAngle);
+          path.line(innerStart.x, innerStart.y);
+          path.arc(donutHoleRadius, donutHoleRadius, 0,  endAngle - startAngle  > 180, 1, innerEnd.x, innerEnd.y);
+        }
       }
 
       // Create the SVG path
-      // If this is a donut chart we add the donut class, otherwise just a regular slice
+      // If this is a donut chart we add a donut class, otherwise just a regular slice
+      var classes = [options.classNames.slice];
+      if (options.donut){
+        if (useDonutHoleMethod){
+          classes.push(options.classNames.donutShape);
+        } else {
+          classes.push(options.classNames.donut);
+        }
+      }
       var pathElement = seriesGroups[i].elem('path', {
         d: path.stringify()
-      }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+      }, classes.join(' '));
 
       // Adding the pie series value to the path
       pathElement.attr({
@@ -176,8 +226,8 @@
         'meta': Chartist.serialize(series.meta)
       }, Chartist.xmlNs.uri);
 
-      // If this is a donut, we add the stroke-width as style attribute
-      if(options.donut) {
+      // If this is a donut and we're using the stroke method, we add the stroke-width as style attribute
+      if(options.donut && ! useDonutHoleMethod) {
         pathElement.attr({
           'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
         });
