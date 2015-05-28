@@ -3288,13 +3288,35 @@ var Chartist = {
       });
     }
 
-    // Start drawing: grid -> series -> labels
-    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
-
-    // Projected 0 point
-    var zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(0).pos) : (chartRect.y1 - valueAxis.projectValue(0).pos),
+    // Start drawing
+    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
+      gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup),
+      // Projected 0 point
+      zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(0).pos) : (chartRect.y1 - valueAxis.projectValue(0).pos),
       // Used to track the screen coordinates of stacked bars
       stackedBarValues = [];
+
+    Chartist.createAxis(
+      labelAxis,
+      this.data.labels,
+      chartRect,
+      gridGroup,
+      labelGroup,
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
+
+    Chartist.createAxis(
+      valueAxis,
+      valueAxis.bounds.values,
+      chartRect,
+      gridGroup,
+      labelGroup,
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
 
     // Draw the series
     this.data.series.forEach(function(series, seriesIndex) {
@@ -3398,33 +3420,6 @@ var Chartist = {
         }, positions));
       }.bind(this));
     }.bind(this));
-
-    // Draw labels
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
-
-    // Create grid
-    Chartist.createAxis(
-      valueAxis,
-      valueAxis.bounds.values,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
-
-    // Create labels
-    Chartist.createAxis(
-      labelAxis,
-      this.data.labels,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    ); 
 
     this.eventEmitter.emit('created', {
       bounds: valueAxis.bounds,
@@ -3530,8 +3525,6 @@ var Chartist = {
     showLabel: true,
     // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
     labelOffset: 0,
-    // This option can be set to 'inside', 'outside' or 'center'. Positioned with 'inside' the labels will be placed on half the distance of the radius to the border of the Pie by respecting the 'labelOffset'. The 'outside' option will place the labels at the border of the pie and 'center' will place the labels in the absolute center point of the chart. The 'center' option only makes sense in conjunction with the 'labelOffset' option.
-    labelPosition: 'inside',
     // An interpolation function for the label value
     labelInterpolationFnc: Chartist.noop,
     // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
@@ -3592,18 +3585,9 @@ var Chartist = {
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
     radius -= options.donut ? options.donutWidth / 2  : 0;
 
-    // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
-    // if regular pie chart it's half of the radius
-    if(options.labelPosition === 'outside' || options.donut) {
-      labelRadius = radius;
-    } else if(options.labelPosition === 'center') {
-      // If labelPosition is center we start with 0 and will later wait for the labelOffset
-      labelRadius = 0;
-    } else {
-      // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
-      // slice
-      labelRadius = radius / 2;
-    }
+    // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
+    // see https://github.com/gionkunz/chartist-js/issues/21
+    labelRadius = options.donut ? radius : radius / 2;
     // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
     labelRadius += options.labelOffset;
 
@@ -3697,24 +3681,22 @@ var Chartist = {
         var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
           interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
 
-        if(interpolatedValue || interpolatedValue === 0) {
-          var labelElement = seriesGroups[i].elem('text', {
-            dx: labelPosition.x,
-            dy: labelPosition.y,
-            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-          }, options.classNames.label).text('' + interpolatedValue);
+        var labelElement = seriesGroups[i].elem('text', {
+          dx: labelPosition.x,
+          dy: labelPosition.y,
+          'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+        }, options.classNames.label).text('' + interpolatedValue);
 
-          // Fire off draw event
-          this.eventEmitter.emit('draw', {
-            type: 'label',
-            index: i,
-            group: seriesGroups[i],
-            element: labelElement,
-            text: '' + interpolatedValue,
-            x: labelPosition.x,
-            y: labelPosition.y
-          });
-        }
+        // Fire off draw event
+        this.eventEmitter.emit('draw', {
+          type: 'label',
+          index: i,
+          group: seriesGroups[i],
+          element: labelElement,
+          text: '' + interpolatedValue,
+          x: labelPosition.x,
+          y: labelPosition.y
+        });
       }
 
       // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
