@@ -1,11 +1,11 @@
 {
   "name": "chartist-plugin-accessibility",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": [
     "./dist/chartist-plugin-accessibility.min.js"
   ],
   "dependencies": {
-    "chartist": "~0.7.3"
+    "chartist": "~0.8.0"
   },
   "ignore": [
     ".*",

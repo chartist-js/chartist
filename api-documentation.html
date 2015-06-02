@@ -410,6 +410,8 @@
                   showLabel: true,
                   // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
                   labelOffset: 0,
+                  // This option can be set to &#x27;inside&#x27;, &#x27;outside&#x27; or &#x27;center&#x27;. Positioned with &#x27;inside&#x27; the labels will be placed on half the distance of the radius to the border of the Pie by respecting the &#x27;labelOffset&#x27;. The &#x27;outside&#x27; option will place the labels at the border of the pie and &#x27;center&#x27; will place the labels in the absolute center point of the chart. The &#x27;center&#x27; option only makes sense in conjunction with the &#x27;labelOffset&#x27; option.
+                  labelPosition: &#x27;inside&#x27;,
                   // An interpolation function for the label value
                   labelInterpolationFnc: Chartist.noop,
                   // Label direction can be &#x27;neutral&#x27;, &#x27;explode&#x27; or &#x27;implode&#x27;. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
@@ -620,7 +622,7 @@
                 };</code>
                   </pre><div class="member-content"><div class="description"><p>Functional style helper to produce array with given length initialized with undefined values</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-sum"><span class="member-tag">method</span> Chartist.sum()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-sum-code">Show code</button></header><pre id="chartistcore-method-sum-code">
                     <code class="javascript">Chartist.sum = function(previous, current) {
-                  return previous + current;
+                  return previous + (current ? current : 0);
                 };</code>
                   </pre><div class="member-content"><div class="description"><p>Sum helper to be used in reduce functions</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>previous</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>current</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>*</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-serialmap"><span class="member-tag">method</span> Chartist.serialMap()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-serialmap-code">Show code</button></header><pre id="chartistcore-method-serialmap-code">
                     <code class="javascript">Chartist.serialMap = function(arr, cb) {
@@ -800,26 +802,32 @@
                 };</code>
                   </pre><div class="member-content"><div class="description"><p>Get the height of the area in the chart for the data series</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The height of the area in the chart for the data series</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-gethighlow"><span class="member-tag">method</span> Chartist.getHighLow()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-gethighlow-code">Show code</button></header><pre id="chartistcore-method-gethighlow-code">
                     <code class="javascript">Chartist.getHighLow = function (dataArray, options) {
-                  var i,
-                    j,
-                    highLow = {
+                  var highLow = {
                       high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
                       low: options.low === undefined ? Number.MAX_VALUE : +options.low
                     },
                     findHigh = options.high === undefined,
                     findLow = options.low === undefined;
                 
-                  for (i = 0; i &lt; dataArray.length; i++) {
-                    for (j = 0; j &lt; dataArray[i].length; j++) {
-                      if (findHigh &amp;&amp; dataArray[i][j] &gt; highLow.high) {
-                        highLow.high = dataArray[i][j];
+                  // Function to recursively walk through arrays and find highest and lowest number
+                  function recursiveHighLow(data) {
+                    if(data instanceof Array) {
+                      for (var i = 0; i &lt; data.length; i++) {
+                        recursiveHighLow(data[i]);
+                      }
+                    } else {
+                      if (findHigh &amp;&amp; data &gt; highLow.high) {
+                        highLow.high = data;
                       }
                 
-                      if (findLow &amp;&amp; dataArray[i][j] &lt; highLow.low) {
-                        highLow.low = dataArray[i][j];
+                      if (findLow &amp;&amp; data &lt; highLow.low) {
+                        highLow.low = data;
                       }
                     }
                   }
+                
+                  // Start to find highest and lowest number recursively
+                  recursiveHighLow(dataArray);
                 
                   // If high and low are the same because of misconfiguration or flat data (only the same value) we need
                   // to set the high or low to 0 depending on the polarity
@@ -840,6 +848,10 @@
                 };</code>
                   </pre><div class="member-content"><div class="description"><p>Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.</p></div><h6>Parameters</h6><div class="param"><code>dataArray</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that contains the highest and lowest value that will be visualized on the chart.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-rho"><span class="member-tag">method</span> Chartist.rho()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-rho-code">Show code</button></header><pre id="chartistcore-method-rho-code">
                     <code class="javascript">Chartist.rho = function(num) {
+                  if(num === 1) {
+                    return num;
+                  }
+                
                   function gcd(p, q) {
                     if (p % q === 0) {
                       return q;

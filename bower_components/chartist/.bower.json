@@ -1,6 +1,6 @@
 {
   "name": "chartist",
-  "version": "0.7.3",
+  "version": "0.8.0",
   "main": [
     "./dist/chartist.min.js",
     "./dist/chartist.min.css"
@@ -13,7 +13,10 @@
     "codemirror": "~4.12.0",
     "base64": "~0.3.0",
     "chartist-plugin-pointlabels": "~0.0.2",
-    "chartist-plugin-sketchy": "~0.0.1"
+    "chartist-plugin-sketchy": "~0.0.1",
+    "chartist-plugin-accessibility": "~0.0.1",
+    "chartist-plugin-tooltip": "~0.0.8",
+    "matchMedia": "~0.2.0"
   },
   "ignore": [
     ".*",
@@ -26,14 +29,17 @@
     "src",
     "test"
   ],
+  "resolutions": {
+    "chartist": "~0.8.0"
+  },
   "homepage": "https://github.com/gionkunz/chartist-js",
-  "_release": "0.7.3",
+  "_release": "0.8.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.7.3",
-    "commit": "455639edb56e8a124e514f175415ba6157e9567a"
+    "tag": "v0.8.0",
+    "commit": "6399391df3e56bb7406e93e68748eafad4154011"
   },
   "_source": "git://github.com/gionkunz/chartist-js.git",
-  "_target": "~0.7.3",
+  "_target": "~0.8.0",
   "_originalSource": "chartist"
 }

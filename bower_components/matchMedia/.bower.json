@@ -17,6 +17,5 @@
   },
   "_source": "git://github.com/paulirish/matchMedia.js.git",
   "_target": "~0.2.0",
-  "_originalSource": "matchMedia",
-  "_direct": true
+  "_originalSource": "matchMedia"
 }

@@ -1,11 +1,11 @@
 {
   "name": "chartist-plugin-accessibility",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": [
     "./dist/chartist-plugin-accessibility.min.js"
   ],
   "dependencies": {
-    "chartist": "~0.7.3"
+    "chartist": "~0.8.0"
   },
   "ignore": [
     ".*",
@@ -17,14 +17,13 @@
     "test"
   ],
   "homepage": "https://github.com/gionkunz/chartist-plugin-accessibility",
-  "_release": "0.0.1",
+  "_release": "0.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1",
-    "commit": "2a8c68ccaee5c0176736f678a3deb089c2931135"
+    "tag": "v0.0.2",
+    "commit": "59803c964dfbf7920128454dffa3d4971364bb76"
   },
   "_source": "git://github.com/gionkunz/chartist-plugin-accessibility.git",
-  "_target": "~0.0.1",
-  "_originalSource": "chartist-plugin-accessibility",
-  "_direct": true
+  "_target": "~0.0.2",
+  "_originalSource": "chartist-plugin-accessibility"
 }

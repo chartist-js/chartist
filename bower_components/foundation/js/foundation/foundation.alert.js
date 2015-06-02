@@ -4,7 +4,7 @@
   Foundation.libs.alert = {
     name : 'alert',
 
-    version : '5.5.1',
+    version : '5.5.2',
 
     settings : {
       callback : function () {}
@@ -26,12 +26,12 @@
         if (Modernizr.csstransitions) {
           alertBox.addClass('alert-close');
           alertBox.on('transitionend webkitTransitionEnd oTransitionEnd', function (e) {
-            S(this).trigger('close').trigger('close.fndtn.alert').remove();
+            S(this).trigger('close.fndtn.alert').remove();
             settings.callback();
           });
         } else {
           alertBox.fadeOut(300, function () {
-            S(this).trigger('close').trigger('close.fndtn.alert').remove();
+            S(this).trigger('close.fndtn.alert').remove();
             settings.callback();
           });
         }

@@ -1,11 +1,11 @@
 {
   "name": "chartist-plugin-sketchy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": [
     "./dist/chartist-plugin-sketchy.min.js"
   ],
   "devDependencies": {
-    "chartist": "~0.5.0"
+    "chartist": "~0.8.0"
   },
   "ignore": [
     ".*",

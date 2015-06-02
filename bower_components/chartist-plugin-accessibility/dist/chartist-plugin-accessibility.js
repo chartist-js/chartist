@@ -111,7 +111,7 @@
 
           if (chart instanceof Chartist.Pie) {
             // For pie charts we have only column headers and one series
-            var dataArray = Chartist.getDataArray(chart.data, chart.optionsProvider.currentOptions.reverseData);
+            var dataArray = Chartist.getDataArray(chart.data, chart.optionsProvider.getCurrentOptions().reverseData);
 
             // First render the column headers with our pie chart labels
             chart.data.labels.forEach(function (text) {

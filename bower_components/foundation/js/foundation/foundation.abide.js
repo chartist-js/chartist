@@ -4,11 +4,12 @@
   Foundation.libs.abide = {
     name : 'abide',
 
-    version : '5.5.1',
+    version : '5.5.2',
 
     settings : {
       live_validate : true,
       validate_on_blur : true,
+      // validate_on: 'tab', // tab (when user tabs between fields), change (input changes), manual (call custom events) 
       focus_on_invalid : true,
       error_labels : true, // labels with a for="inputId" will recieve an `error` class
       error_class : 'error',
@@ -26,7 +27,8 @@
         // http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#valid-e-mail-address
         email : /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/,
 
-        url : /^(https?|ftp|file|ssh):\/\/(((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/,
+        // http://blogs.lse.ac.uk/lti/2008/04/23/a-regular-expression-to-match-any-url/
+        url: /^(https?|ftp|file|ssh):\/\/([-;:&=\+\$,\w]+@{1})?([-A-Za-z0-9\.]+)+:?(\d+)?((\/[-\+~%\/\.\w]+)?\??([-\+=&;%@\.\w]+)?#?([\w]+)?)?/,
         // abc.de
         domain : /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,8}$/,
 
@@ -68,36 +70,71 @@
 
       this.invalid_attr = this.add_namespace('data-invalid');
 
+      function validate(originalSelf, e) {
+        clearTimeout(self.timer);
+        self.timer = setTimeout(function () {
+          self.validate([originalSelf], e);
+        }.bind(originalSelf), settings.timeout);
+      }
+
+
       form
         .off('.abide')
-        .on('submit.fndtn.abide validate.fndtn.abide', function (e) {
+        .on('submit.fndtn.abide', function (e) {
           var is_ajax = /ajax/i.test(self.S(this).attr(self.attr_name()));
-          return self.validate(self.S(this).find('input, textarea, select').get(), e, is_ajax);
+          return self.validate(self.S(this).find('input, textarea, select').not(":hidden, [data-abide-ignore]").get(), e, is_ajax);
         })
-        .on('reset', function () {
-          return self.reset($(this));
+        .on('validate.fndtn.abide', function (e) {
+          if (settings.validate_on === 'manual') {
+            self.validate([e.target], e);
+          }
         })
-        .find('input, textarea, select')
+        .on('reset', function (e) {
+          return self.reset($(this), e);          
+        })
+        .find('input, textarea, select').not(":hidden, [data-abide-ignore]")
           .off('.abide')
           .on('blur.fndtn.abide change.fndtn.abide', function (e) {
-            if (settings.validate_on_blur === true) {
-              self.validate([this], e);
+            // old settings fallback
+            // will be deprecated with F6 release
+            if (settings.validate_on_blur && settings.validate_on_blur === true) {
+              validate(this, e);
+            }
+            // new settings combining validate options into one setting
+            if (settings.validate_on === 'change') {
+              validate(this, e);
             }
           })
           .on('keydown.fndtn.abide', function (e) {
-            if (settings.live_validate === true && e.which != 9) {
-              clearTimeout(self.timer);
-              self.timer = setTimeout(function () {
-                self.validate([this], e);
-              }.bind(this), settings.timeout);
+            // old settings fallback
+            // will be deprecated with F6 release
+            if (settings.live_validate && settings.live_validate === true && e.which != 9) {
+              validate(this, e);
             }
+            // new settings combining validate options into one setting
+            if (settings.validate_on === 'tab' && e.which === 9) {
+              validate(this, e);
+            }
+            else if (settings.validate_on === 'change') {
+              validate(this, e);
+            }
+          })
+          .on('focus', function (e) {
+            if (navigator.userAgent.match(/iPad|iPhone|Android|BlackBerry|Windows Phone|webOS/i)) {
+              $('html, body').animate({
+                  scrollTop: $(e.target).offset().top
+              }, 100);
+            } 
           });
     },
 
-    reset : function (form) {
-      form.removeAttr(this.invalid_attr);
-      $(this.invalid_attr, form).removeAttr(this.invalid_attr);
-      $('.' + this.settings.error_class, form).not('small').removeClass(this.settings.error_class);
+    reset : function (form, e) {
+      var self = this;
+      form.removeAttr(self.invalid_attr);
+
+      $('[' + self.invalid_attr + ']', form).removeAttr(self.invalid_attr);
+      $('.' + self.settings.error_class, form).not('small').removeClass(self.settings.error_class);
+      $(':input', form).not(':button, :submit, :reset, :hidden, [data-abide-ignore]').val('').removeAttr(self.invalid_attr);
     },
 
     validate : function (els, e, is_ajax) {
@@ -112,14 +149,14 @@
           if (this.settings.focus_on_invalid) {
             els[i].focus();
           }
-          form.trigger('invalid').trigger('invalid.fndtn.abide');
+          form.trigger('invalid.fndtn.abide');
           this.S(els[i]).closest('form').attr(this.invalid_attr, '');
           return false;
         }
       }
 
       if (submit_event || is_ajax) {
-        form.trigger('valid').trigger('valid.fndtn.abide');
+        form.trigger('valid.fndtn.abide');
       }
 
       form.removeAttr(this.invalid_attr);
@@ -192,15 +229,36 @@
           parent = direct_parent.parent();
         }
 
-        if (validator) {
-          valid = this.settings.validators[validator].apply(this, [el, required, parent]);
-          el_validations.push(valid);
-        }
-
         if (is_radio && required) {
           el_validations.push(this.valid_radio(el, required));
         } else if (is_checkbox && required) {
           el_validations.push(this.valid_checkbox(el, required));
+
+        } else if (validator) {
+          // Validate using each of the specified (space-delimited) validators.
+          var validators = validator.split(' ');
+          var last_valid = true, all_valid = true;
+          for (var iv = 0; iv < validators.length; iv++) {
+              valid = this.settings.validators[validators[iv]].apply(this, [el, required, parent])
+              el_validations.push(valid);
+              all_valid = valid && last_valid;
+              last_valid = valid;
+          }
+          if (all_valid) {
+              this.S(el).removeAttr(this.invalid_attr);
+              parent.removeClass('error');
+              if (label.length > 0 && this.settings.error_labels) {
+                label.removeClass(this.settings.error_class).removeAttr('role');
+              }
+              $(el).triggerHandler('valid');
+          } else {
+              this.S(el).attr(this.invalid_attr, '');
+              parent.addClass('error');
+              if (label.length > 0 && this.settings.error_labels) {
+                label.addClass(this.settings.error_class).attr('role', 'alert');
+              }
+              $(el).triggerHandler('invalid');
+          }
         } else {
 
           if (el_patterns[i][1].test(value) && valid_length ||
@@ -211,7 +269,6 @@
           }
 
           el_validations = [el_validations.every(function (valid) {return valid;})];
-
           if (el_validations[0]) {
             this.S(el).removeAttr(this.invalid_attr);
             el.setAttribute('aria-invalid', 'false');
@@ -240,9 +297,8 @@
             $(el).triggerHandler('invalid');
           }
         }
-        validations.push(el_validations[0]);
+        validations = validations.concat(el_validations);
       }
-      validations = [validations.every(function (valid) {return valid;})];
       return validations;
     },
 
@@ -252,8 +308,10 @@
 
       if (valid) {
         el.removeAttr(this.invalid_attr).parent().removeClass(this.settings.error_class);
+        $(el).triggerHandler('valid');
       } else {
         el.attr(this.invalid_attr, '').parent().addClass(this.settings.error_class);
+        $(el).triggerHandler('invalid');
       }
 
       return valid;
@@ -286,8 +344,10 @@
       for (var i = 0; i < count; i++) {
         if (valid) {
           this.S(group[i]).removeAttr(this.invalid_attr).parent().removeClass(this.settings.error_class);
+          $(group[i]).triggerHandler('valid');
         } else {
           this.S(group[i]).attr(this.invalid_attr, '').parent().addClass(this.settings.error_class);
+          $(group[i]).triggerHandler('invalid');
         }
       }
 
@@ -335,6 +395,14 @@
       }
 
       return valid;
+    },
+
+    reflow : function(scope, options) {
+      var self = this,
+          form = self.S('[' + this.attr_name() + ']').attr('novalidate', 'novalidate');
+          self.S(form).each(function (idx, el) {
+            self.events(el);
+          });
     }
   };
 }(jQuery, window, window.document));

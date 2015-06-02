@@ -1,3 +1,33 @@
+v0.8.0 - 10 May 2015
+--------------------
+- Added new option to bar charts to allow a series distribution and use a simple one dimensional array for data (#209)
+- Added option for label placement and refactored label positioning code (#302)
+- Added option to only use integer numbers in linear scale axis (#77)
+- Added possibility to add series configuration on line chart to override specific options on series level (#289, #168)
+- Added functionality to handle holes in line charts (#294)
+- Added step interpolation for line charts
+- Added default styles for bar and horizontal bar labels that make more sense (#303)
+- Added series data and meta information to events (#293)
+- Changed line chart behavior to draw points from interpolated values (#295)
+- Removed restriction to SVGElements so Chartist.Svg can be used for HTML DOM elements (#261)
+- Refactored and simplified axis creation, also includes updated CSS label handling
+- Refactored getDataArray for simplification and fixed type conversion issue with data arrays for pie charts
+- Centralized high/low calculations in getHighLow() method and added support for empty charts. Thanks @scthi !
+- Fixed bug in pie chart where meta was only added when series name was specified
+- Fixed bug where special condition to check single value should also include object value notation (#265)
+- Fixed bug with Chartist.extend when null property is extended
+- Fixed bug with Firefox dying with a DOM exception when calling getBBox() on an invisible node. Thanks @scthi !
+- Switched from object literal accessor definition to regular function (#278)
+
+v0.7.4 - 19 Apr 2015
+--------------------
+- Enhanced documentation site (Accessibility plugin, live example eval, fixed path to Sass settings, better HTML example of how to include Chartist, example how to include multiple charts on one page)
+- Added Arc to Chartist.Svg.Path
+- Refactored Chartist.Pie to make use of Svg.Path and expose path in events
+- Closing path of Pie if not a donut for correct strokes
+- Exposing axis objects in created event
+- Changed grid event to use axis object instead of string
+
 v0.7.3 - 27 Feb 2015
 --------------------
 - Fixed bugs in the chart.update method 
