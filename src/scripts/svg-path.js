@@ -306,16 +306,40 @@
    * This function clones a whole path object with all its properties. This is a deep clone and path element objects will also be cloned.
    *
    * @memberof Chartist.Svg.Path
+   * @param {Boolean} [close] Optional option to set the new cloned path to closed. If not specified or false, the original path close option will be used.
    * @return {Chartist.Svg.Path}
    */
-  function clone() {
-    var c = new Chartist.Svg.Path(this.close);
+  function clone(close) {
+    var c = new Chartist.Svg.Path(close || this.close);
     c.pos = this.pos;
     c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
       return Chartist.extend({}, pathElement);
     });
     c.options = Chartist.extend({}, this.options);
     return c;
+  }
+
+  /**
+   * Split a Svg.Path object by a specific command in the path chain. The path chain will be split and an array of newly created paths objects will be returned. This is useful if you'd like to split an SVG path by it's move commands, for example, in order to isolate chunks of drawings.
+   *
+   * @memberof Chartist.Svg.Path
+   * @param {String} command The command you'd like to use to split the path
+   * @return {Array<Chartist.Svg.Path>}
+   */
+  function splitByCommand(command) {
+    var split = [
+      new Chartist.Svg.Path()
+    ];
+
+    this.pathElements.forEach(function(pathElement) {
+      if(pathElement.command === command.toUpperCase() && split[split.length - 1].pathElements.length !== 0) {
+        split.push(new Chartist.Svg.Path());
+      }
+
+      split[split.length - 1].pathElements.push(pathElement);
+    });
+
+    return split;
   }
 
   /**
@@ -352,7 +376,8 @@
     transform: transform,
     parse: parse,
     stringify: stringify,
-    clone: clone
+    clone: clone,
+    splitByCommand: splitByCommand
   });
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;

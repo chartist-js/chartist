@@ -297,5 +297,31 @@ describe('Chartist SVG', function () {
         { command: 'C', x1: 5, y1: 100, x2: 7, y2: 100, x: 0, y: 0 }
       ]);
     });
+
+    it('should split correctly by move command', function () {
+      var paths = new Chartist.Svg.Path().parse('M0,0L0,0L0,0L0,0M0,0L0,0L0,0L0,0').splitByCommand('M');
+      expect(paths).toHaveLength(2);
+      expect(paths[0].pathElements[0].command).toBe('M');
+      expect(paths[0].pathElements).toHaveLength(4);
+      expect(paths[1].pathElements[0].command).toBe('M');
+      expect(paths[1].pathElements).toHaveLength(4);
+    });
+
+    it('should split correctly by move command and tailing move element', function () {
+      var paths = new Chartist.Svg.Path().parse('M0,0L0,0L0,0L0,0M0,0L0,0L0,0L0,0M0,0').splitByCommand('M');
+      expect(paths).toHaveLength(3);
+      expect(paths[2].pathElements[0].command).toBe('M');
+    });
+
+    it('should split correctly by move command and leading other commands', function () {
+      var paths = new Chartist.Svg.Path().parse('L0,0C0,0,0,0,0,0M0,0L0,0L0,0L0,0M0,0L0,0L0,0L0,0').splitByCommand('M');
+      expect(paths).toHaveLength(3);
+      expect(paths[0].pathElements).toHaveLength(2);
+      expect(paths[0].pathElements[0].command).toBe('L');
+      expect(paths[0].pathElements[1].command).toBe('C');
+
+      expect(paths[1].pathElements).toHaveLength(4);
+      expect(paths[1].pathElements[0].command).toBe('M');
+    });
   });
 });

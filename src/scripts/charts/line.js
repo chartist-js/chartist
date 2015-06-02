@@ -259,34 +259,49 @@
         // We project the areaBase value into screen coordinates
         var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase).pos;
 
-        // Clone original path and splice our new area path to add the missing path elements to close the area shape
-        var areaPath = path.clone();
-        // Modify line path and add missing elements for area
-        areaPath.position(0)
-          .remove(1)
-          .move(chartRect.x1, areaBaseProjected)
-          .line(pathCoordinates[0], pathCoordinates[1])
-          .position(areaPath.pathElements.length)
-          .line(pathCoordinates[pathCoordinates.length - 2], areaBaseProjected);
+        // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
+        path.splitByCommand('M').filter(function onlySolidSegments(pathSegment) {
+          // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
+          return pathSegment.pathElements.length > 1;
+        }).map(function convertToArea(solidPathSegments) {
+          // Receiving the filtered solid path segments we can now convert those segments into fill areas
+          var firstElement = solidPathSegments.pathElements[0];
+          var lastElement = solidPathSegments.pathElements[solidPathSegments.pathElements.length - 1];
 
-        // Create the new path for the area shape with the area class from the options
-        var area = seriesGroups[seriesIndex].elem('path', {
-          d: areaPath.stringify()
-        }, options.classNames.area, true).attr({
-          'values': normalizedData[seriesIndex]
-        }, Chartist.xmlNs.uri);
+          // Cloning the solid path segment with closing option and removing the first move command from the clone
+          // We then insert a new move that should start at the area base and draw a straight line up or down
+          // at the end of the path we add an additional straight line to the projected area base value
+          // As the closing option is set our path will be automatically closed
+          return solidPathSegments.clone(true)
+            .position(0)
+            .remove(1)
+            .move(firstElement.x, areaBaseProjected)
+            .line(firstElement.x, firstElement.y)
+            .position(solidPathSegments.pathElements.length + 1)
+            .line(lastElement.x, areaBaseProjected);
 
-        this.eventEmitter.emit('draw', {
-          type: 'area',
-          values: normalizedData[seriesIndex],
-          path: areaPath.clone(),
-          series: series,
-          seriesIndex: seriesIndex,
-          chartRect: chartRect,
-          index: seriesIndex,
-          group: seriesGroups[seriesIndex],
-          element: area
-        });
+        }).forEach(function createArea(areaPath) {
+          // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
+          // and adding the created DOM elements to the correct series group
+          var area = seriesGroups[seriesIndex].elem('path', {
+            d: areaPath.stringify()
+          }, options.classNames.area, true).attr({
+            'values': normalizedData[seriesIndex]
+          }, Chartist.xmlNs.uri);
+
+          // Emit an event for each area that was drawn
+          this.eventEmitter.emit('draw', {
+            type: 'area',
+            values: normalizedData[seriesIndex],
+            path: areaPath.clone(),
+            series: series,
+            seriesIndex: seriesIndex,
+            chartRect: chartRect,
+            index: seriesIndex,
+            group: seriesGroups[seriesIndex],
+            element: area
+          });
+        }.bind(this));
       }
     }.bind(this));
 
