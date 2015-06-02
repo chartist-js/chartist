@@ -237,3 +237,13 @@ sections:
           id: simple-gauge-chart
           classes: ct-golden-section ct-negative-labels
           intro: This pie chart uses donut, startAngle and total to draw a gauge chart.
+
+      - type: live-example
+        data:
+          title: Animating a Donut with Svg.animate
+          level: 4
+          id: example-donut-animation
+          classes: ct-golden-section
+          intro: >
+                    Although it'd be also possible to achieve this animation with CSS, with some minor suboptimal
+                    things, here's an example of how to animate donut charts using Chartist.Svg.animate and SMIL.

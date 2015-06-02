@@ -54,10 +54,10 @@ chart.on('draw', function(data) {
 
 // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
 chart.on('created', function() {
-  if(window.__exampleAnimateTimeout) {
-    clearTimeout(window.__exampleAnimateTimeout);
-    window.__exampleAnimateTimeout = null;
+  if(window.__anim0987432598723) {
+    clearTimeout(window.__anim0987432598723);
+    window.__anim0987432598723 = null;
   }
-  window.__exampleAnimateTimeout = setTimeout(chart.update.bind(chart), 8000);
+  window.__anim0987432598723 = setTimeout(chart.update.bind(chart), 8000);
 });
 
