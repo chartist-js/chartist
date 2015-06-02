@@ -62,6 +62,7 @@
   color: $ct-text-color;
   font-size: $ct-text-size;
   line-height: $ct-text-line-height;
+  alignment-baseline: middle;
 }
 
 @mixin ct-chart-grid($ct-grid-color: $ct-grid-color, $ct-grid-width: $ct-grid-width, $ct-grid-dasharray: $ct-grid-dasharray) {

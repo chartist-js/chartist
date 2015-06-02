@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.8.0
+/* Chartist.js 0.8.2
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.8.0'
+  version: '0.8.2'
 };
 
 (function (window, document, Chartist) {
@@ -154,7 +154,7 @@ var Chartist = {
    * @return {*}
    */
   Chartist.sum = function(previous, current) {
-    return previous + current;
+    return previous + (current ? current : 0);
   };
 
   /**
@@ -450,26 +450,32 @@ var Chartist = {
    * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
    */
   Chartist.getHighLow = function (dataArray, options) {
-    var i,
-      j,
-      highLow = {
+    var highLow = {
         high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
         low: options.low === undefined ? Number.MAX_VALUE : +options.low
       },
       findHigh = options.high === undefined,
       findLow = options.low === undefined;
 
-    for (i = 0; i < dataArray.length; i++) {
-      for (j = 0; j < dataArray[i].length; j++) {
-        if (findHigh && dataArray[i][j] > highLow.high) {
-          highLow.high = dataArray[i][j];
+    // Function to recursively walk through arrays and find highest and lowest number
+    function recursiveHighLow(data) {
+      if(data instanceof Array) {
+        for (var i = 0; i < data.length; i++) {
+          recursiveHighLow(data[i]);
+        }
+      } else {
+        if (findHigh && data > highLow.high) {
+          highLow.high = data;
         }
 
-        if (findLow && dataArray[i][j] < highLow.low) {
-          highLow.low = dataArray[i][j];
+        if (findLow && data < highLow.low) {
+          highLow.low = data;
         }
       }
     }
+
+    // Start to find highest and lowest number recursively
+    recursiveHighLow(dataArray);
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
     // to set the high or low to 0 depending on the polarity
@@ -497,6 +503,10 @@ var Chartist = {
    * @returns {Number} The smallest integer factor of the parameter num.
    */
   Chartist.rho = function(num) {
+    if(num === 1) {
+      return num;
+    }
+
     function gcd(p, q) {
       if (p % q === 0) {
         return q;
@@ -3376,13 +3386,13 @@ var Chartist = {
         // We need to transform coordinates differently based on the chart layout
         if(options.horizontalBars) {
           projected = {
-            x: chartRect.x1 + valueAxis.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
-            y: chartRect.y1 - labelAxis.projectValue(value, labelAxisValueIndex, normalizedData[seriesIndex]).pos
+            x: chartRect.x1 + valueAxis.projectValue(value || 0, valueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - labelAxis.projectValue(value || 0, labelAxisValueIndex, normalizedData[seriesIndex]).pos
           };
         } else {
           projected = {
-            x: chartRect.x1 + labelAxis.projectValue(value, labelAxisValueIndex, normalizedData[seriesIndex]).pos,
-            y: chartRect.y1 - valueAxis.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+            x: chartRect.x1 + labelAxis.projectValue(value || 0, labelAxisValueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - valueAxis.projectValue(value || 0, valueIndex, normalizedData[seriesIndex]).pos
           }
         }
 
@@ -3394,6 +3404,11 @@ var Chartist = {
         // Enter value in stacked bar values used to remember previous screen value for stacking up bars
         previousStack = stackedBarValues[valueIndex] || zeroPoint;
         stackedBarValues[valueIndex] = previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
+
+        // Skip if value is undefined
+        if(value === undefined) {
+          return;
+        }
 
         var positions = {};
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
@@ -3525,6 +3540,8 @@ var Chartist = {
     showLabel: true,
     // Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
     labelOffset: 0,
+    // This option can be set to 'inside', 'outside' or 'center'. Positioned with 'inside' the labels will be placed on half the distance of the radius to the border of the Pie by respecting the 'labelOffset'. The 'outside' option will place the labels at the border of the pie and 'center' will place the labels in the absolute center point of the chart. The 'center' option only makes sense in conjunction with the 'labelOffset' option.
+    labelPosition: 'inside',
     // An interpolation function for the label value
     labelInterpolationFnc: Chartist.noop,
     // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
@@ -3585,9 +3602,18 @@ var Chartist = {
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
     radius -= options.donut ? options.donutWidth / 2  : 0;
 
-    // If a donut chart then the label position is at the radius, if regular pie chart it's half of the radius
-    // see https://github.com/gionkunz/chartist-js/issues/21
-    labelRadius = options.donut ? radius : radius / 2;
+    // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
+    // if regular pie chart it's half of the radius
+    if(options.labelPosition === 'outside' || options.donut) {
+      labelRadius = radius;
+    } else if(options.labelPosition === 'center') {
+      // If labelPosition is center we start with 0 and will later wait for the labelOffset
+      labelRadius = 0;
+    } else {
+      // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
+      // slice
+      labelRadius = radius / 2;
+    }
     // Add the offset to the labelRadius where a negative offset means closed to the center of the chart
     labelRadius += options.labelOffset;
 
@@ -3681,22 +3707,24 @@ var Chartist = {
         var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
           interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
 
-        var labelElement = seriesGroups[i].elem('text', {
-          dx: labelPosition.x,
-          dy: labelPosition.y,
-          'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-        }, options.classNames.label).text('' + interpolatedValue);
+        if(interpolatedValue || interpolatedValue === 0) {
+          var labelElement = seriesGroups[i].elem('text', {
+            dx: labelPosition.x,
+            dy: labelPosition.y,
+            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+          }, options.classNames.label).text('' + interpolatedValue);
 
-        // Fire off draw event
-        this.eventEmitter.emit('draw', {
-          type: 'label',
-          index: i,
-          group: seriesGroups[i],
-          element: labelElement,
-          text: '' + interpolatedValue,
-          x: labelPosition.x,
-          y: labelPosition.y
-        });
+          // Fire off draw event
+          this.eventEmitter.emit('draw', {
+            type: 'label',
+            index: i,
+            group: seriesGroups[i],
+            element: labelElement,
+            text: '' + interpolatedValue,
+            x: labelPosition.x,
+            y: labelPosition.y
+          });
+        }
       }
 
       // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues

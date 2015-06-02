@@ -1,5 +1,9 @@
-v0.8.1 - 02 Jun 2015
+v0.8.2 - 02 Jun 2015
 --------------------
+- Fixed broken release 0.8.1
+
+v0.8.1 - 02 Jun 2015 (BROKEN!)
+------------------------------
 - Added new option labelPosition for Pie charts to have better control over label placement, fixes #315
 - Added default styles for alignment-baseline
 - Added better support for undefined values in bar charts
