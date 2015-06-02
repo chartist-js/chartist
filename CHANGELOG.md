@@ -1,3 +1,11 @@
+v0.8.1 - 02 Jun 2015
+--------------------
+- Added new option labelPosition for Pie charts to have better control over label placement, fixes #315
+- Added default styles for alignment-baseline
+- Added better support for undefined values in bar charts
+- Refactored getHighLow to use recursion in order to enable more dynamic array structures and better edge case management
+- Fixed issue with Chartist.rho that caused endless loop when called with 1, fixes #318
+
 v0.8.0 - 10 May 2015
 --------------------
 - Added new option to bar charts to allow a series distribution and use a simple one dimensional array for data (#209)
