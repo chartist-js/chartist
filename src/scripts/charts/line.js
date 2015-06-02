@@ -267,7 +267,7 @@
           .move(chartRect.x1, areaBaseProjected)
           .line(pathCoordinates[0], pathCoordinates[1])
           .position(areaPath.pathElements.length)
-          .line(pathCoordinates[pathCoordinates.length - 2], areaBaseProjected);
+          .line(areaPath.pathElements[areaPath.pathElements.length - 1].x, areaBaseProjected);
 
         // Create the new path for the area shape with the area class from the options
         var area = seriesGroups[seriesIndex].elem('path', {
