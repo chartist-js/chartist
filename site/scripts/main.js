@@ -12,9 +12,6 @@ function evalChartistCode(code, chartElement) {
   // Remove any declaration of $chart as we are passing $chart to our function eval
   modified = modified.replace(/var \$chart.+;/, '');
 
-  if(chartElement.__chartist__) {
-    chartElement.__chartist__.detach();
-  }
   var $chartElement = $(chartElement).empty();
 
   try {
