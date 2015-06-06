@@ -57,8 +57,15 @@
    * @memberof Chartist.Base
    */
   function detach() {
-    window.removeEventListener('resize', this.resizeListener);
-    this.optionsProvider.removeMediaQueryListeners();
+    // Only detach if initialization already occurred on this chart. If this chart still hasn't initialized (therefore
+    // the initializationTimeoutId is still a valid timeout reference, we will clear the timeout
+    if(!this.initializeTimeoutId) {
+      window.removeEventListener('resize', this.resizeListener);
+      this.optionsProvider.removeMediaQueryListeners();
+    } else {
+      window.clearTimeout(this.initializeTimeoutId);
+    }
+
     return this;
   }
 
