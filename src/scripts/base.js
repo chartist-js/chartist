@@ -157,14 +157,7 @@
     if(this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
       if(this.container.__chartist__) {
-        if(this.container.__chartist__.initializeTimeoutId) {
-          // If the initializeTimeoutId is still set we can safely assume that the initialization function has not
-          // been called yet from the event loop. Therefore we should cancel the timeout and don't need to detach
-          window.clearTimeout(this.container.__chartist__.initializeTimeoutId);
-        } else {
-          // The timeout reference has already been reset which means we need to detach the old chart first
-          this.container.__chartist__.detach();
-        }
+        this.container.__chartist__.detach();
       }
 
       this.container.__chartist__ = this;
