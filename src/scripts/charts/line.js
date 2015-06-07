@@ -129,31 +129,8 @@
       onlyInteger: options.axisY.onlyInteger
     });
 
-    // Start drawing
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
-      gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
-
-    Chartist.createAxis(
-      axisX,
-      this.data.labels,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
-
-    Chartist.createAxis(
-      axisY,
-      axisY.bounds.values,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
+    // Start drawing: grid -> series -> labels
+    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
 
     // Draw the series
     this.data.series.forEach(function(series, seriesIndex) {
@@ -304,6 +281,31 @@
         }.bind(this));
       }
     }.bind(this));
+
+    // Draw labels
+    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
+
+    Chartist.createAxis(
+      axisX,
+      this.data.labels,
+      chartRect,
+      gridGroup,
+      labelGroup,
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
+
+    Chartist.createAxis(
+      axisY,
+      axisY.bounds.values,
+      chartRect,
+      gridGroup,
+      labelGroup,
+      this.supportsForeignObject,
+      options,
+      this.eventEmitter
+    );
 
     this.eventEmitter.emit('created', {
       bounds: axisY.bounds,
