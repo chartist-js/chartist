@@ -1,3 +1,10 @@
+v0.8.3 - 07 Jun 2015
+--------------------
+- Greatly reduced CSS selector complexity and split slice into slice-pie and slice-donut
+- Added more robust detach mechanism that takes async initialization into account
+- Added better handling for area drawing with segmented paths, fixes #340
+- Documentation: Added getting started guide for styling charts
+
 v0.8.2 - 02 Jun 2015
 --------------------
 - Fixed broken release 0.8.1
