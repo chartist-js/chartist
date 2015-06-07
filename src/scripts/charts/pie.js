@@ -21,10 +21,11 @@
     chartPadding: 5,
     // Override the class names that are used to generate the SVG structure of the chart
     classNames: {
-      chart: 'ct-chart-pie',
+      chartPie: 'ct-chart-pie',
+      chartDonut: 'ct-chart-donut',
       series: 'ct-series',
-      slice: 'ct-slice',
-      donut: 'ct-donut',
+      slicePie: 'ct-slice-pie',
+      sliceDonut: 'ct-slice-donut',
       label: 'ct-label'
     },
     // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
@@ -86,7 +87,7 @@
       dataArray = Chartist.getDataArray(this.data, options.reverseData);
 
     // Create SVG.js draw
-    this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+    this.svg = Chartist.createSvg(this.container, options.width, options.height,options.donut ? options.classNames.chartDonut : options.classNames.chartPie);
     // Calculate charting rect
     chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
     // Get biggest circle radius possible within chartRect
@@ -168,7 +169,7 @@
       // If this is a donut chart we add the donut class, otherwise just a regular slice
       var pathElement = seriesGroups[i].elem('path', {
         d: path.stringify()
-      }, options.classNames.slice + (options.donut ? ' ' + options.classNames.donut : ''));
+      }, options.donut ? options.classNames.sliceDonut : options.classNames.slicePie);
 
       // Adding the pie series value to the path
       pathElement.attr({

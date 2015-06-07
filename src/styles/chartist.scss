@@ -62,7 +62,6 @@
   color: $ct-text-color;
   font-size: $ct-text-size;
   line-height: $ct-text-line-height;
-  alignment-baseline: middle;
 }
 
 @mixin ct-chart-grid($ct-grid-color: $ct-grid-color, $ct-grid-width: $ct-grid-width, $ct-grid-dasharray: $ct-grid-dasharray) {
@@ -104,11 +103,11 @@
 }
 
 @mixin ct-chart-series-color($color) {
-  .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice}.#{$ct-class-donut} {
+  .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice-donut} {
     stroke: $color;
   }
 
-  .#{$ct-class-slice}:not(.#{$ct-class-donut}), .#{$ct-class-area} {
+  .#{$ct-class-slice-pie}, .#{$ct-class-area} {
     fill: $color;
   }
 }
@@ -205,32 +204,28 @@
     @include ct-chart-bar($ct-bar-width);
   }
 
-  .#{$ct-class-slice}.#{$ct-class-donut} {
+  .#{$ct-class-slice-donut} {
     @include ct-chart-donut($ct-donut-width);
   }
 
   @if $ct-include-colored-series {
-    .#{$ct-class-series} {
-      @for $i from 0 to length($ct-series-names) {
-        &.#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
-          $color: nth($ct-series-colors, $i + 1);
+    @for $i from 0 to length($ct-series-names) {
+      .#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
+        $color: nth($ct-series-colors, $i + 1);
 
-          @include ct-chart-series-color($color);
-        }
+        @include ct-chart-series-color($color);
       }
     }
   }
 }
 
 @if $ct-include-classes {
-  .#{$ct-class-chart} {
-    @include ct-chart();
+  @include ct-chart();
 
-    @if $ct-include-alternative-responsive-containers {
-      @for $i from 0 to length($ct-scales-names) {
-        &.#{nth($ct-scales-names, $i + 1)} {
-          @include ct-responsive-svg-container($ratio: nth($ct-scales, $i + 1));
-        }
+  @if $ct-include-alternative-responsive-containers {
+    @for $i from 0 to length($ct-scales-names) {
+      .#{nth($ct-scales-names, $i + 1)} {
+        @include ct-responsive-svg-container($ratio: nth($ct-scales, $i + 1));
       }
     }
   }

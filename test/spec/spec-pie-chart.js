@@ -28,7 +28,7 @@ describe('Pie chart tests', function() {
       var chart = new Chartist.Pie('.ct-chart', data);
 
       chart.on('created', function() {
-        expect(Chartist.deserialize($('.ct-slice').eq(1).attr('ct:meta'))).toEqual(meta);
+        expect(Chartist.deserialize($('.ct-slice-pie').eq(1).attr('ct:meta'))).toEqual(meta);
         done();
       });
     });
