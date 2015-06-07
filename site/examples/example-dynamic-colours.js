@@ -1,23 +1,11 @@
 var count = 45;
 var max = 100;
 
-// Utility function to produce an empty array without holes
-function times(n) {
-  return Array.apply(null, new Array(n));
-}
-
-// Utility function to be usen in Array.map to multiply a value
-function multiplyFactory(multiplier) {
-  return function(num) {
-    return num * multiplier;
-  };
-}
-
 // Creating a bar chart with no labels and a series array with one series. For the series we generate random data with `count` elements and random data ranging from 0 to `max`.
 var chart = new Chartist.Bar('.ct-chart', {
-  labels: times(count),
+  labels: Chartist.times(count),
   series: [
-    times(count).map(Math.random).map(multiplyFactory(max))
+    Chartist.times(count).map(Math.random).map(Chartist.mapMultiply(max))
   ]
 }, {
   axisX: {
