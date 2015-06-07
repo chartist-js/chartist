@@ -25,4 +25,8 @@ var responsiveOptions = [
   ]
 ];
 
-new Chartist.Line('.ct-chart', data, null, responsiveOptions);
+new Chartist.Line('.ct-chart', data, {
+  chartPadding: {
+    top: 30
+  }
+}, responsiveOptions);

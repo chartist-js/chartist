@@ -1,9 +1,9 @@
-.ct-chart .ct-series.ct-series-a .ct-line,
-.ct-chart .ct-series.ct-series-a .ct-point {
+.ct-series-a .ct-line,
+.ct-series-a .ct-point {
   stroke: blue;
 }
 
-.ct-chart .ct-series.ct-series-b .ct-line,
-.ct-chart .ct-series.ct-series-b .ct-point {
+.ct-series-b .ct-line,
+.ct-series-b .ct-point {
   stroke: green;
 }

@@ -1,8 +1,8 @@
-/* Pie charts consist of solid slices where you can use this selector to override the default style. As the Pie chart is kind of a hybrid donut aswell, you need to distinguish with a :not pseudo class selector */
-.ct-chart-pie .ct-series.ct-series-a .ct-slice:not(.ct-donut) {
+/* Pie charts consist of solid slices where you can use this selector to override the default style. */
+.ct-series-a .ct-slice-pie {
   /* fill of the pie slieces */
   fill: hsl(120, 40%, 60%);
-  /* give your pie slices some outline or separate them visually by using the backrgound color here */
+  /* give your pie slices some outline or separate them visually by using the background color here */
   stroke: white;
   /* outline width */
   stroke-width: 4px;

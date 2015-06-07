@@ -1,5 +1,5 @@
 /* Use this selector to override the line style on a given series */
-.ct-chart-line .ct-series.ct-series-a .ct-line {
+.ct-series-a .ct-line {
   /* Set the colour of this series line */
   stroke: red;
   /* Control the thikness of your lines */
@@ -9,7 +9,7 @@
 }
 
 /* This selector overrides the points style on line charts. Points on line charts are actually just very short strokes. This allows you to customize even the point size in CSS */
-.ct-chart-line .ct-series.ct-series-a .ct-point {
+.ct-series-a .ct-point {
   /* Colour of your points */
   stroke: red;
   /* Size of your points */
