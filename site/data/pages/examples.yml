@@ -81,6 +81,27 @@ sections:
                    The API allows you to modify complex SVG paths and transform them for different animation morphing states.
       - type: live-example
         data:
+          title: break line
+          level: 4
+          id: example-break-line
+          classes: ct-golden-section
+          intro: An example of break line
+      - type: live-example
+        data:
+          title: limit line and smart align
+          level: 4
+          id: example-line-limit
+          classes: ct-golden-section
+          intro: An example of smart align that lines up with the limit line
+      - type: live-example
+        data:
+          title: variable lengths
+          level: 4
+          id: example-line-variable-length
+          classes: ct-golden-section
+          intro: An example of a simple line chart with different length
+      - type: live-example
+        data:
           title: Line Interpolation / Smoothing
           level: 4
           id: example-line-simple-smoothing

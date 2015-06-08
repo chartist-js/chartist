@@ -61,6 +61,8 @@
     showArea: false,
     // The base for the area chart that will be used to close the area shape (is normally 0)
     areaBase: 0,
+    // Whether the line will stop drawing when the data ends rather than trying normalize the data. Therefore this will not manipulate data with multiple length.
+    allowVariableDataLengths: false,
     // Specify if the lines should be smoothed. This value can be true or false where true will result in smoothing using the default smoothing interpolation function Chartist.Interpolation.cardinal and false results in Chartist.Interpolation.none. You can also choose other smoothing / interpolation functions available in the Chartist.Interpolation module, or write your own interpolation function. Check the examples for a brief description.
     lineSmooth: true,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
@@ -168,8 +170,13 @@
       this.eventEmitter
     );
 
-    // Draw the series
-    this.data.series.forEach(function(series, seriesIndex) {
+    // Draw the series - called by forEach
+    var loopThroughEachSeries = function (series, seriesIndex) {
+
+      //console.log('/////////////');
+      //console.log('series:', series);
+      //console.log('/////////////');
+
       seriesGroups[seriesIndex] = this.svg.elem('g');
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
@@ -185,17 +192,69 @@
       ].join(' '));
 
       var pathCoordinates = [];
+      var lastValidValue = false;
+      var createLimitLine = function() {
+        console.log('smart align enabled!');
+      };
+      var hasSmartAlignEnabled = function (series, nextValue, options) {
+        // TODO - test and fix multiple smart aligns
+        // if the current series contains limitData
+        // and the upcoming value is null
+        // and both showLimitLine, breakLine are enabled
+        // and breakLine.smartAlign is also true
+        //console.log('options.showLimitLine.enabled:', options.showLimitLine.enabled);
+        //console.log('options.breakLine.enabled:', options.breakLine.enabled);
+        //console.log('=============================');
+        //debugger;
+        return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.showLimitLine.enabled && options.breakLine.enabled && options.breakLine.smartAlign && createLimitLine();
+      };
 
-      normalizedData[seriesIndex].forEach(function(value, valueIndex) {
-        var p = {
-          x: chartRect.x1 + axisX.projectValue(value, valueIndex,  normalizedData[seriesIndex]).pos,
-          y: chartRect.y1 - axisY.projectValue(value, valueIndex,  normalizedData[seriesIndex]).pos
-        };
-        pathCoordinates.push(p.x, p.y);
+      console.log('-----------------------------------');
+      console.log('allowVariableDataLengths:', options.allowVariableDataLengths);
+      console.log('breakLine:', options.breakLine);
+      console.log('showLimitLine:', options.showLimitLine);
 
-        //If we should show points we need to create them now to avoid secondary loop
+      normalizedData[seriesIndex].forEach(function (value, valueIndex) {
+
+        var nextValue = normalizedData[seriesIndex][valueIndex + 1],
+          p;
+
+        if (value === 0 && options.allowVariableDataLengths) {
+
+          // skip this
+          //console.log('A', Math.random());
+
+        } else if (value !== null || !options.allowVariableDataLengths) {
+
+          //console.log('B', Math.random());
+
+          p = {
+            x: chartRect.x1 + axisX.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - axisY.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+          };
+          pathCoordinates.push(p.x, p.y);
+
+        } else if (hasSmartAlignEnabled(series, nextValue, this.options)) {
+
+          console.log('C', Math.random());
+
+          lastValidValue = true;
+          // get the offset percentage between the limit line value and the last value
+          var offsetPercentage = (Math.abs(series.limitData.lastValue - series.limitData.cap)) / (Math.abs(series.limitData.lastValue - series.limitData.limitValue));
+          p = {
+            x: chartRect.x1 + axisX.projectValue(series.limitData.cap, valueIndex - 1, normalizedData[seriesIndex], offsetPercentage).pos,
+            y: chartRect.y1 - axisY.projectValue(series.limitData.cap, valueIndex - 1, normalizedData[seriesIndex]).pos
+          };
+          // remove the last two points
+          pathCoordinates.splice(pathCoordinates.length - 2, 2);
+          // redraw to only a percentage of the vector to the next point
+          pathCoordinates.push(p.x, p.y);
+
+        }
+
+        // If we should show points we need to create them now to avoid secondary loop
         // Small offset for Firefox to render squares correctly
-        if (options.showPoint) {
+        if (options.showPoint && p) {
           var point = seriesGroups[seriesIndex].elem('line', {
             x1: p.x,
             y1: p.y,
@@ -224,10 +283,12 @@
           options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
           path = smoothing(pathCoordinates);
 
-        if(options.showLine) {
+        if (options.showLine) {
           var line = seriesGroups[seriesIndex].elem('path', {
-            d: path.stringify()
-          }, options.classNames.line, true).attr({
+            d: path.stringify(series, normalizedData[seriesIndex])
+          }, options.classNames.line, true);
+
+          line.attr({
             'values': normalizedData[seriesIndex]
           }, Chartist.xmlNs.uri);
 
@@ -242,7 +303,7 @@
           });
         }
 
-        if(options.showArea) {
+        if (options.showArea) {
           // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
           // the area is not drawn outside the chart area.
           var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
@@ -278,7 +339,9 @@
           });
         }
       }
-    }.bind(this));
+    }.bind(this);
+
+    this.data.series.forEach(loopThroughEachSeries);
 
     this.eventEmitter.emit('created', {
       bounds: axisY.bounds,

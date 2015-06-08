@@ -335,8 +335,8 @@ var Chartist = {
       // Convert object values to numbers
       for (var j = 0; j < array[i].length; j++) {
         value = array[i][j];
-        value = value.value === 0 ? 0 : (value.value || value);
-        array[i][j] = +value;
+        var convertedValue = typeof value !== 'undefined' ? value : value.value;
+        array[i][j] = +convertedValue;
       }
     }
 

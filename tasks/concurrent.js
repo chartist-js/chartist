@@ -13,7 +13,7 @@ module.exports = function (grunt) {
   return {
     server: [
       'sass:public'
-    ],
+    ],              
     test: [
       'sass' // tmp
     ],

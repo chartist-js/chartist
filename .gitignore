@@ -5,6 +5,7 @@ site/bower_components/
 # build
 .tmp/
 .public/
+.idea/
 # dist/
 
 # generated
