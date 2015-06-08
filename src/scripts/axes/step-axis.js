@@ -7,20 +7,18 @@
 (function (window, document, Chartist) {
   'use strict';
 
-  function StepAxis(axisUnit, chartRect, options) {
+  function StepAxis(axisUnit, data, chartRect, options) {
     Chartist.StepAxis.super.constructor.call(this,
       axisUnit,
       chartRect,
+      options.ticks,
       options);
 
-    this.stepLength = this.axisLength / (options.stepCount - (options.stretch ? 1 : 0));
+    this.stepLength = this.axisLength / (options.ticks.length - (options.stretch ? 1 : 0));
   }
 
   function projectValue(value, index) {
-    return {
-      pos: this.stepLength * index,
-      len: this.stepLength
-    };
+    return this.stepLength * index;
   }
 
   Chartist.StepAxis = Chartist.Axis.extend({

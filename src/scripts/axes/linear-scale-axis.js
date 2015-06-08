@@ -7,20 +7,20 @@
 (function (window, document, Chartist) {
   'use strict';
 
-  function LinearScaleAxis(axisUnit, chartRect, options) {
+  function LinearScaleAxis(axisUnit, data, chartRect, options) {
+    // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
+    this.highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
+    this.bounds = Chartist.getBounds(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], this.highLow, options.scaleMinSpace, options.referenceValue, options.onlyInteger);
+
     Chartist.LinearScaleAxis.super.constructor.call(this,
       axisUnit,
       chartRect,
+      this.bounds.values,
       options);
-
-    this.bounds = Chartist.getBounds(this.axisLength, options.highLow, options.scaleMinSpace, options.referenceValue, options.onlyInteger);
   }
 
   function projectValue(value) {
-    return {
-      pos: this.axisLength * (value - this.bounds.min) / this.bounds.range,
-      len: Chartist.projectLength(this.axisLength, this.bounds.step, this.bounds)
-    };
+    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.bounds.min) / this.bounds.range;
   }
 
   Chartist.LinearScaleAxis = Chartist.Axis.extend({

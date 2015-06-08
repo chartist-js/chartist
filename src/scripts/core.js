@@ -333,7 +333,7 @@ var Chartist = {
    * @param {Boolean} reverse If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
-  Chartist.getDataArray = function (data, reverse) {
+  Chartist.getDataArray = function (data, reverse, multi) {
     // If the data should be reversed but isn't we need to reverse it
     // If it's reversed but it shouldn't we need to reverse it back
     // That's required to handle data updates correctly and to reflect the responsive configurations
@@ -352,7 +352,14 @@ var Chartist = {
       } else if(value.hasOwnProperty('value')) {
         return recursiveConvert(value.value);
       } else {
-        return +value;
+        if(multi) {
+          return {
+            x: value.hasOwnProperty('x') ? value.x : undefined,
+            y: value.hasOwnProperty('y') ? value.y : +value
+          };
+        } else {
+          return +value;
+        }
       }
     }
 
@@ -450,11 +457,15 @@ var Chartist = {
    * Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.
    *
    * @memberof Chartist.Core
-   * @param {Array} dataArray The array that contains the data to be visualized in the chart
+   * @param {Array} data The array that contains the data to be visualized in the chart
    * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {String} dimension Axis dimension 'x' or 'y' used to access the correct value and high / low configuration
    * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
    */
-  Chartist.getHighLow = function (dataArray, options) {
+  Chartist.getHighLow = function (data, options, dimension) {
+    // TODO: Remove workaround for deprecated global high / low config. Axis high / low configuration is preferred
+    options = Chartist.extend({}, options, dimension ? options['axis' + dimension.toUpperCase()] : {});
+
     var highLow = {
         high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
         low: options.low === undefined ? Number.MAX_VALUE : +options.low
@@ -464,23 +475,27 @@ var Chartist = {
 
     // Function to recursively walk through arrays and find highest and lowest number
     function recursiveHighLow(data) {
-      if(data instanceof Array) {
+      if(data === undefined) {
+        return undefined;
+      } else if(data instanceof Array) {
         for (var i = 0; i < data.length; i++) {
           recursiveHighLow(data[i]);
         }
       } else {
-        if (findHigh && data > highLow.high) {
-          highLow.high = data;
+        var value = dimension ? +data[dimension] : +data;
+
+        if (findHigh && value > highLow.high) {
+          highLow.high = value;
         }
 
-        if (findLow && data < highLow.low) {
-          highLow.low = data;
+        if (findLow && value < highLow.low) {
+          highLow.low = value;
         }
       }
     }
 
     // Start to find highest and lowest number recursively
-    recursiveHighLow(dataArray);
+    recursiveHighLow(data);
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
     // to set the high or low to 0 depending on the polarity
@@ -498,6 +513,20 @@ var Chartist = {
     }
 
     return highLow;
+  };
+
+  Chartist.isNum = function(value) {
+    return !isNaN(value) && isFinite(value);
+  };
+
+  Chartist.getMultiValue = function(value, dimension) {
+    if(+value+'' === value+'') {
+      return +value;
+    } else if(value) {
+      return value[dimension];
+    } else {
+      return undefined;
+    }
   };
 
   /**
@@ -707,7 +736,7 @@ var Chartist = {
    * Creates a grid line based on a projected value.
    *
    * @memberof Chartist.Core
-   * @param projectedValue
+   * @param position
    * @param index
    * @param axis
    * @param offset
@@ -716,10 +745,10 @@ var Chartist = {
    * @param classes
    * @param eventEmitter
    */
-  Chartist.createGrid = function(projectedValue, index, axis, offset, length, group, classes, eventEmitter) {
+  Chartist.createGrid = function(position, index, axis, offset, length, group, classes, eventEmitter) {
     var positionalData = {};
-    positionalData[axis.units.pos + '1'] = projectedValue.pos;
-    positionalData[axis.units.pos + '2'] = projectedValue.pos;
+    positionalData[axis.units.pos + '1'] = position;
+    positionalData[axis.units.pos + '2'] = position;
     positionalData[axis.counterUnits.pos + '1'] = offset;
     positionalData[axis.counterUnits.pos + '2'] = offset + length;
 
@@ -741,7 +770,8 @@ var Chartist = {
    * Creates a label based on a projected value and an axis.
    *
    * @memberof Chartist.Core
-   * @param projectedValue
+   * @param position
+   * @param length
    * @param index
    * @param labels
    * @param axis
@@ -752,13 +782,13 @@ var Chartist = {
    * @param useForeignObject
    * @param eventEmitter
    */
-  Chartist.createLabel = function(projectedValue, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
+  Chartist.createLabel = function(position, length, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
     var labelElement;
     var positionalData = {};
 
-    positionalData[axis.units.pos] = projectedValue.pos + labelOffset[axis.units.pos];
+    positionalData[axis.units.pos] = position + labelOffset[axis.units.pos];
     positionalData[axis.counterUnits.pos] = labelOffset[axis.counterUnits.pos];
-    positionalData[axis.units.len] = projectedValue.len;
+    positionalData[axis.units.len] = length;
     positionalData[axis.counterUnits.len] = axisOffset - 10;
 
     if(useForeignObject) {
@@ -784,78 +814,6 @@ var Chartist = {
       element: labelElement,
       text: labels[index]
     }, positionalData));
-  };
-
-  /**
-   * This function creates a whole axis with its grid lines and labels based on an axis model and a chartRect.
-   *
-   * @memberof Chartist.Core
-   * @param axis
-   * @param data
-   * @param chartRect
-   * @param gridGroup
-   * @param labelGroup
-   * @param useForeignObject
-   * @param options
-   * @param eventEmitter
-   */
-  Chartist.createAxis = function(axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
-    var axisOptions = options['axis' + axis.units.pos.toUpperCase()];
-    var projectedValues = data.map(axis.projectValue.bind(axis));
-    var labelValues = data.map(axisOptions.labelInterpolationFnc);
-
-    projectedValues.forEach(function(projectedValue, index) {
-      var labelOffset = {
-        x: 0,
-        y: 0
-      };
-
-      // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
-      if(!labelValues[index] && labelValues[index] !== 0) {
-        return;
-      }
-
-      // Transform to global coordinates using the chartRect
-      // We also need to set the label offset for the createLabel function
-      if(axis.units.pos === 'x') {
-        projectedValue.pos = chartRect.x1 + projectedValue.pos;
-        labelOffset.x = options.axisX.labelOffset.x;
-
-        // If the labels should be positioned in start position (top side for vertical axis) we need to set a
-        // different offset as for positioned with end (bottom)
-        if(options.axisX.position === 'start') {
-          labelOffset.y = chartRect.padding.top + options.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
-        } else {
-          labelOffset.y = chartRect.y1 + options.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
-        }
-      } else {
-        projectedValue.pos = chartRect.y1 - projectedValue.pos;
-        labelOffset.y = options.axisY.labelOffset.y - (useForeignObject ? projectedValue.len : 0);
-
-        // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
-        // different offset as for positioned with end (right side)
-        if(options.axisY.position === 'start') {
-          labelOffset.x = useForeignObject ? chartRect.padding.left + options.axisY.labelOffset.x : chartRect.x1 - 10;
-        } else {
-          labelOffset.x = chartRect.x2 + options.axisY.labelOffset.x + 10;
-        }
-      }
-
-      if(axisOptions.showGrid) {
-        Chartist.createGrid(projectedValue, index, axis, axis.gridOffset, chartRect[axis.counterUnits.len](), gridGroup, [
-          options.classNames.grid,
-          options.classNames[axis.units.dir]
-        ], eventEmitter);
-      }
-
-      if(axisOptions.showLabel) {
-        Chartist.createLabel(projectedValue, index, labelValues, axis, axisOptions.offset, labelOffset, labelGroup, [
-          options.classNames.label,
-          options.classNames[axis.units.dir],
-          options.classNames[axisOptions.position]
-        ], useForeignObject, eventEmitter);
-      }
-    });
   };
 
   /**

@@ -32,6 +32,10 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
+      // Set the axis type to be used to project values on this axis
+      type: Chartist.Axis.StepAxis,
+      // This value specifies the minimum height in pixel of the scale steps
+      scaleMinSpace: 20,
       // Use only integer values (whole numbers) for the scale steps
       onlyInteger: false
     },
@@ -52,6 +56,8 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
+      // Set the axis type to be used to project values on this axis
+      type: Chartist.Axis.LinearScaleAxis,
       // This value specifies the minimum height in pixel of the scale steps
       scaleMinSpace: 20,
       // Use only integer values (whole numbers) for the scale steps
@@ -109,64 +115,54 @@
    *
    */
   function createChart(options) {
-    var seriesGroups = [];
-    var normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length);
+    var data = {
+      raw: this.data,
+      normalized: Chartist.getDataArray(this.data, options.reverseData, true)
+    };
 
     // Create new svg object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
+    // Create groups for labels, grid and series
+    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+    var seriesGroup = this.svg.elem('g');
+    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
-    var highLow = Chartist.getHighLow(normalizedData, options);
+    var axisX, axisY;
 
-    var axisX = new Chartist.StepAxis(Chartist.Axis.units.x, chartRect, {
-      stepCount: this.data.labels.length,
-      stretch: options.fullWidth
-    });
+    if(options.axisX.type === undefined) {
+      axisX = new Chartist.StepAxis(Chartist.Axis.units.x, data, chartRect, Chartist.extend({}, options.axisX, {
+        ticks: data.raw.labels,
+        stretch: options.fullWidth
+      }));
+    } else {
+      axisX = options.axisX.type.call(Chartist, Chartist.Axis.units.x, data, chartRect, options.axisX);
+    }
 
-    var axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, chartRect, {
-      highLow: highLow,
-      scaleMinSpace: options.axisY.scaleMinSpace,
-      onlyInteger: options.axisY.onlyInteger
-    });
+    if(options.axisY.type === undefined) {
+      axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
+        high: Chartist.isNum(options.high) ? options.high : options.axisY.high,
+        low: Chartist.isNum(options.low) ? options.low : options.axisY.low
+      }));
+    } else {
+      axisY = options.axisY.type.call(Chartist, Chartist.Axis.units.y, data, chartRect, options.axisY);
+    }
 
-    // Start drawing
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup),
-      gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
-
-    Chartist.createAxis(
-      axisX,
-      this.data.labels,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
-
-    Chartist.createAxis(
-      axisY,
-      axisY.bounds.values,
-      chartRect,
-      gridGroup,
-      labelGroup,
-      this.supportsForeignObject,
-      options,
-      this.eventEmitter
-    );
+    axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
     // Draw the series
-    this.data.series.forEach(function(series, seriesIndex) {
-      seriesGroups[seriesIndex] = this.svg.elem('g');
+    data.raw.series.forEach(function(series, seriesIndex) {
+      var seriesElement = seriesGroup.elem('g');
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
-      seriesGroups[seriesIndex].attr({
+      seriesElement.attr({
         'series-name': series.name,
         'meta': Chartist.serialize(series.meta)
       }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
-      seriesGroups[seriesIndex].addClass([
+      seriesElement.addClass([
         options.classNames.series,
         (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(seriesIndex))
       ].join(' '));
@@ -174,10 +170,10 @@
       var pathCoordinates = [],
         pathData = [];
 
-      normalizedData[seriesIndex].forEach(function(value, valueIndex) {
+      data.normalized[seriesIndex].forEach(function(value, valueIndex) {
         var p = {
-          x: chartRect.x1 + axisX.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
-          y: chartRect.y1 - axisY.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+          x: chartRect.x1 + axisX.projectValue(value, valueIndex, data.normalized[seriesIndex]),
+          y: chartRect.y1 - axisY.projectValue(value, valueIndex, data.normalized[seriesIndex])
         };
         pathCoordinates.push(p.x, p.y);
         pathData.push({
@@ -206,7 +202,7 @@
       if (seriesOptions.showPoint) {
 
         path.pathElements.forEach(function(pathElement) {
-          var point = seriesGroups[seriesIndex].elem('line', {
+          var point = seriesElement.elem('line', {
             x1: pathElement.x,
             y1: pathElement.y,
             x2: pathElement.x + 0.01,
@@ -223,7 +219,7 @@
             meta: pathElement.data.meta,
             series: series,
             seriesIndex: seriesIndex,
-            group: seriesGroups[seriesIndex],
+            group: seriesElement,
             element: point,
             x: pathElement.x,
             y: pathElement.y
@@ -232,21 +228,21 @@
       }
 
       if(seriesOptions.showLine) {
-        var line = seriesGroups[seriesIndex].elem('path', {
+        var line = seriesElement.elem('path', {
           d: path.stringify()
         }, options.classNames.line, true).attr({
-          'values': normalizedData[seriesIndex]
+          'values': data.normalized[seriesIndex]
         }, Chartist.xmlNs.uri);
 
         this.eventEmitter.emit('draw', {
           type: 'line',
-          values: normalizedData[seriesIndex],
+          values: data.normalized[seriesIndex],
           path: path.clone(),
           chartRect: chartRect,
           index: seriesIndex,
           series: series,
           seriesIndex: seriesIndex,
-          group: seriesGroups[seriesIndex],
+          group: seriesElement,
           element: line
         });
       }
@@ -257,7 +253,7 @@
         var areaBase = Math.max(Math.min(options.areaBase, axisY.bounds.max), axisY.bounds.min);
 
         // We project the areaBase value into screen coordinates
-        var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase).pos;
+        var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
 
         // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
         path.splitByCommand('M').filter(function onlySolidSegments(pathSegment) {
@@ -283,22 +279,22 @@
         }).forEach(function createArea(areaPath) {
           // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
           // and adding the created DOM elements to the correct series group
-          var area = seriesGroups[seriesIndex].elem('path', {
+          var area = seriesElement.elem('path', {
             d: areaPath.stringify()
           }, options.classNames.area, true).attr({
-            'values': normalizedData[seriesIndex]
+            'values': data.normalized[seriesIndex]
           }, Chartist.xmlNs.uri);
 
           // Emit an event for each area that was drawn
           this.eventEmitter.emit('draw', {
             type: 'area',
-            values: normalizedData[seriesIndex],
+            values: data.normalized[seriesIndex],
             path: areaPath.clone(),
             series: series,
             seriesIndex: seriesIndex,
             chartRect: chartRect,
             index: seriesIndex,
-            group: seriesGroups[seriesIndex],
+            group: seriesElement,
             element: area
           });
         }.bind(this));
