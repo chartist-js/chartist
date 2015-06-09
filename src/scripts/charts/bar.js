@@ -110,7 +110,7 @@
       raw: this.data,
       normalized: options.distributeSeries ? Chartist.getDataArray(this.data, options.reverseData).map(function(value) {
         return [value];
-      }) : Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length)
+      }) : Chartist.getDataArray(this.data, options.reverseData)
     };
 
     var highLow;

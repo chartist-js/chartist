@@ -117,12 +117,12 @@ describe('Line chart tests', function () {
               data: pathElement.data
             };
           })).toEqual([
-            {command: 'M', data: {valueIndex: 1, value: 15, meta: undefined}},
-            {command: 'L', data: {valueIndex: 2, value: 0, meta: undefined}},
-            {command: 'M', data: {valueIndex: 4, value: 2, meta: undefined}},
-            {command: 'L', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'L', data: {valueIndex: 6, value: 4, meta: undefined}},
-            {command: 'M', data: {valueIndex: 8, value: 1, meta: 'meta data'}}
+            {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
           ]);
           done();
         }
@@ -149,14 +149,14 @@ describe('Line chart tests', function () {
               data: pathElement.data
             };
           })).toEqual([
-            {command: 'M', data: {valueIndex: 1, value: 15, meta: undefined}},
+            {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
             // Cardinal should create Line path segment if only one connection
-            {command: 'L', data: {valueIndex: 2, value: 0, meta: undefined}},
-            {command: 'M', data: {valueIndex: 4, value: 2, meta: undefined}},
+            {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
             // Cardinal should create Curve path segment for 2 or more connections
-            {command: 'C', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'C', data: {valueIndex: 6, value: 4, meta: undefined}},
-            {command: 'M', data: {valueIndex: 8, value: 1, meta: 'meta data'}}
+            {command: 'C', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'C', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
           ]);
           done();
         }
@@ -183,12 +183,12 @@ describe('Line chart tests', function () {
               data: pathElement.data
             };
           })).toEqual([
-            {command: 'M', data: {valueIndex: 1, value: 15, meta: undefined}},
-            {command: 'C', data: {valueIndex: 2, value: 0, meta: undefined}},
-            {command: 'M', data: {valueIndex: 4, value: 2, meta: undefined}},
-            {command: 'C', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'C', data: {valueIndex: 6, value: 4, meta: undefined}},
-            {command: 'M', data: {valueIndex: 8, value: 1, meta: 'meta data'}}
+            {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+            {command: 'C', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+            {command: 'C', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'C', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
           ]);
           done();
         }
@@ -215,15 +215,15 @@ describe('Line chart tests', function () {
               data: pathElement.data
             };
           })).toEqual([
-            {command: 'M', data: {valueIndex: 1, value: 15, meta: undefined}},
-            {command: 'L', data: {valueIndex: 1, value: 15, meta: undefined}},
-            {command: 'L', data: {valueIndex: 2, value: 0, meta: undefined}},
-            {command: 'M', data: {valueIndex: 4, value: 2, meta: undefined}},
-            {command: 'L', data: {valueIndex: 4, value: 2, meta: undefined}},
-            {command: 'L', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'L', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'L', data: {valueIndex: 6, value: 4, meta: undefined}},
-            {command: 'M', data: {valueIndex: 8, value: 1, meta: 'meta data'}}
+            {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
           ]);
           done();
         }
@@ -252,15 +252,15 @@ describe('Line chart tests', function () {
               data: pathElement.data
             };
           })).toEqual([
-            {command: 'M', data: {valueIndex: 1, value: 15, meta: undefined}},
-            {command: 'L', data: {valueIndex: 2, value: 0, meta: undefined}},
-            {command: 'L', data: {valueIndex: 2, value: 0, meta: undefined}},
-            {command: 'M', data: {valueIndex: 4, value: 2, meta: undefined}},
-            {command: 'L', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'L', data: {valueIndex: 5, value: 3, meta: undefined}},
-            {command: 'L', data: {valueIndex: 6, value: 4, meta: undefined}},
-            {command: 'L', data: {valueIndex: 6, value: 4, meta: undefined}},
-            {command: 'M', data: {valueIndex: 8, value: 1, meta: 'meta data'}}
+            {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
           ]);
           done();
         }

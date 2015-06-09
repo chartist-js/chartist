@@ -331,6 +331,7 @@ var Chartist = {
    * @memberof Chartist.Core
    * @param {Object} data The series object that contains the data to be visualized in the chart
    * @param {Boolean} reverse If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.
+   * @param {Boolean} multi Create a multi dimensional array from a series data array where a value object with `x` and `y` values will be created.
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
   Chartist.getDataArray = function (data, reverse, multi) {
@@ -342,10 +343,11 @@ var Chartist = {
       data.reversed = !data.reversed;
     }
 
-    // Rcursively walks through nested arrays and convert string values to numbers and objects with value properties
+    // Recursively walks through nested arrays and convert string values to numbers and objects with value properties
     // to values. Check the tests in data core -> data normalization for a detailed specification of expected values
     function recursiveConvert(value) {
-      if(value === undefined || value === null || (typeof value === 'number' && isNaN(value))) {
+      if(Chartist.isFalseyButZero(value)) {
+        // This is a hole in data and we should return undefined
         return undefined;
       } else if((value.data || value) instanceof Array) {
         return (value.data || value).map(recursiveConvert);
@@ -354,11 +356,13 @@ var Chartist = {
       } else {
         if(multi) {
           return {
-            x: value.hasOwnProperty('x') ? value.x : undefined,
-            y: value.hasOwnProperty('y') ? value.y : +value
+            x: Chartist.getNumberOrUndefined(value.x),
+            // Single series value arrays are assumed to specify the Y-Axis value
+            // For example: [1, 2] => [{x: undefined, y: 1}, {x: undefined, y: 2}]
+            y: value.hasOwnProperty('y') ? Chartist.getNumberOrUndefined(value.y) : Chartist.getNumberOrUndefined(value)
           };
         } else {
-          return +value;
+          return Chartist.getNumberOrUndefined(value);
         }
       }
     }
@@ -388,28 +392,6 @@ var Chartist = {
       bottom: typeof padding.bottom === 'number' ? padding.bottom : fallback,
       left: typeof padding.left === 'number' ? padding.left : fallback
     };
-  };
-
-  /**
-   * Adds missing values at the end of the array. This array contains the data, that will be visualized in the chart
-   *
-   * @memberof Chartist.Core
-   * @param {Array} dataArray The array that contains the data to be visualized in the chart. The array in this parameter will be modified by function.
-   * @param {Number} length The length of the x-axis data array.
-   * @return {Array} The array that got updated with missing values.
-   */
-  Chartist.normalizeDataArray = function (dataArray, length) {
-    for (var i = 0; i < dataArray.length; i++) {
-      if (dataArray[i].length === length) {
-        continue;
-      }
-
-      for (var j = dataArray[i].length; j < length; j++) {
-        dataArray[i][j] = undefined;
-      }
-    }
-
-    return dataArray;
   };
 
   Chartist.getMetaData = function(series, index) {
@@ -515,12 +497,48 @@ var Chartist = {
     return highLow;
   };
 
+  /**
+   * Checks if the value is a valid number or string with a number.
+   *
+   * @memberof Chartist.Core
+   * @param value
+   * @returns {Boolean}
+   */
   Chartist.isNum = function(value) {
     return !isNaN(value) && isFinite(value);
   };
 
+  /**
+   * Returns true on all falsey values except the numeric value 0.
+   *
+   * @memberof Chartist.Core
+   * @param value
+   * @returns {boolean}
+   */
+  Chartist.isFalseyButZero = function(value) {
+    return !value && value !== 0;
+  };
+
+  /**
+   * Returns a number if the passed parameter is a valid number or the function will return undefined. On all other values than a valid number, this function will return undefined.
+   *
+   * @memberof Chartist.Core
+   * @param value
+   * @returns {*}
+   */
+  Chartist.getNumberOrUndefined = function(value) {
+    return isNaN(+value) ? undefined : +value;
+  };
+
+  /**
+   * Gets a value from a dimension `value.x` or `value.y` while returning value directly if it's a valid numeric value. If the value is not numeric and it's falsey this function will return undefined.
+   *
+   * @param value
+   * @param dimension
+   * @returns {*}
+   */
   Chartist.getMultiValue = function(value, dimension) {
-    if(+value+'' === value+'') {
+    if(Chartist.isNum(value)) {
       return +value;
     } else if(value) {
       return value[dimension];
