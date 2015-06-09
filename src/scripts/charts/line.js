@@ -6,7 +6,7 @@
  * @module Chartist.Line
  */
 /* global Chartist */
-(function(window, document, Chartist){
+(function (window, document, Chartist) {
   'use strict';
 
   /**
@@ -193,26 +193,19 @@
 
       var pathCoordinates = [];
       var lastValidValue = false;
-      var createLimitLine = function() {
-        console.log('smart align enabled!');
-      };
-      var hasSmartAlignEnabled = function (series, nextValue, options) {
+      var hasExactValueChange = function (series, nextValue, options) {
         // TODO - test and fix multiple smart aligns
         // if the current series contains limitData
         // and the upcoming value is null
-        // and both showLimitLine, breakLine are enabled
+        // breakLine are enabled
         // and breakLine.smartAlign is also true
-        //console.log('options.showLimitLine.enabled:', options.showLimitLine.enabled);
-        //console.log('options.breakLine.enabled:', options.breakLine.enabled);
-        //console.log('=============================');
-        //debugger;
-        return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.showLimitLine.enabled && options.breakLine.enabled && options.breakLine.smartAlign && createLimitLine();
+        return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.breakLine.enabled && options.breakLine.exactValueChange;
       };
 
-      console.log('-----------------------------------');
-      console.log('allowVariableDataLengths:', options.allowVariableDataLengths);
-      console.log('breakLine:', options.breakLine);
-      console.log('showLimitLine:', options.showLimitLine);
+      //console.log('-----------------------------------');
+      //console.log('allowVariableDataLengths:', options.allowVariableDataLengths);
+      //console.log('breakLine:', options.breakLine);
+      //console.log('this.data.series:', this.data.series);
 
       normalizedData[seriesIndex].forEach(function (value, valueIndex) {
 
@@ -222,21 +215,10 @@
         if (value === 0 && options.allowVariableDataLengths) {
 
           // skip this
-          //console.log('A', Math.random());
 
-        } else if (value !== null || !options.allowVariableDataLengths) {
+        } else if (hasExactValueChange(series, nextValue, this.options)) {
 
-          //console.log('B', Math.random());
-
-          p = {
-            x: chartRect.x1 + axisX.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
-            y: chartRect.y1 - axisY.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
-          };
-          pathCoordinates.push(p.x, p.y);
-
-        } else if (hasSmartAlignEnabled(series, nextValue, this.options)) {
-
-          console.log('C', Math.random());
+          console.log('exact value true');
 
           lastValidValue = true;
           // get the offset percentage between the limit line value and the last value
@@ -248,6 +230,14 @@
           // remove the last two points
           pathCoordinates.splice(pathCoordinates.length - 2, 2);
           // redraw to only a percentage of the vector to the next point
+          pathCoordinates.push(p.x, p.y);
+
+        } else if (value !== null || !options.allowVariableDataLengths) {
+
+          p = {
+            x: chartRect.x1 + axisX.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos,
+            y: chartRect.y1 - axisY.projectValue(value, valueIndex, normalizedData[seriesIndex]).pos
+          };
           pathCoordinates.push(p.x, p.y);
 
         }
@@ -280,7 +270,7 @@
       // TODO: Nicer handling of conditions, maybe composition?
       if (options.showLine || options.showArea) {
         var smoothing = typeof options.lineSmooth === 'function' ?
-          options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
+            options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
           path = smoothing(pathCoordinates);
 
         if (options.showLine) {
@@ -340,6 +330,32 @@
         }
       }
     }.bind(this);
+
+    //if (options.breakLine.enabled && options.breakLine.exactValueChange) {
+
+    if (options.breakLine && options.breakLine.enabled && options.breakLine.limit) {
+      console.log('-----------------------------');
+      console.log('has breakline enabled');
+      console.log('-----------------------------');
+      this.data.series.forEach(function (seriesData) {
+
+        if (seriesData.data) {
+          console.log('has a data array');
+          var subSetArray = [];
+          seriesData.data.forEach(function (dataPoint) {
+            console.log(dataPoint);
+            if (dataPoint < options.breakLine.limit) {
+              subSetArray.push(dataPoint);
+            }
+          });
+          console.log('subSetArray:', subSetArray);
+        }
+
+      });
+      this.data.series.push({
+        data: [1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024]
+      });
+    }
 
     this.data.series.forEach(loopThroughEachSeries);
 
