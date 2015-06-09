@@ -1,9 +1,8 @@
 /**
- * The continuous axis uses standard linear continuous projection of values along an axis. It makes use of a divisor option to divide the range provided from the minimum and maximum value or the options high and low that will override the computed minimum and maximum.
- *
- * *options*
+ * The fixed scale axis uses standard linear projection of values along an axis. It makes use of a divisor option to divide the range provided from the minimum and maximum value or the options high and low that will override the computed minimum and maximum.
+ * **Options**
  * The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.
- * ```
+ * ```javascript
  * var options = {
  *   // If high is specified then the axis will display values explicitly up to this value and the computed maximum from the data is ignored
  *   high: 100,
@@ -16,20 +15,20 @@
  * };
  * ```
  *
- * @module Chartist.ContinuousAxis
+ * @module Chartist.FixedScaleAxis
  */
 /* global Chartist */
 (function (window, document, Chartist) {
   'use strict';
 
-  function ContinuousAxis(axisUnit, data, chartRect, options) {
+  function FixedScaleAxis(axisUnit, data, chartRect, options) {
     this.highLow = Chartist.getHighLow(data.normalized, options, axisUnit.pos);
     this.divisor = options.divisor || 1;
     this.ticks = options.ticks || Chartist.times(this.divisor).map(function(value, index) {
       return this.highLow.low + (this.highLow.high - this.highLow.low) / this.divisor * index;
     }.bind(this));
 
-    Chartist.ContinuousAxis.super.constructor.call(this,
+    Chartist.FixedScaleAxis.super.constructor.call(this,
       axisUnit,
       chartRect,
       this.ticks,
@@ -42,8 +41,8 @@
     return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.highLow.low) / (this.highLow.high - this.highLow.low);
   }
 
-  Chartist.ContinuousAxis = Chartist.Axis.extend({
-    constructor: ContinuousAxis,
+  Chartist.FixedScaleAxis = Chartist.Axis.extend({
+    constructor: FixedScaleAxis,
     projectValue: projectValue
   });
 

@@ -168,7 +168,7 @@
         ticks: labelAxisTicks
       });
 
-      valueAxis = axisX = new Chartist.LinearScaleAxis(Chartist.Axis.units.x, data, chartRect, Chartist.extend({}, options.axisX, {
+      valueAxis = axisX = new Chartist.AutoScaleAxis(Chartist.Axis.units.x, data, chartRect, Chartist.extend({}, options.axisX, {
         highLow: highLow,
         referenceValue: 0
       }));
@@ -177,7 +177,7 @@
         ticks: labelAxisTicks
       });
 
-      valueAxis = axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
+      valueAxis = axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
         highLow: highLow,
         referenceValue: 0
       }));

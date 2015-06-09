@@ -477,7 +477,9 @@ var Chartist = {
     }
 
     // Start to find highest and lowest number recursively
-    recursiveHighLow(data);
+    if(findHigh || findLow) {
+      recursiveHighLow(data);
+    }
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
     // to set the high or low to 0 depending on the polarity

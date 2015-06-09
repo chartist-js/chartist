@@ -1,8 +1,3 @@
-/**
- * Axis base class used to implement different axis types
- *
- * @module Chartist.Axis
- */
 /* global Chartist */
 (function (window, document, Chartist) {
   'use strict';

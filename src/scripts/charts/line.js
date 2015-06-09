@@ -32,12 +32,8 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
-      // Set the axis type to be used to project values on this axis
-      type: Chartist.Axis.StepAxis,
-      // This value specifies the minimum height in pixel of the scale steps
-      scaleMinSpace: 20,
-      // Use only integer values (whole numbers) for the scale steps
-      onlyInteger: false
+      // Set the axis type to be used to project values on this axis. If not defined, Chartist.StepAxis will be used for the X-Axis, where the ticks option will be set to the labels in the data and the stretch option will be set to the global fullWidth option. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
+      type: undefined
     },
     // Options for Y-Axis
     axisY: {
@@ -56,8 +52,8 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
-      // Set the axis type to be used to project values on this axis
-      type: Chartist.Axis.LinearScaleAxis,
+      // Set the axis type to be used to project values on this axis. If not defined, Chartist.AutoScaleAxis will be used for the Y-Axis, where the high and low options will be set to the global high and low options. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
+      type: undefined,
       // This value specifies the minimum height in pixel of the scale steps
       scaleMinSpace: 20,
       // Use only integer values (whole numbers) for the scale steps
@@ -140,7 +136,7 @@
     }
 
     if(options.axisY.type === undefined) {
-      axisY = new Chartist.LinearScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
+      axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
         high: Chartist.isNum(options.high) ? options.high : options.axisY.high,
         low: Chartist.isNum(options.low) ? options.low : options.axisY.low
       }));
