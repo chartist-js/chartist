@@ -204,7 +204,7 @@
             x2: pathElement.x + 0.01,
             y2: pathElement.y
           }, options.classNames.point).attr({
-            'value': pathElement.data.value,
+            'value': pathElement.data.value.x === undefined ? pathElement.data.value.y : pathElement.data.value.x + ',' + pathElement.data.value.y,
             'meta': pathElement.data.meta
           }, Chartist.xmlNs.uri);
 
@@ -226,9 +226,7 @@
       if(seriesOptions.showLine) {
         var line = seriesElement.elem('path', {
           d: path.stringify()
-        }, options.classNames.line, true).attr({
-          'values': data.normalized[seriesIndex]
-        }, Chartist.xmlNs.uri);
+        }, options.classNames.line, true);
 
         this.eventEmitter.emit('draw', {
           type: 'line',

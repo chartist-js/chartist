@@ -543,9 +543,9 @@ var Chartist = {
     if(Chartist.isNum(value)) {
       return +value;
     } else if(value) {
-      return value[dimension];
+      return value[dimension] || 0;
     } else {
-      return undefined;
+      return 0;
     }
   };
 
