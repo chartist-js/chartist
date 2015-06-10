@@ -183,7 +183,8 @@
         lineSmooth: Chartist.getSeriesOption(series, options, 'lineSmooth'),
         showPoint: Chartist.getSeriesOption(series, options, 'showPoint'),
         showLine: Chartist.getSeriesOption(series, options, 'showLine'),
-        showArea: Chartist.getSeriesOption(series, options, 'showArea')
+        showArea: Chartist.getSeriesOption(series, options, 'showArea'),
+        areaBase: Chartist.getSeriesOption(series, options, 'areaBase')
       };
 
       var smoothing = typeof seriesOptions.lineSmooth === 'function' ?
@@ -245,7 +246,7 @@
       if(seriesOptions.showArea && axisY.highLow) {
         // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
         // the area is not drawn outside the chart area.
-        var areaBase = Math.max(Math.min(options.areaBase, axisY.highLow.high), axisY.highLow.low);
+        var areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.highLow.high), axisY.highLow.low);
 
         // We project the areaBase value into screen coordinates
         var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
