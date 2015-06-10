@@ -1,3 +1,10 @@
+v0.9.0 - 10 Jun 2015
+--------------------
+- Major refactoring of axis and projection code, added possibility to configure axes when creating a chart
+- Added areaBase to series options override in line chart, fixes #342
+- Throwing up in infinite loop for edge cases and during development
+- Documentation: Added documentation for axis configuration and getting started guide for custom axes
+
 v0.8.3 - 07 Jun 2015
 --------------------
 - Greatly reduced CSS selector complexity and split slice into slice-pie and slice-donut
