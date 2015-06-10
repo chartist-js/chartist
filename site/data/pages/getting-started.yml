@@ -633,3 +633,121 @@ sections:
                 classes: ct-golden-section
                 intro: >
                          Edit this example to figure out how to tweak animations. The force is strong in you young padawan!
+
+      - type: sub-section
+        data:
+          title: Switching axis type
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The default configuration of the line chart is that it will use a step based X-Axis and an
+                        automatic linear scale for the Y-Axis. This is all happening under the hood of Chartist and
+                        already satisfies a lot of use-cases.
+            - type: text
+              data:
+                text: >
+                        Sometimes though, it's not enough to have a fixed step chart and you'd need something a bit
+                        more complex. Something that allows you to plot those values along the X- and Y-Axis, instead
+                        of just the Y-Axis. Sometimes, you'd also want to specify the ticks on your chart manually
+                        rather than having them auto calculated from Chartist.
+            - type: text
+              data:
+                text: >
+                        Of course Chartist wouldn't let you down with all those ideas you have in mind on how to
+                        visualize your data!
+
+            - type: sub-section
+              data:
+                title: A line chart is only 1-dimensional?!
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              By default, Chartist uses <code>Chartist.StepAxis</code> for the X-Axis and <code>Chartist.AutoScaleAxis</code>
+                              for the Y-Axis. Please read the <a href="api-documentation.html">API documentation</a>
+                              if you'd like to get more details, or available options on axis configuration.
+                  - type: text
+                    data:
+                      text: >
+                              The step based axis will not use any value for projection but rather rely on the index
+                              of the given value to determine the position. This is fine for discrete steps of one
+                              dimensional data, like we know it from regular Chartist charts:
+                  - type: code-snippet
+                    data:
+                      id: 1-dimension-values
+                      lang: js
+                  - type: text
+                    data:
+                      text: >
+                              What really happens with such one dimensional series data under the hood is that it will
+                              be transformed into two dimensional data like so:
+                  - type: code-snippet
+                    data:
+                      id: 2-dimensions-values
+                      lang: js
+                  - type: text
+                    data:
+                      text: >
+                              You can see that Chartist will automatically convert one dimensional data into two
+                              dimensional values where the previous value is assigned to <code>y</code> and <code>x</code> will be set to
+                              <code>undefined</code>. As the default axis for projecting the <code>x</code> value
+                              is a <code>Chartist.StepAxis</code> that relies on the value index rather than the
+                              value, this is perfectly fine for the default setup.
+
+
+            - type: sub-section
+              data:
+                title: Creating an XY-plot chart
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              In order to plot on the X-Axis too, we'd need to switch the standard axis type
+                              <code>Chartist.StepAxis</code> to something more continuous. Let's create a full fledged auto
+                              scale chart that scales both the Y- and X-Axis automatically using
+                              the <code>Chartist.AutoScaleAxis</code>!
+                  - type: live-example
+                    data:
+                      title: Configure your axis type
+                      level: 6
+                      id: example-axis-auto
+                      classes: ct-golden-section
+                      intro: >
+                               Note that we have just specified the X-Axis because the Y-Axis is configured to
+                               <code>Chartist.AutoScaleAxis</code> by default.
+                  - type: text
+                    data:
+                      text: >
+                              A few things are different in this chart. Because
+                              the <code>labels</code> array of our data is just used to be mapped as <code>ticks</code> option for the
+                              default <code>Chartist.StepAxis</code> X-Axis, we can completely remove the labels from our data,
+                              once we use a different axis than the step based one. Also you can see now from the
+                              data series is that we are specifying 2-dimensional values directly.
+
+            - type: sub-section
+              data:
+                title: Fixed stuff can be sweet too!
+                level: 5
+                items:
+                  - type: text
+                    data:
+                      text: >
+                              The following example shows how to create an axis with some fixed ticks.
+                              The <code>Chartist.FixedScaleAxis</code> can be used to create a more rudimentary
+                              continuous linear scale, where ticks can be fixed either with an array of values or
+                              with a divisor. For the detailed options please check
+                              the <a href="api-documentation.html">API documentation</a>.
+                  - type: live-example
+                    data:
+                      title: Unleash your creativity...
+                      level: 6
+                      id: example-axis-fixed-and-auto
+                      classes: ct-golden-section
+                      intro: >
+                               Let's say we'd like to fix a few ticks on the Y-Axis on our chart as those are the only
+                               ones we're interested in. The X-Axis should be continuous too, but let's make
+                               that axis a <code>Chartist.AutoScaleAxis</code>.
