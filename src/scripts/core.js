@@ -600,6 +600,7 @@ var Chartist = {
    */
   Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, referenceValue, onlyInteger) {
     var i,
+      optimizationCounter = 0,
       newMin,
       newMax,
       bounds = {
@@ -650,6 +651,10 @@ var Chartist = {
           }
         } else {
           break;
+        }
+
+        if(optimizationCounter++ > 1000) {
+          throw new Error('Exceeded maximum number of iterations while optimizing scale step!');
         }
       }
     }
