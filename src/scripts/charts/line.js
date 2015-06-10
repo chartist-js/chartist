@@ -170,12 +170,57 @@
       this.eventEmitter
     );
 
+    // check to see if options.breakLine is defined and enabled
+    if (options.breakLine && options.breakLine.enabled && options.breakLine.limit) {
+
+      if (Array.isArray(options.breakLine.limit)) {
+
+        console.log('is array');
+
+      } else {
+
+        this.data.series.forEach(function (seriesData, seriesIndex, seriesArray) {
+
+          if (seriesData.data) {
+            var subSetArray = [],
+              first = true,
+              limitIndex,
+              limitValue,
+              lastValue;
+            seriesData.data.forEach(function (dataPoint, index, dataArray) {
+              if (dataPoint < options.breakLine.limit) {
+                subSetArray.push(dataPoint);
+                dataArray[index] = null;
+              } else if (dataPoint >= options.breakLine.limit && first) {
+                first = false;
+                limitIndex = index;
+                limitValue = dataPoint;
+                lastValue = dataArray[index - 1];
+                subSetArray.push(dataPoint);
+              }
+            });
+
+            seriesArray.push({
+              data: subSetArray,
+              limitData: {
+                lastValue: lastValue,
+                limitValue: limitValue,
+                index: limitIndex,
+                cap: options.breakLine.limit
+              }
+            });
+          }
+
+        });
+
+      }
+
+    }
+
     // Draw the series - called by forEach
     var loopThroughEachSeries = function (series, seriesIndex) {
 
-      //console.log('/////////////');
-      //console.log('series:', series);
-      //console.log('/////////////');
+      normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length);
 
       seriesGroups[seriesIndex] = this.svg.elem('g');
 
@@ -202,11 +247,6 @@
         return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.breakLine.enabled && options.breakLine.exactValueChange;
       };
 
-      //console.log('-----------------------------------');
-      //console.log('allowVariableDataLengths:', options.allowVariableDataLengths);
-      //console.log('breakLine:', options.breakLine);
-      //console.log('this.data.series:', this.data.series);
-
       normalizedData[seriesIndex].forEach(function (value, valueIndex) {
 
         var nextValue = normalizedData[seriesIndex][valueIndex + 1],
@@ -217,8 +257,6 @@
           // skip this
 
         } else if (hasExactValueChange(series, nextValue, this.options)) {
-
-          console.log('exact value true');
 
           lastValidValue = true;
           // get the offset percentage between the limit line value and the last value
@@ -330,32 +368,6 @@
         }
       }
     }.bind(this);
-
-    //if (options.breakLine.enabled && options.breakLine.exactValueChange) {
-
-    if (options.breakLine && options.breakLine.enabled && options.breakLine.limit) {
-      console.log('-----------------------------');
-      console.log('has breakline enabled');
-      console.log('-----------------------------');
-      this.data.series.forEach(function (seriesData) {
-
-        if (seriesData.data) {
-          console.log('has a data array');
-          var subSetArray = [];
-          seriesData.data.forEach(function (dataPoint) {
-            console.log(dataPoint);
-            if (dataPoint < options.breakLine.limit) {
-              subSetArray.push(dataPoint);
-            }
-          });
-          console.log('subSetArray:', subSetArray);
-        }
-
-      });
-      this.data.series.push({
-        data: [1024, 1024, 1024, 1024, 1024, 1024, 1024, 1024]
-      });
-    }
 
     this.data.series.forEach(loopThroughEachSeries);
 

@@ -33,7 +33,7 @@ new Chartist.Line('.ct-chart',
     showLine: true,
     breakLine: {
       enabled: true,
-      limit: 1024,
+      limit: [512, 1024],
       exactValueChange: true
     }
   }
