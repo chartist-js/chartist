@@ -45,7 +45,7 @@ var Chartist = {
     target = target || {};
 
     var sources = Array.prototype.slice.call(arguments, 1);
-    sources.forEach(function(source) {
+    sources.forEach(function (source) {
       for (var prop in source) {
         if (typeof source[prop] === 'object' && !(source[prop] instanceof Array)) {
           target[prop] = Chartist.extend({}, target[prop], source[prop]);
@@ -67,7 +67,7 @@ var Chartist = {
    * @param {String} newSubStr
    * @return {String}
    */
-  Chartist.replaceAll = function(str, subStr, newSubStr) {
+  Chartist.replaceAll = function (str, subStr, newSubStr) {
     return str.replace(new RegExp(subStr, 'g'), newSubStr);
   };
 
@@ -78,8 +78,8 @@ var Chartist = {
    * @param {String|Number} value
    * @return {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
    */
-  Chartist.stripUnit = function(value) {
-    if(typeof value === 'string') {
+  Chartist.stripUnit = function (value) {
+    if (typeof value === 'string') {
       value = value.replace(/[^0-9\+-\.]/g, '');
     }
 
@@ -94,8 +94,8 @@ var Chartist = {
    * @param {String} unit
    * @return {String} Returns the passed number value with unit.
    */
-  Chartist.ensureUnit = function(value, unit) {
-    if(typeof value === 'number') {
+  Chartist.ensureUnit = function (value, unit) {
+    if (typeof value === 'number') {
       value = value + unit;
     }
 
@@ -109,7 +109,7 @@ var Chartist = {
    * @param {String|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
    * @return {Node}
    */
-  Chartist.querySelector = function(query) {
+  Chartist.querySelector = function (query) {
     return query instanceof Node ? query : document.querySelector(query);
   };
 
@@ -120,7 +120,7 @@ var Chartist = {
    * @param length
    * @return {Array}
    */
-  Chartist.times = function(length) {
+  Chartist.times = function (length) {
     return Array.apply(null, new Array(length));
   };
 
@@ -132,7 +132,7 @@ var Chartist = {
    * @param current
    * @return {*}
    */
-  Chartist.sum = function(previous, current) {
+  Chartist.sum = function (previous, current) {
     return previous + current;
   };
 
@@ -144,14 +144,14 @@ var Chartist = {
    * @param cb
    * @return {Array}
    */
-  Chartist.serialMap = function(arr, cb) {
+  Chartist.serialMap = function (arr, cb) {
     var result = [],
-        length = Math.max.apply(null, arr.map(function(e) {
-          return e.length;
-        }));
+      length = Math.max.apply(null, arr.map(function (e) {
+        return e.length;
+      }));
 
-    Chartist.times(length).forEach(function(e, index) {
-      var args = arr.map(function(e) {
+    Chartist.times(length).forEach(function (e, index) {
+      var args = arr.map(function (e) {
         return e[index];
       });
 
@@ -169,7 +169,7 @@ var Chartist = {
    * @param {Number} [digits] The number of digits after decimal used to do the rounding
    * @returns {number} Rounded value
    */
-  Chartist.roundWithPrecision = function(value, digits) {
+  Chartist.roundWithPrecision = function (value, digits) {
     var precision = Math.pow(10, digits || Chartist.precision);
     return Math.round(value * precision) / precision;
   };
@@ -204,16 +204,16 @@ var Chartist = {
    * @param {Number|String|Object} data
    * @return {String}
    */
-  Chartist.serialize = function(data) {
-    if(data === null || data === undefined) {
+  Chartist.serialize = function (data) {
+    if (data === null || data === undefined) {
       return data;
-    } else if(typeof data === 'number') {
-      data = ''+data;
-    } else if(typeof data === 'object') {
-      data = JSON.stringify({data: data});
+    } else if (typeof data === 'number') {
+      data = '' + data;
+    } else if (typeof data === 'object') {
+      data = JSON.stringify({ data: data });
     }
 
-    return Object.keys(Chartist.escapingMap).reduce(function(result, key) {
+    return Object.keys(Chartist.escapingMap).reduce(function (result, key) {
       return Chartist.replaceAll(result, key, Chartist.escapingMap[key]);
     }, data);
   };
@@ -225,19 +225,20 @@ var Chartist = {
    * @param {String} data
    * @return {String|Number|Object}
    */
-  Chartist.deserialize = function(data) {
-    if(typeof data !== 'string') {
+  Chartist.deserialize = function (data) {
+    if (typeof data !== 'string') {
       return data;
     }
 
-    data = Object.keys(Chartist.escapingMap).reduce(function(result, key) {
+    data = Object.keys(Chartist.escapingMap).reduce(function (result, key) {
       return Chartist.replaceAll(result, Chartist.escapingMap[key], key);
     }, data);
 
     try {
       data = JSON.parse(data);
       data = data.data !== undefined ? data.data : data;
-    } catch(e) {}
+    } catch (e) {
+    }
 
     return data;
   };
@@ -274,7 +275,6 @@ var Chartist = {
       style: 'width: ' + width + '; height: ' + height + ';'
     });
 
-    // Add the DOM node to our container
     container.appendChild(svg._node);
 
     return svg;
@@ -287,11 +287,11 @@ var Chartist = {
    * @memberof Chartist.Core
    * @param data
    */
-  Chartist.reverseData = function(data) {
+  Chartist.reverseData = function (data) {
     data.labels.reverse();
     data.series.reverse();
     for (var i = 0; i < data.series.length; i++) {
-      if(typeof(data.series[i]) === 'object' && data.series[i].data !== undefined) {
+      if (typeof(data.series[i]) === 'object' && data.series[i].data !== undefined) {
         data.series[i].data.reverse();
       } else {
         data.series[i].reverse();
@@ -308,6 +308,7 @@ var Chartist = {
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
   Chartist.getDataArray = function (data, reverse) {
+
     var array = [],
       value,
       localData;
@@ -315,7 +316,7 @@ var Chartist = {
     // If the data should be reversed but isn't we need to reverse it
     // If it's reversed but it shouldn't we need to reverse it back
     // That's required to handle data updates correctly and to reflect the responsive configurations
-    if(reverse && !data.reversed || !reverse && data.reversed) {
+    if (reverse && !data.reversed || !reverse && data.reversed) {
       Chartist.reverseData(data);
       data.reversed = !data.reversed;
     }
@@ -325,7 +326,7 @@ var Chartist = {
       // otherwise the value directly (array or number).
       // We create a copy of the original data array with Array.prototype.push.apply
       localData = typeof(data.series[i]) === 'object' && data.series[i].data !== undefined ? data.series[i].data : data.series[i];
-      if(localData instanceof Array) {
+      if (localData instanceof Array) {
         array[i] = [];
         Array.prototype.push.apply(array[i], localData);
       } else {
@@ -336,8 +337,9 @@ var Chartist = {
       for (var j = 0; j < array[i].length; j++) {
         value = array[i][j];
         var convertedValue = typeof value !== 'undefined' ? value : value.value;
-        array[i][j] = +convertedValue;
+        array[i][j] = convertedValue;
       }
+
     }
 
     return array;
@@ -351,7 +353,7 @@ var Chartist = {
    * @param {Number} [fallback] This value is used to fill missing values if a incomplete padding object was passed
    * @returns {Object} Returns a padding object containing top, right, bottom, left properties filled with the padding number passed in as argument. If the argument is something else than a number (presumably already a correct padding object) then this argument is directly returned.
    */
-  Chartist.normalizePadding = function(padding, fallback) {
+  Chartist.normalizePadding = function (padding, fallback) {
     fallback = fallback || 0;
 
     return typeof padding === 'number' ? {
@@ -382,14 +384,14 @@ var Chartist = {
       }
 
       for (var j = dataArray[i].length; j < length; j++) {
-        dataArray[i][j] = 0;
+        dataArray[i][j] = null;
       }
     }
 
     return dataArray;
   };
 
-  Chartist.getMetaData = function(series, index) {
+  Chartist.getMetaData = function (series, index) {
     var value = series.data ? series.data[index] : series[index];
     return value ? Chartist.serialize(value.meta) : undefined;
   };
@@ -427,7 +429,7 @@ var Chartist = {
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
+    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top + options.chartPadding.bottom) - options.axisX.offset, 0);
   };
 
   /**
@@ -481,11 +483,11 @@ var Chartist = {
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
     // to set the high or low to 0 depending on the polarity
-    if(bounds.high === bounds.low) {
+    if (bounds.high === bounds.low) {
       // If both values are 0 we set high to 1
-      if(bounds.low === 0) {
+      if (bounds.low === 0) {
         bounds.high = 1;
-      } else if(bounds.low < 0) {
+      } else if (bounds.low < 0) {
         // If we have the same negative value for the bounds we set bounds.high to 0
         bounds.high = 0;
       } else {
@@ -611,7 +613,7 @@ var Chartist = {
    * @param classes
    * @param eventEmitter
    */
-  Chartist.createGrid = function(projectedValue, index, axis, offset, length, group, classes, eventEmitter) {
+  Chartist.createGrid = function (projectedValue, index, axis, offset, length, group, classes, eventEmitter) {
     var positionalData = {};
     positionalData[axis.units.pos + '1'] = projectedValue.pos;
     positionalData[axis.units.pos + '2'] = projectedValue.pos;
@@ -647,7 +649,7 @@ var Chartist = {
    * @param useForeignObject
    * @param eventEmitter
    */
-  Chartist.createLabel = function(projectedValue, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
+  Chartist.createLabel = function (projectedValue, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
     var labelElement,
       positionalData = {};
     positionalData[axis.units.pos] = projectedValue.pos + labelOffset[axis.units.pos];
@@ -655,7 +657,7 @@ var Chartist = {
     positionalData[axis.units.len] = projectedValue.len;
     positionalData[axis.counterUnits.len] = axisOffset;
 
-    if(useForeignObject) {
+    if (useForeignObject) {
       var content = '<span class="' + classes.join(' ') + '">' + labels[index] + '</span>';
       labelElement = group.foreignObject(content, Chartist.extend({
         style: 'overflow: visible;'
@@ -687,25 +689,25 @@ var Chartist = {
    * @param options
    * @param eventEmitter
    */
-  Chartist.createAxis = function(axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
+  Chartist.createAxis = function (axis, data, chartRect, gridGroup, labelGroup, useForeignObject, options, eventEmitter) {
     var axisOptions = options['axis' + axis.units.pos.toUpperCase()],
       projectedValues = data.map(axis.projectValue.bind(axis)).map(axis.transform),
       labelValues = data.map(axisOptions.labelInterpolationFnc);
 
-    projectedValues.forEach(function(projectedValue, index) {
+    projectedValues.forEach(function (projectedValue, index) {
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
-      if(!labelValues[index] && labelValues[index] !== 0) {
+      if (!labelValues[index] && labelValues[index] !== 0) {
         return;
       }
 
-      if(axisOptions.showGrid) {
+      if (axisOptions.showGrid) {
         Chartist.createGrid(projectedValue, index, axis, axis.gridOffset, chartRect[axis.counterUnits.len](), gridGroup, [
           options.classNames.grid,
           options.classNames[axis.units.dir]
         ], eventEmitter);
       }
 
-      if(axisOptions.showLabel) {
+      if (axisOptions.showLabel) {
         Chartist.createLabel(projectedValue, index, labelValues, axis, axisOptions.offset, axis.labelOffset, labelGroup, [
           options.classNames.label,
           options.classNames[axis.units.dir]
@@ -742,7 +744,7 @@ var Chartist = {
         }
       }
 
-      if(eventEmitter && !preventChangedEvent) {
+      if (eventEmitter && !preventChangedEvent) {
         eventEmitter.emit('optionsChanged', {
           previousOptions: previousOptions,
           currentOptions: currentOptions
@@ -751,7 +753,7 @@ var Chartist = {
     }
 
     function removeMediaQueryListeners() {
-      mediaQueryListeners.forEach(function(mql) {
+      mediaQueryListeners.forEach(function (mql) {
         mql.removeListener(updateCurrentOptions);
       });
     }

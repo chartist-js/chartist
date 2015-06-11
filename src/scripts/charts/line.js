@@ -63,6 +63,15 @@
     areaBase: 0,
     // Whether the line will stop drawing when the data ends rather than trying normalize the data. Therefore this will not manipulate data with multiple length.
     allowVariableDataLengths: false,
+    // Object which contains breakLine options, will automatically create a new line, allowVariableDataLengths must be set to true
+    breakLine: {
+      // Whether to break up the line chart on certain values
+      enabled: false,
+      // Value or values to change the line, can be a number or array (i.e. 500 or [250, 550, 1050])
+      limit: null,
+      // Will end each line on the exact value and not on an axis interval
+      exactValueMode: false
+    },
     // Specify if the lines should be smoothed. This value can be true or false where true will result in smoothing using the default smoothing interpolation function Chartist.Interpolation.cardinal and false results in Chartist.Interpolation.none. You can also choose other smoothing / interpolation functions available in the Chartist.Interpolation module, or write your own interpolation function. Check the examples for a brief description.
     lineSmooth: true,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
@@ -96,6 +105,9 @@
    *
    */
   function createChart(options) {
+
+    var self = this;
+
     var seriesGroups = [],
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length),
       normalizedPadding = Chartist.normalizePadding(options.chartPadding, defaultOptions.padding);
@@ -173,45 +185,106 @@
     // check to see if options.breakLine is defined and enabled
     if (options.breakLine && options.breakLine.enabled && options.breakLine.limit) {
 
-      if (Array.isArray(options.breakLine.limit)) {
+      if (self.cachedSeries) {
 
-        console.log('is array');
+        self.data.series = self.cachedSeries;
 
       } else {
 
-        this.data.series.forEach(function (seriesData, seriesIndex, seriesArray) {
+        var newSeries = self.data.series.slice(),
+          first = true,
+          limitIndex,
+          highestIndex,
+          limitValue,
+          lastValue,
+          loopEachLineBreak = function (limit, generatedArray, seriesData) {
 
-          if (seriesData.data) {
-            var subSetArray = [],
-              first = true,
-              limitIndex,
-              limitValue,
-              lastValue;
-            seriesData.data.forEach(function (dataPoint, index, dataArray) {
-              if (dataPoint < options.breakLine.limit) {
-                subSetArray.push(dataPoint);
-                dataArray[index] = null;
-              } else if (dataPoint >= options.breakLine.limit && first) {
-                first = false;
-                limitIndex = index;
-                limitValue = dataPoint;
-                lastValue = dataArray[index - 1];
-                subSetArray.push(dataPoint);
-              }
-            });
+            var subSetArray = [];
 
-            seriesArray.push({
-              data: subSetArray,
-              limitData: {
-                lastValue: lastValue,
-                limitValue: limitValue,
-                index: limitIndex,
-                cap: options.breakLine.limit
-              }
-            });
-          }
+            if (seriesData.data) {
+
+              seriesData.data.some(function (dataPoint, index, dataArray) {
+
+                if (dataPoint < limit) {
+
+                  generatedArray.forEach(function (series) {
+                    series.data[index] = null;
+                  });
+                  subSetArray.push(dataPoint);
+
+                } else if (dataPoint >= limit && first) {
+
+                  first = false;
+                  if (!limitIndex) {
+                    limitIndex = index;
+                    highestIndex = index;
+                  } else {
+                    limitIndex = index;
+                  }
+                  limitValue = dataPoint;
+                  lastValue = dataArray[index - 1];
+                  subSetArray.push(dataPoint);
+                  return true;
+
+                }
+
+              });
+
+              generatedArray.push({
+                data: subSetArray,
+                limitData: {
+                  lastValue: lastValue,
+                  limitValue: limit,
+                  index: limitIndex,
+                  cap: options.breakLine.limit
+                }
+              });
+
+            }
+
+          },
+          generatedArray = [];
+
+        if (Array.isArray(options.breakLine.limit)) {
+
+          // sorts breakline array from highest to lowest
+          options.breakLine.limit.sort(function (a, b) {
+            return b - a;
+          });
+
+          generatedArray = [];
+
+          options.breakLine.limit.forEach(function (limit) {
+
+            first = true;
+
+            // loop though each series
+            newSeries.forEach(loopEachLineBreak.bind(self, limit, generatedArray));
+
+          });
+
+        } else {
+
+          generatedArray = [];
+
+          // loop though each series
+          newSeries.forEach(loopEachLineBreak.bind(self, options.breakLine.limit, generatedArray));
+
+        }
+
+        // make everything null before highestIndex
+        newSeries.forEach(function (seriesData) {
+          seriesData.data.forEach(function (dataPoint, index, dataArray) {
+            if (index < highestIndex) {
+              dataArray[index] = null;
+            }
+          });
 
         });
+
+        self.data.series = newSeries.concat(generatedArray);
+
+        self.cachedSeries = self.data.series;
 
       }
 
@@ -220,6 +293,7 @@
     // Draw the series - called by forEach
     var loopThroughEachSeries = function (series, seriesIndex) {
 
+      // after series arrays have been modified then recalculate normalized data
       normalizedData = Chartist.normalizeDataArray(Chartist.getDataArray(this.data, options.reverseData), this.data.labels.length);
 
       seriesGroups[seriesIndex] = this.svg.elem('g');
@@ -244,17 +318,19 @@
         // and the upcoming value is null
         // breakLine are enabled
         // and breakLine.smartAlign is also true
-        return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.breakLine.enabled && options.breakLine.exactValueChange;
+        return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.breakLine.enabled && options.breakLine.exactValueMode;
       };
+
+      console.log('>>>', normalizedData[seriesIndex]);
 
       normalizedData[seriesIndex].forEach(function (value, valueIndex) {
 
         var nextValue = normalizedData[seriesIndex][valueIndex + 1],
           p;
 
-        if (value === 0 && options.allowVariableDataLengths) {
+        if (value === null && options.allowVariableDataLengths) {
 
-          // skip this
+          // do not map this value
 
         } else if (hasExactValueChange(series, nextValue, this.options)) {
 
@@ -303,6 +379,7 @@
             y: p.y
           });
         }
+
       }.bind(this));
 
       // TODO: Nicer handling of conditions, maybe composition?
@@ -311,9 +388,12 @@
             options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
           path = smoothing(pathCoordinates);
 
+        console.log('path:', path);
+
         if (options.showLine) {
+          var normalizedSeries = normalizedData[seriesIndex];
           var line = seriesGroups[seriesIndex].elem('path', {
-            d: path.stringify(series, normalizedData[seriesIndex])
+            d: path.stringify(series, normalizedSeries)
           }, options.classNames.line, true);
 
           line.attr({
@@ -367,6 +447,7 @@
           });
         }
       }
+
     }.bind(this);
 
     this.data.series.forEach(loopThroughEachSeries);

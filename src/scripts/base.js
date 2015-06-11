@@ -4,7 +4,7 @@
  * @module Chartist.Base
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
 
   // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
@@ -22,7 +22,8 @@
    * @memberof Chartist.Base
    */
   function update(data, options, override) {
-    if(data) {
+
+    if (data) {
       this.data = data;
       // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
       this.eventEmitter.emit('data', {
@@ -31,19 +32,19 @@
       });
     }
 
-    if(options) {
+    if (options) {
       this.options = Chartist.extend({}, override ? this.options : this.defaultOptions, options);
 
       // If chartist was not initialized yet, we just set the options and leave the rest to the initialization
       // Otherwise we re-create the optionsProvider at this point
-      if(!this.initializeTimeoutId) {
+      if (!this.initializeTimeoutId) {
         this.optionsProvider.removeMediaQueryListeners();
         this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
       }
     }
 
     // Only re-created the chart if it has been initialized yet
-    if(!this.initializeTimeoutId) {
+    if (!this.initializeTimeoutId) {
       this.createChart(this.optionsProvider.currentOptions);
     }
 
@@ -94,15 +95,15 @@
     // This will also register a listener that is re-creating the chart based on media changes
     this.optionsProvider = Chartist.optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
     // Register options change listener that will trigger a chart update
-    this.eventEmitter.addEventHandler('optionsChanged', function() {
+    this.eventEmitter.addEventHandler('optionsChanged', function () {
       this.update();
     }.bind(this));
 
     // Before the first chart creation we need to register us with all plugins that are configured
     // Initialize all relevant plugins with our chart object and the plugin options specified in the config
-    if(this.options.plugins) {
-      this.options.plugins.forEach(function(plugin) {
-        if(plugin instanceof Array) {
+    if (this.options.plugins) {
+      this.options.plugins.forEach(function (plugin) {
+        if (plugin instanceof Array) {
           plugin[0](this, plugin[1]);
         } else {
           plugin(this);
@@ -143,14 +144,14 @@
     this.eventEmitter = Chartist.EventEmitter();
     this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
     this.supportsAnimations = Chartist.Svg.isSupported('AnimationEventsAttribute');
-    this.resizeListener = function resizeListener(){
+    this.resizeListener = function resizeListener() {
       this.update();
     }.bind(this);
 
-    if(this.container) {
+    if (this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
-      if(this.container.__chartist__) {
-        if(this.container.__chartist__.initializeTimeoutId) {
+      if (this.container.__chartist__) {
+        if (this.container.__chartist__.initializeTimeoutId) {
           // If the initializeTimeoutId is still set we can safely assume that the initialization function has not
           // been called yet from the event loop. Therefore we should cancel the timeout and don't need to detach
           window.clearTimeout(this.container.__chartist__.initializeTimeoutId);
@@ -175,7 +176,7 @@
     container: undefined,
     svg: undefined,
     eventEmitter: undefined,
-    createChart: function() {
+    createChart: function () {
       throw new Error('Base chart type can\'t be instantiated!');
     },
     update: update,
