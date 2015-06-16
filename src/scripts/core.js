@@ -718,8 +718,8 @@ var Chartist = {
     var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     // If settings were to small to cope with offset (legacy) and padding, we'll adjust
-    width = Math.max(width, (options.horizontalBar ? yAxisOffset : xAxisOffset) + normalizedPadding.left + normalizedPadding.right);
-    height = Math.max(height, (options.horizontalBar ? xAxisOffset : yAxisOffset) + normalizedPadding.top + normalizedPadding.bottom);
+    width = Math.max(width, yAxisOffset + normalizedPadding.left + normalizedPadding.right);
+    height = Math.max(height, xAxisOffset + normalizedPadding.top + normalizedPadding.bottom);
 
     var chartRect = {
       padding: normalizedPadding,
