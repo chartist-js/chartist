@@ -170,7 +170,7 @@
 
       valueAxis = axisX = new Chartist.AutoScaleAxis(Chartist.Axis.units.x, data, chartRect, Chartist.extend({}, options.axisX, {
         highLow: highLow,
-        referenceValue: 0
+        referenceValue: options.low || 0
       }));
     } else {
       labelAxis = axisX = new Chartist.StepAxis(Chartist.Axis.units.x, data, chartRect, {
@@ -179,12 +179,13 @@
 
       valueAxis = axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
         highLow: highLow,
-        referenceValue: 0
+        referenceValue: options.low || 0
       }));
     }
 
     // Projected 0 point
-    var zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(0)) : (chartRect.y1 - valueAxis.projectValue(0));
+    var relativeZero = valueAxis.bounds.min > 0 ? valueAxis.bounds.min : 0;
+    var zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(relativeZero)) : (chartRect.y1 - valueAxis.projectValue(relativeZero));
     // Used to track the screen coordinates of stacked bars
     var stackedBarValues = [];
 
