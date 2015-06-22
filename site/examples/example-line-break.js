@@ -16,9 +16,8 @@ new Chartist.Line('.ct-chart',
     showLine: true,
     breakLine: {
       enabled: true,
-      limit: [500, 900],
-      //limit: 500,
-      exactValueMode: true
+      limit: [500, 900]
+      //limit: 500
     }
   }
 );

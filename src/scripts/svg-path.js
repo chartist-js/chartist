@@ -98,15 +98,11 @@
    */
   function move(x, y, relative) {
     if (typeof x === 'undefined' || typeof y === 'undefined') {
-      console.log('A');
-      console.log('>>>>>>>>>>>>>', x, y);
-      //element('M', {
-      //  x: 0,
-      //  y: 0
-      //}, this.pathElements, this.pos++, relative);
-      debugger;
+      element('M', {
+        x: 0,
+        y: 0
+      }, this.pathElements, this.pos++, relative);
     } else {
-      console.log('B');
       element('M', {
         x: +x,
         y: +y

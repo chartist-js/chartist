@@ -70,7 +70,7 @@
       // Value or values to change the line, can be a number or array (i.e. 500 or [250, 550, 1050])
       limit: null,
       // Will end each line on the exact value and not on an axis interval
-      exactValueMode: false
+      // exactValueMode: false TODO - integrate this, working on it
     },
     // Specify if the lines should be smoothed. This value can be true or false where true will result in smoothing using the default smoothing interpolation function Chartist.Interpolation.cardinal and false results in Chartist.Interpolation.none. You can also choose other smoothing / interpolation functions available in the Chartist.Interpolation module, or write your own interpolation function. Check the examples for a brief description.
     lineSmooth: true,
@@ -321,8 +321,6 @@
         return typeof series.limitData !== 'undefined' && nextValue === null && !lastValidValue && options.breakLine.enabled && options.breakLine.exactValueMode;
       };
 
-      console.log('>>>', normalizedData[seriesIndex]);
-
       normalizedData[seriesIndex].forEach(function (value, valueIndex) {
 
         var nextValue = normalizedData[seriesIndex][valueIndex + 1],
@@ -387,8 +385,6 @@
         var smoothing = typeof options.lineSmooth === 'function' ?
             options.lineSmooth : (options.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none()),
           path = smoothing(pathCoordinates);
-
-        console.log('path:', path);
 
         if (options.showLine) {
           var normalizedSeries = normalizedData[seriesIndex];
