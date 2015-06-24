@@ -25,8 +25,12 @@
 
   function AutoScaleAxis(axisUnit, data, chartRect, options) {
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
-    this.highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
-    this.bounds = Chartist.getBounds(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], this.highLow, options.scaleMinSpace || 20, options.referenceValue, options.onlyInteger);
+    var highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
+    this.bounds = Chartist.getBounds(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], highLow, options.scaleMinSpace || 20, options.referenceValue, options.onlyInteger);
+    this.range = {
+      min: this.bounds.min,
+      max: this.bounds.max
+    };
 
     Chartist.AutoScaleAxis.super.constructor.call(this,
       axisUnit,

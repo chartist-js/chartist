@@ -22,11 +22,15 @@
   'use strict';
 
   function FixedScaleAxis(axisUnit, data, chartRect, options) {
-    this.highLow = Chartist.getHighLow(data.normalized, options, axisUnit.pos);
+    var highLow = Chartist.getHighLow(data.normalized, options, axisUnit.pos);
     this.divisor = options.divisor || 1;
     this.ticks = options.ticks || Chartist.times(this.divisor).map(function(value, index) {
-      return this.highLow.low + (this.highLow.high - this.highLow.low) / this.divisor * index;
+      return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
     }.bind(this));
+    this.range = {
+      min: highLow.low,
+      max: highLow.high
+    };
 
     Chartist.FixedScaleAxis.super.constructor.call(this,
       axisUnit,
@@ -38,7 +42,7 @@
   }
 
   function projectValue(value) {
-    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.highLow.low) / (this.highLow.high - this.highLow.low);
+    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.range.min) / (this.range.max - this.range.min);
   }
 
   Chartist.FixedScaleAxis = Chartist.Axis.extend({
