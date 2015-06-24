@@ -1,3 +1,9 @@
+v0.9.1 - 24 Jun 2015
+--------------------
+- Fixed bug with areaBase narrowing process in area charts, fixes #364
+- Fixed bug on bar chart where wrong offset was used (axis offset), fixes #347 (Thanks to @amsardesai !)
+- Fixed bug with namespace attributes that caused duplication of SVG element on updates in old browsers (Thanks to @radist2s !)
+
 v0.9.0 - 10 Jun 2015
 --------------------
 - Major refactoring of axis and projection code, added possibility to configure axes when creating a chart

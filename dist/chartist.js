@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.9.0
+/* Chartist.js 0.9.1
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.9.0'
+  version: '0.9.1'
 };
 
 (function (window, document, Chartist) {
@@ -308,7 +308,7 @@ var Chartist = {
     // Check if there is a previous SVG element in the container that contains the Chartist XML namespace and remove it
     // Since the DOM API does not support namespaces we need to manually search the returned list http://www.w3.org/TR/selectors-api/
     Array.prototype.slice.call(container.querySelectorAll('svg')).filter(function filterChartistSvgObjects(svg) {
-      return svg.getAttribute(Chartist.xmlNs.qualifiedName);
+      return svg.getAttributeNS('http://www.w3.org/2000/xmlns/', Chartist.xmlNs.prefix);
     }).forEach(function removePreviousElement(svg) {
       container.removeChild(svg);
     });
@@ -739,8 +739,8 @@ var Chartist = {
     var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     // If settings were to small to cope with offset (legacy) and padding, we'll adjust
-    width = Math.max(width, xAxisOffset + normalizedPadding.left + normalizedPadding.right);
-    height = Math.max(height, yAxisOffset + normalizedPadding.top + normalizedPadding.bottom);
+    width = Math.max(width, yAxisOffset + normalizedPadding.left + normalizedPadding.right);
+    height = Math.max(height, xAxisOffset + normalizedPadding.top + normalizedPadding.bottom);
 
     var chartRect = {
       padding: normalizedPadding,
@@ -2782,8 +2782,12 @@ var Chartist = {
 
   function AutoScaleAxis(axisUnit, data, chartRect, options) {
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
-    this.highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
-    this.bounds = Chartist.getBounds(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], this.highLow, options.scaleMinSpace || 20, options.referenceValue, options.onlyInteger);
+    var highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
+    this.bounds = Chartist.getBounds(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], highLow, options.scaleMinSpace || 20, options.referenceValue, options.onlyInteger);
+    this.range = {
+      min: this.bounds.min,
+      max: this.bounds.max
+    };
 
     Chartist.AutoScaleAxis.super.constructor.call(this,
       axisUnit,
@@ -2826,11 +2830,15 @@ var Chartist = {
   'use strict';
 
   function FixedScaleAxis(axisUnit, data, chartRect, options) {
-    this.highLow = Chartist.getHighLow(data.normalized, options, axisUnit.pos);
+    var highLow = Chartist.getHighLow(data.normalized, options, axisUnit.pos);
     this.divisor = options.divisor || 1;
     this.ticks = options.ticks || Chartist.times(this.divisor).map(function(value, index) {
-      return this.highLow.low + (this.highLow.high - this.highLow.low) / this.divisor * index;
+      return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
     }.bind(this));
+    this.range = {
+      min: highLow.low,
+      max: highLow.high
+    };
 
     Chartist.FixedScaleAxis.super.constructor.call(this,
       axisUnit,
@@ -2842,7 +2850,7 @@ var Chartist = {
   }
 
   function projectValue(value) {
-    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.highLow.low) / (this.highLow.high - this.highLow.low);
+    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.range.min) / (this.range.max - this.range.min);
   }
 
   Chartist.FixedScaleAxis = Chartist.Axis.extend({
@@ -3134,11 +3142,11 @@ var Chartist = {
         });
       }
 
-      // Area currently only works with axes that support highLow!
-      if(seriesOptions.showArea && axisY.highLow) {
-        // If areaBase is outside the chart area (< low or > high) we need to set it respectively so that
+      // Area currently only works with axes that support a range!
+      if(seriesOptions.showArea && axisY.range) {
+        // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
         // the area is not drawn outside the chart area.
-        var areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.highLow.high), axisY.highLow.low);
+        var areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.range.max), axisY.range.min);
 
         // We project the areaBase value into screen coordinates
         var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
