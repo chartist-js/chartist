@@ -1,7 +1,7 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.AutoScaleAxis</li><li class="heading">Chartist.FixedScaleAxis</li><li class="heading">Chartist.StepAxis</li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-replaceall">Chartist.replaceAll()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapmultiply">Chartist.mapMultiply()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapadd">Chartist.mapAdd()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-method-roundwithprecision">Chartist.roundWithPrecision()</a></li><li><a class="text-clipping" href="#chartistcore-property-precision">Chartist.precision</a></li><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a></li><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li><a class="text-clipping" href="#chartistcore-method-reversedata">Chartist.reverseData()</a></li><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a></li><li><a class="text-clipping" href="#chartistcore-method-normalizepadding">Chartist.normalizePadding()</a></li><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a></li><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a></li><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a></li><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a></li><li><a class="text-clipping" href="#chartistcore-method-isnum">Chartist.isNum()</a></li><li><a class="text-clipping" href="#chartistcore-method-isfalseybutzero">Chartist.isFalseyButZero()</a></li><li><a class="text-clipping" href="#chartistcore-method-getnumberorundefined">Chartist.getNumberOrUndefined()</a></li><li><a class="text-clipping" href="#chartistcore-method-rho">Chartist.rho()</a></li><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a></li><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a></li><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a></li><li><a class="text-clipping" href="#chartistcore-method-creategrid">Chartist.createGrid()</a></li><li><a class="text-clipping" href="#chartistcore-method-createlabel">Chartist.createLabel()</a></li><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Interpolation</li><li><a class="text-clipping" href="#chartistinterpolation-method-none">Chartist.Interpolation.none()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-simple">Chartist.Interpolation.simple()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-cardinal">Chartist.Interpolation.cardinal()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-step">Chartist.Interpolation.step()</a></li><li class="heading">Chartist.Svg.Path</li><li><a class="text-clipping" href="#chartistsvgpath-declaration-elementdescriptions">elementDescriptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-constructor-svgpath">SvgPath()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-position">position()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-move">move()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-line">line()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-curve">curve()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-arc">arc()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-parse">parse()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-stringify">stringify()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-scale">scale()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-translate">translate()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-transform">transform()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-clone">clone()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-splitbycommand">splitByCommand()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-join">join()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-parent">parent()</a></li><li><a class="text-clipping" href="#chartistsvg-function-root">root()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselector">querySelector()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselectorall">querySelectorAll()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-getbboxproperty">getBBoxProperty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>auto-scale-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistautoscaleaxis">Module Chartist.AutoScaleAxis</h4><div class="module-description"><p>The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.</p><pre><code class="lang-javascript">var options = {
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.AutoScaleAxis</li><li class="heading">Chartist.FixedScaleAxis</li><li class="heading">Chartist.StepAxis</li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-replaceall">Chartist.replaceAll()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapmultiply">Chartist.mapMultiply()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapadd">Chartist.mapAdd()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-method-roundwithprecision">Chartist.roundWithPrecision()</a></li><li><a class="text-clipping" href="#chartistcore-property-precision">Chartist.precision</a></li><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a></li><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Interpolation</li><li><a class="text-clipping" href="#chartistinterpolation-method-none">Chartist.Interpolation.none()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-simple">Chartist.Interpolation.simple()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-cardinal">Chartist.Interpolation.cardinal()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-step">Chartist.Interpolation.step()</a></li><li class="heading">Chartist.Svg.Path</li><li><a class="text-clipping" href="#chartistsvgpath-declaration-elementdescriptions">elementDescriptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-constructor-svgpath">SvgPath()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-position">position()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-move">move()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-line">line()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-curve">curve()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-arc">arc()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-parse">parse()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-stringify">stringify()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-scale">scale()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-translate">translate()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-transform">transform()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-clone">clone()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-splitbycommand">splitByCommand()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-join">join()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-parent">parent()</a></li><li><a class="text-clipping" href="#chartistsvg-function-root">root()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselector">querySelector()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselectorall">querySelectorAll()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-getbboxproperty">getBBoxProperty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>auto-scale-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistautoscaleaxis">Module Chartist.AutoScaleAxis</h4><div class="module-description"><p>The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.</p><pre><code class="lang-javascript">var options = {
   // If high is specified then the axis will display values explicitly up to this value and the computed maximum from the data is ignored
   high: 100,
   // If low is specified then the axis will display values explicitly down to this value and the computed minimum from the data is ignored
@@ -747,7 +747,7 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
   // Check if there is a previous SVG element in the container that contains the Chartist XML namespace and remove it
   // Since the DOM API does not support namespaces we need to manually search the returned list http://www.w3.org/TR/selectors-api/
   Array.prototype.slice.call(container.querySelectorAll(&#x27;svg&#x27;)).filter(function filterChartistSvgObjects(svg) {
-    return svg.getAttribute(Chartist.xmlNs.qualifiedName);
+    return svg.getAttributeNS(&#x27;http://www.w3.org/2000/xmlns/&#x27;, Chartist.xmlNs.prefix);
   }).forEach(function removePreviousElement(svg) {
     container.removeChild(svg);
   });
@@ -764,9 +764,16 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
   container.appendChild(svg._node);
 
   return svg;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Create or reinitialize the SVG element for the chart</p></div><h6>Parameters</h6><div class="param"><code>container</code> ( <span class="param-type"><code>Node</code></span> )<div class="param-description">The containing DOM Node object that will be used to plant the SVG element</div></div><div class="param"><code>width</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the width of the SVG element. Default is 100%</div></div><div class="param"><code>height</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the height of the SVG element. Default is 100%</div></div><div class="param"><code>className</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Specify a class to be added to the SVG element</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The created/reinitialized SVG element</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-reversedata"><span class="member-tag">method</span> Chartist.reverseData()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-reversedata-code">Show code</button></header><pre id="chartistcore-method-reversedata-code">
-    <code class="javascript">Chartist.reverseData = function(data) {
+};
+
+
+/**
+ * Reverses the series, labels and series data arrays.
+ *
+ * @memberof Chartist.Core
+ * @param data
+ */
+Chartist.reverseData = function(data) {
   data.labels.reverse();
   data.series.reverse();
   for (var i = 0; i &lt; data.series.length; i++) {
@@ -776,9 +783,18 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
       data.series[i].reverse();
     }
   }
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Reverses the series, labels and series data arrays.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>data</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getdataarray"><span class="member-tag">method</span> Chartist.getDataArray()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getdataarray-code">Show code</button></header><pre id="chartistcore-method-getdataarray-code">
-    <code class="javascript">Chartist.getDataArray = function (data, reverse, multi) {
+};
+
+/**
+ * Convert data series into plain array
+ *
+ * @memberof Chartist.Core
+ * @param {Object} data The series object that contains the data to be visualized in the chart
+ * @param {Boolean} reverse If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.
+ * @param {Boolean} multi Create a multi dimensional array from a series data array where a value object with &#x60;x&#x60; and &#x60;y&#x60; values will be created.
+ * @return {Array} A plain array that contains the data to be visualized in the chart
+ */
+Chartist.getDataArray = function (data, reverse, multi) {
   // If the data should be reversed but isn&#x27;t we need to reverse it
   // If it&#x27;s reversed but it shouldn&#x27;t we need to reverse it back
   // That&#x27;s required to handle data updates correctly and to reflect the responsive configurations
@@ -812,9 +828,17 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
   }
 
   return data.series.map(recursiveConvert);
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Convert data series into plain array</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The series object that contains the data to be visualized in the chart</div></div><div class="param"><code>reverse</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.</div></div><div class="param"><code>multi</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Create a multi dimensional array from a series data array where a value object with &#x60;x&#x60; and &#x60;y&#x60; values will be created.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Array</code></span> )<div class="param-description">A plain array that contains the data to be visualized in the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-normalizepadding"><span class="member-tag">method</span> Chartist.normalizePadding()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-normalizepadding-code">Show code</button></header><pre id="chartistcore-method-normalizepadding-code">
-    <code class="javascript">Chartist.normalizePadding = function(padding, fallback) {
+};
+
+/**
+ * Converts a number into a padding object.
+ *
+ * @memberof Chartist.Core
+ * @param {Object|Number} padding
+ * @param {Number} [fallback] This value is used to fill missing values if a incomplete padding object was passed
+ * @returns {Object} Returns a padding object containing top, right, bottom, left properties filled with the padding number passed in as argument. If the argument is something else than a number (presumably already a correct padding object) then this argument is directly returned.
+ */
+Chartist.normalizePadding = function(padding, fallback) {
   fallback = fallback || 0;
 
   return typeof padding === &#x27;number&#x27; ? {
@@ -833,21 +857,54 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
 Chartist.getMetaData = function(series, index) {
   var value = series.data ? series.data[index] : series[index];
   return value ? Chartist.serialize(value.meta) : undefined;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Converts a number into a padding object.</p></div><h6>Parameters</h6><div class="param"><code>padding</code> ( <span class="param-type"><code>Object</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><div class="param"><code>[fallback]</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">This value is used to fill missing values if a incomplete padding object was passed</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-orderofmagnitude"><span class="member-tag">method</span> Chartist.orderOfMagnitude()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-orderofmagnitude-code">Show code</button></header><pre id="chartistcore-method-orderofmagnitude-code">
-    <code class="javascript">Chartist.orderOfMagnitude = function (value) {
+};
+
+/**
+ * Calculate the order of magnitude for the chart scale
+ *
+ * @memberof Chartist.Core
+ * @param {Number} value The value Range of the chart
+ * @return {Number} The order of magnitude
+ */
+Chartist.orderOfMagnitude = function (value) {
   return Math.floor(Math.log(Math.abs(value)) / Math.LN10);
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Calculate the order of magnitude for the chart scale</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The value Range of the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The order of magnitude</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-projectlength"><span class="member-tag">method</span> Chartist.projectLength()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-projectlength-code">Show code</button></header><pre id="chartistcore-method-projectlength-code">
-    <code class="javascript">Chartist.projectLength = function (axisLength, length, bounds) {
+};
+
+/**
+ * Project a data length into screen coordinates (pixels)
+ *
+ * @memberof Chartist.Core
+ * @param {Object} axisLength The svg element for the chart
+ * @param {Number} length Single data value from a series array
+ * @param {Object} bounds All the values to set the bounds of the chart
+ * @return {Number} The projected data length in pixels
+ */
+Chartist.projectLength = function (axisLength, length, bounds) {
   return length / bounds.range * axisLength;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Project a data length into screen coordinates (pixels)</p></div><h6>Parameters</h6><div class="param"><code>axisLength</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>length</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Single data value from a series array</div></div><div class="param"><code>bounds</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The projected data length in pixels</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getavailableheight"><span class="member-tag">method</span> Chartist.getAvailableHeight()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getavailableheight-code">Show code</button></header><pre id="chartistcore-method-getavailableheight-code">
-    <code class="javascript">Chartist.getAvailableHeight = function (svg, options) {
+};
+
+/**
+ * Get the height of the area in the chart for the data series
+ *
+ * @memberof Chartist.Core
+ * @param {Object} svg The svg element for the chart
+ * @param {Object} options The Object that contains all the optional values for the chart
+ * @return {Number} The height of the area in the chart for the data series
+ */
+Chartist.getAvailableHeight = function (svg, options) {
   return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Get the height of the area in the chart for the data series</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">The height of the area in the chart for the data series</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-gethighlow"><span class="member-tag">method</span> Chartist.getHighLow()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-gethighlow-code">Show code</button></header><pre id="chartistcore-method-gethighlow-code">
-    <code class="javascript">Chartist.getHighLow = function (data, options, dimension) {
+};
+
+/**
+ * Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.
+ *
+ * @memberof Chartist.Core
+ * @param {Array} data The array that contains the data to be visualized in the chart
+ * @param {Object} options The Object that contains all the optional values for the chart
+ * @param {String} dimension Axis dimension &#x27;x&#x27; or &#x27;y&#x27; used to access the correct value and high / low configuration
+ * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
+ */
+Chartist.getHighLow = function (data, options, dimension) {
   // TODO: Remove workaround for deprecated global high / low config. Axis high / low configuration is preferred
   options = Chartist.extend({}, options, dimension ? options[&#x27;axis&#x27; + dimension.toUpperCase()] : {});
 
@@ -900,21 +957,66 @@ Chartist.getMetaData = function(series, index) {
   }
 
   return highLow;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.</p></div><h6>Parameters</h6><div class="param"><code>data</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">The array that contains the data to be visualized in the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>dimension</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Axis dimension &#x27;x&#x27; or &#x27;y&#x27; used to access the correct value and high / low configuration</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object that contains the highest and lowest value that will be visualized on the chart.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-isnum"><span class="member-tag">method</span> Chartist.isNum()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-isnum-code">Show code</button></header><pre id="chartistcore-method-isnum-code">
-    <code class="javascript">Chartist.isNum = function(value) {
+};
+
+/**
+ * Checks if the value is a valid number or string with a number.
+ *
+ * @memberof Chartist.Core
+ * @param value
+ * @returns {Boolean}
+ */
+Chartist.isNum = function(value) {
   return !isNaN(value) &amp;&amp; isFinite(value);
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Checks if the value is a valid number or string with a number.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>value</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-isfalseybutzero"><span class="member-tag">method</span> Chartist.isFalseyButZero()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-isfalseybutzero-code">Show code</button></header><pre id="chartistcore-method-isfalseybutzero-code">
-    <code class="javascript">Chartist.isFalseyButZero = function(value) {
+};
+
+/**
+ * Returns true on all falsey values except the numeric value 0.
+ *
+ * @memberof Chartist.Core
+ * @param value
+ * @returns {boolean}
+ */
+Chartist.isFalseyButZero = function(value) {
   return !value &amp;&amp; value !== 0;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Returns true on all falsey values except the numeric value 0.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>value</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getnumberorundefined"><span class="member-tag">method</span> Chartist.getNumberOrUndefined()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getnumberorundefined-code">Show code</button></header><pre id="chartistcore-method-getnumberorundefined-code">
-    <code class="javascript">Chartist.getNumberOrUndefined = function(value) {
+};
+
+/**
+ * Returns a number if the passed parameter is a valid number or the function will return undefined. On all other values than a valid number, this function will return undefined.
+ *
+ * @memberof Chartist.Core
+ * @param value
+ * @returns {*}
+ */
+Chartist.getNumberOrUndefined = function(value) {
   return isNaN(+value) ? undefined : +value;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Returns a number if the passed parameter is a valid number or the function will return undefined. On all other values than a valid number, this function will return undefined.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>value</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-rho"><span class="member-tag">method</span> Chartist.rho()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-rho-code">Show code</button></header><pre id="chartistcore-method-rho-code">
-    <code class="javascript">Chartist.rho = function(num) {
+};
+
+/**
+ * Gets a value from a dimension &#x60;value.x&#x60; or &#x60;value.y&#x60; while returning value directly if it&#x27;s a valid numeric value. If the value is not numeric and it&#x27;s falsey this function will return undefined.
+ *
+ * @param value
+ * @param dimension
+ * @returns {*}
+ */
+Chartist.getMultiValue = function(value, dimension) {
+  if(Chartist.isNum(value)) {
+    return +value;
+  } else if(value) {
+    return value[dimension] || 0;
+  } else {
+    return 0;
+  }
+};
+
+/**
+ * Pollard Rho Algorithm to find smallest factor of an integer value. There are more efficient algorithms for factorization, but this one is quite efficient and not so complex.
+ *
+ * @memberof Chartist.Core
+ * @param {Number} num An integer number where the smallest factor should be searched for
+ * @returns {Number} The smallest integer factor of the parameter num.
+ */
+Chartist.rho = function(num) {
   if(num === 1) {
     return num;
   }
@@ -943,9 +1045,20 @@ Chartist.getMetaData = function(series, index) {
   } while (divisor === 1);
 
   return divisor;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Pollard Rho Algorithm to find smallest factor of an integer value. There are more efficient algorithms for factorization, but this one is quite efficient and not so complex.</p></div><h6>Parameters</h6><div class="param"><code>num</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">An integer number where the smallest factor should be searched for</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-getbounds"><span class="member-tag">method</span> Chartist.getBounds()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-getbounds-code">Show code</button></header><pre id="chartistcore-method-getbounds-code">
-    <code class="javascript">Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, referenceValue, onlyInteger) {
+};
+
+/**
+ * Calculate and retrieve all the bounds for the chart and return them in one array
+ *
+ * @memberof Chartist.Core
+ * @param {Number} axisLength The length of the Axis used for
+ * @param {Object} highLow An object containing a high and low property indicating the value range of the chart.
+ * @param {Number} scaleMinSpace The minimum projected length a step should result in
+ * @param {Number} referenceValue The reference value for the chart.
+ * @param {Boolean} onlyInteger
+ * @return {Object} All the values to set the bounds of the chart
+ */
+Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, referenceValue, onlyInteger) {
   var i,
     optimizationCounter = 0,
     newMin,
@@ -1025,18 +1138,37 @@ Chartist.getMetaData = function(series, index) {
   }
 
   return bounds;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Calculate and retrieve all the bounds for the chart and return them in one array</p></div><h6>Parameters</h6><div class="param"><code>axisLength</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The length of the Axis used for</div></div><div class="param"><code>highLow</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An object containing a high and low property indicating the value range of the chart.</div></div><div class="param"><code>scaleMinSpace</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The minimum projected length a step should result in</div></div><div class="param"><code>referenceValue</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The reference value for the chart.</div></div><div class="param"><code>onlyInteger</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">All the values to set the bounds of the chart</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-polartocartesian"><span class="member-tag">method</span> Chartist.polarToCartesian()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-polartocartesian-code">Show code</button></header><pre id="chartistcore-method-polartocartesian-code">
-    <code class="javascript">Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
+};
+
+/**
+ * Calculate cartesian coordinates of polar coordinates
+ *
+ * @memberof Chartist.Core
+ * @param {Number} centerX X-axis coordinates of center point of circle segment
+ * @param {Number} centerY X-axis coordinates of center point of circle segment
+ * @param {Number} radius Radius of circle segment
+ * @param {Number} angleInDegrees Angle of circle segment in degrees
+ * @return {Number} Coordinates of point on circumference
+ */
+Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
   var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
 
   return {
     x: centerX + (radius * Math.cos(angleInRadians)),
     y: centerY + (radius * Math.sin(angleInRadians))
   };
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Calculate cartesian coordinates of polar coordinates</p></div><h6>Parameters</h6><div class="param"><code>centerX</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">X-axis coordinates of center point of circle segment</div></div><div class="param"><code>centerY</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">X-axis coordinates of center point of circle segment</div></div><div class="param"><code>radius</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Radius of circle segment</div></div><div class="param"><code>angleInDegrees</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">Angle of circle segment in degrees</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">Coordinates of point on circumference</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createchartrect"><span class="member-tag">method</span> Chartist.createChartRect()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createchartrect-code">Show code</button></header><pre id="chartistcore-method-createchartrect-code">
-    <code class="javascript">Chartist.createChartRect = function (svg, options, fallbackPadding) {
+};
+
+/**
+ * Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
+ *
+ * @memberof Chartist.Core
+ * @param {Object} svg The svg element for the chart
+ * @param {Object} options The Object that contains all the optional values for the chart
+ * @param {Number} [fallbackPadding] The fallback padding if partial padding objects are used
+ * @return {Object} The chart rectangles coordinates inside the svg element plus the rectangles measurements
+ */
+Chartist.createChartRect = function (svg, options, fallbackPadding) {
   var hasAxis = !!(options.axisX || options.axisY);
   var yAxisOffset = hasAxis ? options.axisY.offset : 0;
   var xAxisOffset = hasAxis ? options.axisX.offset : 0;
@@ -1046,8 +1178,8 @@ Chartist.getMetaData = function(series, index) {
   var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
   // If settings were to small to cope with offset (legacy) and padding, we&#x27;ll adjust
-  width = Math.max(width, xAxisOffset + normalizedPadding.left + normalizedPadding.right);
-  height = Math.max(height, yAxisOffset + normalizedPadding.top + normalizedPadding.bottom);
+  width = Math.max(width, yAxisOffset + normalizedPadding.left + normalizedPadding.right);
+  height = Math.max(height, xAxisOffset + normalizedPadding.top + normalizedPadding.bottom);
 
   var chartRect = {
     padding: normalizedPadding,
@@ -1083,9 +1215,22 @@ Chartist.getMetaData = function(series, index) {
   }
 
   return chartRect;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right</p></div><h6>Parameters</h6><div class="param"><code>svg</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The svg element for the chart</div></div><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The Object that contains all the optional values for the chart</div></div><div class="param"><code>[fallbackPadding]</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description">The fallback padding if partial padding objects are used</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The chart rectangles coordinates inside the svg element plus the rectangles measurements</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-creategrid"><span class="member-tag">method</span> Chartist.createGrid()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-creategrid-code">Show code</button></header><pre id="chartistcore-method-creategrid-code">
-    <code class="javascript">Chartist.createGrid = function(position, index, axis, offset, length, group, classes, eventEmitter) {
+};
+
+/**
+ * Creates a grid line based on a projected value.
+ *
+ * @memberof Chartist.Core
+ * @param position
+ * @param index
+ * @param axis
+ * @param offset
+ * @param length
+ * @param group
+ * @param classes
+ * @param eventEmitter
+ */
+Chartist.createGrid = function(position, index, axis, offset, length, group, classes, eventEmitter) {
   var positionalData = {};
   positionalData[axis.units.pos + &#x27;1&#x27;] = position;
   positionalData[axis.units.pos + &#x27;2&#x27;] = position;
@@ -1104,9 +1249,25 @@ Chartist.getMetaData = function(series, index) {
       element: gridElement
     }, positionalData)
   );
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Creates a grid line based on a projected value.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>position</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>index</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>axis</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>offset</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>group</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>classes</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>eventEmitter</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-createlabel"><span class="member-tag">method</span> Chartist.createLabel()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-createlabel-code">Show code</button></header><pre id="chartistcore-method-createlabel-code">
-    <code class="javascript">Chartist.createLabel = function(position, length, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
+};
+
+/**
+ * Creates a label based on a projected value and an axis.
+ *
+ * @memberof Chartist.Core
+ * @param position
+ * @param length
+ * @param index
+ * @param labels
+ * @param axis
+ * @param axisOffset
+ * @param labelOffset
+ * @param group
+ * @param classes
+ * @param useForeignObject
+ * @param eventEmitter
+ */
+Chartist.createLabel = function(position, length, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
   var labelElement;
   var positionalData = {};
 
@@ -1138,9 +1299,36 @@ Chartist.getMetaData = function(series, index) {
     element: labelElement,
     text: labels[index]
   }, positionalData));
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Creates a label based on a projected value and an axis.</p></div><h6>Parameters</h6><div class="param"><code></code> ( <span class="param-type"><code>position</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>length</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>index</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>labels</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>axis</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>axisOffset</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>labelOffset</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>group</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>classes</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>useForeignObject</code></span> )<div class="param-description"></div></div><div class="param"><code></code> ( <span class="param-type"><code>eventEmitter</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-optionsprovider"><span class="member-tag">method</span> Chartist.optionsProvider()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-optionsprovider-code">Show code</button></header><pre id="chartistcore-method-optionsprovider-code">
-    <code class="javascript">Chartist.optionsProvider = function (options, responsiveOptions, eventEmitter) {
+};
+
+/**
+ * Helper to read series specific options from options object. It automatically falls back to the global option if
+ * there is no option in the series options.
+ *
+ * @param {Object} series Series object
+ * @param {Object} options Chartist options object
+ * @param {string} key The options key that should be used to obtain the options
+ * @returns {*}
+ */
+Chartist.getSeriesOption = function(series, options, key) {
+  if(series.name &amp;&amp; options.series &amp;&amp; options.series[series.name]) {
+    var seriesOptions = options.series[series.name];
+    return seriesOptions.hasOwnProperty(key) ? seriesOptions[key] : options[key];
+  } else {
+    return options[key];
+  }
+};
+
+/**
+ * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
+ *
+ * @memberof Chartist.Core
+ * @param {Object} options Options set by user
+ * @param {Array} responsiveOptions Optional functions to add responsive behavior to chart
+ * @param {Object} eventEmitter The event emitter that will be used to emit the options changed events
+ * @return {Object} The consolidated options object from the defaults, base and matching responsive options
+ */
+Chartist.optionsProvider = function (options, responsiveOptions, eventEmitter) {
   var baseOptions = Chartist.extend({}, options),
     currentOptions,
     mediaQueryListeners = [],
@@ -1195,7 +1383,7 @@ Chartist.getMetaData = function(series, index) {
 };
 
 }(window, document, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>Provides options handling functionality with callback for options changes triggered by responsive options and media query matches</p></div><h6>Parameters</h6><div class="param"><code>options</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">Options set by user</div></div><div class="param"><code>responsiveOptions</code> ( <span class="param-type"><code>Array</code></span> )<div class="param-description">Optional functions to add responsive behavior to chart</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">The event emitter that will be used to emit the options changed events</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The consolidated options object from the defaults, base and matching responsive options</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>event.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistevent">Module Chartist.Event</h4><div class="module-description"><p>A very basic event module that helps to generate and catch events.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistevent-function-addeventhandler"><span class="member-tag">function</span> addEventHandler()</h5><button class="api-code-button" data-toggle-visible="#chartistevent-function-addeventhandler-code">Show code</button></header><pre id="chartistevent-function-addeventhandler-code">
+  </pre><div class="member-content"><div class="description"><p>Create or reinitialize the SVG element for the chart</p></div><h6>Parameters</h6><div class="param"><code>container</code> ( <span class="param-type"><code>Node</code></span> )<div class="param-description">The containing DOM Node object that will be used to plant the SVG element</div></div><div class="param"><code>width</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the width of the SVG element. Default is 100%</div></div><div class="param"><code>height</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Set the height of the SVG element. Default is 100%</div></div><div class="param"><code>className</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">Specify a class to be added to the SVG element</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">The created/reinitialized SVG element</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>event.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistevent">Module Chartist.Event</h4><div class="module-description"><p>A very basic event module that helps to generate and catch events.</p></div><div class="module-members"><article class="module-member function"><header class="member-header"><h5 class="member-title" id="chartistevent-function-addeventhandler"><span class="member-tag">function</span> addEventHandler()</h5><button class="api-code-button" data-toggle-visible="#chartistevent-function-addeventhandler-code">Show code</button></header><pre id="chartistevent-function-addeventhandler-code">
     <code class="javascript">function addEventHandler(event, handler) {
   handlers[event] = handlers[event] || [];
   handlers[event].push(handler);

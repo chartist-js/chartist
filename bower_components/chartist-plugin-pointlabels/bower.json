@@ -1,11 +1,11 @@
 {
   "name": "chartist-plugin-pointlabels",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": [
     "./dist/chartist-plugin-pointlabels.min.js"
   ],
   "dependencies": {
-    "chartist": "~0.8.0"
+    "chartist": "~0.9.0"
   },
   "ignore": [
     ".*",

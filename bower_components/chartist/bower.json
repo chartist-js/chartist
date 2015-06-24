@@ -1,6 +1,6 @@
 {
   "name": "chartist",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "main": [
     "./dist/chartist.min.js",
     "./dist/chartist.min.css"
@@ -12,9 +12,9 @@
     "compass-mixins": "~1.0.2",
     "codemirror": "~4.12.0",
     "base64": "~0.3.0",
-    "chartist-plugin-pointlabels": "~0.0.2",
-    "chartist-plugin-sketchy": "~0.0.1",
-    "chartist-plugin-accessibility": "~0.0.1",
+    "chartist-plugin-pointlabels": "~0.0.3",
+    "chartist-plugin-sketchy": "~0.0.2",
+    "chartist-plugin-accessibility": "~0.0.2",
     "chartist-plugin-tooltip": "~0.0.8",
     "matchMedia": "~0.2.0"
   },

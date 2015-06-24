@@ -1,6 +1,6 @@
 # Point Labels plugin for Chartist.js
 
-This is a simple plugin for Chartist.js that will put a label on top of data points on line charts. This plugin serves 
+This is a simple plugin for Chartist.js that will put a label on top of data points on line charts. This plugin serves
 as an example plugin package and can be used as starting point to create your own awesome Chartist.js plugin.
 
 Please visit http://gionkunz.github.io/chartist-js/plugins.html for more information.
@@ -14,7 +14,8 @@ var defaultOptions = {
     x: 0,
     y: -10
   },
-  textAnchor: 'middle'
+  textAnchor: 'middle',
+  labelInterpolationFnc: Chartist.noop
 };
 ```
 
@@ -30,7 +31,8 @@ var chart = new Chartist.Line('.ct-chart', {
 }, {
   plugins: [
     ctPointLabels({
-      textAnchor: 'middle'
+      textAnchor: 'middle',
+      labelInterpolationFnc: function(value) {return '$' + value.toFixed(2)}
     })
   ]
 });
