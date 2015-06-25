@@ -187,7 +187,13 @@ sections:
             - type: text
               data:
                 text: >
-                        The axis title plugin allows you to add simple titles to your axises.
+                        The axis title plugin allows you to add simple titles to your axes.
+            - type: live-example
+              data:
+                id: example-plugin-axistitle
+                classes: ct-golden-section
+                intro: >
+                          Create beautiful hand drawn charts using the Chartist Sketchy plugin.
             - type: table
               data:
                 rows:
