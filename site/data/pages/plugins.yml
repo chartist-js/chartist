@@ -193,7 +193,7 @@ sections:
                 id: example-plugin-axistitle
                 classes: ct-golden-section
                 intro: >
-                          Create beautiful hand drawn charts using the Chartist Sketchy plugin.
+                          While not a core functionality, this plugin makes it absolutely easy to add axis titles to your chart.
             - type: table
               data:
                 rows:
