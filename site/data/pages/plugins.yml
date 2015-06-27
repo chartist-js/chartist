@@ -179,6 +179,30 @@ sections:
                   -
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/gionkunz/chartist-plugin-sketchy" target="_blank">chartist-plugin-sketchy</a>'
+      - type: sub-section
+        data:
+          title: Axis Title Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The axis title plugin allows you to add simple titles to your axes.
+            - type: live-example
+              data:
+                id: example-plugin-axistitle
+                classes: ct-golden-section
+                intro: >
+                          Create beautiful hand drawn charts using the Chartist Sketchy plugin.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Alex Stanbury
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/alexstanbury/chartist-plugin-axistitle" target="_blank">chartist-plugin-axistitle</a>'
   - title: Develop a plugin
     level: 3
     items:

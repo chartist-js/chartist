@@ -15,6 +15,7 @@
     "chartist-plugin-sketchy": "~0.0.2",
     "chartist-plugin-accessibility": "~0.0.2",
     "chartist-plugin-tooltip": "~0.0.8",
+    "chartist-plugin-axistitle": "~0.0.1",
     "matchMedia": "~0.2.0"
   },
   "ignore": [
