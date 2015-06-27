@@ -23,7 +23,7 @@ chart.on('draw', function(context) {
     // With the Chartist.Svg API we can easily set an attribute on our bar that just got drawn
     context.element.attr({
       // Now we set the style attribute on our bar to override the default color of the bar. By using a HSL colour we can easily set the hue of the colour dynamically while keeping the same saturation and lightness. From the context we can also get the current value of the bar. We use that value to calculate a hue between 0 and 100 degree. This will make our bars appear green when close to the maximum and red when close to zero.
-      style: 'stroke: hsl(' + Math.floor(context.value / max * 100) + ', 50%, 50%);'
+      style: 'stroke: hsl(' + Math.floor(Chartist.getMultiValue(context.value) / max * 100) + ', 50%, 50%);'
     });
   }
 });

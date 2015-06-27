@@ -22,7 +22,7 @@ chart.on('draw', function(data) {
     data.group.append(new Chartist.Svg('circle', {
       cx: data.x2,
       cy: data.y2,
-      r: Math.abs(data.value) * 2 + 5
+      r: Math.abs(Chartist.getMultiValue(data.value)) * 2 + 5
     }, 'ct-slice-pie'));
   }
 });

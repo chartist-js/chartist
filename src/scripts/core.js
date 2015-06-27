@@ -355,12 +355,22 @@ var Chartist = {
         return recursiveConvert(value.value);
       } else {
         if(multi) {
-          return {
-            x: Chartist.getNumberOrUndefined(value.x),
-            // Single series value arrays are assumed to specify the Y-Axis value
-            // For example: [1, 2] => [{x: undefined, y: 1}, {x: undefined, y: 2}]
-            y: value.hasOwnProperty('y') ? Chartist.getNumberOrUndefined(value.y) : Chartist.getNumberOrUndefined(value)
-          };
+          var multiValue = {};
+
+          // Single series value arrays are assumed to specify the Y-Axis value
+          // For example: [1, 2] => [{x: undefined, y: 1}, {x: undefined, y: 2}]
+          // If multi is a string then it's assumed that it specified which dimension should be filled as default
+          if(typeof multi === 'string') {
+            multiValue[multi] = Chartist.getNumberOrUndefined(value);
+          } else {
+            multiValue.y = Chartist.getNumberOrUndefined(value);
+          }
+
+          multiValue.x = value.hasOwnProperty('x') ? Chartist.getNumberOrUndefined(value.x) : multiValue.x;
+          multiValue.y = value.hasOwnProperty('y') ? Chartist.getNumberOrUndefined(value.y) : multiValue.y;
+
+          return multiValue;
+
         } else {
           return Chartist.getNumberOrUndefined(value);
         }
@@ -440,7 +450,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {Array} data The array that contains the data to be visualized in the chart
-   * @param {Object} options The Object that contains all the optional values for the chart
+   * @param {Object} options The Object that contains the chart options
    * @param {String} dimension Axis dimension 'x' or 'y' used to access the correct value and high / low configuration
    * @return {Object} An object that contains the highest and lowest value that will be visualized on the chart.
    */
@@ -451,9 +461,9 @@ var Chartist = {
     var highLow = {
         high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
         low: options.low === undefined ? Number.MAX_VALUE : +options.low
-      },
-      findHigh = options.high === undefined,
-      findLow = options.low === undefined;
+      };
+    var findHigh = options.high === undefined;
+    var findLow = options.low === undefined;
 
     // Function to recursively walk through arrays and find highest and lowest number
     function recursiveHighLow(data) {
@@ -479,6 +489,14 @@ var Chartist = {
     // Start to find highest and lowest number recursively
     if(findHigh || findLow) {
       recursiveHighLow(data);
+    }
+
+    // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
+    // used to generate the chart. This is useful when the chart always needs to contain the position of the
+    // invisible reference value in the view i.e. for bipolar scales.
+    if (options.referenceValue || options.referenceValue === 0) {
+      highLow.high = Math.max(options.referenceValue, highLow.high);
+      highLow.low = Math.min(options.referenceValue, highLow.low);
     }
 
     // If high and low are the same because of misconfiguration or flat data (only the same value) we need
@@ -543,7 +561,7 @@ var Chartist = {
     if(Chartist.isNum(value)) {
       return +value;
     } else if(value) {
-      return value[dimension] || 0;
+      return value[dimension || 'y'] || 0;
     } else {
       return 0;
     }
@@ -594,11 +612,10 @@ var Chartist = {
    * @param {Number} axisLength The length of the Axis used for
    * @param {Object} highLow An object containing a high and low property indicating the value range of the chart.
    * @param {Number} scaleMinSpace The minimum projected length a step should result in
-   * @param {Number} referenceValue The reference value for the chart.
    * @param {Boolean} onlyInteger
    * @return {Object} All the values to set the bounds of the chart
    */
-  Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, referenceValue, onlyInteger) {
+  Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, onlyInteger) {
     var i,
       optimizationCounter = 0,
       newMin,
@@ -607,14 +624,6 @@ var Chartist = {
         high: highLow.high,
         low: highLow.low
       };
-
-    // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
-    // used to generate the chart. This is useful when the chart always needs to contain the position of the
-    // invisible reference value in the view i.e. for bipolar scales.
-    if (referenceValue || referenceValue === 0) {
-      bounds.high = Math.max(referenceValue, bounds.high);
-      bounds.low = Math.min(referenceValue, bounds.low);
-    }
 
     bounds.valueRange = bounds.high - bounds.low;
     bounds.oom = Chartist.orderOfMagnitude(bounds.valueRange);
