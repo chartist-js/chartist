@@ -1,0 +1,8 @@
+/* chartist-plugin-axistitle 0.0.1
+ * Copyright © 2015 Alex Stanbury
+ * Free to use under the WTFPL license.
+ * http://www.wtfpl.net/
+ */
+
+!function(a,b){"function"==typeof define&&define.amd?define([],function(){return a.returnExportsGlobal=b()}):"object"==typeof exports?module.exports=b():a["Chartist.plugins.ctAxisTitle"]=b()}(this,function(){return function(a,b,c){"use strict";var d={axisTitle:"",axisClass:"ct-axis-title",offset:{x:0,y:0},textAnchor:"middle",flipText:!1},e={xAxis:d,yAxis:d};c.plugins=c.plugins||{},c.plugins.ctAxisTitle=function(a){return a=c.extend({},e,a),function(b){b.on("created",function(b){if(!a.axisX.axisTitle&&!a.axisY.axisTitle)throw new Error("ctAxisTitle plugin - You must provide at least one axis title");if(!b.axisX&&!b.axisY)throw new Error("ctAxisTitle plugin can only be used on charts that have at least one axis");var d,e,f;if(a.axisX.axisTitle&&b.axisX&&(d=b.axisX.axisLength/2+b.options.axisX.offset+b.options.chartPadding.left,e=b.options.chartPadding.top,"end"===b.options.axisX.position&&(e+=b.axisY.axisLength),f=new c.Svg("text"),f.addClass(a.axisX.axisClass),f.text(a.axisX.axisTitle),f.attr({x:d+a.axisX.offset.x,y:e+a.axisX.offset.y,"text-anchor":a.axisX.textAnchor}),b.svg.append(f,!0)),a.axisY.axisTitle&&b.axisY){d=0,e=b.axisY.axisLength/2+b.options.chartPadding.top,"end"===b.options.axisY.position&&(d=b.axisX.axisLength);var g="rotate("+(a.axisY.flipTitle?-90:90)+", "+d+", "+e+")";f=new c.Svg("text"),f.addClass(a.axisY.axisClass),f.text(a.axisY.axisTitle),f.attr({x:d+a.axisY.offset.x,y:e+a.axisY.offset.y,transform:g,"text-anchor":a.axisY.textAnchor}),b.svg.append(f,!0)}})}}}(window,document,Chartist),Chartist.plugins.ctAxisTitle});
+//# sourceMappingURL=chartist-plugin-axistitle.min.js.map

@@ -81,12 +81,14 @@
       options = Chartist.extend({}, defaultOptions, options);
 
       return function ctAccessibility(chart) {
-        var wrapper,
-          elementId = typeof options.elementId === 'function' ? options.elementId() : options.elementId;
+        var elementId = typeof options.elementId === 'function' ? options.elementId() : options.elementId;
 
         chart.on('created', function (data) {
-          if (wrapper) {
-            wrapper.parentNode.removeChild(wrapper);
+          var containerElement = data.svg._node.parentNode;
+
+          var previousElement = containerElement.querySelector('#' + elementId);
+          if(previousElement) {
+            containerElement.removeChild(previousElement);
           }
 
           // As we are now compensating the SVG graphic with the chart with an accessibility table, we hide it for ARIA
@@ -132,9 +134,7 @@
 
           } else {
             // For line and bar charts we have multiple series and therefore also row headers
-            var normalizedData = Chartist.normalizeDataArray(
-              Chartist.getDataArray(
-                chart.data, chart.optionsProvider.currentOptions.reverseData), chart.data.labels.length);
+            var normalizedData = Chartist.getDataArray(chart.data, chart.optionsProvider.getCurrentOptions().reverseData);
 
             // Add column headers inclusing the series column header for the row headers
             [options.seriesHeader].concat(chart.data.labels).forEach(function (text) {
@@ -164,8 +164,7 @@
           }
 
           // Update invisible table in DOM and update table element with newly created table
-          chart.container.innerHTML += element.toString();
-          wrapper = chart.container.querySelector('#' + elementId);
+          containerElement.appendChild(new DOMParser().parseFromString(element.toString(), 'text/html').getElementById(elementId));
         });
       };
     };
