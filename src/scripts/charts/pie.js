@@ -79,6 +79,7 @@
    */
   function createChart(options) {
     var seriesGroups = [],
+      labelsGroup,
       chartRect,
       radius,
       labelRadius,
@@ -127,6 +128,11 @@
     var hasSingleValInSeries = this.data.series.filter(function(val) {
       return val.hasOwnProperty('value') ? val.value !== 0 : val !== 0;
     }).length === 1;
+
+    //if we need to show labels we create the label group now
+    if(options.showLabel) {
+      labelsGroup = this.svg.elem('g', null, null, true);
+    }
 
     // Draw the series
     // initialize series groups
@@ -208,7 +214,7 @@
           interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
 
         if(interpolatedValue || interpolatedValue === 0) {
-          var labelElement = seriesGroups[i].elem('text', {
+          var labelElement = labelsGroup.elem('text', {
             dx: labelPosition.x,
             dy: labelPosition.y,
             'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
@@ -218,7 +224,7 @@
           this.eventEmitter.emit('draw', {
             type: 'label',
             index: i,
-            group: seriesGroups[i],
+            group: labelsGroup,
             element: labelElement,
             text: '' + interpolatedValue,
             x: labelPosition.x,
