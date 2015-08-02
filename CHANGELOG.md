@@ -1,3 +1,10 @@
+v0.9.2 - 2 Aug 2015
+--------------------
+- Enabled bar charts to use dynamic axes fixes #363, fixes #355
+- Added axis title plugin to plugins page (Thanks to @alexstanbury !)
+- Added a label group for Pie charts to prevent occlusion by slices (Thanks to Anthony Jimenez!)
+- Added better handling for multi values when writing custom attributes, fixes #379
+
 v0.9.1 - 24 Jun 2015
 --------------------
 - Fixed bug with areaBase narrowing process in area charts, fixes #364
