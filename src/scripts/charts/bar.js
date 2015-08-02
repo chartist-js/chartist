@@ -330,9 +330,14 @@
         positions.y1 = Math.min(Math.max(positions.y1, chartRect.y2), chartRect.y1);
         positions.y2 = Math.min(Math.max(positions.y2, chartRect.y2), chartRect.y1);
 
+        // For flipped axis we need to normalize the value X and Y values
+        ;
+
         // Create bar element
         bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
-          'value': value.x === undefined ? value.y : value.x + ',' + value.y,
+          'value': [value.x, value.y].filter(function(v) {
+            return v;
+          }).join(','),
           'meta': Chartist.getMetaData(series, valueIndex)
         }, Chartist.xmlNs.uri);
 
