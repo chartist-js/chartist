@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.9.2
+/* Chartist.js 0.9.3
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.9.2'
+  version: '0.9.3'
 };
 
 (function (window, document, Chartist) {
@@ -2184,7 +2184,7 @@ var Chartist = {
    * @return {Boolean} True of false if the feature is supported or not
    */
   Chartist.Svg.isSupported = function(feature) {
-    return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
+    return document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#' + feature, '1.1');
   };
 
   /**
@@ -2869,7 +2869,7 @@ var Chartist = {
 
 }(window, document, Chartist));
 ;/**
- * The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the while axis length. The projection is done using the index of the data value rather than the value itself and therefore it's only useful for distribution purpose.
+ * The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the whole axis length. The projection is done using the index of the data value rather than the value itself and therefore it's only useful for distribution purpose.
  * **Options**
  * The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.
  * ```javascript
@@ -3602,13 +3602,13 @@ var Chartist = {
         // We need to transform coordinates differently based on the chart layout
         if(options.horizontalBars) {
           projected = {
-            x: chartRect.x1 + valueAxis.projectValue(value.x || 0, valueIndex, data.normalized[seriesIndex]),
-            y: chartRect.y1 - labelAxis.projectValue(value.y || 0, labelAxisValueIndex, data.normalized[seriesIndex])
+            x: chartRect.x1 + valueAxis.projectValue(value && value.x ? value.x : 0, valueIndex, data.normalized[seriesIndex]),
+            y: chartRect.y1 - labelAxis.projectValue(value && value.y ? value.y : 0, labelAxisValueIndex, data.normalized[seriesIndex])
           };
         } else {
           projected = {
-            x: chartRect.x1 + labelAxis.projectValue(value.x || 0, labelAxisValueIndex, data.normalized[seriesIndex]),
-            y: chartRect.y1 - valueAxis.projectValue(value.y || 0, valueIndex, data.normalized[seriesIndex])
+            x: chartRect.x1 + labelAxis.projectValue(value && value.x ? value.x : 0, labelAxisValueIndex, data.normalized[seriesIndex]),
+            y: chartRect.y1 - valueAxis.projectValue(value && value.y ? value.y : 0, valueIndex, data.normalized[seriesIndex])
           }
         }
 
@@ -3646,9 +3646,6 @@ var Chartist = {
         positions.x2 = Math.min(Math.max(positions.x2, chartRect.x1), chartRect.x2);
         positions.y1 = Math.min(Math.max(positions.y1, chartRect.y2), chartRect.y1);
         positions.y2 = Math.min(Math.max(positions.y2, chartRect.y2), chartRect.y1);
-
-        // For flipped axis we need to normalize the value X and Y values
-        ;
 
         // Create bar element
         bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
