@@ -533,7 +533,7 @@
    * @return {Boolean} True of false if the feature is supported or not
    */
   Chartist.Svg.isSupported = function(feature) {
-    return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
+    return document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#' + feature, '1.1');
   };
 
   /**
