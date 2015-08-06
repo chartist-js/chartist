@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.9.3
+/* Chartist.js 0.9.4
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.9.3'
+  version: '0.9.4'
 };
 
 (function (window, document, Chartist) {
@@ -1690,21 +1690,21 @@ var Chartist = {
       if(name === 'svg') {
         this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
       }
+    }
 
-      if(attributes) {
-        this.attr(attributes);
-      }
+    if(attributes) {
+      this.attr(attributes);
+    }
 
-      if(className) {
-        this.addClass(className);
-      }
+    if(className) {
+      this.addClass(className);
+    }
 
-      if(parent) {
-        if (insertFirst && parent._node.firstChild) {
-          parent._node.insertBefore(this._node, parent._node.firstChild);
-        } else {
-          parent._node.appendChild(this._node);
-        }
+    if(parent) {
+      if (insertFirst && parent._node.firstChild) {
+        parent._node.insertBefore(this._node, parent._node.firstChild);
+      } else {
+        parent._node.appendChild(this._node);
       }
     }
   }
@@ -3127,6 +3127,8 @@ var Chartist = {
             meta: pathElement.data.meta,
             series: series,
             seriesIndex: seriesIndex,
+            axisX: axisX,
+            axisY: axisY,
             group: seriesElement,
             element: point,
             x: pathElement.x,
@@ -3148,6 +3150,8 @@ var Chartist = {
           index: seriesIndex,
           series: series,
           seriesIndex: seriesIndex,
+          axisX: axisX,
+          axisY: axisY,
           group: seriesElement,
           element: line
         });
@@ -3199,6 +3203,8 @@ var Chartist = {
             path: areaPath.clone(),
             series: series,
             seriesIndex: seriesIndex,
+            axisX: axisX,
+            axisY: axisY,
             chartRect: chartRect,
             index: seriesIndex,
             group: seriesElement,
@@ -3662,6 +3668,8 @@ var Chartist = {
           meta: Chartist.getMetaData(series, valueIndex),
           series: series,
           seriesIndex: seriesIndex,
+          axisX: axisX,
+          axisY: axisY,
           chartRect: chartRect,
           group: seriesElement,
           element: bar

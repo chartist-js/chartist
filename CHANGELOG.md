@@ -1,3 +1,8 @@
+v0.9.4 - 06 Aug 2015
+--------------------
+- Added axes to all events where they are available in context to provide better API convenience when developing plugins
+- Consider additional parameters of SVG elem when called with DOM node
+
 v0.9.3 - 05 Aug 2015
 --------------------
 - Added better check for undefined values in bar chart, fixes #400
