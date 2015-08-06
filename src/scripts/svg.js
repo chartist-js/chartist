@@ -39,21 +39,21 @@
       if(name === 'svg') {
         this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
       }
+    }
 
-      if(attributes) {
-        this.attr(attributes);
-      }
+    if(attributes) {
+      this.attr(attributes);
+    }
 
-      if(className) {
-        this.addClass(className);
-      }
+    if(className) {
+      this.addClass(className);
+    }
 
-      if(parent) {
-        if (insertFirst && parent._node.firstChild) {
-          parent._node.insertBefore(this._node, parent._node.firstChild);
-        } else {
-          parent._node.appendChild(this._node);
-        }
+    if(parent) {
+      if (insertFirst && parent._node.firstChild) {
+        parent._node.insertBefore(this._node, parent._node.firstChild);
+      } else {
+        parent._node.appendChild(this._node);
       }
     }
   }
