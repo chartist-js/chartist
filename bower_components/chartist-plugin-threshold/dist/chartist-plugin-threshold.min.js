@@ -1,0 +1,8 @@
+/* chartist-plugin-threshold 0.0.1
+ * Copyright © 2015 Gion Kunz
+ * Free to use under the WTFPL license.
+ * http://www.wtfpl.net/
+ */
+
+!function(a,b){"function"==typeof define&&define.amd?define([],function(){return a.returnExportsGlobal=b()}):"object"==typeof exports?module.exports=b():a["Chartist.plugins.ctThreshold"]=b()}(this,function(){return function(a,b,c){"use strict";function d(a,b){var c=a.svg.querySelector("defs")||a.svg.elem("defs"),d=a.chartRect.height()-a.axisY.projectValue(b.threshold)+a.chartRect.y2,e=a.svg.width(),f=a.svg.height();return c.elem("mask",{x:0,y:0,width:e,height:f,id:b.maskNames.aboveThreshold}).elem("rect",{x:0,y:0,width:e,height:d,fill:"white"}),c.elem("mask",{x:0,y:0,width:e,height:f,id:b.maskNames.belowThreshold}).elem("rect",{x:0,y:d,width:e,height:f-d,fill:"white"}),c}var e={threshold:0,classNames:{aboveThreshold:"ct-threshold-above",belowThreshold:"ct-threshold-below"},maskNames:{aboveThreshold:"ct-threshold-mask-above",belowThreshold:"ct-threshold-mask-below"}};c.plugins=c.plugins||{},c.plugins.ctThreshold=function(a){return a=c.extend({},e,a),function(b){(b instanceof c.Line||b instanceof c.Bar)&&(b.on("draw",function(b){"point"===b.type?b.element.addClass(b.value.y>=a.threshold?a.classNames.aboveThreshold:a.classNames.belowThreshold):("line"===b.type||"bar"===b.type||"area"===b.type)&&(b.element.parent().elem(b.element._node.cloneNode(!0)).attr({mask:"url(#"+a.maskNames.aboveThreshold+")"}).addClass(a.classNames.aboveThreshold),b.element.attr({mask:"url(#"+a.maskNames.belowThreshold+")"}).addClass(a.classNames.belowThreshold))}),b.on("created",function(b){d(b,a)}))}}}(window,document,Chartist),Chartist.plugins.ctThreshold});
+//# sourceMappingURL=chartist-plugin-threshold.min.js.map

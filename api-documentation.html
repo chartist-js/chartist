@@ -23,7 +23,7 @@
   // If ticks is explicitly set, then the axis will not compute the ticks with the divisor, but directly use the data in ticks to determine at what points on the axis a tick need to be generated.
   ticks: [1, 10, 20, 30]
 };
-</code></pre></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>step-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartiststepaxis">Module Chartist.StepAxis</h4><div class="module-description"><p>The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the while axis length. The projection is done using the index of the data value rather than the value itself and therefore it&#39;s only useful for distribution purpose.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.</p><pre><code class="lang-javascript">var options = {
+</code></pre></div><div class="module-members"></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>step-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartiststepaxis">Module Chartist.StepAxis</h4><div class="module-description"><p>The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the whole axis length. The projection is done using the index of the data value rather than the value itself and therefore it&#39;s only useful for distribution purpose.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.</p><pre><code class="lang-javascript">var options = {
   // Ticks to be used to distribute across the axis length. As this axis type relies on the index of the value rather than the value, arbitrary data that can be converted to a string can be used as ticks.
   ticks: [&#39;One&#39;, &#39;Two&#39;, &#39;Three&#39;],
   // If set to true the full width will be used to distribute the values where the last value will be at the maximum of the axis length. If false the spaces between the ticks will be evenly distributed instead.
@@ -1945,21 +1945,21 @@ Chartist.Svg.Path.join = join;
     if(name === &#x27;svg&#x27;) {
       this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
     }
+  }
 
-    if(attributes) {
-      this.attr(attributes);
-    }
+  if(attributes) {
+    this.attr(attributes);
+  }
 
-    if(className) {
-      this.addClass(className);
-    }
+  if(className) {
+    this.addClass(className);
+  }
 
-    if(parent) {
-      if (insertFirst &amp;&amp; parent._node.firstChild) {
-        parent._node.insertBefore(this._node, parent._node.firstChild);
-      } else {
-        parent._node.appendChild(this._node);
-      }
+  if(parent) {
+    if (insertFirst &amp;&amp; parent._node.firstChild) {
+      parent._node.insertBefore(this._node, parent._node.firstChild);
+    } else {
+      parent._node.appendChild(this._node);
     }
   }
 }</code>
@@ -2267,7 +2267,7 @@ Chartist.Svg = Chartist.Class.extend({
 });
 </code></pre><p><strong>Automatic unit conversion</strong><br>For the <code>dur</code> and the <code>begin</code> animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.<br><strong>Guided mode</strong><br>The default behavior of SMIL animations with offset using the <code>begin</code> attribute is that the attribute will keep it&#39;s original value until the animation starts. Mostly this behavior is not desired as you&#39;d like to have your element attributes already initialized with the animation <code>from</code> value even before the animation starts. Also if you don&#39;t specify <code>fill=&quot;freeze&quot;</code> on an animate element or if you delete the animation after it&#39;s done (which is done in guided mode) the attribute will switch back to the initial value. This behavior is also not desired when performing simple one-time animations. For one-time animations you&#39;d want to trigger animations immediately instead of relative to the document begin time. That&#39;s why in guided mode Chartist.Svg will also use the <code>begin</code> property to schedule a timeout and manually start the animation after the timeout. If you&#39;re using multiple SMIL definition objects for an attribute (in an array), guided mode will be disabled for this attribute, even if you explicitly enabled it.<br>If guided mode is enabled the following behavior is added:</p><ul><li>Before the animation starts (even when delayed with <code>begin</code>) the animated attribute will be set already to the <code>from</code> value of the animation</li><li><code>begin</code> is explicitly set to <code>indefinite</code> so it can be started manually without relying on document begin time (creation)</li><li>The animate element will be forced to use <code>fill=&quot;freeze&quot;</code></li><li>The animation will be triggered with <code>beginElement()</code> in a timeout where <code>begin</code> of the definition object is interpreted in milli seconds. If no <code>begin</code> was specified the timeout is triggered immediately.</li><li>After the animation the element attribute value will be set to the <code>to</code> value of the animation</li><li>The animate element is deleted from the DOM</li></ul></div><h6>Parameters</h6><div class="param"><code>animations</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">An animations object where the property keys are the attributes you&#x27;d like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.</div></div><div class="param"><code>guided</code> ( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.</div></div><div class="param"><code>eventEmitter</code> ( <span class="param-type"><code>Object</code></span> )<div class="param-description">If specified, this event emitter will be notified when an animation starts or ends.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Chartist.Svg</code></span> )<div class="param-description">The current element where the animation was added</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistsvg-method-issupported"><span class="member-tag">method</span> Chartist.Svg.isSupported()</h5><button class="api-code-button" data-toggle-visible="#chartistsvg-method-issupported-code">Show code</button></header><pre id="chartistsvg-method-issupported-code">
     <code class="javascript">Chartist.Svg.isSupported = function(feature) {
-  return document.implementation.hasFeature(&#x27;www.http://w3.org/TR/SVG11/feature#&#x27; + feature, &#x27;1.1&#x27;);
+  return document.implementation.hasFeature(&#x27;http://www.w3.org/TR/SVG11/feature#&#x27; + feature, &#x27;1.1&#x27;);
 };
 
 /**

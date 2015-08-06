@@ -1,0 +1,15 @@
+.ct-line.ct-threshold-above, .ct-point.ct-threshold-above, .ct-bar.ct-threshold-above {
+  stroke: #f05b4f;
+}
+
+.ct-line.ct-threshold-below, .ct-point.ct-threshold-below, .ct-bar.ct-threshold-below {
+  stroke: #59922b;
+}
+
+.ct-area.ct-threshold-above {
+  fill: #f05b4f;
+}
+
+.ct-area.ct-threshold-below {
+  fill: #59922b;
+}

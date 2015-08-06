@@ -1,0 +1,17 @@
+{
+  "name": "chartist-plugin-threshold",
+  "main": [
+    "./dist/chartist-plugin-threshold.min.js"
+  ],
+  "dependencies": {
+    "chartist": "^0.9.4"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ]
+}
