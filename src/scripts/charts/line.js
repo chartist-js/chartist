@@ -218,6 +218,8 @@
             meta: pathElement.data.meta,
             series: series,
             seriesIndex: seriesIndex,
+            axisX: axisX,
+            axisY: axisY,
             group: seriesElement,
             element: point,
             x: pathElement.x,
@@ -239,6 +241,8 @@
           index: seriesIndex,
           series: series,
           seriesIndex: seriesIndex,
+          axisX: axisX,
+          axisY: axisY,
           group: seriesElement,
           element: line
         });
@@ -290,6 +294,8 @@
             path: areaPath.clone(),
             series: series,
             seriesIndex: seriesIndex,
+            axisX: axisX,
+            axisY: axisY,
             chartRect: chartRect,
             index: seriesIndex,
             group: seriesElement,

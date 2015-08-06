@@ -345,6 +345,8 @@
           meta: Chartist.getMetaData(series, valueIndex),
           series: series,
           seriesIndex: seriesIndex,
+          axisX: axisX,
+          axisY: axisY,
           chartRect: chartRect,
           group: seriesElement,
           element: bar
