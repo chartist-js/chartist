@@ -203,6 +203,31 @@ sections:
                   -
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/alexstanbury/chartist-plugin-axistitle" target="_blank">chartist-plugin-axistitle</a>'
+      - type: sub-section
+        data:
+          title: Threshold Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        This Chartist plugin can be used to divide your Line or Bar chart with a threshold.
+            - type: live-example
+              data:
+                id: example-plugin-threshold
+                classes: ct-golden-section
+                intro: >
+                          Everything above and below the
+                          threshold will be tagged with a special class, in order for your to apply different styling where appropriate.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-threshold" target="_blank">chartist-plugin-threshold</a>'
   - title: Develop a plugin
     level: 3
     items:
