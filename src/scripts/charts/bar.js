@@ -77,7 +77,9 @@
     // Specify the distance in pixel of bars in a group
     seriesBarDistance: 15,
     // If set to true this property will cause the series bars to be stacked and form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
-    stackBars: false,
+    stackBars: false,  
+    // If set to true this property will cause the series bars to be stacked and force all bars to draw from the zero line.
+    negativeStackBars: false,
     // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
     horizontalBars: false,
     // If set to true then each bar will represent a series and the data array is expected to be a one dimensional array of data values rather than a series array of series. This is useful if the bar chart should represent a profile rather than some data over time.
@@ -321,8 +323,8 @@
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
         positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
         // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
-        positions[labelAxis.counterUnits.pos + '1'] = options.stackBars ? previousStack : zeroPoint;
-        positions[labelAxis.counterUnits.pos + '2'] = options.stackBars ? stackedBarValues[valueIndex] : projected[labelAxis.counterUnits.pos];
+        positions[labelAxis.counterUnits.pos + '1'] = options.stackBars && !options.negativeStackBars ? previousStack : zeroPoint;
+        positions[labelAxis.counterUnits.pos + '2'] = options.stackBars && !options.negativeStackBars ? stackedBarValues[valueIndex] : projected[labelAxis.counterUnits.pos];
 
         // Limit x and y so that they are within the chart rect
         positions.x1 = Math.min(Math.max(positions.x1, chartRect.x1), chartRect.x2);
