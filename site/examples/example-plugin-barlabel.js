@@ -6,7 +6,7 @@ new Chartist.Bar('.ct-chart', {
   ]
 }, {
   plugins: [
-    ctBarLabels({
+    Chartist.plugins.ctBarLabels({
       labelClass: 'ct-bar-label',
       textAnchor: 'middle'
     })
