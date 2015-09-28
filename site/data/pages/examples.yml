@@ -21,6 +21,15 @@ sections:
                    point or to terminate the series before others.
       - type: live-example
         data:
+          title: Filled holes in data
+          level: 4
+          id: example-line-data-fill-holes
+          classes: ct-golden-section
+          intro: >
+                   Sometimes you don't want your data looking so fragmented, even when it really is.  That's why you
+                   can also configure Chartist to smooth over holes in your data.
+      - type: live-example
+        data:
           title: Only whole numbers
           level: 4
           id: example-line-only-integer
