@@ -280,7 +280,7 @@ describe('Chartist core', function() {
     });
   });
   
-  fdescribe('quantity', function() {
+  describe('quantity', function() {
     
     it('should return value for numbers', function() {
       expect(Chartist.quantity(100)).toEqual({ value: 100 });

@@ -79,11 +79,7 @@ var Chartist = {
    * @return {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
    */
   Chartist.stripUnit = function(value) {
-    if(typeof value === 'string') {
-      value = value.replace(/[^0-9\+-\.]/g, '');
-    }
-
-    return +value;
+    return Chartist.quantity(value).value;
   };
 
   /**
