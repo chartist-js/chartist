@@ -295,7 +295,6 @@
 
     return function step(pathCoordinates, valueData) {
       var path = new Chartist.Svg.Path();
-      var hole = true;
 
       var prevX, prevY, prevData;
 
