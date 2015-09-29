@@ -103,6 +103,24 @@ var Chartist = {
   };
 
   /**
+   * Converts a number or string to a quantity object.
+   *
+   * @memberof Chartist.Core   
+   * @param {String|Number} input
+   * @return {Object} Returns an object containing the value and the unit.
+   */
+  Chartist.quantity = function(input) {
+    if (typeof input === 'string') {
+      var match = (/^(\d+)\s*(.*)$/g).exec(input);
+      return {
+        value : +match[1],
+        unit: match[2] || undefined
+      };
+    }
+    return { value: input };
+  };
+
+  /**
    * This is a wrapper around document.querySelector that will return the query if it's already of type Node
    *
    * @memberof Chartist.Core

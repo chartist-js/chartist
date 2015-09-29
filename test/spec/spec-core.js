@@ -279,4 +279,27 @@ describe('Chartist core', function() {
       });
     });
   });
+  
+  fdescribe('quantity', function() {
+    
+    it('should return value for numbers', function() {
+      expect(Chartist.quantity(100)).toEqual({ value: 100 });
+      expect(Chartist.quantity(0)).toEqual({ value: 0 });
+      expect(Chartist.quantity(NaN)).toEqual({ value: NaN });
+      expect(Chartist.quantity(null)).toEqual({ value: null });
+      expect(Chartist.quantity(undefined)).toEqual({ value: undefined });
+    });
+    
+    it('should return value without unit from string', function() {
+      expect(Chartist.quantity('100')).toEqual({ value: 100, unit : undefined });
+      expect(Chartist.quantity('0')).toEqual({ value: 0, unit : undefined });
+    });
+    
+    it('should return value and unit from string', function() {
+      expect(Chartist.quantity('100%')).toEqual({ value: 100, unit :'%' });
+      expect(Chartist.quantity('100 %')).toEqual({ value: 100, unit :'%' });
+      expect(Chartist.quantity('0px')).toEqual({ value: 0, unit: 'px' });
+    });
+    
+  });
 });
