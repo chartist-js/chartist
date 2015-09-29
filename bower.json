@@ -17,6 +17,7 @@
     "chartist-plugin-tooltip": "~0.0.8",
     "chartist-plugin-axistitle": "~0.0.1",
     "chartist-plugin-threshold": "~0.0.1",
+    "chartist-plugin-fill-donut": "~0.0.1",
     "matchMedia": "~0.2.0"
   },
   "ignore": [

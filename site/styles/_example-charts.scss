@@ -76,3 +76,35 @@
     fill: #59922b;
   }
 }
+
+#example-plugin-fill-donut {
+  .ct-chart-donut .ct-series-a .ct-slice-donut {
+    stroke: #d70206;
+  }
+
+  .ct-chart-donut .ct-series-b .ct-slice-donut {
+    stroke: rgba(0,0,0,.4);
+    opacity: 0.0;
+  }
+
+  .ct-chart-donut .ct-fill-donut .ct-slice-donut {
+    stroke: rgba(0,0,0,.4);
+    opacity: 1;
+  }
+
+  .ct-fill-donut-label {
+    h3 {
+      font-weight: bolder;
+    }
+    
+    small {
+      font-size: 0.6em;
+    }
+
+    
+    i { 
+      font-size: 1.5em; 
+    }
+
+  }
+}
