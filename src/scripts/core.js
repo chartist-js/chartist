@@ -103,7 +103,7 @@ var Chartist = {
    *
    * @memberof Chartist.Core   
    * @param {String|Number} input
-   * @return {Object} Returns an object containing the value and the unit.
+   * @return {Object} Returns an object containing the value as number and the unit as string.
    */
   Chartist.quantity = function(input) {
     if (typeof input === 'string') {
@@ -456,7 +456,7 @@ var Chartist = {
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
+    return Math.max((Chartist.quantity(options.height).value || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
   };
 
   /**
@@ -736,8 +736,8 @@ var Chartist = {
     var yAxisOffset = hasAxis ? options.axisY.offset : 0;
     var xAxisOffset = hasAxis ? options.axisX.offset : 0;
     // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
-    var width = svg.width() || Chartist.stripUnit(options.width) || 0;
-    var height = svg.height() || Chartist.stripUnit(options.height) || 0;
+    var width = svg.width() || Chartist.quantity(options.width).value || 0;
+    var height = svg.height() || Chartist.quantity(options.height).value || 0;
     var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     // If settings were to small to cope with offset (legacy) and padding, we'll adjust
