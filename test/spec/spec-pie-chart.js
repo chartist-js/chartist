@@ -182,4 +182,59 @@ describe('Pie chart tests', function() {
     });
       
   });
+  
+  describe('Pie Chart with relative donutWidth', function() {
+    
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var data = {
+        series: [20, 10, 30, 40]
+      };
+      var options =  {
+        chartPadding:50,
+        height:500,
+        width:500,
+        donut: true,
+        donutWidth: '25%',
+        showLabel: false
+      };
+      var chart = new Chartist.Pie('.ct-chart', data, options);
+      chart.on('created', callback);
+    }
+    
+    it('should render four strokes', function(done) {
+      onCreated(function() {
+        expect($('.ct-slice-donut').length).toBe(4);
+        done();
+      });
+    });
+
+    it('should create slice path', function(done) {
+      onCreated(function() {
+        $('.ct-slice-donut').each(function() {
+          
+          var num = '\\d+(\\.\\d*)?';
+          var pattern = 
+            '^M' + num + ',' + num
+            + 'A175,175,0,0,0,' + num + ',' + num
+            + '$'
+            ;
+          var path = $(this).attr('d');
+          expect(path).toMatch(pattern);
+        });
+        done();
+      });      
+    })
+    
+    it('should set stroke-width', function(done) {
+     onCreated(function() {
+        $('.ct-slice-donut').each(function() {          
+          var style = $(this).attr('style');
+          expect(style).toMatch('stroke-width:\\s?50px');
+        });
+        done();
+      });    
+    });  
+  });
+  
 });
