@@ -55,6 +55,20 @@ to the masses.
 5. Richer Sass / CSS framework
 6. Other charts types (spider etc.)
 
+## Plugins
+
+Some features aren't right for the core product
+but there is a great set of plugins available
+which add features like:
+
+* [Axis labels](http://gionkunz.github.io/chartist-js/plugins.html#axis-title-plugin)
+* [Tooltips at data points](https://gionkunz.github.io/chartist-js/plugins.html#tooltip-plugin)
+* [Coloring above/below a threshold](https://gionkunz.github.io/chartist-js/plugins.html#threshold-plugin)
+
+and more.
+
+See all the plugins [here](https://gionkunz.github.io/chartist-js/plugins.html).
+
 ## Contribution
 
 We are looking for people who share the idea of having a simple, flexible charting library that is responsive and uses
