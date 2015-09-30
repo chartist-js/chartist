@@ -192,7 +192,7 @@
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut) {
         pathElement.attr({
-          'style': 'stroke-width: ' + (donutWidth.value) + 'px'
+          'style': 'stroke-width: ' + donutWidth.value + 'px'
         });
       }
 
