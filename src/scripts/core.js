@@ -72,17 +72,6 @@ var Chartist = {
   };
 
   /**
-   * Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.
-   *
-   * @memberof Chartist.Core
-   * @param {String|Number} value
-   * @return {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
-   */
-  Chartist.stripUnit = function(value) {
-    return Chartist.quantity(value).value;
-  };
-
-  /**
    * Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.
    *
    * @memberof Chartist.Core
