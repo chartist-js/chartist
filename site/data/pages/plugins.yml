@@ -254,6 +254,31 @@ sections:
                   -
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/gionkunz/chartist-plugin-threshold" target="_blank">chartist-plugin-threshold</a>'
+      - type: sub-section
+        data:
+          title: Zoom Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The zoom plugin allows you to zoom into charts.
+            - type: live-example
+              data:
+                id: example-plugin-zoom
+                classes: ct-golden-section
+                intro: >
+                          Use the left mouse button to drag a zoom box. The plugin provides a callback that can be used to reset the zoom.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Hannes Kamecke
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/hansmaad/chartist-plugin-zoom" target="_blank">chartist-plugin-zoom</a>'                 
+                    
   - title: Develop a plugin
     level: 3
     items:
