@@ -324,7 +324,7 @@
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
         positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
         
-        if(options.stackBars && (options.stackMode == 'accumulate' || !options.stackMode)) {
+        if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode)) {
           // Stack mode: accumulate (default)
           // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
           // We want backwards compatibility, so the expected fallback without the 'stackMode' option 
