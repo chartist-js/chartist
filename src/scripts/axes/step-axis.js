@@ -28,7 +28,9 @@
   }
 
   function projectValue(value, index) {
-    return this.stepLength * index;
+    var val = this.stepLength * index;
+    //check to see if isNaN;
+    return val !== val ? 1 : val;
   }
 
   Chartist.StepAxis = Chartist.Axis.extend({
