@@ -24,6 +24,7 @@
     "package.json",
     "README.md"
   ],
+  "style": "dist/chartist.min.css",
   "main": "dist/chartist.js",
   "browser": "dist/chartist.js",
   "licenses": [
