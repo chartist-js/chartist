@@ -138,8 +138,8 @@
           return value;
         }).reduce(function(prev, curr) {
           return {
-            x: prev.x + curr.x || 0,
-            y: prev.y + curr.y || 0
+            x: prev.x + (curr && curr.x) || 0,
+            y: prev.y + (curr && curr.y) || 0
           };
         }, {x: 0, y: 0});
       });
