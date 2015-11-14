@@ -1,3 +1,12 @@
+v0.9.5 - 14 Nov 2015
+--------------------
+- Added 'fillHoles' option for line graphs, which continues the line smoothly through data holes (Thanks to Joshua Warner !)
+- Added option to use relative donut width values (Thanks to hansmaad !)
+- Added stackMode for bar charts to create overlapping charts or bipolar stacked charts (Thanks to Douglas Mak !)
+- Fixed issue with unordered ticks in fixed scale axis, fixes #411 (Thanks Carlos !)
+- Fixed left navigation in examples was not using valid anchors, fixes #514 (Thanks Carlos !)
+- Internal refactoring and cleanup (Thanks to hansmaad !)
+
 v0.9.4 - 06 Aug 2015
 --------------------
 - Added axes to all events where they are available in context to provide better API convenience when developing plugins

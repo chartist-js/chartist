@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.9.4
+/* Chartist.js 0.9.5
  * Copyright © 2015 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
@@ -25,7 +25,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.9.4'
+  version: '0.9.5'
 };
 
 (function (window, document, Chartist) {
@@ -93,21 +93,6 @@ var Chartist = {
   };
 
   /**
-   * Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.
-   *
-   * @memberof Chartist.Core
-   * @param {String|Number} value
-   * @return {Number} Returns the string as number or NaN if the passed length could not be converted to pixel
-   */
-  Chartist.stripUnit = function(value) {
-    if(typeof value === 'string') {
-      value = value.replace(/[^0-9\+-\.]/g, '');
-    }
-
-    return +value;
-  };
-
-  /**
    * Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.
    *
    * @memberof Chartist.Core
@@ -121,6 +106,24 @@ var Chartist = {
     }
 
     return value;
+  };
+
+  /**
+   * Converts a number or string to a quantity object.
+   *
+   * @memberof Chartist.Core
+   * @param {String|Number} input
+   * @return {Object} Returns an object containing the value as number and the unit as string.
+   */
+  Chartist.quantity = function(input) {
+    if (typeof input === 'string') {
+      var match = (/^(\d+)\s*(.*)$/g).exec(input);
+      return {
+        value : +match[1],
+        unit: match[2] || undefined
+      };
+    }
+    return { value: input };
   };
 
   /**
@@ -463,7 +466,7 @@ var Chartist = {
    * @return {Number} The height of the area in the chart for the data series
    */
   Chartist.getAvailableHeight = function (svg, options) {
-    return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
+    return Math.max((Chartist.quantity(options.height).value || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
   };
 
   /**
@@ -718,7 +721,7 @@ var Chartist = {
    * @param {Number} centerY X-axis coordinates of center point of circle segment
    * @param {Number} radius Radius of circle segment
    * @param {Number} angleInDegrees Angle of circle segment in degrees
-   * @return {Number} Coordinates of point on circumference
+   * @return {{x:Number, y:Number}} Coordinates of point on circumference
    */
   Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -743,8 +746,8 @@ var Chartist = {
     var yAxisOffset = hasAxis ? options.axisY.offset : 0;
     var xAxisOffset = hasAxis ? options.axisX.offset : 0;
     // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
-    var width = svg.width() || Chartist.stripUnit(options.width) || 0;
-    var height = svg.height() || Chartist.stripUnit(options.height) || 0;
+    var width = svg.width() || Chartist.quantity(options.width).value || 0;
+    var height = svg.height() || Chartist.quantity(options.height).value || 0;
     var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     // If settings were to small to cope with offset (legacy) and padding, we'll adjust
@@ -967,30 +970,45 @@ var Chartist = {
   /**
    * This interpolation function does not smooth the path and the result is only containing lines and no curves.
    *
+   * @example
+   * var chart = new Chartist.Line('.ct-chart', {
+   *   labels: [1, 2, 3, 4, 5],
+   *   series: [[1, 2, 8, 1, 7]]
+   * }, {
+   *   lineSmooth: Chartist.Interpolation.none({
+   *     fillHoles: false
+   *   })
+   * });
+   *
+   *
    * @memberof Chartist.Interpolation
    * @return {Function}
    */
-  Chartist.Interpolation.none = function() {
+  Chartist.Interpolation.none = function(options) {
+    var defaultOptions = {
+      fillHoles: false
+    };
+    options = Chartist.extend({}, defaultOptions, options);
     return function none(pathCoordinates, valueData) {
       var path = new Chartist.Svg.Path();
-      // We need to assume that the first value is a "hole"
       var hole = true;
 
-      for(var i = 1; i < pathCoordinates.length; i += 2) {
-        var data = valueData[(i - 1) / 2];
+      for(var i = 0; i < pathCoordinates.length; i += 2) {
+        var currX = pathCoordinates[i];
+        var currY = pathCoordinates[i + 1];
+        var currData = valueData[i / 2];
 
-        // If the current value is undefined we should treat it as a hole start
-        if(data.value === undefined) {
-          hole = true;
-        } else {
-          // If this value is valid we need to check if we're coming out of a hole
+        if(currData.value !== undefined) {
+
           if(hole) {
-            // If we are coming out of a hole we should first make a move and also reset the hole flag
-            path.move(pathCoordinates[i - 1], pathCoordinates[i], false, data);
-            hole = false;
+            path.move(currX, currY, false, currData);
           } else {
-            path.line(pathCoordinates[i - 1], pathCoordinates[i], false, data);
+            path.line(currX, currY, false, currData);
           }
+
+          hole = false;
+        } else if(!options.fillHoles) {
+          hole = true;
         }
       }
 
@@ -1011,7 +1029,8 @@ var Chartist = {
    *   series: [[1, 2, 8, 1, 7]]
    * }, {
    *   lineSmooth: Chartist.Interpolation.simple({
-   *     divisor: 2
+   *     divisor: 2,
+   *     fillHoles: false
    *   })
    * });
    *
@@ -1022,7 +1041,8 @@ var Chartist = {
    */
   Chartist.Interpolation.simple = function(options) {
     var defaultOptions = {
-      divisor: 2
+      divisor: 2,
+      fillHoles: false
     };
     options = Chartist.extend({}, defaultOptions, options);
 
@@ -1030,26 +1050,19 @@ var Chartist = {
 
     return function simple(pathCoordinates, valueData) {
       var path = new Chartist.Svg.Path();
-      var hole = true;
+      var prevX, prevY, prevData;
 
-      for(var i = 2; i < pathCoordinates.length; i += 2) {
-        var prevX = pathCoordinates[i - 2];
-        var prevY = pathCoordinates[i - 1];
+      for(var i = 0; i < pathCoordinates.length; i += 2) {
         var currX = pathCoordinates[i];
         var currY = pathCoordinates[i + 1];
         var length = (currX - prevX) * d;
-        var prevData = valueData[(i / 2) - 1];
         var currData = valueData[i / 2];
 
-        if(prevData.value === undefined) {
-          hole = true;
-        } else {
+        if(currData.value !== undefined) {
 
-          if(hole) {
-            path.move(prevX, prevY, false, prevData);
-          }
-
-          if(currData.value !== undefined) {
+          if(prevData === undefined) {
+            path.move(currX, currY, false, currData);
+          } else {
             path.curve(
               prevX + length,
               prevY,
@@ -1060,9 +1073,13 @@ var Chartist = {
               false,
               currData
             );
-
-            hole = false;
           }
+
+          prevX = currX;
+          prevY = currY;
+          prevData = currData;
+        } else if(!options.fillHoles) {
+          prevX = currX = prevData = undefined;
         }
       }
 
@@ -1083,7 +1100,8 @@ var Chartist = {
    *   series: [[1, 2, 8, 1, 7]]
    * }, {
    *   lineSmooth: Chartist.Interpolation.cardinal({
-   *     tension: 1
+   *     tension: 1,
+   *     fillHoles: false
    *   })
    * });
    *
@@ -1093,7 +1111,8 @@ var Chartist = {
    */
   Chartist.Interpolation.cardinal = function(options) {
     var defaultOptions = {
-      tension: 1
+      tension: 1,
+      fillHoles: false
     };
 
     options = Chartist.extend({}, defaultOptions, options);
@@ -1111,7 +1130,9 @@ var Chartist = {
       for(var i = 0; i < pathCoordinates.length; i += 2) {
         // If this value is a "hole" we set the hole flag
         if(valueData[i / 2].value === undefined) {
-          hole = true;
+          if(!options.fillHoles) {
+            hole = true;
+          }
         } else {
           // If it's a valid value we need to check if we're coming out of a hole and create a new empty segment
           if(hole) {
@@ -1213,7 +1234,8 @@ var Chartist = {
    *   series: [[1, 2, 8, 1, 7]]
    * }, {
    *   lineSmooth: Chartist.Interpolation.step({
-   *     postpone: true
+   *     postpone: true,
+   *     fillHoles: false
    *   })
    * });
    *
@@ -1223,34 +1245,27 @@ var Chartist = {
    */
   Chartist.Interpolation.step = function(options) {
     var defaultOptions = {
-      postpone: true
+      postpone: true,
+      fillHoles: false
     };
 
     options = Chartist.extend({}, defaultOptions, options);
 
     return function step(pathCoordinates, valueData) {
       var path = new Chartist.Svg.Path();
-      var hole = true;
 
-      for (var i = 2; i < pathCoordinates.length; i += 2) {
-        var prevX = pathCoordinates[i - 2];
-        var prevY = pathCoordinates[i - 1];
+      var prevX, prevY, prevData;
+
+      for (var i = 0; i < pathCoordinates.length; i += 2) {
         var currX = pathCoordinates[i];
         var currY = pathCoordinates[i + 1];
-        var prevData = valueData[(i / 2) - 1];
         var currData = valueData[i / 2];
 
-        // If last point is a "hole"
-        if(prevData.value === undefined) {
-          hole = true;
-        } else {
-          // If last point is not a "hole" but we just came back out of a "hole" we need to move first
-          if(hole) {
-            path.move(prevX, prevY, false, prevData);
-          }
-
-          // If the current point is also not a hole we can draw the step lines
-          if(currData.value !== undefined) {
+        // If the current point is also not a hole we can draw the step lines
+        if(currData.value !== undefined) {
+          if(prevData === undefined) {
+            path.move(currX, currY, false, currData);
+          } else {
             if(options.postpone) {
               // If postponed we should draw the step line with the value of the previous value
               path.line(currX, prevY, false, prevData);
@@ -1260,9 +1275,13 @@ var Chartist = {
             }
             // Line to the actual point (this should only be a Y-Axis movement
             path.line(currX, currY, false, currData);
-            // Reset the "hole" flag as previous and current point have valid values
-            hole = false;
           }
+
+          prevX = currX;
+          prevY = currY;
+          prevData = currData;
+        } else if(!options.fillHoles) {
+          prevX = prevY = prevData = undefined;
         }
       }
 
@@ -2084,7 +2103,7 @@ var Chartist = {
 
           // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
           // which needs to be in ms aside
-          timeout = Chartist.stripUnit(animationDefinition.begin || 0);
+          timeout = Chartist.quantity(animationDefinition.begin || 0).value;
           animationDefinition.begin = 'indefinite';
         }
 
@@ -2844,6 +2863,9 @@ var Chartist = {
     this.ticks = options.ticks || Chartist.times(this.divisor).map(function(value, index) {
       return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
     }.bind(this));
+    this.ticks.sort(function(a, b) {
+      return a - b;
+    });
     this.range = {
       min: highLow.low,
       max: highLow.high
@@ -3399,8 +3421,11 @@ var Chartist = {
     },
     // Specify the distance in pixel of bars in a group
     seriesBarDistance: 15,
-    // If set to true this property will cause the series bars to be stacked and form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+    // If set to true this property will cause the series bars to be stacked. Check the `stackMode` option for further stacking options.
     stackBars: false,
+    // If set to 'overlap' this property will force the stacked bars to draw from the zero line.
+    // If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+    stackMode: 'accumulate',
     // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
     horizontalBars: false,
     // If set to true then each bar will represent a series and the data array is expected to be a one dimensional array of data values rather than a series array of series. This is useful if the bar chart should represent a profile rather than some data over time.
@@ -3643,9 +3668,20 @@ var Chartist = {
         var positions = {};
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
         positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
-        // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
-        positions[labelAxis.counterUnits.pos + '1'] = options.stackBars ? previousStack : zeroPoint;
-        positions[labelAxis.counterUnits.pos + '2'] = options.stackBars ? stackedBarValues[valueIndex] : projected[labelAxis.counterUnits.pos];
+
+        if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode)) {
+          // Stack mode: accumulate (default)
+          // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
+          // We want backwards compatibility, so the expected fallback without the 'stackMode' option
+          // to be the original behaviour (accumulate)
+          positions[labelAxis.counterUnits.pos + '1'] = previousStack;
+          positions[labelAxis.counterUnits.pos + '2'] = stackedBarValues[valueIndex];
+        } else {
+          // Draw from the zero line normally
+          // This is also the same code for Stack mode: overlap
+          positions[labelAxis.counterUnits.pos + '1'] = zeroPoint;
+          positions[labelAxis.counterUnits.pos + '2'] = projected[labelAxis.counterUnits.pos];
+        }
 
         // Limit x and y so that they are within the chart rect
         positions.x1 = Math.min(Math.max(positions.x1, chartRect.x1), chartRect.x2);
@@ -3777,6 +3813,7 @@ var Chartist = {
     // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
     donut: false,
     // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
+    // This option can be set as number or string to specify a relative width (i.e. 100 or '30%').
     donutWidth: 60,
     // If a label should be shown or not
     showLabel: true,
@@ -3840,10 +3877,15 @@ var Chartist = {
       return previousValue + currentValue;
     }, 0);
 
+    var donutWidth = Chartist.quantity(options.donutWidth);
+    if (donutWidth.unit === '%') {
+      donutWidth.value *= radius / 100;
+    }
+
     // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
     // Unfortunately this is not possible with the current SVG Spec
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
-    radius -= options.donut ? options.donutWidth / 2  : 0;
+    radius -= options.donut ? donutWidth.value / 2  : 0;
 
     // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
     // if regular pie chart it's half of the radius
@@ -3928,7 +3970,7 @@ var Chartist = {
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut) {
         pathElement.attr({
-          'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
+          'style': 'stroke-width: ' + donutWidth.value + 'px'
         });
       }
 
