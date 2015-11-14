@@ -76,8 +76,8 @@
     },
     // Specify the distance in pixel of bars in a group
     seriesBarDistance: 15,
-    // If set to true this property will cause the series bars to be stacked. The default stack mode is `accumulate`.
-    stackBars: false,  
+    // If set to true this property will cause the series bars to be stacked. Check the `stackMode` option for further stacking options.
+    stackBars: false,
     // If set to 'overlap' this property will force the stacked bars to draw from the zero line.
     // If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
     stackMode: 'accumulate',
@@ -323,19 +323,19 @@
         var positions = {};
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
         positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
-        
+
         if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode)) {
           // Stack mode: accumulate (default)
           // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
-          // We want backwards compatibility, so the expected fallback without the 'stackMode' option 
+          // We want backwards compatibility, so the expected fallback without the 'stackMode' option
           // to be the original behaviour (accumulate)
           positions[labelAxis.counterUnits.pos + '1'] = previousStack;
           positions[labelAxis.counterUnits.pos + '2'] = stackedBarValues[valueIndex];
-        } else {          
+        } else {
           // Draw from the zero line normally
           // This is also the same code for Stack mode: overlap
           positions[labelAxis.counterUnits.pos + '1'] = zeroPoint;
-          positions[labelAxis.counterUnits.pos + '2'] = projected[labelAxis.counterUnits.pos];        
+          positions[labelAxis.counterUnits.pos + '2'] = projected[labelAxis.counterUnits.pos];
         }
 
         // Limit x and y so that they are within the chart rect

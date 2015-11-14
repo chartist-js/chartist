@@ -277,8 +277,7 @@ sections:
                     - Hannes Kamecke
                   -
                     - '<strong>Link:</strong>'
-                    - '<a href="https://github.com/hansmaad/chartist-plugin-zoom" target="_blank">chartist-plugin-zoom</a>'                 
-                    
+                    - '<a href="https://github.com/hansmaad/chartist-plugin-zoom" target="_blank">chartist-plugin-zoom</a>'
   - title: Develop a plugin
     level: 3
     items:

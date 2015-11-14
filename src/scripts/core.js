@@ -90,7 +90,7 @@ var Chartist = {
   /**
    * Converts a number or string to a quantity object.
    *
-   * @memberof Chartist.Core   
+   * @memberof Chartist.Core
    * @param {String|Number} input
    * @return {Object} Returns an object containing the value as number and the unit as string.
    */
@@ -700,7 +700,7 @@ var Chartist = {
    * @param {Number} centerY X-axis coordinates of center point of circle segment
    * @param {Number} radius Radius of circle segment
    * @param {Number} angleInDegrees Angle of circle segment in degrees
-   * @return {Number} Coordinates of point on circumference
+   * @return {{x:Number, y:Number}} Coordinates of point on circumference
    */
   Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
     var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;

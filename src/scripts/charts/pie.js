@@ -35,7 +35,7 @@
     // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
     donut: false,
     // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
-    // This option can be set as number or string to specify a relative width (i.e. 100 or '30%'). 
+    // This option can be set as number or string to specify a relative width (i.e. 100 or '30%').
     donutWidth: 60,
     // If a label should be shown or not
     showLabel: true,
@@ -103,7 +103,7 @@
     if (donutWidth.unit === '%') {
       donutWidth.value *= radius / 100;
     }
-      
+
     // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
     // Unfortunately this is not possible with the current SVG Spec
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html

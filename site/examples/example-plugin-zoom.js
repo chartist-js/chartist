@@ -5,12 +5,12 @@ var data = {
     { x: 3, y: 25 },
     { x: 4, y: 66 },
     { x: 5, y: 30 },
-    { x: 6, y: 22 },
+    { x: 6, y: 22 }
   ]]
 };
 
 var options = {
-  axisX: {    
+  axisX: {
     type: Chartist.AutoScaleAxis
   },
   axisY: {
@@ -27,9 +27,8 @@ function onZoom(chart, reset) {
   resetFnc = reset;
 }
 
-
 var btn = document.createElement('button');
-btn.id = 'reset-zoom-btn'
+btn.id = 'reset-zoom-btn';
 btn.innerHTML = 'Reset Zoom';
 btn.style.float = 'right';
 btn.addEventListener('click', function() {

@@ -28,7 +28,7 @@
    */
   Chartist.Interpolation.none = function(options) {
     var defaultOptions = {
-      fillHoles: false,
+      fillHoles: false
     };
     options = Chartist.extend({}, defaultOptions, options);
     return function none(pathCoordinates, valueData) {
@@ -84,7 +84,7 @@
   Chartist.Interpolation.simple = function(options) {
     var defaultOptions = {
       divisor: 2,
-      fillHoles: false,
+      fillHoles: false
     };
     options = Chartist.extend({}, defaultOptions, options);
 
@@ -154,7 +154,7 @@
   Chartist.Interpolation.cardinal = function(options) {
     var defaultOptions = {
       tension: 1,
-      fillHoles: false,
+      fillHoles: false
     };
 
     options = Chartist.extend({}, defaultOptions, options);
@@ -288,7 +288,7 @@
   Chartist.Interpolation.step = function(options) {
     var defaultOptions = {
       postpone: true,
-      fillHoles: false,
+      fillHoles: false
     };
 
     options = Chartist.extend({}, defaultOptions, options);
