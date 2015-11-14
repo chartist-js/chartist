@@ -27,6 +27,9 @@
     this.ticks = options.ticks || Chartist.times(this.divisor).map(function(value, index) {
       return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
     }.bind(this));
+    this.ticks.sort(function(a, b) {
+      return a - b;
+    });
     this.range = {
       min: highLow.low,
       max: highLow.high
