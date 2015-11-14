@@ -33,10 +33,10 @@ describe('Pie chart tests', function() {
       });
     });
   });
-  
+
   describe('Simple Pie Chart', function() {
     // https://gionkunz.github.io/chartist-js/examples.html#simple-pie-chart
-       
+
     function onCreated(callback) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
       var data = {
@@ -51,46 +51,45 @@ describe('Pie chart tests', function() {
         }
       };
 
-      var sum = function(a, b) { return a + b };
+      var sum = function(a, b) { return a + b; };
 
       var chart = new Chartist.Pie('.ct-chart', data, options);
       chart.on('created', callback);
     }
-    
+
     it('should render three slices', function(done) {
       onCreated(function() {
         expect($('.ct-slice-pie').length).toBe(3);
         done();
       });
     });
-    
+
     it('should set value attribute', function(done) {
       onCreated(function() {
-        var slices = $('.ct-slice-pie'); 
+        var slices = $('.ct-slice-pie');
         expect(slices.eq(2).attr('ct:value')).toBe('5');
         expect(slices.eq(1).attr('ct:value')).toBe('3');
         expect(slices.eq(0).attr('ct:value')).toBe('4');
         done();
-      });      
+      });
     });
-    
+
     it('should create slice path', function(done) {
       onCreated(function() {
         $('.ct-slice-pie').each(function() {
-          
+
           var num = '\\d+(\\.\\d*)?';
-          var pattern = 
-            '^M' + num + ',' + num
-            + 'A40,40,0,0,0,' + num + ',' + num
-            + 'L50,50Z$'
-            ;
+          var pattern =
+            '^M' + num + ',' + num +
+            'A40,40,0,0,0,' + num + ',' + num +
+            'L50,50Z$';
           var path = $(this).attr('d');
           expect(path).toMatch(pattern);
         });
         done();
-      });      
-    })
-    
+      });
+    });
+
     it('should add labels', function(done) {
       onCreated(function() {
         var labels = $('.ct-label');
@@ -99,15 +98,15 @@ describe('Pie chart tests', function() {
         expect(labels.eq(2).text()).toBe('33%');
         done();
       });
-      
-    });        
+
+    });
   });
-  
-  
-  
+
+
+
   describe('Gauge Chart', function() {
     // https://gionkunz.github.io/chartist-js/examples.html#gauge-chart
-    
+
     function onCreated(callback) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
       var data = {
@@ -126,65 +125,64 @@ describe('Pie chart tests', function() {
       var chart = new Chartist.Pie('.ct-chart', data, options);
       chart.on('created', callback);
     }
-    
+
     it('should render four strokes', function(done) {
       onCreated(function() {
         expect($('.ct-slice-donut').length).toBe(4);
         done();
       });
     });
-    
+
     it('should set value attribute', function(done) {
       onCreated(function() {
         var slices = $('.ct-slice-donut');
-        expect(slices.eq(3).attr('ct:value')).toBe('20'); 
+        expect(slices.eq(3).attr('ct:value')).toBe('20');
         expect(slices.eq(2).attr('ct:value')).toBe('10');
         expect(slices.eq(1).attr('ct:value')).toBe('30');
         expect(slices.eq(0).attr('ct:value')).toBe('40');
         done();
-      });      
+      });
     });
-    
+
     it('should create slice path', function(done) {
       onCreated(function() {
         $('.ct-slice-donut').each(function() {
-          
+
           var num = '\\d+(\\.\\d*)?';
-          var pattern = 
-            '^M' + num + ',' + num
-            + 'A170,170,0,0,0,' + num + ',' + num
-            + '$'
-            ;
+          var pattern =
+            '^M' + num + ',' + num +
+            'A170,170,0,0,0,' + num + ',' + num +
+            '$';
           var path = $(this).attr('d');
           expect(path).toMatch(pattern);
         });
         done();
-      });      
-    })
-    
+      });
+    });
+
     it('should set stroke-width', function(done) {
      onCreated(function() {
-        $('.ct-slice-donut').each(function() {          
+        $('.ct-slice-donut').each(function() {
           var style = $(this).attr('style');
           expect(style).toMatch('stroke-width:\\s?60px');
         });
         done();
-      });    
+      });
     });
-    
+
     it('should not add labels', function(done) {
       onCreated(function() {
         var labels = $('.ct-label');
-        expect(labels.length).toBe(0);        
+        expect(labels.length).toBe(0);
         done();
       });
-      
+
     });
-      
+
   });
-  
+
   describe('Pie Chart with relative donutWidth', function() {
-    
+
     function onCreated(callback) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
       var data = {
@@ -201,7 +199,7 @@ describe('Pie chart tests', function() {
       var chart = new Chartist.Pie('.ct-chart', data, options);
       chart.on('created', callback);
     }
-    
+
     it('should render four strokes', function(done) {
       onCreated(function() {
         expect($('.ct-slice-donut').length).toBe(4);
@@ -212,29 +210,28 @@ describe('Pie chart tests', function() {
     it('should create slice path', function(done) {
       onCreated(function() {
         $('.ct-slice-donut').each(function() {
-          
+
           var num = '\\d+(\\.\\d*)?';
-          var pattern = 
-            '^M' + num + ',' + num
-            + 'A175,175,0,0,0,' + num + ',' + num
-            + '$'
-            ;
+          var pattern =
+            '^M' + num + ',' + num +
+            'A175,175,0,0,0,' + num + ',' + num +
+            '$';
           var path = $(this).attr('d');
           expect(path).toMatch(pattern);
         });
         done();
-      });      
-    })
-    
+      });
+    });
+
     it('should set stroke-width', function(done) {
      onCreated(function() {
-        $('.ct-slice-donut').each(function() {          
+        $('.ct-slice-donut').each(function() {
           var style = $(this).attr('style');
           expect(style).toMatch('stroke-width:\\s?50px');
         });
         done();
-      });    
-    });  
+      });
+    });
   });
-  
+
 });

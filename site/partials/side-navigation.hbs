@@ -9,7 +9,7 @@
           {{/is}}
 
           {{#is type 'live-example'}}
-            <li><a class="text-clipping" href="#{{#if id}}{{id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
+            <li><a class="text-clipping" href="#{{#if data.id}}{{data.id}}{{else}}{{slugify data.title}}{{/if}}">{{data.title}}</a></li>
           {{/is}}
         {{/each}}
       {{/each}}
