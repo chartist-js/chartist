@@ -1,7 +1,7 @@
 <!doctype html><!--[if lt IE 7]>
 <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]--><!--[if IE 7]>
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
-<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.AutoScaleAxis</li><li class="heading">Chartist.FixedScaleAxis</li><li class="heading">Chartist.StepAxis</li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-replaceall">Chartist.replaceAll()</a></li><li><a class="text-clipping" href="#chartistcore-method-stripunit">Chartist.stripUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapmultiply">Chartist.mapMultiply()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapadd">Chartist.mapAdd()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-method-roundwithprecision">Chartist.roundWithPrecision()</a></li><li><a class="text-clipping" href="#chartistcore-property-precision">Chartist.precision</a></li><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a></li><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Interpolation</li><li><a class="text-clipping" href="#chartistinterpolation-method-none">Chartist.Interpolation.none()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-simple">Chartist.Interpolation.simple()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-cardinal">Chartist.Interpolation.cardinal()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-step">Chartist.Interpolation.step()</a></li><li class="heading">Chartist.Svg.Path</li><li><a class="text-clipping" href="#chartistsvgpath-declaration-elementdescriptions">elementDescriptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-constructor-svgpath">SvgPath()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-position">position()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-move">move()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-line">line()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-curve">curve()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-arc">arc()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-parse">parse()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-stringify">stringify()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-scale">scale()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-translate">translate()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-transform">transform()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-clone">clone()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-splitbycommand">splitByCommand()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-join">join()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-parent">parent()</a></li><li><a class="text-clipping" href="#chartistsvg-function-root">root()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselector">querySelector()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselectorall">querySelectorAll()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-getbboxproperty">getBBoxProperty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>auto-scale-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistautoscaleaxis">Module Chartist.AutoScaleAxis</h4><div class="module-description"><p>The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.</p><pre><code class="lang-javascript">var options = {
+<html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"><body><section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1></li><li class="toggle-topbar menu-icon"><a href="#">Menu</a></li></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></li></ul><ul class="left"><li><a href="getting-started.html">Getting started</a></li><li><a href="api-documentation.html">API Documentation</a></li><li><a href="examples.html">Examples</a></li><li><a href="plugins.html">Plugins</a></li><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></li></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.AutoScaleAxis</li><li class="heading">Chartist.FixedScaleAxis</li><li class="heading">Chartist.StepAxis</li><li class="heading">Chartist.Base</li><li><a class="text-clipping" href="#chartistbase-function-update">update()</a></li><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a></li><li><a class="text-clipping" href="#chartistbase-function-on">on()</a></li><li><a class="text-clipping" href="#chartistbase-function-off">off()</a></li><li class="heading">Chartist.Bar</li><li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a></li><li class="heading">Chartist.Line</li><li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistline-function-line">Line()</a></li><li class="heading">Chartist.Pie</li><li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a></li><li class="heading">Chartist.Class</li><li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a></li><li class="heading">Chartist.Core</li><li><a class="text-clipping" href="#chartistcore-method-noop">Chartist.noop()</a></li><li><a class="text-clipping" href="#chartistcore-method-alphanumerate">Chartist.alphaNumerate()</a></li><li><a class="text-clipping" href="#chartistcore-method-extend">Chartist.extend()</a></li><li><a class="text-clipping" href="#chartistcore-method-replaceall">Chartist.replaceAll()</a></li><li><a class="text-clipping" href="#chartistcore-method-ensureunit">Chartist.ensureUnit()</a></li><li><a class="text-clipping" href="#chartistcore-method-quantity">Chartist.quantity()</a></li><li><a class="text-clipping" href="#chartistcore-method-queryselector">Chartist.querySelector()</a></li><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a></li><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapmultiply">Chartist.mapMultiply()</a></li><li><a class="text-clipping" href="#chartistcore-method-mapadd">Chartist.mapAdd()</a></li><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a></li><li><a class="text-clipping" href="#chartistcore-method-roundwithprecision">Chartist.roundWithPrecision()</a></li><li><a class="text-clipping" href="#chartistcore-property-precision">Chartist.precision</a></li><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a></li><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a></li><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a></li><li class="heading">Chartist.Event</li><li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a></li><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a></li><li class="heading">Chartist.Interpolation</li><li><a class="text-clipping" href="#chartistinterpolation-method-none">Chartist.Interpolation.none()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-simple">Chartist.Interpolation.simple()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-cardinal">Chartist.Interpolation.cardinal()</a></li><li><a class="text-clipping" href="#chartistinterpolation-method-step">Chartist.Interpolation.step()</a></li><li class="heading">Chartist.Svg.Path</li><li><a class="text-clipping" href="#chartistsvgpath-declaration-elementdescriptions">elementDescriptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-declaration-defaultoptions">defaultOptions</a></li><li><a class="text-clipping" href="#chartistsvgpath-constructor-svgpath">SvgPath()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-position">position()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-move">move()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-line">line()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-curve">curve()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-arc">arc()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-parse">parse()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-stringify">stringify()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-scale">scale()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-translate">translate()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-transform">transform()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-clone">clone()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-splitbycommand">splitByCommand()</a></li><li><a class="text-clipping" href="#chartistsvgpath-function-join">join()</a></li><li class="heading">Chartist.Svg</li><li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a></li><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a></li><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a></li><li><a class="text-clipping" href="#chartistsvg-function-parent">parent()</a></li><li><a class="text-clipping" href="#chartistsvg-function-root">root()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselector">querySelector()</a></li><li><a class="text-clipping" href="#chartistsvg-function-queryselectorall">querySelectorAll()</a></li><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a></li><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a></li><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a></li><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a></li><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a></li><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a></li><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a></li><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a></li><li><a class="text-clipping" href="#chartistsvg-function-getbboxproperty">getBBoxProperty()</a></li><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a></li><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a></li><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></li></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>auto-scale-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistautoscaleaxis">Module Chartist.AutoScaleAxis</h4><div class="module-description"><p>The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.</p><pre><code class="lang-javascript">var options = {
   // If high is specified then the axis will display values explicitly up to this value and the computed maximum from the data is ignored
   high: 100,
   // If low is specified then the axis will display values explicitly down to this value and the computed minimum from the data is ignored
@@ -185,8 +185,11 @@ function initialize() {
   },
   // Specify the distance in pixel of bars in a group
   seriesBarDistance: 15,
-  // If set to true this property will cause the series bars to be stacked and form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+  // If set to true this property will cause the series bars to be stacked. Check the &#x60;stackMode&#x60; option for further stacking options.
   stackBars: false,
+  // If set to &#x27;overlap&#x27; this property will force the stacked bars to draw from the zero line.
+  // If set to &#x27;accumulate&#x27; this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+  stackMode: &#x27;accumulate&#x27;,
   // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
   horizontalBars: false,
   // If set to true then each bar will represent a series and the data array is expected to be a one dimensional array of data values rather than a series array of series. This is useful if the bar chart should represent a profile rather than some data over time.
@@ -443,6 +446,7 @@ new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code><
   // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
   donut: false,
   // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
+  // This option can be set as number or string to specify a relative width (i.e. 100 or &#x27;30%&#x27;).
   donutWidth: 60,
   // If a label should be shown or not
   showLabel: true,
@@ -634,15 +638,7 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
     <code class="javascript">Chartist.replaceAll = function(str, subStr, newSubStr) {
   return str.replace(new RegExp(subStr, &#x27;g&#x27;), newSubStr);
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Replaces all occurrences of subStr in str with newSubStr and returns a new string.</p></div><h6>Parameters</h6><div class="param"><code>str</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>subStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>newSubStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-stripunit"><span class="member-tag">method</span> Chartist.stripUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-stripunit-code">Show code</button></header><pre id="chartistcore-method-stripunit-code">
-    <code class="javascript">Chartist.stripUnit = function(value) {
-  if(typeof value === &#x27;string&#x27;) {
-    value = value.replace(/[^0-9\+-\.]/g, &#x27;&#x27;);
-  }
-
-  return +value;
-};</code>
-  </pre><div class="member-content"><div class="description"><p>Converts a string to a number while removing the unit if present. If a number is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Number</code></span> )<div class="param-description">Returns the string as number or NaN if the passed length could not be converted to pixel</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-ensureunit"><span class="member-tag">method</span> Chartist.ensureUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-ensureunit-code">Show code</button></header><pre id="chartistcore-method-ensureunit-code">
+  </pre><div class="member-content"><div class="description"><p>Replaces all occurrences of subStr in str with newSubStr and returns a new string.</p></div><h6>Parameters</h6><div class="param"><code>str</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>subStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><div class="param"><code>newSubStr</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-ensureunit"><span class="member-tag">method</span> Chartist.ensureUnit()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-ensureunit-code">Show code</button></header><pre id="chartistcore-method-ensureunit-code">
     <code class="javascript">Chartist.ensureUnit = function(value, unit) {
   if(typeof value === &#x27;number&#x27;) {
     value = value + unit;
@@ -650,7 +646,18 @@ console.log(banana.color);</code></pre></div></article></div></header></section>
 
   return value;
 };</code>
-  </pre><div class="member-content"><div class="description"><p>Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><div class="param"><code>unit</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description">Returns the passed number value with unit.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-queryselector"><span class="member-tag">method</span> Chartist.querySelector()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-queryselector-code">Show code</button></header><pre id="chartistcore-method-queryselector-code">
+  </pre><div class="member-content"><div class="description"><p>Converts a number to a string with a unit. If a string is passed then this will be returned unmodified.</p></div><h6>Parameters</h6><div class="param"><code>value</code> ( <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><div class="param"><code>unit</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>String</code></span> )<div class="param-description">Returns the passed number value with unit.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-quantity"><span class="member-tag">method</span> Chartist.quantity()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-quantity-code">Show code</button></header><pre id="chartistcore-method-quantity-code">
+    <code class="javascript">Chartist.quantity = function(input) {
+  if (typeof input === &#x27;string&#x27;) {
+    var match = (/^(\d+)\s*(.*)$/g).exec(input);
+    return {
+      value : +match[1],
+      unit: match[2] || undefined
+    };
+  }
+  return { value: input };
+};</code>
+  </pre><div class="member-content"><div class="description"><p>Converts a number or string to a quantity object.</p></div><h6>Parameters</h6><div class="param"><code>input</code> ( <span class="param-type"><code>String</code></span> <span class="param-type"><code>Number</code></span> )<div class="param-description"></div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Object</code></span> )<div class="param-description">Returns an object containing the value as number and the unit as string.</div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistcore-method-queryselector"><span class="member-tag">method</span> Chartist.querySelector()</h5><button class="api-code-button" data-toggle-visible="#chartistcore-method-queryselector-code">Show code</button></header><pre id="chartistcore-method-queryselector-code">
     <code class="javascript">Chartist.querySelector = function(query) {
   return query instanceof Node ? query : document.querySelector(query);
 };</code>
@@ -902,7 +909,7 @@ Chartist.projectLength = function (axisLength, length, bounds) {
  * @return {Number} The height of the area in the chart for the data series
  */
 Chartist.getAvailableHeight = function (svg, options) {
-  return Math.max((Chartist.stripUnit(options.height) || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
+  return Math.max((Chartist.quantity(options.height).value || svg.height()) - (options.chartPadding.top +  options.chartPadding.bottom) - options.axisX.offset, 0);
 };
 
 /**
@@ -1157,7 +1164,7 @@ Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, onlyInteger) 
  * @param {Number} centerY X-axis coordinates of center point of circle segment
  * @param {Number} radius Radius of circle segment
  * @param {Number} angleInDegrees Angle of circle segment in degrees
- * @return {Number} Coordinates of point on circumference
+ * @return {{x:Number, y:Number}} Coordinates of point on circumference
  */
 Chartist.polarToCartesian = function (centerX, centerY, radius, angleInDegrees) {
   var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
@@ -1182,8 +1189,8 @@ Chartist.createChartRect = function (svg, options, fallbackPadding) {
   var yAxisOffset = hasAxis ? options.axisY.offset : 0;
   var xAxisOffset = hasAxis ? options.axisX.offset : 0;
   // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
-  var width = svg.width() || Chartist.stripUnit(options.width) || 0;
-  var height = svg.height() || Chartist.stripUnit(options.height) || 0;
+  var width = svg.width() || Chartist.quantity(options.width).value || 0;
+  var height = svg.height() || Chartist.quantity(options.height).value || 0;
   var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
   // If settings were to small to cope with offset (legacy) and padding, we&#x27;ll adjust
@@ -1439,37 +1446,51 @@ return {
 
 }(window, document, Chartist));</code>
   </pre><div class="member-content"><div class="description"><p>Use this function to emit an event. All handlers that are listening for this event will be triggered with the data parameter.</p></div><h6>Parameters</h6><div class="param"><code>event</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The event name that should be triggered</div></div><div class="param"><code>data</code> ( <span class="param-type"><code>*</code></span> )<div class="param-description">Arbitrary data that will be passed to the event handler callback functions</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>interpolation.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistinterpolation">Module Chartist.Interpolation</h4><div class="module-description"><p>Chartist path interpolation functions.</p></div><div class="module-members"><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistinterpolation-method-none"><span class="member-tag">method</span> Chartist.Interpolation.none()</h5><button class="api-code-button" data-toggle-visible="#chartistinterpolation-method-none-code">Show code</button></header><pre id="chartistinterpolation-method-none-code">
-    <code class="javascript">Chartist.Interpolation.none = function() {
+    <code class="javascript">Chartist.Interpolation.none = function(options) {
+  var defaultOptions = {
+    fillHoles: false
+  };
+  options = Chartist.extend({}, defaultOptions, options);
   return function none(pathCoordinates, valueData) {
     var path = new Chartist.Svg.Path();
-    // We need to assume that the first value is a &quot;hole&quot;
     var hole = true;
 
-    for(var i = 1; i &lt; pathCoordinates.length; i += 2) {
-      var data = valueData[(i - 1) / 2];
+    for(var i = 0; i &lt; pathCoordinates.length; i += 2) {
+      var currX = pathCoordinates[i];
+      var currY = pathCoordinates[i + 1];
+      var currData = valueData[i / 2];
 
-      // If the current value is undefined we should treat it as a hole start
-      if(data.value === undefined) {
-        hole = true;
-      } else {
-        // If this value is valid we need to check if we&#x27;re coming out of a hole
+      if(currData.value !== undefined) {
+
         if(hole) {
-          // If we are coming out of a hole we should first make a move and also reset the hole flag
-          path.move(pathCoordinates[i - 1], pathCoordinates[i], false, data);
-          hole = false;
+          path.move(currX, currY, false, currData);
         } else {
-          path.line(pathCoordinates[i - 1], pathCoordinates[i], false, data);
+          path.line(currX, currY, false, currData);
         }
+
+        hole = false;
+      } else if(!options.fillHoles) {
+        hole = true;
       }
     }
 
     return path;
   };
 };</code>
-  </pre><div class="member-content"><div class="description"><p>This interpolation function does not smooth the path and the result is only containing lines and no curves.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Function</code></span> )<div class="param-description"></div></div></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistinterpolation-method-simple"><span class="member-tag">method</span> Chartist.Interpolation.simple()</h5><button class="api-code-button" data-toggle-visible="#chartistinterpolation-method-simple-code">Show code</button></header><pre id="chartistinterpolation-method-simple-code">
+  </pre><div class="member-content"><div class="description"><p>This interpolation function does not smooth the path and the result is only containing lines and no curves.</p></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Function</code></span> )<div class="param-description"></div></div><h6>Examples</h6><pre class="api-example"><code class="js">var chart = new Chartist.Line(&#x27;.ct-chart&#x27;, {
+  labels: [1, 2, 3, 4, 5],
+  series: [[1, 2, 8, 1, 7]]
+}, {
+  lineSmooth: Chartist.Interpolation.none({
+    fillHoles: false
+  })
+});
+
+</code></pre></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistinterpolation-method-simple"><span class="member-tag">method</span> Chartist.Interpolation.simple()</h5><button class="api-code-button" data-toggle-visible="#chartistinterpolation-method-simple-code">Show code</button></header><pre id="chartistinterpolation-method-simple-code">
     <code class="javascript">Chartist.Interpolation.simple = function(options) {
   var defaultOptions = {
-    divisor: 2
+    divisor: 2,
+    fillHoles: false
   };
   options = Chartist.extend({}, defaultOptions, options);
 
@@ -1477,26 +1498,19 @@ return {
 
   return function simple(pathCoordinates, valueData) {
     var path = new Chartist.Svg.Path();
-    var hole = true;
+    var prevX, prevY, prevData;
 
-    for(var i = 2; i &lt; pathCoordinates.length; i += 2) {
-      var prevX = pathCoordinates[i - 2];
-      var prevY = pathCoordinates[i - 1];
+    for(var i = 0; i &lt; pathCoordinates.length; i += 2) {
       var currX = pathCoordinates[i];
       var currY = pathCoordinates[i + 1];
       var length = (currX - prevX) * d;
-      var prevData = valueData[(i / 2) - 1];
       var currData = valueData[i / 2];
 
-      if(prevData.value === undefined) {
-        hole = true;
-      } else {
+      if(currData.value !== undefined) {
 
-        if(hole) {
-          path.move(prevX, prevY, false, prevData);
-        }
-
-        if(currData.value !== undefined) {
+        if(prevData === undefined) {
+          path.move(currX, currY, false, currData);
+        } else {
           path.curve(
             prevX + length,
             prevY,
@@ -1507,9 +1521,13 @@ return {
             false,
             currData
           );
-
-          hole = false;
         }
+
+        prevX = currX;
+        prevY = currY;
+        prevData = currData;
+      } else if(!options.fillHoles) {
+        prevX = currX = prevData = undefined;
       }
     }
 
@@ -1521,14 +1539,16 @@ return {
   series: [[1, 2, 8, 1, 7]]
 }, {
   lineSmooth: Chartist.Interpolation.simple({
-    divisor: 2
+    divisor: 2,
+    fillHoles: false
   })
 });
 
 </code></pre></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistinterpolation-method-cardinal"><span class="member-tag">method</span> Chartist.Interpolation.cardinal()</h5><button class="api-code-button" data-toggle-visible="#chartistinterpolation-method-cardinal-code">Show code</button></header><pre id="chartistinterpolation-method-cardinal-code">
     <code class="javascript">Chartist.Interpolation.cardinal = function(options) {
   var defaultOptions = {
-    tension: 1
+    tension: 1,
+    fillHoles: false
   };
 
   options = Chartist.extend({}, defaultOptions, options);
@@ -1546,7 +1566,9 @@ return {
     for(var i = 0; i &lt; pathCoordinates.length; i += 2) {
       // If this value is a &quot;hole&quot; we set the hole flag
       if(valueData[i / 2].value === undefined) {
-        hole = true;
+        if(!options.fillHoles) {
+          hole = true;
+        }
       } else {
         // If it&#x27;s a valid value we need to check if we&#x27;re coming out of a hole and create a new empty segment
         if(hole) {
@@ -1641,40 +1663,34 @@ return {
   series: [[1, 2, 8, 1, 7]]
 }, {
   lineSmooth: Chartist.Interpolation.cardinal({
-    tension: 1
+    tension: 1,
+    fillHoles: false
   })
 });
 </code></pre></div></article><article class="module-member method"><header class="member-header"><h5 class="member-title" id="chartistinterpolation-method-step"><span class="member-tag">method</span> Chartist.Interpolation.step()</h5><button class="api-code-button" data-toggle-visible="#chartistinterpolation-method-step-code">Show code</button></header><pre id="chartistinterpolation-method-step-code">
     <code class="javascript">Chartist.Interpolation.step = function(options) {
   var defaultOptions = {
-    postpone: true
+    postpone: true,
+    fillHoles: false
   };
 
   options = Chartist.extend({}, defaultOptions, options);
 
   return function step(pathCoordinates, valueData) {
     var path = new Chartist.Svg.Path();
-    var hole = true;
 
-    for (var i = 2; i &lt; pathCoordinates.length; i += 2) {
-      var prevX = pathCoordinates[i - 2];
-      var prevY = pathCoordinates[i - 1];
+    var prevX, prevY, prevData;
+
+    for (var i = 0; i &lt; pathCoordinates.length; i += 2) {
       var currX = pathCoordinates[i];
       var currY = pathCoordinates[i + 1];
-      var prevData = valueData[(i / 2) - 1];
       var currData = valueData[i / 2];
 
-      // If last point is a &quot;hole&quot;
-      if(prevData.value === undefined) {
-        hole = true;
-      } else {
-        // If last point is not a &quot;hole&quot; but we just came back out of a &quot;hole&quot; we need to move first
-        if(hole) {
-          path.move(prevX, prevY, false, prevData);
-        }
-
-        // If the current point is also not a hole we can draw the step lines
-        if(currData.value !== undefined) {
+      // If the current point is also not a hole we can draw the step lines
+      if(currData.value !== undefined) {
+        if(prevData === undefined) {
+          path.move(currX, currY, false, currData);
+        } else {
           if(options.postpone) {
             // If postponed we should draw the step line with the value of the previous value
             path.line(currX, prevY, false, prevData);
@@ -1684,9 +1700,13 @@ return {
           }
           // Line to the actual point (this should only be a Y-Axis movement
           path.line(currX, currY, false, currData);
-          // Reset the &quot;hole&quot; flag as previous and current point have valid values
-          hole = false;
         }
+
+        prevX = currX;
+        prevY = currY;
+        prevData = currData;
+      } else if(!options.fillHoles) {
+        prevX = prevY = prevData = undefined;
       }
     }
 
@@ -1700,7 +1720,8 @@ return {
   series: [[1, 2, 8, 1, 7]]
 }, {
   lineSmooth: Chartist.Interpolation.step({
-    postpone: true
+    postpone: true,
+    fillHoles: false
   })
 });
 </code></pre></div></article></div></header></section></div><aside class="side-notes"></aside></section><section class="documentation-section full"><header><h3>svg-path.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistsvgpath">Module Chartist.Svg.Path</h4><div class="module-description"><p>Chartist SVG path module for SVG path description creation and modification.</p></div><div class="module-members"><article class="module-member declaration"><header class="member-header"><h5 class="member-title" id="chartistsvgpath-declaration-elementdescriptions"><span class="member-tag">declaration</span> elementDescriptions</h5><button class="api-code-button" data-toggle-visible="#chartistsvgpath-declaration-elementdescriptions-code">Show code</button></header><pre id="chartistsvgpath-declaration-elementdescriptions-code">
@@ -2156,7 +2177,7 @@ Chartist.Svg.Path.join = join;
 
         // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
         // which needs to be in ms aside
-        timeout = Chartist.stripUnit(animationDefinition.begin || 0);
+        timeout = Chartist.quantity(animationDefinition.begin || 0).value;
         animationDefinition.begin = &#x27;indefinite&#x27;;
       }
 

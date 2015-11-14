@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>chartist zoom</title>
+  <link rel="stylesheet" href="bower_components/chartist/dist/chartist.min.css">
+  <style>
+	  .ct-zoom-rect {
+		  fill: rgba(200, 100, 100, 0.3);
+		  stroke: red;
+	  }
+  </style>
+</head>
+<body>
+	<h1>Chartist Zoom Plugin</h1>
+	<p>Use left mouse button to drag a zoom box. Reset zoom with right mouse button.</p>
+	<p><a id="reset" href="#" style="display:none" onclick='return reset()'>Reset</a></p>
+	<div class="ct-chart ct-golden-section" style="max-width:800px"></div>
+	
+	<script src="bower_components/chartist/dist/chartist.js"></script>
+	<script src="dist/chartist-plugin-zoom.min.js"></script>
+
+	<script>
+		var data  = {
+			series: [[
+				{x: 1, y: 100},
+				{x: 2, y: 50},
+				{x: 3, y: 25},
+				{x: 4, y: 66},
+				{x: 5, y: 44},
+				{x: 6, y: 22},
+				
+			]]
+			};
+			
+		var options = {      
+			chartPadding: {
+				top: 50,
+				right: 30,
+				left: 40,
+				bottom: 50
+			},
+			axisX: {
+				type: Chartist.AutoScaleAxis
+			},
+			axisY: {
+				type: Chartist.AutoScaleAxis
+			},
+			plugins : [
+				Chartist.plugins.zoom({ onZoom : onZoom })
+			]
+		};
+		var chart = Chartist.Line('.ct-chart', data, options);
+		
+		var resetFnc;
+		function onZoom(chart, reset) {
+			document.getElementById('reset').style.display = 'inline';
+			resetFnc = reset;					
+		}
+		
+		function reset() {
+			resetFnc && resetFnc();
+			resetFnc = null;
+			document.getElementById('reset').style.display = 'none';
+		}
+		
+	</script>
+</body>
+</html>

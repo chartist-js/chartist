@@ -1,0 +1,17 @@
+{
+  "name": "chartist-plugin-zoom",
+  "main": [
+    "./dist/chartist-plugin-zoom.min.js"
+  ],
+  "dependencies": {
+    "chartist": "~0.9.4"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ]
+}

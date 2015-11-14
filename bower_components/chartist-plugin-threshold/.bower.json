@@ -1,0 +1,28 @@
+{
+  "name": "chartist-plugin-threshold",
+  "main": [
+    "./dist/chartist-plugin-threshold.min.js"
+  ],
+  "dependencies": {
+    "chartist": "^0.9.4"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ],
+  "homepage": "https://github.com/gionkunz/chartist-plugin-threshold",
+  "version": "0.0.2",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.0.2",
+    "commit": "28fab7ba79dd682470df5b2064b32d7ac6e6d1fe"
+  },
+  "_source": "git://github.com/gionkunz/chartist-plugin-threshold.git",
+  "_target": "~0.0.1",
+  "_originalSource": "chartist-plugin-threshold"
+}

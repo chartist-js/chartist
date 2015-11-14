@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Chartist Plugin Fill-Donut Example</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/chartist.min.css">
+        <style type="text/css">
+            .ct-chart-donut .ct-series-a .ct-slice-donut {
+                stroke: #d70206;
+            }
+            .ct-chart-donut .ct-series-b .ct-slice-donut {
+                stroke: rgba(0,0,0,.4);
+                opacity: 0.0;
+            }
+            .ct-chart-donut .ct-fill-donut .ct-slice-donut{
+                stroke: rgba(0,0,0,.4);
+                opacity: 1;
+            }
+            .ct-fill-donut-label h3{
+                font-weight: bolder;
+            }
+            .ct-fill-donut-label .small {
+                font-size: 0.6em;
+            }
+            .ct-fill-donut-label i { 
+                font-size: 1.5em;
+                color: rgba(0,0,0,.4);
+            }
+        </style>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-sm-offset-3">
+                    <div class="card">
+                        <div class="card-header bg-inverse">Speed Example</div>
+                        <div class="card-body">
+                            <div id="chart-e1"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="js/chartist.min.js"></script>
+        <script src="js/chartist-plugin-fill-donut.min.js"></script>
+        <script>
+        $(function() {
+            var chart = new Chartist.Pie('#chart-e1', {
+                    series: [160, 60 ],
+                    labels: ['', '']
+                }, {
+                    donut: true,
+                    donutWidth: 20,
+                    startAngle: 210,
+                    total: 260,
+                    showLabel: false,
+                    plugins: [
+                        Chartist.plugins.fillDonut({
+                            items: [{
+                                content: '<i class="fa fa-tachometer text-muted"></i>',
+                                position: 'bottom',
+                                offsetY : 10,
+                                offsetX: -2
+                            }, {
+                                content: '<h3>160<span class="small">mph</span></h3>'
+                            }]
+                        })
+                    ],
+                });
+
+                chart.on('draw', function(data) {
+                    if(data.type === 'slice' && data.index == 0) {
+                        // Get the total path length in order to use for dash array animation
+                        var pathLength = data.element._node.getTotalLength();
+
+                        // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                        data.element.attr({
+                            'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                        });
+
+                        // Create animation definition while also assigning an ID to the animation for later sync usage
+                        var animationDefinition = {
+                            'stroke-dashoffset': {
+                                id: 'anim' + data.index,
+                                dur: 1200,
+                                from: -pathLength + 'px',
+                                to:  '0px',
+                                easing: Chartist.Svg.Easing.easeOutQuint,
+                                // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                                fill: 'freeze'
+                            }
+                        };
+
+                        // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
+                        data.element.attr({
+                            'stroke-dashoffset': -pathLength + 'px'
+                        });
+
+                        // We can't use guided mode as the animations need to rely on setting begin manually
+                        // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
+                        data.element.animate(animationDefinition, true);
+                    }
+                });
+        });
+        </script>
+    </body>
+</html>

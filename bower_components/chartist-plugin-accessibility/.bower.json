@@ -24,6 +24,6 @@
     "commit": "4fff97574a1b1a5bc0f387984d024b75f450fe54"
   },
   "_source": "git://github.com/gionkunz/chartist-plugin-accessibility.git",
-  "_target": "~0.0.3",
+  "_target": "~0.0.2",
   "_originalSource": "chartist-plugin-accessibility"
 }

@@ -1,0 +1,28 @@
+{
+  "name": "chartist-plugin-zoom",
+  "main": [
+    "./dist/chartist-plugin-zoom.min.js"
+  ],
+  "dependencies": {
+    "chartist": "~0.9.4"
+  },
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "node_modules",
+    "src",
+    "test"
+  ],
+  "homepage": "https://github.com/hansmaad/chartist-plugin-zoom",
+  "version": "0.0.1",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "e9ef975452cd6808086a4e43ffff564a9a664151"
+  },
+  "_source": "git://github.com/hansmaad/chartist-plugin-zoom.git",
+  "_target": "~0.0.1",
+  "_originalSource": "chartist-plugin-zoom"
+}

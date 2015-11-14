@@ -1,0 +1,19 @@
+{
+  "name": "chartist-plugin-fill-donut",
+  "version": "0.0.1",
+  "description": "",
+  "main": "packages.json",
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.4.1",
+    "gulp-watch": "^4.3.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "moxx",
+  "license": "MIT"
+}

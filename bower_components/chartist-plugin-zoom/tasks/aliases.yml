@@ -1,0 +1,21 @@
+# Grunt Commands
+# ==============
+#
+# Use `grunt` in the root directory to select and run a specific task.
+
+default:
+  - 'newer:jshint'
+  - 'test'
+  - 'build'
+
+# create the plugin
+build:
+  - 'clean:dist'
+  - 'copy:dist'
+  - 'umd'
+  - 'uglify:dist'
+
+# tests
+test:
+  - 'clean:tmp'
+  - 'jasmine'
