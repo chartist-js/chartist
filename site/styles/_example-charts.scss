@@ -48,12 +48,6 @@
   }
 }
 
-#behavior-with-jquery {
-  .ct-point {
-    @include ct-chart-point($ct-point-size: 20px);
-  }
-}
-
 #example-plugin-threshold {
   .ct-line {
     stroke-dasharray: 5px;
