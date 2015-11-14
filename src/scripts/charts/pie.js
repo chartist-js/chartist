@@ -35,6 +35,7 @@
     // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
     donut: false,
     // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
+    // This option can be set as number or string to specify a relative width (i.e. 100 or '30%'). 
     donutWidth: 60,
     // If a label should be shown or not
     showLabel: true,
@@ -98,10 +99,15 @@
       return previousValue + currentValue;
     }, 0);
 
+    var donutWidth = Chartist.quantity(options.donutWidth);
+    if (donutWidth.unit === '%') {
+      donutWidth.value *= radius / 100;
+    }
+      
     // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
     // Unfortunately this is not possible with the current SVG Spec
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
-    radius -= options.donut ? options.donutWidth / 2  : 0;
+    radius -= options.donut ? donutWidth.value / 2  : 0;
 
     // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
     // if regular pie chart it's half of the radius
@@ -186,7 +192,7 @@
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut) {
         pathElement.attr({
-          'style': 'stroke-width: ' + (+options.donutWidth) + 'px'
+          'style': 'stroke-width: ' + donutWidth.value + 'px'
         });
       }
 

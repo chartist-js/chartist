@@ -53,3 +53,64 @@
     @include ct-chart-point($ct-point-size: 20px);
   }
 }
+
+#example-plugin-threshold {
+  .ct-line {
+    stroke-dasharray: 5px;
+    animation: dashoffset 1s linear infinite;
+  }
+
+  .ct-line.ct-threshold-above, .ct-point.ct-threshold-above, .ct-bar.ct-threshold-above {
+    stroke: #f05b4f;
+  }
+
+  .ct-line.ct-threshold-below, .ct-point.ct-threshold-below, .ct-bar.ct-threshold-below {
+    stroke: #59922b;
+  }
+
+  .ct-area.ct-threshold-above {
+    fill: #f05b4f;
+  }
+
+  .ct-area.ct-threshold-below {
+    fill: #59922b;
+  }
+}
+
+#example-plugin-fill-donut {
+  .ct-chart-donut .ct-series-a .ct-slice-donut {
+    stroke: #d70206;
+  }
+
+  .ct-chart-donut .ct-series-b .ct-slice-donut {
+    stroke: rgba(0,0,0,.4);
+    opacity: 0.0;
+  }
+
+  .ct-chart-donut .ct-fill-donut .ct-slice-donut {
+    stroke: rgba(0,0,0,.4);
+    opacity: 1;
+  }
+
+  .ct-fill-donut-label {
+    h3 {
+      font-weight: bolder;
+    }
+    
+    small {
+      font-size: 0.6em;
+    }
+
+    
+    i { 
+      font-size: 1.5em; 
+    }
+
+  }
+}
+#example-plugin-zoom {
+  .ct-zoom-rect {
+		  fill: rgba(200, 100, 100, 0.3);
+		  stroke: red;
+	  }
+}
