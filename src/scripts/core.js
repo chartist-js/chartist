@@ -886,7 +886,7 @@ var Chartist = {
       mediaQueryListeners = [],
       i;
 
-    function updateCurrentOptions(preventChangedEvent) {
+    function updateCurrentOptions(mediaEvent) {
       var previousOptions = currentOptions;
       currentOptions = Chartist.extend({}, baseOptions);
 
@@ -899,7 +899,7 @@ var Chartist = {
         }
       }
 
-      if(eventEmitter && !preventChangedEvent) {
+      if(eventEmitter && mediaEvent) {
         eventEmitter.emit('optionsChanged', {
           previousOptions: previousOptions,
           currentOptions: currentOptions
@@ -923,8 +923,8 @@ var Chartist = {
         mediaQueryListeners.push(mql);
       }
     }
-    // Execute initially so we get the correct options
-    updateCurrentOptions(true);
+    // Execute initially without an event argument so we get the correct options
+    updateCurrentOptions();
 
     return {
       removeMediaQueryListeners: removeMediaQueryListeners,
