@@ -253,7 +253,7 @@ sections:
                     - Moxx
                   -
                     - '<strong>Link:</strong>'
-                    - '<a href="https://github.com/gionkunz/chartist-plugin-threshold" target="_blank">chartist-plugin-threshold</a>'
+                    - '<a href="https://github.com/moxx/chartist-plugin-fill-donut" target="_blank">chartist-plugin-fill-donut</a>'
       - type: sub-section
         data:
           title: Zoom Plugin
