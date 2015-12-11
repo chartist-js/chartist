@@ -789,6 +789,17 @@ var Chartist = {
     positionalData[axis.counterUnits.pos + '1'] = offset;
     positionalData[axis.counterUnits.pos + '2'] = offset + length;
 
+    // Event for grid beforeDraw
+    eventEmitter.emit('beforeDraw',
+      {
+        type: 'grid',
+        axis: axis,
+        index: index,
+        group: group,
+        positionalData: positionalData
+      }
+    );
+
     var gridElement = group.elem('line', positionalData, classes.join(' '));
 
     // Event for grid draw
