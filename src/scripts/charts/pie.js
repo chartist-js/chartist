@@ -164,7 +164,7 @@
         endAngle -= 0.01;
       }
 
-      var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
+      var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke

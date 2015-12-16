@@ -98,11 +98,39 @@ describe('Pie chart tests', function() {
         expect(labels.eq(2).text()).toBe('33%');
         done();
       });
-
     });
+
   });
 
+  describe('Pie with small ratio', function() {
+    
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var data = {
+        series: [0.001, 2]
+      };
+      var options =  {
+        width: 100,
+        height: 100,
+        chartPadding: 0,
+      };
+      var chart = new Chartist.Pie('.ct-chart', data, options);
+      chart.on('created', callback);
+    }
+    
+    it('should render correctly with very small slices', function(done) {
+      onCreated(function() {
 
+        var slice1 = $('.ct-slice-pie').eq(0);
+        var slice2 = $('.ct-slice-pie').eq(1);        
+
+        expect(slice1.attr('d')).toMatch(/^M50,0A50,50,0,1,0,50.1\d+,0/);
+        expect(slice2.attr('d')).toMatch(/^M50.1\d+,0A50,50,0,0,0,50,0/);
+        done();
+      });
+    });
+
+  });
 
   describe('Gauge Chart', function() {
     // https://gionkunz.github.io/chartist-js/examples.html#gauge-chart
