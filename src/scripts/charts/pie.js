@@ -158,13 +158,17 @@
       ].join(' '));
 
       var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
+
+      // Use slight offset so there are no transparent hairline issues
+      var overlappigStartAngle = Math.max(0, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2));
+      
       // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
       // with Z and use 359.99 degrees
-      if(endAngle - startAngle === 360) {
-        endAngle -= 0.01;
+      if(endAngle - overlappigStartAngle >= 359.99) {
+        endAngle = overlappigStartAngle + 359.99;
       }
 
-      var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle),
+      var start = Chartist.polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
@@ -239,7 +243,7 @@
         }
       }
 
-      // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
+      // Set next startAngle to current endAngle.
       // (except for last slice)
       startAngle = endAngle;
     }
