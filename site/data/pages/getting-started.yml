@@ -571,7 +571,7 @@ sections:
       - type: text
         data:
           text: >
-                  In the following chapter you'll find some advanced usage examples that might be of interesst for you.
+                  In the following chapter you'll find some advanced usage examples that might be of interest for you.
                   Chartist is very flexible because it relies on standard technology. This also means that you will need
                   to implement certain things yourself. This topic should cover some of these use-cases and give you some
                   basic idea why and how to implement certain functionality.
