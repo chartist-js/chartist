@@ -52,7 +52,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-critical": "0.1.1",
     "grunt-newer": "^1.1.0",
-    "grunt-sass": "^0.18.0",
+    "grunt-sass": "^1.1.0",
     "grunt-svgmin": "~2.0.0",
     "grunt-template": "^0.2.3",
     "grunt-umd": "~2.3.1",
