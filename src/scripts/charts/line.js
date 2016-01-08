@@ -103,7 +103,9 @@
       horizontal: 'ct-horizontal',
       start: 'ct-start',
       end: 'ct-end'
-    }
+    },
+    // map each series to a custom className, or use null or undefined to add no custom className
+    customClassNameMap: []
   };
 
   /**
@@ -150,6 +152,7 @@
     // Draw the series
     data.raw.series.forEach(function(series, seriesIndex) {
       var seriesElement = seriesGroup.elem('g');
+      var seriesClasses = [];
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
       seriesElement.attr({
@@ -158,10 +161,16 @@
       }, Chartist.xmlNs.uri);
 
       // Use series class from series data or if not set generate one
-      seriesElement.addClass([
+      seriesClasses = seriesClasses.concat([
         options.classNames.series,
         (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(seriesIndex))
-      ].join(' '));
+      ]);
+
+      if (options.customClassNameMap && options.customClassNameMap[seriesIndex]) {
+          seriesClasses.push(options.customClassNameMap[seriesIndex]);
+      }
+
+      seriesElement.addClass(seriesClasses.join(' '));
 
       var pathCoordinates = [],
         pathData = [];
