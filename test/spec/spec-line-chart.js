@@ -266,5 +266,32 @@ describe('Line chart tests', function () {
         }
       });
     });
+
+    it('should render custom class names when provided with options.customClassNameMap', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var data = {
+        labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        series: [
+          [5, 2, 4, 2, 0],
+          [1, 1, 1, 1, 1]
+        ]
+      };
+
+      var customClassNameMap = [ "firstSeriesName", null ];
+
+      var chart = new Chartist.Line('.ct-chart', data, {
+        customClassNameMap: customClassNameMap
+      });
+
+      chart.on('created', function () {
+        var classNamesA = Chartist.deserialize($('.ct-series-a').attr("class"));
+        var classNamesB = Chartist.deserialize($('.ct-series-b').attr("class"));
+        expect(classNamesA).toMatch("ct-series ct-series-a firstSeriesName");
+        expect(classNamesB).toMatch("ct-series ct-series-b");
+        done();
+      });
+    });
+
   });
 });
