@@ -217,6 +217,75 @@ describe('Pie chart tests', function() {
     });
 
   });
+  
+  describe('Pie with some empty values configured to be ignored', function() {
+    var data, options;
+
+    beforeEach(function() {
+      data = {
+        series: [1, 2, 0, 4]
+      };
+      options =  {
+        width: 100,
+        height: 100,
+        ignoreEmptyValues: true
+      };
+    });
+
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var chart = new Chartist.Pie('.ct-chart', data, options);
+      chart.on('created', callback);
+    }
+
+    it('Pie should not render empty slices', function(done) {
+      onCreated(function() { 
+        var slices = $('.ct-slice-pie');
+        
+        expect(slices.length).toBe(3);
+        
+        expect(slices.eq(2).attr('ct:value')).toBe('1');
+        expect(slices.eq(1).attr('ct:value')).toBe('2');
+        expect(slices.eq(0).attr('ct:value')).toBe('4');
+        done();
+      });
+    });
+  });
+  
+  describe('Pie with some empty values configured not to be ignored', function() {
+    var data, options;
+
+    beforeEach(function() {
+      data = {
+        series: [1, 2, 0, 4]
+      };
+      options =  {
+        width: 100,
+        height: 100,
+        ignoreEmptyValues: false
+      };  
+    });
+
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var chart = new Chartist.Pie('.ct-chart', data, options);
+      chart.on('created', callback);
+    }
+
+    it('Pie should render empty slices', function(done) {
+      onCreated(function() { 
+        var slices = $('.ct-slice-pie');
+        
+        expect(slices.length).toBe(4);
+        
+        expect(slices.eq(3).attr('ct:value')).toBe('1');
+        expect(slices.eq(2).attr('ct:value')).toBe('2');
+        expect(slices.eq(1).attr('ct:value')).toBe('0');
+        expect(slices.eq(0).attr('ct:value')).toBe('4');
+        done();
+      });
+    });
+  });
 
   describe('Gauge Chart', function() {
     // https://gionkunz.github.io/chartist-js/examples.html#gauge-chart
