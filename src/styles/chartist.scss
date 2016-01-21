@@ -219,7 +219,6 @@
 
         @include ct-chart-series-color($color);
       }
-      
       .#{$ct-class-legend} .#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
         $color: nth($ct-series-colors, $i + 1);
         
