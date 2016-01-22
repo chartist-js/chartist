@@ -124,6 +124,27 @@
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
+
+    // if the lines are supposed to be stacked, then stack the lines
+    // by adding the preceding values at each index to each data point.
+    // do this directly to the data here so the axes can react appropriately.
+    var stackedValues = [];
+    if (options.stackLines) {
+      data.normalized.forEach(function(series, seriesIndex) {
+        data.normalized[seriesIndex] = series.map(function(value, valueIndex) {
+          if (!value || !value.y) {
+            return value;
+          }
+          if (typeof stackedValues[valueIndex] === "undefined") {
+            stackedValues[valueIndex] = 0;
+          }
+          value.y += stackedValues[valueIndex];
+          stackedValues[valueIndex] += value.y;
+          return value;
+        });
+      }.bind(this));
+    }
+
     var axisX, axisY;
 
     if(options.axisX.type === undefined) {

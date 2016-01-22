@@ -11,6 +11,13 @@ sections:
           intro: An example of a simple line chart with three series. You can edit this example in realtime.
       - type: live-example
         data:
+          title: Stacked line chart
+          level: 4
+          id: stacked-line-chart
+          classes: ct-golden-section
+          intro: The same line chart, with each line's data accumulating from the previous line.
+      - type: live-example
+        data:
           title: Holes in data
           level: 4
           id: example-line-data-holes
