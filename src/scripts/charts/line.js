@@ -205,9 +205,7 @@
             x2: pathElement.x + 0.01,
             y2: pathElement.y
           }, options.classNames.point).attr({
-            'value': [pathElement.data.value.x, pathElement.data.value.y].filter(function(v) {
-                return v || v === 0;
-              }).join(','),
+            'value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNum).join(','),
             'meta': pathElement.data.meta
           }, Chartist.xmlNs.uri);
 
