@@ -9,6 +9,52 @@ describe('Bar chart tests', function() {
 
   });
 
+  describe('ct:value attribute', function() {
+    it('should contain x and y value for each bar', function(done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var chart = new Chartist.Bar('.ct-chart', {
+        series: [[
+          {x: 1, y: 2},
+          {x: 3, y: 4}
+        ]]
+      }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis
+        }
+      });
+
+      chart.on('created', function() {
+        expect($('.ct-bar').eq(0).attr('ct:value')).toEqual('1,2');
+        expect($('.ct-bar').eq(1).attr('ct:value')).toEqual('3,4');
+        done();
+      });
+    });
+
+    it('should render values that are zero', function(done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var chart = new Chartist.Bar('.ct-chart', {
+        series: [[
+          {x: 0, y: 1},
+          {x: 2, y: 0},
+          {x: 0, y: 0}
+        ]]
+      }, {
+        axisX: {
+          type: Chartist.AutoScaleAxis
+        }
+      });
+
+      chart.on('created', function() {
+        expect($('.ct-bar').eq(0).attr('ct:value')).toEqual('0,1');
+        expect($('.ct-bar').eq(1).attr('ct:value')).toEqual('2,0');
+        expect($('.ct-bar').eq(2).attr('ct:value')).toEqual('0,0');
+        done();
+      });
+    });
+  });
+
   describe('Meta data tests', function () {
     it('should render meta data correctly with mixed value array', function(done) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
