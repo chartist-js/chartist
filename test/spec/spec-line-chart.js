@@ -25,8 +25,8 @@ describe('Line chart tests', function () {
       });
 
       chart.on('created', function () {
-        expect($('.ct-point').eq(0).attr('ct:value')).toEqual('1,2');
-        expect($('.ct-point').eq(1).attr('ct:value')).toEqual('3,4');
+        expect($('.ct-point').eq(0).attr('ct:value')).toBe('1,2');
+        expect($('.ct-point').eq(1).attr('ct:value')).toBe('3,4');
         done();
       });
     });
@@ -47,9 +47,9 @@ describe('Line chart tests', function () {
       });
 
       chart.on('created', function () {
-        expect($('.ct-point').eq(0).attr('ct:value')).toEqual('0,1');
-        expect($('.ct-point').eq(1).attr('ct:value')).toEqual('1,0');
-        expect($('.ct-point').eq(2).attr('ct:value')).toEqual('0,0');
+        expect($('.ct-point').eq(0).attr('ct:value')).toBe('0,1');
+        expect($('.ct-point').eq(1).attr('ct:value')).toBe('1,0');
+        expect($('.ct-point').eq(2).attr('ct:value')).toBe('0,0');
         done();
       });
     });
