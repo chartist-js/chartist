@@ -281,9 +281,7 @@
           // and adding the created DOM elements to the correct series group
           var area = seriesElement.elem('path', {
             d: areaPath.stringify()
-          }, options.classNames.area, true).attr({
-            'values': data.normalized[seriesIndex]
-          }, Chartist.xmlNs.uri);
+          }, options.classNames.area, true);
 
           // Emit an event for each area that was drawn
           this.eventEmitter.emit('draw', {
