@@ -65,8 +65,6 @@
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
-    // Use only integer values (whole numbers) for the scale steps
-    onlyInteger: false,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
