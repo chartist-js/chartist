@@ -200,10 +200,13 @@
       // This is necessary to treat "holes" in line charts
       var segments = splitIntoSegments(pathCoordinates, valueData);
 
-      // If the split resulted in more that one segment we need to interpolate each segment individually and join them
-      // afterwards together into a single path.
-      if(segments.length > 1) {
-        var paths = [];
+      if(!segments.length) {
+        // If there were no segments return 'Chartist.Interpolation.none'
+        return Chartist.Interpolation.none()([]);
+      } else if(segments.length > 1) {
+        // If the split resulted in more that one segment we need to interpolate each segment individually and join them
+        // afterwards together into a single path.
+          var paths = [];
         // For each segment we will recurse the cardinal function
         segments.forEach(function(segment) {
           paths.push(cardinal(segment.pathCoordinates, segment.valueData));

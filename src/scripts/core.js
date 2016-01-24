@@ -511,9 +511,12 @@ var Chartist = {
       } else if (highLow.low < 0) {
         // If we have the same negative value for the bounds we set bounds.high to 0
         highLow.high = 0;
-      } else {
+      } else if (highLow.high > 0) {
         // If we have the same positive value for the bounds we set bounds.low to 0
         highLow.low = 0;
+      } else {
+        // If data array was empty, values are Number.MAX_VALUE and -Number.MAX_VALUE. Set bounds to prevent errors
+        highLow.high = highLow.low = 0;
       }
     }
 
