@@ -313,4 +313,94 @@ describe('Line chart tests', function () {
       });
     });
   });
+
+  describe('Empty data tests', function () {
+    it('should render empty grid with no data', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var chart = new Chartist.Line('.ct-chart');
+
+      chart.on('created', function () {
+        // Find at least one vertical grid line
+        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        done();
+      });
+    });
+
+    it('should render empty grid with only labels', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var data = {
+        labels: [1, 2, 3, 4]
+      };
+      var chart = new Chartist.Line('.ct-chart', data);
+
+      chart.on('created', function () {
+        // Find at least one vertical grid line
+        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        // Find exactly as many horizontal grid lines as labels were specified (Step Axis)
+        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(data.labels.length);
+        done();
+      });
+    });
+
+    it('should generate labels and render empty grid with only series in data', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var data = {
+        series:  [
+          [1, 2, 3, 4],
+          [2, 3, 4],
+          [3, 4]
+        ]
+      };
+      var chart = new Chartist.Line('.ct-chart', data);
+
+      chart.on('created', function () {
+        // Find at least one vertical grid line
+        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        // Should generate the labels using the largest series count
+        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(Math.max.apply(null, data.series.map(function(series) {
+          return series.length;
+        })));
+        done();
+      });
+    });
+
+    it('should render empty grid with no data and specified high low', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var chart = new Chartist.Line('.ct-chart', null, {
+        width: 400,
+        height: 300,
+        high: 100,
+        low: -100
+      });
+
+      chart.on('created', function () {
+        // Find first and last label
+        var labels = document.querySelectorAll('.ct-labels .ct-label.ct-vertical');
+        var firstLabel = labels[0];
+        var lastLabel = labels[labels.length - 1];
+
+        expect(firstLabel.textContent).toBe('-100');
+        expect(lastLabel.textContent).toBe('100');
+        done();
+      });
+    });
+
+    it('should render empty grid with no data and reverseData option', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var chart = new Chartist.Line('.ct-chart', null, {
+        reverseData: true
+      });
+
+      chart.on('created', function () {
+        // Find at least one vertical grid line
+        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        done();
+      });
+    });
+  });
 });

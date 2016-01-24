@@ -309,6 +309,44 @@ var Chartist = {
     return svg;
   };
 
+  /**
+   * Ensures that the data object passed as second argument to the charts is present and correctly initialized.
+   *
+   * @param  {Object} data The data object that is passed as second argument to the charts
+   * @return {Object} The normalized data object
+   */
+  Chartist.normalizeData = function(data) {
+    // Ensure data is present otherwise enforce
+    data = data || {series: [], labels: []};
+    data.series = data.series || [];
+    data.labels = data.labels || [];
+
+    // Check if we should generate some labels based on existing series data
+    if (data.series.length > 0 && data.labels.length === 0) {
+      var normalized = Chartist.getDataArray(data),
+          labelCount;
+
+      // If all elements of the normalized data array are arrays we're dealing with
+      // data from Bar or Line charts and we need to find the largest series if they are un-even
+      if (normalized.every(function(value) {
+        return value instanceof Array;
+      })) {
+        // Getting the series with the the most elements
+        labelCount = Math.max.apply(null, normalized.map(function(series) {
+          return series.length;
+        }));
+      } else {
+        // We're dealing with Pie data so we just take the normalized array length
+        labelCount = normalized.length;
+      }
+
+      // Setting labels to an array with emptry strings using our labelCount estimated above
+      data.labels = Chartist.times(labelCount).map(function() {
+        return '';
+      });
+    }
+    return data;
+  };
 
   /**
    * Reverses the series, labels and series data arrays.
@@ -516,7 +554,8 @@ var Chartist = {
         highLow.low = 0;
       } else {
         // If data array was empty, values are Number.MAX_VALUE and -Number.MAX_VALUE. Set bounds to prevent errors
-        highLow.high = highLow.low = 0;
+        highLow.high = 1;
+        highLow.low = 0;
       }
     }
 

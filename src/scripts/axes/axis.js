@@ -56,7 +56,7 @@
       }
 
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
-      if(!labelValues[index] && labelValues[index] !== 0) {
+      if(!Chartist.isFalseyButZero(labelValues[index]) && !labelValues[index] === '') {
         return;
       }
 

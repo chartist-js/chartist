@@ -111,6 +111,7 @@
    *
    */
   function createChart(options) {
+    this.data = Chartist.normalizeData(this.data);
     var data = {
       raw: this.data,
       normalized: Chartist.getDataArray(this.data, options.reverseData, true)
