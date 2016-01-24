@@ -81,6 +81,7 @@
    * @param options
    */
   function createChart(options) {
+    this.data = Chartist.normalizeData(this.data);
     var seriesGroups = [],
       labelsGroup,
       chartRect,
@@ -166,7 +167,7 @@
 
       // Use slight offset so there are no transparent hairline issues
       var overlappigStartAngle = Math.max(0, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2));
-      
+
       // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
       // with Z and use 359.99 degrees
       if(endAngle - overlappigStartAngle >= 359.99) {
@@ -226,7 +227,7 @@
       if(options.showLabel) {
         // Position at the labelRadius distance from center and between start and end angle
         var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
-          interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
+          interpolatedValue = options.labelInterpolationFnc(this.data.labels && !Chartist.isFalseyButZero(this.data.labels[i]) ? this.data.labels[i] : dataArray[i], i);
 
         if(interpolatedValue || interpolatedValue === 0) {
           var labelElement = labelsGroup.elem('text', {

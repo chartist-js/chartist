@@ -107,6 +107,7 @@
    *
    */
   function createChart(options) {
+    this.data = Chartist.normalizeData(this.data);
     var data = {
       raw: this.data,
       normalized: options.distributeSeries ? Chartist.getDataArray(this.data, options.reverseData, options.horizontalBars ? 'x' : 'y').map(function(value) {
@@ -129,7 +130,7 @@
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-    if(options.stackBars) {
+    if(options.stackBars && data.normalized.length !== 0) {
       // If stacked bars we need to calculate the high low from stacked values from each series
       var serialSums = Chartist.serialMap(data.normalized, function serialSums() {
         return Array.prototype.slice.call(arguments).map(function(value) {
