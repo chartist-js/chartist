@@ -197,14 +197,13 @@
       // If we should show points we need to create them now to avoid secondary loop
       // Points are drawn from the pathElements returned by the interpolation function
       // Small offset for Firefox to render squares correctly
+      // Point radius could be changed via css class f.e. - "r: 5;"
       if (seriesOptions.showPoint) {
-
         path.pathElements.forEach(function(pathElement) {
-          var point = seriesElement.elem('line', {
-            x1: pathElement.x,
-            y1: pathElement.y,
-            x2: pathElement.x + 0.01,
-            y2: pathElement.y
+          var point = seriesElement.elem('circle', {
+            cx: pathElement.x,
+            cy: pathElement.y,
+            r: 4
           }, options.classNames.point).attr({
             'value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNum).join(','),
             'meta': pathElement.data.meta
