@@ -73,9 +73,9 @@
   }
 }
 
-@mixin ct-chart-point($ct-point-size: $ct-point-size, $ct-point-shape: $ct-point-shape) {
-  stroke-width: $ct-point-size;
-  stroke-linecap: $ct-point-shape;
+@mixin ct-chart-point($ct-point-size: $ct-point-size) {
+  stroke: 0px;
+  r: $ct-point-size;
 }
 
 @mixin ct-chart-line($ct-line-width: $ct-line-width, $ct-line-dasharray: $ct-line-dasharray) {
@@ -103,11 +103,11 @@
 }
 
 @mixin ct-chart-series-color($color) {
-  .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice-donut} {
+   .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice-donut} {
     stroke: $color;
   }
 
-  .#{$ct-class-slice-pie}, .#{$ct-class-area} {
+  .#{$ct-class-slice-pie}, .#{$ct-class-area}, .#{$ct-class-point}, {
     fill: $color;
   }
 }
@@ -189,7 +189,7 @@
   }
 
   .#{$ct-class-point} {
-    @include ct-chart-point($ct-point-size, $ct-point-shape);
+    @include ct-chart-point($ct-point-size);
   }
 
   .#{$ct-class-line} {
