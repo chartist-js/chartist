@@ -15,7 +15,7 @@
 }(this, function () {
 
 /* Chartist.js 0.9.5
- * Copyright © 2015 Gion Kunz
+ * Copyright © 2016 Gion Kunz
  * Free to use under the WTFPL license.
  * http://www.wtfpl.net/
  */
@@ -330,6 +330,44 @@ var Chartist = {
     return svg;
   };
 
+  /**
+   * Ensures that the data object passed as second argument to the charts is present and correctly initialized.
+   *
+   * @param  {Object} data The data object that is passed as second argument to the charts
+   * @return {Object} The normalized data object
+   */
+  Chartist.normalizeData = function(data) {
+    // Ensure data is present otherwise enforce
+    data = data || {series: [], labels: []};
+    data.series = data.series || [];
+    data.labels = data.labels || [];
+
+    // Check if we should generate some labels based on existing series data
+    if (data.series.length > 0 && data.labels.length === 0) {
+      var normalized = Chartist.getDataArray(data),
+          labelCount;
+
+      // If all elements of the normalized data array are arrays we're dealing with
+      // data from Bar or Line charts and we need to find the largest series if they are un-even
+      if (normalized.every(function(value) {
+        return value instanceof Array;
+      })) {
+        // Getting the series with the the most elements
+        labelCount = Math.max.apply(null, normalized.map(function(series) {
+          return series.length;
+        }));
+      } else {
+        // We're dealing with Pie data so we just take the normalized array length
+        labelCount = normalized.length;
+      }
+
+      // Setting labels to an array with emptry strings using our labelCount estimated above
+      data.labels = Chartist.times(labelCount).map(function() {
+        return '';
+      });
+    }
+    return data;
+  };
 
   /**
    * Reverses the series, labels and series data arrays.
@@ -532,8 +570,12 @@ var Chartist = {
       } else if (highLow.low < 0) {
         // If we have the same negative value for the bounds we set bounds.high to 0
         highLow.high = 0;
-      } else {
+      } else if (highLow.high > 0) {
         // If we have the same positive value for the bounds we set bounds.low to 0
+        highLow.low = 0;
+      } else {
+        // If data array was empty, values are Number.MAX_VALUE and -Number.MAX_VALUE. Set bounds to prevent errors
+        highLow.high = 1;
         highLow.low = 0;
       }
     }
@@ -1158,10 +1200,13 @@ var Chartist = {
       // This is necessary to treat "holes" in line charts
       var segments = splitIntoSegments(pathCoordinates, valueData);
 
-      // If the split resulted in more that one segment we need to interpolate each segment individually and join them
-      // afterwards together into a single path.
-      if(segments.length > 1) {
-        var paths = [];
+      if(!segments.length) {
+        // If there were no segments return 'Chartist.Interpolation.none'
+        return Chartist.Interpolation.none()([]);
+      } else if(segments.length > 1) {
+        // If the split resulted in more that one segment we need to interpolate each segment individually and join them
+        // afterwards together into a single path.
+          var paths = [];
         // For each segment we will recurse the cardinal function
         segments.forEach(function(segment) {
           paths.push(cardinal(segment.pathCoordinates, segment.valueData));
@@ -1981,43 +2026,23 @@ var Chartist = {
   }
 
   /**
-   * "Save" way to get property value from svg BoundingBox.
-   * This is a workaround. Firefox throws an NS_ERROR_FAILURE error if getBBox() is called on an invisible node.
-   * See [NS_ERROR_FAILURE: Component returned failure code: 0x80004005](http://jsfiddle.net/sym3tri/kWWDK/)
-   *
-   * @memberof Chartist.Svg
-   * @param {SVGElement} node The svg node to
-   * @param {String} prop The property to fetch (ex.: height, width, ...)
-   * @returns {Number} The value of the given bbox property
-   */
-  function getBBoxProperty(node, prop) {
-    try {
-      return node.getBBox()[prop];
-    } catch(e) {}
-
-    return 0;
-  }
-
-  /**
-   * Get element height with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+   * Get element height using `getBoundingClientRect`
    *
    * @memberof Chartist.Svg
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.clientHeight || Math.round(getBBoxProperty(this._node, 'height')) || this._node.parentNode.clientHeight;
+    return this._node.getBoundingClientRect().height;
   }
 
   /**
-   * Get element width with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+   * Get element width using `getBoundingClientRect`
    *
    * @memberof Chartist.Core
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.clientWidth || Math.round(getBBoxProperty(this._node, 'width')) || this._node.parentNode.clientWidth;
+    return this._node.getBoundingClientRect().width;
   }
 
   /**
@@ -2725,7 +2750,7 @@ var Chartist = {
       }
 
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
-      if(!labelValues[index] && labelValues[index] !== 0) {
+      if(!Chartist.isFalseyButZero(labelValues[index]) && !labelValues[index] === '') {
         return;
       }
 
@@ -3042,6 +3067,7 @@ var Chartist = {
    *
    */
   function createChart(options) {
+    this.data = Chartist.normalizeData(this.data);
     var data = {
       raw: this.data,
       normalized: Chartist.getDataArray(this.data, options.reverseData, true)
@@ -3127,18 +3153,15 @@ var Chartist = {
       // If we should show points we need to create them now to avoid secondary loop
       // Points are drawn from the pathElements returned by the interpolation function
       // Small offset for Firefox to render squares correctly
+      // Point radius could be changed via css class f.e. - "r: 5;"
       if (seriesOptions.showPoint) {
-
         path.pathElements.forEach(function(pathElement) {
-          var point = seriesElement.elem('line', {
-            x1: pathElement.x,
-            y1: pathElement.y,
-            x2: pathElement.x + 0.01,
-            y2: pathElement.y
+          var point = seriesElement.elem('circle', {
+            cx: pathElement.x,
+            cy: pathElement.y,
+            r: 4
           }, options.classNames.point).attr({
-            'value': [pathElement.data.value.x, pathElement.data.value.y].filter(function(v) {
-                return v;
-              }).join(','),
+            'value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNum).join(','),
             'meta': pathElement.data.meta
           }, Chartist.xmlNs.uri);
 
@@ -3214,9 +3237,7 @@ var Chartist = {
           // and adding the created DOM elements to the correct series group
           var area = seriesElement.elem('path', {
             d: areaPath.stringify()
-          }, options.classNames.area, true).attr({
-            'values': data.normalized[seriesIndex]
-          }, Chartist.xmlNs.uri);
+          }, options.classNames.area, true);
 
           // Emit an event for each area that was drawn
           this.eventEmitter.emit('draw', {
@@ -3410,8 +3431,6 @@ var Chartist = {
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
-    // Use only integer values (whole numbers) for the scale steps
-    onlyInteger: false,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
@@ -3454,6 +3473,7 @@ var Chartist = {
    *
    */
   function createChart(options) {
+    this.data = Chartist.normalizeData(this.data);
     var data = {
       raw: this.data,
       normalized: options.distributeSeries ? Chartist.getDataArray(this.data, options.reverseData, options.horizontalBars ? 'x' : 'y').map(function(value) {
@@ -3476,15 +3496,15 @@ var Chartist = {
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-    if(options.stackBars) {
+    if(options.stackBars && data.normalized.length !== 0) {
       // If stacked bars we need to calculate the high low from stacked values from each series
       var serialSums = Chartist.serialMap(data.normalized, function serialSums() {
         return Array.prototype.slice.call(arguments).map(function(value) {
           return value;
         }).reduce(function(prev, curr) {
           return {
-            x: prev.x + curr.x || 0,
-            y: prev.y + curr.y || 0
+            x: prev.x + (curr && curr.x) || 0,
+            y: prev.y + (curr && curr.y) || 0
           };
         }, {x: 0, y: 0});
       });
@@ -3691,9 +3711,7 @@ var Chartist = {
 
         // Create bar element
         bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
-          'value': [value.x, value.y].filter(function(v) {
-            return v;
-          }).join(','),
+          'value': [value.x, value.y].filter(Chartist.isNum).join(','),
           'meta': Chartist.getMetaData(series, valueIndex)
         }, Chartist.xmlNs.uri);
 
@@ -3826,7 +3844,9 @@ var Chartist = {
     // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
     labelDirection: 'neutral',
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
-    reverseData: false
+    reverseData: false,
+    // If true empty values will be ignored to avoid drawing unncessary slices and labels
+    ignoreEmptyValues: false
   };
 
   /**
@@ -3857,6 +3877,7 @@ var Chartist = {
    * @param options
    */
   function createChart(options) {
+    this.data = Chartist.normalizeData(this.data);
     var seriesGroups = [],
       labelsGroup,
       chartRect,
@@ -3921,6 +3942,9 @@ var Chartist = {
     // Draw the series
     // initialize series groups
     for (var i = 0; i < this.data.series.length; i++) {
+      // If current value is zero and we are ignoring empty values then skip to next value
+      if (dataArray[i] === 0 && options.ignoreEmptyValues) continue;
+
       var series = this.data.series[i];
       seriesGroups[i] = this.svg.elem('g', null, null, true);
 
@@ -3936,13 +3960,17 @@ var Chartist = {
       ].join(' '));
 
       var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
+
+      // Use slight offset so there are no transparent hairline issues
+      var overlappigStartAngle = Math.max(0, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2));
+
       // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
       // with Z and use 359.99 degrees
-      if(endAngle - startAngle === 360) {
-        endAngle -= 0.01;
+      if(endAngle - overlappigStartAngle >= 359.99) {
+        endAngle = overlappigStartAngle + 359.99;
       }
 
-      var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2)),
+      var start = Chartist.polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
@@ -3995,7 +4023,7 @@ var Chartist = {
       if(options.showLabel) {
         // Position at the labelRadius distance from center and between start and end angle
         var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
-          interpolatedValue = options.labelInterpolationFnc(this.data.labels ? this.data.labels[i] : dataArray[i], i);
+          interpolatedValue = options.labelInterpolationFnc(this.data.labels && !Chartist.isFalseyButZero(this.data.labels[i]) ? this.data.labels[i] : dataArray[i], i);
 
         if(interpolatedValue || interpolatedValue === 0) {
           var labelElement = labelsGroup.elem('text', {
@@ -4017,7 +4045,7 @@ var Chartist = {
         }
       }
 
-      // Set next startAngle to current endAngle. Use slight offset so there are no transparent hairline issues
+      // Set next startAngle to current endAngle.
       // (except for last slice)
       startAngle = endAngle;
     }
