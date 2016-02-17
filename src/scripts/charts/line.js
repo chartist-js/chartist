@@ -368,7 +368,7 @@
    *   ]
    * };
    *
-   * // In adition to the regular options we specify responsive option overrides that will override the default configutation based on the matching media queries.
+   * // In addition to the regular options we specify responsive option overrides that will override the default configutation based on the matching media queries.
    * var responsiveOptions = [
    *   ['screen and (min-width: 641px) and (max-width: 1024px)', {
    *     showPoint: false,
