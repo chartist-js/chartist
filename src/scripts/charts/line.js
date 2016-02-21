@@ -154,9 +154,9 @@
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
       seriesElement.attr({
-        'series-name': series.name,
-        'meta': Chartist.serialize(series.meta)
-      }, Chartist.xmlNs.uri);
+        'ct:series-name': series.name,
+        'ct:meta': Chartist.serialize(series.meta)
+      });
 
       // Use series class from series data or if not set generate one
       seriesElement.addClass([
@@ -206,9 +206,9 @@
             x2: pathElement.x + 0.01,
             y2: pathElement.y
           }, options.classNames.point).attr({
-            'value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNum).join(','),
-            'meta': pathElement.data.meta
-          }, Chartist.xmlNs.uri);
+            'ct:value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNum).join(','),
+            'ct:meta': pathElement.data.meta
+          });
 
           this.eventEmitter.emit('draw', {
             type: 'point',

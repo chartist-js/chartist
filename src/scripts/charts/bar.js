@@ -254,9 +254,9 @@
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
       seriesElement.attr({
-        'series-name': series.name,
-        'meta': Chartist.serialize(series.meta)
-      }, Chartist.xmlNs.uri);
+        'ct:series-name': series.name,
+        'ct:meta': Chartist.serialize(series.meta)
+      });
 
       // Use series class from series data or if not set generate one
       seriesElement.addClass([
@@ -345,9 +345,9 @@
 
         // Create bar element
         bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
-          'value': [value.x, value.y].filter(Chartist.isNum).join(','),
-          'meta': Chartist.getMetaData(series, valueIndex)
-        }, Chartist.xmlNs.uri);
+          'ct:value': [value.x, value.y].filter(Chartist.isNum).join(','),
+          'ct:meta': Chartist.getMetaData(series, valueIndex)
+        });
 
         this.eventEmitter.emit('draw', Chartist.extend({
           type: 'bar',
