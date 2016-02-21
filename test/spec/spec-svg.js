@@ -65,6 +65,25 @@ describe('Chartist SVG', function () {
     expect(svg._node.firstChild.attributes.r.textContent).toBe('10');
   });
 
+  it('should allow to set namespaced attributes', function () {
+    var svg = new window.Chartist.Svg('image');
+    svg.elem('image').attr({
+      x: 100,
+      y: 100,
+      height: 100,
+      width: 100,
+      'xlink:href': 'image.jpg'
+    });
+
+    expect(svg._node).toBeDefined();
+    expect(svg._node.firstChild).toBeDefined();
+    expect(svg._node.firstChild.getAttribute('x')).toBe('100');
+    expect(svg._node.firstChild.getAttribute('y')).toBe('100');
+    expect(svg._node.firstChild.getAttribute('width')).toBe('100');
+    expect(svg._node.firstChild.getAttribute('height')).toBe('100');
+    expect(svg._node.firstChild.getAttributeNS(Chartist.namespaces.xlink, 'href')).toBe('image.jpg');
+  });
+
   it('should clear on each nesting level', function () {
     var svg = new window.Chartist.Svg('svg');
     var group = svg.elem('g');
