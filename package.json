@@ -20,7 +20,8 @@
   ],
   "files": [
     "dist",
-    "LICENSE",
+    "LICENSE-WTFPL",
+    "LICENSE-MIT",
     "package.json",
     "README.md"
   ],
