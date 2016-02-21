@@ -167,7 +167,7 @@ sections:
                 - name: iOS Safari 7
                   status: supported
                   text: Supported
-            - name: Reponsive Options Override
+            - name: Responsive Options Override
               browsers:
                 - name: IE9*
                   status: supported
