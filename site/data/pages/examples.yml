@@ -159,7 +159,7 @@ sections:
           classes: ct-golden-section
           intro: >
                     Chartist will figure out if your browser supports foreignObject and it will use them to create labels
-                    that re based on regular HTML text elements. Multi-line and regular CSS styles are just two of many
+                    that are based on regular HTML text elements. Multi-line and regular CSS styles are just two of many
                     benefits while using foreignObjects!
       - type: live-example
         data:
