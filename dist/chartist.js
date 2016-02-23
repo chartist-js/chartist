@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.9.6
+/* Chartist.js 0.9.7
  * Copyright © 2016 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.9.6'
+  version: '0.9.7'
 };
 
 (function (window, document, Chartist) {
@@ -2758,7 +2758,7 @@ var Chartist = {
       }
 
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
-      if(!Chartist.isFalseyButZero(labelValues[index]) && !labelValues[index] === '') {
+      if(Chartist.isFalseyButZero(labelValues[index]) && labelValues[index] !== '') {
         return;
       }
 
@@ -3332,7 +3332,7 @@ var Chartist = {
    *   ]
    * };
    *
-   * // In adition to the regular options we specify responsive option overrides that will override the default configutation based on the matching media queries.
+   * // In addition to the regular options we specify responsive option overrides that will override the default configutation based on the matching media queries.
    * var responsiveOptions = [
    *   ['screen and (min-width: 641px) and (max-width: 1024px)', {
    *     showPoint: false,
