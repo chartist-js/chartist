@@ -3979,7 +3979,7 @@ var Chartist = {
         endAngle = overlappigStartAngle + 359.99;
       }
 
-      var start = Chartist.polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
+      var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - overlappigStartAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
