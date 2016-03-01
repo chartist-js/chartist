@@ -882,7 +882,7 @@ var Chartist = {
     positionalData[axis.units.pos] = position + labelOffset[axis.units.pos];
     positionalData[axis.counterUnits.pos] = labelOffset[axis.counterUnits.pos];
     positionalData[axis.units.len] = length;
-    positionalData[axis.counterUnits.len] = axisOffset - 10;
+    positionalData[axis.counterUnits.len] = Math.max(0, axisOffset - 10);
 
     if(useForeignObject) {
       // We need to set width and height explicitly to px as span will not expand with width and height being
