@@ -385,6 +385,15 @@ describe('Chartist core', function() {
       expect(bounds.values).toEqual([0]);
       // Is this correct behaviour? Should it be [0, 5]?
     });
+      
+    it('should return single step if range is less than epsilon', function() {
+      var bounds = Chartist.getBounds(100, { high: 1.0000000000000002, low: 1 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(1.0000000000000002);
+      expect(bounds.low).toBe(1);
+      expect(bounds.high).toBe(1.0000000000000002);
+      expect(bounds.values).toEqual([1]);
+    });
     
   });
   
