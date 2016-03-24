@@ -28,6 +28,7 @@
   "style": "dist/chartist.min.css",
   "main": "dist/chartist.js",
   "browser": "dist/chartist.js",
+  "license": "MIT OR WTFPL",
   "licenses": [
     {
       "type": "WTFPL",
