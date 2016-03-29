@@ -401,7 +401,7 @@ describe('Chartist core', function() {
 
     function makeValues(arr) {
       return arr.map(function(x) {
-        return { value: x }
+        return { value: x };
       });
     }
 
