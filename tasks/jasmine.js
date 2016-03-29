@@ -29,6 +29,7 @@ module.exports = function (grunt) {
         '<%= pkg.config.src %>/scripts/charts/pie.js'
       ],
       options: {
+        summary: true,
         specs: '<%= pkg.config.test %>/spec/**/spec-*.js',
         helpers: '<%= pkg.config.test %>/spec/**/helper-*.js',
         vendor: [          
