@@ -209,6 +209,40 @@ describe('Line chart tests', function () {
       });
     });
 
+    it('should render correctly with Interpolation.monotoneCubic and holes everywhere', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var chart = new Chartist.Line('.ct-chart', {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+        ]
+      }, {
+        lineSmooth: Chartist.Interpolation.monotoneCubic()
+      });
+
+      chart.on('draw', function (context) {
+        if (context.type === 'line') {
+          expect(context.path.pathElements.map(function (pathElement) {
+            return {
+              command: pathElement.command,
+              data: pathElement.data
+            };
+          })).toEqual([
+            {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+            // Monotone cubic should create Line path segment if only one connection
+            {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+            // Monotone cubic should create Curve path segment for 2 or more connections
+            {command: 'C', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
+            {command: 'C', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
+            {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+          ]);
+          done();
+        }
+      });
+    });
+
     it('should render correctly with Interpolation.simple and holes everywhere', function (done) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
 
