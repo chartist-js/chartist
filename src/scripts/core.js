@@ -845,6 +845,7 @@ var Chartist = {
    */
   Chartist.createGrid = function(position, index, axis, offset, length, group, classes, eventEmitter) {
     var positionalData = {};
+    position = Math.round(position) + 0.5;  // Avoid blurred lines
     positionalData[axis.units.pos + '1'] = position;
     positionalData[axis.units.pos + '2'] = position;
     positionalData[axis.counterUnits.pos + '1'] = offset;
