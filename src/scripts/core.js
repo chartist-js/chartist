@@ -747,7 +747,9 @@ var Chartist = {
     var values = [];
     for (i = bounds.min; i <= bounds.max; i += bounds.step) {      
       var value = Chartist.roundWithPrecision(i);      
-      value != values[values.length - 1] && values.push(i);
+      if (value !== values[values.length - 1]) {
+        values.push(i);
+      }
     }
     bounds.values = values;
     return bounds;

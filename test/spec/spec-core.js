@@ -427,13 +427,13 @@ describe('Chartist core', function() {
     }
     
     it('should add single grid line to group', function(done) {
-      onCreated(function(grid) {
+      onCreated(function() {
         expect(group.querySelectorAll('line').svgElements.length).toBe(1);
       }, done);            
     }); 
     
     it('should add half pixel offset to position to avoid blurry lines', function(done) {
-      onCreated(function(grid) {
+      onCreated(function() {
         var line = group.querySelector('line'); 
         expect(line.attr('x1')).toBe('10.5');
         expect(line.attr('x2')).toBe('10.5');
@@ -445,7 +445,7 @@ describe('Chartist core', function() {
     it('should draw horizontal line', function(done) {
       axis.units.pos = 'y';
       axis.counterUnits.pos = 'x';
-      onCreated(function(grid) {
+      onCreated(function() {
         var line = group.querySelector('line'); 
         expect(line.attr('y1')).toBe('10.5');
         expect(line.attr('y2')).toBe('10.5');
