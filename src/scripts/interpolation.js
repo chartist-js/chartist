@@ -162,43 +162,12 @@
     var t = Math.min(1, Math.max(0, options.tension)),
       c = 1 - t;
 
-    // This function will help us to split pathCoordinates and valueData into segments that also contain pathCoordinates
-    // and valueData. This way the existing functions can be reused and the segment paths can be joined afterwards.
-    // This functionality is necessary to treat "holes" in the line charts
-    function splitIntoSegments(pathCoordinates, valueData) {
-      var segments = [];
-      var hole = true;
-
-      for(var i = 0; i < pathCoordinates.length; i += 2) {
-        // If this value is a "hole" we set the hole flag
-        if(valueData[i / 2].value === undefined) {
-          if(!options.fillHoles) {
-            hole = true;
-          }
-        } else {
-          // If it's a valid value we need to check if we're coming out of a hole and create a new empty segment
-          if(hole) {
-            segments.push({
-              pathCoordinates: [],
-              valueData: []
-            });
-            // As we have a valid value now, we are not in a "hole" anymore
-            hole = false;
-          }
-
-          // Add to the segment pathCoordinates and valueData
-          segments[segments.length - 1].pathCoordinates.push(pathCoordinates[i], pathCoordinates[i + 1]);
-          segments[segments.length - 1].valueData.push(valueData[i / 2]);
-        }
-      }
-
-      return segments;
-    }
-
     return function cardinal(pathCoordinates, valueData) {
       // First we try to split the coordinates into segments
       // This is necessary to treat "holes" in line charts
-      var segments = splitIntoSegments(pathCoordinates, valueData);
+      var segments = Chartist.splitIntoSegments(pathCoordinates, valueData, {
+        fillHoles: options.fillHoles
+      });
 
       if(!segments.length) {
         // If there were no segments return 'Chartist.Interpolation.none'
@@ -298,50 +267,13 @@
 
     options = Chartist.extend({}, defaultOptions, options);
 
-    // This function will help us to split pathCoordinates and valueData into segments that also contain pathCoordinates
-    // and valueData. This way the existing functions can be reused and the segment paths can be joined afterwards.
-    // This functionality is necessary to treat "holes" in the line charts
-    function splitIntoSegments(pathCoordinates, valueData) {
-      var segments = [];
-      var hole = true;
-
-      for(var i = 0; i < pathCoordinates.length; i += 2) {
-        // If this value is a "hole" we set the hole flag
-        if(valueData[i / 2].value === undefined) {
-          if(!options.fillHoles) {
-            hole = true;
-          }
-        } else if(i >= 2 && pathCoordinates[i] <= pathCoordinates[i-2]) {
-          // Because we are doing monotone interpolation, curve fitting only makes sense for
-          // increasing x values. Therefore if two subsequent points have the same x value, or
-          // the x value is decreasing, then we create a hole at this point. (Which cannot be
-          // filled in even with the 'fillHoles' option)
-
-          hole = true;
-        } else {
-          // If it's a valid value we need to check if we're coming out of a hole and create a new empty segment
-          if(hole) {
-            segments.push({
-              pathCoordinates: [],
-              valueData: []
-            });
-            // As we have a valid value now, we are not in a "hole" anymore
-            hole = false;
-          }
-
-          // Add to the segment pathCoordinates and valueData
-          segments[segments.length - 1].pathCoordinates.push(pathCoordinates[i], pathCoordinates[i + 1]);
-          segments[segments.length - 1].valueData.push(valueData[i / 2]);
-        }
-      }
-
-      return segments;
-    }
-
     return function monotoneCubic(pathCoordinates, valueData) {
       // First we try to split the coordinates into segments
       // This is necessary to treat "holes" in line charts
-      var segments = splitIntoSegments(pathCoordinates, valueData);
+      var segments = Chartist.splitIntoSegments(pathCoordinates, valueData, {
+        fillHoles: options.fillHoles,
+        increasingX: true
+      });
 
       if(!segments.length) {
         // If there were no segments return 'Chartist.Interpolation.none'
