@@ -398,7 +398,7 @@ describe('Chartist core', function() {
   });
   
   
-  fdescribe('createGrid', function() {
+  describe('createGrid', function() {
     var group, axis, classes, eventEmitter, position, length, offset;
     
     beforeEach(function() {
