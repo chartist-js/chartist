@@ -398,4 +398,61 @@ describe('Chartist core', function() {
   });
   
   
+  describe('createGrid', function() {
+    var group, axis, classes, eventEmitter, position, length, offset;
+    
+    beforeEach(function() {
+      eventEmitter = Chartist.EventEmitter();
+      group = new Chartist.Svg('g');
+      axis = {
+        units: {
+          pos : 'x'
+        },
+        counterUnits: {
+          pos : 'y'
+        }
+      }; 
+      classes = [];
+      position = 10;
+      length = 100;
+      offset = 20;
+    });
+    
+    function onCreated(fn, done) {
+      eventEmitter.addEventHandler('draw', function(grid) {
+        fn(grid);
+        done();
+      });
+      Chartist.createGrid(position, 1, axis, offset, length, group, classes, eventEmitter);
+    }
+    
+    it('should add single grid line to group', function(done) {
+      onCreated(function() {
+        expect(group.querySelectorAll('line').svgElements.length).toBe(1);
+      }, done);            
+    }); 
+    
+    it('should add half pixel offset to position to avoid blurry lines', function(done) {
+      onCreated(function() {
+        var line = group.querySelector('line'); 
+        expect(line.attr('x1')).toBe('10.5');
+        expect(line.attr('x2')).toBe('10.5');
+        expect(line.attr('y1')).toBe('20');
+        expect(line.attr('y2')).toBe('120');
+      }, done);            
+    }); 
+    
+    it('should draw horizontal line', function(done) {
+      axis.units.pos = 'y';
+      axis.counterUnits.pos = 'x';
+      onCreated(function() {
+        var line = group.querySelector('line'); 
+        expect(line.attr('y1')).toBe('10.5');
+        expect(line.attr('y2')).toBe('10.5');
+        expect(line.attr('x1')).toBe('20');
+        expect(line.attr('x2')).toBe('120');
+      }, done);            
+    }); 
+
+  });
 });
