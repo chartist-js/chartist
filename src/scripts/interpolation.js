@@ -359,7 +359,7 @@
             ys[i + 1],
 
             false,
-            valueData[i]
+            valueData[i + 1]
           );
         }
 
