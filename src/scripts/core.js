@@ -727,6 +727,10 @@ var Chartist = {
       }
     }
 
+    // step must not be less than EPSILON to create values that can be represented as floating number.
+    var EPSILON = 2.221E-16;
+    bounds.step = Math.max(bounds.step, EPSILON);
+    
     // Narrow min and max based on new step
     newMin = bounds.min;
     newMax = bounds.max;
@@ -740,11 +744,12 @@ var Chartist = {
     bounds.max = newMax;
     bounds.range = bounds.max - bounds.min;
 
-    bounds.values = [];
-    for (i = bounds.min; i <= bounds.max; i += bounds.step) {
-      bounds.values.push(Chartist.roundWithPrecision(i));
+    var values = [];
+    for (i = bounds.min; i <= bounds.max; i += bounds.step) {      
+      var value = Chartist.roundWithPrecision(i);      
+      value != values[values.length - 1] && values.push(i);
     }
-
+    bounds.values = values;
     return bounds;
   };
 
@@ -882,7 +887,7 @@ var Chartist = {
     positionalData[axis.units.pos] = position + labelOffset[axis.units.pos];
     positionalData[axis.counterUnits.pos] = labelOffset[axis.counterUnits.pos];
     positionalData[axis.units.len] = length;
-    positionalData[axis.counterUnits.len] = axisOffset - 10;
+    positionalData[axis.counterUnits.len] = Math.max(0, axisOffset - 10);
 
     if(useForeignObject) {
       // We need to set width and height explicitly to px as span will not expand with width and height being
@@ -942,7 +947,7 @@ var Chartist = {
       mediaQueryListeners = [],
       i;
 
-    function updateCurrentOptions(preventChangedEvent) {
+    function updateCurrentOptions(mediaEvent) {
       var previousOptions = currentOptions;
       currentOptions = Chartist.extend({}, baseOptions);
 
@@ -955,7 +960,7 @@ var Chartist = {
         }
       }
 
-      if(eventEmitter && !preventChangedEvent) {
+      if(eventEmitter && mediaEvent) {
         eventEmitter.emit('optionsChanged', {
           previousOptions: previousOptions,
           currentOptions: currentOptions
@@ -979,8 +984,8 @@ var Chartist = {
         mediaQueryListeners.push(mql);
       }
     }
-    // Execute initially so we get the correct options
-    updateCurrentOptions(true);
+    // Execute initially without an event argument so we get the correct options
+    updateCurrentOptions();
 
     return {
       removeMediaQueryListeners: removeMediaQueryListeners,
