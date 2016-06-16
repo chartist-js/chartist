@@ -394,7 +394,33 @@ describe('Chartist core', function() {
       expect(bounds.high).toBe(1.0000000000000002);
       expect(bounds.values).toEqual([1]);
     });
-    
+
+    it('should return values with no zero included', function() {
+      var bounds = Chartist.getBounds(100, { high: 8.2, low: -1 }, 15, false);
+      expect(bounds.step).toEqual(2);
+      expect(bounds.values).toEqual([-1,1,3,5,7,9]);
+    });
+
+    it('should return values with zero included', function() {
+      var bounds = Chartist.getBounds(100, { high: 8.2, low: -1 }, 15, false, 0);
+      expect(bounds.step).toEqual(2);
+      expect(bounds.range).toEqual(12);
+      expect(bounds.values).toEqual([-2,0,2,4,6,8,10]);
+    });
+
+    it('should return values with -3 included', function() {
+      var bounds = Chartist.getBounds(100, { high: 8.2, low: -1 }, 15, false, -3);
+      expect(bounds.step).toEqual(2);
+      expect(bounds.values).toEqual([-3,-1,1,3,5,7,9]);
+    });
+
+    it('should return values with 16 included', function() {
+      var bounds = Chartist.getBounds(100, { high: 8.2, low: -1 }, 15, false, 16);
+      expect(bounds.step).toEqual(2);
+      expect(bounds.values).toEqual([-2,0,2,4,6,8,10,12,14,16]);
+    });
+
+
   });
 
   describe('splitIntoSegments', function() {
