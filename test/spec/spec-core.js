@@ -420,6 +420,12 @@ describe('Chartist core', function() {
       expect(bounds.values).toEqual([-2,0,2,4,6,8,10,12,14,16]);
     });
 
+    it('should return values width floating numbers', function() {
+      var bounds = Chartist.getBounds(100, { high: 8.2, low: -1 }, 3, false, 0);
+      expect(bounds.step).toEqual(0.5);
+      expect(bounds.values).toEqual([-1, -0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9]);
+    });
+
 
   });
 

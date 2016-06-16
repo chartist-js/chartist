@@ -732,7 +732,7 @@ var Chartist = {
     bounds.step = Math.max(bounds.step, EPSILON);
 
     var values = [], value;
-    if (ensureTickValue || ensureTickValue === 0) {
+    if (typeof ensureTickValue === 'number') {
 
       // Avoid min to be higher and max to be lower than the ensured tick value
       bounds.min = Math.min(bounds.min, ensureTickValue);
