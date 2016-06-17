@@ -674,7 +674,7 @@ var Chartist = {
    * @param {Boolean} onlyInteger
    * @return {Object} All the values to set the bounds of the chart
    */
-  Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, onlyInteger) {
+  Chartist.getBounds = function (axisLength, highLow, scaleMinSpace, onlyInteger, ensureTickValue) {
     var i,
       optimizationCounter = 0,
       newMin,
@@ -730,26 +730,50 @@ var Chartist = {
     // step must not be less than EPSILON to create values that can be represented as floating number.
     var EPSILON = 2.221E-16;
     bounds.step = Math.max(bounds.step, EPSILON);
-    
-    // Narrow min and max based on new step
-    newMin = bounds.min;
-    newMax = bounds.max;
-    while(newMin + bounds.step <= bounds.low) {
-      newMin += bounds.step;
-    }
-    while(newMax - bounds.step >= bounds.high) {
-      newMax -= bounds.step;
-    }
-    bounds.min = newMin;
-    bounds.max = newMax;
-    bounds.range = bounds.max - bounds.min;
 
-    var values = [];
-    for (i = bounds.min; i <= bounds.max; i += bounds.step) {      
-      var value = Chartist.roundWithPrecision(i);      
-      value != values[values.length - 1] && values.push(i);
+    var values = [], value;
+    if (typeof ensureTickValue === 'number') {
+
+      // Avoid min to be higher and max to be lower than the ensured tick value
+      bounds.min = Math.min(bounds.min, ensureTickValue);
+      bounds.max = Math.max(bounds.max, ensureTickValue);
+
+      // Step up and down from the ensured value to generate tick values, min value and max value
+      value = ensureTickValue;
+      while (value > bounds.min) {
+        values.push(Chartist.roundWithPrecision((value -= bounds.step)));
+      }
+      bounds.min = value;
+      values = values.reverse();
+      values.push(value = ensureTickValue);
+      while (value < bounds.max) {
+        values.push(Chartist.roundWithPrecision((value += bounds.step)));
+      }
+      bounds.max = value;
+
+    } else {
+
+      // Narrow min and max based on new step
+      newMin = bounds.min;
+      newMax = bounds.max;
+      while(newMin + bounds.step <= bounds.low) {
+        newMin += bounds.step;
+      }
+      while(newMax - bounds.step >= bounds.high) {
+        newMax -= bounds.step;
+      }
+      bounds.min = newMin;
+      bounds.max = newMax;
+
+      for (i = bounds.min; i <= bounds.max; i += bounds.step) {
+        value = Chartist.roundWithPrecision(i);
+        value != values[values.length - 1] && values.push(i);
+      }
+
     }
+
     bounds.values = values;
+    bounds.range = bounds.max - bounds.min;
     return bounds;
   };
 
