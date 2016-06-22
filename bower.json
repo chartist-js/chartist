@@ -14,7 +14,7 @@
     "chartist-plugin-pointlabels": "~0.0.4",
     "chartist-plugin-sketchy": "~0.0.2",
     "chartist-plugin-accessibility": "~0.0.2",
-    "chartist-plugin-tooltip": "~0.0.8",
+    "chartist-plugin-tooltip": "~0.0.12",
     "chartist-plugin-axistitle": "~0.0.1",
     "chartist-plugin-threshold": "~0.0.1",
     "chartist-plugin-fill-donut": "~0.0.1",
