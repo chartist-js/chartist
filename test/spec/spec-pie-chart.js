@@ -39,8 +39,9 @@ describe('Pie chart tests', function() {
 
     var num = '\\d+(\\.\\d*)?';
     var data, options;
-    
+
     beforeEach(function() {
+      var sum = function(a, b) { return a + b; };
       data = {
         series: [5, 3, 4]
       };
@@ -52,9 +53,8 @@ describe('Pie chart tests', function() {
           return Math.round(value / data.series.reduce(sum) * 100) + '%';
         }
       };
-      var sum = function(a, b) { return a + b; };
     });
-    
+
     function onCreated(callback) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
       var chart = new Chartist.Pie('.ct-chart', data, options);
@@ -101,7 +101,7 @@ describe('Pie chart tests', function() {
         done();
       });
     });
-    
+
     it('should overlap slices', function(done) {
       data = {
         series: [1, 1]
@@ -137,7 +137,7 @@ describe('Pie chart tests', function() {
         done();
       });
     });
-    
+
     it('should draw complete circle with startAngle', function(done) {
       data.series = [100];
       options.startAngle = 90;
@@ -147,7 +147,7 @@ describe('Pie chart tests', function() {
         done();
       });
     });
-    
+
     it('should draw complete circle if values are 0', function(done) {
       data = {
         series: [0, 1, 0]
@@ -172,7 +172,7 @@ describe('Pie chart tests', function() {
         width: 100,
         height: 100,
         chartPadding: 0,
-      };  
+      };
     });
 
     function onCreated(callback) {
@@ -182,7 +182,7 @@ describe('Pie chart tests', function() {
     }
 
     it('Pie should render correctly with very small slices', function(done) {
-      onCreated(function() { 
+      onCreated(function() {
         var slice1 = $('.ct-slice-pie').eq(0);
         var slice2 = $('.ct-slice-pie').eq(1);
 
@@ -191,10 +191,10 @@ describe('Pie chart tests', function() {
         done();
       });
     });
-    
+
     it('Pie should render correctly with very small slices on startAngle', function(done) {
       options.startAngle = 90;
-      onCreated(function() { 
+      onCreated(function() {
         var slice1 = $('.ct-slice-pie').eq(0);
         var slice2 = $('.ct-slice-pie').eq(1);
 
@@ -206,7 +206,7 @@ describe('Pie chart tests', function() {
 
     it('Donut should render correctly with very small slices', function(done) {
       options.donut = true;
-      onCreated(function() { 
+      onCreated(function() {
         var slice1 = $('.ct-slice-donut').eq(0);
         var slice2 = $('.ct-slice-donut').eq(1);
 
@@ -217,7 +217,7 @@ describe('Pie chart tests', function() {
     });
 
   });
-  
+
   describe('Pie with some empty values configured to be ignored', function() {
     var data, options;
 
@@ -239,11 +239,11 @@ describe('Pie chart tests', function() {
     }
 
     it('Pie should not render empty slices', function(done) {
-      onCreated(function() { 
+      onCreated(function() {
         var slices = $('.ct-slice-pie');
-        
+
         expect(slices.length).toBe(3);
-        
+
         expect(slices.eq(2).attr('ct:value')).toBe('1');
         expect(slices.eq(1).attr('ct:value')).toBe('2');
         expect(slices.eq(0).attr('ct:value')).toBe('4');
@@ -251,7 +251,7 @@ describe('Pie chart tests', function() {
       });
     });
   });
-  
+
   describe('Pie with some empty values configured not to be ignored', function() {
     var data, options;
 
@@ -263,7 +263,7 @@ describe('Pie chart tests', function() {
         width: 100,
         height: 100,
         ignoreEmptyValues: false
-      };  
+      };
     });
 
     function onCreated(callback) {
@@ -273,11 +273,11 @@ describe('Pie chart tests', function() {
     }
 
     it('Pie should render empty slices', function(done) {
-      onCreated(function() { 
+      onCreated(function() {
         var slices = $('.ct-slice-pie');
-        
+
         expect(slices.length).toBe(4);
-        
+
         expect(slices.eq(3).attr('ct:value')).toBe('1');
         expect(slices.eq(2).attr('ct:value')).toBe('2');
         expect(slices.eq(1).attr('ct:value')).toBe('0');
