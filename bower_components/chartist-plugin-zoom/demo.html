@@ -8,16 +8,22 @@
 		  fill: rgba(200, 100, 100, 0.3);
 		  stroke: red;
 	  }
+    body {
+      min-height: 2000px;
+    }
+    .fixed {
+      position:fixed;
+    }
   </style>
 </head>
 <body>
 	<h1>Chartist Zoom Plugin</h1>
 	<p>Use left mouse button to drag a zoom box. Reset zoom with right mouse button.</p>
 	<p><a id="reset" href="#" style="display:none" onclick='return reset()'>Reset</a></p>
-	<div class="ct-chart ct-golden-section" style="max-width:800px"></div>
-	
+	<div id="c1" class="ct-chart ct-golden-section" style="max-width:800px"></div>
+	<div id="c2" class="fixed ct-chart ct-golden-section" style="max-width:800px"></div>
 	<script src="bower_components/chartist/dist/chartist.js"></script>
-	<script src="dist/chartist-plugin-zoom.min.js"></script>
+	<script src="dist/chartist-plugin-zoom.js"></script>
 
 	<script>
 		var data  = {
@@ -49,7 +55,8 @@
 				Chartist.plugins.zoom({ onZoom : onZoom })
 			]
 		};
-		var chart = Chartist.Line('.ct-chart', data, options);
+		var chart1 = Chartist.Line('#c1', data, options);
+    var chart2 = Chartist.Line('#c2', data, options);
 		
 		var resetFnc;
 		function onZoom(chart, reset) {

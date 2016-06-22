@@ -4,7 +4,6 @@
 # Use `grunt` in the root directory to select and run a specific task.
 
 default:
-  - 'newer:jshint'
   - 'test'
   - 'build'
 

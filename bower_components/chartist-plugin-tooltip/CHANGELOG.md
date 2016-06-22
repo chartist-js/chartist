@@ -1,6 +1,10 @@
-# SANE Stack Changelog
+# Chartist Plugin Tooltip Changelog
 
 ### master
+
+### 0.0.11
+* [BUGFIX] Tooltips now working properly on Firefox
+* [ENHANCEMENT] Added custom tooltip using options.tooltipFnc
 
 ### 0.0.10
 * [BUGFIX] Set currency default to `undefined`. Fixes issue in chartist.js 0.7.4.

@@ -1,6 +1,6 @@
 # Tooltip plugin for Chartist.js
 
-This plugin provides quick&easy tooltips for your chartist charts. Touch support is planned soon.
+This plugin provides quick and easy tooltips for your chartist charts. Touch support is planned soon.
 
 Please visit http://gionkunz.github.io/chartist-js/plugins.html for more information.
 
@@ -32,6 +32,7 @@ var chart = new Chartist.Line('.ct-chart', {
       {meta: 'other description', value: 4}, 
       {meta: 'other description', value: 2}
     ]
+  ]
 }, {
   plugins: [
     Chartist.plugins.tooltip()

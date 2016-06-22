@@ -15,14 +15,14 @@
     "test"
   ],
   "homepage": "https://github.com/hansmaad/chartist-plugin-zoom",
-  "version": "0.0.1",
-  "_release": "0.0.1",
+  "version": "0.2.2",
+  "_release": "0.2.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1",
-    "commit": "e9ef975452cd6808086a4e43ffff564a9a664151"
+    "tag": "v0.2.2",
+    "commit": "d46f5621fa550e1d2097a16af91803fa735b91ac"
   },
-  "_source": "git://github.com/hansmaad/chartist-plugin-zoom.git",
-  "_target": "~0.0.1",
+  "_source": "https://github.com/hansmaad/chartist-plugin-zoom.git",
+  "_target": "~0.2.1",
   "_originalSource": "chartist-plugin-zoom"
 }
