@@ -100,7 +100,8 @@
       point: 'ct-point',
       area: 'ct-area',
       grid: 'ct-grid',
-      gridGroup: 'ct-grids',
+      gridGroupVertical: 'ct-grids-vertical',
+      gridGroupHorizontal: 'ct-grids-horizontal',
       gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
@@ -119,7 +120,8 @@
     // Create new svg object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
     // Create groups for labels, grid and series
-    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+    var gridGroupVertical = this.svg.elem('g').addClass(options.classNames.gridGroupVertical);
+    var gridGroupHorizontal = this.svg.elem('g').addClass(options.classNames.gridGroupHorizontal);
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
@@ -144,8 +146,8 @@
       axisY = options.axisY.type.call(Chartist, Chartist.Axis.units.y, data.normalized.series, chartRect, options.axisY);
     }
 
-    axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-    axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    axisX.createGridAndLabels(gridGroupHorizontal, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    axisY.createGridAndLabels(gridGroupVertical, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
     if (options.showGridBackground) {
       Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);

@@ -98,7 +98,8 @@
       series: 'ct-series',
       bar: 'ct-bar',
       grid: 'ct-grid',
-      gridGroup: 'ct-grids',
+      gridGroupVertical: 'ct-grids-vertical',
+      gridGroupHorizontal: 'ct-grids-horizontal',
       gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
@@ -133,7 +134,8 @@
     );
 
     // Drawing groups in correct order
-    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+    var gridGroupVertical = this.svg.elem('g').addClass(options.classNames.gridGroupVertical);
+    var gridGroupHorizontal = this.svg.elem('g').addClass(options.classNames.gridGroupHorizontal);
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
@@ -230,8 +232,8 @@
     // Used to track the screen coordinates of stacked bars
     var stackedBarValues = [];
 
-    labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-    valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    labelAxis.createGridAndLabels(gridGroupHorizontal, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    valueAxis.createGridAndLabels(gridGroupVertical, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
     if (options.showGridBackground) {
       Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);

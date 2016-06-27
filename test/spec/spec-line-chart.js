@@ -510,9 +510,9 @@ describe('Line chart tests', function () {
 
       chart.on('created', function () {
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(document.querySelector('.ct-grids-vertical .ct-grid.ct-vertical')).toBeDefined();
         // Find exactly as many horizontal grid lines as labels were specified (Step Axis)
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(data.labels.length);
+        expect(document.querySelectorAll('.ct-grids-horizontal .ct-grid.ct-horizontal').length).toBe(data.labels.length);
         done();
       });
     });
@@ -531,9 +531,9 @@ describe('Line chart tests', function () {
 
       chart.on('created', function () {
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(document.querySelector('.ct-grids-vertical .ct-grid.ct-vertical')).toBeDefined();
         // Should generate the labels using the largest series count
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(Math.max.apply(null, data.series.map(function(series) {
+        expect(document.querySelectorAll('.ct-grids-horizontal .ct-grid.ct-horizontal').length).toBe(Math.max.apply(null, data.series.map(function(series) {
           return series.length;
         })));
         done();
