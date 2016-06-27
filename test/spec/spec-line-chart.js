@@ -552,7 +552,7 @@ describe('Line chart tests', function () {
 
       chart.on('created', function () {
         // Find first and last label
-        var labels = document.querySelectorAll('.ct-labels .ct-label.ct-vertical');
+        var labels = document.querySelectorAll('.ct-labels-vertical .ct-label.ct-vertical');
         var firstLabel = labels[0];
         var lastLabel = labels[labels.length - 1];
 
