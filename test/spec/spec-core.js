@@ -395,6 +395,15 @@ describe('Chartist core', function() {
       expect(bounds.values).toEqual([1]);
     });
     
+    it('should return single step if range is less than smallest increment', function() {
+      var bounds = Chartist.getBounds(613.234375, { high: 1000.0000000000001, low: 999.9999999999997 }, 50, false);
+      expect(bounds.min).toBe(999.9999999999999);
+      expect(bounds.max).toBe(1000);
+      expect(bounds.low).toBe(999.9999999999997);
+      expect(bounds.high).toBe(1000.0000000000001);
+      expect(bounds.values).toEqual([999.9999999999999]);
+    });
+
   });
 
   describe('splitIntoSegments', function() {
