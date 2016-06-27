@@ -56,18 +56,20 @@ var Chartist = {
    * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
    */
   Chartist.extend = function (target) {
+    var i, source, sourceProp;
     target = target || {};
 
-    var sources = Array.prototype.slice.call(arguments, 1);
-    sources.forEach(function(source) {
+    for (i = 1; i < arguments.length; i++) {
+      source = arguments[i];
       for (var prop in source) {
-        if (typeof source[prop] === 'object' && source[prop] !== null && !(source[prop] instanceof Array)) {
-          target[prop] = Chartist.extend({}, target[prop], source[prop]);
+        sourceProp = source[prop];
+        if (typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
+          target[prop] = Chartist.extend(target[prop], sourceProp);
         } else {
-          target[prop] = source[prop];
+          target[prop] = sourceProp;
         }
       }
-    });
+    };
 
     return target;
   };
