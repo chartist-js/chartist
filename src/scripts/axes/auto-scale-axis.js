@@ -32,10 +32,19 @@
       max: this.bounds.max
     };
 
+    var ticks = this.bounds.values;
+    if (options.ticks) {
+      ticks = ticks.concat(options.ticks).filter(function(value, index, self) {
+        return self.indexOf(value) === index;
+      }).sort(function(a, b) {
+        return a - b;
+      });
+    }
+
     Chartist.AutoScaleAxis.super.constructor.call(this,
       axisUnit,
       chartRect,
-      this.bounds.values,
+      ticks,
       options);
   }
 
