@@ -69,7 +69,7 @@ var Chartist = {
           target[prop] = sourceProp;
         }
       }
-    };
+    }
 
     return target;
   };
