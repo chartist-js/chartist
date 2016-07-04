@@ -524,4 +524,54 @@ describe('Chartist core', function() {
     });
 
   });
+
+  describe('createGridBackground', function() {
+    var group, chartRect, className, eventEmitter;
+
+    beforeEach(function() {
+      eventEmitter = Chartist.EventEmitter();
+      group = new Chartist.Svg('g');
+      className = 'ct-test';
+      chartRect = {
+        x1 : 5, 
+        y2 : 10,
+        _width : 100,
+        _height : 50,
+        width : function() { return this._width; },
+        height : function() { return this._height; },
+      };
+    });
+
+    function onCreated(fn, done) {
+      eventEmitter.addEventHandler('draw', function(data) {
+        fn(data);
+        done();
+      });
+      Chartist.createGridBackground(group, chartRect, className, eventEmitter);
+    }
+
+    it('should add rect', function(done) {
+      onCreated(function() {
+        var rects = group.querySelectorAll('rect').svgElements;        
+        expect(rects.length).toBe(1);
+        var rect = rects[0];
+        expect(rect.attr('x')).toBe('5');
+        expect(rect.attr('y')).toBe('10');
+        expect(rect.attr('width')).toBe('100');
+        expect(rect.attr('height')).toBe('50');
+        expect(rect.classes()).toEqual(['ct-test']);
+      }, done);            
+    });
+
+    it('should pass grid to event', function(done) {
+      onCreated(function(data) {
+        expect(data.type).toBe('gridBackground');
+        var rect = data.element;        
+        expect(rect.attr('x')).toBe('5');
+        expect(rect.attr('y')).toBe('10');
+      }, done);
+    });
+
+
+  });
 });
