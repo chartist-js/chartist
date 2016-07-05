@@ -39,7 +39,7 @@
 
     if (!isNaN(parseFloat(options.ensureTickValue)) && ticks.indexOf(options.ensureTickValue) == -1) {
 
-      // redefine ticks by ensuring a given tick value and by preserving the calculated step size / interval
+      // Redefine ticks by ensuring a given tick value and by preserving the calculated step size / interval
       ticks = [];
       var currTick = options.ensureTickValue;
       var tickStep = this.bounds.step;
@@ -54,7 +54,7 @@
       ticks = ticks.reverse();
       this.bounds.min = currTick;
 
-      // Step up from the ensured value to generate higher tick values and define a new maximum limit
+      // Step up from the ensured tick value to generate higher tick values and define a new maximum limit
       currTick = options.ensureTickValue;
       ticks.push(currTick);
       while (currTick < maxTick) {
@@ -63,7 +63,7 @@
       }
       this.bounds.max = currTick;
 
-      // redefine bounds properties by new ticks, minimum and maximum limit
+      // Redefine bounds properties by new ticks, minimum and maximum limits
       this.bounds.valueRange = this.bounds.range = this.bounds.max - this.bounds.min;
       this.bounds.numberOfSteps = ticks.length;
 
