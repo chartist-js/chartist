@@ -18,6 +18,7 @@ $ct-class-bar: ct-bar !default;
 $ct-class-slice-pie: ct-slice-pie !default;
 $ct-class-slice-donut: ct-slice-donut !default;
 $ct-class-grid: ct-grid !default;
+$ct-class-grid-background: ct-grid-background !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
 $ct-class-start: ct-start !default;
@@ -37,6 +38,7 @@ $ct-text-line-height: 1;
 $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
 $ct-grid-dasharray: 2px !default;
 $ct-grid-width: 1px !default;
+$ct-grid-background-fill: none !default;
 
 // Line chart properties
 $ct-line-width: 4px !default;
