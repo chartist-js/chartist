@@ -1,3 +1,15 @@
+v0.9.8 - 22 Jun 2016
+--------------------
+- Added monotone cubic interpolation which is now the default interpolation for line charts <James Watmuff>
+- Update zoom plugin to 0.2.1 <hansmaad>
+- Bugfix: Prevent infinite loop in getBounds if bounds.valueRange is very small, fixes #643 <hansmaad>
+- Bugfix: Correct update events during media changes <Rory Hunter>
+- Bugfix: prevent negative value for foreignObject width attribute <Jose Ignacio>
+- Fixed example line chart in getting started documentation <Robin Edbom>
+- Updated development pipeline dependencies <Gion Kunz>
+- Updated chartist tooltip plugin and example styles <Gion Kunz>
+- Fixed WTFPL License issue <Gion Kunz>
+
 v0.9.7 - 23 Feb 2016
 --------------------
 - Fixed bug with label and grid rendering on axis, fixes #621
