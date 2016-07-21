@@ -396,6 +396,65 @@ describe('Chartist core', function() {
     });
     
   });
-  
-  
+
+  describe('splitIntoSegments', function() {
+
+    function makeValues(arr) {
+      return arr.map(function(x) {
+        return { value: x };
+      });
+    }
+
+    it('should return empty array for empty input', function() {
+      expect(Chartist.splitIntoSegments([],[])).toEqual([]);
+    });
+
+    it('should remove undefined values', function() {
+      var coords = [1,2,3,4,5,6,7,8,9,10,11,12];
+      var values = makeValues([1,undefined,undefined,4,undefined,6]);
+
+      expect(Chartist.splitIntoSegments(coords, values)).toEqual([{
+        pathCoordinates: [1,2],
+        valueData: makeValues([1])
+      }, {
+        pathCoordinates: [7, 8],
+        valueData: makeValues([4])
+      }, {
+        pathCoordinates: [11, 12],
+        valueData: makeValues([6])
+      }]);
+    });
+
+    it('should respect fillHoles option', function() {
+      var coords = [1,2,3,4,5,6,7,8,9,10,11,12];
+      var values = makeValues([1,undefined,undefined,4,undefined,6]);
+      var options = {
+        fillHoles: true
+      };
+
+      expect(Chartist.splitIntoSegments(coords, values, options)).toEqual([{
+        pathCoordinates: [1,2,7,8,11,12],
+        valueData: makeValues([1,4,6])
+      }]);
+    });
+
+    it('should respect increasingX option', function() {
+      var coords = [1,2,3,4,5,6,5,6,7,8,1,2];
+      var values = makeValues([1,2,3,4,5,6]);
+      var options = {
+        increasingX: true
+      };
+
+      expect(Chartist.splitIntoSegments(coords, values, options)).toEqual([{
+        pathCoordinates: [1,2,3,4,5,6],
+        valueData: makeValues([1,2,3])
+      }, {
+        pathCoordinates: [5,6,7,8],
+        valueData: makeValues([4,5])
+      }, {
+        pathCoordinates: [1,2],
+        valueData: makeValues([6])
+      }]);
+    });
+  });
 });
