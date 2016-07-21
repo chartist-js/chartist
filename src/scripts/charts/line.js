@@ -189,7 +189,7 @@
       };
 
       var smoothing = typeof seriesOptions.lineSmooth === 'function' ?
-        seriesOptions.lineSmooth : (seriesOptions.lineSmooth ? Chartist.Interpolation.cardinal() : Chartist.Interpolation.none());
+        seriesOptions.lineSmooth : (seriesOptions.lineSmooth ? Chartist.Interpolation.monotoneCubic() : Chartist.Interpolation.none());
       // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
       // index, value and meta data
       var path = smoothing(pathCoordinates, pathData);
