@@ -27,10 +27,6 @@
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
     var highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
     this.bounds = Chartist.getBounds(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], highLow, options.scaleMinSpace || 20, options.onlyInteger);
-    this.range = {
-      min: this.bounds.min,
-      max: this.bounds.max
-    };
 
     var ticks = this.bounds.values;
     if (options.ticks) {
@@ -40,6 +36,43 @@
         return a - b;
       });
     }
+
+    if (!isNaN(parseFloat(options.ensureTickValue)) && ticks.indexOf(options.ensureTickValue) == -1) {
+
+      // Redefine ticks by ensuring a given tick value and by preserving the calculated step size / interval
+      ticks = [];
+      var currTick = options.ensureTickValue;
+      var tickStep = this.bounds.step;
+      var minTick = this.bounds.min;
+      var maxTick = this.bounds.max;
+
+      // Step down from the ensured tick value to generate lower tick values and define a new minimum limit
+      while (currTick > minTick) {
+        currTick -= tickStep;
+        ticks.push(Chartist.roundWithPrecision(currTick));
+      }
+      ticks = ticks.reverse();
+      this.bounds.min = currTick;
+
+      // Step up from the ensured tick value to generate higher tick values and define a new maximum limit
+      currTick = options.ensureTickValue;
+      ticks.push(currTick);
+      while (currTick < maxTick) {
+        currTick += tickStep;
+        ticks.push(Chartist.roundWithPrecision(currTick));
+      }
+      this.bounds.max = currTick;
+
+      // Redefine bounds properties by new ticks, minimum and maximum limits
+      this.bounds.valueRange = this.bounds.range = this.bounds.max - this.bounds.min;
+      this.bounds.numberOfSteps = ticks.length;
+
+    }
+
+    this.range = {
+      min: this.bounds.min,
+      max: this.bounds.max
+    };
 
     Chartist.AutoScaleAxis.super.constructor.call(this,
       axisUnit,
