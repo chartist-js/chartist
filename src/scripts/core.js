@@ -140,7 +140,7 @@ var Chartist = {
    * @return {Array}
    */
   Chartist.times = function(length) {
-    return Array.apply(null, new Array(length));
+    return Array.from(Array(length), () => null);
   };
 
   /**
