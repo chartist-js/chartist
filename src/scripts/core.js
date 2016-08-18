@@ -7,8 +7,10 @@ var Chartist = {
   version: '<%= pkg.version %>'
 };
 
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   /**
    * This object contains all namespaces used within Chartist.
@@ -1097,4 +1099,4 @@ var Chartist = {
 
     return segments;
   };
-}(window, document, Chartist));
+}(this, Chartist));
