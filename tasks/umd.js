@@ -15,6 +15,7 @@ module.exports = function (grunt) {
       src: '<%= pkg.config.dist %>/chartist.js',
       objectToExport: 'Chartist',
       globalAlias: 'Chartist',
+      amdModuleId: 'Chartist',
       indent: '  '
     }
   };
