@@ -29,10 +29,8 @@ var Chartist = {
   version: '0.9.8'
 };
 
-(function (globalRoot, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   /**
    * This object contains all namespaces used within Chartist.
@@ -80,20 +78,18 @@ var Chartist = {
    * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
    */
   Chartist.extend = function (target) {
-    var i, source, sourceProp;
     target = target || {};
 
-    for (i = 1; i < arguments.length; i++) {
-      source = arguments[i];
+    var sources = Array.prototype.slice.call(arguments, 1);
+    sources.forEach(function(source) {
       for (var prop in source) {
-        sourceProp = source[prop];
-        if (typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
-          target[prop] = Chartist.extend(target[prop], sourceProp);
+        if (typeof source[prop] === 'object' && source[prop] !== null && !(source[prop] instanceof Array)) {
+          target[prop] = Chartist.extend({}, target[prop], source[prop]);
         } else {
-          target[prop] = sourceProp;
+          target[prop] = source[prop];
         }
       }
-    }
+    });
 
     return target;
   };
@@ -753,31 +749,25 @@ var Chartist = {
       }
     }
 
+    // step must not be less than EPSILON to create values that can be represented as floating number.
     var EPSILON = 2.221E-16;
     bounds.step = Math.max(bounds.step, EPSILON);
-    function safeIncrement(value, increment) {
-      // If increment is too small use *= (1+EPSILON) as a simple nextafter
-      if (value === (value += increment)) {
-      	value *= (1 + (increment > 0 ? EPSILON : -EPSILON));
-      }
-      return value;
-    }
 
     // Narrow min and max based on new step
     newMin = bounds.min;
     newMax = bounds.max;
-    while (newMin + bounds.step <= bounds.low) {
-    	newMin = safeIncrement(newMin, bounds.step);
+    while(newMin + bounds.step <= bounds.low) {
+      newMin += bounds.step;
     }
-    while (newMax - bounds.step >= bounds.high) {
-    	newMax = safeIncrement(newMax, -bounds.step);
+    while(newMax - bounds.step >= bounds.high) {
+      newMax -= bounds.step;
     }
     bounds.min = newMin;
     bounds.max = newMax;
     bounds.range = bounds.max - bounds.min;
 
     var values = [];
-    for (i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
+    for (i = bounds.min; i <= bounds.max; i += bounds.step) {
       var value = Chartist.roundWithPrecision(i);
       if (value !== values[values.length - 1]) {
         values.push(i);
@@ -896,31 +886,6 @@ var Chartist = {
         element: gridElement
       }, positionalData)
     );
-  };
-
-  /**
-   * Creates a grid background rect and emits the draw event.
-   *
-   * @memberof Chartist.Core
-   * @param gridGroup
-   * @param chartRect
-   * @param className
-   * @param eventEmitter
-   */
-  Chartist.createGridBackground = function (gridGroup, chartRect, className, eventEmitter) {
-    var gridBackground = gridGroup.elem('rect', {
-        x: chartRect.x1,
-        y: chartRect.y2,
-        width: chartRect.width(),
-        height: chartRect.height(),
-      }, className, true);
-
-      // Event for grid background draw
-      eventEmitter.emit('draw', {
-        type: 'gridBackground',
-        group: gridGroup,
-        element: gridBackground
-      });
   };
 
   /**
@@ -1121,14 +1086,14 @@ var Chartist = {
 
     return segments;
   };
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * Chartist path interpolation functions.
  *
  * @module Chartist.Interpolation
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist) {
   'use strict';
 
   Chartist.Interpolation = {};
@@ -1558,14 +1523,14 @@ var Chartist = {
     };
   };
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * A very basic event module that helps to generate and catch events.
  *
  * @module Chartist.Event
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
 
   Chartist.EventEmitter = function () {
@@ -1636,14 +1601,14 @@ var Chartist = {
     };
   };
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * This module provides some basic prototype inheritance utilities.
  *
  * @module Chartist.Class
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist) {
   'use strict';
 
   function listToArray(list) {
@@ -1747,16 +1712,15 @@ var Chartist = {
     cloneDefinitions: cloneDefinitions
   };
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * Base for all chart types. The methods in Chartist.Base are inherited to all chart types.
  *
  * @module Chartist.Base
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
 
   // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
   // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -1937,16 +1901,15 @@ var Chartist = {
     supportsForeignObject: false
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * Chartist SVG module for simple SVG DOM abstraction
  *
  * @module Chartist.Svg
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist) {
   'use strict';
-  var document = globalRoot.document;
 
   /**
    * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
@@ -1996,7 +1959,7 @@ var Chartist = {
    *
    * @memberof Chartist.Svg
    * @param {Object|String} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.
-   * @param {String} [ns] If specified, the attribute will be obtained using getAttributeNs. In order to write namepsaced attributes you can use the namespace:attribute notation within the attributes object.
+   * @param {String} ns If specified, the attribute will be obtained using getAttributeNs. In order to write namepsaced attributes you can use the namespace:attribute notation within the attributes object.
    * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
   function attr(attributes, ns) {
@@ -2525,14 +2488,14 @@ var Chartist = {
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * Chartist SVG path module for SVG path description creation and modification.
  *
  * @module Chartist.Svg.Path
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist) {
   'use strict';
 
   /**
@@ -2910,12 +2873,10 @@ var Chartist = {
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;
   Chartist.Svg.Path.join = join;
-}(this, Chartist));
+}(window, document, Chartist));
 ;/* global Chartist */
-(function (globalRoot, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   var axisUnits = {
     x: {
@@ -3028,7 +2989,7 @@ var Chartist = {
 
   Chartist.Axis.units = axisUnits;
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.
  * **Options**
@@ -3051,10 +3012,8 @@ var Chartist = {
  * @module Chartist.AutoScaleAxis
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   function AutoScaleAxis(axisUnit, data, chartRect, options) {
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
@@ -3081,7 +3040,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * The fixed scale axis uses standard linear projection of values along an axis. It makes use of a divisor option to divide the range provided from the minimum and maximum value or the options high and low that will override the computed minimum and maximum.
  * **Options**
@@ -3102,10 +3061,8 @@ var Chartist = {
  * @module Chartist.FixedScaleAxis
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   function FixedScaleAxis(axisUnit, data, chartRect, options) {
     var highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
@@ -3139,7 +3096,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the whole axis length. The projection is done using the index of the data value rather than the value itself and therefore it's only useful for distribution purpose.
  * **Options**
@@ -3156,10 +3113,8 @@ var Chartist = {
  * @module Chartist.StepAxis
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function (window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   function StepAxis(axisUnit, data, chartRect, options) {
     Chartist.StepAxis.super.constructor.call(this,
@@ -3180,7 +3135,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
  *
@@ -3189,10 +3144,8 @@ var Chartist = {
  * @module Chartist.Line
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist){
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   /**
    * Default options in line charts. Expand the code view to see a detailed list of options with comments.
@@ -3258,8 +3211,6 @@ var Chartist = {
     areaBase: 0,
     // Specify if the lines should be smoothed. This value can be true or false where true will result in smoothing using the default smoothing interpolation function Chartist.Interpolation.cardinal and false results in Chartist.Interpolation.none. You can also choose other smoothing / interpolation functions available in the Chartist.Interpolation module, or write your own interpolation function. Check the examples for a brief description.
     lineSmooth: true,
-    // If the line chart should add a background fill to the .ct-grids group.
-    showGridBackground: false,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
     // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
@@ -3286,7 +3237,6 @@ var Chartist = {
       area: 'ct-area',
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
-      gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
       start: 'ct-start',
@@ -3335,10 +3285,6 @@ var Chartist = {
 
     axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-
-    if (options.showGridBackground) {
-      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
-    }
 
     // Draw the series
     data.raw.series.forEach(function(series, seriesIndex) {
@@ -3600,17 +3546,15 @@ var Chartist = {
     createChart: createChart
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.
  *
  * @module Chartist.Bar
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist){
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   /**
    * Default options in bar charts. Expand the code view to see a detailed list of options with comments.
@@ -3690,8 +3634,6 @@ var Chartist = {
     distributeSeries: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
-    // If the bar chart should add a background fill to the .ct-grids group.
-    showGridBackground: false,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-bar',
@@ -3702,7 +3644,6 @@ var Chartist = {
       bar: 'ct-bar',
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
-      gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
       start: 'ct-start',
@@ -3833,10 +3774,6 @@ var Chartist = {
 
     labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-
-    if (options.showGridBackground) {
-      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
-    }
 
     // Draw the series
     data.raw.series.forEach(function(series, seriesIndex) {
@@ -4039,17 +3976,15 @@ var Chartist = {
     createChart: createChart
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 ;/**
  * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts
  *
  * @module Chartist.Pie
  */
 /* global Chartist */
-(function (globalRoot, Chartist) {
+(function(window, document, Chartist) {
   'use strict';
-  var window = globalRoot.window;
-  var document = globalRoot.document;
 
   /**
    * Default options in line charts. Expand the code view to see a detailed list of options with comments.
@@ -4389,7 +4324,7 @@ var Chartist = {
     determineAnchorPosition: determineAnchorPosition
   });
 
-}(this, Chartist));
+}(window, document, Chartist));
 
 return Chartist;
 
