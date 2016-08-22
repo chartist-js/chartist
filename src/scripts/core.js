@@ -1068,7 +1068,8 @@ var Chartist = {
 
     for(var i = 0; i < pathCoordinates.length; i += 2) {
       // If this value is a "hole" we set the hole flag
-      if(valueData[i / 2].value === undefined) {
+      var value = valueData[i/2].value;
+      if(value === undefined || (value && value.y === undefined)) {
         if(!options.fillHoles) {
           hole = true;
         }
