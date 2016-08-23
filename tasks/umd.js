@@ -16,7 +16,7 @@ module.exports = function (grunt) {
       objectToExport: 'Chartist',
       globalAlias: 'Chartist',
       amdModuleId: 'Chartist',
-      indent: '  '
+      indent: 2
     }
   };
 };
