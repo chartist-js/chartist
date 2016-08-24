@@ -395,6 +395,15 @@ describe('Chartist core', function() {
       expect(bounds.values).toEqual([1]);
     });
     
+    it('should return single step if range is less than smallest increment', function() {
+      var bounds = Chartist.getBounds(613.234375, { high: 1000.0000000000001, low: 999.9999999999997 }, 50, false);
+      expect(bounds.min).toBe(999.9999999999999);
+      expect(bounds.max).toBe(1000);
+      expect(bounds.low).toBe(999.9999999999997);
+      expect(bounds.high).toBe(1000.0000000000001);
+      expect(bounds.values).toEqual([999.9999999999999]);
+    });
+
   });
 
   describe('splitIntoSegments', function() {
@@ -456,5 +465,113 @@ describe('Chartist core', function() {
         valueData: makeValues([6])
       }]);
     });
+  });
+
+  describe('createGrid', function() {
+    var group, axis, classes, eventEmitter, position, length, offset;
+
+    beforeEach(function() {
+      eventEmitter = Chartist.EventEmitter();
+      group = new Chartist.Svg('g');
+      axis = {
+        units: {
+          pos : 'x'
+        },
+        counterUnits: {
+          pos : 'y'
+        }
+      }; 
+      classes = [];
+      position = 10;
+      length = 100;
+      offset = 20;
+    });
+
+    function onCreated(fn, done) {
+      eventEmitter.addEventHandler('draw', function(grid) {
+        fn(grid);
+        done();
+      });
+      Chartist.createGrid(position, 1, axis, offset, length, group, classes, eventEmitter);
+    }
+
+    it('should add single grid line to group', function(done) {
+      onCreated(function() {
+        expect(group.querySelectorAll('line').svgElements.length).toBe(1);
+      }, done);            
+    });
+
+    it('should draw line', function(done) {
+      onCreated(function() {
+        var line = group.querySelector('line');
+        expect(line.attr('x1')).toBe('10');
+        expect(line.attr('x2')).toBe('10');
+        expect(line.attr('y1')).toBe('20');
+        expect(line.attr('y2')).toBe('120');
+      }, done);
+    });
+
+    it('should draw horizontal line', function(done) {
+      axis.units.pos = 'y';
+      axis.counterUnits.pos = 'x';
+      onCreated(function() {
+        var line = group.querySelector('line');
+        expect(line.attr('y1')).toBe('10');
+        expect(line.attr('y2')).toBe('10');
+        expect(line.attr('x1')).toBe('20');
+        expect(line.attr('x2')).toBe('120');
+      }, done);
+    });
+
+  });
+
+  describe('createGridBackground', function() {
+    var group, chartRect, className, eventEmitter;
+
+    beforeEach(function() {
+      eventEmitter = Chartist.EventEmitter();
+      group = new Chartist.Svg('g');
+      className = 'ct-test';
+      chartRect = {
+        x1 : 5, 
+        y2 : 10,
+        _width : 100,
+        _height : 50,
+        width : function() { return this._width; },
+        height : function() { return this._height; },
+      };
+    });
+
+    function onCreated(fn, done) {
+      eventEmitter.addEventHandler('draw', function(data) {
+        fn(data);
+        done();
+      });
+      Chartist.createGridBackground(group, chartRect, className, eventEmitter);
+    }
+
+    it('should add rect', function(done) {
+      onCreated(function() {
+        var rects = group.querySelectorAll('rect').svgElements;        
+        expect(rects.length).toBe(1);
+        var rect = rects[0];
+        expect(rect.attr('x')).toBe('5');
+        expect(rect.attr('y')).toBe('10');
+        expect(rect.attr('width')).toBe('100');
+        expect(rect.attr('height')).toBe('50');
+        expect(rect.classes()).toEqual(['ct-test']);
+      }, done);            
+    });
+
+    it('should pass grid to event', function(done) {
+      onCreated(function(data) {
+        expect(data.type).toBe('gridBackground');
+        var rect = data.element;        
+        expect(rect.attr('x')).toBe('5');
+        expect(rect.attr('y')).toBe('10');
+      }, done);
+    });
+
+
   });
 });

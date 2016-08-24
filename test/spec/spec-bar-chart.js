@@ -9,6 +9,71 @@ describe('Bar chart tests', function() {
 
   });
 
+  describe('grids', function() {
+    
+    var chart;
+    var options;
+    var data;
+
+    beforeEach(function() {
+      data = {
+        series: [[
+          { x: 1, y: 1 },
+          { x: 3, y: 5 }
+        ]]
+      };
+      options =  {
+        axisX: {
+          type: Chartist.AutoScaleAxis,
+          onlyInteger: true
+        },
+        axisY: {
+          type: Chartist.AutoScaleAxis,
+          onlyInteger: true
+        }
+      };
+    });
+
+    function onCreated(fn) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');  
+      chart = new Chartist.Bar('.ct-chart', data, options);
+      chart.on('created', fn);      
+    }
+
+    it('should contain ct-grids group', function(done) {
+      onCreated(function () {
+        expect($('g.ct-grids').length).toBe(1);        
+        done();
+      });
+    });
+
+    it('should draw grid lines', function(done) {
+      onCreated(function () {
+        expect($('g.ct-grids line.ct-grid.ct-horizontal').length).toBe(3);
+        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(6);        
+        done();
+      });
+    });
+
+    it('should draw grid background', function(done) {
+      options.showGridBackground = true;
+      onCreated(function () {
+        expect($('g.ct-grids rect.ct-grid-background').length).toBe(1);
+        done();
+      });
+    });
+
+    it('should not draw grid background if option set to false', function(done) {
+      options.showGridBackground = false;
+      onCreated(function () {
+        expect($('g.ct-grids rect.ct-grid-background').length).toBe(0);
+        done();
+      });
+    });
+
+  });
+
+
   describe('ct:value attribute', function() {
     it('should contain x and y value for each bar', function(done) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
