@@ -1,6 +1,9 @@
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   var axisUnits = {
     x: {
@@ -113,4 +116,4 @@
 
   Chartist.Axis.units = axisUnits;
 
-}(window, document, Chartist));
+}(this, Chartist));

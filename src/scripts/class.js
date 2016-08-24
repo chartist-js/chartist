@@ -4,7 +4,7 @@
  * @module Chartist.Class
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
   function listToArray(list) {
@@ -108,4 +108,4 @@
     cloneDefinitions: cloneDefinitions
   };
 
-}(window, document, Chartist));
+}(this, Chartist));

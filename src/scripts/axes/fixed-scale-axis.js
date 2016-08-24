@@ -18,8 +18,11 @@
  * @module Chartist.FixedScaleAxis
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   function FixedScaleAxis(axisUnit, data, chartRect, options) {
     var highLow = options.highLow || Chartist.getHighLow(data.normalized, options, axisUnit.pos);
@@ -53,4 +56,4 @@
     projectValue: projectValue
   });
 
-}(window, document, Chartist));
+}(this, Chartist));

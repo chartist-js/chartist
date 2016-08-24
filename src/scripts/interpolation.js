@@ -4,7 +4,7 @@
  * @module Chartist.Interpolation
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
   Chartist.Interpolation = {};
@@ -434,4 +434,4 @@
     };
   };
 
-}(window, document, Chartist));
+}(this, Chartist));

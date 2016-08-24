@@ -20,8 +20,11 @@
  * @module Chartist.AutoScaleAxis
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   function AutoScaleAxis(axisUnit, data, chartRect, options) {
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
@@ -48,4 +51,4 @@
     projectValue: projectValue
   });
 
-}(window, document, Chartist));
+}(this, Chartist));

@@ -4,8 +4,10 @@
  * @module Chartist.Svg
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
+
+  var document = globalRoot.document;
 
   /**
    * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
@@ -584,4 +586,4 @@
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-}(window, document, Chartist));
+}(this, Chartist));

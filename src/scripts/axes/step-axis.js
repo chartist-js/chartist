@@ -14,8 +14,11 @@
  * @module Chartist.StepAxis
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   function StepAxis(axisUnit, data, chartRect, options) {
     Chartist.StepAxis.super.constructor.call(this,
@@ -36,4 +39,4 @@
     projectValue: projectValue
   });
 
-}(window, document, Chartist));
+}(this, Chartist));
