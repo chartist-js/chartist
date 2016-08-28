@@ -40,7 +40,7 @@
         var currY = pathCoordinates[i + 1];
         var currData = valueData[i / 2];
 
-        if(currData.value !== undefined) {
+        if(currData.value !== undefined && currData.value.y !== undefined) {
 
           if(hole) {
             path.move(currX, currY, false, currData);
@@ -100,7 +100,7 @@
         var length = (currX - prevX) * d;
         var currData = valueData[i / 2];
 
-        if(currData.value !== undefined) {
+        if(currData.value !== undefined && currData.value.y !== undefined) {
 
           if(prevData === undefined) {
             path.move(currX, currY, false, currData);
