@@ -752,7 +752,15 @@ var Chartist = {
     // step must not be less than EPSILON to create values that can be represented as floating number.
     var EPSILON = 2.221E-16;
     bounds.step = Math.max(bounds.step, EPSILON);
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+    
+=======
+
+>>>>>>> beabb2793ab67da84cadc0b91d5fd509f2cdfc55
+>>>>>>> master
     // Narrow min and max based on new step
     newMin = bounds.min;
     newMax = bounds.max;
@@ -767,11 +775,23 @@ var Chartist = {
     bounds.range = bounds.max - bounds.min;
 
     var values = [];
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    for (i = bounds.min; i <= bounds.max; i += bounds.step) {      
+      var value = Chartist.roundWithPrecision(i);      
+      value != values[values.length - 1] && values.push(i);
+=======
+>>>>>>> master
     for (i = bounds.min; i <= bounds.max; i += bounds.step) {
       var value = Chartist.roundWithPrecision(i);
       if (value !== values[values.length - 1]) {
         values.push(i);
       }
+<<<<<<< HEAD
+=======
+>>>>>>> beabb2793ab67da84cadc0b91d5fd509f2cdfc55
+>>>>>>> master
     }
     bounds.values = values;
     return bounds;
