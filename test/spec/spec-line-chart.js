@@ -515,8 +515,8 @@ describe('Line chart tests', function () {
       });
   
       chart.on('created', function () {
-        expect($('.ct-point').eq(0).attr('x1')).not.toBe(NaN);
-        expect($('.ct-point').eq(0).attr('x2')).not.toBe(NaN);
+        expect($('.ct-point').eq(0).attr('x1')).not.toBe('NaN');
+        expect($('.ct-point').eq(0).attr('x2')).not.toBe('NaN');
         done();
       });
     });
