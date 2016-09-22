@@ -78,18 +78,20 @@ var Chartist = {
    * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
    */
   Chartist.extend = function (target) {
+    var i, source, sourceProp;
     target = target || {};
 
-    var sources = Array.prototype.slice.call(arguments, 1);
-    sources.forEach(function(source) {
+    for (i = 1; i < arguments.length; i++) {
+      source = arguments[i];
       for (var prop in source) {
-        if (typeof source[prop] === 'object' && source[prop] !== null && !(source[prop] instanceof Array)) {
-          target[prop] = Chartist.extend({}, target[prop], source[prop]);
+        sourceProp = source[prop];
+        if (typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
+          target[prop] = Chartist.extend(target[prop], sourceProp);
         } else {
-          target[prop] = source[prop];
+          target[prop] = sourceProp;
         }
       }
-    });
+    }
 
     return target;
   };
@@ -749,49 +751,35 @@ var Chartist = {
       }
     }
 
-    // step must not be less than EPSILON to create values that can be represented as floating number.
     var EPSILON = 2.221E-16;
     bounds.step = Math.max(bounds.step, EPSILON);
-<<<<<<< HEAD
+    function safeIncrement(value, increment) {
+      // If increment is too small use *= (1+EPSILON) as a simple nextafter
+      if (value === (value += increment)) {
+      	value *= (1 + (increment > 0 ? EPSILON : -EPSILON));
+      }
+      return value;
+    }
 
-=======
-<<<<<<< HEAD
-    
-=======
-
->>>>>>> beabb2793ab67da84cadc0b91d5fd509f2cdfc55
->>>>>>> master
     // Narrow min and max based on new step
     newMin = bounds.min;
     newMax = bounds.max;
-    while(newMin + bounds.step <= bounds.low) {
-      newMin += bounds.step;
+    while (newMin + bounds.step <= bounds.low) {
+    	newMin = safeIncrement(newMin, bounds.step);
     }
-    while(newMax - bounds.step >= bounds.high) {
-      newMax -= bounds.step;
+    while (newMax - bounds.step >= bounds.high) {
+    	newMax = safeIncrement(newMax, -bounds.step);
     }
     bounds.min = newMin;
     bounds.max = newMax;
     bounds.range = bounds.max - bounds.min;
 
     var values = [];
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-    for (i = bounds.min; i <= bounds.max; i += bounds.step) {      
-      var value = Chartist.roundWithPrecision(i);      
-      value != values[values.length - 1] && values.push(i);
-=======
->>>>>>> master
-    for (i = bounds.min; i <= bounds.max; i += bounds.step) {
+    for (i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
       var value = Chartist.roundWithPrecision(i);
       if (value !== values[values.length - 1]) {
         values.push(i);
       }
-<<<<<<< HEAD
-=======
->>>>>>> beabb2793ab67da84cadc0b91d5fd509f2cdfc55
->>>>>>> master
     }
     bounds.values = values;
     return bounds;
@@ -906,6 +894,31 @@ var Chartist = {
         element: gridElement
       }, positionalData)
     );
+  };
+
+  /**
+   * Creates a grid background rect and emits the draw event.
+   *
+   * @memberof Chartist.Core
+   * @param gridGroup
+   * @param chartRect
+   * @param className
+   * @param eventEmitter
+   */
+  Chartist.createGridBackground = function (gridGroup, chartRect, className, eventEmitter) {
+    var gridBackground = gridGroup.elem('rect', {
+        x: chartRect.x1,
+        y: chartRect.y2,
+        width: chartRect.width(),
+        height: chartRect.height(),
+      }, className, true);
+
+      // Event for grid background draw
+      eventEmitter.emit('draw', {
+        type: 'gridBackground',
+        group: gridGroup,
+        element: gridBackground
+      });
   };
 
   /**
@@ -1979,7 +1992,7 @@ var Chartist = {
    *
    * @memberof Chartist.Svg
    * @param {Object|String} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.
-   * @param {String} ns If specified, the attribute will be obtained using getAttributeNs. In order to write namepsaced attributes you can use the namespace:attribute notation within the attributes object.
+   * @param {String} [ns] If specified, the attribute will be obtained using getAttributeNs. In order to write namepsaced attributes you can use the namespace:attribute notation within the attributes object.
    * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
   function attr(attributes, ns) {
@@ -2187,10 +2200,13 @@ var Chartist = {
    * @return {Chartist.Svg} The wrapper of the current element
    */
   function addClass(names) {
-  	var arr = this.classes(this._node).concat(names.trim().split(/\s+/));
-  	this._node.setAttribute('class', arr.filter(function(elem, pos) {
-	  	return arr.indexOf(elem) === pos;
-	  }).join(' '));
+    this._node.setAttribute('class',
+      this.classes(this._node)
+        .concat(names.trim().split(/\s+/))
+        .filter(function(elem, pos, self) {
+          return self.indexOf(elem) === pos;
+        }).join(' ')
+    );
 
     return this;
   }
@@ -3140,7 +3156,8 @@ var Chartist = {
       options.ticks,
       options);
 
-    this.stepLength = this.axisLength / (options.ticks.length - (options.stretch ? 1 : 0));
+    var calc = (options.ticks.length - (options.stretch ? 1 : 0));
+    this.stepLength = this.axisLength / (calc === 0 ? 1 : calc);
   }
 
   function projectValue(value, index) {
@@ -3224,11 +3241,13 @@ var Chartist = {
     showPoint: true,
     // If the line chart should draw an area
     showArea: false,
-    // The base for the area chart that will be used to close the area shape (is normally 0)
+    // The base for the area chart that will be used to close the area shape (is normally 0)    
     areaBase: 0,
     // Specify if the lines should be smoothed. This value can be true or false where true will result in smoothing using the default smoothing interpolation function Chartist.Interpolation.cardinal and false results in Chartist.Interpolation.none. You can also choose other smoothing / interpolation functions available in the Chartist.Interpolation module, or write your own interpolation function. Check the examples for a brief description.
     lineSmooth: true,
-    // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+    // If the line chart should add a background fill to the .ct-grids group.
+    showGridBackground: false,
+    // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value    
     low: undefined,
     // Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
     high: undefined,
@@ -3254,6 +3273,7 @@ var Chartist = {
       area: 'ct-area',
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
+      gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
       start: 'ct-start',
@@ -3303,6 +3323,10 @@ var Chartist = {
     axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
+    if (options.showGridBackground) {
+      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
+    }
+    
     // Draw the series
     data.raw.series.forEach(function(series, seriesIndex) {
       var seriesElement = seriesGroup.elem('g');
@@ -3651,6 +3675,8 @@ var Chartist = {
     distributeSeries: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
+    // If the bar chart should add a background fill to the .ct-grids group.
+    showGridBackground: false,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
       chart: 'ct-chart-bar',
@@ -3661,6 +3687,7 @@ var Chartist = {
       bar: 'ct-bar',
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
+      gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
       start: 'ct-start',
@@ -3791,6 +3818,10 @@ var Chartist = {
 
     labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+
+    if (options.showGridBackground) {
+      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
+    }
 
     // Draw the series
     data.raw.series.forEach(function(series, seriesIndex) {
