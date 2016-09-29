@@ -163,7 +163,8 @@
         (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(i))
       ].join(' '));
 
-      var endAngle = startAngle + dataArray[i] / totalDataSum * 360;
+      // If the whole dataset is 0 endAngle should be zero. Can't divide by 0.
+      var endAngle = (totalDataSum > 0 ? startAngle + dataArray[i] / totalDataSum * 360 : 0);
 
       // Use slight offset so there are no transparent hairline issues
       var overlappigStartAngle = Math.max(0, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2));
