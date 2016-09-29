@@ -252,6 +252,39 @@ describe('Pie chart tests', function() {
     });
   });
 
+  describe('Pie with empty values', function() {
+    var data;
+
+    beforeEach(function() {
+      data = {
+        series: [0, 0, 0]
+      };
+    });
+
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var chart = new Chartist.Pie('.ct-chart', data, {});
+      chart.on('created', callback);
+    }
+
+    it('Pie should render without NaN values and points', function(done) {
+      onCreated(function() {
+        var slices = $('.ct-slice-pie');
+
+        expect(slices.length).toBe(3);
+
+        expect(slices.eq(2).attr('ct:value')).toBe('0');
+        expect(slices.eq(1).attr('ct:value')).toBe('0');
+        expect(slices.eq(0).attr('ct:value')).toBe('0');
+
+        expect(slices.eq(2).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
+        expect(slices.eq(1).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
+        expect(slices.eq(0).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
+        done();
+      });
+    });
+  });
+
   describe('Pie with some empty values configured not to be ignored', function() {
     var data, options;
 
