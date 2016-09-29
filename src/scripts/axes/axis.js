@@ -97,7 +97,7 @@
         Chartist.createLabel(projectedValue, labelLength, index, labelValues, this, axisOptions.offset, labelOffset, labelGroup, [
           chartOptions.classNames.label,
           chartOptions.classNames[this.units.dir],
-          chartOptions.classNames[axisOptions.position]
+          (axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames['end'])
         ], useForeignObject, eventEmitter);
       }
     }.bind(this));
