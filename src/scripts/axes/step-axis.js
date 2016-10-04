@@ -24,7 +24,8 @@
       options.ticks,
       options);
 
-    this.stepLength = this.axisLength / (options.ticks.length - (options.stretch ? 1 : 0));
+    var calc = (options.ticks.length - (options.stretch ? 1 : 0));
+    this.stepLength = this.axisLength / (calc === 0 ? 1 : calc);
   }
 
   function projectValue(value, index) {
