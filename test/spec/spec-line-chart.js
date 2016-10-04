@@ -502,4 +502,24 @@ describe('Line chart tests', function () {
       });
     });
   });
+  
+  describe('x1 and x2 attribute', function () {
+    it('should contain just a datapoint', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+  
+      var chart = new Chartist.Line('.ct-chart', {
+        series: [[
+          {x: 1, y: 2}
+        ]]
+      }, {
+       fullWidth: true
+      });
+  
+      chart.on('created', function () {
+        expect($('.ct-point').eq(0).attr('x1')).not.toBe('NaN');
+        expect($('.ct-point').eq(0).attr('x2')).not.toBe('NaN');
+        done();
+      });
+    });
+  });
 });
