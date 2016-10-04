@@ -755,11 +755,14 @@ var Chartist = {
     bounds.step = Math.max(bounds.step, EPSILON);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     
 =======
 
 >>>>>>> beabb27... Dist and version bump
 =======
+=======
+>>>>>>> e986b2b81150effcf018103b39c81899120553b5
     function safeIncrement(value, increment) {
       // If increment is too small use *= (1+EPSILON) as a simple nextafter
       if (value === (value += increment)) {
@@ -768,7 +771,10 @@ var Chartist = {
       return value;
     }
 
+<<<<<<< HEAD
 >>>>>>> e986b2b... rebuild chartist.js
+=======
+>>>>>>> e986b2b81150effcf018103b39c81899120553b5
     // Narrow min and max based on new step
     newMin = bounds.min;
     newMax = bounds.max;
@@ -785,6 +791,7 @@ var Chartist = {
     var values = [];
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     for (i = bounds.min; i <= bounds.max; i += bounds.step) {      
       var value = Chartist.roundWithPrecision(i);      
       value != values[values.length - 1] && values.push(i);
@@ -793,14 +800,20 @@ var Chartist = {
 =======
     for (i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
 >>>>>>> e986b2b... rebuild chartist.js
+=======
+    for (i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
+>>>>>>> e986b2b81150effcf018103b39c81899120553b5
       var value = Chartist.roundWithPrecision(i);
       if (value !== values[values.length - 1]) {
         values.push(i);
       }
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> beabb27... Dist and version bump
 =======
 >>>>>>> e986b2b... rebuild chartist.js
+=======
+>>>>>>> e986b2b81150effcf018103b39c81899120553b5
     }
     bounds.values = values;
     return bounds;
