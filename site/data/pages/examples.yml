@@ -121,6 +121,16 @@ sections:
                    <code>showArea</code> and even the smoothing function can be overriden per series! And guess what?
                    You can even override those series settings in the responsive configuration! Check the example code
                    for more details.
+      - type: live-example
+        data:
+          title: Time Series with Moment.js
+          level: 4
+          id: example-timeseries-moment
+          classes: ct-golden-section
+          intro: >
+                   This example uses <a href="http://momentjs.com/">Moment.js</a> in the label interpolation function 
+                   to format a date object. The fixed axis ensures that there is correct spacing between the data points, 
+                   and the number of labels is determined by the devisor.
   - title: Bar chart examples
     level: 3
     items:
