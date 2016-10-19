@@ -40,7 +40,7 @@
         var currY = pathCoordinates[i + 1];
         var currData = valueData[i / 2];
 
-        if(currData.value !== undefined) {
+        if(Chartist.getMultiValue(currData.value) !== undefined) {
 
           if(hole) {
             path.move(currX, currY, false, currData);

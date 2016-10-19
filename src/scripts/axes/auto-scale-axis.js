@@ -40,7 +40,7 @@
   }
 
   function projectValue(value) {
-    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.bounds.min) / this.bounds.range;
+    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos, 0) - this.bounds.min) / this.bounds.range;
   }
 
   Chartist.AutoScaleAxis = Chartist.Axis.extend({
