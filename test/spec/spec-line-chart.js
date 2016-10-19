@@ -461,6 +461,32 @@ describe('Line chart tests', function () {
     });
   });
 
+  describe('Single value data tests', function() {
+    var data;
+
+    beforeEach(function() {
+      data = {
+        labels: [1],
+        series: [[1]]
+      };
+    });
+
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var chart = new Chartist.Line('.ct-chart', data);
+      chart.on('created', callback);
+    }
+
+    it('should render without NaN values and points', function(done) {
+      onCreated(function() {
+          expect($('.ct-line').eq(0).attr('d')).toBe('M50,15');
+          expect($('.ct-point').eq(0).attr('x1')).toBe('50');
+          expect($('.ct-point').eq(0).attr('x2')).toBe('50.01');
+          done();
+        });
+      });
+  });
+
   describe('Empty data tests', function () {
     it('should render empty grid with no data', function (done) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
