@@ -73,6 +73,54 @@ describe('Line chart tests', function () {
 
   });
 
+  describe('AxisY position tests', function() {
+    var options;
+    var data;
+
+    beforeEach(function() {
+      data = {
+        series: [[
+          { x: 1, y: 1 },
+          { x: 3, y: 5 }
+        ]]
+      };
+      options =  {};
+    });
+
+    function onCreated(callback) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+      var chart = new Chartist.Line('.ct-chart', data, options);
+      chart.on('created', callback);
+    }
+
+    it('class should be ct-start if position start', function(done) {
+      options = {
+        axisY: {
+          position: 'start'
+        }
+      }
+      onCreated(function() {
+          $('.ct-label.ct-vertical').each(function() {
+            expect($(this).attr('class')).toBe('ct-label ct-vertical ct-start');
+          });
+          done();
+        });
+      });
+
+    it('class should be ct-end if position is any other value than start', function(done) {
+      options = {
+        axisY: {
+          position: 'right'
+        }
+      }      
+      onCreated(function() {
+        $('.ct-label.ct-vertical').each(function() {
+          expect($(this).attr('class')).toBe('ct-label ct-vertical ct-end');
+        });
+        done();
+      });
+    });
+  });
 
   describe('ct:value attribute', function () {
     it('should contain x and y value for each datapoint', function (done) {
