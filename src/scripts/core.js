@@ -586,7 +586,7 @@ var Chartist = {
    * @returns {Boolean}
    */
   Chartist.isNum = function(value) {
-    return !isNaN(value) && isFinite(value);
+    return (typeof value === "number" || typeof value === "string") && !isNaN(value) && isFinite(value);
   };
 
   /**
@@ -608,23 +608,24 @@ var Chartist = {
    * @returns {*}
    */
   Chartist.getNumberOrUndefined = function(value) {
-    return isNaN(+value) ? undefined : +value;
+    return Chartist.isNum(value) ? +value : undefined;
   };
 
   /**
-   * Gets a value from a dimension `value.x` or `value.y` while returning value directly if it's a valid numeric value. If the value is not numeric and it's falsey this function will return undefined.
+   * Gets a value from a dimension `value.x` or `value.y` while returning value directly if it's a valid numeric value. If the value is not numeric and it's falsey this function will return `defaultValue`.
    *
    * @param value
    * @param dimension
+   * @param defaultValue
    * @returns {*}
    */
-  Chartist.getMultiValue = function(value, dimension) {
+  Chartist.getMultiValue = function(value, dimension, defaultValue) {
     if(Chartist.isNum(value)) {
       return +value;
     } else if(value) {
-      return value[dimension || 'y'] || 0;
+      return Chartist.isFalseyButZero(value[dimension || 'y']) ? defaultValue : value[dimension || 'y'];
     } else {
-      return 0;
+      return defaultValue;
     }
   };
 
@@ -1068,7 +1069,8 @@ var Chartist = {
 
     for(var i = 0; i < pathCoordinates.length; i += 2) {
       // If this value is a "hole" we set the hole flag
-      if(valueData[i / 2].value === undefined) {
+      if(Chartist.getMultiValue(valueData[i / 2].value) === undefined) {
+      // if(valueData[i / 2].value === undefined) {
         if(!options.fillHoles) {
           hole = true;
         }
