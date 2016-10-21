@@ -73,10 +73,15 @@
     "time-grunt": "^1.0.0"
   },
   "engines": {
-    "node": ">=5.5.0"
+    "node": ">=6.9.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "start": "./node_modules/.bin/grunt",
+    "test": "./node_modules/.bin/grunt test",
+    "dev": "./node_modules/.bin/grunt dev",
+    "build": "./node_modules/.bin/grunt build",
+    "preview": "./node_modules/.bin/grunt preview",
+    "public": "./node_modules/.bin/grunt public"
   },
   "config": {
     "banner": "/* Chartist.js <%= pkg.version %>\n * Copyright © <%= year %> Gion Kunz\n * Free to use under either the WTFPL license or the MIT license.\n * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL\n * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT\n */\n",
