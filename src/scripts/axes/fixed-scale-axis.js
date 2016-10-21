@@ -45,7 +45,7 @@
   }
 
   function projectValue(value) {
-    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos, 0) - this.range.min) / (this.range.max - this.range.min);
+    return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.range.min) / (this.range.max - this.range.min);
   }
 
   Chartist.FixedScaleAxis = Chartist.Axis.extend({

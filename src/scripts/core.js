@@ -365,6 +365,31 @@ var Chartist = {
   };
 
   /**
+   * This function safely checks if an objects has an owned property.
+   *
+   * @param {Object} object The object where to check for a property
+   * @param {string} property The property name
+   * @returns {boolean} Returns true if the object owns the specified property
+   */
+  Chartist.safeHasProperty = function(object, property) {
+    return object !== null &&
+      typeof object === 'object' &&
+      object.hasOwnProperty(property);
+  };
+
+  /**
+   * Checks if a value is considered a hole in the data series.
+   *
+   * @param {*} value
+   * @returns {boolean} True if the value is considered a data hole
+   */
+  Chartist.isDataHoleValue = function(value) {
+    return value === null ||
+      value === undefined ||
+      (typeof value === 'number' && isNaN(value));
+  };
+
+  /**
    * Reverses the series, labels and series data arrays.
    *
    * @memberof Chartist.Core
@@ -387,8 +412,8 @@ var Chartist = {
    *
    * @memberof Chartist.Core
    * @param {Object} data The series object that contains the data to be visualized in the chart
-   * @param {Boolean} reverse If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.
-   * @param {Boolean} multi Create a multi dimensional array from a series data array where a value object with `x` and `y` values will be created.
+   * @param {Boolean} [reverse] If true the whole data is reversed by the getDataArray call. This will modify the data object passed as first parameter. The labels as well as the series order is reversed. The whole series data arrays are reversed too.
+   * @param {Boolean} [multi] Create a multi dimensional array from a series data array where a value object with `x` and `y` values will be created.
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
   Chartist.getDataArray = function (data, reverse, multi) {
@@ -403,14 +428,21 @@ var Chartist = {
     // Recursively walks through nested arrays and convert string values to numbers and objects with value properties
     // to values. Check the tests in data core -> data normalization for a detailed specification of expected values
     function recursiveConvert(value) {
-      if(Chartist.isFalseyButZero(value)) {
-        // This is a hole in data and we should return undefined
-        return undefined;
-      } else if((value.data || value) instanceof Array) {
-        return (value.data || value).map(recursiveConvert);
-      } else if(value.hasOwnProperty('value')) {
+      if(Chartist.safeHasProperty(value, 'value')) {
+        // We are dealing with value object notation so we need to recurse on value property
         return recursiveConvert(value.value);
+      } else if(Chartist.safeHasProperty(value, 'data')) {
+        // We are dealing with series object notation so we need to recurse on data property
+        return recursiveConvert(value.data);
+      } else if(value instanceof Array) {
+        // Data is of type array so we need to recurse on the series
+        return value.map(recursiveConvert);
+      } else if(Chartist.isDataHoleValue(value)) {
+        // We're dealing with a hole in the data and therefore need to return undefined
+        // We're also returning undefined for multi value output
+        return undefined;
       } else {
+        // We need to prepare multi value output (x and y data)
         if(multi) {
           var multiValue = {};
 
@@ -429,6 +461,7 @@ var Chartist = {
           return multiValue;
 
         } else {
+          // We can return simple data
           return Chartist.getNumberOrUndefined(value);
         }
       }
@@ -612,20 +645,29 @@ var Chartist = {
   };
 
   /**
+   * Checks if provided value object is multi value (contains x or y properties)
+   *
+   * @memberof Chartist.Core
+   * @param value
+   */
+  Chartist.isMultiValue = function(value) {
+    return typeof value === 'object' && ('x' in value || 'y' in value);
+  };
+
+  /**
    * Gets a value from a dimension `value.x` or `value.y` while returning value directly if it's a valid numeric value. If the value is not numeric and it's falsey this function will return `defaultValue`.
    *
+   * @memberof Chartist.Core
    * @param value
    * @param dimension
    * @param defaultValue
    * @returns {*}
    */
-  Chartist.getMultiValue = function(value, dimension, defaultValue) {
-    if(Chartist.isNumeric(value)) {
-      return +value;
-    } else if(value) {
-      return Chartist.isFalseyButZero(value[dimension || 'y']) ? defaultValue : value[dimension || 'y'];
+  Chartist.getMultiValue = function(value, dimension) {
+    if(Chartist.isMultiValue(value)) {
+      return Chartist.getNumberOrUndefined(value[dimension || 'y']);
     } else {
-      return defaultValue;
+      return Chartist.getNumberOrUndefined(value);
     }
   };
 
