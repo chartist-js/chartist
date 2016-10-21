@@ -81,15 +81,14 @@
    * @param options
    */
   function createChart(options) {
-    this.data = Chartist.normalizeData(this.data);
+    var data = Chartist.normalizeData(this.data);
     var seriesGroups = [],
       labelsGroup,
       chartRect,
       radius,
       labelRadius,
       totalDataSum,
-      startAngle = options.startAngle,
-      dataArray = Chartist.getDataArray(this.data, options.reverseData);
+      startAngle = options.startAngle;
 
     // Create SVG.js draw
     this.svg = Chartist.createSvg(this.container, options.width, options.height,options.donut ? options.classNames.chartDonut : options.classNames.chartPie);
@@ -98,7 +97,7 @@
     // Get biggest circle radius possible within chartRect
     radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
     // Calculate total of all series to get reference value or use total reference from optional options
-    totalDataSum = options.total || dataArray.reduce(function(previousValue, currentValue) {
+    totalDataSum = options.total || data.normalized.series.reduce(function(previousValue, currentValue) {
       return previousValue + currentValue;
     }, 0);
 
@@ -134,7 +133,7 @@
     };
 
     // Check if there is only one non-zero value in the series array.
-    var hasSingleValInSeries = this.data.series.filter(function(val) {
+    var hasSingleValInSeries = data.raw.series.filter(function(val) {
       return val.hasOwnProperty('value') ? val.value !== 0 : val !== 0;
     }).length === 1;
 
@@ -145,11 +144,11 @@
 
     // Draw the series
     // initialize series groups
-    for (var i = 0; i < this.data.series.length; i++) {
+    for (var i = 0; i < data.raw.series.length; i++) {
       // If current value is zero and we are ignoring empty values then skip to next value
-      if (dataArray[i] === 0 && options.ignoreEmptyValues) continue;
+      if (data.normalized.series[i] === 0 && options.ignoreEmptyValues) continue;
 
-      var series = this.data.series[i];
+      var series = data.raw.series[i];
       seriesGroups[i] = this.svg.elem('g', null, null, true);
 
       // If the series is an object and contains a name or meta data we add a custom attribute
@@ -164,7 +163,7 @@
       ].join(' '));
 
       // If the whole dataset is 0 endAngle should be zero. Can't divide by 0.
-      var endAngle = (totalDataSum > 0 ? startAngle + dataArray[i] / totalDataSum * 360 : 0);
+      var endAngle = (totalDataSum > 0 ? startAngle + data.normalized.series[i] / totalDataSum * 360 : 0);
 
       // Use slight offset so there are no transparent hairline issues
       var overlappigStartAngle = Math.max(0, startAngle - (i === 0 || hasSingleValInSeries ? 0 : 0.2));
@@ -196,7 +195,7 @@
 
       // Adding the pie series value to the path
       pathElement.attr({
-        'ct:value': dataArray[i],
+        'ct:value': data.normalized.series[i],
         'ct:meta': Chartist.serialize(series.meta)
       });
 
@@ -210,7 +209,7 @@
       // Fire off draw event
       this.eventEmitter.emit('draw', {
         type: 'slice',
-        value: dataArray[i],
+        value: data.normalized.series[i],
         totalDataSum: totalDataSum,
         index: i,
         meta: series.meta,
@@ -227,8 +226,21 @@
       // If we need to show labels we need to add the label for this slice now
       if(options.showLabel) {
         // Position at the labelRadius distance from center and between start and end angle
-        var labelPosition = Chartist.polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2),
-          interpolatedValue = options.labelInterpolationFnc(this.data.labels && !Chartist.isFalseyButZero(this.data.labels[i]) ? this.data.labels[i] : dataArray[i], i);
+        var labelPosition = Chartist.polarToCartesian(
+          center.x,
+          center.y,
+          labelRadius,
+          startAngle + (endAngle - startAngle) / 2
+        );
+
+        var rawValue;
+        if(data.normalized.labels && !Chartist.isFalseyButZero(data.normalized.labels[i])) {
+          rawValue = data.normalized.labels[i];
+        } else {
+          rawValue = data.normalized.series[i];
+        }
+
+        var interpolatedValue = options.labelInterpolationFnc(rawValue, i);
 
         if(interpolatedValue || interpolatedValue === 0) {
           var labelElement = labelsGroup.elem('text', {

@@ -12,11 +12,7 @@ describe('Axes tests', function() {
         'rectEnd':'y1',
         'rectOffset':'x1'
       },
-      data = {
-        'raw': {
-          'series':[[1]]
-        }
-      },
+      data = [[1]],
       chartRect = {
         'y2':0,
         'y1':15,
@@ -43,12 +39,7 @@ describe('Axes tests', function() {
         'rectEnd':'y1',
         'rectOffset':'x1'
       },
-      data = {
-        'raw': {
-          'series':[[ {x: 1, y: 10}, {x: 2, y: 5}, {x: 3, y: -5} ]]
-        },
-        'normalized':[[ {'y':10,'x':1},{'y':5,'x':2},{'y':-5,'x':3} ]]
-      },
+      data = [[ {x: 1, y: 10}, {x: 2, y: 5}, {x: 3, y: -5} ]],
       chartRect = {
         'padding':{'top':15,'right':15,'bottom':5,'left':10},
         'y2':15,

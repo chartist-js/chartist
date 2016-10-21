@@ -331,37 +331,46 @@ var Chartist = {
    * @param  {Object} data The data object that is passed as second argument to the charts
    * @return {Object} The normalized data object
    */
-  Chartist.normalizeData = function(data) {
-    // Ensure data is present otherwise enforce
-    data = data || {series: [], labels: []};
-    data.series = data.series || [];
-    data.labels = data.labels || [];
+  Chartist.normalizeData = function(data, reverse, multi) {
+    var labelCount;
+    var output = {
+      raw: data,
+      normalized: {}
+    };
 
     // Check if we should generate some labels based on existing series data
-    if (data.series.length > 0 && data.labels.length === 0) {
-      var normalized = Chartist.getDataArray(data),
-          labelCount;
+    output.normalized.series = Chartist.getDataArray({
+      series: data.series || []
+    }, reverse, multi);
 
-      // If all elements of the normalized data array are arrays we're dealing with
-      // data from Bar or Line charts and we need to find the largest series if they are un-even
-      if (normalized.every(function(value) {
+    // If all elements of the normalized data array are arrays we're dealing with
+    // multi series data and we need to find the largest series if they are un-even
+    if (output.normalized.series.every(function(value) {
         return value instanceof Array;
       })) {
-        // Getting the series with the the most elements
-        labelCount = Math.max.apply(null, normalized.map(function(series) {
-          return series.length;
-        }));
-      } else {
-        // We're dealing with Pie data so we just take the normalized array length
-        labelCount = normalized.length;
-      }
-
-      // Setting labels to an array with emptry strings using our labelCount estimated above
-      data.labels = Chartist.times(labelCount).map(function() {
-        return '';
-      });
+      // Getting the series with the the most elements
+      labelCount = Math.max.apply(null, output.normalized.series.map(function(series) {
+        return series.length;
+      }));
+    } else {
+      // We're dealing with Pie data so we just take the normalized array length
+      labelCount = output.normalized.series.length;
     }
-    return data;
+
+    output.normalized.labels = (data.labels || []).slice();
+    // Padding the labels to labelCount with empty strings
+    Array.prototype.push.apply(
+      output.normalized.labels,
+      Chartist.times(Math.max(0, labelCount - output.normalized.labels.length)).map(function() {
+        return '';
+      })
+    );
+
+    if(reverse) {
+      Chartist.reverseData(output.normalized);
+    }
+
+    return output;
   };
 
   /**
@@ -416,15 +425,7 @@ var Chartist = {
    * @param {Boolean} [multi] Create a multi dimensional array from a series data array where a value object with `x` and `y` values will be created.
    * @return {Array} A plain array that contains the data to be visualized in the chart
    */
-  Chartist.getDataArray = function (data, reverse, multi) {
-    // If the data should be reversed but isn't we need to reverse it
-    // If it's reversed but it shouldn't we need to reverse it back
-    // That's required to handle data updates correctly and to reflect the responsive configurations
-    if(reverse && !data.reversed || !reverse && data.reversed) {
-      Chartist.reverseData(data);
-      data.reversed = !data.reversed;
-    }
-
+  Chartist.getDataArray = function(data, reverse, multi) {
     // Recursively walks through nested arrays and convert string values to numbers and objects with value properties
     // to values. Check the tests in data core -> data normalization for a detailed specification of expected values
     function recursiveConvert(value) {
