@@ -1,8 +1,8 @@
 {
   "name": "chartist",
   "main": [
-    "./dist/chartist.min.js",
-    "./dist/chartist.min.css"
+    "./dist/chartist.js",
+    "./dist/chartist.css"
   ],
   "devDependencies": {
     "snap.svg": "~0.3.0",
