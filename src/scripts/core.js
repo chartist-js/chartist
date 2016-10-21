@@ -579,14 +579,14 @@ var Chartist = {
   };
 
   /**
-   * Checks if the value is a valid number or string with a number.
+   * Checks if a value can be safely coerced to a number. This includes all values except null which result in finite numbers when coerced. This excludes NaN, since it's not finite.
    *
    * @memberof Chartist.Core
    * @param value
    * @returns {Boolean}
    */
-  Chartist.isNum = function(value) {
-    return (typeof value === "number" || typeof value === "string") && !isNaN(value) && isFinite(value);
+  Chartist.isNumeric = function(value) {
+    return value === null ? false : isFinite(value);
   };
 
   /**
@@ -608,7 +608,7 @@ var Chartist = {
    * @returns {*}
    */
   Chartist.getNumberOrUndefined = function(value) {
-    return Chartist.isNum(value) ? +value : undefined;
+    return Chartist.isNumeric(value) ? +value : undefined;
   };
 
   /**
@@ -620,7 +620,7 @@ var Chartist = {
    * @returns {*}
    */
   Chartist.getMultiValue = function(value, dimension, defaultValue) {
-    if(Chartist.isNum(value)) {
+    if(Chartist.isNumeric(value)) {
       return +value;
     } else if(value) {
       return Chartist.isFalseyButZero(value[dimension || 'y']) ? defaultValue : value[dimension || 'y'];

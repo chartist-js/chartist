@@ -141,8 +141,8 @@
 
     if(options.axisY.type === undefined) {
       axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data, chartRect, Chartist.extend({}, options.axisY, {
-        high: Chartist.isNum(options.high) ? options.high : options.axisY.high,
-        low: Chartist.isNum(options.low) ? options.low : options.axisY.low
+        high: Chartist.isNumeric(options.high) ? options.high : options.axisY.high,
+        low: Chartist.isNumeric(options.low) ? options.low : options.axisY.low
       }));
     } else {
       axisY = options.axisY.type.call(Chartist, Chartist.Axis.units.y, data, chartRect, options.axisY);
@@ -213,7 +213,7 @@
             x2: pathElement.x + 0.01,
             y2: pathElement.y
           }, options.classNames.point).attr({
-            'ct:value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNum).join(','),
+            'ct:value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNumeric).join(','),
             'ct:meta': pathElement.data.meta
           });
 
