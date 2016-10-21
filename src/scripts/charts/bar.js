@@ -65,6 +65,8 @@
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
+    // Unless low/high are explicitly set, bar chart will be centered at zero by default. Set referenceValue to null to auto scale.
+    referenceValue: 0,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
@@ -136,6 +138,7 @@
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
     if(options.stackBars && data.normalized.series.length !== 0) {
+
       // If stacked bars we need to calculate the high low from stacked values from each series
       var serialSums = Chartist.serialMap(data.normalized.series, function serialSums() {
         return Array.prototype.slice.call(arguments).map(function(value) {
@@ -148,14 +151,13 @@
         }, {x: 0, y: 0});
       });
 
-      highLow = Chartist.getHighLow([serialSums], Chartist.extend({}, options, {
-        referenceValue: 0
-      }), options.horizontalBars ? 'x' : 'y');
+      highLow = Chartist.getHighLow([serialSums], options, options.horizontalBars ? 'x' : 'y');
+
     } else {
-      highLow = Chartist.getHighLow(data.normalized.series, Chartist.extend({}, options, {
-        referenceValue: 0
-      }), options.horizontalBars ? 'x' : 'y');
+
+      highLow = Chartist.getHighLow(data.normalized.series, options, options.horizontalBars ? 'x' : 'y');
     }
+
     // Overrides of high / low from settings
     highLow.high = +options.high || (options.high === 0 ? 0 : highLow.high);
     highLow.low = +options.low || (options.low === 0 ? 0 : highLow.low);
