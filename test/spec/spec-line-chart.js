@@ -10,7 +10,7 @@ describe('Line chart tests', function () {
   });
 
   describe('grids', function() {
-    
+
     var chart;
     var options;
     var data;
@@ -35,14 +35,14 @@ describe('Line chart tests', function () {
     });
 
     function onCreated(fn) {
-      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');  
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
       chart = new Chartist.Line('.ct-chart', data, options);
-      chart.on('created', fn);      
+      chart.on('created', fn);
     }
 
     it('should contain ct-grids group', function(done) {
       onCreated(function () {
-        expect($('g.ct-grids').length).toBe(1);        
+        expect($('g.ct-grids').length).toBe(1);
         done();
       });
     });
@@ -50,7 +50,7 @@ describe('Line chart tests', function () {
     it('should draw grid lines', function(done) {
       onCreated(function () {
         expect($('g.ct-grids line.ct-grid.ct-horizontal').length).toBe(3);
-        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(5);        
+        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(5);
         done();
       });
     });
@@ -98,7 +98,7 @@ describe('Line chart tests', function () {
         axisY: {
           position: 'start'
         }
-      }
+      };
       onCreated(function() {
           $('.ct-label.ct-vertical').each(function() {
             expect($(this).attr('class')).toBe('ct-label ct-vertical ct-start');
@@ -112,7 +112,7 @@ describe('Line chart tests', function () {
         axisY: {
           position: 'right'
         }
-      }      
+      };
       onCreated(function() {
         $('.ct-label.ct-vertical').each(function() {
           expect($(this).attr('class')).toBe('ct-label ct-vertical ct-end');
@@ -576,11 +576,11 @@ describe('Line chart tests', function () {
       });
     });
   });
-  
+
   describe('x1 and x2 attribute', function () {
     it('should contain just a datapoint', function (done) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-  
+
       var chart = new Chartist.Line('.ct-chart', {
         series: [[
           {x: 1, y: 2}
@@ -588,7 +588,7 @@ describe('Line chart tests', function () {
       }, {
        fullWidth: true
       });
-  
+
       chart.on('created', function () {
         expect($('.ct-point').eq(0).attr('x1')).not.toBe('NaN');
         expect($('.ct-point').eq(0).attr('x2')).not.toBe('NaN');
