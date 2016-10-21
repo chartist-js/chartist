@@ -214,7 +214,7 @@
             y2: pathElement.y
           }, options.classNames.point).attr({
             'ct:value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNumeric).join(','),
-            'ct:meta': pathElement.data.meta
+            'ct:meta': Chartist.serialize(pathElement.data.meta)
           });
 
           this.eventEmitter.emit('draw', {
@@ -247,6 +247,7 @@
           index: seriesIndex,
           series: series,
           seriesIndex: seriesIndex,
+          seriesMeta: series.meta,
           axisX: axisX,
           axisY: axisY,
           group: seriesElement,

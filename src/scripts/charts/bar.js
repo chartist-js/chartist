@@ -349,18 +349,20 @@
         positions.x2 = Math.min(Math.max(positions.x2, chartRect.x1), chartRect.x2);
         positions.y1 = Math.min(Math.max(positions.y1, chartRect.y2), chartRect.y1);
         positions.y2 = Math.min(Math.max(positions.y2, chartRect.y2), chartRect.y1);
+        
+        var metaData = Chartist.getMetaData(series, valueIndex);
 
         // Create bar element
         bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
           'ct:value': [value.x, value.y].filter(Chartist.isNumeric).join(','),
-          'ct:meta': Chartist.getMetaData(series, valueIndex)
+          'ct:meta': Chartist.serialize(metaData)
         });
 
         this.eventEmitter.emit('draw', Chartist.extend({
           type: 'bar',
           value: value,
           index: valueIndex,
-          meta: Chartist.getMetaData(series, valueIndex),
+          meta: metaData,
           series: series,
           seriesIndex: seriesIndex,
           axisX: axisX,

@@ -496,7 +496,7 @@ var Chartist = {
 
   Chartist.getMetaData = function(series, index) {
     var value = series.data ? series.data[index] : series[index];
-    return value ? Chartist.serialize(value.meta) : undefined;
+    return value ? value.meta : undefined;
   };
 
   /**
