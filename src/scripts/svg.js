@@ -147,6 +147,16 @@
   }
 
   /**
+   * Returns the underlying SVG node for the current element.
+   *
+   * @memberof Chartist.Svg
+   * @returns {Node}
+   */
+  function getNode() {
+    return this._node;
+  }
+
+  /**
    * This method creates a foreignObject (see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.
    *
    * @memberof Chartist.Svg
@@ -483,6 +493,7 @@
     root: root,
     querySelector: querySelector,
     querySelectorAll: querySelectorAll,
+    getNode: getNode,
     foreignObject: foreignObject,
     text: text,
     empty: empty,
