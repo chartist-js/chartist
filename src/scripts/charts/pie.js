@@ -226,13 +226,22 @@
 
       // If we need to show labels we need to add the label for this slice now
       if(options.showLabel) {
-        // Position at the labelRadius distance from center and between start and end angle
-        var labelPosition = Chartist.polarToCartesian(
-          center.x,
-          center.y,
-          labelRadius,
-          startAngle + (endAngle - startAngle) / 2
-        );
+        var labelPosition;
+        if(data.raw.series.length === 1) {
+          // If we have only 1 series, we can position the label in the center of the pie
+          labelPosition = {
+            x: center.x,
+            y: center.y
+          };
+        } else {
+          // Position at the labelRadius distance from center and between start and end angle
+          labelPosition = Chartist.polarToCartesian(
+            center.x,
+            center.y,
+            labelRadius,
+            startAngle + (endAngle - startAngle) / 2
+          );
+        }
 
         var rawValue;
         if(data.normalized.labels && !Chartist.isFalseyButZero(data.normalized.labels[index])) {
