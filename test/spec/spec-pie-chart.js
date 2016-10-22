@@ -71,9 +71,9 @@ describe('Pie chart tests', function() {
     it('should set value attribute', function(done) {
       onCreated(function() {
         var slices = $('.ct-slice-pie');
-        expect(slices.eq(2).attr('ct:value')).toBe('5');
+        expect(slices.eq(0).attr('ct:value')).toBe('5');
         expect(slices.eq(1).attr('ct:value')).toBe('3');
-        expect(slices.eq(0).attr('ct:value')).toBe('4');
+        expect(slices.eq(2).attr('ct:value')).toBe('4');
         done();
       });
     });
@@ -110,8 +110,8 @@ describe('Pie chart tests', function() {
         var slice1 = $('.ct-slice-pie').eq(0);
         var slice2 = $('.ct-slice-pie').eq(1);
 
-        expect(slice1.attr('d')).toMatch(/^M50,10A40,40,0,0,0,50.\d+,90L50,50Z/);
-        expect(slice2.attr('d')).toMatch(/^M50,90A40,40,0,0,0,50,10L50,50Z/);
+        expect(slice1.attr('d')).toMatch(/^M50,90A40,40,0,0,0,50,10L50,50Z/);
+        expect(slice2.attr('d')).toMatch(/^M50,10A40,40,0,0,0,50.\d+,90L50,50Z/);
         done();
       });
     });
@@ -121,7 +121,7 @@ describe('Pie chart tests', function() {
         series: [1, 2]
       };
       onCreated(function() {
-        var slice1 = $('.ct-slice-pie').eq(0);
+        var slice1 = $('.ct-slice-pie').eq(1);
         expect(slice1.attr('d')).toMatch(/^M50,10A40,40,0,1,0/);
         done();
       }, data);
@@ -171,7 +171,7 @@ describe('Pie chart tests', function() {
       options =  {
         width: 100,
         height: 100,
-        chartPadding: 0,
+        chartPadding: 0
       };
     });
 
@@ -186,8 +186,8 @@ describe('Pie chart tests', function() {
         var slice1 = $('.ct-slice-pie').eq(0);
         var slice2 = $('.ct-slice-pie').eq(1);
 
-        expect(slice1.attr('d')).toMatch(/^M49.9\d*,0A50,50,0,1,0,50,0/);
-        expect(slice2.attr('d')).toMatch(/^M50.1\d+,0A50,50,0,0,0,50,0/);
+        expect(slice1.attr('d')).toMatch(/^M50.1\d+,0A50,50,0,0,0,50,0/);
+        expect(slice2.attr('d')).toMatch(/^M49.9\d*,0A50,50,0,1,0,50,0/);
         done();
       });
     });
@@ -198,8 +198,8 @@ describe('Pie chart tests', function() {
         var slice1 = $('.ct-slice-pie').eq(0);
         var slice2 = $('.ct-slice-pie').eq(1);
 
-        expect(slice1.attr('d')).toMatch(/^M100,49.97\d*A50,50,0,1,0,100,49.98\d*/);
-        expect(slice2.attr('d')).toMatch(/^M100,50.1\d*A50,50,0,0,0,100,50/);
+        expect(slice1.attr('d')).toMatch(/^M100,50.1\d*A50,50,0,0,0,100,50/);
+        expect(slice2.attr('d')).toMatch(/^M100,49.97\d*A50,50,0,1,0,100,49.98\d*/);
         done();
       });
     });
@@ -210,8 +210,8 @@ describe('Pie chart tests', function() {
         var slice1 = $('.ct-slice-donut').eq(0);
         var slice2 = $('.ct-slice-donut').eq(1);
 
-        expect(slice1.attr('d')).toMatch(/^M49.9\d*,30A20,20,0,1,0,50,30/);
-        expect(slice2.attr('d')).toMatch(/^M50.\d+,30A20,20,0,0,0,50,30/);
+        expect(slice1.attr('d')).toMatch(/^M50.\d+,30A20,20,0,0,0,50,30/);
+        expect(slice2.attr('d')).toMatch(/^M49.9\d*,30A20,20,0,1,0,50,30/);
         done();
       });
     });
@@ -244,9 +244,9 @@ describe('Pie chart tests', function() {
 
         expect(slices.length).toBe(3);
 
-        expect(slices.eq(2).attr('ct:value')).toBe('1');
+        expect(slices.eq(0).attr('ct:value')).toBe('1');
         expect(slices.eq(1).attr('ct:value')).toBe('2');
-        expect(slices.eq(0).attr('ct:value')).toBe('4');
+        expect(slices.eq(2).attr('ct:value')).toBe('4');
         done();
       });
     });
@@ -273,13 +273,13 @@ describe('Pie chart tests', function() {
 
         expect(slices.length).toBe(3);
 
-        expect(slices.eq(2).attr('ct:value')).toBe('0');
-        expect(slices.eq(1).attr('ct:value')).toBe('0');
         expect(slices.eq(0).attr('ct:value')).toBe('0');
+        expect(slices.eq(1).attr('ct:value')).toBe('0');
+        expect(slices.eq(2).attr('ct:value')).toBe('0');
 
-        expect(slices.eq(2).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
-        expect(slices.eq(1).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
         expect(slices.eq(0).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
+        expect(slices.eq(1).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
+        expect(slices.eq(2).attr('d')).toBe('M200,5A118.609,118.609,0,0,0,200,5L200,123.609Z');
         done();
       });
     });
@@ -311,10 +311,10 @@ describe('Pie chart tests', function() {
 
         expect(slices.length).toBe(4);
 
-        expect(slices.eq(3).attr('ct:value')).toBe('1');
-        expect(slices.eq(2).attr('ct:value')).toBe('2');
-        expect(slices.eq(1).attr('ct:value')).toBe('0');
-        expect(slices.eq(0).attr('ct:value')).toBe('4');
+        expect(slices.eq(0).attr('ct:value')).toBe('1');
+        expect(slices.eq(1).attr('ct:value')).toBe('2');
+        expect(slices.eq(2).attr('ct:value')).toBe('0');
+        expect(slices.eq(3).attr('ct:value')).toBe('4');
         done();
       });
     });
@@ -352,10 +352,10 @@ describe('Pie chart tests', function() {
     it('should set value attribute', function(done) {
       onCreated(function() {
         var slices = $('.ct-slice-donut');
-        expect(slices.eq(3).attr('ct:value')).toBe('20');
-        expect(slices.eq(2).attr('ct:value')).toBe('10');
-        expect(slices.eq(1).attr('ct:value')).toBe('30');
-        expect(slices.eq(0).attr('ct:value')).toBe('40');
+        expect(slices.eq(0).attr('ct:value')).toBe('20');
+        expect(slices.eq(1).attr('ct:value')).toBe('10');
+        expect(slices.eq(2).attr('ct:value')).toBe('30');
+        expect(slices.eq(3).attr('ct:value')).toBe('40');
         done();
       });
     });
