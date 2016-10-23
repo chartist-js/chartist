@@ -421,7 +421,7 @@ describe('Chartist core', function() {
       expect(bounds.max).toBe(1000);
       expect(bounds.low).toBe(999.9999999999997);
       expect(bounds.high).toBe(1000.0000000000001);
-      expect(bounds.values).toEqual([999.9999999999999]);
+      expect(bounds.values).toEqual([Chartist.roundWithPrecision(999.9999999999999)]);
     });
 
   });
