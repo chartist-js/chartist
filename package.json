@@ -39,16 +39,7 @@
       "url": "https://github.com/chartist-js/chartist/blob/master/LICENSE-MIT"
     }
   ],
-  "dependencies": {
-    "autoprefixer": "^6.5.1",
-    "chokidar": "^1.6.1",
-    "cssnano": "^3.7.7",
-    "debounce": "^1.0.0",
-    "fs-promise": "^0.5.0",
-    "interpolate": "^0.1.0",
-    "node-sass": "^3.10.1",
-    "postcss": "^5.2.5"
-  },
+  "dependencies": {},
   "devDependencies": {
     "browser-sync": "^2.17.5",
     "jasmine-core": "^2.5.2",
@@ -57,7 +48,15 @@
     "karma-jasmine": "^1.0.2",
     "karma-jspm": "^2.2.0",
     "karma-nyan-reporter": "^0.2.4",
-    "karma-phantomjs-launcher": "^1.0.2"
+    "karma-phantomjs-launcher": "^1.0.2",
+    "autoprefixer": "^6.5.1",
+    "chokidar": "^1.6.1",
+    "cssnano": "^3.7.7",
+    "debounce": "^1.0.0",
+    "fs-promise": "^0.5.0",
+    "interpolate": "^0.1.0",
+    "node-sass": "^3.10.1",
+    "postcss": "^5.2.5"
   },
   "engines": {
     "node": ">=6.9.0"
@@ -74,6 +73,7 @@
   },
   "scripts": {
     "start": "yarn run test-watch & yarn run server & yarn run styles-watch",
+    "test": "./node_modules/.bin/karma start karma.ci.config.js",
     "test-watch": "./node_modules/.bin/karma start karma.watch.config.js",
     "styles-watch": "./tooling/node/styles-watch.js",
     "server": "./node_modules/.bin/browser-sync start --config 'bs-config.js'",
