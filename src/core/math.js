@@ -1,4 +1,4 @@
-import {precision} from './globals';
+import {precision as globalPrecision} from './globals';
 
 /**
  * Calculate the order of magnitude for the chart scale
@@ -33,7 +33,7 @@ export function projectLength(axisLength, length, bounds) {
  * @returns {number} Rounded value
  */
 export function roundWithPrecision(value, digits) {
-  var precision = Math.pow(10, digits || precision);
+  var precision = Math.pow(10, digits || globalPrecision);
   return Math.round(value * precision) / precision;
 }
 

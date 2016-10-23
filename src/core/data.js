@@ -474,7 +474,7 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   for (i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
     var value = roundWithPrecision(i);
     if (value !== values[values.length - 1]) {
-      values.push(i);
+      values.push(value);
     }
   }
   bounds.values = values;

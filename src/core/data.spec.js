@@ -1,4 +1,5 @@
 import {serialize, deserialize, getDataArray, getBounds, splitIntoSegments} from './data';
+import {roundWithPrecision} from './math';
 
 describe('Data', () => {
   describe('serialization', () => {
@@ -274,16 +275,14 @@ describe('Data', () => {
       expect(bounds.values).toEqual([0]);
     });
 
-    /*
-     TODO: This is currently failing with the ES6 refactoring and I can't tell why
-     it('should return single step if range is less than epsilon', () => {
-     const bounds = getBounds(100, { high: 1.0000000000000002, low: 1 }, 20, false);
-     expect(bounds.min).toBe(1);
-     expect(bounds.max).toBe(1.0000000000000002);
-     expect(bounds.low).toBe(1);
-     expect(bounds.high).toBe(1.0000000000000002);
-     expect(bounds.values).toEqual([1]);
-     });*/
+    it('should return single step if range is less than epsilon', () => {
+      const bounds = getBounds(100, { high: 1.0000000000000002, low: 1 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(1.0000000000000002);
+      expect(bounds.low).toBe(1);
+      expect(bounds.high).toBe(1.0000000000000002);
+      expect(bounds.values).toEqual([1]);
+    });
 
     it('should return single step if range is less than smallest increment', () => {
       const bounds = getBounds(613.234375, {high: 1000.0000000000001, low: 999.9999999999997}, 50, false);
@@ -291,7 +290,7 @@ describe('Data', () => {
       expect(bounds.max).toBe(1000);
       expect(bounds.low).toBe(999.9999999999997);
       expect(bounds.high).toBe(1000.0000000000001);
-      expect(bounds.values).toEqual([999.9999999999999]);
+      expect(bounds.values).toEqual([roundWithPrecision(999.9999999999999)]);
     });
   });
 
