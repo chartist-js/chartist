@@ -13,6 +13,10 @@
   display: -webkit-flex;
   display: flex; }
 
+.ct-chart-pie .ct-label,
+.ct-chart-donut .ct-label {
+  dominant-baseline: central; }
+
 .ct-label.ct-horizontal.ct-start {
   -webkit-box-align: flex-end;
   -webkit-align-items: flex-end;
@@ -137,6 +141,9 @@
   stroke: rgba(0, 0, 0, 0.2);
   stroke-width: 1px;
   stroke-dasharray: 2px; }
+
+.ct-grid-background {
+  fill: none; }
 
 .ct-point {
   stroke-width: 10px;

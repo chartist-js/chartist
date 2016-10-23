@@ -123,6 +123,11 @@
     @include ct-flex();
   }
 
+  .#{$ct-class-chart-pie} .#{$ct-class-label},
+  .#{$ct-class-chart-donut} .#{$ct-class-label} {
+    dominant-baseline: central;
+  }
+
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
     // Fallback for browsers that don't support foreignObjects
@@ -186,6 +191,10 @@
 
   .#{$ct-class-grid} {
     @include ct-chart-grid($ct-grid-color, $ct-grid-width, $ct-grid-dasharray);
+  }
+
+  .#{$ct-class-grid-background} {
+    fill: $ct-grid-background-fill;
   }
 
   .#{$ct-class-point} {
