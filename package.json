@@ -73,7 +73,7 @@
     "time-grunt": "^1.0.0"
   },
   "engines": {
-    "node": ">=6.9.0"
+    "node": ">=4.6.0"
   },
   "scripts": {
     "start": "./node_modules/.bin/grunt",
