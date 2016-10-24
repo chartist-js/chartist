@@ -238,7 +238,7 @@
     valueAxis.createGridAndLabels(gridGroupVertical, labelGroupVertical, this.supportsForeignObject, options, this.eventEmitter);
 
     if (options.showGridBackground) {
-      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
+      Chartist.createGridBackground(gridGroupHorizontal, chartRect, options.classNames.gridBackground, this.eventEmitter);
     }
 
     // Draw the series

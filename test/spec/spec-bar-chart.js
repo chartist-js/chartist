@@ -40,17 +40,18 @@ describe('Bar chart tests', function() {
       chart.on('created', fn);      
     }
 
-    it('should contain ct-grids group', function(done) {
+    it('should contain ct-grids groups', function(done) {
       onCreated(function () {
-        expect($('g.ct-grids').length).toBe(1);        
+        expect($('g.ct-grids-horizontal').length).toBe(1);        
+        expect($('g.ct-grids-vertical').length).toBe(1);        
         done();
       });
     });
 
     it('should draw grid lines', function(done) {
       onCreated(function () {
-        expect($('g.ct-grids line.ct-grid.ct-horizontal').length).toBe(3);
-        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(6);        
+        expect($('g.ct-grids-horizontal line.ct-grid.ct-horizontal').length).toBe(3);
+        expect($('g.ct-grids-vertical line.ct-grid.ct-vertical').length).toBe(6);        
         done();
       });
     });
@@ -58,7 +59,7 @@ describe('Bar chart tests', function() {
     it('should draw grid background', function(done) {
       options.showGridBackground = true;
       onCreated(function () {
-        expect($('g.ct-grids rect.ct-grid-background').length).toBe(1);
+        expect($('g.ct-grids-horizontal rect.ct-grid-background').length).toBe(1);
         done();
       });
     });
@@ -66,7 +67,7 @@ describe('Bar chart tests', function() {
     it('should not draw grid background if option set to false', function(done) {
       options.showGridBackground = false;
       onCreated(function () {
-        expect($('g.ct-grids rect.ct-grid-background').length).toBe(0);
+        expect($('g.ct-grids-horizontal rect.ct-grid-background').length).toBe(0);
         done();
       });
     });
