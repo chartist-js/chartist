@@ -6,14 +6,13 @@ export class FixedScaleAxis extends Axis {
   constructor(axisUnit, data, chartRect, options) {
     super();
 
-    var highLow = options.highLow || getHighLow(data, options, axisUnit.pos);
+    const highLow = options.highLow || getHighLow(data, options, axisUnit.pos);
     this.divisor = options.divisor || 1;
-    this.ticks = options.ticks || times(this.divisor).map(function(value, index) {
-        return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
-      }.bind(this));
-    this.ticks.sort(function(a, b) {
-      return a - b;
-    });
+    this.ticks = options.ticks ||
+      times(this.divisor).map(
+        (value, index) => highLow.low + (highLow.high - highLow.low) / this.divisor * index
+      );
+    this.ticks.sort((a, b) => a - b);
     this.range = {
       min: highLow.low,
       max: highLow.high
@@ -25,6 +24,7 @@ export class FixedScaleAxis extends Axis {
   }
 
   projectValue(value) {
-    return this.axisLength * (+getMultiValue(value, this.units.pos) - this.range.min) / (this.range.max - this.range.min);
+    return this.axisLength * (+getMultiValue(value, this.units.pos) - this.range.min) /
+      (this.range.max - this.range.min);
   }
 }

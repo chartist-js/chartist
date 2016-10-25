@@ -48,16 +48,12 @@ export class EventEmitter {
   emit(event, data) {
     // Only do something if there are event handlers with this name existing
     if(this.handlers[event]) {
-      this.handlers[event].forEach(function(handler) {
-        handler(data);
-      });
+      this.handlers[event].forEach((handler) => handler(data));
     }
 
     // Emit event to star event handlers
     if(this.handlers['*']) {
-      this.handlers['*'].forEach(function(starHandler) {
-        starHandler(event, data);
-      });
+      this.handlers['*'].forEach((starHandler) => starHandler(event, data));
     }
   }
 }

@@ -19,18 +19,20 @@ import {SvgPath} from '../svg/svg-path';
  * @return {Function}
  */
 export function none(options) {
-  var defaultOptions = {
+  const defaultOptions = {
     fillHoles: false
   };
-  options = extend({}, defaultOptions, options);
-  return function none(pathCoordinates, valueData) {
-    var path = new SvgPath();
-    var hole = true;
 
-    for(var i = 0; i < pathCoordinates.length; i += 2) {
-      var currX = pathCoordinates[i];
-      var currY = pathCoordinates[i + 1];
-      var currData = valueData[i / 2];
+  options = extend({}, defaultOptions, options);
+
+  return function none(pathCoordinates, valueData) {
+    const path = new SvgPath();
+    let hole = true;
+
+    for(let i = 0; i < pathCoordinates.length; i += 2) {
+      const currX = pathCoordinates[i];
+      const currY = pathCoordinates[i + 1];
+      const currData = valueData[i / 2];
 
       if(getMultiValue(currData.value) !== undefined) {
 

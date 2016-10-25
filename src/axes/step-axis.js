@@ -5,7 +5,7 @@ export class StepAxis extends Axis {
     super();
     super.initialize(axisUnit, chartRect, options.ticks, options);
 
-    var calc = Math.max(1, options.ticks.length - (options.stretch ? 1 : 0));
+    const calc = Math.max(1, options.ticks.length - (options.stretch ? 1 : 0));
     this.stepLength = this.axisLength / calc;
   }
 

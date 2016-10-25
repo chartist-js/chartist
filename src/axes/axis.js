@@ -36,19 +36,19 @@ export class Axis {
   }
 
   createGridAndLabels(gridGroup, labelGroup, useForeignObject, chartOptions, eventEmitter) {
-    var axisOptions = chartOptions['axis' + this.units.pos.toUpperCase()];
-    var projectedValues = this.ticks.map(this.projectValue.bind(this));
-    var labelValues = this.ticks.map(axisOptions.labelInterpolationFnc);
+    const axisOptions = chartOptions['axis' + this.units.pos.toUpperCase()];
+    const projectedValues = this.ticks.map(this.projectValue.bind(this));
+    const labelValues = this.ticks.map(axisOptions.labelInterpolationFnc);
 
-    projectedValues.forEach(function(projectedValue, index) {
-      var labelOffset = {
+    projectedValues.forEach((projectedValue, index) => {
+      const labelOffset = {
         x: 0,
         y: 0
       };
 
       // TODO: Find better solution for solving this problem
       // Calculate how much space we have available for the label
-      var labelLength;
+      let labelLength;
       if(projectedValues[index + 1]) {
         // If we still have one label ahead, we can calculate the distance to the next tick / label
         labelLength = projectedValues[index + 1] - projectedValue;
@@ -59,7 +59,7 @@ export class Axis {
         labelLength = Math.max(this.axisLength - projectedValue, 30);
       }
 
-      // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
+      // Skip grid lines and labels where interpolated label values are falsey (except for 0)
       if(isFalseyButZero(labelValues[index]) && labelValues[index] !== '') {
         return;
       }
@@ -73,9 +73,13 @@ export class Axis {
         // If the labels should be positioned in start position (top side for vertical axis) we need to set a
         // different offset as for positioned with end (bottom)
         if(chartOptions.axisX.position === 'start') {
-          labelOffset.y = this.chartRect.padding.top + chartOptions.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+          labelOffset.y = this.chartRect.padding.top +
+            chartOptions.axisX.labelOffset.y +
+            (useForeignObject ? 5 : 20);
         } else {
-          labelOffset.y = this.chartRect.y1 + chartOptions.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+          labelOffset.y = this.chartRect.y1 +
+            chartOptions.axisX.labelOffset.y +
+            (useForeignObject ? 5 : 20);
         }
       } else {
         projectedValue = this.chartRect.y1 - projectedValue;
@@ -84,7 +88,9 @@ export class Axis {
         // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
         // different offset as for positioned with end (right side)
         if(chartOptions.axisY.position === 'start') {
-          labelOffset.x = useForeignObject ? this.chartRect.padding.left + chartOptions.axisY.labelOffset.x : this.chartRect.x1 - 10;
+          labelOffset.x = useForeignObject ?
+          this.chartRect.padding.left + chartOptions.axisY.labelOffset.x :
+          this.chartRect.x1 - 10;
         } else {
           labelOffset.x = this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
         }
@@ -104,6 +110,6 @@ export class Axis {
           (axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames['end'])
         ], useForeignObject, eventEmitter);
       }
-    }.bind(this));
+    });
   }
 }

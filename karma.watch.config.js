@@ -6,6 +6,7 @@ module.exports = function(config) {
     browsers: ['PhantomJS'],
     reporters: ['nyan'],
     files: [
+      'node_modules/core-js/client/shim.min.js',
       { pattern: 'src/**/*.+(js|html)', included: false },
       { pattern: 'tooling/**/*.js', included: false },
       { pattern: 'package.json', included: false },

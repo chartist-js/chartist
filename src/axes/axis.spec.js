@@ -2,10 +2,10 @@ import {Svg} from '../svg/svg';
 import {EventEmitter} from '../event/event-emitter';
 import {Axis, axisUnits} from './axis';
 
-describe('Axis', function() {
-  var ticks, chartRect, chartOptions, eventEmitter, gridGroup, labelGroup;
+describe('Axis', () => {
+  let ticks, chartRect, chartOptions, eventEmitter, gridGroup, labelGroup;
 
-  beforeEach(function() {
+  beforeEach(() => {
     eventEmitter = new EventEmitter();
     gridGroup = new Svg('g');
     labelGroup = new Svg('g');
@@ -53,16 +53,13 @@ describe('Axis', function() {
     };
   });
 
-  it('should skip all grid lines and labels for interpolated value of null', function() {
-    chartOptions.axisX.labelInterpolationFnc = function(value, index) {
-      return index === 0 ? null : value;
-    };
+  it('should skip all grid lines and labels for interpolated value of null', () => {
+    chartOptions.axisX.labelInterpolationFnc =
+      (value, index) => index === 0 ? null : value;
 
     var axis = new Axis();
     axis.initialize(axisUnits.x, chartRect, ticks, null);
-    axis.projectValue = function(value) {
-      return value;
-    };
+    axis.projectValue = (value) => value;
 
     axis.createGridAndLabels(gridGroup, labelGroup, true, chartOptions, eventEmitter);
     expect(gridGroup.querySelectorAll('.ct-grid').svgElements.length).toBe(1);
@@ -70,15 +67,12 @@ describe('Axis', function() {
   });
 
   it('should skip all grid lines and labels for interpolated value of undefined', function() {
-    chartOptions.axisX.labelInterpolationFnc = function(value, index) {
-      return index === 0 ? undefined : value;
-    };
+    chartOptions.axisX.labelInterpolationFnc =
+      (value, index) => index === 0 ? undefined : value;
 
     var axis = new Axis();
     axis.initialize(axisUnits.x, chartRect, ticks, null);
-    axis.projectValue = function(value) {
-      return value;
-    };
+    axis.projectValue = (value) => value;
 
     axis.createGridAndLabels(gridGroup, labelGroup, true, chartOptions, eventEmitter);
     expect(gridGroup.querySelectorAll('.ct-grid').svgElements.length).toBe(1);
@@ -86,15 +80,12 @@ describe('Axis', function() {
   });
 
   it('should include all grid lines and labels for interpolated value of empty strings', function() {
-    chartOptions.axisX.labelInterpolationFnc = function(value, index) {
-      return index === 0 ? '' : value;
-    };
+    chartOptions.axisX.labelInterpolationFnc =
+      (value, index) => index === 0 ? '' : value;
 
     var axis = new Axis();
     axis.initialize(axisUnits.x, chartRect, ticks, null);
-    axis.projectValue = function(value) {
-      return value;
-    };
+    axis.projectValue = (value) => value;
 
     axis.createGridAndLabels(gridGroup, labelGroup, true, chartOptions, eventEmitter);
     expect(gridGroup.querySelectorAll('.ct-grid').svgElements.length).toBe(2);

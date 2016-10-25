@@ -22,7 +22,7 @@ import {SvgPath} from '../svg/svg-path';
  * @returns {Function}
  */
 export function step(options) {
-  var defaultOptions = {
+  const defaultOptions = {
     postpone: true,
     fillHoles: false
   };
@@ -30,14 +30,16 @@ export function step(options) {
   options = extend({}, defaultOptions, options);
 
   return function step(pathCoordinates, valueData) {
-    var path = new SvgPath();
+    const path = new SvgPath();
 
-    var prevX, prevY, prevData;
+    let prevX;
+    let prevY;
+    let prevData;
 
-    for (var i = 0; i < pathCoordinates.length; i += 2) {
-      var currX = pathCoordinates[i];
-      var currY = pathCoordinates[i + 1];
-      var currData = valueData[i / 2];
+    for (let i = 0; i < pathCoordinates.length; i += 2) {
+      const currX = pathCoordinates[i];
+      const currY = pathCoordinates[i + 1];
+      const currData = valueData[i / 2];
 
       // If the current point is also not a hole we can draw the step lines
       if(currData.value !== undefined) {

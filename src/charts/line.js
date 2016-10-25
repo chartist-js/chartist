@@ -198,19 +198,20 @@ export class LineChart extends BaseChart {
    *
    */
   createChart(options) {
-    var data = normalizeData(this.data, options.reverseData, true);
+    const data = normalizeData(this.data, options.reverseData, true);
 
     // Create new svg object
     this.svg = createSvg(this.container, options.width, options.height, options.classNames.chart);
     // Create groups for labels, grid and series
-    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
-    var seriesGroup = this.svg.elem('g');
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
+    const gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+    const seriesGroup = this.svg.elem('g');
+    const labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-    var chartRect = createChartRect(this.svg, options, defaultOptions.padding);
-    var axisX, axisY;
+    const chartRect = createChartRect(this.svg, options, defaultOptions.padding);
+    let axisX;
+    let axisY;
 
-    if(options.axisX.type === undefined) {
+    if (options.axisX.type === undefined) {
       axisX = new StepAxis(axisUnits.x, data.normalized.series, chartRect, extend({}, options.axisX, {
         ticks: data.normalized.labels,
         stretch: options.fullWidth
@@ -219,7 +220,7 @@ export class LineChart extends BaseChart {
       axisX = new options.axisX.type(axisUnits.x, data.normalized.series, chartRect, options.axisX);
     }
 
-    if(options.axisY.type === undefined) {
+    if (options.axisY.type === undefined) {
       axisY = new AutoScaleAxis(axisUnits.y, data.normalized.series, chartRect, extend({}, options.axisY, {
         high: isNumeric(options.high) ? options.high : options.axisY.high,
         low: isNumeric(options.low) ? options.low : options.axisY.low
@@ -236,8 +237,8 @@ export class LineChart extends BaseChart {
     }
 
     // Draw the series
-    data.raw.series.forEach(function(series, seriesIndex) {
-      var seriesElement = seriesGroup.elem('g');
+    data.raw.series.forEach((series, seriesIndex) => {
+      const seriesElement = seriesGroup.elem('g');
 
       // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
       seriesElement.attr({
@@ -248,26 +249,26 @@ export class LineChart extends BaseChart {
       // Use series class from series data or if not set generate one
       seriesElement.addClass([
         options.classNames.series,
-        (series.className || options.classNames.series + '-' + alphaNumerate(seriesIndex))
+        series.className || `${options.classNames.series}-${alphaNumerate(seriesIndex)}`
       ].join(' '));
 
-      var pathCoordinates = [],
-        pathData = [];
+      const pathCoordinates = [];
+      const pathData = [];
 
-      data.normalized.series[seriesIndex].forEach(function(value, valueIndex) {
-        var p = {
+      data.normalized.series[seriesIndex].forEach((value, valueIndex) => {
+        const p = {
           x: chartRect.x1 + axisX.projectValue(value, valueIndex, data.normalized.series[seriesIndex]),
           y: chartRect.y1 - axisY.projectValue(value, valueIndex, data.normalized.series[seriesIndex])
         };
         pathCoordinates.push(p.x, p.y);
         pathData.push({
-          value: value,
-          valueIndex: valueIndex,
+          value,
+          valueIndex,
           meta: getMetaData(series, valueIndex)
         });
-      }.bind(this));
+      });
 
-      var seriesOptions = {
+      const seriesOptions = {
         lineSmooth: getSeriesOption(series, options, 'lineSmooth'),
         showPoint: getSeriesOption(series, options, 'showPoint'),
         showLine: getSeriesOption(series, options, 'showLine'),
@@ -275,19 +276,19 @@ export class LineChart extends BaseChart {
         areaBase: getSeriesOption(series, options, 'areaBase')
       };
 
-      var smoothing = typeof seriesOptions.lineSmooth === 'function' ?
+      const smoothing = typeof seriesOptions.lineSmooth === 'function' ?
         seriesOptions.lineSmooth : (seriesOptions.lineSmooth ? monotoneCubic() : none());
       // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
       // index, value and meta data
-      var path = smoothing(pathCoordinates, pathData);
+      const path = smoothing(pathCoordinates, pathData);
 
       // If we should show points we need to create them now to avoid secondary loop
       // Points are drawn from the pathElements returned by the interpolation function
       // Small offset for Firefox to render squares correctly
       if (seriesOptions.showPoint) {
 
-        path.pathElements.forEach(function(pathElement) {
-          var point = seriesElement.elem('line', {
+        path.pathElements.forEach((pathElement) => {
+          const point = seriesElement.elem('line', {
             x1: pathElement.x,
             y1: pathElement.y,
             x2: pathElement.x + 0.01,
@@ -302,20 +303,20 @@ export class LineChart extends BaseChart {
             value: pathElement.data.value,
             index: pathElement.data.valueIndex,
             meta: pathElement.data.meta,
-            series: series,
-            seriesIndex: seriesIndex,
-            axisX: axisX,
-            axisY: axisY,
+            series,
+            seriesIndex,
+            axisX,
+            axisY,
             group: seriesElement,
             element: point,
             x: pathElement.x,
             y: pathElement.y
           });
-        }.bind(this));
+        });
       }
 
-      if(seriesOptions.showLine) {
-        var line = seriesElement.elem('path', {
+      if (seriesOptions.showLine) {
+        const line = seriesElement.elem('path', {
           d: path.stringify()
         }, options.classNames.line, true);
 
@@ -323,80 +324,84 @@ export class LineChart extends BaseChart {
           type: 'line',
           values: data.normalized.series[seriesIndex],
           path: path.clone(),
-          chartRect: chartRect,
+          chartRect,
+          // TODO: Remove redundant
           index: seriesIndex,
-          series: series,
-          seriesIndex: seriesIndex,
+          series,
+          seriesIndex,
           seriesMeta: series.meta,
-          axisX: axisX,
-          axisY: axisY,
+          axisX,
+          axisY,
           group: seriesElement,
           element: line
         });
       }
 
       // Area currently only works with axes that support a range!
-      if(seriesOptions.showArea && axisY.range) {
+      if (seriesOptions.showArea && axisY.range) {
         // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
         // the area is not drawn outside the chart area.
-        var areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.range.max), axisY.range.min);
+        const areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.range.max), axisY.range.min);
 
         // We project the areaBase value into screen coordinates
-        var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
+        const areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
 
         // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
-        path.splitByCommand('M').filter(function onlySolidSegments(pathSegment) {
+        path.splitByCommand('M')
           // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
-          return pathSegment.pathElements.length > 1;
-        }).map(function convertToArea(solidPathSegments) {
-          // Receiving the filtered solid path segments we can now convert those segments into fill areas
-          var firstElement = solidPathSegments.pathElements[0];
-          var lastElement = solidPathSegments.pathElements[solidPathSegments.pathElements.length - 1];
+          .filter((pathSegment) => pathSegment.pathElements.length > 1)
+          .map((solidPathSegments) => {
+            // Receiving the filtered solid path segments we can now convert those segments into fill areas
+            const firstElement = solidPathSegments.pathElements[0];
+            const lastElement = solidPathSegments.pathElements[solidPathSegments.pathElements.length - 1];
 
-          // Cloning the solid path segment with closing option and removing the first move command from the clone
-          // We then insert a new move that should start at the area base and draw a straight line up or down
-          // at the end of the path we add an additional straight line to the projected area base value
-          // As the closing option is set our path will be automatically closed
-          return solidPathSegments.clone(true)
-            .position(0)
-            .remove(1)
-            .move(firstElement.x, areaBaseProjected)
-            .line(firstElement.x, firstElement.y)
-            .position(solidPathSegments.pathElements.length + 1)
-            .line(lastElement.x, areaBaseProjected);
+            // Cloning the solid path segment with closing option and removing the first move command from the clone
+            // We then insert a new move that should start at the area base and draw a straight line up or down
+            // at the end of the path we add an additional straight line to the projected area base value
+            // As the closing option is set our path will be automatically closed
+            return solidPathSegments.clone(true)
+              .position(0)
+              .remove(1)
+              .move(firstElement.x, areaBaseProjected)
+              .line(firstElement.x, firstElement.y)
+              .position(solidPathSegments.pathElements.length + 1)
+              .line(lastElement.x, areaBaseProjected);
 
-        }).forEach(function createArea(areaPath) {
-          // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
-          // and adding the created DOM elements to the correct series group
-          var area = seriesElement.elem('path', {
-            d: areaPath.stringify()
-          }, options.classNames.area, true);
+          })
+          .forEach((areaPath) => {
+            // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
+            // and adding the created DOM elements to the correct series group
+            const area = seriesElement.elem('path', {
+              d: areaPath.stringify()
+            }, options.classNames.area, true);
 
-          // Emit an event for each area that was drawn
-          this.eventEmitter.emit('draw', {
-            type: 'area',
-            values: data.normalized.series[seriesIndex],
-            path: areaPath.clone(),
-            series: series,
-            seriesIndex: seriesIndex,
-            axisX: axisX,
-            axisY: axisY,
-            chartRect: chartRect,
-            index: seriesIndex,
-            group: seriesElement,
-            element: area
+            // Emit an event for each area that was drawn
+            this.eventEmitter.emit('draw', {
+              type: 'area',
+              values: data.normalized.series[seriesIndex],
+              path: areaPath.clone(),
+              series,
+              seriesIndex,
+              axisX,
+              axisY,
+              chartRect,
+              // TODO: Remove redundant
+              index: seriesIndex,
+              group: seriesElement,
+              element: area
+            });
           });
-        }.bind(this));
       }
-    }.bind(this));
-
+    });
+    
     this.eventEmitter.emit('created', {
+      // TODO: Remove redundant
       bounds: axisY.bounds,
-      chartRect: chartRect,
-      axisX: axisX,
-      axisY: axisY,
+      chartRect,
+      axisX,
+      axisY,
       svg: this.svg,
-      options: options
+      options
     });
   }
 }

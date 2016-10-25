@@ -6,15 +6,14 @@
  * @param {Object...} sources This object (objects) will be merged into target and then target is returned
  * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
  */
-export function extend(target) {
-  var i, source, sourceProp;
+export function extend(target = {}, ...sources) {
   target = target || {};
 
-  for (i = 1; i < arguments.length; i++) {
-    source = arguments[i];
-    for (var prop in source) {
-      sourceProp = source[prop];
-      if (typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
+  for(let i = 0; i < sources.length; i++) {
+    const source = sources[i];
+    for(let prop in source) {
+      const sourceProp = source[prop];
+      if(typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
         target[prop] = extend(target[prop], sourceProp);
       } else {
         target[prop] = sourceProp;

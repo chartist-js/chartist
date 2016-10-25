@@ -276,7 +276,7 @@ describe('Data', () => {
     });
 
     it('should return single step if range is less than epsilon', () => {
-      const bounds = getBounds(100, { high: 1.0000000000000002, low: 1 }, 20, false);
+      const bounds = getBounds(100, {high: 1.0000000000000002, low: 1}, 20, false);
       expect(bounds.min).toBe(1);
       expect(bounds.max).toBe(1.0000000000000002);
       expect(bounds.low).toBe(1);
@@ -296,7 +296,7 @@ describe('Data', () => {
 
   describe('splitIntoSegments', () => {
     function makeValues(arr) {
-      return arr.map(function (x) {
+      return arr.map(function(x) {
         return {value: x};
       });
     }

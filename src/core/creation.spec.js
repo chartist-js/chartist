@@ -51,10 +51,10 @@ describe('Creation', () => {
       group = new Svg('g');
       axis = {
         units: {
-          pos : 'x'
+          pos: 'x'
         },
         counterUnits: {
-          pos : 'y'
+          pos: 'y'
         }
       };
       classes = [];

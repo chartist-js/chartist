@@ -38,7 +38,7 @@ export class Svg {
     }
 
     if(parent) {
-      if (insertFirst && parent._node.firstChild) {
+      if(insertFirst && parent._node.firstChild) {
         parent._node.insertBefore(this._node, parent._node.firstChild);
       } else {
         parent._node.appendChild(this._node);
@@ -69,7 +69,7 @@ export class Svg {
         return;
       }
 
-      if (key.indexOf(':') !== -1) {
+      if(key.indexOf(':') !== -1) {
         var namespacedAttribute = key.split(':');
         this._node.setAttributeNS(namespaces[namespacedAttribute[0]], key, attributes[key]);
       } else {
@@ -111,7 +111,7 @@ export class Svg {
    * @return {Svg} The root SVG element wrapped in a Svg element
    */
   root() {
-    var node = this._node;
+    let node = this._node;
     while(node.nodeName !== 'svg') {
       node = node.parentNode;
     }
@@ -126,7 +126,7 @@ export class Svg {
    * @return {Svg} The SVG wrapper for the element found or null if no element was found
    */
   querySelector(selector) {
-    var foundNode = this._node.querySelector(selector);
+    const foundNode = this._node.querySelector(selector);
     return foundNode ? new Svg(foundNode) : null;
   }
 
@@ -138,7 +138,7 @@ export class Svg {
    * @return {SvgList} The SVG wrapper list for the element found or null if no element was found
    */
   querySelectorAll(selector) {
-    var foundNodes = this._node.querySelectorAll(selector);
+    const foundNodes = this._node.querySelectorAll(selector);
     return foundNodes.length ? new SvgList(foundNodes) : null;
   }
 
@@ -166,7 +166,7 @@ export class Svg {
     // If content is string then we convert it to DOM
     // TODO: Handle case where content is not a string nor a DOM Node
     if(typeof content === 'string') {
-      var container = document.createElement('div');
+      const container = document.createElement('div');
       container.innerHTML = content;
       content = container.firstChild;
     }
@@ -176,7 +176,7 @@ export class Svg {
 
     // Creating the foreignObject without required extension attribute (as described here
     // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
-    var fnObj = this.elem('foreignObject', attributes, className, insertFirst);
+    const fnObj = this.elem('foreignObject', attributes, className, insertFirst);
 
     // Add content to foreignObjectElement
     fnObj._node.appendChild(content);
@@ -203,7 +203,7 @@ export class Svg {
    * @return {Svg} The same wrapper object that got emptied
    */
   empty() {
-    while (this._node.firstChild) {
+    while(this._node.firstChild) {
       this._node.removeChild(this._node.firstChild);
     }
 
@@ -288,11 +288,10 @@ export class Svg {
    * @return {Svg} The wrapper of the current element
    */
   removeClass(names) {
-    var removedClasses = names.trim().split(/\s+/);
+    const removedClasses = names.trim().split(/\s+/);
 
-    this._node.setAttribute('class', this.classes().filter(function(name) {
-      return removedClasses.indexOf(name) === -1;
-    }).join(' '));
+    this._node.setAttribute('class',
+      this.classes().filter((name) => removedClasses.indexOf(name) === -1).join(' '));
 
     return this;
   }
@@ -374,13 +373,12 @@ export class Svg {
       guided = true;
     }
 
-    Object.keys(animations).forEach(function createAnimateForAttributes(attribute) {
+    Object.keys(animations).forEach((attribute) => {
 
-      function createAnimate(animationDefinition, guided) {
-        var attributeProperties = {},
-          animate,
-          timeout,
-          animationEasing;
+      const createAnimate = (animationDefinition, guided) => {
+        const attributeProperties = {};
+        let animationEasing;
+        let timeout;
 
         // Check if an easing is specified in the definition object and delete it from the object as it will not
         // be part of the animate element attributes.
@@ -415,15 +413,15 @@ export class Svg {
           animationDefinition.begin = 'indefinite';
         }
 
-        animate = this.elem('animate', extend({
+        const animate = this.elem('animate', extend({
           attributeName: attribute
         }, animationDefinition));
 
         if(guided) {
           // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
-          setTimeout(function() {
+          setTimeout(() => {
             // If beginElement fails we set the animated attribute to the end position and remove the animate element
-            // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occured in
+            // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occurred in
             // the browser. (Currently FF 34 does not support animate elements in foreignObjects)
             try {
               animate._node.beginElement();
@@ -434,20 +432,20 @@ export class Svg {
               // Remove the animate element as it's no longer required
               animate.remove();
             }
-          }.bind(this), timeout);
+          }, timeout);
         }
 
         if(eventEmitter) {
-          animate._node.addEventListener('beginEvent', function handleBeginEvent() {
+          animate._node.addEventListener('beginEvent', () =>
             eventEmitter.emit('animationBegin', {
               element: this,
               animate: animate._node,
               params: animationDefinition
-            });
-          }.bind(this));
+            })
+          );
         }
 
-        animate._node.addEventListener('endEvent', function handleEndEvent() {
+        animate._node.addEventListener('endEvent', () => {
           if(eventEmitter) {
             eventEmitter.emit('animationEnd', {
               element: this,
@@ -463,19 +461,17 @@ export class Svg {
             // Remove the animate element as it's no longer required
             animate.remove();
           }
-        }.bind(this));
-      }
+        });
+      };
 
       // If current attribute is an array of definition objects we create an animate for each and disable guided mode
       if(animations[attribute] instanceof Array) {
-        animations[attribute].forEach(function(animationDefinition) {
-          createAnimate.bind(this)(animationDefinition, false);
-        }.bind(this));
+        animations[attribute]
+          .forEach((animationDefinition) => createAnimate(animationDefinition, false));
       } else {
-        createAnimate.bind(this)(animations[attribute], guided);
+        createAnimate(animations[attribute], guided);
       }
-
-    }.bind(this));
+    });
 
     return this;
   }

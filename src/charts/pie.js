@@ -1,5 +1,5 @@
 import {alphaNumerate, quantity, isFalseyButZero} from '../core/lang';
-import {noop} from '../core/functional';
+import {noop, sum} from '../core/functional';
 import {polarToCartesian} from '../core/math';
 import {extend} from '../core/extend';
 import {normalizeData, serialize} from '../core/data';
@@ -62,7 +62,7 @@ const defaultOptions = {
  * @return {string}
  */
 export function determineAnchorPosition(center, label, direction) {
-  var toTheRight = label.x > center.x;
+  const toTheRight = label.x > center.x;
 
   if (toTheRight && direction === 'explode' ||
     !toTheRight && direction === 'implode') {
@@ -154,27 +154,23 @@ export class PieChart extends BaseChart {
    * @param options
    */
   createChart(options) {
-    var data = normalizeData(this.data);
-    var seriesGroups = [],
-      labelsGroup,
-      chartRect,
-      radius,
-      labelRadius,
-      totalDataSum,
-      startAngle = options.startAngle;
+    const data = normalizeData(this.data);
+    const seriesGroups = [];
+    let labelsGroup;
+    let labelRadius;
+    let startAngle = options.startAngle;
 
     // Create SVG.js draw
     this.svg = createSvg(this.container, options.width, options.height, options.donut ? options.classNames.chartDonut : options.classNames.chartPie);
     // Calculate charting rect
-    chartRect = createChartRect(this.svg, options, defaultOptions.padding);
+    const chartRect = createChartRect(this.svg, options, defaultOptions.padding);
     // Get biggest circle radius possible within chartRect
-    radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
+    let radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
     // Calculate total of all series to get reference value or use total reference from optional options
-    totalDataSum = options.total || data.normalized.series.reduce(function (previousValue, currentValue) {
-        return previousValue + currentValue;
-      }, 0);
+    const totalDataSum = options.total ||
+      data.normalized.series.reduce(sum, 0);
 
-    var donutWidth = quantity(options.donutWidth);
+    const donutWidth = quantity(options.donutWidth);
     if (donutWidth.unit === '%') {
       donutWidth.value *= radius / 100;
     }
@@ -200,20 +196,19 @@ export class PieChart extends BaseChart {
     labelRadius += options.labelOffset;
 
     // Calculate end angle based on total sum and current data value and offset with padding
-    var center = {
+    const center = {
       x: chartRect.x1 + chartRect.width() / 2,
       y: chartRect.y2 + chartRect.height() / 2
     };
 
     // Check if there is only one non-zero value in the series array.
-    var hasSingleValInSeries = data.raw.series.filter(function (val) {
-        return val.hasOwnProperty('value') ? val.value !== 0 : val !== 0;
-      }).length === 1;
+    const hasSingleValInSeries = data.raw.series
+      .filter((val) => val.hasOwnProperty('value') ? val.value !== 0 : val !== 0)
+      .length === 1;
 
     // Creating the series groups
-    data.raw.series.forEach(function (series, index) {
-      seriesGroups[index] = this.svg.elem('g', null, null);
-    }.bind(this));
+    data.raw.series
+      .forEach((series, index) => seriesGroups[index] = this.svg.elem('g', null, null));
     //if we need to show labels we create the label group now
     if (options.showLabel) {
       labelsGroup = this.svg.elem('g', null, null);
@@ -221,7 +216,7 @@ export class PieChart extends BaseChart {
 
     // Draw the series
     // initialize series groups
-    data.raw.series.forEach(function (series, index) {
+    data.raw.series.forEach((series, index) => {
       // If current value is zero and we are ignoring empty values then skip to next value
       if (data.normalized.series[index] === 0 && options.ignoreEmptyValues) return;
 
@@ -233,14 +228,14 @@ export class PieChart extends BaseChart {
       // Use series class from series data or if not set generate one
       seriesGroups[index].addClass([
         options.classNames.series,
-        (series.className || options.classNames.series + '-' + alphaNumerate(index))
+        series.className || `${options.classNames.series}-${alphaNumerate(index)}`
       ].join(' '));
 
       // If the whole dataset is 0 endAngle should be zero. Can't divide by 0.
-      var endAngle = (totalDataSum > 0 ? startAngle + data.normalized.series[index] / totalDataSum * 360 : 0);
+      let endAngle = (totalDataSum > 0 ? startAngle + data.normalized.series[index] / totalDataSum * 360 : 0);
 
       // Use slight offset so there are no transparent hairline issues
-      var overlappigStartAngle = Math.max(0, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
+      const overlappigStartAngle = Math.max(0, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
 
       // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
       // with Z and use 359.99 degrees
@@ -248,11 +243,11 @@ export class PieChart extends BaseChart {
         endAngle = overlappigStartAngle + 359.99;
       }
 
-      var start = polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
-        end = polarToCartesian(center.x, center.y, radius, endAngle);
+      const start = polarToCartesian(center.x, center.y, radius, overlappigStartAngle);
+      const end = polarToCartesian(center.x, center.y, radius, endAngle);
 
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
-      var path = new SvgPath(!options.donut)
+      const path = new SvgPath(!options.donut)
         .move(end.x, end.y)
         .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
@@ -263,7 +258,7 @@ export class PieChart extends BaseChart {
 
       // Create the SVG path
       // If this is a donut chart we add the donut class, otherwise just a regular slice
-      var pathElement = seriesGroups[index].elem('path', {
+      const pathElement = seriesGroups[index].elem('path', {
         d: path.stringify()
       }, options.donut ? options.classNames.sliceDonut : options.classNames.slicePie);
 
@@ -299,7 +294,8 @@ export class PieChart extends BaseChart {
 
       // If we need to show labels we need to add the label for this slice now
       if (options.showLabel) {
-        var labelPosition;
+        let labelPosition;
+
         if (data.raw.series.length === 1) {
           // If we have only 1 series, we can position the label in the center of the pie
           labelPosition = {
@@ -316,14 +312,14 @@ export class PieChart extends BaseChart {
           );
         }
 
-        var rawValue;
+        let rawValue;
         if (data.normalized.labels && !isFalseyButZero(data.normalized.labels[index])) {
           rawValue = data.normalized.labels[index];
         } else {
           rawValue = data.normalized.series[index];
         }
 
-        var interpolatedValue = options.labelInterpolationFnc(rawValue, index);
+        const interpolatedValue = options.labelInterpolationFnc(rawValue, index);
 
         if (interpolatedValue || interpolatedValue === 0) {
           var labelElement = labelsGroup.elem('text', {
@@ -335,7 +331,7 @@ export class PieChart extends BaseChart {
           // Fire off draw event
           this.eventEmitter.emit('draw', {
             type: 'label',
-            index: index,
+            index,
             group: labelsGroup,
             element: labelElement,
             text: '' + interpolatedValue,
@@ -348,12 +344,12 @@ export class PieChart extends BaseChart {
       // Set next startAngle to current endAngle.
       // (except for last slice)
       startAngle = endAngle;
-    }.bind(this));
+    });
 
     this.eventEmitter.emit('created', {
-      chartRect: chartRect,
+      chartRect,
       svg: this.svg,
-      options: options
+      options
     });
   }
 }

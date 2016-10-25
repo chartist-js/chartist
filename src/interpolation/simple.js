@@ -25,23 +25,26 @@ import {SvgPath} from '../svg/svg-path';
  * @return {Function}
  */
 export function simple(options) {
-  var defaultOptions = {
+  const defaultOptions = {
     divisor: 2,
     fillHoles: false
   };
+
   options = extend({}, defaultOptions, options);
 
-  var d = 1 / Math.max(1, options.divisor);
+  const d = 1 / Math.max(1, options.divisor);
 
   return function simple(pathCoordinates, valueData) {
-    var path = new SvgPath();
-    var prevX, prevY, prevData;
+    const path = new SvgPath();
+    let prevX;
+    let prevY;
+    let prevData;
 
-    for(var i = 0; i < pathCoordinates.length; i += 2) {
-      var currX = pathCoordinates[i];
-      var currY = pathCoordinates[i + 1];
-      var length = (currX - prevX) * d;
-      var currData = valueData[i / 2];
+    for(let i = 0; i < pathCoordinates.length; i += 2) {
+      const currX = pathCoordinates[i];
+      const currY = pathCoordinates[i + 1];
+      const length = (currX - prevX) * d;
+      const currData = valueData[i / 2];
 
       if(currData.value !== undefined) {
 
@@ -64,7 +67,7 @@ export function simple(options) {
         prevY = currY;
         prevData = currData;
       } else if(!options.fillHoles) {
-        prevX = currX = prevData = undefined;
+        prevX = prevY = prevData = undefined;
       }
     }
 

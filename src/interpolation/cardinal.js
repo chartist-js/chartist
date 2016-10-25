@@ -25,20 +25,20 @@ import {none} from './none';
  * @return {Function}
  */
 export function cardinal(options) {
-  var defaultOptions = {
+  const defaultOptions = {
     tension: 1,
     fillHoles: false
   };
 
   options = extend({}, defaultOptions, options);
 
-  var t = Math.min(1, Math.max(0, options.tension)),
-    c = 1 - t;
+  const t = Math.min(1, Math.max(0, options.tension));
+  const c = 1 - t;
 
   return function cardinal(pathCoordinates, valueData) {
     // First we try to split the coordinates into segments
     // This is necessary to treat "holes" in line charts
-    var segments = splitIntoSegments(pathCoordinates, valueData, {
+    const segments = splitIntoSegments(pathCoordinates, valueData, {
       fillHoles: options.fillHoles
     });
 
@@ -48,13 +48,11 @@ export function cardinal(options) {
     } else if(segments.length > 1) {
       // If the split resulted in more that one segment we need to interpolate each segment individually and join them
       // afterwards together into a single path.
-      var paths = [];
       // For each segment we will recurse the cardinal function
-      segments.forEach(function(segment) {
-        paths.push(cardinal(segment.pathCoordinates, segment.valueData));
-      });
       // Join the segment path data into a single path and return
-      return SvgPath.join(paths);
+      return SvgPath.join(
+        segments.map((segment) => cardinal(segment.pathCoordinates, segment.valueData))
+      );
     } else {
       // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first
       // segment
@@ -66,29 +64,30 @@ export function cardinal(options) {
         return none()(pathCoordinates, valueData);
       }
 
-      var path = new SvgPath().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]),
-        z;
+      const path = new SvgPath().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
+      let z;
 
-      for (var i = 0, iLen = pathCoordinates.length; iLen - 2 * !z > i; i += 2) {
-        var p = [
+      for(let i = 0, iLen = pathCoordinates.length; iLen - 2 * !z > i; i += 2) {
+        const p = [
           {x: +pathCoordinates[i - 2], y: +pathCoordinates[i - 1]},
           {x: +pathCoordinates[i], y: +pathCoordinates[i + 1]},
           {x: +pathCoordinates[i + 2], y: +pathCoordinates[i + 3]},
           {x: +pathCoordinates[i + 4], y: +pathCoordinates[i + 5]}
         ];
-        if (z) {
-          if (!i) {
+
+        if(z) {
+          if(!i) {
             p[0] = {x: +pathCoordinates[iLen - 2], y: +pathCoordinates[iLen - 1]};
-          } else if (iLen - 4 === i) {
+          } else if(iLen - 4 === i) {
             p[3] = {x: +pathCoordinates[0], y: +pathCoordinates[1]};
-          } else if (iLen - 2 === i) {
+          } else if(iLen - 2 === i) {
             p[2] = {x: +pathCoordinates[0], y: +pathCoordinates[1]};
             p[3] = {x: +pathCoordinates[2], y: +pathCoordinates[3]};
           }
         } else {
-          if (iLen - 4 === i) {
+          if(iLen - 4 === i) {
             p[3] = p[2];
-          } else if (!i) {
+          } else if(!i) {
             p[0] = {x: +pathCoordinates[i], y: +pathCoordinates[i + 1]};
           }
         }

@@ -1,5 +1,7 @@
 import {precision as globalPrecision} from './globals';
 
+export const EPSILON = 2.221E-16;
+
 /**
  * Calculate the order of magnitude for the chart scale
  *
@@ -33,7 +35,7 @@ export function projectLength(axisLength, length, bounds) {
  * @returns {number} Rounded value
  */
 export function roundWithPrecision(value, digits) {
-  var precision = Math.pow(10, digits || globalPrecision);
+  const precision = Math.pow(10, digits || globalPrecision);
   return Math.round(value * precision) / precision;
 }
 
@@ -61,7 +63,9 @@ export function rho(num) {
     return x * x + 1;
   }
 
-  var x1 = 2, x2 = 2, divisor;
+  let x1 = 2;
+  let x2 = 2;
+  let divisor;
   if (num % 2 === 0) {
     return 2;
   }
@@ -86,7 +90,7 @@ export function rho(num) {
  * @return {{x:Number, y:Number}} Coordinates of point on circumference
  */
 export function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-  var angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
 
   return {
     x: centerX + (radius * Math.cos(angleInRadians)),

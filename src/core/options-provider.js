@@ -10,54 +10,50 @@ import {extend} from './extend';
  * @return {Object} The consolidated options object from the defaults, base and matching responsive options
  */
 export function optionsProvider(options, responsiveOptions, eventEmitter) {
-  var baseOptions = extend({}, options),
-    currentOptions,
-    mediaQueryListeners = [],
-    i;
+  const baseOptions = extend({}, options);
+  let currentOptions;
+  const mediaQueryListeners = [];
 
   function updateCurrentOptions(mediaEvent) {
-    var previousOptions = currentOptions;
+    const previousOptions = currentOptions;
     currentOptions = extend({}, baseOptions);
 
     if (responsiveOptions) {
-      for (i = 0; i < responsiveOptions.length; i++) {
-        var mql = window.matchMedia(responsiveOptions[i][0]);
+      responsiveOptions.forEach((responsiveOption) => {
+        const mql = window.matchMedia(responsiveOption[0]);
         if (mql.matches) {
-          currentOptions = extend(currentOptions, responsiveOptions[i][1]);
+          currentOptions = extend(currentOptions, responsiveOption[1]);
         }
-      }
+      });
     }
 
     if(eventEmitter && mediaEvent) {
       eventEmitter.emit('optionsChanged', {
-        previousOptions: previousOptions,
-        currentOptions: currentOptions
+        previousOptions,
+        currentOptions
       });
     }
   }
 
   function removeMediaQueryListeners() {
-    mediaQueryListeners.forEach(function(mql) {
-      mql.removeListener(updateCurrentOptions);
-    });
+    mediaQueryListeners.forEach((mql) => mql.removeListener(updateCurrentOptions));
   }
 
   if (!window.matchMedia) {
     throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
   } else if (responsiveOptions) {
-
-    for (i = 0; i < responsiveOptions.length; i++) {
-      var mql = window.matchMedia(responsiveOptions[i][0]);
+    responsiveOptions.forEach((responsiveOption) => {
+      const mql = window.matchMedia(responsiveOption[0]);
       mql.addListener(updateCurrentOptions);
       mediaQueryListeners.push(mql);
-    }
+    });
   }
   // Execute initially without an event argument so we get the correct options
   updateCurrentOptions();
 
   return {
-    removeMediaQueryListeners: removeMediaQueryListeners,
-    getCurrentOptions: function getCurrentOptions() {
+    removeMediaQueryListeners,
+    getCurrentOptions() {
       return extend({}, currentOptions);
     }
   };

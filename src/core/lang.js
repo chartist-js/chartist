@@ -92,13 +92,16 @@ export function ensureUnit(value, unit) {
  */
 export function quantity(input) {
   if (typeof input === 'string') {
-    var match = (/^(\d+)\s*(.*)$/g).exec(input);
+    const match = (/^(\d+)\s*(.*)$/g).exec(input);
     return {
       value : +match[1],
       unit: match[2] || undefined
     };
   }
-  return { value: input };
+
+  return {
+    value: input
+  };
 }
 
 /**
