@@ -10,32 +10,32 @@ import {Svg} from './svg';
  */
 export class SvgList {
   constructor(nodeList) {
-    var list = this;
+    const list = this;
 
     this.svgElements = [];
-    for(var i = 0; i < nodeList.length; i++) {
+    for(let i = 0; i < nodeList.length; i++) {
       this.svgElements.push(new Svg(nodeList[i]));
     }
 
     // Add delegation methods for Svg
-    Object.keys(Svg.prototype).filter(function(prototypeProperty) {
-      return ['constructor',
-          'parent',
-          'querySelector',
-          'querySelectorAll',
-          'replace',
-          'append',
-          'classes',
-          'height',
-          'width'].indexOf(prototypeProperty) === -1;
-    }).forEach(function(prototypeProperty) {
-      list[prototypeProperty] = function() {
-        var args = Array.prototype.slice.call(arguments, 0);
-        list.svgElements.forEach(function(element) {
-          Svg.prototype[prototypeProperty].apply(element, args);
-        });
-        return list;
-      };
-    });
+    Object.keys(Svg.prototype).filter((prototypeProperty) => [
+      'constructor',
+      'parent',
+      'querySelector',
+      'querySelectorAll',
+      'replace',
+      'append',
+      'classes',
+      'height',
+      'width'
+    ].indexOf(prototypeProperty) === -1)
+      .forEach((prototypeProperty) => {
+        list[prototypeProperty] = () => {
+          const args = Array.from(arguments);
+          list.svgElements.forEach((element) =>
+            Svg.prototype[prototypeProperty].apply(element, args));
+          return list;
+        };
+      });
   }
 }

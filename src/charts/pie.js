@@ -64,10 +64,10 @@ const defaultOptions = {
 export function determineAnchorPosition(center, label, direction) {
   const toTheRight = label.x > center.x;
 
-  if (toTheRight && direction === 'explode' ||
+  if(toTheRight && direction === 'explode' ||
     !toTheRight && direction === 'implode') {
     return 'start';
-  } else if (toTheRight && direction === 'implode' ||
+  } else if(toTheRight && direction === 'implode' ||
     !toTheRight && direction === 'explode') {
     return 'end';
   } else {
@@ -171,7 +171,7 @@ export class PieChart extends BaseChart {
       data.normalized.series.reduce(sum, 0);
 
     const donutWidth = quantity(options.donutWidth);
-    if (donutWidth.unit === '%') {
+    if(donutWidth.unit === '%') {
       donutWidth.value *= radius / 100;
     }
 
@@ -182,9 +182,9 @@ export class PieChart extends BaseChart {
 
     // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
     // if regular pie chart it's half of the radius
-    if (options.labelPosition === 'outside' || options.donut) {
+    if(options.labelPosition === 'outside' || options.donut) {
       labelRadius = radius;
-    } else if (options.labelPosition === 'center') {
+    } else if(options.labelPosition === 'center') {
       // If labelPosition is center we start with 0 and will later wait for the labelOffset
       labelRadius = 0;
     } else {
@@ -203,14 +203,14 @@ export class PieChart extends BaseChart {
 
     // Check if there is only one non-zero value in the series array.
     const hasSingleValInSeries = data.raw.series
-      .filter((val) => val.hasOwnProperty('value') ? val.value !== 0 : val !== 0)
-      .length === 1;
+        .filter((val) => val.hasOwnProperty('value') ? val.value !== 0 : val !== 0)
+        .length === 1;
 
     // Creating the series groups
     data.raw.series
       .forEach((series, index) => seriesGroups[index] = this.svg.elem('g', null, null));
-    //if we need to show labels we create the label group now
-    if (options.showLabel) {
+    // if we need to show labels we create the label group now
+    if(options.showLabel) {
       labelsGroup = this.svg.elem('g', null, null);
     }
 
@@ -218,7 +218,9 @@ export class PieChart extends BaseChart {
     // initialize series groups
     data.raw.series.forEach((series, index) => {
       // If current value is zero and we are ignoring empty values then skip to next value
-      if (data.normalized.series[index] === 0 && options.ignoreEmptyValues) return;
+      if(data.normalized.series[index] === 0 && options.ignoreEmptyValues) {
+        return;
+      }
 
       // If the series is an object and contains a name or meta data we add a custom attribute
       seriesGroups[index].attr({
@@ -239,7 +241,7 @@ export class PieChart extends BaseChart {
 
       // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
       // with Z and use 359.99 degrees
-      if (endAngle - overlappigStartAngle >= 359.99) {
+      if(endAngle - overlappigStartAngle >= 359.99) {
         endAngle = overlappigStartAngle + 359.99;
       }
 
@@ -252,7 +254,7 @@ export class PieChart extends BaseChart {
         .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
-      if (!options.donut) {
+      if(!options.donut) {
         path.line(center.x, center.y);
       }
 
@@ -269,7 +271,7 @@ export class PieChart extends BaseChart {
       });
 
       // If this is a donut, we add the stroke-width as style attribute
-      if (options.donut) {
+      if(options.donut) {
         pathElement.attr({
           'style': 'stroke-width: ' + donutWidth.value + 'px'
         });
@@ -293,10 +295,10 @@ export class PieChart extends BaseChart {
       });
 
       // If we need to show labels we need to add the label for this slice now
-      if (options.showLabel) {
+      if(options.showLabel) {
         let labelPosition;
 
-        if (data.raw.series.length === 1) {
+        if(data.raw.series.length === 1) {
           // If we have only 1 series, we can position the label in the center of the pie
           labelPosition = {
             x: center.x,
@@ -313,7 +315,7 @@ export class PieChart extends BaseChart {
         }
 
         let rawValue;
-        if (data.normalized.labels && !isFalseyButZero(data.normalized.labels[index])) {
+        if(data.normalized.labels && !isFalseyButZero(data.normalized.labels[index])) {
           rawValue = data.normalized.labels[index];
         } else {
           rawValue = data.normalized.series[index];
@@ -321,8 +323,8 @@ export class PieChart extends BaseChart {
 
         const interpolatedValue = options.labelInterpolationFnc(rawValue, index);
 
-        if (interpolatedValue || interpolatedValue === 0) {
-          var labelElement = labelsGroup.elem('text', {
+        if(interpolatedValue || interpolatedValue === 0) {
+          const labelElement = labelsGroup.elem('text', {
             dx: labelPosition.x,
             dy: labelPosition.y,
             'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)

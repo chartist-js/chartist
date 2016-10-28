@@ -25,16 +25,16 @@ const defaultOptions = {
 };
 
 function element(command, params, pathElements, pos, relative, data) {
-  var pathElement = extend({
+  const pathElement = extend({
     command: relative ? command.toLowerCase() : command.toUpperCase()
-  }, params, data ? { data: data } : {} );
+  }, params, data ? {data: data} : {});
 
   pathElements.splice(pos, 0, pathElement);
 }
 
 function forEachParam(pathElements, cb) {
-  pathElements.forEach(function(pathElement, pathElementIndex) {
-    elementDescriptions[pathElement.command.toLowerCase()].forEach(function(paramName, paramIndex) {
+  pathElements.forEach((pathElement, pathElementIndex) => {
+    elementDescriptions[pathElement.command.toLowerCase()].forEach((paramName, paramIndex) => {
       cb(pathElement, paramName, pathElementIndex, paramIndex, pathElements);
     });
   });
@@ -59,10 +59,10 @@ export class SvgPath {
    * @return {SvgPath}
    */
   static join(paths, close, options) {
-    var joinedPath = new SvgPath(close, options);
-    for(var i = 0; i < paths.length; i++) {
-      var path = paths[i];
-      for(var j = 0; j < path.pathElements.length; j++) {
+    const joinedPath = new SvgPath(close, options);
+    for(let i = 0; i < paths.length; i++) {
+      const path = paths[i];
+      for(let j = 0; j < path.pathElements.length; j++) {
         joinedPath.pathElements.push(path.pathElements[j]);
       }
     }
@@ -203,15 +203,15 @@ export class SvgPath {
    */
   parse(path) {
     // Parsing the SVG path string into an array of arrays [['M', '10', '10'], ['L', '100', '100']]
-    var chunks = path.replace(/([A-Za-z])([0-9])/g, '$1 $2')
+    const chunks = path.replace(/([A-Za-z])([0-9])/g, '$1 $2')
       .replace(/([0-9])([A-Za-z])/g, '$1 $2')
       .split(/[\s,]+/)
-      .reduce(function(result, element) {
-        if(element.match(/[A-Za-z]/)) {
+      .reduce((result, pathElement) => {
+        if(pathElement.match(/[A-Za-z]/)) {
           result.push([]);
         }
 
-        result[result.length - 1].push(element);
+        result[result.length - 1].push(pathElement);
         return result;
       }, []);
 
@@ -222,22 +222,20 @@ export class SvgPath {
 
     // Using svgPathElementDescriptions to map raw path arrays into objects that contain the command and the parameters
     // For example {command: 'M', x: '10', y: '10'}
-    var elements = chunks.map(function(chunk) {
-      var command = chunk.shift(),
-        description = elementDescriptions[command.toLowerCase()];
+    const elements = chunks.map((chunk) => {
+      const command = chunk.shift();
+      const description = elementDescriptions[command.toLowerCase()];
 
       return extend({
         command: command
-      }, description.reduce(function(result, paramName, index) {
+      }, description.reduce((result, paramName, index) => {
         result[paramName] = +chunk[index];
         return result;
       }, {}));
     });
 
     // Preparing a splice call with the elements array as var arg params and insert the parsed elements at the current position
-    var spliceArgs = [this.pos, 0];
-    Array.prototype.push.apply(spliceArgs, elements);
-    Array.prototype.splice.apply(this.pathElements, spliceArgs);
+    this.pathElements.splice(this.pos, 0, ...elements);
     // Increase the internal position by the element count
     this.pos += elements.length;
 
@@ -251,17 +249,17 @@ export class SvgPath {
    * @return {String}
    */
   stringify() {
-    var accuracyMultiplier = Math.pow(10, this.options.accuracy);
+    const accuracyMultiplier = Math.pow(10, this.options.accuracy);
 
-    return this.pathElements.reduce(function(path, pathElement) {
-        var params = elementDescriptions[pathElement.command.toLowerCase()].map(function(paramName) {
-          return this.options.accuracy ?
+    return this.pathElements.reduce((path, pathElement) => {
+        const params = elementDescriptions[pathElement.command.toLowerCase()].map((paramName) =>
+          this.options.accuracy ?
             (Math.round(pathElement[paramName] * accuracyMultiplier) / accuracyMultiplier) :
-            pathElement[paramName];
-        }.bind(this));
+            pathElement[paramName]
+        );
 
         return path + pathElement.command + params.join(',');
-      }.bind(this), '') + (this.close ? 'Z' : '');
+      }, '') + (this.close ? 'Z' : '');
   }
 
   /**
@@ -273,9 +271,9 @@ export class SvgPath {
    * @return {SvgPath} The current path object for easy call chaining.
    */
   scale(x, y) {
-    forEachParam(this.pathElements, function(pathElement, paramName) {
-      pathElement[paramName] *= paramName[0] === 'x' ? x : y;
-    });
+    forEachParam(this.pathElements, (pathElement, paramName) =>
+      pathElement[paramName] *= paramName[0] === 'x' ? x : y
+    );
     return this;
   }
 
@@ -288,9 +286,9 @@ export class SvgPath {
    * @return {SvgPath} The current path object for easy call chaining.
    */
   translate(x, y) {
-    forEachParam(this.pathElements, function(pathElement, paramName) {
-      pathElement[paramName] += paramName[0] === 'x' ? x : y;
-    });
+    forEachParam(this.pathElements, (pathElement, paramName) =>
+      pathElement[paramName] += paramName[0] === 'x' ? x : y
+    );
     return this;
   }
 
@@ -307,8 +305,8 @@ export class SvgPath {
    * @return {SvgPath} The current path object for easy call chaining.
    */
   transform(transformFnc) {
-    forEachParam(this.pathElements, function(pathElement, paramName, pathElementIndex, paramIndex, pathElements) {
-      var transformed = transformFnc(pathElement, paramName, pathElementIndex, paramIndex, pathElements);
+    forEachParam(this.pathElements, (pathElement, paramName, pathElementIndex, paramIndex, pathElements) => {
+      const transformed = transformFnc(pathElement, paramName, pathElementIndex, paramIndex, pathElements);
       if(transformed || transformed === 0) {
         pathElement[paramName] = transformed;
       }
@@ -324,13 +322,11 @@ export class SvgPath {
    * @return {SvgPath}
    */
   clone(close) {
-    var c = new SvgPath(close || this.close);
-    c.pos = this.pos;
-    c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
-      return extend({}, pathElement);
-    });
-    c.options = extend({}, this.options);
-    return c;
+    const clone = new SvgPath(close || this.close);
+    clone.pos = this.pos;
+    clone.pathElements = this.pathElements.slice().map((pathElement) => extend({}, pathElement));
+    clone.options = extend({}, this.options);
+    return clone;
   }
 
   /**
@@ -341,11 +337,11 @@ export class SvgPath {
    * @return {Array<SvgPath>}
    */
   splitByCommand(command) {
-    var split = [
+    const split = [
       new SvgPath()
     ];
 
-    this.pathElements.forEach(function(pathElement) {
+    this.pathElements.forEach((pathElement) => {
       if(pathElement.command === command.toUpperCase() && split[split.length - 1].pathElements.length !== 0) {
         split.push(new SvgPath());
       }

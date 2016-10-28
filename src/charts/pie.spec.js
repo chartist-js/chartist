@@ -285,7 +285,7 @@ describe('PieChart', () => {
       data = {
         series: [1, 2, 0, 4]
       };
-      options =  {
+      options = {
         width: 100,
         height: 100,
         ignoreEmptyValues: false

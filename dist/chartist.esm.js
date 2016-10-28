@@ -1,8 +1,8 @@
 /* Chartist.js 1.0.0
  * Copyright © 2016 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
- * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
- * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT
+ * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-WTFPL
+ * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-MIT
  */
 var version = '1.0.0';
 
@@ -137,7 +137,10 @@ function quantity(input) {
       unit: match[2] || undefined
     };
   }
-  return { value: input };
+
+  return {
+    value: input
+  };
 }
 
 /**
@@ -152,6 +155,16 @@ function alphaNumerate(n) {
   return String.fromCharCode(97 + n % 26);
 }
 
+var _toConsumableArray = (function (arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }return arr2;
+  } else {
+    return Array.from(arr);
+  }
+});
+
 /**
  * Helps to simplify functional style code
  *
@@ -159,9 +172,9 @@ function alphaNumerate(n) {
  * @param {*} n This exact value will be returned by the noop function
  * @return {*} The same value that was provided to the n parameter
  */
-function noop(n) {
+var noop = function noop(n) {
   return n;
-}
+};
 
 /**
  * Functional style helper to produce array with given length initialized with undefined values
@@ -170,9 +183,9 @@ function noop(n) {
  * @param length
  * @return {Array}
  */
-function times(length) {
-  return Array.apply(null, new Array(length));
-}
+var times = function times(length) {
+  return Array.from({ length: length });
+};
 
 /**
  * Sum helper to be used in reduce functions
@@ -182,60 +195,40 @@ function times(length) {
  * @param current
  * @return {*}
  */
-function sum(previous, current) {
+var sum = function sum(previous, current) {
   return previous + (current ? current : 0);
-}
-
-/**
- * Multiply helper to be used in `Array.map` for multiplying each value of an array with a factor.
- *
- * @memberof Chartist.Core
- * @param {Number} factor
- * @returns {Function} Function that can be used in `Array.map` to multiply each value in an array
- */
-function mapMultiply(factor) {
-  return function (num) {
-    return num * factor;
-  };
-}
-
-/**
- * Add helper to be used in `Array.map` for adding a addend to each value of an array.
- *
- * @memberof Chartist.Core
- * @param {Number} addend
- * @returns {Function} Function that can be used in `Array.map` to add a addend to each value in an array
- */
-function mapAdd(addend) {
-  return function (num) {
-    return num + addend;
-  };
-}
+};
 
 /**
  * Map for multi dimensional arrays where their nested arrays will be mapped in serial. The output array will have the length of the largest nested array. The callback function is called with variable arguments where each argument is the nested array value (or undefined if there are no more values).
  *
+ * For example:
+ * @example
+ * ```javascript
+ * const data = [[1, 2], [3], []];
+ * serialMap(data, cb);
+ *
+ * // where cb will be called 2 times
+ * // 1. call arguments: (1, 3, undefined)
+ * // 2. call arguments: (2, undefined, undefined)
+ * ```
+ *
  * @memberof Chartist.Core
- * @param arr
- * @param cb
+ * @param array
+ * @param callback
  * @return {Array}
  */
-function serialMap(arr, cb) {
-  var result = [],
-      length = Math.max.apply(null, arr.map(function (e) {
-    return e.length;
-  }));
-
-  times(length).forEach(function (e, index) {
-    var args = arr.map(function (e) {
-      return e[index];
-    });
-
-    result[index] = cb.apply(null, args);
+var serialMap = function serialMap(array, callback) {
+  return times(Math.max.apply(Math, _toConsumableArray(array.map(function (element) {
+    return element.length;
+  })))).map(function (inner, index) {
+    return callback.apply(undefined, _toConsumableArray(array.map(function (element) {
+      return element[index];
+    })));
   });
+};
 
-  return result;
-}
+var EPSILON = 2.221E-16;
 
 /**
  * Calculate the order of magnitude for the chart scale
@@ -270,7 +263,7 @@ function projectLength(axisLength, length, bounds) {
  * @returns {number} Rounded value
  */
 function roundWithPrecision(value, digits) {
-  var precision$$1 = Math.pow(10, digits || precision$$1);
+  var precision$$1 = Math.pow(10, digits || precision);
   return Math.round(value * precision$$1) / precision$$1;
 }
 
@@ -298,9 +291,9 @@ function rho(num) {
     return x * x + 1;
   }
 
-  var x1 = 2,
-      x2 = 2,
-      divisor;
+  var x1 = 2;
+  var x2 = 2;
+  var divisor = void 0;
   if (num % 2 === 0) {
     return 2;
   }
@@ -341,14 +334,19 @@ function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
  * @param {Object...} sources This object (objects) will be merged into target and then target is returned
  * @return {Object} An object that has the same reference as target but is extended and merged with the properties of source
  */
-function extend(target) {
-  var i, source, sourceProp;
+function extend() {
+  var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
   target = target || {};
 
-  for (i = 1; i < arguments.length; i++) {
-    source = arguments[i];
+  for (var _len = arguments.length, sources = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    sources[_key - 1] = arguments[_key];
+  }
+
+  for (var i = 0; i < sources.length; i++) {
+    var source = sources[i];
     for (var prop in source) {
-      sourceProp = source[prop];
+      var sourceProp = source[prop];
       if (typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
         target[prop] = extend(target[prop], sourceProp);
       } else {
@@ -413,7 +411,9 @@ function deserialize(data) {
  * @return {Object} The normalized data object
  */
 function normalizeData(data, reverse, multi) {
-  var labelCount;
+  var _output$normalized$la;
+
+  var labelCount = void 0;
   var output = {
     raw: data,
     normalized: {}
@@ -430,9 +430,9 @@ function normalizeData(data, reverse, multi) {
     return value instanceof Array;
   })) {
     // Getting the series with the the most elements
-    labelCount = Math.max.apply(null, output.normalized.series.map(function (series) {
+    labelCount = Math.max.apply(Math, _toConsumableArray(output.normalized.series.map(function (series) {
       return series.length;
-    }));
+    })));
   } else {
     // We're dealing with Pie data so we just take the normalized array length
     labelCount = output.normalized.series.length;
@@ -440,9 +440,9 @@ function normalizeData(data, reverse, multi) {
 
   output.normalized.labels = (data.labels || []).slice();
   // Padding the labels to labelCount with empty strings
-  Array.prototype.push.apply(output.normalized.labels, times(Math.max(0, labelCount - output.normalized.labels.length)).map(function () {
+  (_output$normalized$la = output.normalized.labels).push.apply(_output$normalized$la, _toConsumableArray(times(Math.max(0, labelCount - output.normalized.labels.length)).map(function () {
     return '';
-  }));
+  })));
 
   if (reverse) {
     reverseData(output.normalized);
@@ -482,11 +482,32 @@ function isDataHoleValue(value) {
 function reverseData(data) {
   data.labels.reverse();
   data.series.reverse();
-  for (var i = 0; i < data.series.length; i++) {
-    if (typeof data.series[i] === 'object' && data.series[i].data !== undefined) {
-      data.series[i].data.reverse();
-    } else if (data.series[i] instanceof Array) {
-      data.series[i].reverse();
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = data.series[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var series = _step.value;
+
+      if (typeof series === 'object' && series.data !== undefined) {
+        series.data.reverse();
+      } else if (series instanceof Array) {
+        series.reverse();
+      }
+    }
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
     }
   }
 }
@@ -552,7 +573,7 @@ function getDataArray(data, reverse, multi) {
  * @param value
  */
 function isMultiValue(value) {
-  return typeof value === 'object' && ('x' in value || 'y' in value);
+  return typeof value === 'object' && (value.hasOwnProperty('x') || value.hasOwnProperty('y'));
 }
 
 /**
@@ -561,12 +582,13 @@ function isMultiValue(value) {
  * @memberof Chartist.Core
  * @param value
  * @param dimension
- * @param defaultValue
  * @returns {*}
  */
-function getMultiValue(value, dimension) {
+function getMultiValue(value) {
+  var dimension = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'y';
+
   if (isMultiValue(value)) {
-    return getNumberOrUndefined(value[dimension || 'y']);
+    return getNumberOrUndefined(value[dimension]);
   } else {
     return getNumberOrUndefined(value);
   }
@@ -678,15 +700,15 @@ function getHighLow(data, options, dimension) {
   var findLow = options.low === undefined;
 
   // Function to recursively walk through arrays and find highest and lowest number
-  function recursiveHighLow(data) {
-    if (data === undefined) {
+  function recursiveHighLow(sourceData) {
+    if (sourceData === undefined) {
       return undefined;
-    } else if (data instanceof Array) {
-      for (var i = 0; i < data.length; i++) {
-        recursiveHighLow(data[i]);
+    } else if (sourceData instanceof Array) {
+      for (var i = 0; i < sourceData.length; i++) {
+        recursiveHighLow(sourceData[i]);
       }
     } else {
-      var value = dimension ? +data[dimension] : +data;
+      var value = dimension ? +sourceData[dimension] : +sourceData;
 
       if (findHigh && value > highLow.high) {
         highLow.high = value;
@@ -744,11 +766,7 @@ function getHighLow(data, options, dimension) {
  * @return {Object} All the values to set the bounds of the chart
  */
 function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
-  var i,
-      optimizationCounter = 0,
-      newMin,
-      newMax,
-      bounds = {
+  var bounds = {
     high: highLow.high,
     low: highLow.low
   };
@@ -777,6 +795,7 @@ function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
     bounds.step = smallestFactor;
   } else {
     // Trying to divide or multiply by 2 and find the best step value
+    var optimizationCounter = 0;
     while (true) {
       if (scaleUp && projectLength(axisLength, bounds.step, bounds) <= scaleMinSpace) {
         bounds.step *= 2;
@@ -796,7 +815,6 @@ function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
     }
   }
 
-  var EPSILON = 2.221E-16;
   bounds.step = Math.max(bounds.step, EPSILON);
   function safeIncrement(value, increment) {
     // If increment is too small use *= (1+EPSILON) as a simple nextafter
@@ -807,8 +825,8 @@ function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   }
 
   // Narrow min and max based on new step
-  newMin = bounds.min;
-  newMax = bounds.max;
+  var newMin = bounds.min;
+  var newMax = bounds.max;
   while (newMin + bounds.step <= bounds.low) {
     newMin = safeIncrement(newMin, bounds.step);
   }
@@ -820,13 +838,14 @@ function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   bounds.range = bounds.max - bounds.min;
 
   var values = [];
-  for (i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
+  for (var i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
     var value = roundWithPrecision(i);
     if (value !== values[values.length - 1]) {
-      values.push(i);
+      values.push(value);
     }
   }
   bounds.values = values;
+
   return bounds;
 }
 
@@ -863,6 +882,8 @@ var _createClass = (function () {
  * @constructor
  */
 var SvgList = function SvgList(nodeList) {
+  var _arguments = arguments;
+
   _classCallCheck(this, SvgList);
 
   var list = this;
@@ -877,9 +898,9 @@ var SvgList = function SvgList(nodeList) {
     return ['constructor', 'parent', 'querySelector', 'querySelectorAll', 'replace', 'append', 'classes', 'height', 'width'].indexOf(prototypeProperty) === -1;
   }).forEach(function (prototypeProperty) {
     list[prototypeProperty] = function () {
-      var args = Array.prototype.slice.call(arguments, 0);
+      var args = Array.from(_arguments);
       list.svgElements.forEach(function (element) {
-        Svg.prototype[prototypeProperty].apply(element, args);
+        return Svg.prototype[prototypeProperty].apply(element, args);
       });
       return list;
     };
@@ -1313,17 +1334,18 @@ var Svg = function () {
   }, {
     key: 'animate',
     value: function animate(animations, guided, eventEmitter) {
+      var _this = this;
+
       if (guided === undefined) {
         guided = true;
       }
 
-      Object.keys(animations).forEach(function createAnimateForAttributes(attribute) {
+      Object.keys(animations).forEach(function (attribute) {
 
-        function createAnimate(animationDefinition, guided) {
-          var attributeProperties = {},
-              animate,
-              timeout,
-              animationEasing;
+        var createAnimate = function createAnimate(animationDefinition, createGuided) {
+          var attributeProperties = {};
+          var animationEasing = void 0;
+          var timeout = void 0;
 
           // Check if an easing is specified in the definition object and delete it from the object as it will not
           // be part of the animate element attributes.
@@ -1344,11 +1366,11 @@ var Svg = function () {
           }
 
           // Adding "fill: freeze" if we are in guided mode and set initial attribute values
-          if (guided) {
+          if (createGuided) {
             animationDefinition.fill = 'freeze';
             // Animated property on our element should already be set to the animation from value in guided mode
             attributeProperties[attribute] = animationDefinition.from;
-            this.attr(attributeProperties);
+            _this.attr(attributeProperties);
 
             // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
             // which needs to be in ms aside
@@ -1356,66 +1378,66 @@ var Svg = function () {
             animationDefinition.begin = 'indefinite';
           }
 
-          animate = this.elem('animate', extend({
+          var animate = _this.elem('animate', extend({
             attributeName: attribute
           }, animationDefinition));
 
-          if (guided) {
+          if (createGuided) {
             // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
             setTimeout(function () {
               // If beginElement fails we set the animated attribute to the end position and remove the animate element
-              // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occured in
+              // This happens if the SMIL ElementTimeControl interface is not supported or any other problems occurred in
               // the browser. (Currently FF 34 does not support animate elements in foreignObjects)
               try {
                 animate._node.beginElement();
               } catch (err) {
                 // Set animated attribute to current animated value
                 attributeProperties[attribute] = animationDefinition.to;
-                this.attr(attributeProperties);
+                _this.attr(attributeProperties);
                 // Remove the animate element as it's no longer required
                 animate.remove();
               }
-            }.bind(this), timeout);
+            }, timeout);
           }
 
           if (eventEmitter) {
-            animate._node.addEventListener('beginEvent', function handleBeginEvent() {
-              eventEmitter.emit('animationBegin', {
-                element: this,
+            animate._node.addEventListener('beginEvent', function () {
+              return eventEmitter.emit('animationBegin', {
+                element: _this,
                 animate: animate._node,
                 params: animationDefinition
               });
-            }.bind(this));
+            });
           }
 
-          animate._node.addEventListener('endEvent', function handleEndEvent() {
+          animate._node.addEventListener('endEvent', function () {
             if (eventEmitter) {
               eventEmitter.emit('animationEnd', {
-                element: this,
+                element: _this,
                 animate: animate._node,
                 params: animationDefinition
               });
             }
 
-            if (guided) {
+            if (createGuided) {
               // Set animated attribute to current animated value
               attributeProperties[attribute] = animationDefinition.to;
-              this.attr(attributeProperties);
+              _this.attr(attributeProperties);
               // Remove the animate element as it's no longer required
               animate.remove();
             }
-          }.bind(this));
-        }
+          });
+        };
 
         // If current attribute is an array of definition objects we create an animate for each and disable guided mode
         if (animations[attribute] instanceof Array) {
           animations[attribute].forEach(function (animationDefinition) {
-            createAnimate.bind(this)(animationDefinition, false);
-          }.bind(this));
+            return createAnimate(animationDefinition, false);
+          });
         } else {
-          createAnimate.bind(this)(animations[attribute], guided);
+          createAnimate(animations[attribute], guided);
         }
-      }.bind(this));
+      });
 
       return this;
     }
@@ -1477,25 +1499,25 @@ var easings = {
  * @param {String} className Specify a class to be added to the SVG element
  * @return {Object} The created/reinitialized SVG element
  */
-function createSvg(container, width, height, className) {
-  var svg;
-
-  width = width || '100%';
-  height = height || '100%';
+function createSvg(container) {
+  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '100%';
+  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '100%';
+  var className = arguments[3];
 
   // Check if there is a previous SVG element in the container that contains the Chartist XML namespace and remove it
   // Since the DOM API does not support namespaces we need to manually search the returned list http://www.w3.org/TR/selectors-api/
-  Array.prototype.slice.call(container.querySelectorAll('svg')).filter(function filterChartistSvgObjects(svg) {
+  Array.from(container.querySelectorAll('svg')).filter(function (svg) {
     return svg.getAttributeNS(namespaces.xmlns, 'ct');
-  }).forEach(function removePreviousElement(svg) {
-    container.removeChild(svg);
+  }).forEach(function (svg) {
+    return container.removeChild(svg);
   });
 
   // Create svg object with width and height or use 100% as default
-  svg = new Svg('svg').attr({
+  var svg = new Svg('svg').attr({
     width: width,
     height: height
   }).addClass(className).attr({
+    // TODO: Check better solution (browser support) and remove inline styles due to CSP
     style: 'width: ' + width + '; height: ' + height + ';'
   });
 
@@ -1513,8 +1535,8 @@ function createSvg(container, width, height, className) {
  * @param {Number} [fallback] This value is used to fill missing values if a incomplete padding object was passed
  * @returns {Object} Returns a padding object containing top, right, bottom, left properties filled with the padding number passed in as argument. If the argument is something else than a number (presumably already a correct padding object) then this argument is directly returned.
  */
-function normalizePadding(padding, fallback) {
-  fallback = fallback || 0;
+function normalizePadding(padding) {
+  var fallback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
   return typeof padding === 'number' ? {
     top: padding,
@@ -1661,7 +1683,7 @@ function createGridBackground(gridGroup, chartRect, className, eventEmitter) {
  * @param eventEmitter
  */
 function createLabel(position, length, index, labels, axis, axisOffset, labelOffset, group, classes, useForeignObject, eventEmitter) {
-  var labelElement;
+  var labelElement = void 0;
   var positionalData = {};
 
   positionalData[axis.units.pos] = position + labelOffset[axis.units.pos];
@@ -1672,7 +1694,9 @@ function createLabel(position, length, index, labels, axis, axisOffset, labelOff
   if (useForeignObject) {
     // We need to set width and height explicitly to px as span will not expand with width and height being
     // 100% in all browsers
-    var content = '<span class="' + classes.join(' ') + '" style="' + axis.units.len + ': ' + Math.round(positionalData[axis.units.len]) + 'px; ' + axis.counterUnits.len + ': ' + Math.round(positionalData[axis.counterUnits.len]) + 'px">' + labels[index] + '</span>';
+    var stepLength = Math.round(positionalData[axis.units.len]);
+    var stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
+    var content = ('\n      <span class="' + classes.join(' ') + '"\n            style="' + axis.units.len + ': ' + stepLength + 'px; ' + axis.counterUnits.len + ': ' + stepCounterLength + 'px">\n        ' + labels[index] + '\n      </span>\n    ').trim();
 
     labelElement = group.foreignObject(content, extend({
       style: 'overflow: visible;'
@@ -1701,22 +1725,21 @@ function createLabel(position, length, index, labels, axis, axisOffset, labelOff
  * @return {Object} The consolidated options object from the defaults, base and matching responsive options
  */
 function optionsProvider(options, responsiveOptions, eventEmitter) {
-  var baseOptions = extend({}, options),
-      currentOptions,
-      mediaQueryListeners = [],
-      i;
+  var baseOptions = extend({}, options);
+  var currentOptions = void 0;
+  var mediaQueryListeners = [];
 
   function updateCurrentOptions(mediaEvent) {
     var previousOptions = currentOptions;
     currentOptions = extend({}, baseOptions);
 
     if (responsiveOptions) {
-      for (i = 0; i < responsiveOptions.length; i++) {
-        var mql = window.matchMedia(responsiveOptions[i][0]);
+      responsiveOptions.forEach(function (responsiveOption) {
+        var mql = window.matchMedia(responsiveOption[0]);
         if (mql.matches) {
-          currentOptions = extend(currentOptions, responsiveOptions[i][1]);
+          currentOptions = extend(currentOptions, responsiveOption[1]);
         }
-      }
+      });
     }
 
     if (eventEmitter && mediaEvent) {
@@ -1729,19 +1752,18 @@ function optionsProvider(options, responsiveOptions, eventEmitter) {
 
   function removeMediaQueryListeners() {
     mediaQueryListeners.forEach(function (mql) {
-      mql.removeListener(updateCurrentOptions);
+      return mql.removeListener(updateCurrentOptions);
     });
   }
 
   if (!window.matchMedia) {
     throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
   } else if (responsiveOptions) {
-
-    for (i = 0; i < responsiveOptions.length; i++) {
-      var mql = window.matchMedia(responsiveOptions[i][0]);
+    responsiveOptions.forEach(function (responsiveOption) {
+      var mql = window.matchMedia(responsiveOption[0]);
       mql.addListener(updateCurrentOptions);
       mediaQueryListeners.push(mql);
-    }
+    });
   }
   // Execute initially without an event argument so we get the correct options
   updateCurrentOptions();
@@ -1817,14 +1839,14 @@ var EventEmitter = function () {
       // Only do something if there are event handlers with this name existing
       if (this.handlers[event]) {
         this.handlers[event].forEach(function (handler) {
-          handler(data);
+          return handler(data);
         });
       }
 
       // Emit event to star event handlers
       if (this.handlers['*']) {
         this.handlers['*'].forEach(function (starHandler) {
-          starHandler(event, data);
+          return starHandler(event, data);
         });
       }
     }
@@ -1845,6 +1867,8 @@ var BaseChart = function () {
    * @constructor
    */
   function BaseChart(query, data, defaultOptions, options, responsiveOptions) {
+    var _this = this;
+
     _classCallCheck(this, BaseChart);
 
     this.container = querySelector$1(query);
@@ -1857,9 +1881,9 @@ var BaseChart = function () {
     this.eventEmitter = new EventEmitter();
     this.supportsForeignObject = isSupported('Extensibility');
     this.supportsAnimations = isSupported('AnimationEventsAttribute');
-    this.resizeListener = function resizeListener() {
-      this.update();
-    }.bind(this);
+    this.resizeListener = function () {
+      return _this.update();
+    };
 
     if (this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
@@ -1872,7 +1896,9 @@ var BaseChart = function () {
 
     // Using event loop for first draw to make it possible to register event listeners in the same call stack where
     // the chart was created.
-    this.initializeTimeoutId = setTimeout(this.initialize.bind(this), 0);
+    this.initializeTimeoutId = setTimeout(function () {
+      return _this.initialize();
+    }, 0);
   }
 
   _createClass(BaseChart, [{
@@ -1983,6 +2009,8 @@ var BaseChart = function () {
   }, {
     key: 'initialize',
     value: function initialize() {
+      var _this2 = this;
+
       // Add window resize listener that re-creates the chart
       window.addEventListener('resize', this.resizeListener);
 
@@ -1991,19 +2019,19 @@ var BaseChart = function () {
       this.optionsProvider = optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
       // Register options change listener that will trigger a chart update
       this.eventEmitter.addEventHandler('optionsChanged', function () {
-        this.update();
-      }.bind(this));
+        return _this2.update();
+      });
 
       // Before the first chart creation we need to register us with all plugins that are configured
       // Initialize all relevant plugins with our chart object and the plugin options specified in the config
       if (this.options.plugins) {
         this.options.plugins.forEach(function (plugin) {
           if (plugin instanceof Array) {
-            plugin[0](this, plugin[1]);
+            plugin[0](_this2, plugin[1]);
           } else {
-            plugin(this);
+            plugin(_this2);
           }
-        }.bind(this));
+        });
       }
 
       // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
@@ -2091,6 +2119,8 @@ var Axis = function () {
   }, {
     key: 'createGridAndLabels',
     value: function createGridAndLabels(gridGroup, labelGroup, useForeignObject, chartOptions, eventEmitter) {
+      var _this = this;
+
       var axisOptions = chartOptions['axis' + this.units.pos.toUpperCase()];
       var projectedValues = this.ticks.map(this.projectValue.bind(this));
       var labelValues = this.ticks.map(axisOptions.labelInterpolationFnc);
@@ -2103,7 +2133,7 @@ var Axis = function () {
 
         // TODO: Find better solution for solving this problem
         // Calculate how much space we have available for the label
-        var labelLength;
+        var labelLength = void 0;
         if (projectedValues[index + 1]) {
           // If we still have one label ahead, we can calculate the distance to the next tick / label
           labelLength = projectedValues[index + 1] - projectedValue;
@@ -2111,48 +2141,48 @@ var Axis = function () {
           // If we don't have a label ahead and we have only two labels in total, we just take the remaining distance to
           // on the whole axis length. We limit that to a minimum of 30 pixel, so that labels close to the border will
           // still be visible inside of the chart padding.
-          labelLength = Math.max(this.axisLength - projectedValue, 30);
+          labelLength = Math.max(_this.axisLength - projectedValue, 30);
         }
 
-        // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
+        // Skip grid lines and labels where interpolated label values are falsey (except for 0)
         if (isFalseyButZero(labelValues[index]) && labelValues[index] !== '') {
           return;
         }
 
         // Transform to global coordinates using the chartRect
         // We also need to set the label offset for the createLabel function
-        if (this.units.pos === 'x') {
-          projectedValue = this.chartRect.x1 + projectedValue;
+        if (_this.units.pos === 'x') {
+          projectedValue = _this.chartRect.x1 + projectedValue;
           labelOffset.x = chartOptions.axisX.labelOffset.x;
 
           // If the labels should be positioned in start position (top side for vertical axis) we need to set a
           // different offset as for positioned with end (bottom)
           if (chartOptions.axisX.position === 'start') {
-            labelOffset.y = this.chartRect.padding.top + chartOptions.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+            labelOffset.y = _this.chartRect.padding.top + chartOptions.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
           } else {
-            labelOffset.y = this.chartRect.y1 + chartOptions.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
+            labelOffset.y = _this.chartRect.y1 + chartOptions.axisX.labelOffset.y + (useForeignObject ? 5 : 20);
           }
         } else {
-          projectedValue = this.chartRect.y1 - projectedValue;
+          projectedValue = _this.chartRect.y1 - projectedValue;
           labelOffset.y = chartOptions.axisY.labelOffset.y - (useForeignObject ? labelLength : 0);
 
           // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
           // different offset as for positioned with end (right side)
           if (chartOptions.axisY.position === 'start') {
-            labelOffset.x = useForeignObject ? this.chartRect.padding.left + chartOptions.axisY.labelOffset.x : this.chartRect.x1 - 10;
+            labelOffset.x = useForeignObject ? _this.chartRect.padding.left + chartOptions.axisY.labelOffset.x : _this.chartRect.x1 - 10;
           } else {
-            labelOffset.x = this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
+            labelOffset.x = _this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
           }
         }
 
         if (axisOptions.showGrid) {
-          createGrid(projectedValue, index, this, this.gridOffset, this.chartRect[this.counterUnits.len](), gridGroup, [chartOptions.classNames.grid, chartOptions.classNames[this.units.dir]], eventEmitter);
+          createGrid(projectedValue, index, _this, _this.gridOffset, _this.chartRect[_this.counterUnits.len](), gridGroup, [chartOptions.classNames.grid, chartOptions.classNames[_this.units.dir]], eventEmitter);
         }
 
         if (axisOptions.showLabel) {
-          createLabel(projectedValue, labelLength, index, labelValues, this, axisOptions.offset, labelOffset, labelGroup, [chartOptions.classNames.label, chartOptions.classNames[this.units.dir], axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames['end']], useForeignObject, eventEmitter);
+          createLabel(projectedValue, labelLength, index, labelValues, _this, axisOptions.offset, labelOffset, labelGroup, [chartOptions.classNames.label, chartOptions.classNames[_this.units.dir], axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames.end], useForeignObject, eventEmitter);
         }
-      }.bind(this));
+      });
     }
   }]);
 
@@ -2225,8 +2255,8 @@ var FixedScaleAxis = function (_Axis) {
     var highLow = options.highLow || getHighLow(data, options, axisUnit.pos);
     _this.divisor = options.divisor || 1;
     _this.ticks = options.ticks || times(_this.divisor).map(function (value, index) {
-      return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
-    }.bind(_this));
+      return highLow.low + (highLow.high - highLow.low) / _this.divisor * index;
+    });
     _this.ticks.sort(function (a, b) {
       return a - b;
     });
@@ -2506,13 +2536,15 @@ var SvgPath = function () {
   }, {
     key: 'parse',
     value: function parse(path) {
+      var _pathElements;
+
       // Parsing the SVG path string into an array of arrays [['M', '10', '10'], ['L', '100', '100']]
-      var chunks = path.replace(/([A-Za-z])([0-9])/g, '$1 $2').replace(/([0-9])([A-Za-z])/g, '$1 $2').split(/[\s,]+/).reduce(function (result, element) {
-        if (element.match(/[A-Za-z]/)) {
+      var chunks = path.replace(/([A-Za-z])([0-9])/g, '$1 $2').replace(/([0-9])([A-Za-z])/g, '$1 $2').split(/[\s,]+/).reduce(function (result, pathElement) {
+        if (pathElement.match(/[A-Za-z]/)) {
           result.push([]);
         }
 
-        result[result.length - 1].push(element);
+        result[result.length - 1].push(pathElement);
         return result;
       }, []);
 
@@ -2524,8 +2556,8 @@ var SvgPath = function () {
       // Using svgPathElementDescriptions to map raw path arrays into objects that contain the command and the parameters
       // For example {command: 'M', x: '10', y: '10'}
       var elements = chunks.map(function (chunk) {
-        var command = chunk.shift(),
-            description = elementDescriptions[command.toLowerCase()];
+        var command = chunk.shift();
+        var description = elementDescriptions[command.toLowerCase()];
 
         return extend({
           command: command
@@ -2536,9 +2568,7 @@ var SvgPath = function () {
       });
 
       // Preparing a splice call with the elements array as var arg params and insert the parsed elements at the current position
-      var spliceArgs = [this.pos, 0];
-      Array.prototype.push.apply(spliceArgs, elements);
-      Array.prototype.splice.apply(this.pathElements, spliceArgs);
+      (_pathElements = this.pathElements).splice.apply(_pathElements, [this.pos, 0].concat(_toConsumableArray(elements)));
       // Increase the internal position by the element count
       this.pos += elements.length;
 
@@ -2555,15 +2585,17 @@ var SvgPath = function () {
   }, {
     key: 'stringify',
     value: function stringify() {
+      var _this = this;
+
       var accuracyMultiplier = Math.pow(10, this.options.accuracy);
 
       return this.pathElements.reduce(function (path, pathElement) {
         var params = elementDescriptions[pathElement.command.toLowerCase()].map(function (paramName) {
-          return this.options.accuracy ? Math.round(pathElement[paramName] * accuracyMultiplier) / accuracyMultiplier : pathElement[paramName];
-        }.bind(this));
+          return _this.options.accuracy ? Math.round(pathElement[paramName] * accuracyMultiplier) / accuracyMultiplier : pathElement[paramName];
+        });
 
         return path + pathElement.command + params.join(',');
-      }.bind(this), '') + (this.close ? 'Z' : '');
+      }, '') + (this.close ? 'Z' : '');
     }
 
     /**
@@ -2579,7 +2611,7 @@ var SvgPath = function () {
     key: 'scale',
     value: function scale(x, y) {
       forEachParam(this.pathElements, function (pathElement, paramName) {
-        pathElement[paramName] *= paramName[0] === 'x' ? x : y;
+        return pathElement[paramName] *= paramName[0] === 'x' ? x : y;
       });
       return this;
     }
@@ -2597,7 +2629,7 @@ var SvgPath = function () {
     key: 'translate',
     value: function translate(x, y) {
       forEachParam(this.pathElements, function (pathElement, paramName) {
-        pathElement[paramName] += paramName[0] === 'x' ? x : y;
+        return pathElement[paramName] += paramName[0] === 'x' ? x : y;
       });
       return this;
     }
@@ -2638,13 +2670,13 @@ var SvgPath = function () {
   }, {
     key: 'clone',
     value: function clone(close) {
-      var c = new SvgPath(close || this.close);
-      c.pos = this.pos;
-      c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
+      var clone = new SvgPath(close || this.close);
+      clone.pos = this.pos;
+      clone.pathElements = this.pathElements.slice().map(function (pathElement) {
         return extend({}, pathElement);
       });
-      c.options = extend({}, this.options);
-      return c;
+      clone.options = extend({}, this.options);
+      return clone;
     }
 
     /**
@@ -2696,8 +2728,10 @@ function none(options) {
   var defaultOptions = {
     fillHoles: false
   };
+
   options = extend({}, defaultOptions, options);
-  return function none(pathCoordinates, valueData) {
+
+  return function noneInterpolation(pathCoordinates, valueData) {
     var path = new SvgPath();
     var hole = true;
 
@@ -2752,13 +2786,16 @@ function simple(options) {
     divisor: 2,
     fillHoles: false
   };
+
   options = extend({}, defaultOptions, options);
 
   var d = 1 / Math.max(1, options.divisor);
 
-  return function simple(pathCoordinates, valueData) {
+  return function simpleInterpolation(pathCoordinates, valueData) {
     var path = new SvgPath();
-    var prevX, prevY, prevData;
+    var prevX = void 0;
+    var prevY = void 0;
+    var prevData = void 0;
 
     for (var i = 0; i < pathCoordinates.length; i += 2) {
       var currX = pathCoordinates[i];
@@ -2778,7 +2815,7 @@ function simple(options) {
         prevY = currY;
         prevData = currData;
       } else if (!options.fillHoles) {
-        prevX = currX = prevData = undefined;
+        prevX = prevY = prevData = undefined;
       }
     }
 
@@ -2814,10 +2851,12 @@ function step(options) {
 
   options = extend({}, defaultOptions, options);
 
-  return function step(pathCoordinates, valueData) {
+  return function stepInterpolation(pathCoordinates, valueData) {
     var path = new SvgPath();
 
-    var prevX, prevY, prevData;
+    var prevX = void 0;
+    var prevY = void 0;
+    var prevData = void 0;
 
     for (var i = 0; i < pathCoordinates.length; i += 2) {
       var currX = pathCoordinates[i];
@@ -2882,10 +2921,10 @@ function cardinal(options) {
 
   options = extend({}, defaultOptions, options);
 
-  var t = Math.min(1, Math.max(0, options.tension)),
-      c = 1 - t;
+  var t = Math.min(1, Math.max(0, options.tension));
+  var c = 1 - t;
 
-  return function cardinal(pathCoordinates, valueData) {
+  return function cardinalInterpolation(pathCoordinates, valueData) {
     // First we try to split the coordinates into segments
     // This is necessary to treat "holes" in line charts
     var segments = splitIntoSegments(pathCoordinates, valueData, {
@@ -2898,13 +2937,11 @@ function cardinal(options) {
     } else if (segments.length > 1) {
       // If the split resulted in more that one segment we need to interpolate each segment individually and join them
       // afterwards together into a single path.
-      var paths = [];
       // For each segment we will recurse the cardinal function
-      segments.forEach(function (segment) {
-        paths.push(cardinal(segment.pathCoordinates, segment.valueData));
-      });
       // Join the segment path data into a single path and return
-      return SvgPath.join(paths);
+      return SvgPath.join(segments.map(function (segment) {
+        return cardinalInterpolation(segment.pathCoordinates, segment.valueData);
+      }));
     } else {
       // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first
       // segment
@@ -2916,11 +2953,12 @@ function cardinal(options) {
         return none()(pathCoordinates, valueData);
       }
 
-      var path = new SvgPath().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]),
-          z;
+      var path = new SvgPath().move(pathCoordinates[0], pathCoordinates[1], false, valueData[0]);
+      var z = void 0;
 
       for (var i = 0, iLen = pathCoordinates.length; iLen - 2 * !z > i; i += 2) {
         var p = [{ x: +pathCoordinates[i - 2], y: +pathCoordinates[i - 1] }, { x: +pathCoordinates[i], y: +pathCoordinates[i + 1] }, { x: +pathCoordinates[i + 2], y: +pathCoordinates[i + 3] }, { x: +pathCoordinates[i + 4], y: +pathCoordinates[i + 5] }];
+
         if (z) {
           if (!i) {
             p[0] = { x: +pathCoordinates[iLen - 2], y: +pathCoordinates[iLen - 1] };
@@ -2976,7 +3014,7 @@ function monotoneCubic(options) {
 
   options = extend({}, defaultOptions, options);
 
-  return function monotoneCubic(pathCoordinates, valueData) {
+  return function monotoneCubicInterpolation(pathCoordinates, valueData) {
     // First we try to split the coordinates into segments
     // This is necessary to treat "holes" in line charts
     var segments = splitIntoSegments(pathCoordinates, valueData, {
@@ -2990,13 +3028,11 @@ function monotoneCubic(options) {
     } else if (segments.length > 1) {
       // If the split resulted in more that one segment we need to interpolate each segment individually and join them
       // afterwards together into a single path.
-      var paths = [];
       // For each segment we will recurse the monotoneCubic fn function
-      segments.forEach(function (segment) {
-        paths.push(monotoneCubic(segment.pathCoordinates, segment.valueData));
-      });
       // Join the segment path data into a single path and return
-      return SvgPath.join(paths);
+      return SvgPath.join(segments.map(function (segment) {
+        return monotoneCubicInterpolation(segment.pathCoordinates, segment.valueData);
+      }));
     } else {
       // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first
       // segment
@@ -3008,61 +3044,55 @@ function monotoneCubic(options) {
         return none()(pathCoordinates, valueData);
       }
 
-      var xs = [],
-          ys = [],
-          i,
-          n = pathCoordinates.length / 2,
-          ms = [],
-          ds = [],
-          dys = [],
-          dxs = [],
-          path;
+      var xs = [];
+      var ys = [];
+      var n = pathCoordinates.length / 2;
+      var ms = [];
+      var ds = [];
+      var dys = [];
+      var dxs = [];
 
       // Populate x and y coordinates into separate arrays, for readability
-
-      for (i = 0; i < n; i++) {
+      for (var i = 0; i < n; i++) {
         xs[i] = pathCoordinates[i * 2];
         ys[i] = pathCoordinates[i * 2 + 1];
       }
 
       // Calculate deltas and derivative
-
-      for (i = 0; i < n - 1; i++) {
-        dys[i] = ys[i + 1] - ys[i];
-        dxs[i] = xs[i + 1] - xs[i];
-        ds[i] = dys[i] / dxs[i];
+      for (var _i = 0; _i < n - 1; _i++) {
+        dys[_i] = ys[_i + 1] - ys[_i];
+        dxs[_i] = xs[_i + 1] - xs[_i];
+        ds[_i] = dys[_i] / dxs[_i];
       }
 
       // Determine desired slope (m) at each point using Fritsch-Carlson method
       // See: http://math.stackexchange.com/questions/45218/implementation-of-monotone-cubic-interpolation
-
       ms[0] = ds[0];
       ms[n - 1] = ds[n - 2];
 
-      for (i = 1; i < n - 1; i++) {
-        if (ds[i] === 0 || ds[i - 1] === 0 || ds[i - 1] > 0 !== ds[i] > 0) {
-          ms[i] = 0;
+      for (var _i2 = 1; _i2 < n - 1; _i2++) {
+        if (ds[_i2] === 0 || ds[_i2 - 1] === 0 || ds[_i2 - 1] > 0 !== ds[_i2] > 0) {
+          ms[_i2] = 0;
         } else {
-          ms[i] = 3 * (dxs[i - 1] + dxs[i]) / ((2 * dxs[i] + dxs[i - 1]) / ds[i - 1] + (dxs[i] + 2 * dxs[i - 1]) / ds[i]);
+          ms[_i2] = 3 * (dxs[_i2 - 1] + dxs[_i2]) / ((2 * dxs[_i2] + dxs[_i2 - 1]) / ds[_i2 - 1] + (dxs[_i2] + 2 * dxs[_i2 - 1]) / ds[_i2]);
 
-          if (!isFinite(ms[i])) {
-            ms[i] = 0;
+          if (!isFinite(ms[_i2])) {
+            ms[_i2] = 0;
           }
         }
       }
 
       // Now build a path from the slopes
+      var path = new SvgPath().move(xs[0], ys[0], false, valueData[0]);
 
-      path = new SvgPath().move(xs[0], ys[0], false, valueData[0]);
-
-      for (i = 0; i < n - 1; i++) {
+      for (var _i3 = 0; _i3 < n - 1; _i3++) {
         path.curve(
         // First control point
-        xs[i] + dxs[i] / 3, ys[i] + ms[i] * dxs[i] / 3,
+        xs[_i3] + dxs[_i3] / 3, ys[_i3] + ms[_i3] * dxs[_i3] / 3,
         // Second control point
-        xs[i + 1] - dxs[i] / 3, ys[i + 1] - ms[i + 1] * dxs[i] / 3,
+        xs[_i3 + 1] - dxs[_i3] / 3, ys[_i3 + 1] - ms[_i3 + 1] * dxs[_i3] / 3,
         // End point
-        xs[i + 1], ys[i + 1], false, valueData[i + 1]);
+        xs[_i3 + 1], ys[_i3 + 1], false, valueData[_i3 + 1]);
       }
 
       return path;
@@ -3279,6 +3309,8 @@ var LineChart = function (_BaseChart) {
   _createClass(LineChart, [{
     key: 'createChart',
     value: function createChart(options) {
+      var _this2 = this;
+
       var data = normalizeData(this.data, options.reverseData, true);
 
       // Create new svg object
@@ -3289,7 +3321,8 @@ var LineChart = function (_BaseChart) {
       var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
       var chartRect = createChartRect(this.svg, options, defaultOptions.padding);
-      var axisX, axisY;
+      var axisX = void 0;
+      var axisY = void 0;
 
       if (options.axisX.type === undefined) {
         axisX = new StepAxis(axisUnits.x, data.normalized.series, chartRect, extend({}, options.axisX, {
@@ -3329,8 +3362,8 @@ var LineChart = function (_BaseChart) {
         // Use series class from series data or if not set generate one
         seriesElement.addClass([options.classNames.series, series.className || options.classNames.series + '-' + alphaNumerate(seriesIndex)].join(' '));
 
-        var pathCoordinates = [],
-            pathData = [];
+        var pathCoordinates = [];
+        var pathData = [];
 
         data.normalized.series[seriesIndex].forEach(function (value, valueIndex) {
           var p = {
@@ -3343,7 +3376,7 @@ var LineChart = function (_BaseChart) {
             valueIndex: valueIndex,
             meta: getMetaData(series, valueIndex)
           });
-        }.bind(this));
+        });
 
         var seriesOptions = {
           lineSmooth: getSeriesOption(series, options, 'lineSmooth'),
@@ -3353,7 +3386,13 @@ var LineChart = function (_BaseChart) {
           areaBase: getSeriesOption(series, options, 'areaBase')
         };
 
-        var smoothing = typeof seriesOptions.lineSmooth === 'function' ? seriesOptions.lineSmooth : seriesOptions.lineSmooth ? monotoneCubic() : none();
+        var smoothing = void 0;
+        if (typeof seriesOptions.lineSmooth === 'function') {
+          smoothing = seriesOptions.lineSmooth;
+        } else {
+          smoothing = seriesOptions.lineSmooth ? monotoneCubic() : none();
+        }
+
         // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
         // index, value and meta data
         var path = smoothing(pathCoordinates, pathData);
@@ -3374,7 +3413,7 @@ var LineChart = function (_BaseChart) {
               'ct:meta': serialize(pathElement.data.meta)
             });
 
-            this.eventEmitter.emit('draw', {
+            _this2.eventEmitter.emit('draw', {
               type: 'point',
               value: pathElement.data.value,
               index: pathElement.data.valueIndex,
@@ -3388,7 +3427,7 @@ var LineChart = function (_BaseChart) {
               x: pathElement.x,
               y: pathElement.y
             });
-          }.bind(this));
+          });
         }
 
         if (seriesOptions.showLine) {
@@ -3396,11 +3435,12 @@ var LineChart = function (_BaseChart) {
             d: path.stringify()
           }, options.classNames.line, true);
 
-          this.eventEmitter.emit('draw', {
+          _this2.eventEmitter.emit('draw', {
             type: 'line',
             values: data.normalized.series[seriesIndex],
             path: path.clone(),
             chartRect: chartRect,
+            // TODO: Remove redundant
             index: seriesIndex,
             series: series,
             seriesIndex: seriesIndex,
@@ -3414,53 +3454,58 @@ var LineChart = function (_BaseChart) {
 
         // Area currently only works with axes that support a range!
         if (seriesOptions.showArea && axisY.range) {
-          // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
-          // the area is not drawn outside the chart area.
-          var areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.range.max), axisY.range.min);
+          (function () {
+            // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
+            // the area is not drawn outside the chart area.
+            var areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.range.max), axisY.range.min);
 
-          // We project the areaBase value into screen coordinates
-          var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
+            // We project the areaBase value into screen coordinates
+            var areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
 
-          // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
-          path.splitByCommand('M').filter(function onlySolidSegments(pathSegment) {
+            // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
+            path.splitByCommand('M')
             // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
-            return pathSegment.pathElements.length > 1;
-          }).map(function convertToArea(solidPathSegments) {
-            // Receiving the filtered solid path segments we can now convert those segments into fill areas
-            var firstElement = solidPathSegments.pathElements[0];
-            var lastElement = solidPathSegments.pathElements[solidPathSegments.pathElements.length - 1];
+            .filter(function (pathSegment) {
+              return pathSegment.pathElements.length > 1;
+            }).map(function (solidPathSegments) {
+              // Receiving the filtered solid path segments we can now convert those segments into fill areas
+              var firstElement = solidPathSegments.pathElements[0];
+              var lastElement = solidPathSegments.pathElements[solidPathSegments.pathElements.length - 1];
 
-            // Cloning the solid path segment with closing option and removing the first move command from the clone
-            // We then insert a new move that should start at the area base and draw a straight line up or down
-            // at the end of the path we add an additional straight line to the projected area base value
-            // As the closing option is set our path will be automatically closed
-            return solidPathSegments.clone(true).position(0).remove(1).move(firstElement.x, areaBaseProjected).line(firstElement.x, firstElement.y).position(solidPathSegments.pathElements.length + 1).line(lastElement.x, areaBaseProjected);
-          }).forEach(function createArea(areaPath) {
-            // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
-            // and adding the created DOM elements to the correct series group
-            var area = seriesElement.elem('path', {
-              d: areaPath.stringify()
-            }, options.classNames.area, true);
+              // Cloning the solid path segment with closing option and removing the first move command from the clone
+              // We then insert a new move that should start at the area base and draw a straight line up or down
+              // at the end of the path we add an additional straight line to the projected area base value
+              // As the closing option is set our path will be automatically closed
+              return solidPathSegments.clone(true).position(0).remove(1).move(firstElement.x, areaBaseProjected).line(firstElement.x, firstElement.y).position(solidPathSegments.pathElements.length + 1).line(lastElement.x, areaBaseProjected);
+            }).forEach(function (areaPath) {
+              // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
+              // and adding the created DOM elements to the correct series group
+              var area = seriesElement.elem('path', {
+                d: areaPath.stringify()
+              }, options.classNames.area, true);
 
-            // Emit an event for each area that was drawn
-            this.eventEmitter.emit('draw', {
-              type: 'area',
-              values: data.normalized.series[seriesIndex],
-              path: areaPath.clone(),
-              series: series,
-              seriesIndex: seriesIndex,
-              axisX: axisX,
-              axisY: axisY,
-              chartRect: chartRect,
-              index: seriesIndex,
-              group: seriesElement,
-              element: area
+              // Emit an event for each area that was drawn
+              _this2.eventEmitter.emit('draw', {
+                type: 'area',
+                values: data.normalized.series[seriesIndex],
+                path: areaPath.clone(),
+                series: series,
+                seriesIndex: seriesIndex,
+                axisX: axisX,
+                axisY: axisY,
+                chartRect: chartRect,
+                // TODO: Remove redundant
+                index: seriesIndex,
+                group: seriesElement,
+                element: area
+              });
             });
-          }.bind(this));
+          })();
         }
-      }.bind(this));
+      });
 
       this.eventEmitter.emit('created', {
+        // TODO: Remove redundant
         bounds: axisY.bounds,
         chartRect: chartRect,
         axisX: axisX,
@@ -3629,8 +3674,11 @@ var BarChart = function (_BaseChart) {
   _createClass(BarChart, [{
     key: 'createChart',
     value: function createChart(options) {
-      var data;
-      var highLow;
+      var _arguments = arguments,
+          _this2 = this;
+
+      var data = void 0;
+      var highLow = void 0;
 
       if (options.distributeSeries) {
         data = normalizeData(this.data, options.reverseData, options.horizontalBars ? 'x' : 'y');
@@ -3650,10 +3698,9 @@ var BarChart = function (_BaseChart) {
       var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
       if (options.stackBars && data.normalized.series.length !== 0) {
-
         // If stacked bars we need to calculate the high low from stacked values from each series
-        var serialSums = serialMap(data.normalized.series, function serialSums() {
-          return Array.prototype.slice.call(arguments).map(function (value) {
+        var serialSums = serialMap(data.normalized.series, function () {
+          return Array.from(_arguments).map(function (value) {
             return value;
           }).reduce(function (prev, curr) {
             return {
@@ -3665,7 +3712,6 @@ var BarChart = function (_BaseChart) {
 
         highLow = getHighLow([serialSums], options, options.horizontalBars ? 'x' : 'y');
       } else {
-
         highLow = getHighLow(data.normalized.series, options, options.horizontalBars ? 'x' : 'y');
       }
 
@@ -3674,8 +3720,11 @@ var BarChart = function (_BaseChart) {
       highLow.low = +options.low || (options.low === 0 ? 0 : highLow.low);
 
       var chartRect = createChartRect(this.svg, options, defaultOptions$2.padding);
-
-      var valueAxis, labelAxisTicks, labelAxis, axisX, axisY;
+      var valueAxis = void 0;
+      var labelAxisTicks = void 0;
+      var labelAxis = void 0;
+      var axisX = void 0;
+      var axisY = void 0;
 
       // We need to set step count based on some options combinations
       if (options.distributeSeries && options.stackBars) {
@@ -3725,7 +3774,7 @@ var BarChart = function (_BaseChart) {
             referenceValue: 0
           }));
         } else {
-          valueAxis = axisY = new options.axisY.type(axisUnits.units.y, data.normalized.series, chartRect, extend({}, options.axisY, {
+          valueAxis = axisY = new options.axisY.type(axisUnits.y, data.normalized.series, chartRect, extend({}, options.axisY, {
             highLow: highLow,
             referenceValue: 0
           }));
@@ -3749,9 +3798,7 @@ var BarChart = function (_BaseChart) {
         // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
         var biPol = seriesIndex - (data.raw.series.length - 1) / 2;
         // Half of the period width between vertical grid lines used to position bars
-        var periodHalfLength;
-        // Current series SVG element
-        var seriesElement;
+        var periodHalfLength = void 0;
 
         // We need to set periodHalfLength based on some options combinations
         if (options.distributeSeries && !options.stackBars) {
@@ -3768,7 +3815,7 @@ var BarChart = function (_BaseChart) {
         }
 
         // Adding the series group to the series element
-        seriesElement = seriesGroup.elem('g');
+        var seriesElement = seriesGroup.elem('g');
 
         // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
         seriesElement.attr({
@@ -3780,8 +3827,7 @@ var BarChart = function (_BaseChart) {
         seriesElement.addClass([options.classNames.series, series.className || options.classNames.series + '-' + alphaNumerate(seriesIndex)].join(' '));
 
         data.normalized.series[seriesIndex].forEach(function (value, valueIndex) {
-          var projected, bar, previousStack, labelAxisValueIndex;
-
+          var labelAxisValueIndex = void 0;
           // We need to set labelAxisValueIndex based on some options combinations
           if (options.distributeSeries && !options.stackBars) {
             // If distributed series are enabled but stacked bars aren't, we can use the seriesIndex for later projection
@@ -3796,6 +3842,7 @@ var BarChart = function (_BaseChart) {
             labelAxisValueIndex = valueIndex;
           }
 
+          var projected = void 0;
           // We need to transform coordinates differently based on the chart layout
           if (options.horizontalBars) {
             projected = {
@@ -3823,7 +3870,7 @@ var BarChart = function (_BaseChart) {
           }
 
           // Enter value in stacked bar values used to remember previous screen value for stacking up bars
-          previousStack = stackedBarValues[valueIndex] || zeroPoint;
+          var previousStack = stackedBarValues[valueIndex] || zeroPoint;
           stackedBarValues[valueIndex] = previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
 
           // Skip if value is undefined
@@ -3858,12 +3905,12 @@ var BarChart = function (_BaseChart) {
           var metaData = getMetaData(series, valueIndex);
 
           // Create bar element
-          bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
+          var bar = seriesElement.elem('line', positions, options.classNames.bar).attr({
             'ct:value': [value.x, value.y].filter(isNumeric).join(','),
             'ct:meta': serialize(metaData)
           });
 
-          this.eventEmitter.emit('draw', extend({
+          _this2.eventEmitter.emit('draw', extend({
             type: 'bar',
             value: value,
             index: valueIndex,
@@ -3876,8 +3923,8 @@ var BarChart = function (_BaseChart) {
             group: seriesElement,
             element: bar
           }, positions));
-        }.bind(this));
-      }.bind(this));
+        });
+      });
 
       this.eventEmitter.emit('created', {
         bounds: valueAxis.bounds,
@@ -4046,25 +4093,22 @@ var PieChart = function (_BaseChart) {
   _createClass(PieChart, [{
     key: 'createChart',
     value: function createChart(options) {
+      var _this2 = this;
+
       var data = normalizeData(this.data);
-      var seriesGroups = [],
-          labelsGroup,
-          chartRect,
-          radius,
-          labelRadius,
-          totalDataSum,
-          startAngle = options.startAngle;
+      var seriesGroups = [];
+      var labelsGroup = void 0;
+      var labelRadius = void 0;
+      var startAngle = options.startAngle;
 
       // Create SVG.js draw
       this.svg = createSvg(this.container, options.width, options.height, options.donut ? options.classNames.chartDonut : options.classNames.chartPie);
       // Calculate charting rect
-      chartRect = createChartRect(this.svg, options, defaultOptions$3.padding);
+      var chartRect = createChartRect(this.svg, options, defaultOptions$3.padding);
       // Get biggest circle radius possible within chartRect
-      radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
+      var radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
       // Calculate total of all series to get reference value or use total reference from optional options
-      totalDataSum = options.total || data.normalized.series.reduce(function (previousValue, currentValue) {
-        return previousValue + currentValue;
-      }, 0);
+      var totalDataSum = options.total || data.normalized.series.reduce(sum, 0);
 
       var donutWidth = quantity(options.donutWidth);
       if (donutWidth.unit === '%') {
@@ -4104,9 +4148,9 @@ var PieChart = function (_BaseChart) {
 
       // Creating the series groups
       data.raw.series.forEach(function (series, index) {
-        seriesGroups[index] = this.svg.elem('g', null, null);
-      }.bind(this));
-      //if we need to show labels we create the label group now
+        return seriesGroups[index] = _this2.svg.elem('g', null, null);
+      });
+      // if we need to show labels we create the label group now
       if (options.showLabel) {
         labelsGroup = this.svg.elem('g', null, null);
       }
@@ -4115,7 +4159,9 @@ var PieChart = function (_BaseChart) {
       // initialize series groups
       data.raw.series.forEach(function (series, index) {
         // If current value is zero and we are ignoring empty values then skip to next value
-        if (data.normalized.series[index] === 0 && options.ignoreEmptyValues) return;
+        if (data.normalized.series[index] === 0 && options.ignoreEmptyValues) {
+          return;
+        }
 
         // If the series is an object and contains a name or meta data we add a custom attribute
         seriesGroups[index].attr({
@@ -4137,8 +4183,8 @@ var PieChart = function (_BaseChart) {
           endAngle = overlappigStartAngle + 359.99;
         }
 
-        var start = polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
-            end = polarToCartesian(center.x, center.y, radius, endAngle);
+        var start = polarToCartesian(center.x, center.y, radius, overlappigStartAngle);
+        var end = polarToCartesian(center.x, center.y, radius, endAngle);
 
         // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
         var path = new SvgPath(!options.donut).move(end.x, end.y).arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
@@ -4168,7 +4214,7 @@ var PieChart = function (_BaseChart) {
         }
 
         // Fire off draw event
-        this.eventEmitter.emit('draw', {
+        _this2.eventEmitter.emit('draw', {
           type: 'slice',
           value: data.normalized.series[index],
           totalDataSum: totalDataSum,
@@ -4186,7 +4232,8 @@ var PieChart = function (_BaseChart) {
 
         // If we need to show labels we need to add the label for this slice now
         if (options.showLabel) {
-          var labelPosition;
+          var labelPosition = void 0;
+
           if (data.raw.series.length === 1) {
             // If we have only 1 series, we can position the label in the center of the pie
             labelPosition = {
@@ -4198,7 +4245,7 @@ var PieChart = function (_BaseChart) {
             labelPosition = polarToCartesian(center.x, center.y, labelRadius, startAngle + (endAngle - startAngle) / 2);
           }
 
-          var rawValue;
+          var rawValue = void 0;
           if (data.normalized.labels && !isFalseyButZero(data.normalized.labels[index])) {
             rawValue = data.normalized.labels[index];
           } else {
@@ -4215,7 +4262,7 @@ var PieChart = function (_BaseChart) {
             }, options.classNames.label).text('' + interpolatedValue);
 
             // Fire off draw event
-            this.eventEmitter.emit('draw', {
+            _this2.eventEmitter.emit('draw', {
               type: 'label',
               index: index,
               group: labelsGroup,
@@ -4230,7 +4277,7 @@ var PieChart = function (_BaseChart) {
         // Set next startAngle to current endAngle.
         // (except for last slice)
         startAngle = endAngle;
-      }.bind(this));
+      });
 
       this.eventEmitter.emit('created', {
         chartRect: chartRect,
@@ -4243,6 +4290,6 @@ var PieChart = function (_BaseChart) {
   return PieChart;
 }(BaseChart);
 
-export { interpolation as Interpolation, EventEmitter, extend, optionsProvider, namespaces, precision, escapingMap, version, replaceAll, querySelector$1 as querySelector, safeHasProperty, isNumeric, isFalseyButZero, getNumberOrUndefined, ensureUnit, quantity, alphaNumerate, noop, times, sum, mapMultiply, mapAdd, serialMap, orderOfMagnitude, projectLength, roundWithPrecision, rho, polarToCartesian, serialize, deserialize, normalizeData, getMetaData, isDataHoleValue, reverseData, getDataArray, isMultiValue, getMultiValue, getSeriesOption, splitIntoSegments, getHighLow, getBounds, createSvg, normalizePadding, createChartRect, createGrid, createGridBackground, createLabel, BaseChart, LineChart, BarChart, PieChart, Axis, axisUnits, AutoScaleAxis, FixedScaleAxis, StepAxis, Svg, isSupported, easings, SvgList, SvgPath };
+export { interpolation as Interpolation, EventEmitter, extend, optionsProvider, namespaces, precision, escapingMap, version, replaceAll, querySelector$1 as querySelector, safeHasProperty, isNumeric, isFalseyButZero, getNumberOrUndefined, ensureUnit, quantity, alphaNumerate, noop, times, sum, serialMap, EPSILON, orderOfMagnitude, projectLength, roundWithPrecision, rho, polarToCartesian, serialize, deserialize, normalizeData, getMetaData, isDataHoleValue, reverseData, getDataArray, isMultiValue, getMultiValue, getSeriesOption, splitIntoSegments, getHighLow, getBounds, createSvg, normalizePadding, createChartRect, createGrid, createGridBackground, createLabel, BaseChart, LineChart, BarChart, PieChart, Axis, axisUnits, AutoScaleAxis, FixedScaleAxis, StepAxis, Svg, isSupported, easings, SvgList, SvgPath };
 
 //# sourceMappingURL=chartist.esm.js.map

@@ -25,7 +25,7 @@ export function none(options) {
 
   options = extend({}, defaultOptions, options);
 
-  return function none(pathCoordinates, valueData) {
+  return function noneInterpolation(pathCoordinates, valueData) {
     const path = new SvgPath();
     let hole = true;
 

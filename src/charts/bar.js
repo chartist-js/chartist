@@ -178,7 +178,7 @@ export class BarChart extends BaseChart {
 
     if(options.stackBars && data.normalized.series.length !== 0) {
       // If stacked bars we need to calculate the high low from stacked values from each series
-      var serialSums = serialMap(data.normalized.series, () =>
+      const serialSums = serialMap(data.normalized.series, () =>
         Array.from(arguments)
           .map((value) => value)
           .reduce((prev, curr) => {
@@ -271,7 +271,7 @@ export class BarChart extends BaseChart {
     labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
-    if (options.showGridBackground) {
+    if(options.showGridBackground) {
       createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
     }
 

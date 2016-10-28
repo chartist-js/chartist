@@ -107,7 +107,7 @@ export class Axis {
         createLabel(projectedValue, labelLength, index, labelValues, this, axisOptions.offset, labelOffset, labelGroup, [
           chartOptions.classNames.label,
           chartOptions.classNames[this.units.dir],
-          (axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames['end'])
+          (axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames.end)
         ], useForeignObject, eventEmitter);
       }
     });

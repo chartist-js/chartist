@@ -32,7 +32,7 @@ export function monotoneCubic(options) {
 
   options = extend({}, defaultOptions, options);
 
-  return function monotoneCubic(pathCoordinates, valueData) {
+  return function monotoneCubicInterpolation(pathCoordinates, valueData) {
     // First we try to split the coordinates into segments
     // This is necessary to treat "holes" in line charts
     const segments = splitIntoSegments(pathCoordinates, valueData, {
@@ -49,7 +49,7 @@ export function monotoneCubic(options) {
       // For each segment we will recurse the monotoneCubic fn function
       // Join the segment path data into a single path and return
       return SvgPath.join(
-        segments.map((segment) => monotoneCubic(segment.pathCoordinates, segment.valueData))
+        segments.map((segment) => monotoneCubicInterpolation(segment.pathCoordinates, segment.valueData))
       );
     } else {
       // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first

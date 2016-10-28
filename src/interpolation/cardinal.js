@@ -35,7 +35,7 @@ export function cardinal(options) {
   const t = Math.min(1, Math.max(0, options.tension));
   const c = 1 - t;
 
-  return function cardinal(pathCoordinates, valueData) {
+  return function cardinalInterpolation(pathCoordinates, valueData) {
     // First we try to split the coordinates into segments
     // This is necessary to treat "holes" in line charts
     const segments = splitIntoSegments(pathCoordinates, valueData, {
@@ -51,7 +51,7 @@ export function cardinal(options) {
       // For each segment we will recurse the cardinal function
       // Join the segment path data into a single path and return
       return SvgPath.join(
-        segments.map((segment) => cardinal(segment.pathCoordinates, segment.valueData))
+        segments.map((segment) => cardinalInterpolation(segment.pathCoordinates, segment.valueData))
       );
     } else {
       // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first

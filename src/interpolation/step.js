@@ -29,14 +29,14 @@ export function step(options) {
 
   options = extend({}, defaultOptions, options);
 
-  return function step(pathCoordinates, valueData) {
+  return function stepInterpolation(pathCoordinates, valueData) {
     const path = new SvgPath();
 
     let prevX;
     let prevY;
     let prevData;
 
-    for (let i = 0; i < pathCoordinates.length; i += 2) {
+    for(let i = 0; i < pathCoordinates.length; i += 2) {
       const currX = pathCoordinates[i];
       const currY = pathCoordinates[i + 1];
       const currData = valueData[i / 2];

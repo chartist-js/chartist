@@ -13,9 +13,6 @@ function createCustomMatchers(matchers) {
 
 const domMatchers = {
   toHaveClass(actual, expected) {
-    console.log(actual);
-    console.log(expected);
-
     const pass = actual.classList.contains(expected);
     return {
       pass,

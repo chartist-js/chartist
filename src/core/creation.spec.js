@@ -28,7 +28,7 @@ describe('Creation', () => {
     });
 
     it('should remove previous chartist svg elements', () => {
-      const fixture = addFixture(`<div id="chart-container"></div>`);
+      const fixture = addFixture('<div id="chart-container"></div>');
 
       const container = fixture.wrapper.querySelector('#chart-container');
       const svg1 = createSvg(container, '500px', '400px', 'ct-fish-bar');

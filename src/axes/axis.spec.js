@@ -57,7 +57,7 @@ describe('Axis', () => {
     chartOptions.axisX.labelInterpolationFnc =
       (value, index) => index === 0 ? null : value;
 
-    var axis = new Axis();
+    const axis = new Axis();
     axis.initialize(axisUnits.x, chartRect, ticks, null);
     axis.projectValue = (value) => value;
 
@@ -70,7 +70,7 @@ describe('Axis', () => {
     chartOptions.axisX.labelInterpolationFnc =
       (value, index) => index === 0 ? undefined : value;
 
-    var axis = new Axis();
+    const axis = new Axis();
     axis.initialize(axisUnits.x, chartRect, ticks, null);
     axis.projectValue = (value) => value;
 
@@ -83,7 +83,7 @@ describe('Axis', () => {
     chartOptions.axisX.labelInterpolationFnc =
       (value, index) => index === 0 ? '' : value;
 
-    var axis = new Axis();
+    const axis = new Axis();
     axis.initialize(axisUnits.x, chartRect, ticks, null);
     axis.projectValue = (value) => value;
 

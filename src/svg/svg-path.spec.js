@@ -22,12 +22,12 @@ describe('SvgPath', () => {
 
     expect(path.pathElements.length).toBe(6);
     expect(path.pathElements).toEqual([
-      { command: 'M', x: 1, y: 2 },
-      { command: 'm', x: 3, y: 4 },
-      { command: 'L', x: 5, y: 6 },
-      { command: 'l', x: 7, y: 8 },
-      { command: 'C', x1: 9, y1: 10, x2: 11, y2: 12, x: 13, y: 14 },
-      { command: 'c', x1: 15, y1: 16, x2: 17, y2: 18, x: 19, y: 20 }
+      {command: 'M', x: 1, y: 2},
+      {command: 'm', x: 3, y: 4},
+      {command: 'L', x: 5, y: 6},
+      {command: 'l', x: 7, y: 8},
+      {command: 'C', x1: 9, y1: 10, x2: 11, y2: 12, x: 13, y: 14},
+      {command: 'c', x1: 15, y1: 16, x2: 17, y2: 18, x: 19, y: 20}
     ]);
   });
 
@@ -46,13 +46,13 @@ describe('SvgPath', () => {
 
     expect(path.pathElements.length).toBe(7);
     expect(path.pathElements).toEqual([
-      { command: 'M', x: -1, y: 0 },
-      { command: 'M', x: 1, y: 2 },
-      { command: 'M', x: 3, y: 4 },
-      { command: 'M', x: 5, y: 6 },
-      { command: 'M', x: 7, y: 8 },
-      { command: 'M', x: 9, y: 10 },
-      { command: 'M', x: 11, y: 12 }
+      {command: 'M', x: -1, y: 0},
+      {command: 'M', x: 1, y: 2},
+      {command: 'M', x: 3, y: 4},
+      {command: 'M', x: 5, y: 6},
+      {command: 'M', x: 7, y: 8},
+      {command: 'M', x: 9, y: 10},
+      {command: 'M', x: 11, y: 12}
     ]);
   });
 
@@ -98,9 +98,9 @@ describe('SvgPath', () => {
       .scale(10, 100);
 
     expect(path.pathElements).toEqual([
-      { command: 'M', x: 10, y: 200 },
-      { command: 'L', x: 30, y: 400 },
-      { command: 'C', x1: 50, y1: 600, x2: 70, y2: 800, x: 90, y: 1000 }
+      {command: 'M', x: 10, y: 200},
+      {command: 'L', x: 30, y: 400},
+      {command: 'C', x1: 50, y1: 600, x2: 70, y2: 800, x: 90, y: 1000}
     ]);
   });
 
@@ -112,9 +112,9 @@ describe('SvgPath', () => {
       .translate(10, 100);
 
     expect(path.pathElements).toEqual([
-      { command: 'M', x: 11, y: 102 },
-      { command: 'L', x: 13, y: 104 },
-      { command: 'C', x1: 15, y1: 106, x2: 17, y2: 108, x: 19, y: 110 }
+      {command: 'M', x: 11, y: 102},
+      {command: 'L', x: 13, y: 104},
+      {command: 'C', x1: 15, y1: 106, x2: 17, y2: 108, x: 19, y: 110}
     ]);
   });
 
@@ -132,9 +132,9 @@ describe('SvgPath', () => {
       });
 
     expect(path.pathElements).toEqual([
-      { command: 'M', x: 1, y: 100 },
-      { command: 'L', x: 3, y: 100 },
-      { command: 'C', x1: 5, y1: 100, x2: 7, y2: 100, x: 0, y: 0 }
+      {command: 'M', x: 1, y: 100},
+      {command: 'L', x: 3, y: 100},
+      {command: 'C', x1: 5, y1: 100, x2: 7, y2: 100, x: 0, y: 0}
     ]);
   });
 

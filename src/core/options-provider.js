@@ -18,10 +18,10 @@ export function optionsProvider(options, responsiveOptions, eventEmitter) {
     const previousOptions = currentOptions;
     currentOptions = extend({}, baseOptions);
 
-    if (responsiveOptions) {
+    if(responsiveOptions) {
       responsiveOptions.forEach((responsiveOption) => {
         const mql = window.matchMedia(responsiveOption[0]);
-        if (mql.matches) {
+        if(mql.matches) {
           currentOptions = extend(currentOptions, responsiveOption[1]);
         }
       });
@@ -39,9 +39,9 @@ export function optionsProvider(options, responsiveOptions, eventEmitter) {
     mediaQueryListeners.forEach((mql) => mql.removeListener(updateCurrentOptions));
   }
 
-  if (!window.matchMedia) {
+  if(!window.matchMedia) {
     throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
-  } else if (responsiveOptions) {
+  } else if(responsiveOptions) {
     responsiveOptions.forEach((responsiveOption) => {
       const mql = window.matchMedia(responsiveOption[0]);
       mql.addListener(updateCurrentOptions);

@@ -30,11 +30,11 @@ describe('BarChart', () => {
     beforeEach(() => {
       data = {
         series: [[
-          { x: 1, y: 1 },
-          { x: 3, y: 5 }
+          {x: 1, y: 1},
+          {x: 3, y: 5}
         ]]
       };
-      options =  {
+      options = {
         axisX: {
           type: AutoScaleAxis,
           onlyInteger: true
@@ -250,7 +250,7 @@ describe('BarChart', () => {
 
     it('should generate labels and render empty grid with only series in data', (done) => {
       data = {
-        series:  [
+        series: [
           [1, 2, 3, 4],
           [2, 3, 4],
           [3, 4]

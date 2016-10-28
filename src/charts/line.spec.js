@@ -31,11 +31,11 @@ describe('LineChart', () => {
     beforeEach(() => {
       data = {
         series: [[
-          { x: 1, y: 1 },
-          { x: 3, y: 5 }
+          {x: 1, y: 1},
+          {x: 3, y: 5}
         ]]
       };
-      options =  {
+      options = {
         axisX: {
           type: AutoScaleAxis,
           onlyInteger: true
@@ -83,11 +83,11 @@ describe('LineChart', () => {
     beforeEach(() => {
       data = {
         series: [[
-          { x: 1, y: 1 },
-          { x: 3, y: 5 }
+          {x: 1, y: 1},
+          {x: 3, y: 5}
         ]]
       };
-      options =  {};
+      options = {};
     });
 
     it('should have ct-start class if position start', (done) => {
@@ -274,7 +274,7 @@ describe('LineChart', () => {
 
       const chart = createChart();
       chart.on('draw', (context) => {
-        if (context.type === 'line') {
+        if(context.type === 'line') {
           expect(context.path.pathElements.map((pathElement) => {
             return {
               command: pathElement.command,
@@ -306,7 +306,7 @@ describe('LineChart', () => {
 
       const chart = createChart();
       chart.on('draw', (context) => {
-        if (context.type === 'line') {
+        if(context.type === 'line') {
           expect(context.path.pathElements.map((pathElement) => {
             return {
               command: pathElement.command,
@@ -340,7 +340,7 @@ describe('LineChart', () => {
 
       const chart = createChart();
       chart.on('draw', (context) => {
-        if (context.type === 'line') {
+        if(context.type === 'line') {
           expect(context.path.pathElements.map((pathElement) => {
             return {
               command: pathElement.command,
@@ -374,7 +374,7 @@ describe('LineChart', () => {
 
       const chart = createChart();
       chart.on('draw', (context) => {
-        if (context.type === 'line') {
+        if(context.type === 'line') {
           expect(context.path.pathElements.map((pathElement) => {
             return {
               command: pathElement.command,
@@ -406,7 +406,7 @@ describe('LineChart', () => {
 
       const chart = createChart();
       chart.on('draw', (context) => {
-        if (context.type === 'line') {
+        if(context.type === 'line') {
           expect(context.path.pathElements.map((pathElement) => {
             return {
               command: pathElement.command,
@@ -435,7 +435,7 @@ describe('LineChart', () => {
           [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
         ]
       };
-      options ={
+      options = {
         lineSmooth: Interpolation.step({
           postpone: false
         })
@@ -443,7 +443,7 @@ describe('LineChart', () => {
 
       const chart = createChart();
       chart.on('draw', (context) => {
-        if (context.type === 'line') {
+        if(context.type === 'line') {
           expect(context.path.pathElements.map((pathElement) => {
             return {
               command: pathElement.command,
@@ -509,7 +509,7 @@ describe('LineChart', () => {
 
     it('should generate labels and render empty grid with only series in data', (done) => {
       data = {
-        series:  [
+        series: [
           [1, 2, 3, 4],
           [2, 3, 4],
           [3, 4]
@@ -528,7 +528,7 @@ describe('LineChart', () => {
 
     it('should render empty grid with no data and specified high low', (done) => {
       data = null;
-      options ={
+      options = {
         width: 400,
         height: 300,
         high: 100,

@@ -1,7 +1,7 @@
 export let container = null;
 
 export function initializeFixtures() {
-  if (!container) {
+  if(!container) {
     container = document.createElement('div');
     container.setAttribute('data-fixture-container', `${+new Date()}`);
     document.body.appendChild(container);
@@ -9,14 +9,14 @@ export function initializeFixtures() {
 }
 
 export function destroyFixtures() {
-    if (container) {
-      document.body.removeChild(container);
-      container = null;
-    }
+  if(container) {
+    document.body.removeChild(container);
+    container = null;
   }
+}
 
 export function loadFixture(path) {
-  if (!container) {
+  if(!container) {
     initializeFixtures();
   }
 

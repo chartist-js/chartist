@@ -41,10 +41,10 @@ export const sum = (previous, current) => previous + (current ? current : 0);
  * ```
  *
  * @memberof Chartist.Core
- * @param arr
- * @param cb
+ * @param array
+ * @param callback
  * @return {Array}
  */
-export const serialMap = (arr, cb) =>
-  times(Math.max(...arr.map((e) => e.length)))
-    .map((e, index) => cb(...arr.map((e) => e[index])));
+export const serialMap = (array, callback) =>
+  times(Math.max(...array.map((element) => element.length)))
+    .map((inner, index) => callback(...array.map((element) => element[index])));

@@ -52,7 +52,7 @@ export function rho(num) {
   }
 
   function gcd(p, q) {
-    if (p % q === 0) {
+    if(p % q === 0) {
       return q;
     } else {
       return gcd(q, p % q);
@@ -66,7 +66,7 @@ export function rho(num) {
   let x1 = 2;
   let x2 = 2;
   let divisor;
-  if (num % 2 === 0) {
+  if(num % 2 === 0) {
     return 2;
   }
 
@@ -74,7 +74,7 @@ export function rho(num) {
     x1 = f(x1) % num;
     x2 = f(f(x2)) % num;
     divisor = gcd(Math.abs(x1 - x2), num);
-  } while (divisor === 1);
+  } while(divisor === 1);
 
   return divisor;
 }

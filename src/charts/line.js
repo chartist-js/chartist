@@ -211,7 +211,7 @@ export class LineChart extends BaseChart {
     let axisX;
     let axisY;
 
-    if (options.axisX.type === undefined) {
+    if(options.axisX.type === undefined) {
       axisX = new StepAxis(axisUnits.x, data.normalized.series, chartRect, extend({}, options.axisX, {
         ticks: data.normalized.labels,
         stretch: options.fullWidth
@@ -220,7 +220,7 @@ export class LineChart extends BaseChart {
       axisX = new options.axisX.type(axisUnits.x, data.normalized.series, chartRect, options.axisX);
     }
 
-    if (options.axisY.type === undefined) {
+    if(options.axisY.type === undefined) {
       axisY = new AutoScaleAxis(axisUnits.y, data.normalized.series, chartRect, extend({}, options.axisY, {
         high: isNumeric(options.high) ? options.high : options.axisY.high,
         low: isNumeric(options.low) ? options.low : options.axisY.low
@@ -232,7 +232,7 @@ export class LineChart extends BaseChart {
     axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
-    if (options.showGridBackground) {
+    if(options.showGridBackground) {
       createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
     }
 
@@ -276,8 +276,13 @@ export class LineChart extends BaseChart {
         areaBase: getSeriesOption(series, options, 'areaBase')
       };
 
-      const smoothing = typeof seriesOptions.lineSmooth === 'function' ?
-        seriesOptions.lineSmooth : (seriesOptions.lineSmooth ? monotoneCubic() : none());
+      let smoothing;
+      if(typeof seriesOptions.lineSmooth === 'function') {
+        smoothing = seriesOptions.lineSmooth;
+      } else {
+        smoothing = seriesOptions.lineSmooth ? monotoneCubic() : none();
+      }
+
       // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
       // index, value and meta data
       const path = smoothing(pathCoordinates, pathData);
@@ -285,7 +290,7 @@ export class LineChart extends BaseChart {
       // If we should show points we need to create them now to avoid secondary loop
       // Points are drawn from the pathElements returned by the interpolation function
       // Small offset for Firefox to render squares correctly
-      if (seriesOptions.showPoint) {
+      if(seriesOptions.showPoint) {
 
         path.pathElements.forEach((pathElement) => {
           const point = seriesElement.elem('line', {
@@ -315,7 +320,7 @@ export class LineChart extends BaseChart {
         });
       }
 
-      if (seriesOptions.showLine) {
+      if(seriesOptions.showLine) {
         const line = seriesElement.elem('path', {
           d: path.stringify()
         }, options.classNames.line, true);
@@ -338,7 +343,7 @@ export class LineChart extends BaseChart {
       }
 
       // Area currently only works with axes that support a range!
-      if (seriesOptions.showArea && axisY.range) {
+      if(seriesOptions.showArea && axisY.range) {
         // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
         // the area is not drawn outside the chart area.
         const areaBase = Math.max(Math.min(seriesOptions.areaBase, axisY.range.max), axisY.range.min);
@@ -348,7 +353,7 @@ export class LineChart extends BaseChart {
 
         // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
         path.splitByCommand('M')
-          // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
+        // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
           .filter((pathSegment) => pathSegment.pathElements.length > 1)
           .map((solidPathSegments) => {
             // Receiving the filtered solid path segments we can now convert those segments into fill areas
@@ -393,7 +398,7 @@ export class LineChart extends BaseChart {
           });
       }
     });
-    
+
     this.eventEmitter.emit('created', {
       // TODO: Remove redundant
       bounds: axisY.bounds,

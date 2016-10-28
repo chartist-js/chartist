@@ -41,7 +41,15 @@
   ],
   "dependencies": {},
   "devDependencies": {
+    "autoprefixer": "^6.5.1",
+    "babel-eslint": "^7.1.0",
     "browser-sync": "^2.17.5",
+    "chokidar": "^1.6.1",
+    "cssnano": "^3.7.7",
+    "debounce": "^1.0.0",
+    "eslint": "^3.8.1",
+    "fs-promise": "^0.5.0",
+    "interpolate": "^0.1.0",
     "jasmine-core": "^2.5.2",
     "jspm": "beta",
     "karma": "^1.3.0",
@@ -49,12 +57,6 @@
     "karma-jspm": "^2.2.0",
     "karma-nyan-reporter": "^0.2.4",
     "karma-phantomjs-launcher": "^1.0.2",
-    "autoprefixer": "^6.5.1",
-    "chokidar": "^1.6.1",
-    "cssnano": "^3.7.7",
-    "debounce": "^1.0.0",
-    "fs-promise": "^0.5.0",
-    "interpolate": "^0.1.0",
     "node-sass": "^3.10.1",
     "postcss": "^5.2.5"
   },
@@ -77,12 +79,13 @@
     "test-watch": "./node_modules/.bin/karma start karma.watch.config.js",
     "styles-watch": "./tooling/node/styles-watch.js",
     "server": "./node_modules/.bin/browser-sync start --config 'bs-config.js'",
-    "build": "yarn run build-styles && yarn run build-umd && yarn run build-esm",
+    "lint": "./node_modules/.bin/eslint src",
+    "build": "yarn run lint && yarn run build-styles && yarn run test && yarn run build-umd && yarn run build-esm",
     "build-umd": "./node_modules/.bin/jspm build chartist dist/chartist.umd.js --format umd --global-name Chartist --minify --source-map-contents && ./tooling/node/banner.js dist/chartist.umd.js dist/chartist.umd.js",
     "build-esm": "./node_modules/.bin/jspm build chartist dist/chartist.esm.js --format esm && ./tooling/node/banner.js dist/chartist.esm.js dist/chartist.esm.js",
     "build-styles": "./tooling/node/styles.js src/styles/chartist.scss dist"
   },
   "config": {
-    "banner": "/* Chartist.js {pkg.version}\n * Copyright © {year} Gion Kunz\n * Free to use under either the WTFPL license or the MIT license.\n * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL\n * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT\n */\n"
+    "banner": "/* Chartist.js {pkg.version}\n * Copyright © {year} Gion Kunz\n * Free to use under either the WTFPL license or the MIT license.\n * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-WTFPL\n * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-MIT\n */\n"
   }
 }

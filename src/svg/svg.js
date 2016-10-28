@@ -70,7 +70,7 @@ export class Svg {
       }
 
       if(key.indexOf(':') !== -1) {
-        var namespacedAttribute = key.split(':');
+        const namespacedAttribute = key.split(':');
         this._node.setAttributeNS(namespaces[namespacedAttribute[0]], key, attributes[key]);
       } else {
         this._node.setAttribute(key, attributes[key]);
@@ -375,7 +375,7 @@ export class Svg {
 
     Object.keys(animations).forEach((attribute) => {
 
-      const createAnimate = (animationDefinition, guided) => {
+      const createAnimate = (animationDefinition, createGuided) => {
         const attributeProperties = {};
         let animationEasing;
         let timeout;
@@ -401,7 +401,7 @@ export class Svg {
         }
 
         // Adding "fill: freeze" if we are in guided mode and set initial attribute values
-        if(guided) {
+        if(createGuided) {
           animationDefinition.fill = 'freeze';
           // Animated property on our element should already be set to the animation from value in guided mode
           attributeProperties[attribute] = animationDefinition.from;
@@ -417,7 +417,7 @@ export class Svg {
           attributeName: attribute
         }, animationDefinition));
 
-        if(guided) {
+        if(createGuided) {
           // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
           setTimeout(() => {
             // If beginElement fails we set the animated attribute to the end position and remove the animate element
@@ -454,7 +454,7 @@ export class Svg {
             });
           }
 
-          if(guided) {
+          if(createGuided) {
             // Set animated attribute to current animated value
             attributeProperties[attribute] = animationDefinition.to;
             this.attr(attributeProperties);

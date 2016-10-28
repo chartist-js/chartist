@@ -161,7 +161,7 @@ export function getDataArray(data, reverse, multi) {
     } else {
       // We need to prepare multi value output (x and y data)
       if(multi) {
-        var multiValue = {};
+        const multiValue = {};
 
         // Single series value arrays are assumed to specify the Y-Axis value
         // For example: [1, 2] => [{x: undefined, y: 1}, {x: undefined, y: 2}]
@@ -321,15 +321,15 @@ export function getHighLow(data, options, dimension) {
   const findLow = options.low === undefined;
 
   // Function to recursively walk through arrays and find highest and lowest number
-  function recursiveHighLow(data) {
-    if(data === undefined) {
+  function recursiveHighLow(sourceData) {
+    if(sourceData === undefined) {
       return undefined;
-    } else if(data instanceof Array) {
-      for(let i = 0; i < data.length; i++) {
-        recursiveHighLow(data[i]);
+    } else if(sourceData instanceof Array) {
+      for(let i = 0; i < sourceData.length; i++) {
+        recursiveHighLow(sourceData[i]);
       }
     } else {
-      const value = dimension ? +data[dimension] : +data;
+      const value = dimension ? +sourceData[dimension] : +sourceData;
 
       if(findHigh && value > highLow.high) {
         highLow.high = value;
@@ -460,7 +460,7 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
 
   const values = [];
   for(let i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
-    var value = roundWithPrecision(i);
+    const value = roundWithPrecision(i);
     if(value !== values[values.length - 1]) {
       values.push(value);
     }

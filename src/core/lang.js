@@ -91,10 +91,10 @@ export function ensureUnit(value, unit) {
  * @return {Object} Returns an object containing the value as number and the unit as string.
  */
 export function quantity(input) {
-  if (typeof input === 'string') {
+  if(typeof input === 'string') {
     const match = (/^(\d+)\s*(.*)$/g).exec(input);
     return {
-      value : +match[1],
+      value: +match[1],
       unit: match[2] || undefined
     };
   }

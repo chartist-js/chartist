@@ -89,8 +89,8 @@ export function createChartRect(svg, options, fallbackPadding) {
     }
   };
 
-  if (hasAxis) {
-    if (options.axisX.position === 'start') {
+  if(hasAxis) {
+    if(options.axisX.position === 'start') {
       chartRect.y2 = normalizedPadding.top + xAxisOffset;
       chartRect.y1 = Math.max(height - normalizedPadding.bottom, chartRect.y2 + 1);
     } else {
@@ -98,7 +98,7 @@ export function createChartRect(svg, options, fallbackPadding) {
       chartRect.y1 = Math.max(height - normalizedPadding.bottom - xAxisOffset, chartRect.y2 + 1);
     }
 
-    if (options.axisY.position === 'start') {
+    if(options.axisY.position === 'start') {
       chartRect.x1 = normalizedPadding.left + yAxisOffset;
       chartRect.x2 = Math.max(width - normalizedPadding.right, chartRect.x1 + 1);
     } else {
@@ -199,14 +199,14 @@ export function createLabel(position, length, index, labels, axis, axisOffset, l
   positionalData[axis.units.len] = length;
   positionalData[axis.counterUnits.len] = Math.max(0, axisOffset - 10);
 
-  if (useForeignObject) {
+  if(useForeignObject) {
     // We need to set width and height explicitly to px as span will not expand with width and height being
     // 100% in all browsers
-    const length = Math.round(positionalData[axis.units.len]);
-    const counterLength = Math.round(positionalData[axis.counterUnits.len]);
+    const stepLength = Math.round(positionalData[axis.units.len]);
+    const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
     const content = `
       <span class="${classes.join(' ')}"
-            style="${axis.units.len}: ${length}px; ${axis.counterUnits.len}: ${counterLength}px">
+            style="${axis.units.len}: ${stepLength}px; ${axis.counterUnits.len}: ${stepCounterLength}px">
         ${labels[index]}
       </span>
     `.trim();

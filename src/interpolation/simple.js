@@ -34,7 +34,7 @@ export function simple(options) {
 
   const d = 1 / Math.max(1, options.divisor);
 
-  return function simple(pathCoordinates, valueData) {
+  return function simpleInterpolation(pathCoordinates, valueData) {
     const path = new SvgPath();
     let prevX;
     let prevY;
