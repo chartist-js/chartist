@@ -971,7 +971,8 @@ var Chartist = {
     if(useForeignObject) {
       // We need to set width and height explicitly to px as span will not expand with width and height being
       // 100% in all browsers
-      var content = '<span class="' + classes.join(' ') + '" style="' +
+      var content = '<span class="' + classes.join(' ') +
+      '" xmlns="' + Chartist.namespaces.xhtml + '" style="' +
         axis.units.len + ': ' + Math.round(positionalData[axis.units.len]) + 'px; ' +
         axis.counterUnits.len + ': ' + Math.round(positionalData[axis.counterUnits.len]) + 'px">' +
         labels[index] + '</span>';
