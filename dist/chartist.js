@@ -4,7 +4,7 @@
     define('Chartist', [], function () {
       return (root['Chartist'] = factory());
     });
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
@@ -14,8 +14,8 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.10.0
- * Copyright © 2016 Gion Kunz
+/* Chartist.js 0.10.1
+ * Copyright © 2017 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.10.0'
+  version: '0.10.1'
 };
 
 (function (window, document, Chartist) {
@@ -993,7 +993,8 @@ var Chartist = {
     if(useForeignObject) {
       // We need to set width and height explicitly to px as span will not expand with width and height being
       // 100% in all browsers
-      var content = '<span class="' + classes.join(' ') + '" style="' +
+      var content = '<span class="' + classes.join(' ') +
+      '" xmlns="' + Chartist.namespaces.xhtml + '" style="' +
         axis.units.len + ': ' + Math.round(positionalData[axis.units.len]) + 'px; ' +
         axis.counterUnits.len + ': ' + Math.round(positionalData[axis.counterUnits.len]) + 'px">' +
         labels[index] + '</span>';
@@ -4140,7 +4141,9 @@ var Chartist = {
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
     // If true empty values will be ignored to avoid drawing unncessary slices and labels
-    ignoreEmptyValues: false
+    ignoreEmptyValues: false,
+    // For adding colors to the donut
+    colors: false
   };
 
   /**
@@ -4292,10 +4295,17 @@ var Chartist = {
 
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut) {
-        pathElement.attr({
-          'style': 'stroke-width: ' + donutWidth.value + 'px'
-        });
+        if(Array.isArray(options.colors) && typeof options.colors[index] !== "undefined"){
+            pathElement.attr({
+              'style': 'stroke-width: ' + donutWidth.value + 'px; stroke:'+ options.colors[index] +';'
+            });
+        }else{
+            pathElement.attr({
+              'style': 'stroke-width: ' + donutWidth.value + 'px'
+            });
+        }
       }
+      
 
       // Fire off draw event
       this.eventEmitter.emit('draw', {
