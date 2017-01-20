@@ -50,7 +50,9 @@
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
     // If true empty values will be ignored to avoid drawing unncessary slices and labels
-    ignoreEmptyValues: false
+    ignoreEmptyValues: false,
+    // For adding colors to the donut
+    colors: false
   };
 
   /**
@@ -202,10 +204,17 @@
 
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut) {
-        pathElement.attr({
-          'style': 'stroke-width: ' + donutWidth.value + 'px'
-        });
+        if(Array.isArray(options.colors) && typeof options.colors[index] !== "undefined"){
+            pathElement.attr({
+              'style': 'stroke-width: ' + donutWidth.value + 'px; stroke:'+ options.colors[index] +';'
+            });
+        }else{
+            pathElement.attr({
+              'style': 'stroke-width: ' + donutWidth.value + 'px'
+            });
+        }
       }
+      
 
       // Fire off draw event
       this.eventEmitter.emit('draw', {
