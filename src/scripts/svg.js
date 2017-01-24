@@ -314,23 +314,23 @@
   }
 
   /**
-   * Get element height using `getBoundingClientRect`
+   * Get element height using `offsetHeight`
    *
    * @memberof Chartist.Svg
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.getBoundingClientRect().height;
+    return this._node.offsetHeight;
   }
 
   /**
-   * Get element width using `getBoundingClientRect`
+   * Get element width using `offsetHeight`
    *
    * @memberof Chartist.Core
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.getBoundingClientRect().width;
+    return this._node.offsetWidth;
   }
 
   /**
