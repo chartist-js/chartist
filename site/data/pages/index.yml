@@ -232,7 +232,7 @@ sections:
               - '<a href="https://github.com/mfpierre/meteor-chartist-js" target="_blank">meteor-chartist-js</a>'
               - Meteor Package
             -
-              - '<a href="https://github.com/soderlind/tablepress_chartist" target="_blank">tablepress_chartist</a>'
+              - '<a href="https://github.com/silsha/tablepress_chartist" target="_blank">tablepress_chartist</a>'
               - Wordpress / Tablepress Extension
             -
               - '<a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a>'
