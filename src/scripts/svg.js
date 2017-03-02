@@ -273,13 +273,10 @@
    * @return {Chartist.Svg} The wrapper of the current element
    */
   function addClass(names) {
-    this._node.setAttribute('class',
-      this.classes(this._node)
-        .concat(names.trim().split(/\s+/))
-        .filter(function(elem, pos, self) {
-          return self.indexOf(elem) === pos;
-        }).join(' ')
-    );
+    var arr = this.classes(this._node).concat(names.trim().split(/\s+/));
+    this._node.setAttribute('class', arr.filter(function(elem, pos) {
+      return arr.indexOf(elem) === pos;
+    }).join(' '));
 
     return this;
   }
