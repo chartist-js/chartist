@@ -144,7 +144,11 @@
    * @constructor
    */
   function Base(query, data, defaultOptions, options, responsiveOptions) {
-    this.container = Chartist.querySelector(query);
+    var supportsForeignObject = 'supportsForeignObject' in options 
+								? options.supportsForeignObject 
+								: Chartist.Svg.isSupported('Extensibility');
+
+	this.container = Chartist.querySelector(query);
     this.data = data || {};
     this.data.labels = this.data.labels || [];
     this.data.series = this.data.series || [];
@@ -152,7 +156,7 @@
     this.options = options;
     this.responsiveOptions = responsiveOptions;
     this.eventEmitter = Chartist.EventEmitter();
-    this.supportsForeignObject = Chartist.Svg.isSupported('Extensibility');
+    this.supportsForeignObject = supportsForeignObject;
     this.supportsAnimations = Chartist.Svg.isSupported('AnimationEventsAttribute');
     this.resizeListener = function resizeListener(){
       this.update();
