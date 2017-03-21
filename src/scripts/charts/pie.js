@@ -195,14 +195,12 @@
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
       if(!options.donut) {
         path.line(center.x, center.y);
-      } else {
-        if (options.donutSolid) {
-          donutSolidRadius = radius - donutWidth.value;
-          innerStart = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
-          innerEnd = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, endAngle);
-          path.line(innerStart.x, innerStart.y);
-          path.arc(donutSolidRadius, donutSolidRadius, 0, endAngle - startAngle  > 180, 1, innerEnd.x, innerEnd.y);
-        }
+      } else if (options.donutSolid) {
+        donutSolidRadius = radius - donutWidth.value;
+        innerStart = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
+        innerEnd = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, endAngle);
+        path.line(innerStart.x, innerStart.y);
+        path.arc(donutSolidRadius, donutSolidRadius, 0, endAngle - startAngle  > 180, 1, innerEnd.x, innerEnd.y);
       }
 
       // Create the SVG path
