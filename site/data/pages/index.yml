@@ -302,4 +302,4 @@ sections:
     side-notes:
       - type: text
         data:
-          text: With the clear separation of concerns within Chartist.js you're able to style your charts with CSS in @media queries. However, sometimes it requires to also control the behaviour of your charts depending on the media. For this purpose Chartist.js provides you with a simple configuration override mechanism based on media queries.
+          text: With the clear separation of concerns within Chartist.js, you're able to style your charts with CSS in @media queries. However, sometimes you also need to conditionally control the behavior of your charts. For this purpose, Chartist.js provides you with a simple configuration override mechanism based on media queries.
