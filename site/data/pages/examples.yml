@@ -256,3 +256,19 @@ sections:
           intro: >
                     Although it'd be also possible to achieve this animation with CSS, with some minor suboptimal
                     things, here's an example of how to animate donut charts using Chartist.Svg.animate and SMIL.
+
+      - type: live-example
+        data:
+          title: Donut chart using fill rather than stroke
+          level: 4
+          id: example-donut-solid-chart
+          classes: ct-golden-section ct-negative-labels
+          intro: This pie chart uses donut and donutSolid to draw a donut chart.
+
+      - type: live-example
+        data:
+          title: Gauge chart using fill rather than stroke
+          level: 4
+          id: example-gauge-donut-solid-chart
+          classes: ct-golden-section ct-negative-labels
+          intro: This pie chart uses total, startAngle, donut and donutSolid to draw a gauge chart.
