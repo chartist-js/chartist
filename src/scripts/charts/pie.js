@@ -224,9 +224,7 @@
 
       // If this is a donut, we add the stroke-width as style attribute
       if(options.donut && !options.donutSolid) {
-        pathElement.attr({
-          'style': 'stroke-width: ' + donutWidth.value + 'px'
-        });
+        pathElement._node.style.strokeWidth = donutWidth.value + 'px';
       }
 
       // Fire off draw event
