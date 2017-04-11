@@ -107,7 +107,7 @@
     stroke: $color;
   }
 
-  .#{$ct-class-slice-pie}, .#{$ct-class-area} {
+  .#{$ct-class-slice-pie}, .#{$ct-class-slice-donut-solid}, .#{$ct-class-area} {
     fill: $color;
   }
 }

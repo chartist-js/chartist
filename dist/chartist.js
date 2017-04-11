@@ -4,7 +4,7 @@
     define('Chartist', [], function () {
       return (root['Chartist'] = factory());
     });
-  } else if (typeof exports === 'object') {
+  } else if (typeof module === 'object' && module.exports) {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like environments that support module.exports,
     // like Node.
@@ -14,8 +14,8 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.10.0
- * Copyright © 2016 Gion Kunz
+/* Chartist.js 0.11.0
+ * Copyright © 2017 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.10.0'
+  version: '0.11.0'
 };
 
 (function (window, document, Chartist) {
@@ -337,9 +337,10 @@ var Chartist = {
     svg = new Chartist.Svg('svg').attr({
       width: width,
       height: height
-    }).addClass(className).attr({
-      style: 'width: ' + width + '; height: ' + height + ';'
-    });
+    }).addClass(className);
+
+    svg._node.style.width = width;
+    svg._node.style.height = height;
 
     // Add the DOM node to our container
     container.appendChild(svg._node);
@@ -993,10 +994,12 @@ var Chartist = {
     if(useForeignObject) {
       // We need to set width and height explicitly to px as span will not expand with width and height being
       // 100% in all browsers
-      var content = '<span class="' + classes.join(' ') + '" style="' +
-        axis.units.len + ': ' + Math.round(positionalData[axis.units.len]) + 'px; ' +
-        axis.counterUnits.len + ': ' + Math.round(positionalData[axis.counterUnits.len]) + 'px">' +
-        labels[index] + '</span>';
+      var content = document.createElement('span');
+      content.className = classes.join(' ');
+      content.setAttribute('xmlns', Chartist.namespaces.xhtml);
+      content.innerText = labels[index];
+      content.style[axis.units.len] = Math.round(positionalData[axis.units.len]) + 'px';
+      content.style[axis.counterUnits.len] = Math.round(positionalData[axis.counterUnits.len]) + 'px';
 
       labelElement = group.foreignObject(content, Chartist.extend({
         style: 'overflow: visible;'
@@ -4116,6 +4119,7 @@ var Chartist = {
       series: 'ct-series',
       slicePie: 'ct-slice-pie',
       sliceDonut: 'ct-slice-donut',
+      sliceDonutSolid: 'ct-slice-donut-solid',
       label: 'ct-label'
     },
     // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
@@ -4124,6 +4128,8 @@ var Chartist = {
     total: undefined,
     // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
     donut: false,
+    // If specified the donut segments will be drawn as shapes instead of strokes.
+    donutSolid: false,
     // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
     // This option can be set as number or string to specify a relative width (i.e. 100 or '30%').
     donutWidth: 60,
@@ -4199,15 +4205,17 @@ var Chartist = {
     // If this is a donut chart we need to adjust our radius to enable strokes to be drawn inside
     // Unfortunately this is not possible with the current SVG Spec
     // See this proposal for more details: http://lists.w3.org/Archives/Public/www-svg/2003Oct/0000.html
-    radius -= options.donut ? donutWidth.value / 2  : 0;
+    radius -= options.donut && !options.donutSolid ? donutWidth.value / 2  : 0;
 
     // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
     // if regular pie chart it's half of the radius
-    if(options.labelPosition === 'outside' || options.donut) {
+    if(options.labelPosition === 'outside' || options.donut && !options.donutSolid) {
       labelRadius = radius;
     } else if(options.labelPosition === 'center') {
       // If labelPosition is center we start with 0 and will later wait for the labelOffset
       labelRadius = 0;
+    } else if(options.donutSolid) {
+      labelRadius = radius - donutWidth.value / 2;
     } else {
       // Default option is 'inside' where we use half the radius so the label will be placed in the center of the pie
       // slice
@@ -4268,21 +4276,38 @@ var Chartist = {
       var start = Chartist.polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
+      var innerStart,
+        innerEnd,
+        donutSolidRadius;
+
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
-      var path = new Chartist.Svg.Path(!options.donut)
+      var path = new Chartist.Svg.Path(!options.donut || options.donutSolid)
         .move(end.x, end.y)
         .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
       if(!options.donut) {
         path.line(center.x, center.y);
+      } else if (options.donutSolid) {
+        donutSolidRadius = radius - donutWidth.value;
+        innerStart = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
+        innerEnd = Chartist.polarToCartesian(center.x, center.y, donutSolidRadius, endAngle);
+        path.line(innerStart.x, innerStart.y);
+        path.arc(donutSolidRadius, donutSolidRadius, 0, endAngle - startAngle  > 180, 1, innerEnd.x, innerEnd.y);
       }
 
       // Create the SVG path
       // If this is a donut chart we add the donut class, otherwise just a regular slice
+      var pathClassName = options.classNames.slicePie;
+      if (options.donut) {
+        pathClassName = options.classNames.sliceDonut;
+        if (options.donutSolid) {
+          pathClassName = options.classNames.sliceDonutSolid;
+        }
+      }
       var pathElement = seriesGroups[index].elem('path', {
         d: path.stringify()
-      }, options.donut ? options.classNames.sliceDonut : options.classNames.slicePie);
+      }, pathClassName);
 
       // Adding the pie series value to the path
       pathElement.attr({
@@ -4291,10 +4316,8 @@ var Chartist = {
       });
 
       // If this is a donut, we add the stroke-width as style attribute
-      if(options.donut) {
-        pathElement.attr({
-          'style': 'stroke-width: ' + donutWidth.value + 'px'
-        });
+      if(options.donut && !options.donutSolid) {
+        pathElement._node.style.strokeWidth = donutWidth.value + 'px';
       }
 
       // Fire off draw event
