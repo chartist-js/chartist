@@ -445,6 +445,7 @@ new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code><
     series: &#x27;ct-series&#x27;,
     slicePie: &#x27;ct-slice-pie&#x27;,
     sliceDonut: &#x27;ct-slice-donut&#x27;,
+    sliceDonutSolid: &#x27;ct-slice-donut-solid&#x27;,
     label: &#x27;ct-label&#x27;
   },
   // The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
@@ -453,6 +454,8 @@ new Chartist.Line(&#x27;.ct-chart&#x27;, data, null, responsiveOptions);</code><
   total: undefined,
   // If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
   donut: false,
+  // If specified the donut segments will be drawn as shapes instead of strokes.
+  donutSolid: false,
   // Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
   // This option can be set as number or string to specify a relative width (i.e. 100 or &#x27;30%&#x27;).
   donutWidth: 60,
@@ -836,9 +839,10 @@ Chartist.querySelector = function(query) {
   svg = new Chartist.Svg(&#x27;svg&#x27;).attr({
     width: width,
     height: height
-  }).addClass(className).attr({
-    style: &#x27;width: &#x27; + width + &#x27;; height: &#x27; + height + &#x27;;&#x27;
-  });
+  }).addClass(className);
+
+  svg._node.style.width = width;
+  svg._node.style.height = height;
 
   // Add the DOM node to our container
   container.appendChild(svg._node);
@@ -1253,10 +1257,12 @@ Chartist.getMetaData = function(series, index) {
   if(useForeignObject) {
     // We need to set width and height explicitly to px as span will not expand with width and height being
     // 100% in all browsers
-    var content = &#x27;&lt;span class=&quot;&#x27; + classes.join(&#x27; &#x27;) + &#x27;&quot; style=&quot;&#x27; +
-      axis.units.len + &#x27;: &#x27; + Math.round(positionalData[axis.units.len]) + &#x27;px; &#x27; +
-      axis.counterUnits.len + &#x27;: &#x27; + Math.round(positionalData[axis.counterUnits.len]) + &#x27;px&quot;&gt;&#x27; +
-      labels[index] + &#x27;&lt;/span&gt;&#x27;;
+    var content = document.createElement(&#x27;span&#x27;);
+    content.className = classes.join(&#x27; &#x27;);
+    content.setAttribute(&#x27;xmlns&#x27;, Chartist.namespaces.xhtml);
+    content.innerText = labels[index];
+    content.style[axis.units.len] = Math.round(positionalData[axis.units.len]) + &#x27;px&#x27;;
+    content.style[axis.counterUnits.len] = Math.round(positionalData[axis.counterUnits.len]) + &#x27;px&#x27;;
 
     labelElement = group.foreignObject(content, Chartist.extend({
       style: &#x27;overflow: visible;&#x27;

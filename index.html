@@ -3,671 +3,671 @@
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
 <html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - Simple responsive charts</title><meta name="description" content="Create responsive, scalable and good looking charts with chartist.js."><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><style type="text/css">@charset "UTF-8";
 
-[data-icon]:before {
-  content: attr(data-icon);
-  display: inline-block;
-  vertical-align: baseline;
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 1em;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.ct-golden-section:after {
-  content: "";
-}
-
-.ct-golden-section {
-  display: block;
-  position: relative;
-  width: 100%;
-}
-
-.ct-golden-section:before {
-  display: block;
-  float: left;
-  content: "";
-  width: 0;
-  height: 0;
-  padding-bottom: 61.804697157%;
-}
-
-.ct-golden-section:after {
-  display: table;
-  clear: both;
-}
-
-body,
-td,
-th {
-  padding: 0;
-}
-
-.button,
-body {
-  position: relative;
-}
-
-html {
-  font-family: sans-serif;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
-article,
-figure,
-header,
-nav,
-section {
-  display: block;
-}
-
-a {
-  background-color: transparent;
-}
-
-h1 {
-  font-size: 2em;
-  margin: .67em 0;
-}
-
-small {
-  font-size: 80%;
-}
-
-svg:not(:root) {
-  overflow: hidden;
-}
-
-figure {
-  margin: 1em 40px;
-}
-
-.brwsrsup .brwsrsup__support--supported:after {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.button {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-.button,
-body {
-  font-family: Oxygen,Helvetica,Arial,sans-serif;
-}
-
-body,
-html {
-  height: 100%;
-  font-size: 100%;
-}
-
-*,
-:after,
-:before {
-  -webkit-box-sizing: inherit;
-  -moz-box-sizing: inherit;
-  box-sizing: inherit;
-}
-
-body {
-  background: #EADBC4;
-  color: #5b4421;
-  font-style: normal;
-  font-weight: 400;
-  margin: 0;
-}
-
-.left {
-  float: left!important;
-}
-
-.right {
-  float: right!important;
-}
-
-.button,
-a {
-  text-decoration: none;
-}
-
-.button {
-  border-radius: 0;
-  border-style: solid;
-  border-width: 0;
-  font-weight: 400;
-  line-height: normal;
-  margin: 0 0 1.25rem;
-  text-align: center;
-  display: inline-block;
-  padding: 1rem 2rem 1.0625rem;
-  font-size: 1rem;
-  background-color: #F4C63D;
-  border-color: #e7b00d;
-  color: #453D3F;
-}
-
-.button.large {
-  padding: 1.125rem 2.25rem 1.1875rem;
-  font-size: 1.25rem;
-}
-
-.contain-to-grid {
-  width: 100%;
-  background: #453D3F;
-}
-
-.contain-to-grid .top-bar {
-  margin-bottom: 0;
-}
-
-.top-bar {
-  background: #453D3F;
-  height: 2.8125rem;
-  line-height: 2.8125rem;
-  margin-bottom: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.top-bar ul {
-  list-style: none;
-  margin-bottom: 0;
-}
-
-.top-bar .title-area {
-  margin: 0;
-  position: relative;
-}
-
-.top-bar .name {
-  font-size: 16px;
-  height: 2.8125rem;
-  margin: 0;
-}
-
-.top-bar .name h1 {
-  font-size: 1.0625rem;
-  line-height: 2.8125rem;
-  margin: 0;
-}
-
-.top-bar .name h1 a {
-  color: #f7f2ea;
-  display: block;
-  font-weight: 400;
-  padding: 0 .9375rem;
-  width: 75%;
-}
-
-.top-bar .toggle-topbar {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.top-bar .toggle-topbar a {
-  color: #f7f2ea;
-  display: block;
-  font-size: .8125rem;
-  font-weight: 700;
-  height: 2.8125rem;
-  line-height: 2.8125rem;
-  padding: 0 .9375rem;
-  position: relative;
-  text-transform: uppercase;
-}
-
-.top-bar .toggle-topbar.menu-icon {
-  margin-top: -16px;
-  top: 50%;
-}
-
-.top-bar .toggle-topbar.menu-icon a {
-  color: #fff;
-  height: 34px;
-  line-height: 33px;
-  padding: 0 2.5rem 0 .9375rem;
-  position: relative;
-}
-
-.top-bar-section {
-  position: relative;
-}
-
-.top-bar-section ul li {
-  background: #453D3F;
-}
-
-.button,
-h3 {
-  box-shadow: 3px 3px 0 rgba(0,0,0,.1);
-}
-
-.top-bar-section {
-  left: 0;
-  width: auto;
-}
-
-.top-bar-section ul {
-  display: block;
-  font-size: 16px;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-.top-bar-section ul li>a {
-  color: #f7f2ea;
-  display: block;
-  font-family: Oxygen,Helvetica,Arial,sans-serif;
-  font-size: .8125rem;
-  font-weight: 400;
-  padding: 12px 0 12px .9375rem;
-  text-transform: none;
-  width: 100%;
-}
-
-.main:after,
-.main>.content>.documentation-section:after,
-.main>.content>ul.example-gallery:after {
-  clear: both;
-}
-
-body {
-  line-height: 1.54;
-  background-image: url(data:image/png;base64,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);
-  background-position: 50% 50%;
-  background-repeat: repeat repeat;
-}
-
-html {
-  box-sizing: border-box;
-}
-
-p:first-child {
-  margin-top: 0;
-}
-
-a {
-  color: #D70206;
-}
-
-ul {
-  padding: 0 0 0 1em;
-  list-style: disc;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-weight: 300;
-  text-transform: uppercase;
-  line-height: 1.2;
-  margin-top: 1em;
-  margin-bottom: .5em;
-}
-
-h2 {
-  font-size: 1.7777777778rem;
-  font-weight: 400;
-}
-
-h3 {
-  font-size: 1.3333333333rem;
-  font-weight: 400;
-  background: #ded0ba;
-  padding: .2em;
-}
-
-h4 {
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-table {
-  border-spacing: 0;
-  min-width: 50%;
-  text-align: left;
-  border-collapse: collapse;
-}
-
-table td,
-table th {
-  padding: .5em 1em;
-}
-
-table tr td,
-table tr th {
-  border-bottom: 1px solid rgba(0,0,0,.1);
-}
-
-table thead th {
-  padding: .8em 1em;
-}
-
-.landing-page-header {
-  background-color: #F4C63D;
-  text-align: center;
-}
-
-.landing-page-header>.introduction-title {
-  text-transform: uppercase;
-  font-size: 3.1604938272rem;
-  margin: 2rem 0 0;
-  display: inline-block;
-  width: 100%;
-  font-weight: 700;
-  color: #fff;
-  line-height: .5;
-  text-shadow: compact(1px 1px #cfa834,2px 2px #cfa834,3px 3px #cfa834,false,false,false,false,false,false,false);
-}
-
-.landing-page-header .library-statement,
-.landing-page-header>.introduction-title>small {
-  display: inline-block;
-  text-shadow: compact(1px 1px #cfa834,2px 2px #cfa834,false,false,false,false,false,false,false,false);
-  width: 100%;
-}
-
-.landing-page-header>.introduction-title>small {
-  font-size: 1rem;
-}
-
-.landing-page-header .library-statement {
-  text-transform: uppercase;
-  font-size: 1.3333333333rem;
-  margin: 0;
-  font-weight: 700;
-  color: #fff;
-  padding-bottom: 3.125rem;
-}
-
-.landing-page-header .library-statement .important {
-  text-decoration: underline;
-}
-
-.landing-page-header>.limiter {
-  position: relative;
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.landing-page-header>.limiter>figure {
-  margin: 0;
-  display: block;
-  position: relative;
-  width: 100%;
-}
-
-.landing-page-header>.limiter>figure:before {
-  display: block;
-  float: left;
-  content: "";
-  width: 0;
-  height: 0;
-  padding-bottom: 100%;
-}
-
-.landing-page-header>.limiter>figure:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-.landing-page-header>.limiter>figure>svg {
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.landing-page-header>.call-to-action {
-  text-align: center;
-  padding-bottom: 3.125rem;
-  padding-left: 1.5625rem;
-  padding-right: 1.5625rem;
-}
-
-.landing-page-header>.call-to-action>.button {
-  color: #fff;
-  color: rgba(255,255,255,.9);
-  font-weight: 300!important;
-}
-
-.landing-page-header>.call-to-action>.button:before {
-  padding-right: .5em;
-}
-
-.landing-page-header>.call-to-action>.button.download {
-  background-color: #D70206;
-}
-
-.landing-page-header>.call-to-action>.button.contribute {
-  background-color: #F05B4F;
-}
-
-@media only screen and (max-width:40em) {
-  .landing-page-header>.call-to-action>.button {
-    width: 100%;
-    font-size: 1em;
-    font-weight: 700!important;
-  }
-}
-
-.brwsrsup {
-  text-align: center;
-}
-
-.brwsrsup .brwsrsup__support--supported {
-  color: #67bf26;
-}
-
-.brwsrsup .brwsrsup__support--supported:after {
-  content: "";
-  display: inline-block;
-  vertical-align: baseline;
-  font-family: FontAwesome;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-.brwsrsup .brwsrsup__visually-hidden {
-  position: absolute;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
-}
-
-@media screen and (max-width:1100px) {
-  .brwsrsup {
-    display: block;
-    text-align: left;
-  }
-
-  .brwsrsup thead {
-    display: none;
-  }
-
-  .brwsrsup .brwsrsup__feature {
-    display: block;
-    padding: 10px 0;
-    margin: 20px 0 10px;
-  }
-
-  .brwsrsup tbody,
-  .brwsrsup tr {
-    display: block;
-  }
-
-  .brwsrsup tr:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-  .brwsrsup .brwsrsup__support--supported:before,
-  .brwsrsup .brwsrsup__support:before {
-    content: attr(data-browser) " ";
-  }
-
-  .brwsrsup td {
-    display: block;
-  }
-
-  .brwsrsup .brwsrsup__support--not-supported:after,
-  .brwsrsup .brwsrsup__support--supported:after {
-    display: inline-block;
-    vertical-align: baseline;
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 1em;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
-
-  .brwsrsup .brwsrsup__support {
-    diplay: block;
-    padding: 5px;
-    width: auto;
-    float: left;
-    margin: 0 10px 10px 0;
-  }
-
-  .brwsrsup .brwsrsup__support--supported {
-    background: #67bf26;
-    color: #fff;
-  }
-
-  .brwsrsup .brwsrsup__support--supported:after {
-    content: "";
-  }
-
-  .brwsrsup .brwsrsup__support--not-supported {
-    background: #D70206;
-    color: #f7f2ea;
-  }
-
-  .brwsrsup .brwsrsup__support--not-supported:before {
-    content: attr(data-browser) " ";
-  }
-
-  .brwsrsup .brwsrsup__support--not-supported:after {
-    content: "";
-  }
-}
-
-.button {
-  text-transform: uppercase;
-}
-
-.sticky.contain-to-grid {
-  box-shadow: 0 3px 0 rgba(0,0,0,.3);
-}
-
-.ct-chart {
-  margin-bottom: 1rem;
-}
-
-.main {
-  margin: 0 auto;
-  max-width: 75rem;
-  width: 100%;
-}
-
-.main:after,
-.main:before {
-  content: " ";
-  display: table;
-}
-
-.main>header {
-  padding-left: 1.5625rem;
-  padding-right: 1.5625rem;
-  width: 100%;
-  float: left;
-  margin-top: 1.3333333333rem;
-}
-
-.main>.content {
-  padding-left: 1.5625rem;
-  padding-right: 1.5625rem;
-  width: 100%;
-  float: left;
-}
-
-.main>.content>.documentation-section {
-  margin: 1rem -1.5625rem 1.7777777778rem;
-  max-width: none;
-  width: auto;
-}
-
-.main>.content>.documentation-section:after,
-.main>.content>.documentation-section:before {
-  content: " ";
-  display: table;
-}
-
-.main>.content>.documentation-section>.content,
-.main>.content>.documentation-section>header {
-  padding-left: 1.5625rem;
-  padding-right: 1.5625rem;
-  width: 100%;
-  float: left;
-}
-
-.main>.content>ul.example-gallery {
-  display: block;
-  padding: 0;
-  margin: 0 -.625rem;
-}
-
-.main>.content>ul.example-gallery:after,
-.main>.content>ul.example-gallery:before {
-  content: " ";
-  display: table;
-}
-
-.main>.content>ul.example-gallery>li {
-  display: block;
-  float: left;
-  height: auto;
-  list-style: none;
-  padding: 0 .625rem 1.25rem;
-  width: 100%;
-}
-
-.main>.content>ul.example-gallery>li:nth-of-type(1n) {
-  clear: none;
-}
-
-.main>.content>ul.example-gallery>li:nth-of-type(1n+1) {
-  clear: both;
-}
-
-.full .main>.content {
-  padding-left: 1.5625rem;
-  padding-right: 1.5625rem;
-  width: 100%;
-  float: left;
-}</style><script id="loadcss">(function(u,s){!function(e){"use strict";var n=function(n,t,o){var l,r=e.document,i=r.createElement("link");if(t)l=t;else{var a=(r.body||r.getElementsByTagName("head")[0]).childNodes;l=a[a.length-1]}var d=r.styleSheets;i.rel="stylesheet",i.href=n,i.media="only x",l.parentNode.insertBefore(i,t?l:l.nextSibling);var f=function(e){for(var n=i.href,t=d.length;t--;)if(d[t].href===n)return e();setTimeout(function(){f(e)})};return i.onloadcssdefined=f,f(function(){i.media=o||"all"}),i};"undefined"!=typeof module?module.exports=n:e.loadCSS=n}("undefined"!=typeof global?global:this);for(var i in u){loadCSS(u[i],s);}}(['styles/vendor.css','styles/main.css'],document.getElementById("loadcss")));</script><noscript><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css"></noscript><section class="page-landing full"><header class="landing-page-header"><div class="introduction-title">Chartist.js <small>Simple responsive charts</small></div><div class="limiter"><figure><svg id="chartist-guy" data-svg-src="images/chartist-guy.svg"></svg></figure></div><div class="library-statement">Only <span class="important">10KB</span> (Gzip) with <span class="important">no dependencies</span>!</div><div class="call-to-action"><a class="button large download" href="https://github.com/gionkunz/chartist-js/tree/develop/dist" target="_blank" data-icon="&#xf019;">Download</a> <a class="button large contribute" href="https://github.com/gionkunz/chartist-js" target="_blank" data-icon="&#xf09b;">Contribute</a></div></header><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1><li class="toggle-topbar menu-icon"><a href="#">Menu</a></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></ul><ul class="left"><li><a href="getting-started.html">Getting started</a><li><a href="api-documentation.html">API Documentation</a><li><a href="examples.html">Examples</a><li><a href="plugins.html">Plugins</a><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Simple responsive charts</h2></header><div class="content"><p>You may think that this is just yet an other charting library. But Chartist.js is the product of a community that was disappointed about the abilities provided by other charting libraries. Of course there are hundreds of other great charting libraries but after using them there were always tweaks you would have wished for that were not included.<h3>Highly customizable responsive charts</h3><ul class="example-gallery"><li><div id="example-gallery-one" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ1cxJywgJ1cyJywgJ1czJywgJ1c0JywgJ1c1JywgJ1c2JywgJ1c3JywgJ1c4JywgJ1c5J10sCiAgICBzZXJpZXM6IFsKICAgIFsxMiwgOSwgNywgOCwgNiwgNCwgMywgMiwgMF0sCiAgICBbMiwgMSwgMy41LCA3LCA5LCA4LCA3LjcsIDQsIDddLAogICAgWzEsIDMsIDQsIDUsIDYsIDgsIDksIDEwLCAxMV0sCiAgICBbMTEsIDcuNSwgNS41LCA1LjUsIDQsIDMuNSwgMiwgMSwgMF0KICBdCn07CgpuZXcgQ2hhcnRpc3QuTGluZSgnLmN0LWNoYXJ0JywgZGF0YSk7"></div><li><div id="example-gallery-two" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJzE5MzgnLCAnMTkzOScsICcxOTQwJywgJzE5NDEnLCAnMTk0MicsICcxOTQzJ10sCiAgICBzZXJpZXM6IFsKICAgIFsxMjAwMCwgOTAwMCwgNzAwMCwgODAwMCwgMTIwMDAsIDEwMDAwXSwKICAgIFsyMDAwLCAxMDAwLCAzNTAwLCA3MDAwLCA1MDAwLCA5MDAwXQogIF0KfTsKCnZhciBvcHRpb25zID0gewogIHNlcmllc0JhckRpc3RhbmNlOiA1Cn07CgpuZXcgQ2hhcnRpc3QuQmFyKCcuY3QtY2hhcnQnLCBkYXRhLCBvcHRpb25zKTs="></div><li><div id="example-gallery-three" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ0RheSBvbmUnLCAnRGF5IHR3bycsICdEYXkgdGhyZWUnLCAnRGF5IGZvdXInXSwKICBzZXJpZXM6IFsyMCwgMTUsIDQwLCAxMF0KfTsKCnZhciBvcHRpb25zID0gewogIGxhYmVsSW50ZXJwb2xhdGlvbkZuYzogZnVuY3Rpb24odmFsdWUpIHsKICAgIHJldHVybiB2YWx1ZS5zcGxpdCgvXHMrLykucmVkdWNlKGZ1bmN0aW9uKHN0ciwgZWxlbSkgewogICAgICByZXR1cm4gc3RyICsgZWxlbVswXSArICcuJzsKICAgIH0sICcnKTsKICB9Cn07Cgp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLm1lZGl1bSwKICAgIHsKICAgICAgY2hhcnRQYWRkaW5nOiAzMCwKICAgICAgbGFiZWxPZmZzZXQ6IDUwLAogICAgICBsYWJlbERpcmVjdGlvbjogJ2V4cGxvZGUnLAogICAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuIHZhbHVlOwogICAgICB9CiAgICB9CiAgXSwKICBbCiAgICBGb3VuZGF0aW9uLm1lZGlhX3F1ZXJpZXMubGFyZ2UsCiAgICB7CiAgICAgIGxhYmVsT2Zmc2V0OiA4MAogICAgfQogIF0sCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLnhsYXJnZSwKICAgIHsKICAgICAgbGFiZWxPZmZzZXQ6IDEwMAogICAgfQogIF0KXTsKCm5ldyBDaGFydGlzdC5QaWUoJy5jdC1jaGFydCcsIGRhdGEsIG9wdGlvbnMsIHJlc3BvbnNpdmVPcHRpb25zKTs="></div><li><div id="example-gallery-four" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgc2VyaWVzOiBbNjAsIDIwXQp9OwoKdmFyIG9wdGlvbnMgPSB7CiAgZG9udXQ6IHRydWUsCiAgICBkb251dFdpZHRoOiA0MCwKICAgIHRvdGFsOiAxMDAsCiAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICByZXR1cm4gdmFsdWUgKyAnJSc7CiAgfQp9OwoKdmFyIHJlc3BvbnNpdmVPcHRpb25zID0gWwogIFsKICAgIEZvdW5kYXRpb24ubWVkaWFfcXVlcmllcy5tZWRpdW0sCiAgICB7CiAgICAgIGxhYmVsT2Zmc2V0OiAzMCwKICAgICAgY2hhcnRQYWRkaW5nOiAxMCwKICAgICAgbGFiZWxEaXJlY3Rpb246ICdleHBsb2RlJwogICAgfQogIF0sCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLmxhcmdlLAogICAgewogICAgICBsYWJlbE9mZnNldDogLTMwLAogICAgICBjaGFydFBhZGRpbmc6IDAsCiAgICAgIGxhYmVsRGlyZWN0aW9uOiAnaW1wbG9kZScKICAgIH0KICBdCl07CgpuZXcgQ2hhcnRpc3QuUGllKCcuY3QtY2hhcnQnLCBkYXRhLCBvcHRpb25zLCByZXNwb25zaXZlT3B0aW9ucyk7"></div></ul><h3>Facts about Chartist</h3><p>The following facts should give you an overview why to choose Chartists as your front-end chart generator:<ul class="list"><li>Simple handling while using convention over configuration<li>Great flexibility while using clear separation of concerns (Style with CSS & control with JS)<li>Usage of SVG (Yes! SVG is the future of illustration in web!)<li>Fully responsive and DPI independent<li>Responsive configuration with media queries<li>Fully built and customizable with Sass</ul><section class="documentation-section full"><header><h4 id="browser-compatibility">Browser compatibility</h4></header><div class="content"><table class="brwsrsup"><thead><tr><td><th class="brwsrsup__browser">IE9<th class="brwsrsup__browser">IE10<th class="brwsrsup__browser">IE11<th class="brwsrsup__browser">Firefox 31<th class="brwsrsup__browser">Chrome 35<th class="brwsrsup__browser">Safari 7<th class="brwsrsup__browser">Safari 8<th class="brwsrsup__browser">Android 4.3<th class="brwsrsup__browser">Android 4.4<th class="brwsrsup__browser">iOS Safari 6<th class="brwsrsup__browser">iOS Safari 7<tbody><tr><th class="brwsrsup__feature">Overall Browser Support<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">Multi-line Labels (foreignObject)<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">Advanced CSS Animations<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">SVG Animations with SMIL<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">Responsive Options Override<td data-browser="IE9*" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported with polyfill</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span></table></div></section><section class="documentation-section full"><header><h4 id="projects-wrapper-libraries">Projects / Wrapper libraries</h4></header><div class="content"><p>These projects and wrapper libraries are known to me right now that either use Chartist.js or wrap them into a library for usage in a framework. <strong>If you know other projects that use Chartist.js please let us know or make a <a href="https://github.com/gionkunz/chartist-js/blob/develop/site/data/pages/index.yml#L206" target="_blank">pull request for this file</a>.</strong><table id="chartist-projects-table" role="presentation"><thead><tr><th>Project<th>Type<tbody><tr><td><a href="https://github.com/panosoft/node-chartist" target="_blank">node-chartist</a><td>Node Package for Server-side Charts<tr><td><a href="https://github.com/paradox41/ng-chartist.js" target="_blank">ng-chartist.js</a><td>Angular Directive<tr><td><a href="https://github.com/gruberb/chartistAngularDirective" target="_blank">chartistAngularDirective.js</a><td>Angular Directive<tr><td><a href="https://fraserxu.me/react-chartist" target="_blank">react-chartist</a><td>React Component<tr><td><a href="https://github.com/mfpierre/meteor-chartist-js" target="_blank">meteor-chartist-js</a><td>Meteor Package<tr><td><a href="https://github.com/soderlind/tablepress_chartist" target="_blank">tablepress_chartist</a><td>Wordpress / Tablepress Extension<tr><td><a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a><td>Ember Addon<tr><td><a href="https://github.com/hatemalimam/ChartistJSF" target="_blank">ChartistJSF</a><td>Java Server Faces (Prime Faces) Component<tr><tr></table></div></section><section class="documentation-section"><header><h3 id="chart-css-animation-example">Chart CSS animation example</h3></header><div class="content"><div id="example-line-months-interpolation" class="ct-chart ct-golden-section dark" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ0phbicsICdGZWInLCAnTWFyJywgJ0FwcicsICdNYXknLCAnSnVuJywgJ0p1bCcsICdBdWcnLCAnU2VwJywgJ09jdCcsICdOb3YnLCAnRGVjJ10sCiAgICBzZXJpZXM6IFsKICAgIFsxLCAyLCAyLjcsIDAsIDMsIDUsIDMsIDQsIDgsIDEwLCAxMiwgN10sCiAgICBbMCwgMS4yLCAyLCA3LCAyLjUsIDksIDUsIDgsIDksIDExLCAxNCwgNF0sCiAgICBbMTAsIDksIDgsIDYuNSwgNi44LCA2LCA1LjQsIDUuMywgNC41LCA0LjQsIDMsIDIuOF0KICBdCn07Cgp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLnNtYWxsLAogICAgewogICAgICBheGlzWDogewogICAgICAgIGxhYmVsSW50ZXJwb2xhdGlvbkZuYzogZnVuY3Rpb24gKHZhbHVlLCBpbmRleCkgewogICAgICAgICAgLy8gSW50ZXJwb2xhdGlvbiBmdW5jdGlvbiBjYXVzZXMgb25seSBldmVyeSAybmQgbGFiZWwgdG8gYmUgZGlzcGxheWVkCiAgICAgICAgICBpZiAoaW5kZXggJSAyICE9PSAwKSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIHJldHVybiB2YWx1ZTsKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdCl07CgpuZXcgQ2hhcnRpc3QuTGluZSgnLmN0LWNoYXJ0JywgZGF0YSwgewogIGNoYXJ0UGFkZGluZzogewogICAgdG9wOiAzMAogIH0KfSwgcmVzcG9uc2l2ZU9wdGlvbnMpOwo="></div><div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">Note that CSS3 animations on SVG CSS attributes are not supported on all browsers and the appearance may vary.</div></div></div><aside class="side-notes"><p>Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!</aside></section><section class="documentation-section"><header><h3 id="crazy-animations-with-smil">Crazy Animations with SMIL!</h3></header><div class="content"><div id="example-line-svg-animation" class="ct-chart ct-golden-section" data-example="dmFyIGNoYXJ0ID0gbmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnLCAnNycsICc4JywgJzknLCAnMTAnLCAnMTEnLCAnMTInXSwKICBzZXJpZXM6IFsKICAgIFsxMiwgOSwgNywgOCwgNSwgNCwgNiwgMiwgMywgMywgNCwgNl0sCiAgICBbNCwgIDUsIDMsIDcsIDMsIDUsIDUsIDMsIDQsIDQsIDUsIDVdLAogICAgWzUsICAzLCA0LCA1LCA2LCAzLCAzLCA0LCA1LCA2LCAzLCA0XSwKICAgIFszLCAgNCwgNSwgNiwgNywgNiwgNCwgNSwgNiwgNywgNiwgM10KICBdCn0sIHsKICBsb3c6IDAKfSk7CgovLyBMZXQncyBwdXQgYSBzZXF1ZW5jZSBudW1iZXIgYXNpZGUgc28gd2UgY2FuIHVzZSBpdCBpbiB0aGUgZXZlbnQgY2FsbGJhY2tzCnZhciBzZXEgPSAwLAogIGRlbGF5cyA9IDgwLAogIGR1cmF0aW9ucyA9IDUwMDsKCi8vIE9uY2UgdGhlIGNoYXJ0IGlzIGZ1bGx5IGNyZWF0ZWQgd2UgcmVzZXQgdGhlIHNlcXVlbmNlCmNoYXJ0Lm9uKCdjcmVhdGVkJywgZnVuY3Rpb24oKSB7CiAgc2VxID0gMDsKfSk7CgovLyBPbiBlYWNoIGRyYXduIGVsZW1lbnQgYnkgQ2hhcnRpc3Qgd2UgdXNlIHRoZSBDaGFydGlzdC5TdmcgQVBJIHRvIHRyaWdnZXIgU01JTCBhbmltYXRpb25zCmNoYXJ0Lm9uKCdkcmF3JywgZnVuY3Rpb24oZGF0YSkgewogIHNlcSsrOwoKICBpZihkYXRhLnR5cGUgPT09ICdsaW5lJykgewogICAgLy8gSWYgdGhlIGRyYXduIGVsZW1lbnQgaXMgYSBsaW5lIHdlIGRvIGEgc2ltcGxlIG9wYWNpdHkgZmFkZSBpbi4gVGhpcyBjb3VsZCBhbHNvIGJlIGFjaGlldmVkIHVzaW5nIENTUzMgYW5pbWF0aW9ucy4KICAgIGRhdGEuZWxlbWVudC5hbmltYXRlKHsKICAgICAgb3BhY2l0eTogewogICAgICAgIC8vIFRoZSBkZWxheSB3aGVuIHdlIGxpa2UgdG8gc3RhcnQgdGhlIGFuaW1hdGlvbgogICAgICAgIGJlZ2luOiBzZXEgKiBkZWxheXMgKyAxMDAwLAogICAgICAgIC8vIER1cmF0aW9uIG9mIHRoZSBhbmltYXRpb24KICAgICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgICAvLyBUaGUgdmFsdWUgd2hlcmUgdGhlIGFuaW1hdGlvbiBzaG91bGQgc3RhcnQKICAgICAgICBmcm9tOiAwLAogICAgICAgIC8vIFRoZSB2YWx1ZSB3aGVyZSBpdCBzaG91bGQgZW5kCiAgICAgICAgdG86IDEKICAgICAgfQogICAgfSk7CiAgfSBlbHNlIGlmKGRhdGEudHlwZSA9PT0gJ2xhYmVsJyAmJiBkYXRhLmF4aXMgPT09ICd4JykgewogICAgZGF0YS5lbGVtZW50LmFuaW1hdGUoewogICAgICB5OiB7CiAgICAgICAgYmVnaW46IHNlcSAqIGRlbGF5cywKICAgICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgICBmcm9tOiBkYXRhLnkgKyAxMDAsCiAgICAgICAgdG86IGRhdGEueSwKICAgICAgICAvLyBXZSBjYW4gc3BlY2lmeSBhbiBlYXNpbmcgZnVuY3Rpb24gZnJvbSBDaGFydGlzdC5TdmcuRWFzaW5nCiAgICAgICAgZWFzaW5nOiAnZWFzZU91dFF1YXJ0JwogICAgICB9CiAgICB9KTsKICB9IGVsc2UgaWYoZGF0YS50eXBlID09PSAnbGFiZWwnICYmIGRhdGEuYXhpcyA9PT0gJ3knKSB7CiAgICBkYXRhLmVsZW1lbnQuYW5pbWF0ZSh7CiAgICAgIHg6IHsKICAgICAgICBiZWdpbjogc2VxICogZGVsYXlzLAogICAgICAgIGR1cjogZHVyYXRpb25zLAogICAgICAgIGZyb206IGRhdGEueCAtIDEwMCwKICAgICAgICB0bzogZGF0YS54LAogICAgICAgIGVhc2luZzogJ2Vhc2VPdXRRdWFydCcKICAgICAgfQogICAgfSk7CiAgfSBlbHNlIGlmKGRhdGEudHlwZSA9PT0gJ3BvaW50JykgewogICAgZGF0YS5lbGVtZW50LmFuaW1hdGUoewogICAgICB4MTogewogICAgICAgIGJlZ2luOiBzZXEgKiBkZWxheXMsCiAgICAgICAgZHVyOiBkdXJhdGlvbnMsCiAgICAgICAgZnJvbTogZGF0YS54IC0gMTAsCiAgICAgICAgdG86IGRhdGEueCwKICAgICAgICBlYXNpbmc6ICdlYXNlT3V0UXVhcnQnCiAgICAgIH0sCiAgICAgIHgyOiB7CiAgICAgICAgYmVnaW46IHNlcSAqIGRlbGF5cywKICAgICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgICBmcm9tOiBkYXRhLnggLSAxMCwKICAgICAgICB0bzogZGF0YS54LAogICAgICAgIGVhc2luZzogJ2Vhc2VPdXRRdWFydCcKICAgICAgfSwKICAgICAgb3BhY2l0eTogewogICAgICAgIGJlZ2luOiBzZXEgKiBkZWxheXMsCiAgICAgICAgZHVyOiBkdXJhdGlvbnMsCiAgICAgICAgZnJvbTogMCwKICAgICAgICB0bzogMSwKICAgICAgICBlYXNpbmc6ICdlYXNlT3V0UXVhcnQnCiAgICAgIH0KICAgIH0pOwogIH0gZWxzZSBpZihkYXRhLnR5cGUgPT09ICdncmlkJykgewogICAgLy8gVXNpbmcgZGF0YS5heGlzIHdlIGdldCB4IG9yIHkgd2hpY2ggd2UgY2FuIHVzZSB0byBjb25zdHJ1Y3Qgb3VyIGFuaW1hdGlvbiBkZWZpbml0aW9uIG9iamVjdHMKICAgIHZhciBwb3MxQW5pbWF0aW9uID0gewogICAgICBiZWdpbjogc2VxICogZGVsYXlzLAogICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgZnJvbTogZGF0YVtkYXRhLmF4aXMudW5pdHMucG9zICsgJzEnXSAtIDMwLAogICAgICB0bzogZGF0YVtkYXRhLmF4aXMudW5pdHMucG9zICsgJzEnXSwKICAgICAgZWFzaW5nOiAnZWFzZU91dFF1YXJ0JwogICAgfTsKCiAgICB2YXIgcG9zMkFuaW1hdGlvbiA9IHsKICAgICAgYmVnaW46IHNlcSAqIGRlbGF5cywKICAgICAgZHVyOiBkdXJhdGlvbnMsCiAgICAgIGZyb206IGRhdGFbZGF0YS5heGlzLnVuaXRzLnBvcyArICcyJ10gLSAxMDAsCiAgICAgIHRvOiBkYXRhW2RhdGEuYXhpcy51bml0cy5wb3MgKyAnMiddLAogICAgICBlYXNpbmc6ICdlYXNlT3V0UXVhcnQnCiAgICB9OwoKICAgIHZhciBhbmltYXRpb25zID0ge307CiAgICBhbmltYXRpb25zW2RhdGEuYXhpcy51bml0cy5wb3MgKyAnMSddID0gcG9zMUFuaW1hdGlvbjsKICAgIGFuaW1hdGlvbnNbZGF0YS5heGlzLnVuaXRzLnBvcyArICcyJ10gPSBwb3MyQW5pbWF0aW9uOwogICAgYW5pbWF0aW9uc1snb3BhY2l0eSddID0gewogICAgICBiZWdpbjogc2VxICogZGVsYXlzLAogICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgZnJvbTogMCwKICAgICAgdG86IDEsCiAgICAgIGVhc2luZzogJ2Vhc2VPdXRRdWFydCcKICAgIH07CgogICAgZGF0YS5lbGVtZW50LmFuaW1hdGUoYW5pbWF0aW9ucyk7CiAgfQp9KTsKCi8vIEZvciB0aGUgc2FrZSBvZiB0aGUgZXhhbXBsZSB3ZSB1cGRhdGUgdGhlIGNoYXJ0IGV2ZXJ5IHRpbWUgaXQncyBjcmVhdGVkIHdpdGggYSBkZWxheSBvZiAxMCBzZWNvbmRzCmNoYXJ0Lm9uKCdjcmVhdGVkJywgZnVuY3Rpb24oKSB7CiAgaWYod2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0KSB7CiAgICBjbGVhclRpbWVvdXQod2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0KTsKICAgIHdpbmRvdy5fX2V4YW1wbGVBbmltYXRlVGltZW91dCA9IG51bGw7CiAgfQogIHdpbmRvdy5fX2V4YW1wbGVBbmltYXRlVGltZW91dCA9IHNldFRpbWVvdXQoY2hhcnQudXBkYXRlLmJpbmQoY2hhcnQpLCAxMjAwMCk7Cn0pOwoK"></div></div><aside class="side-notes"><p>Almost limitless animation possibilities with the Chartist.Svg animation API. Checkout the <a href="getting-started.html#animations-using-chartistsvg">advanced getting started guide about SVG animations</a> with SMIL.</aside></section><section class="documentation-section"><header><h3 id="responsive-charts-configuration">Responsive charts configuration</h3></header><div class="content"><div id="example-line-simple-responsive" class="ct-chart ct-golden-section" data-example="LyogQWRkIGEgYmFzaWMgZGF0YSBzZXJpZXMgd2l0aCBzaXggbGFiZWxzIGFuZCB2YWx1ZXMgKi8KdmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJzEnLCAnMicsICczJywgJzQnLCAnNScsICc2J10sCiAgc2VyaWVzOiBbCiAgICB7CiAgICAgIGRhdGE6IFsxLCAyLCAzLCA1LCA4LCAxM10KICAgIH0KICBdCn07CgovKiBTZXQgc29tZSBiYXNlIG9wdGlvbnMgKHNldHRpbmdzIHdpbGwgb3ZlcnJpZGUgdGhlIGRlZmF1bHQgc2V0dGluZ3MgaW4gQ2hhcnRpc3QuanMgKnNlZSBkZWZhdWx0IHNldHRpbmdzKikuIFdlIGFyZSBhZGRpbmcgYSBiYXNpYyBsYWJlbCBpbnRlcnBvbGF0aW9uIGZ1bmN0aW9uIGZvciB0aGUgeEF4aXMgbGFiZWxzLiAqLwp2YXIgb3B0aW9ucyA9IHsKICBheGlzWDogewogICAgbGFiZWxJbnRlcnBvbGF0aW9uRm5jOiBmdW5jdGlvbih2YWx1ZSkgewogICAgICByZXR1cm4gJ0NhbGVuZGFyIFdlZWsgJyArIHZhbHVlOwogICAgfQogIH0KfTsKCi8qIE5vdyB3ZSBjYW4gc3BlY2lmeSBtdWx0aXBsZSByZXNwb25zaXZlIHNldHRpbmdzIHRoYXQgd2lsbCBvdmVycmlkZSB0aGUgYmFzZSBzZXR0aW5ncyBiYXNlZCBvbiBvcmRlciBhbmQgaWYgdGhlIG1lZGlhIHF1ZXJpZXMgbWF0Y2guIEluIHRoaXMgZXhhbXBsZSB3ZSBhcmUgY2hhbmdpbmcgdGhlIHZpc2liaWxpdHkgb2YgZG90cyBhbmQgbGluZXMgYXMgd2VsbCBhcyB1c2UgZGlmZmVyZW50IGxhYmVsIGludGVycG9sYXRpb25zIGZvciBzcGFjZSByZWFzb25zLiAqLwp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWydzY3JlZW4gYW5kIChtaW4td2lkdGg6IDY0MXB4KSBhbmQgKG1heC13aWR0aDogMTAyNHB4KScsIHsKICAgIHNob3dQb2ludDogZmFsc2UsCiAgICBheGlzWDogewogICAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuICdXZWVrICcgKyB2YWx1ZTsKICAgICAgfQogICAgfQogIH1dLAogIFsnc2NyZWVuIGFuZCAobWF4LXdpZHRoOiA2NDBweCknLCB7CiAgICBzaG93TGluZTogZmFsc2UsCiAgICBheGlzWDogewogICAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuICdXJyArIHZhbHVlOwogICAgICB9CiAgICB9CiAgfV0KXTsKCi8qIEluaXRpYWxpemUgdGhlIGNoYXJ0IHdpdGggdGhlIGFib3ZlIHNldHRpbmdzICovCm5ldyBDaGFydGlzdC5MaW5lKCcjbXktY2hhcnQnLCBkYXRhLCBvcHRpb25zLCByZXNwb25zaXZlT3B0aW9ucyk7"></div><button class="button" data-toggle-visible="#example-line-simple-responsive-code">Show code</button><pre id="example-line-simple-responsive-code"><code class="js">/* Add a basic data series with six labels and values */
+    [data-icon]:before {
+      content: attr(data-icon);
+      display: inline-block;
+      vertical-align: baseline;
+      font-family: FontAwesome;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 1em;
+      line-height: 1;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .ct-golden-section:after {
+      content: "";
+    }
+
+    .ct-golden-section {
+      display: block;
+      position: relative;
+      width: 100%;
+    }
+
+    .ct-golden-section:before {
+      display: block;
+      float: left;
+      content: "";
+      width: 0;
+      height: 0;
+      padding-bottom: 61.804697157%;
+    }
+
+    .ct-golden-section:after {
+      display: table;
+      clear: both;
+    }
+
+    body,
+    td,
+    th {
+      padding: 0;
+    }
+
+    .button,
+    body {
+      position: relative;
+    }
+
+    html {
+      font-family: sans-serif;
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    article,
+    figure,
+    header,
+    nav,
+    section {
+      display: block;
+    }
+
+    a {
+      background-color: transparent;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin: .67em 0;
+    }
+
+    small {
+      font-size: 80%;
+    }
+
+    svg:not(:root) {
+      overflow: hidden;
+    }
+
+    figure {
+      margin: 1em 40px;
+    }
+
+    .brwsrsup .brwsrsup__support--supported:after {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .button,
+    body {
+      font-family: Oxygen,Helvetica,Arial,sans-serif;
+    }
+
+    body,
+    html {
+      height: 100%;
+      font-size: 100%;
+    }
+
+    *,
+    :after,
+    :before {
+      -webkit-box-sizing: inherit;
+      -moz-box-sizing: inherit;
+      box-sizing: inherit;
+    }
+
+    body {
+      background: #EADBC4;
+      color: #5b4421;
+      font-style: normal;
+      font-weight: 400;
+      margin: 0;
+    }
+
+    .left {
+      float: left!important;
+    }
+
+    .right {
+      float: right!important;
+    }
+
+    .button,
+    a {
+      text-decoration: none;
+    }
+
+    .button {
+      border-radius: 0;
+      border-style: solid;
+      border-width: 0;
+      font-weight: 400;
+      line-height: normal;
+      margin: 0 0 1.25rem;
+      text-align: center;
+      display: inline-block;
+      padding: 1rem 2rem 1.0625rem;
+      font-size: 1rem;
+      background-color: #F4C63D;
+      border-color: #e7b00d;
+      color: #453D3F;
+    }
+
+    .button.large {
+      padding: 1.125rem 2.25rem 1.1875rem;
+      font-size: 1.25rem;
+    }
+
+    .contain-to-grid {
+      width: 100%;
+      background: #453D3F;
+    }
+
+    .contain-to-grid .top-bar {
+      margin-bottom: 0;
+    }
+
+    .top-bar {
+      background: #453D3F;
+      height: 2.8125rem;
+      line-height: 2.8125rem;
+      margin-bottom: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .top-bar ul {
+      list-style: none;
+      margin-bottom: 0;
+    }
+
+    .top-bar .title-area {
+      margin: 0;
+      position: relative;
+    }
+
+    .top-bar .name {
+      font-size: 16px;
+      height: 2.8125rem;
+      margin: 0;
+    }
+
+    .top-bar .name h1 {
+      font-size: 1.0625rem;
+      line-height: 2.8125rem;
+      margin: 0;
+    }
+
+    .top-bar .name h1 a {
+      color: #f7f2ea;
+      display: block;
+      font-weight: 400;
+      padding: 0 .9375rem;
+      width: 75%;
+    }
+
+    .top-bar .toggle-topbar {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .top-bar .toggle-topbar a {
+      color: #f7f2ea;
+      display: block;
+      font-size: .8125rem;
+      font-weight: 700;
+      height: 2.8125rem;
+      line-height: 2.8125rem;
+      padding: 0 .9375rem;
+      position: relative;
+      text-transform: uppercase;
+    }
+
+    .top-bar .toggle-topbar.menu-icon {
+      margin-top: -16px;
+      top: 50%;
+    }
+
+    .top-bar .toggle-topbar.menu-icon a {
+      color: #fff;
+      height: 34px;
+      line-height: 33px;
+      padding: 0 2.5rem 0 .9375rem;
+      position: relative;
+    }
+
+    .top-bar-section {
+      position: relative;
+    }
+
+    .top-bar-section ul li {
+      background: #453D3F;
+    }
+
+    .button,
+    h3 {
+      box-shadow: 3px 3px 0 rgba(0,0,0,.1);
+    }
+
+    .top-bar-section {
+      left: 0;
+      width: auto;
+    }
+
+    .top-bar-section ul {
+      display: block;
+      font-size: 16px;
+      height: auto;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .top-bar-section ul li>a {
+      color: #f7f2ea;
+      display: block;
+      font-family: Oxygen,Helvetica,Arial,sans-serif;
+      font-size: .8125rem;
+      font-weight: 400;
+      padding: 12px 0 12px .9375rem;
+      text-transform: none;
+      width: 100%;
+    }
+
+    .main:after,
+    .main>.content>.documentation-section:after,
+    .main>.content>ul.example-gallery:after {
+      clear: both;
+    }
+
+    body {
+      line-height: 1.54;
+      background-image: url(data:image/png;base64,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);
+      background-position: 50% 50%;
+      background-repeat: repeat repeat;
+    }
+
+    html {
+      box-sizing: border-box;
+    }
+
+    p:first-child {
+      margin-top: 0;
+    }
+
+    a {
+      color: #D70206;
+    }
+
+    ul {
+      padding: 0 0 0 1em;
+      list-style: disc;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 300;
+      text-transform: uppercase;
+      line-height: 1.2;
+      margin-top: 1em;
+      margin-bottom: .5em;
+    }
+
+    h2 {
+      font-size: 1.7777777778rem;
+      font-weight: 400;
+    }
+
+    h3 {
+      font-size: 1.3333333333rem;
+      font-weight: 400;
+      background: #ded0ba;
+      padding: .2em;
+    }
+
+    h4 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    table {
+      border-spacing: 0;
+      min-width: 50%;
+      text-align: left;
+      border-collapse: collapse;
+    }
+
+    table td,
+    table th {
+      padding: .5em 1em;
+    }
+
+    table tr td,
+    table tr th {
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+
+    table thead th {
+      padding: .8em 1em;
+    }
+
+    .landing-page-header {
+      background-color: #F4C63D;
+      text-align: center;
+    }
+
+    .landing-page-header>.introduction-title {
+      text-transform: uppercase;
+      font-size: 3.1604938272rem;
+      margin: 2rem 0 0;
+      display: inline-block;
+      width: 100%;
+      font-weight: 700;
+      color: #fff;
+      line-height: .5;
+      text-shadow: compact(1px 1px #cfa834,2px 2px #cfa834,3px 3px #cfa834,false,false,false,false,false,false,false);
+    }
+
+    .landing-page-header .library-statement,
+    .landing-page-header>.introduction-title>small {
+      display: inline-block;
+      text-shadow: compact(1px 1px #cfa834,2px 2px #cfa834,false,false,false,false,false,false,false,false);
+      width: 100%;
+    }
+
+    .landing-page-header>.introduction-title>small {
+      font-size: 1rem;
+    }
+
+    .landing-page-header .library-statement {
+      text-transform: uppercase;
+      font-size: 1.3333333333rem;
+      margin: 0;
+      font-weight: 700;
+      color: #fff;
+      padding-bottom: 3.125rem;
+    }
+
+    .landing-page-header .library-statement .important {
+      text-decoration: underline;
+    }
+
+    .landing-page-header>.limiter {
+      position: relative;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .landing-page-header>.limiter>figure {
+      margin: 0;
+      display: block;
+      position: relative;
+      width: 100%;
+    }
+
+    .landing-page-header>.limiter>figure:before {
+      display: block;
+      float: left;
+      content: "";
+      width: 0;
+      height: 0;
+      padding-bottom: 100%;
+    }
+
+    .landing-page-header>.limiter>figure:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .landing-page-header>.limiter>figure>svg {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .landing-page-header>.call-to-action {
+      text-align: center;
+      padding-bottom: 3.125rem;
+      padding-left: 1.5625rem;
+      padding-right: 1.5625rem;
+    }
+
+    .landing-page-header>.call-to-action>.button {
+      color: #fff;
+      color: rgba(255,255,255,.9);
+      font-weight: 300!important;
+    }
+
+    .landing-page-header>.call-to-action>.button:before {
+      padding-right: .5em;
+    }
+
+    .landing-page-header>.call-to-action>.button.download {
+      background-color: #D70206;
+    }
+
+    .landing-page-header>.call-to-action>.button.contribute {
+      background-color: #F05B4F;
+    }
+
+    @media only screen and (max-width:40em) {
+      .landing-page-header>.call-to-action>.button {
+        width: 100%;
+        font-size: 1em;
+        font-weight: 700!important;
+      }
+    }
+
+    .brwsrsup {
+      text-align: center;
+    }
+
+    .brwsrsup .brwsrsup__support--supported {
+      color: #67bf26;
+    }
+
+    .brwsrsup .brwsrsup__support--supported:after {
+      content: "";
+      display: inline-block;
+      vertical-align: baseline;
+      font-family: FontAwesome;
+      font-style: normal;
+      font-weight: 400;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .brwsrsup .brwsrsup__visually-hidden {
+      position: absolute;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      width: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+    }
+
+    @media screen and (max-width:1100px) {
+      .brwsrsup {
+        display: block;
+        text-align: left;
+      }
+
+      .brwsrsup thead {
+        display: none;
+      }
+
+      .brwsrsup .brwsrsup__feature {
+        display: block;
+        padding: 10px 0;
+        margin: 20px 0 10px;
+      }
+
+      .brwsrsup tbody,
+      .brwsrsup tr {
+        display: block;
+      }
+
+      .brwsrsup tr:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      .brwsrsup .brwsrsup__support--supported:before,
+      .brwsrsup .brwsrsup__support:before {
+        content: attr(data-browser) " ";
+      }
+
+      .brwsrsup td {
+        display: block;
+      }
+
+      .brwsrsup .brwsrsup__support--not-supported:after,
+      .brwsrsup .brwsrsup__support--supported:after {
+        display: inline-block;
+        vertical-align: baseline;
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 1em;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .brwsrsup .brwsrsup__support {
+        diplay: block;
+        padding: 5px;
+        width: auto;
+        float: left;
+        margin: 0 10px 10px 0;
+      }
+
+      .brwsrsup .brwsrsup__support--supported {
+        background: #67bf26;
+        color: #fff;
+      }
+
+      .brwsrsup .brwsrsup__support--supported:after {
+        content: "";
+      }
+
+      .brwsrsup .brwsrsup__support--not-supported {
+        background: #D70206;
+        color: #f7f2ea;
+      }
+
+      .brwsrsup .brwsrsup__support--not-supported:before {
+        content: attr(data-browser) " ";
+      }
+
+      .brwsrsup .brwsrsup__support--not-supported:after {
+        content: "";
+      }
+    }
+
+    .button {
+      text-transform: uppercase;
+    }
+
+    .sticky.contain-to-grid {
+      box-shadow: 0 3px 0 rgba(0,0,0,.3);
+    }
+
+    .ct-chart {
+      margin-bottom: 1rem;
+    }
+
+    .main {
+      margin: 0 auto;
+      max-width: 75rem;
+      width: 100%;
+    }
+
+    .main:after,
+    .main:before {
+      content: " ";
+      display: table;
+    }
+
+    .main>header {
+      padding-left: 1.5625rem;
+      padding-right: 1.5625rem;
+      width: 100%;
+      float: left;
+      margin-top: 1.3333333333rem;
+    }
+
+    .main>.content {
+      padding-left: 1.5625rem;
+      padding-right: 1.5625rem;
+      width: 100%;
+      float: left;
+    }
+
+    .main>.content>.documentation-section {
+      margin: 1rem -1.5625rem 1.7777777778rem;
+      max-width: none;
+      width: auto;
+    }
+
+    .main>.content>.documentation-section:after,
+    .main>.content>.documentation-section:before {
+      content: " ";
+      display: table;
+    }
+
+    .main>.content>.documentation-section>.content,
+    .main>.content>.documentation-section>header {
+      padding-left: 1.5625rem;
+      padding-right: 1.5625rem;
+      width: 100%;
+      float: left;
+    }
+
+    .main>.content>ul.example-gallery {
+      display: block;
+      padding: 0;
+      margin: 0 -.625rem;
+    }
+
+    .main>.content>ul.example-gallery:after,
+    .main>.content>ul.example-gallery:before {
+      content: " ";
+      display: table;
+    }
+
+    .main>.content>ul.example-gallery>li {
+      display: block;
+      float: left;
+      height: auto;
+      list-style: none;
+      padding: 0 .625rem 1.25rem;
+      width: 100%;
+    }
+
+    .main>.content>ul.example-gallery>li:nth-of-type(1n) {
+      clear: none;
+    }
+
+    .main>.content>ul.example-gallery>li:nth-of-type(1n+1) {
+      clear: both;
+    }
+
+    .full .main>.content {
+      padding-left: 1.5625rem;
+      padding-right: 1.5625rem;
+      width: 100%;
+      float: left;
+    }</style><link rel="preload" href="styles/vendor.css" as="style" onload="this.rel='stylesheet'"><noscript><link rel="stylesheet" href="styles/vendor.css"></noscript><link rel="preload" href="styles/main.css" as="style" onload="this.rel='stylesheet'"><noscript><link rel="stylesheet" href="styles/main.css"></noscript><script>!function(e){"use strict";var t=function(t,n,r){function o(e){return i.body?e():void setTimeout(function(){o(e)})}function a(){d.addEventListener&&d.removeEventListener("load",a),d.media=r||"all"}var l,i=e.document,d=i.createElement("link");if(n)l=n;else{var s=(i.body||i.getElementsByTagName("head")[0]).childNodes;l=s[s.length-1]}var u=i.styleSheets;d.rel="stylesheet",d.href=t,d.media="only x",o(function(){l.parentNode.insertBefore(d,n?l:l.nextSibling)});var f=function(e){for(var t=d.href,n=u.length;n--;)if(u[n].href===t)return e();setTimeout(function(){f(e)})};return d.addEventListener&&d.addEventListener("load",a),d.onloadcssdefined=f,f(a),d};"undefined"!=typeof exports?exports.loadCSS=t:e.loadCSS=t}("undefined"!=typeof global?global:this),function(e){if(e.loadCSS){var t=loadCSS.relpreload={};if(t.support=function(){try{return e.document.createElement("link").relList.supports("preload")}catch(e){return!1}},t.poly=function(){for(var t=e.document.getElementsByTagName("link"),n=0;n<t.length;n++){var r=t[n];"preload"===r.rel&&"style"===r.getAttribute("as")&&(e.loadCSS(r.href,r,r.getAttribute("media")),r.rel=null)}},!t.support()){t.poly();var n=e.setInterval(t.poly,300);e.addEventListener&&e.addEventListener("load",function(){t.poly(),e.clearInterval(n)}),e.attachEvent&&e.attachEvent("onload",function(){e.clearInterval(n)})}}}(this);</script><section class="page-landing full"><header class="landing-page-header"><div class="introduction-title">Chartist.js <small>Simple responsive charts</small></div><div class="limiter"><figure><svg id="chartist-guy" data-svg-src="images/chartist-guy.svg"></svg></figure></div><div class="library-statement">Only <span class="important">10KB</span> (Gzip) with <span class="important">no dependencies</span>!</div><div class="call-to-action"><a class="button large download" href="https://github.com/gionkunz/chartist-js/tree/develop/dist" target="_blank" data-icon="&#xf019;">Download</a> <a class="button large contribute" href="https://github.com/gionkunz/chartist-js" target="_blank" data-icon="&#xf09b;">Contribute</a></div></header><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar="" data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1><li class="toggle-topbar menu-icon"><a href="#">Menu</a></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></ul><ul class="left"><li><a href="getting-started.html">Getting started</a><li><a href="api-documentation.html">API Documentation</a><li><a href="examples.html">Examples</a><li><a href="plugins.html">Plugins</a><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Simple responsive charts</h2></header><div class="content"><p>You may think that this is just yet an other charting library. But Chartist.js is the product of a community that was disappointed about the abilities provided by other charting libraries. Of course there are hundreds of other great charting libraries but after using them there were always tweaks you would have wished for that were not included.<h3>Highly customizable responsive charts</h3><ul class="example-gallery"><li><div id="example-gallery-one" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ1cxJywgJ1cyJywgJ1czJywgJ1c0JywgJ1c1JywgJ1c2JywgJ1c3JywgJ1c4JywgJ1c5J10sCiAgICBzZXJpZXM6IFsKICAgIFsxMiwgOSwgNywgOCwgNiwgNCwgMywgMiwgMF0sCiAgICBbMiwgMSwgMy41LCA3LCA5LCA4LCA3LjcsIDQsIDddLAogICAgWzEsIDMsIDQsIDUsIDYsIDgsIDksIDEwLCAxMV0sCiAgICBbMTEsIDcuNSwgNS41LCA1LjUsIDQsIDMuNSwgMiwgMSwgMF0KICBdCn07CgpuZXcgQ2hhcnRpc3QuTGluZSgnLmN0LWNoYXJ0JywgZGF0YSk7"></div><li><div id="example-gallery-two" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJzE5MzgnLCAnMTkzOScsICcxOTQwJywgJzE5NDEnLCAnMTk0MicsICcxOTQzJ10sCiAgICBzZXJpZXM6IFsKICAgIFsxMjAwMCwgOTAwMCwgNzAwMCwgODAwMCwgMTIwMDAsIDEwMDAwXSwKICAgIFsyMDAwLCAxMDAwLCAzNTAwLCA3MDAwLCA1MDAwLCA5MDAwXQogIF0KfTsKCnZhciBvcHRpb25zID0gewogIHNlcmllc0JhckRpc3RhbmNlOiA1Cn07CgpuZXcgQ2hhcnRpc3QuQmFyKCcuY3QtY2hhcnQnLCBkYXRhLCBvcHRpb25zKTs="></div><li><div id="example-gallery-three" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ0RheSBvbmUnLCAnRGF5IHR3bycsICdEYXkgdGhyZWUnLCAnRGF5IGZvdXInXSwKICBzZXJpZXM6IFsyMCwgMTUsIDQwLCAxMF0KfTsKCnZhciBvcHRpb25zID0gewogIGxhYmVsSW50ZXJwb2xhdGlvbkZuYzogZnVuY3Rpb24odmFsdWUpIHsKICAgIHJldHVybiB2YWx1ZS5zcGxpdCgvXHMrLykucmVkdWNlKGZ1bmN0aW9uKHN0ciwgZWxlbSkgewogICAgICByZXR1cm4gc3RyICsgZWxlbVswXSArICcuJzsKICAgIH0sICcnKTsKICB9Cn07Cgp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLm1lZGl1bSwKICAgIHsKICAgICAgY2hhcnRQYWRkaW5nOiAzMCwKICAgICAgbGFiZWxPZmZzZXQ6IDUwLAogICAgICBsYWJlbERpcmVjdGlvbjogJ2V4cGxvZGUnLAogICAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuIHZhbHVlOwogICAgICB9CiAgICB9CiAgXSwKICBbCiAgICBGb3VuZGF0aW9uLm1lZGlhX3F1ZXJpZXMubGFyZ2UsCiAgICB7CiAgICAgIGxhYmVsT2Zmc2V0OiA4MAogICAgfQogIF0sCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLnhsYXJnZSwKICAgIHsKICAgICAgbGFiZWxPZmZzZXQ6IDEwMAogICAgfQogIF0KXTsKCm5ldyBDaGFydGlzdC5QaWUoJy5jdC1jaGFydCcsIGRhdGEsIG9wdGlvbnMsIHJlc3BvbnNpdmVPcHRpb25zKTs="></div><li><div id="example-gallery-four" class="ct-chart ct-golden-section" data-example="dmFyIGRhdGEgPSB7CiAgc2VyaWVzOiBbNjAsIDIwXQp9OwoKdmFyIG9wdGlvbnMgPSB7CiAgZG9udXQ6IHRydWUsCiAgICBkb251dFdpZHRoOiA0MCwKICAgIHRvdGFsOiAxMDAsCiAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICByZXR1cm4gdmFsdWUgKyAnJSc7CiAgfQp9OwoKdmFyIHJlc3BvbnNpdmVPcHRpb25zID0gWwogIFsKICAgIEZvdW5kYXRpb24ubWVkaWFfcXVlcmllcy5tZWRpdW0sCiAgICB7CiAgICAgIGxhYmVsT2Zmc2V0OiAzMCwKICAgICAgY2hhcnRQYWRkaW5nOiAxMCwKICAgICAgbGFiZWxEaXJlY3Rpb246ICdleHBsb2RlJwogICAgfQogIF0sCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLmxhcmdlLAogICAgewogICAgICBsYWJlbE9mZnNldDogLTMwLAogICAgICBjaGFydFBhZGRpbmc6IDAsCiAgICAgIGxhYmVsRGlyZWN0aW9uOiAnaW1wbG9kZScKICAgIH0KICBdCl07CgpuZXcgQ2hhcnRpc3QuUGllKCcuY3QtY2hhcnQnLCBkYXRhLCBvcHRpb25zLCByZXNwb25zaXZlT3B0aW9ucyk7"></div></ul><h3>Facts about Chartist</h3><p>The following facts should give you an overview why to choose Chartists as your front-end chart generator:<ul class="list"><li>Simple handling while using convention over configuration<li>Great flexibility while using clear separation of concerns (Style with CSS & control with JS)<li>Usage of SVG (Yes! SVG is the future of illustration in web!)<li>Fully responsive and DPI independent<li>Responsive configuration with media queries<li>Fully built and customizable with Sass</ul><section class="documentation-section full"><header><h4 id="browser-compatibility">Browser compatibility</h4></header><div class="content"><table class="brwsrsup"><thead><tr><td><th class="brwsrsup__browser">IE9<th class="brwsrsup__browser">IE10<th class="brwsrsup__browser">IE11<th class="brwsrsup__browser">Firefox 31<th class="brwsrsup__browser">Chrome 35<th class="brwsrsup__browser">Safari 7<th class="brwsrsup__browser">Safari 8<th class="brwsrsup__browser">Android 4.3<th class="brwsrsup__browser">Android 4.4<th class="brwsrsup__browser">iOS Safari 6<th class="brwsrsup__browser">iOS Safari 7<tbody><tr><th class="brwsrsup__feature">Overall Browser Support<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">Multi-line Labels (foreignObject)<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">Advanced CSS Animations<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">SVG Animations with SMIL<td data-browser="IE9" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--not-supported"><span class="brwsrsup__visually-hidden">Not supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><tr><th class="brwsrsup__feature">Responsive Options Override<td data-browser="IE9*" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported with polyfill</span><td data-browser="IE10" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="IE11" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Firefox 31" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Chrome 35" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Safari 8" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.3" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="Android 4.4" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 6" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span><td data-browser="iOS Safari 7" class="brwsrsup__support brwsrsup__support--supported"><span class="brwsrsup__visually-hidden">Supported</span></table></div></section><section class="documentation-section full"><header><h4 id="projects-wrapper-libraries">Projects / Wrapper libraries</h4></header><div class="content"><p>These projects and wrapper libraries are known to me right now that either use Chartist.js or wrap them into a library for usage in a framework. <strong>If you know other projects that use Chartist.js please let us know or make a <a href="https://github.com/gionkunz/chartist-js/blob/develop/site/data/pages/index.yml#L206" target="_blank">pull request for this file</a>.</strong><table id="chartist-projects-table" role="presentation"><thead><tr><th>Project<th>Type<tbody><tr><td><a href="https://github.com/panosoft/node-chartist" target="_blank">node-chartist</a><td>Node Package for Server-side Charts<tr><td><a href="https://github.com/paradox41/ng-chartist.js" target="_blank">ng-chartist.js</a><td>Angular Directive<tr><td><a href="https://github.com/gruberb/chartistAngularDirective" target="_blank">chartistAngularDirective.js</a><td>Angular Directive<tr><td><a href="https://fraserxu.me/react-chartist" target="_blank">react-chartist</a><td>React Component<tr><td><a href="https://github.com/mfpierre/meteor-chartist-js" target="_blank">meteor-chartist-js</a><td>Meteor Package<tr><td><a href="https://github.com/soderlind/tablepress_chartist" target="_blank">tablepress_chartist</a><td>Wordpress / Tablepress Extension<tr><td><a href="https://github.com/tylergaw/ember-cli-chartist" target="_blank">ember-cli-chartist</a><td>Ember Addon<tr><td><a href="https://github.com/hatemalimam/ChartistJSF" target="_blank">ChartistJSF</a><td>Java Server Faces (Prime Faces) Component<tr><tr></table></div></section><section class="documentation-section"><header><h3 id="chart-css-animation-example">Chart CSS animation example</h3></header><div class="content"><div id="example-line-months-interpolation" class="ct-chart ct-golden-section dark" data-example="dmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJ0phbicsICdGZWInLCAnTWFyJywgJ0FwcicsICdNYXknLCAnSnVuJywgJ0p1bCcsICdBdWcnLCAnU2VwJywgJ09jdCcsICdOb3YnLCAnRGVjJ10sCiAgICBzZXJpZXM6IFsKICAgIFsxLCAyLCAyLjcsIDAsIDMsIDUsIDMsIDQsIDgsIDEwLCAxMiwgN10sCiAgICBbMCwgMS4yLCAyLCA3LCAyLjUsIDksIDUsIDgsIDksIDExLCAxNCwgNF0sCiAgICBbMTAsIDksIDgsIDYuNSwgNi44LCA2LCA1LjQsIDUuMywgNC41LCA0LjQsIDMsIDIuOF0KICBdCn07Cgp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWwogICAgRm91bmRhdGlvbi5tZWRpYV9xdWVyaWVzLnNtYWxsLAogICAgewogICAgICBheGlzWDogewogICAgICAgIGxhYmVsSW50ZXJwb2xhdGlvbkZuYzogZnVuY3Rpb24gKHZhbHVlLCBpbmRleCkgewogICAgICAgICAgLy8gSW50ZXJwb2xhdGlvbiBmdW5jdGlvbiBjYXVzZXMgb25seSBldmVyeSAybmQgbGFiZWwgdG8gYmUgZGlzcGxheWVkCiAgICAgICAgICBpZiAoaW5kZXggJSAyICE9PSAwKSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIHJldHVybiB2YWx1ZTsKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIH0KICBdCl07CgpuZXcgQ2hhcnRpc3QuTGluZSgnLmN0LWNoYXJ0JywgZGF0YSwgewogIGNoYXJ0UGFkZGluZzogewogICAgdG9wOiAzMAogIH0KfSwgcmVzcG9uc2l2ZU9wdGlvbnMpOwo="></div><div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">Note that CSS3 animations on SVG CSS attributes are not supported on all browsers and the appearance may vary.</div></div></div><aside class="side-notes"><p>Specifying the style of your chart in CSS is not only cleaner but also enables you to use awesome CSS animations and transitions to be applied to your SVG elements!</aside></section><section class="documentation-section"><header><h3 id="crazy-animations-with-smil">Crazy Animations with SMIL!</h3></header><div class="content"><div id="example-line-svg-animation" class="ct-chart ct-golden-section" data-example="dmFyIGNoYXJ0ID0gbmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBsYWJlbHM6IFsnMScsICcyJywgJzMnLCAnNCcsICc1JywgJzYnLCAnNycsICc4JywgJzknLCAnMTAnLCAnMTEnLCAnMTInXSwKICBzZXJpZXM6IFsKICAgIFsxMiwgOSwgNywgOCwgNSwgNCwgNiwgMiwgMywgMywgNCwgNl0sCiAgICBbNCwgIDUsIDMsIDcsIDMsIDUsIDUsIDMsIDQsIDQsIDUsIDVdLAogICAgWzUsICAzLCA0LCA1LCA2LCAzLCAzLCA0LCA1LCA2LCAzLCA0XSwKICAgIFszLCAgNCwgNSwgNiwgNywgNiwgNCwgNSwgNiwgNywgNiwgM10KICBdCn0sIHsKICBsb3c6IDAKfSk7CgovLyBMZXQncyBwdXQgYSBzZXF1ZW5jZSBudW1iZXIgYXNpZGUgc28gd2UgY2FuIHVzZSBpdCBpbiB0aGUgZXZlbnQgY2FsbGJhY2tzCnZhciBzZXEgPSAwLAogIGRlbGF5cyA9IDgwLAogIGR1cmF0aW9ucyA9IDUwMDsKCi8vIE9uY2UgdGhlIGNoYXJ0IGlzIGZ1bGx5IGNyZWF0ZWQgd2UgcmVzZXQgdGhlIHNlcXVlbmNlCmNoYXJ0Lm9uKCdjcmVhdGVkJywgZnVuY3Rpb24oKSB7CiAgc2VxID0gMDsKfSk7CgovLyBPbiBlYWNoIGRyYXduIGVsZW1lbnQgYnkgQ2hhcnRpc3Qgd2UgdXNlIHRoZSBDaGFydGlzdC5TdmcgQVBJIHRvIHRyaWdnZXIgU01JTCBhbmltYXRpb25zCmNoYXJ0Lm9uKCdkcmF3JywgZnVuY3Rpb24oZGF0YSkgewogIHNlcSsrOwoKICBpZihkYXRhLnR5cGUgPT09ICdsaW5lJykgewogICAgLy8gSWYgdGhlIGRyYXduIGVsZW1lbnQgaXMgYSBsaW5lIHdlIGRvIGEgc2ltcGxlIG9wYWNpdHkgZmFkZSBpbi4gVGhpcyBjb3VsZCBhbHNvIGJlIGFjaGlldmVkIHVzaW5nIENTUzMgYW5pbWF0aW9ucy4KICAgIGRhdGEuZWxlbWVudC5hbmltYXRlKHsKICAgICAgb3BhY2l0eTogewogICAgICAgIC8vIFRoZSBkZWxheSB3aGVuIHdlIGxpa2UgdG8gc3RhcnQgdGhlIGFuaW1hdGlvbgogICAgICAgIGJlZ2luOiBzZXEgKiBkZWxheXMgKyAxMDAwLAogICAgICAgIC8vIER1cmF0aW9uIG9mIHRoZSBhbmltYXRpb24KICAgICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgICAvLyBUaGUgdmFsdWUgd2hlcmUgdGhlIGFuaW1hdGlvbiBzaG91bGQgc3RhcnQKICAgICAgICBmcm9tOiAwLAogICAgICAgIC8vIFRoZSB2YWx1ZSB3aGVyZSBpdCBzaG91bGQgZW5kCiAgICAgICAgdG86IDEKICAgICAgfQogICAgfSk7CiAgfSBlbHNlIGlmKGRhdGEudHlwZSA9PT0gJ2xhYmVsJyAmJiBkYXRhLmF4aXMgPT09ICd4JykgewogICAgZGF0YS5lbGVtZW50LmFuaW1hdGUoewogICAgICB5OiB7CiAgICAgICAgYmVnaW46IHNlcSAqIGRlbGF5cywKICAgICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgICBmcm9tOiBkYXRhLnkgKyAxMDAsCiAgICAgICAgdG86IGRhdGEueSwKICAgICAgICAvLyBXZSBjYW4gc3BlY2lmeSBhbiBlYXNpbmcgZnVuY3Rpb24gZnJvbSBDaGFydGlzdC5TdmcuRWFzaW5nCiAgICAgICAgZWFzaW5nOiAnZWFzZU91dFF1YXJ0JwogICAgICB9CiAgICB9KTsKICB9IGVsc2UgaWYoZGF0YS50eXBlID09PSAnbGFiZWwnICYmIGRhdGEuYXhpcyA9PT0gJ3knKSB7CiAgICBkYXRhLmVsZW1lbnQuYW5pbWF0ZSh7CiAgICAgIHg6IHsKICAgICAgICBiZWdpbjogc2VxICogZGVsYXlzLAogICAgICAgIGR1cjogZHVyYXRpb25zLAogICAgICAgIGZyb206IGRhdGEueCAtIDEwMCwKICAgICAgICB0bzogZGF0YS54LAogICAgICAgIGVhc2luZzogJ2Vhc2VPdXRRdWFydCcKICAgICAgfQogICAgfSk7CiAgfSBlbHNlIGlmKGRhdGEudHlwZSA9PT0gJ3BvaW50JykgewogICAgZGF0YS5lbGVtZW50LmFuaW1hdGUoewogICAgICB4MTogewogICAgICAgIGJlZ2luOiBzZXEgKiBkZWxheXMsCiAgICAgICAgZHVyOiBkdXJhdGlvbnMsCiAgICAgICAgZnJvbTogZGF0YS54IC0gMTAsCiAgICAgICAgdG86IGRhdGEueCwKICAgICAgICBlYXNpbmc6ICdlYXNlT3V0UXVhcnQnCiAgICAgIH0sCiAgICAgIHgyOiB7CiAgICAgICAgYmVnaW46IHNlcSAqIGRlbGF5cywKICAgICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgICBmcm9tOiBkYXRhLnggLSAxMCwKICAgICAgICB0bzogZGF0YS54LAogICAgICAgIGVhc2luZzogJ2Vhc2VPdXRRdWFydCcKICAgICAgfSwKICAgICAgb3BhY2l0eTogewogICAgICAgIGJlZ2luOiBzZXEgKiBkZWxheXMsCiAgICAgICAgZHVyOiBkdXJhdGlvbnMsCiAgICAgICAgZnJvbTogMCwKICAgICAgICB0bzogMSwKICAgICAgICBlYXNpbmc6ICdlYXNlT3V0UXVhcnQnCiAgICAgIH0KICAgIH0pOwogIH0gZWxzZSBpZihkYXRhLnR5cGUgPT09ICdncmlkJykgewogICAgLy8gVXNpbmcgZGF0YS5heGlzIHdlIGdldCB4IG9yIHkgd2hpY2ggd2UgY2FuIHVzZSB0byBjb25zdHJ1Y3Qgb3VyIGFuaW1hdGlvbiBkZWZpbml0aW9uIG9iamVjdHMKICAgIHZhciBwb3MxQW5pbWF0aW9uID0gewogICAgICBiZWdpbjogc2VxICogZGVsYXlzLAogICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgZnJvbTogZGF0YVtkYXRhLmF4aXMudW5pdHMucG9zICsgJzEnXSAtIDMwLAogICAgICB0bzogZGF0YVtkYXRhLmF4aXMudW5pdHMucG9zICsgJzEnXSwKICAgICAgZWFzaW5nOiAnZWFzZU91dFF1YXJ0JwogICAgfTsKCiAgICB2YXIgcG9zMkFuaW1hdGlvbiA9IHsKICAgICAgYmVnaW46IHNlcSAqIGRlbGF5cywKICAgICAgZHVyOiBkdXJhdGlvbnMsCiAgICAgIGZyb206IGRhdGFbZGF0YS5heGlzLnVuaXRzLnBvcyArICcyJ10gLSAxMDAsCiAgICAgIHRvOiBkYXRhW2RhdGEuYXhpcy51bml0cy5wb3MgKyAnMiddLAogICAgICBlYXNpbmc6ICdlYXNlT3V0UXVhcnQnCiAgICB9OwoKICAgIHZhciBhbmltYXRpb25zID0ge307CiAgICBhbmltYXRpb25zW2RhdGEuYXhpcy51bml0cy5wb3MgKyAnMSddID0gcG9zMUFuaW1hdGlvbjsKICAgIGFuaW1hdGlvbnNbZGF0YS5heGlzLnVuaXRzLnBvcyArICcyJ10gPSBwb3MyQW5pbWF0aW9uOwogICAgYW5pbWF0aW9uc1snb3BhY2l0eSddID0gewogICAgICBiZWdpbjogc2VxICogZGVsYXlzLAogICAgICBkdXI6IGR1cmF0aW9ucywKICAgICAgZnJvbTogMCwKICAgICAgdG86IDEsCiAgICAgIGVhc2luZzogJ2Vhc2VPdXRRdWFydCcKICAgIH07CgogICAgZGF0YS5lbGVtZW50LmFuaW1hdGUoYW5pbWF0aW9ucyk7CiAgfQp9KTsKCi8vIEZvciB0aGUgc2FrZSBvZiB0aGUgZXhhbXBsZSB3ZSB1cGRhdGUgdGhlIGNoYXJ0IGV2ZXJ5IHRpbWUgaXQncyBjcmVhdGVkIHdpdGggYSBkZWxheSBvZiAxMCBzZWNvbmRzCmNoYXJ0Lm9uKCdjcmVhdGVkJywgZnVuY3Rpb24oKSB7CiAgaWYod2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0KSB7CiAgICBjbGVhclRpbWVvdXQod2luZG93Ll9fZXhhbXBsZUFuaW1hdGVUaW1lb3V0KTsKICAgIHdpbmRvdy5fX2V4YW1wbGVBbmltYXRlVGltZW91dCA9IG51bGw7CiAgfQogIHdpbmRvdy5fX2V4YW1wbGVBbmltYXRlVGltZW91dCA9IHNldFRpbWVvdXQoY2hhcnQudXBkYXRlLmJpbmQoY2hhcnQpLCAxMjAwMCk7Cn0pOwoK"></div></div><aside class="side-notes"><p>Almost limitless animation possibilities with the Chartist.Svg animation API. Checkout the <a href="getting-started.html#animations-using-chartistsvg">advanced getting started guide about SVG animations</a> with SMIL.</aside></section><section class="documentation-section"><header><h3 id="responsive-charts-configuration">Responsive charts configuration</h3></header><div class="content"><div id="example-line-simple-responsive" class="ct-chart ct-golden-section" data-example="LyogQWRkIGEgYmFzaWMgZGF0YSBzZXJpZXMgd2l0aCBzaXggbGFiZWxzIGFuZCB2YWx1ZXMgKi8KdmFyIGRhdGEgPSB7CiAgbGFiZWxzOiBbJzEnLCAnMicsICczJywgJzQnLCAnNScsICc2J10sCiAgc2VyaWVzOiBbCiAgICB7CiAgICAgIGRhdGE6IFsxLCAyLCAzLCA1LCA4LCAxM10KICAgIH0KICBdCn07CgovKiBTZXQgc29tZSBiYXNlIG9wdGlvbnMgKHNldHRpbmdzIHdpbGwgb3ZlcnJpZGUgdGhlIGRlZmF1bHQgc2V0dGluZ3MgaW4gQ2hhcnRpc3QuanMgKnNlZSBkZWZhdWx0IHNldHRpbmdzKikuIFdlIGFyZSBhZGRpbmcgYSBiYXNpYyBsYWJlbCBpbnRlcnBvbGF0aW9uIGZ1bmN0aW9uIGZvciB0aGUgeEF4aXMgbGFiZWxzLiAqLwp2YXIgb3B0aW9ucyA9IHsKICBheGlzWDogewogICAgbGFiZWxJbnRlcnBvbGF0aW9uRm5jOiBmdW5jdGlvbih2YWx1ZSkgewogICAgICByZXR1cm4gJ0NhbGVuZGFyIFdlZWsgJyArIHZhbHVlOwogICAgfQogIH0KfTsKCi8qIE5vdyB3ZSBjYW4gc3BlY2lmeSBtdWx0aXBsZSByZXNwb25zaXZlIHNldHRpbmdzIHRoYXQgd2lsbCBvdmVycmlkZSB0aGUgYmFzZSBzZXR0aW5ncyBiYXNlZCBvbiBvcmRlciBhbmQgaWYgdGhlIG1lZGlhIHF1ZXJpZXMgbWF0Y2guIEluIHRoaXMgZXhhbXBsZSB3ZSBhcmUgY2hhbmdpbmcgdGhlIHZpc2liaWxpdHkgb2YgZG90cyBhbmQgbGluZXMgYXMgd2VsbCBhcyB1c2UgZGlmZmVyZW50IGxhYmVsIGludGVycG9sYXRpb25zIGZvciBzcGFjZSByZWFzb25zLiAqLwp2YXIgcmVzcG9uc2l2ZU9wdGlvbnMgPSBbCiAgWydzY3JlZW4gYW5kIChtaW4td2lkdGg6IDY0MXB4KSBhbmQgKG1heC13aWR0aDogMTAyNHB4KScsIHsKICAgIHNob3dQb2ludDogZmFsc2UsCiAgICBheGlzWDogewogICAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuICdXZWVrICcgKyB2YWx1ZTsKICAgICAgfQogICAgfQogIH1dLAogIFsnc2NyZWVuIGFuZCAobWF4LXdpZHRoOiA2NDBweCknLCB7CiAgICBzaG93TGluZTogZmFsc2UsCiAgICBheGlzWDogewogICAgICBsYWJlbEludGVycG9sYXRpb25GbmM6IGZ1bmN0aW9uKHZhbHVlKSB7CiAgICAgICAgcmV0dXJuICdXJyArIHZhbHVlOwogICAgICB9CiAgICB9CiAgfV0KXTsKCi8qIEluaXRpYWxpemUgdGhlIGNoYXJ0IHdpdGggdGhlIGFib3ZlIHNldHRpbmdzICovCm5ldyBDaGFydGlzdC5MaW5lKCcjbXktY2hhcnQnLCBkYXRhLCBvcHRpb25zLCByZXNwb25zaXZlT3B0aW9ucyk7"></div><button class="button" data-toggle-visible="#example-line-simple-responsive-code">Show code</button><pre id="example-line-simple-responsive-code"><code class="js">/* Add a basic data series with six labels and values */
 var data = {
   labels: [&#x27;1&#x27;, &#x27;2&#x27;, &#x27;3&#x27;, &#x27;4&#x27;, &#x27;5&#x27;, &#x27;6&#x27;],
   series: [
@@ -707,7 +707,7 @@ var responsiveOptions = [
 ];
 
 /* Initialize the chart with the above settings */
-new Chartist.Line(&#x27;#my-chart&#x27;, data, options, responsiveOptions);</code></pre><div class="sub-section"><h4 id="configuration-overrides-based-on-media-queries">Configuration overrides based on media queries</h4><p>Configuring different chart behavior for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.<div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.</div></div></div></div><aside class="side-notes"><p>With the clear separation of concerns within Chartist.js you're able to style your charts with CSS in @media queries. However, sometimes it requires to also control the behaviour of your charts depending on the media. For this purpose Chartist.js provides you with a simple configuration override mechanism based on media queries.</aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+new Chartist.Line(&#x27;#my-chart&#x27;, data, options, responsiveOptions);</code></pre><div class="sub-section"><h4 id="configuration-overrides-based-on-media-queries">Configuration overrides based on media queries</h4><p>Configuring different chart behavior for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.<div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.</div></div></div></div><aside class="side-notes"><p>With the clear separation of concerns within Chartist.js, you're able to style your charts with CSS in @media queries. However, sometimes you also need to conditionally control the behavior of your charts. For this purpose, Chartist.js provides you with a simple configuration override mechanism based on media queries.</aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
