@@ -406,7 +406,9 @@ var Chartist = {
    * @param data
    */
   Chartist.reverseData = function(data) {
+    if(data.labels){
     data.labels.reverse();
+    }
     data.series.reverse();
     for (var i = 0; i < data.series.length; i++) {
       if(typeof(data.series[i]) === 'object' && data.series[i].data !== undefined) {
