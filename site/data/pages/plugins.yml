@@ -154,6 +154,33 @@ sections:
                     - '<a href="https://github.com/gionkunz/chartist-plugin-pointlabels" target="_blank">chartist-plugin-pointlabels</a>'
 
       - type: sub-section
+      data:
+        title: Bar Label Plugin
+        level: 4
+        items:
+          - type: text
+            data:
+              text: >
+                      The bar label plugin can be used if you like to add simple labels on top of your data points
+                      on bar charts. This is useful if you'd like the user to see the exact values of the data without
+                      any additional interaction.
+          - type: live-example
+            data:
+              id: example-plugin-barlabel
+              classes: ct-golden-section
+              intro: >
+                       The bar label plugin draws labels on top of your bars.
+          - type: table
+            data:
+              rows:
+                -
+                  - '<strong>Author:</strong>'
+                  - tirdadc
+                -
+                  - '<strong>Link:</strong>'
+                  - '<a href="https://github.com/tirdadc/chartist-plugin-barlabels" target="_blank">chartist-plugin-barlabels</a>'
+
+      - type: sub-section
         data:
           title: Axis Title Plugin
           level: 4
