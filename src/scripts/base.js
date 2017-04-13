@@ -4,8 +4,9 @@
  * @module Chartist.Base
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
+  var window = globalRoot.window;
 
   // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
   // This is done because we can't work with relative coordinates when drawing the chart because SVG Path does not
@@ -190,4 +191,4 @@
     supportsForeignObject: false
   });
 
-}(window, document, Chartist));
+}(this, Chartist));
