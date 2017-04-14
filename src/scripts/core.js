@@ -1033,7 +1033,7 @@ var Chartist = {
       var previousOptions = currentOptions;
       currentOptions = Chartist.extend({}, baseOptions);
 
-      if (responsiveOptions) {
+      if (window.matchMedia && responsiveOptions) {
         for (i = 0; i < responsiveOptions.length; i++) {
           var mql = window.matchMedia(responsiveOptions[i][0]);
           if (mql.matches) {
@@ -1056,9 +1056,8 @@ var Chartist = {
       });
     }
 
-    if (!window.matchMedia) {
-      throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
-    } else if (responsiveOptions) {
+
+    if (window.matchMedia && responsiveOptions) {
 
       for (i = 0; i < responsiveOptions.length; i++) {
         var mql = window.matchMedia(responsiveOptions[i][0]);
