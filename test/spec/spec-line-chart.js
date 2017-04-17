@@ -388,6 +388,80 @@ describe('Line chart tests', function () {
       });
     });
 
+    it('should render correctly with Interpolation.simple, holes everywhere, and stacked lines', function (done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var series = [
+        [5, 5, 10, 8, 7, 5, 4, null, null, null ],
+        [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null],
+        [4, null, null, null, 10, 10, 7, 8, 6, 9]
+      ];
+      var chart = new Chartist.Line('.ct-chart', {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: series
+      }, {
+        stackLines: true,
+        lineSmooth: Chartist.Interpolation.simple()
+      });
+
+      var commandLines = [];
+      var expectedCommandLines = [
+        [
+          {"command":"M","data":{"value":{"y":5},"valueIndex":0}},
+          {"command":"C","data":{"value":{"y":5},"valueIndex":1}},
+          {"command":"C","data":{"value":{"y":10},"valueIndex":2}},
+          {"command":"C","data":{"value":{"y":8},"valueIndex":3}},
+          {"command":"C","data":{"value":{"y":7},"valueIndex":4}},
+          {"command":"C","data":{"value":{"y":5},"valueIndex":5}},
+          {"command":"C","data":{"value":{"y":4},"valueIndex":6}}
+        ],
+        [
+          {"command":"M","data":{"value":{"y":20},"valueIndex":1}},
+          {"command":"C","data":{"value":{"y":0},"valueIndex":2}},
+          {"command":"M","data":{"value":{"y":9},"valueIndex":4}},
+          {"command":"C","data":{"value":{"y":8},"valueIndex":5}},
+          {"command":"C","data":{"value":{"y":8},"valueIndex":6}},
+          {"command":"M","data":{"value":{"y":1},"valueIndex":8,"meta":"meta data"}}
+        ],
+        [
+          {"command":"M","data":{"value":{"y":9},"valueIndex":0}},
+          {"command":"M","data":{"value":{"y":26},"valueIndex":4}},
+          {"command":"C","data":{"value":{"y":23},"valueIndex":5}},
+          {"command":"C","data":{"value":{"y":19},"valueIndex":6}},
+          {"command":"C","data":{"value":{"y":8},"valueIndex":7}},
+          {"command":"C","data":{"value":{"y":7},"valueIndex":8}},
+          {"command":"C","data":{"value":{"y":9},"valueIndex":9}}
+        ]
+      ];
+
+      var onDraw = function (context) {
+        var commands;
+        if (context.type === 'line') {
+          commands = context.path.pathElements.map(function (pathElement) {
+            return {
+              command: pathElement.command,
+              data: pathElement.data
+            };
+          });
+          commandLines.push(commands);
+
+          // wait until three lines are drawn
+          if (commandLines.length === series.length) {
+            // jasmine has a really hard time comparing these two arrays,
+            // even if we loop through each level individually.
+            // so cheat and compare the stringified versions.
+            expect(JSON.stringify(commandLines)).
+              toEqual(JSON.stringify(expectedCommandLines));
+
+            chart.off('draw', onDraw);
+            done();
+          }
+        }
+      }
+
+      chart.on('draw', onDraw);
+    });
+
     it('should render correctly with postponed Interpolation.step and holes everywhere', function (done) {
       jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
 
