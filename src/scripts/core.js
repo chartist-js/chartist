@@ -841,8 +841,8 @@ var Chartist = {
     var yAxisOffset = hasAxis ? options.axisY.offset : 0;
     var xAxisOffset = hasAxis ? options.axisX.offset : 0;
     // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
-    var width = svg.width() || Chartist.quantity(options.width).value || 0;
-    var height = svg.height() || Chartist.quantity(options.height).value || 0;
+    var width = svg.width() || Chartist.quantity(options.width).value || parseInt(window.getComputedStyle(svg._node).width, 10) || 0;
+    var height = svg.height() || Chartist.quantity(options.height).value || parseInt(window.getComputedStyle(svg._node).height, 10) || 0;
     var normalizedPadding = Chartist.normalizePadding(options.chartPadding, fallbackPadding);
 
     // If settings were to small to cope with offset (legacy) and padding, we'll adjust
