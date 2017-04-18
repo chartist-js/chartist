@@ -4273,7 +4273,7 @@ var Chartist = {
         endAngle = overlappigStartAngle + 359.99;
       }
 
-      var start = Chartist.polarToCartesian(center.x, center.y, radius, overlappigStartAngle),
+      var start = Chartist.polarToCartesian(center.x, center.y, radius, startAngle - overlappigStartAngle),
         end = Chartist.polarToCartesian(center.x, center.y, radius, endAngle);
 
       var innerStart,
