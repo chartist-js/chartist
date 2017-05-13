@@ -1,3 +1,7 @@
+# ide
+.iml
+.idea
+
 # modules
 node_modules/
 site/bower_components/
