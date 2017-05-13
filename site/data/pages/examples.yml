@@ -4,6 +4,13 @@ sections:
     items:
       - type: live-example
         data:
+          title: Candle stick chart
+          level: 4
+          id: example-candle-stick
+          classes: ct-golden-section
+          intro: An example of a candle stick chart. You can edit this example in realtime.
+      - type: live-example
+        data:
           title: Simple line chart
           level: 4
           id: simple-line-chart
@@ -128,8 +135,8 @@ sections:
           id: example-timeseries-moment
           classes: ct-golden-section
           intro: >
-                   This example uses <a href="http://momentjs.com/">Moment.js</a> in the label interpolation function 
-                   to format a date object. The fixed axis ensures that there is correct spacing between the data points, 
+                   This example uses <a href="http://momentjs.com/">Moment.js</a> in the label interpolation function
+                   to format a date object. The fixed axis ensures that there is correct spacing between the data points,
                    and the number of labels is determined by the devisor.
   - title: Bar chart examples
     level: 3
