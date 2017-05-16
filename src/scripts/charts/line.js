@@ -179,7 +179,7 @@
         pathData.push({
           value: value,
           valueIndex: valueIndex,
-          meta: Chartist.getMetaData(series, valueIndex)
+          meta: Chartist.getDataFromSelector(series, valueIndex, 'meta')
         });
       }.bind(this));
 

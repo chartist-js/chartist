@@ -10,7 +10,7 @@ describe('Bar chart tests', function() {
   });
 
   describe('grids', function() {
-    
+
     var chart;
     var options;
     var data;
@@ -35,14 +35,14 @@ describe('Bar chart tests', function() {
     });
 
     function onCreated(fn) {
-      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');  
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
       chart = new Chartist.Bar('.ct-chart', data, options);
-      chart.on('created', fn);      
+      chart.on('created', fn);
     }
 
     it('should contain ct-grids group', function(done) {
       onCreated(function () {
-        expect($('g.ct-grids').length).toBe(1);        
+        expect($('g.ct-grids').length).toBe(1);
         done();
       });
     });
@@ -50,7 +50,7 @@ describe('Bar chart tests', function() {
     it('should draw grid lines', function(done) {
       onCreated(function () {
         expect($('g.ct-grids line.ct-grid.ct-horizontal').length).toBe(3);
-        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(6);        
+        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(6);
         done();
       });
     });
@@ -167,6 +167,32 @@ describe('Bar chart tests', function() {
 
       chart.on('created', function() {
         expect(Chartist.deserialize($('.ct-bar').eq(3).attr('ct:meta'))).toEqual(meta);
+        done();
+      });
+    });
+
+    it('should render parameters data correctly with mixed value array and different normalized data length', function(done) {
+      jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
+
+      var parameters = {
+        test: 'Serialized Test',
+        title: 'Serialized Test Title'
+      };
+
+      var data = {
+        labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        series: [
+          [5, 2, 4, {
+            value: 2,
+            parameters: parameters
+          }, 0]
+        ]
+      };
+
+      var chart = new Chartist.Bar('.ct-chart', data);
+
+      chart.on('created', function() {
+        expect(Chartist.deserialize($('.ct-bar').eq(3).attr('ct:parameters'))).toEqual(parameters);
         done();
       });
     });

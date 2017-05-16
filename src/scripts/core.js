@@ -496,9 +496,9 @@ var Chartist = {
     };
   };
 
-  Chartist.getMetaData = function(series, index) {
+  Chartist.getDataFromSelector = function(series, index, selector) {
     var value = series.data ? series.data[index] : series[index];
-    return value ? value.meta : undefined;
+    return value ? value[selector] : undefined;
   };
 
   /**
