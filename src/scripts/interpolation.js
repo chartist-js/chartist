@@ -371,7 +371,7 @@
   /**
    * Step interpolation will cause the line chart to move in steps rather than diagonal or smoothed lines. This interpolation will create additional points that will also be drawn when the `showPoint` option is enabled.
    *
-   * All smoothing functions within Chartist are factory functions that accept an options parameter. The step interpolation function accepts one configuration parameter `postpone`, that can be `true` or `false`. The default value is `true` and will cause the step to occur where the value actually changes. If a different behaviour is needed where the step is shifted to the left and happens before the actual value, this option can be set to `false`.
+   * All smoothing functions within Chartist are factory functions that accept an options parameter. The step interpolation function accepts one configuration parameter `postpone`, that can be `true`, `false` or a value between 0 and 1. The default value is `true` and will cause the step to occur where the value actually changes. If postpone is true the axis is shifted to the left and happens before the actual value, a float value gives a proportion between the two.
    *
    * @example
    * var chart = new Chartist.Line('.ct-chart', {
@@ -388,38 +388,36 @@
    * @param options
    * @returns {Function}
    */
-  Chartist.Interpolation.step = function(options) {
-    var defaultOptions = {
-      postpone: true,
+Chartist.Interpolation.step = function(options) {
+    var defaultOptions = { 
+      postpone: false,
       fillHoles: false
-    };
+    };   
 
     options = Chartist.extend({}, defaultOptions, options);
 
     return function step(pathCoordinates, valueData) {
+      // Compatible postpone, false = 1, true = 0
+      var shiftX = 1 - (options.postpone || 0);
       var path = new Chartist.Svg.Path();
 
-      var prevX, prevY, prevData;
+      var prevX, prevY, thisX, prevData;
 
-      for (var i = 0; i < pathCoordinates.length; i += 2) {
+      for (var i = 0; i < pathCoordinates.length; i += 2) { 
         var currX = pathCoordinates[i];
-        var currY = pathCoordinates[i + 1];
-        var currData = valueData[i / 2];
+        var currY = pathCoordinates[i + 1]; 
+        var currData = valueData[i / 2]; 
 
         // If the current point is also not a hole we can draw the step lines
         if(currData.value !== undefined) {
           if(prevData === undefined) {
             path.move(currX, currY, false, currData);
           } else {
-            if(options.postpone) {
-              // If postponed we should draw the step line with the value of the previous value
-              path.line(currX, prevY, false, prevData);
-            } else {
-              // If not postponed we should draw the step line with the value of the current value
-              path.line(prevX, currY, false, currData);
-            }
+            thisX = currX - (currX - prevX) * shiftX;
+            // Line from the previous Y to the this X
+            path.line(thisX, prevY, false, currData);
             // Line to the actual point (this should only be a Y-Axis movement
-            path.line(currX, currY, false, currData);
+            path.line(thisX, currY, false, currData);
           }
 
           prevX = currX;
@@ -427,11 +425,15 @@
           prevData = currData;
         } else if(!options.fillHoles) {
           prevX = prevY = prevData = undefined;
-        }
-      }
+        }   
+      }   
+
+      if(prevData && thisX != prevX) {
+        path.line(prevX, prevY, false, prevData);
+      }   
 
       return path;
-    };
-  };
+    };         
+};
 
 }(window, document, Chartist));
