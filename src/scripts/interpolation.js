@@ -388,11 +388,11 @@
    * @param options
    * @returns {Function}
    */
-Chartist.Interpolation.step = function(options) {
+  Chartist.Interpolation.step = function(options) {
     var defaultOptions = { 
-      postpone: false,
+      postpone: true,
       fillHoles: false
-    };   
+    };
 
     options = Chartist.extend({}, defaultOptions, options);
 
@@ -403,10 +403,10 @@ Chartist.Interpolation.step = function(options) {
 
       var prevX, prevY, thisX, prevData;
 
-      for (var i = 0; i < pathCoordinates.length; i += 2) { 
+      for (var i = 0; i < pathCoordinates.length; i += 2) {
         var currX = pathCoordinates[i];
-        var currY = pathCoordinates[i + 1]; 
-        var currData = valueData[i / 2]; 
+        var currY = pathCoordinates[i + 1];
+        var currData = valueData[i / 2];
 
         // If the current point is also not a hole we can draw the step lines
         if(currData.value !== undefined) {
@@ -426,14 +426,12 @@ Chartist.Interpolation.step = function(options) {
         } else if(!options.fillHoles) {
           prevX = prevY = prevData = undefined;
         }   
-      }   
-
+      }
       if(prevData && thisX != prevX) {
         path.line(prevX, prevY, false, prevData);
-      }   
-
+      }
       return path;
-    };         
-};
+    };
+  };
 
 }(window, document, Chartist));
