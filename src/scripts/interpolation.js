@@ -389,7 +389,7 @@
    * @returns {Function}
    */
   Chartist.Interpolation.step = function(options) {
-    var defaultOptions = { 
+    var defaultOptions = {
       postpone: true,
       fillHoles: false
     };
@@ -415,7 +415,7 @@
           } else {
             thisX = currX - (currX - prevX) * shiftX;
             // Line from the previous Y to the this X
-            path.line(thisX, prevY, false, currData);
+            path.line(thisX, prevY, false, shiftX < 0.5 ? prevData : currData);
             // Line to the actual point (this should only be a Y-Axis movement
             path.line(thisX, currY, false, currData);
           }
@@ -425,7 +425,7 @@
           prevData = currData;
         } else if(!options.fillHoles) {
           prevX = prevY = prevData = undefined;
-        }   
+        }
       }
       if(prevData && thisX != prevX) {
         path.line(prevX, prevY, false, prevData);
