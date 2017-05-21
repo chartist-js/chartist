@@ -74,6 +74,8 @@
       bottom: 5,
       left: 10
     },
+    // When set to true, the last grid line on the x-axis is not drawn and the chart elements will expand to the full available width of the chart. For the last label to be drawn correctly you might need to add chart padding or offset the last label with a draw event handler.
+    fullWidth: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
     // If the candle stick chart should add a background fill to the .ct-grids group.
@@ -84,7 +86,8 @@
       label: 'ct-label',
       labelGroup: 'ct-labels',
       series: 'ct-series',
-      candle: 'ct-bar',
+      candlePositive: 'ct-class-candle-green',
+      candleNegative: 'ct-class-candle-red',
       grid: 'ct-grid',
       gridGroup: 'ct-grids',
       gridBackground: 'ct-grid-background',
@@ -97,131 +100,70 @@
 
   /**
    * Creates a new chart
-   *
    */
   function createChart(options) {
-    var data;
-    var highLow;
 
-    data = Chartist.normalizeData(this.data, options.reverseData, 'y');
+    // Prepare data
+    var data = Chartist.normalizeData(this.data, options.reverseData, true);
 
     // Create new svg element
-    this.svg = Chartist.createSvg(
-      this.container,
-      options.width,
-      options.height,
-      options.classNames.chart
-    );
+    this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
 
     // Drawing groups in correct order
     var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-    // if(data.normalized.series.length !== 0) {
-    //
-    //   // If stacked bars we need to calculate the high low from stacked values from each series
-    //   var serialSums = Chartist.serialMap(data.normalized.series, function serialSums() {
-    //     return Array.prototype.slice.call(arguments).map(function(value) {
-    //       return value;
-    //     }).reduce(function(prev, curr) {
-    //       return {
-    //         x: prev.x + (curr && curr.x) || 0,
-    //         y: prev.y + (curr && curr.y) || 0
-    //       };
-    //     }, {x: 0, y: 0});
-    //   });
-    //
-    //   highLow = Chartist.getHighLow([serialSums], options, 'y');
-    //
-    // } else {
+    // Create chart rectangle
+    var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.chartPadding);
 
-      highLow = Chartist.getHighLow(data.normalized.series, options, 'y');
-    // }
-
-    // Overrides of high / low from settings
-    highLow.high = +options.high || (options.high === 0 ? 0 : highLow.high);
-    highLow.low = +options.low || (options.low === 0 ? 0 : highLow.low);
-
-    var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
-
-    var valueAxis,
-      labelAxisTicks,
-      labelAxis,
-      axisX,
-      axisY;
-
-    // We need to set step count based on some options combinations
-    // If distributed series are enabled but stacked bars aren't, we should use the series labels
-    // If we are drawing a regular candle stick chart with two dimensional series data, we just use the labels array
-    // as the bars are normalized
-    labelAxisTicks = data.normalized.labels;
-
-    // Set labelAxis and valueAxis. This setting will flip the axes if necessary.
+    // Prepare x and y axis
+    var axisX, axisY;
     if(options.axisX.type === undefined) {
-      labelAxis = axisX = new Chartist.StepAxis(Chartist.Axis.units.x, data.normalized.series, chartRect, {
-        ticks: labelAxisTicks
-      });
+      axisX = new Chartist.StepAxis(Chartist.Axis.units.x, data.normalized.series, chartRect, Chartist.extend({}, options.axisX, {
+        ticks: data.normalized.labels,
+        stretch: options.fullWidth
+      }));
     } else {
-      labelAxis = axisX = options.axisX.type.call(Chartist, Chartist.Axis.units.x, data.normalized.series, chartRect, options.axisX);
+      axisX = options.axisX.type.call(Chartist, Chartist.Axis.units.x, data.normalized.series, chartRect, options.axisX);
     }
-
     if(options.axisY.type === undefined) {
-      valueAxis = axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data.normalized.series, chartRect, Chartist.extend({}, options.axisY, {
-        highLow: highLow,
-        referenceValue: 0
+      axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data.normalized.series, chartRect, Chartist.extend({}, options.axisY, {
+        high: Chartist.isNumeric(options.high) ? options.high : options.axisY.high,
+        low: Chartist.isNumeric(options.low) ? options.low : options.axisY.low
       }));
     } else {
-      valueAxis = axisY = options.axisY.type.call(Chartist, Chartist.Axis.units.y, data.normalized.series, chartRect, Chartist.extend({}, options.axisY, {
-        highLow: highLow,
-        referenceValue: 0
-      }));
+      axisY = options.axisY.type.call(Chartist, Chartist.Axis.units.y, data.normalized.series, chartRect, options.axisY);
     }
+    axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
-    // Projected 0 point
-    var zeroPoint = (chartRect.y1 - valueAxis.projectValue(0));
-    var openEqualsClose = valueAxis.projectValue(1);
-
-    labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-    valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-
+    // Create grid if necessary
     if (options.showGridBackground) {
       Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
     }
 
     // Draw the candles (each series is representing a single candle)
     data.raw.series.forEach(function(series, seriesIndex) {
-      // Half of the period width between vertical grid lines used to position bars
-      var periodHalfLength;
-      // Current series SVG element
-      var seriesElement;
-      var projected,
-        candle,
-        open,
+      var open,
         highest,
         lowest,
         close,
         upperValue,
         lowerValue;
 
-      // We need to set periodHalfLength
-      // On regular candle stick charts we should just use the series length
-      periodHalfLength = labelAxis.axisLength / data.normalized.series[seriesIndex].length / 2;
+      // Get meta data from series
+      var metaData = Chartist.getMetaData(series, seriesIndex);
 
-      // Adding the series group to the series element
-      seriesElement = seriesGroup.elem('g');
-
-      // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
-      seriesElement.attr({
+      // Adding the series group and write attributes to current series group element
+      // If series name or meta is undefined the attributes will not be written
+      var seriesElement = seriesGroup.elem('g').attr({
         'ct:series-name': series.name,
-        'ct:meta': Chartist.serialize(series.meta)
+        'ct:meta': Chartist.serialize(metaData)
       });
 
-      // Use series class from series data or if not set generate one
-      seriesElement.addClass([
-        options.classNames.series,
-        (series.className || options.classNames.series + '-' + Chartist.alphaNumerate(seriesIndex))
-      ].join(' '));
+      // Use series class from series data
+      seriesElement.addClass([options.classNames.series, series.className].join(' '));
 
       // Assign series values
       open = data.normalized.series[seriesIndex][0].y;
@@ -229,167 +171,75 @@
       lowest = data.normalized.series[seriesIndex][2].y;
       close = data.normalized.series[seriesIndex][3].y;
 
+      // Need to find out weather or not the open value is higher than close value.
+      // And it's important to have at least a small visible range in case open == highest == lowest == close
+      var candleColorStyle = options.classNames.candleNegative;
       if (open > close) {
         upperValue = open;
         lowerValue = close;
       } else if (close > open) {
         upperValue = close;
         lowerValue = open;
+        candleColorStyle = options.classNames.candlePositive;
       } else {
         upperValue = open;
-        lowerValue = close - 10000;
+        lowerValue = close - close / 100;
+        lowest = close - close / 100;
       }
 
-      //console.log(upperValue + " " + lowerValue);
-      //console.log(chartRect.y1);
+      // candleWidth in pixel
+      var candleWidth = 20;
+      var partedCandleWidth = candleWidth / 3;
 
-      // We need to transform coordinates differently based on the chart layout
-      projected = {
-        x: chartRect.x1 + labelAxis.projectValue(upperValue && upperValue.x ? upperValue.x : 0, seriesIndex, data.normalized.series[seriesIndex]),
-        y1: chartRect.y1 - valueAxis.projectValue(upperValue || 0),
-        y2: chartRect.y1 - valueAxis.projectValue(lowerValue || 0)
+      // Create projected object
+      var positions = {
+        x1: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]),
+        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) + candleWidth,
+        y1: chartRect.y1 - axisY.projectValue(upperValue || 0),
+        y2: chartRect.y1 - axisY.projectValue(lowerValue || 0),
+        y3: chartRect.y1 - axisY.projectValue(highest || 0),
+        y4: chartRect.y1 - axisY.projectValue(lowest || 0)
       };
 
-      console.log(projected);
-
-      // If the label axis is a step based axis we will offset the bar into the middle of between two steps using the periodHalfLength value.
-      // If we don't have a step axis, the bar positions can be chosen freely so we should not add any automated positioning.
-      if(labelAxis instanceof Chartist.StepAxis) {
-        // Offset to center bar between grid lines, but only if the step axis is not stretched
-        if(!labelAxis.options.stretch) {
-          projected[labelAxis.units.pos] += periodHalfLength * 1;
-        }
-        // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
-        projected[labelAxis.units.pos] += 0;
-      }
-
-      // Skip if value is undefined
-      if(open === undefined || highest === undefined || lowest === undefined || close === undefined) {
-        return;
-      }
-
-      // y1 == top (0 <=> very top)
-      // y2 == bottom
-      var positions = {};
-      positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
-      positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
-      positions[labelAxis.counterUnits.pos + '1'] = projected[labelAxis.counterUnits.pos + '1'];
-      positions[labelAxis.counterUnits.pos + '2'] = projected[labelAxis.counterUnits.pos + '2'];
-
-      //console.log(positions);
-
-      // Limit x and y so that they are within the chart rect
-      positions.x1 = Math.min(Math.max(positions.x1, chartRect.x1), chartRect.x2);
-      positions.x2 = Math.min(Math.max(positions.x2, chartRect.x1), chartRect.x2);
-      positions.y1 = Math.min(Math.max(positions.y1, chartRect.y2), chartRect.y1);
-      positions.y2 = Math.min(Math.max(positions.y2, chartRect.y2), chartRect.y1);
-
-      var metaData = Chartist.getMetaData(series, seriesIndex);
-
       // Create candle stick element
-      candle = seriesElement.elem('line', positions, options.classNames.candle).attr({
-        'ct:value': [close.x, close.y].filter(Chartist.isNumeric).join(','),
-        'ct:meta': Chartist.serialize(metaData)
-      });
+      // <svg>
+      // <path d="M2 25 L2 75 L6 75 L6 100 L12 100 L12 75 L16 75 L16 25 L12 25 L12 0 L6 0 L6 25 Z" style="fill:red;stroke:black;stroke-width:1;" />
+      //   Sorry, your browser does not support inline SVG.
+      // </svg>
+      // var path = new Chartist.Svg.Path(true).move(2, 25).line(2, 75).line(6, 75).line(6, 100).line(12, 100).line(12, 75).line(16, 75)
+      //   .line(16, 25).line(12, 25).line(12, 0).line(6, 0).line(6, 25);
 
-      this.eventEmitter.emit('draw', Chartist.extend({
+      var path = new Chartist.Svg.Path(true)
+        .move(positions.x1, positions.y1).line(positions.x1, positions.y2)
+        .line(positions.x1+partedCandleWidth, positions.y2).line(positions.x1+partedCandleWidth, positions.y4).line(positions.x1+partedCandleWidth*2, positions.y4).line(positions.x1+partedCandleWidth*2, positions.y2)
+        .line(positions.x2, positions.y2).line(positions.x2, positions.y1)
+        .line(positions.x1+partedCandleWidth*2, positions.y1).line(positions.x1+partedCandleWidth*2, positions.y3).line(positions.x1+partedCandleWidth, positions.y3).line(positions.x1+partedCandleWidth, positions.y1);
+
+      // Create candle SVG by a given path
+      var candle = seriesElement.elem('path', {
+        d: path.stringify()
+      }, candleColorStyle, true);
+
+      this.eventEmitter.emit('draw', {
         type: 'candle',
-        value: close,
+        values: data.normalized.series[seriesIndex],
+        path: path.clone(),
+        chartRect: chartRect,
         index: seriesIndex,
-        meta: metaData,
         series: series,
         seriesIndex: seriesIndex,
+        seriesMeta: series.meta,
         axisX: axisX,
         axisY: axisY,
-        chartRect: chartRect,
         group: seriesElement,
         element: candle
-      }, positions));
+      });
 
 
-
-
-
-
-      // data.normalized.series[seriesIndex].forEach(function(value, valueIndex) {
-      //   var projected,
-      //     candle,
-      //     previousStack,
-      //     labelAxisValueIndex;
-      //
-      //   // We need to set labelAxisValueIndex
-      //   // On regular candle stick charts we just use the value index to project on the label step axis
-      //   labelAxisValueIndex = valueIndex;
-      //
-      //   // We need to transform coordinates differently based on the chart layout
-      //   projected = {
-      //     x: chartRect.x1 + labelAxis.projectValue(value && value.x ? value.x : 0, labelAxisValueIndex, data.normalized.series[seriesIndex]),
-      //     y: chartRect.y1 - valueAxis.projectValue(value && value.y ? value.y : 0, valueIndex, data.normalized.series[seriesIndex])
-      //   };
-      //
-      //   // If the label axis is a step based axis we will offset the bar into the middle of between two steps using the periodHalfLength value.
-      //   // If we don't have a step axis, the bar positions can be chosen freely so we should not add any automated positioning.
-      //   if(labelAxis instanceof Chartist.StepAxis) {
-      //     // Offset to center bar between grid lines, but only if the step axis is not stretched
-      //     if(!labelAxis.options.stretch) {
-      //       projected[labelAxis.units.pos] += periodHalfLength * 1;
-      //     }
-      //     // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
-      //     projected[labelAxis.units.pos] += 0;
-      //   }
-      //
-      //   // Enter value in stacked bar values used to remember previous screen value for stacking up bars
-      //   previousStack = stackedBarValues[valueIndex] || zeroPoint;
-      //   stackedBarValues[valueIndex] = previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
-      //
-      //   // Skip if value is undefined
-      //   if(value === undefined) {
-      //     return;
-      //   }
-      //
-      //   var positions = {};
-      //   positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
-      //   positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
-      //
-      //   // Stack mode: accumulate (default)
-      //   // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
-      //   // We want backwards compatibility, so the expected fallback without the 'stackMode' option
-      //   // to be the or iginal behaviour (accumulate)
-      //   positions[labelAxis.counterUnits.pos + '1'] = previousStack;
-      //   positions[labelAxis.counterUnits.pos + '2'] = stackedBarValues[valueIndex];
-      //
-      //   // Limit x and y so that they are within the chart rect
-      //   positions.x1 = Math.min(Math.max(positions.x1, chartRect.x1), chartRect.x2);
-      //   positions.x2 = Math.min(Math.max(positions.x2, chartRect.x1), chartRect.x2);
-      //   positions.y1 = Math.min(Math.max(positions.y1, chartRect.y2), chartRect.y1);
-      //   positions.y2 = Math.min(Math.max(positions.y2, chartRect.y2), chartRect.y1);
-      //
-      //   var metaData = Chartist.getMetaData(series, valueIndex);
-      //
-      //   // Create bar element
-      //   candle = seriesElement.elem('line', positions, options.classNames.bar).attr({
-      //     'ct:value': [value.x, value.y].filter(Chartist.isNumeric).join(','),
-      //     'ct:meta': Chartist.serialize(metaData)
-      //   });
-      //
-      //   this.eventEmitter.emit('draw', Chartist.extend({
-      //     type: 'candle',
-      //     value: value,
-      //     index: valueIndex,
-      //     meta: metaData,
-      //     series: series,
-      //     seriesIndex: seriesIndex,
-      //     axisX: axisX,
-      //     axisY: axisY,
-      //     chartRect: chartRect,
-      //     group: seriesElement,
-      //     element: candle
-      //   }, positions));
-      // }.bind(this));
     }.bind(this));
 
     this.eventEmitter.emit('created', {
-      bounds: valueAxis.bounds,
+      bounds: axisY.bounds,
       chartRect: chartRect,
       axisX: axisX,
       axisY: axisY,

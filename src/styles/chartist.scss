@@ -102,6 +102,11 @@
   stroke-width: $ct-donut-width;
 }
 
+@mixin ct-chart-candle($ct-candle-color: $ct-candle-color) {
+  fill: $ct-candle-color;
+  stroke: none;
+}
+
 @mixin ct-chart-series-color($color) {
   .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice-donut} {
     stroke: $color;
@@ -215,6 +220,14 @@
 
   .#{$ct-class-slice-donut} {
     @include ct-chart-donut($ct-donut-width);
+  }
+
+  .#{$ct-class-candle-green} {
+    @include ct-chart-candle($ct-candle-color-green);
+  }
+
+  .#{$ct-class-candle-red} {
+    @include ct-chart-candle($ct-candle-color-red);
   }
 
   @if $ct-include-colored-series {
