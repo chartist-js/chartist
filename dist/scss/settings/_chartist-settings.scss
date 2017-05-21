@@ -12,6 +12,7 @@ $ct-class-chart-donut: ct-chart-donut !default;
 $ct-class-label: ct-label !default;
 $ct-class-series: ct-series !default;
 $ct-class-line: ct-line !default;
+$ct-class-candle: ct-candle !default;
 $ct-class-point: ct-point !default;
 $ct-class-area: ct-area !default;
 $ct-class-bar: ct-bar !default;
@@ -55,6 +56,10 @@ $ct-bar-width: 10px !default;
 
 // Donut width (If donut width is to big it can cause issues where the shape gets distorted)
 $ct-donut-width: 60px !default;
+
+// Candle
+$ct-candle-opacity: 0.1 !default;
+$ct-candle-width: 10px !default;
 
 // If set to true it will include the default classes and generate CSS output. If you're planning to use the mixins you
 // should set this property to false
