@@ -1,15 +1,4 @@
 sections:
-  - title: Candle stick chart examples
-    level: 3
-    items:
-      - type: live-example
-        data:
-          title: Candle stick chart
-          level: 4
-          id: example-candle-stick
-          classes: ct-golden-section
-          intro: An example of a candle stick chart. You can edit this example in realtime.
-
   - title: Line chart examples
     level: 3
     items:
@@ -142,6 +131,7 @@ sections:
                    This example uses <a href="http://momentjs.com/">Moment.js</a> in the label interpolation function
                    to format a date object. The fixed axis ensures that there is correct spacing between the data points,
                    and the number of labels is determined by the devisor.
+
   - title: Bar chart examples
     level: 3
     items:
@@ -283,3 +273,14 @@ sections:
           id: example-gauge-donut-solid-chart
           classes: ct-golden-section ct-negative-labels
           intro: This pie chart uses total, startAngle, donut and donutSolid to draw a gauge chart.
+
+  - title: Candle stick chart examples
+    level: 3
+    items:
+      - type: live-example
+        data:
+          title: Simple candle stick chart
+          level: 4
+          id: example-candle-stick
+          classes: ct-golden-section
+          intro: An example of a simple candle stick chart. You can edit this example in realtime.
