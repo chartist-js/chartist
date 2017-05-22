@@ -102,9 +102,10 @@
   stroke-width: $ct-donut-width;
 }
 
-@mixin ct-chart-candle($ct-candle-color: $ct-candle-color) {
+@mixin ct-chart-candle($ct-candle-color: $ct-candle-color, $ct-candle-stroke-color: $ct-candle-stroke-color) {
   fill: $ct-candle-color;
-  stroke: none;
+  stroke: $ct-candle-stroke-color;
+  stroke-width: 1px;
 }
 
 @mixin ct-chart-series-color($color) {
@@ -224,11 +225,11 @@
   }
 
   .#{$ct-class-candle-green} {
-    @include ct-chart-candle($ct-candle-color-green);
+    @include ct-chart-candle($ct-candle-color-green, $ct-candle-stroke-color);
   }
 
   .#{$ct-class-candle-red} {
-    @include ct-chart-candle($ct-candle-color-red);
+    @include ct-chart-candle($ct-candle-color-red, $ct-candle-stroke-color);
   }
 
   @if $ct-include-colored-series {
