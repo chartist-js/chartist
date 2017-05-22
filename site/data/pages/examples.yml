@@ -1,5 +1,5 @@
 sections:
-  - title: Line chart examples
+  - title: Candle stick chart examples
     level: 3
     items:
       - type: live-example
@@ -9,6 +9,10 @@ sections:
           id: example-candle-stick
           classes: ct-golden-section
           intro: An example of a candle stick chart. You can edit this example in realtime.
+
+  - title: Line chart examples
+    level: 3
+    items:
       - type: live-example
         data:
           title: Simple line chart
