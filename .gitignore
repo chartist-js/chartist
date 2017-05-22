@@ -1,5 +1,5 @@
 # ide
-.iml
+*.iml
 .idea
 
 # modules
