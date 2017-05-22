@@ -4,7 +4,7 @@
  * @module Chartist.Candle
  */
 /* global Chartist */
-(function(window, document, Chartist){
+(function (window, document, Chartist) {
   'use strict';
 
   /**
@@ -30,10 +30,8 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
-      // This value specifies the minimum width in pixel of the scale steps
-      scaleMinSpace: 30,
-      // Use only integer values (whole numbers) for the scale steps
-      onlyInteger: false
+      // Set the axis type to be used to project values on this axis. If not defined, Chartist.StepAxis will be used for the X-Axis, where the ticks option will be set to the labels in the data and the stretch option will be set to the global fullWidth option. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
+      type: undefined
     },
     // Options for Y-Axis
     axisY: {
@@ -52,10 +50,8 @@
       showGrid: true,
       // Interpolation function that allows you to intercept the value from the axis label
       labelInterpolationFnc: Chartist.noop,
-      // This value specifies the minimum height in pixel of the scale steps
-      scaleMinSpace: 20,
-      // Use only integer values (whole numbers) for the scale steps
-      onlyInteger: false
+      // Set the axis type to be used to project values on this axis. If not defined, Chartist.StepAxis will be used for the X-Axis, where the ticks option will be set to the labels in the data and the stretch option will be set to the global fullWidth option. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
+      type: undefined
     },
     // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
     width: undefined,
@@ -65,8 +61,6 @@
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
-    // Unless low/high are explicitly set, candle stick chart will be centered at zero by default. Set referenceValue to null to auto scale.
-    referenceValue: 0,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
@@ -78,11 +72,9 @@
     fullWidth: false,
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
-    // If the candle stick chart should add a background fill to the .ct-grids group.
-    showGridBackground: false,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
-      chart: 'ct-chart-bar',
+      chart: 'ct-chart-line',
       label: 'ct-label',
       labelGroup: 'ct-labels',
       series: 'ct-series',
@@ -117,9 +109,19 @@
     // Create chart rectangle
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.chartPadding);
 
+    // Add missing label elements to label array to avoid none displayed candle sticks and the end of the chart.
+    // Length is used to create the axisX (see attribute ticks)
+    var differenceNumberLabelValues = data.normalized.series.length - data.normalized.labels.length;
+    if (differenceNumberLabelValues > 0) {
+      var startIndex = data.normalized.labels.length;
+      for (var i = 0; i < differenceNumberLabelValues; i++) {
+        data.normalized.labels[startIndex + i] = '';
+      }
+    }
+
     // Prepare x and y axis
     var axisX, axisY;
-    if(options.axisX.type === undefined) {
+    if (options.axisX.type === undefined) {
       axisX = new Chartist.StepAxis(Chartist.Axis.units.x, data.normalized.series, chartRect, Chartist.extend({}, options.axisX, {
         ticks: data.normalized.labels,
         stretch: options.fullWidth
@@ -127,7 +129,7 @@
     } else {
       axisX = options.axisX.type.call(Chartist, Chartist.Axis.units.x, data.normalized.series, chartRect, options.axisX);
     }
-    if(options.axisY.type === undefined) {
+    if (options.axisY.type === undefined) {
       axisY = new Chartist.AutoScaleAxis(Chartist.Axis.units.y, data.normalized.series, chartRect, Chartist.extend({}, options.axisY, {
         high: Chartist.isNumeric(options.high) ? options.high : options.axisY.high,
         low: Chartist.isNumeric(options.low) ? options.low : options.axisY.low
@@ -138,13 +140,8 @@
     axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
-    // Create grid if necessary
-    if (options.showGridBackground) {
-      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
-    }
-
     // Draw the candles (each series is representing a single candle)
-    data.raw.series.forEach(function(series, seriesIndex) {
+    data.raw.series.forEach(function (series, seriesIndex) {
       var open,
         highest,
         lowest,
@@ -189,12 +186,13 @@
 
       // candleWidth in pixel
       var candleWidth = 20;
+      var candleCenterWidth = 20 / 2;
       var partedCandleWidth = candleWidth / 3;
 
       // Create projected object
       var positions = {
-        x1: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]),
-        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) + candleWidth,
+        x1: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth,
+        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth + candleWidth,
         y1: chartRect.y1 - axisY.projectValue(upperValue || 0),
         y2: chartRect.y1 - axisY.projectValue(lowerValue || 0),
         y3: chartRect.y1 - axisY.projectValue(highest || 0),
@@ -208,12 +206,11 @@
       // </svg>
       // var path = new Chartist.Svg.Path(true).move(2, 25).line(2, 75).line(6, 75).line(6, 100).line(12, 100).line(12, 75).line(16, 75)
       //   .line(16, 25).line(12, 25).line(12, 0).line(6, 0).line(6, 25);
-
       var path = new Chartist.Svg.Path(true)
         .move(positions.x1, positions.y1).line(positions.x1, positions.y2)
-        .line(positions.x1+partedCandleWidth, positions.y2).line(positions.x1+partedCandleWidth, positions.y4).line(positions.x1+partedCandleWidth*2, positions.y4).line(positions.x1+partedCandleWidth*2, positions.y2)
+        .line(positions.x1 + partedCandleWidth, positions.y2).line(positions.x1 + partedCandleWidth, positions.y4).line(positions.x1 + partedCandleWidth * 2, positions.y4).line(positions.x1 + partedCandleWidth * 2, positions.y2)
         .line(positions.x2, positions.y2).line(positions.x2, positions.y1)
-        .line(positions.x1+partedCandleWidth*2, positions.y1).line(positions.x1+partedCandleWidth*2, positions.y3).line(positions.x1+partedCandleWidth, positions.y3).line(positions.x1+partedCandleWidth, positions.y1);
+        .line(positions.x1 + partedCandleWidth * 2, positions.y1).line(positions.x1 + partedCandleWidth * 2, positions.y3).line(positions.x1 + partedCandleWidth, positions.y3).line(positions.x1 + partedCandleWidth, positions.y1);
 
       // Create candle SVG by a given path
       var candle = seriesElement.elem('path', {
@@ -234,7 +231,6 @@
         group: seriesElement,
         element: candle
       });
-
 
     }.bind(this));
 
