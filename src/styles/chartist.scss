@@ -124,7 +124,8 @@
   }
 
   .#{$ct-class-chart-line} .#{$ct-class-label},
-  .#{$ct-class-chart-bar} .#{$ct-class-label} {
+  .#{$ct-class-chart-bar} .#{$ct-class-label},
+  .#{$ct-class-chart-candle} .#{$ct-class-label}{
     @include ct-flex();
   }
 
