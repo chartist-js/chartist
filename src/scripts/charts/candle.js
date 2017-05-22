@@ -61,6 +61,8 @@
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
+    // Width of candle body in pixel
+    candleWidth: 10,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
@@ -74,7 +76,7 @@
     reverseData: false,
     // Override the class names that get used to generate the SVG structure of the chart
     classNames: {
-      chart: 'ct-chart-line',
+      chart: 'ct-chart-candle',
       label: 'ct-label',
       labelGroup: 'ct-labels',
       series: 'ct-series',
@@ -184,15 +186,13 @@
         lowest = close - close / 100;
       }
 
-      // candleWidth in pixel
-      var candleWidth = 20;
-      var candleCenterWidth = 20 / 2;
-      var partedCandleWidth = candleWidth / 3;
+      var candleCenterWidth = options.candleWidth / 2;
+      var partedCandleWidth = options.candleWidth / 3;
 
       // Create projected object
       var positions = {
         x1: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth,
-        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth + candleWidth,
+        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth + options.candleWidth,
         y1: chartRect.y1 - axisY.projectValue(upperValue || 0),
         y2: chartRect.y1 - axisY.projectValue(lowerValue || 0),
         y3: chartRect.y1 - axisY.projectValue(highest || 0),
