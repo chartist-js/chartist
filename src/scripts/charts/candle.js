@@ -1,7 +1,11 @@
 /**
- * The candle stick chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped candle stick charts.
+ * The candle stick chart module of Chartist that can be used to draw candle stick charts.
  *
  * @module Chartist.Candle
+ *
+ * @author Simon Pfeifer
+ * @since May 2017 (Chartist v0.11.0)
+ * @version 0.0.1
  */
 /* global Chartist */
 (function (window, document, Chartist) {
