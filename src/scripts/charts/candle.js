@@ -1,11 +1,12 @@
 /**
  * The candle stick chart module of Chartist that can be used to draw candle stick charts.
  *
- * @module Chartist.Candle
  *
  * @author Simon Pfeifer
  * @since May 2017 (Chartist v0.11.0)
  * @version 0.0.1
+ *
+ * @module Chartist.Candle
  */
 /* global Chartist */
 (function (window, document, Chartist) {
@@ -287,6 +288,40 @@
    * @param {Object} [options] The options object with options that override the default options. Check the examples for a detailed list.
    * @param {Array} [responsiveOptions] Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    * @return {Object} An object which exposes the API for the created chart
+   *
+   * @example
+   * new Chartist.Candle('.ct-chart', {
+   *   labels: ['22:48', '22:49', '22:50', '22:51', '22:52', '22:53', '22:54', '22:55', '22:56', '22:57', '22:58', '22:59'],
+   *   series: [
+   *     [240, 262, 220, 220],
+   *     [220, 220, 209, 213],
+   *     [213, 214, 211, 212],
+   *     [212, 212, 209, 209],
+   *     [209, 217, 207, 208],
+   *     [208, 211, 207, 207],
+   *     [207, 207, 202, 206],
+   *     [206, 206, 206, 206],
+   *     [206, 206, 206, 206],
+   *     [208, 208, 208, 208],
+   *     [211, 211, 211, 211],
+   *     [208, 208, 208, 208]
+   *   ]
+   * }, {
+   *   axisX: {
+   *     // Labels aligned below vertical grid lines
+   *     labelOffset: {
+   *       x: -14,
+   *       y: 0
+   *     }
+   *   },
+   *   axisY: {
+   *     showGrid: false,
+   *     labelInterpolationFnc: function (value) {
+   *       // Let's add 12000 to this y-axis labels
+   *       return value + 12000;
+   *     }
+   *   }
+   * });
    */
   function Candle(query, data, options, responsiveOptions) {
     Chartist.Candle.super.constructor.call(this,
