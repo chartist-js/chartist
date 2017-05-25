@@ -65,8 +65,14 @@
     high: undefined,
     // Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
     low: undefined,
-    // Width of candle body in pixel
-    candleWidth: 10,
+    // Width of candle body in pixel (IMO is 2 px best minimum value)
+    candleWidth: 2,
+    // Width of candle wick in pixel (IMO is 1 px best minimum value)
+    candleWickWidth: 1,
+    // Use calculated x-axis step length, depending on the number of quotes to display, as candle width. Otherwise the candleWidth is being used.
+    useStepLengthAsCandleWidth: true,
+    // Use 1/3 of candle body width as width for the candle wick, otherwise the candleWickWidth is being used.
+    useOneThirdAsCandleWickWidth: false,
     // Padding of the chart drawing area to the container element and labels as a number or padding object {top: 5, right: 5, bottom: 5, left: 5}
     chartPadding: {
       top: 15,
@@ -146,6 +152,11 @@
     axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
 
+    // Determine whether all candles together should take the full available width within the chart
+    if (options.useStepLengthAsCandleWidth) {
+      options.candleWidth = axisX.stepLength;
+    }
+
     // Draw the candles (each series is representing a single candle)
     data.raw.series.forEach(function (series, seriesIndex) {
       var open,
@@ -191,7 +202,15 @@
       }
 
       var candleCenterWidth = options.candleWidth / 2;
-      var partedCandleWidth = options.candleWidth / 3;
+      // Perform right positioning of candle wick via center value
+      var candleWickStartLength = candleCenterWidth - options.candleWickWidth / 2;
+      var candleWickEndLength = candleCenterWidth + options.candleWickWidth / 2;
+
+      // Determine whether to use one-third of the candle body width as candle wick width
+      if (options.useOneThirdAsCandleWickWidth) {
+        candleWickStartLength = options.candleWidth / 3;
+        candleWickEndLength = candleWickStartLength * 2;
+      }
 
       // Create projected object
       var positions = {
@@ -212,9 +231,9 @@
       //   .line(16, 25).line(12, 25).line(12, 0).line(6, 0).line(6, 25);
       var path = new Chartist.Svg.Path(true)
         .move(positions.x1, positions.y1).line(positions.x1, positions.y2)
-        .line(positions.x1 + partedCandleWidth, positions.y2).line(positions.x1 + partedCandleWidth, positions.y4).line(positions.x1 + partedCandleWidth * 2, positions.y4).line(positions.x1 + partedCandleWidth * 2, positions.y2)
+        .line(positions.x1 + candleWickStartLength, positions.y2).line(positions.x1 + candleWickStartLength, positions.y4).line(positions.x1 + candleWickEndLength, positions.y4).line(positions.x1 + candleWickEndLength, positions.y2)
         .line(positions.x2, positions.y2).line(positions.x2, positions.y1)
-        .line(positions.x1 + partedCandleWidth * 2, positions.y1).line(positions.x1 + partedCandleWidth * 2, positions.y3).line(positions.x1 + partedCandleWidth, positions.y3).line(positions.x1 + partedCandleWidth, positions.y1);
+        .line(positions.x1 + candleWickEndLength, positions.y1).line(positions.x1 + candleWickEndLength, positions.y3).line(positions.x1 + candleWickStartLength, positions.y3).line(positions.x1 + candleWickStartLength, positions.y1);
 
       // Create candle SVG by a given path
       var candle = seriesElement.elem('path', {
