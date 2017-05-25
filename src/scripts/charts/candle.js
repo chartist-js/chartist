@@ -157,6 +157,10 @@
       options.candleWidth = axisX.stepLength;
     }
 
+    // To determine the color of a candle in case it's open price is equals to it's close price the previous price
+    // will be used.
+    var previousClose = 0;
+
     // Draw the candles (each series is representing a single candle)
     data.raw.series.forEach(function (series, seriesIndex) {
       var open,
@@ -196,10 +200,11 @@
         lowerValue = open;
         candleColorStyle = options.classNames.candlePositive;
       } else {
-        upperValue = open;
-        lowerValue = close - close / 100;
-        lowest = close - close / 100;
+        upperValue = close;
+        lowerValue = close;
+        candleColorStyle = (previousClose <= close ? options.classNames.candlePositive : options.classNames.candleNegative);
       }
+      previousClose = close;
 
       var candleCenterWidth = options.candleWidth / 2;
       // Perform right positioning of candle wick via center value
@@ -215,12 +220,18 @@
       // Create projected object
       var positions = {
         x1: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth,
-        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) - candleCenterWidth + options.candleWidth,
+        x2: chartRect.x1 + axisX.projectValue(0, seriesIndex, data.normalized.series[seriesIndex]) + candleCenterWidth,
         y1: chartRect.y1 - axisY.projectValue(upperValue || 0),
         y2: chartRect.y1 - axisY.projectValue(lowerValue || 0),
         y3: chartRect.y1 - axisY.projectValue(highest || 0),
         y4: chartRect.y1 - axisY.projectValue(lowest || 0)
       };
+
+      // If there's no difference and it would display totally nothing, then create one pixel difference
+      if (upperValue === lowerValue) {
+        positions.y2 = positions.y2 - 1;
+        positions.y4 = positions.y4 - 1;
+      }
 
       // Create candle stick element
       // <svg>
