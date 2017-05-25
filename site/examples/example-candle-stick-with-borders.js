@@ -22,7 +22,11 @@ new Chartist.Candle('.ct-chart', {
     }
   },
   axisY: {
-    showGrid: false
+    showGrid: false,
+    labelInterpolationFnc: function (value) {
+      // Let's add 12000 to this y-axis labels
+      return value + 12000;
+    }
   }
 }).on('draw', function (data) {
   if (data.type === 'candle') {
