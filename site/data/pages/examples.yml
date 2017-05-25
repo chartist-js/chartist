@@ -283,4 +283,11 @@ sections:
           level: 4
           id: example-candle-stick
           classes: ct-golden-section
-          intro: An example of a simple candle stick chart. You can edit this example in realtime.
+          intro: An example of a simple candle stick chart.
+      - type: live-example
+        data:
+          title: Candle stick chart using borders
+          level: 4
+          id: example-candle-stick-with-borders
+          classes: ct-golden-section
+          intro: Candle stick chart which is presenting minutes in a small value range above 200 and has black borders around the candle elements. Labels on x-axis are aligned below the vertical grid lines.
