@@ -130,7 +130,7 @@ sections:
           intro: >
                    This example uses <a href="http://momentjs.com/">Moment.js</a> in the label interpolation function 
                    to format a date object. The fixed axis ensures that there is correct spacing between the data points, 
-                   and the number of labels is determined by the devisor.
+                   and the number of labels is determined by the divisor.
   - title: Bar chart examples
     level: 3
     items:
