@@ -308,7 +308,9 @@ var Chartist = {
     Array.prototype.slice.call(container.querySelectorAll('svg')).filter(function filterChartistSvgObjects(svg) {
       return svg.getAttributeNS(Chartist.namespaces.xmlns, 'ct');
     }).forEach(function removePreviousElement(svg) {
-      container.removeChild(svg);
+      if (container.contains(svg)) {
+        container.removeChild(svg);
+      }
     });
 
     // Create svg object with width and height or use 100% as default
