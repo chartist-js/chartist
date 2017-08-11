@@ -18,6 +18,7 @@
     "chartist-plugin-threshold": "~0.0.1",
     "chartist-plugin-fill-donut": "~0.0.1",
     "chartist-plugin-zoom": "~0.2.1",
+    "chartist-plugin-targetline": "~1.0.0",
     "matchMedia": "~0.2.0",
     "moment": "^2.14.1"
   },
