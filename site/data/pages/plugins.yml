@@ -252,6 +252,30 @@ sections:
                   -
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/hansmaad/chartist-plugin-zoom" target="_blank">chartist-plugin-zoom</a>'
+      - type: sub-section
+        data:
+          title: Target Line Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The target line plugin allows you to draw a target line on your chart.
+            - type: live-example
+              data:
+                id: example-plugin-targetline
+                classes: ct-golden-section
+                intro: >
+                          Pass a value to the plugin to draw a target line on the chart.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Harry Twyford
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/htwyford/chartist-plugin-targetline" target="_blank">chartist-plugin-targetline</a>'
   - title: Develop a plugin
     level: 3
     items:
