@@ -56,6 +56,12 @@ module.exports = function (grunt) {
           ]
         },
         {
+          expand: true,
+          cwd: '.tmp/styles',
+          dest: '<%= pkg.config.dist %>/',
+          src: 'chartist.css*'
+        },
+        {
           dest: '<%= pkg.config.dist %>/',
           src: 'LICENSE'
         }

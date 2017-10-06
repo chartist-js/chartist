@@ -1,3 +1,63 @@
+v0.11.0 - 11 Apr 2017
+- Added CSP compatibility by using CSSOM instead of style attributes (Francisco Silva)
+- Added feature to render pie / donut chart as solid shape, allowing outlines (Sergey Kovalyov, Chris Carson)
+- Fixed XMLNS for foreignObjet content (Alfredo Matos)
+
+v0.10.0 - 23 Oct 2016
+---------------------
+
+- Added dominant-baseline styles for pie and donut charts (Gion Kunz)
+- Added public getNode on SVG api (Gion Kunz)
+- Added support for bar charts to have auto narrowing on AutoScaleAxis by overriding referenceValue (Jonathan Dumaine)
+- Added amdModuleId for better integration into webpack (Chris)
+- Added grid background to line and bar chart (hansmaad)
+- Added new LTS node version and included NPM run scripts (Gion Kunz)
+- Added correct meta data emission in events (Gion Kunz)
+- Fixed rounding issues where raw value was added instead of rounded (Gion Kunz)
+- Fixed step axis issue with axis stretch and series count 0 (Gion Kunz)
+- Fixed label position of single series pie / donut charts to be centered (Gion Kunz)
+- Fixed order or drawing pie and donut slices (Gion Kunz)
+- Fixed calculations of stepLength to only stretch ticksLength if > 1 (Alexander van Eck)
+- Fixed better handling of axisOptions.position and fallback to 'end' position (Alexander van Eck)
+- Fixed handling of holes in interpolation for multi-value series (James Watmuff)
+- Fixed function StepAxis() returning NaN (Joao Milton)
+- Fixed NaN issues in SVG when rendering Pie chart with only 0s (Alexander van Eck)
+- Fixed infinite loop in getBounds with a more robust increment (hansmaad)
+- Fixed performance of Chartist.extend (cheese83)
+- Fixed license reference issues in package.json (Jacob Quant)
+- Cleanup of data normalization changes and allows Date objects and booleans as values (Gion Kunz)
+- Cleanup refactoring for data management and normalization (Gion Kunz)
+
+v0.9.8 - 22 Jun 2016
+--------------------
+- Added monotone cubic interpolation which is now the default interpolation for line charts (James Watmuff)
+- Update zoom plugin to 0.2.1 (hansmaad)
+- Bugfix: Prevent infinite loop in getBounds if bounds.valueRange is very small, fixes #643 (hansmaad)
+- Bugfix: Correct update events during media changes (Rory Hunter)
+- Bugfix: prevent negative value for foreignObject width attribute (Jose Ignacio)
+- Fixed example line chart in getting started documentation (Robin Edbom)
+- Updated development pipeline dependencies (Gion Kunz)
+- Updated chartist tooltip plugin and example styles (Gion Kunz)
+- Fixed WTFPL License issue (Gion Kunz)
+
+v0.9.7 - 23 Feb 2016
+--------------------
+- Fixed bug with label and grid rendering on axis, fixes #621
+
+v0.9.6 - 22 Feb 2016
+--------------------
+- Added dual licensing WTFPL and MIT, built new version (Gion Kunz)
+- Adding unminified CSS to dist output, fixes #506 (Gion Kunz)
+- Refactored namespaced attribute handling, fixes #584 (Gion Kunz)
+- Allow charts to be created without data and labels, fixes #598, fixes #588, fixes #537, fixes #425 (Gion Kunz> <Carlos Morales)
+- Removed onlyInteger setting from default bar chart settings, fixes #423 (Gion Kunz)
+- Removed serialization of values on line chart areas, fixes #424 (Gion Kunz)
+- Removed workaround and fallback for SVG element width and height calculations, fixes #592 (Gion Kunz)
+- Render 0 in ct:value attribute for line graphs (Paul Salaets)
+- Allow empty pie chart values to be ignored (Stephen)
+- Fix #527 Pie render issue with small angles. (hansmaad)
+- Small fix for stacked bars with 'holes' in the data (medzes)
+
 v0.9.5 - 14 Nov 2015
 --------------------
 - Added 'fillHoles' option for line graphs, which continues the line smoothly through data holes (Thanks to Joshua Warner !)

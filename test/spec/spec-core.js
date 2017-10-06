@@ -214,6 +214,26 @@ describe('Chartist core', function() {
         ]]
       );
     });
+
+    it('should normalize boolean series correctly', function() {
+      var data = {
+        series: [true, false, false, true]
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [1, 0, 0, 1]
+      );
+    });
+
+    it('should normalize date series correctly', function() {
+      var data = {
+        series: [new Date(0), new Date(1), new Date(2), new Date(3)]
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [0, 1, 2, 3]
+      );
+    });
   });
 
   describe('padding normalization tests', function () {
@@ -279,9 +299,9 @@ describe('Chartist core', function() {
       });
     });
   });
-  
+
   describe('quantity', function() {
-    
+
     it('should return value for numbers', function() {
       expect(Chartist.quantity(100)).toEqual({ value: 100 });
       expect(Chartist.quantity(0)).toEqual({ value: 0 });
@@ -289,17 +309,289 @@ describe('Chartist core', function() {
       expect(Chartist.quantity(null)).toEqual({ value: null });
       expect(Chartist.quantity(undefined)).toEqual({ value: undefined });
     });
-    
+
     it('should return value without unit from string', function() {
       expect(Chartist.quantity('100')).toEqual({ value: 100, unit : undefined });
       expect(Chartist.quantity('0')).toEqual({ value: 0, unit : undefined });
     });
-    
+
     it('should return value and unit from string', function() {
       expect(Chartist.quantity('100%')).toEqual({ value: 100, unit :'%' });
       expect(Chartist.quantity('100 %')).toEqual({ value: 100, unit :'%' });
       expect(Chartist.quantity('0px')).toEqual({ value: 0, unit: 'px' });
     });
-    
+
+  });
+
+  describe('getBounds', function() {
+
+    it('should return 10 steps', function() {
+      var bounds = Chartist.getBounds(100, { high: 10, low: 1 }, 10, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(10);
+      expect(bounds.values).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    });
+
+    it('should return 5 steps', function() {
+      var bounds = Chartist.getBounds(100, { high: 10, low: 1 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(10);
+      expect(bounds.values).toEqual([1, 3, 5, 7, 9]);
+      // Is this correct behaviour? Should it include 10?
+    });
+
+    it('should return non integer steps', function() {
+      var bounds = Chartist.getBounds(100, { high: 2, low: 1 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(2);
+      expect(bounds.values).toEqual([ 1, 1.25, 1.5, 1.75, 2 ]);
+    });
+
+    it('should return integer steps only', function() {
+      var bounds = Chartist.getBounds(100, { high: 3, low: 1 }, 20, true);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(3);
+      expect(bounds.values).toEqual([ 1, 2, 3 ]);
+    });
+
+    it('should return single integer step', function() {
+      var bounds = Chartist.getBounds(100, { high: 2, low: 1 }, 20, true);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(2);
+      expect(bounds.values).toEqual([ 1, 2,]);
+    });
+
+    it('should floor/ceil min/max', function() {
+      var bounds = Chartist.getBounds(100, { high: 9.9, low: 1.01 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(10);
+      expect(bounds.values).toEqual([1, 3, 5, 7, 9]);
+      // Is this correct behaviour? Should it include 10?
+    });
+
+    it('should floor/ceil min/max for non integers', function() {
+      var bounds = Chartist.getBounds(100, { high: 2.9, low: 1.01 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(3);
+      expect(bounds.values).toEqual([1, 1.5, 2, 2.5, 3]);
+    });
+
+    it('should floor/ceil min/max if integers only', function() {
+      var bounds = Chartist.getBounds(100, { high: 2.9, low: 1.01 }, 20, true);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(3);
+      expect(bounds.values).toEqual([1, 2, 3]);
+    });
+
+    it('should return neg and pos values', function() {
+      var bounds = Chartist.getBounds(100, { high: 1.9, low: -0.9 }, 20, false);
+      expect(bounds.min).toBe(-1);
+      expect(bounds.max).toBe(2);
+      expect(bounds.values).toEqual([-1, 0, 1, 2]);
+    });
+
+    it('should return two steps if no space', function() {
+      var bounds = Chartist.getBounds(100, { high: 5, low: 0 }, 45, false);
+      expect(bounds.min).toBe(0);
+      expect(bounds.max).toBe(5);
+      expect(bounds.values).toEqual([0, 4]);
+      // Is this correct behaviour? Should it be [0, 5]?
+    });
+
+    it('should return single step if no space', function() {
+      var bounds = Chartist.getBounds(100, { high: 5, low: 0 }, 80, false);
+      expect(bounds.min).toBe(0);
+      expect(bounds.max).toBe(5);
+      expect(bounds.values).toEqual([0]);
+      // Is this correct behaviour? Should it be [0, 5]?
+    });
+
+    it('should return single step if range is less than epsilon', function() {
+      var bounds = Chartist.getBounds(100, { high: 1.0000000000000002, low: 1 }, 20, false);
+      expect(bounds.min).toBe(1);
+      expect(bounds.max).toBe(1.0000000000000002);
+      expect(bounds.low).toBe(1);
+      expect(bounds.high).toBe(1.0000000000000002);
+      expect(bounds.values).toEqual([1]);
+    });
+
+    it('should return single step if range is less than smallest increment', function() {
+      var bounds = Chartist.getBounds(613.234375, { high: 1000.0000000000001, low: 999.9999999999997 }, 50, false);
+      expect(bounds.min).toBe(999.9999999999999);
+      expect(bounds.max).toBe(1000);
+      expect(bounds.low).toBe(999.9999999999997);
+      expect(bounds.high).toBe(1000.0000000000001);
+      expect(bounds.values).toEqual([Chartist.roundWithPrecision(999.9999999999999)]);
+    });
+
+  });
+
+  describe('splitIntoSegments', function() {
+
+    function makeValues(arr) {
+      return arr.map(function(x) {
+        return { value: x };
+      });
+    }
+
+    it('should return empty array for empty input', function() {
+      expect(Chartist.splitIntoSegments([],[])).toEqual([]);
+    });
+
+    it('should remove undefined values', function() {
+      var coords = [1,2,3,4,5,6,7,8,9,10,11,12];
+      var values = makeValues([1,undefined,undefined,4,undefined,6]);
+
+      expect(Chartist.splitIntoSegments(coords, values)).toEqual([{
+        pathCoordinates: [1,2],
+        valueData: makeValues([1])
+      }, {
+        pathCoordinates: [7, 8],
+        valueData: makeValues([4])
+      }, {
+        pathCoordinates: [11, 12],
+        valueData: makeValues([6])
+      }]);
+    });
+
+    it('should respect fillHoles option', function() {
+      var coords = [1,2,3,4,5,6,7,8,9,10,11,12];
+      var values = makeValues([1,undefined,undefined,4,undefined,6]);
+      var options = {
+        fillHoles: true
+      };
+
+      expect(Chartist.splitIntoSegments(coords, values, options)).toEqual([{
+        pathCoordinates: [1,2,7,8,11,12],
+        valueData: makeValues([1,4,6])
+      }]);
+    });
+
+    it('should respect increasingX option', function() {
+      var coords = [1,2,3,4,5,6,5,6,7,8,1,2];
+      var values = makeValues([1,2,3,4,5,6]);
+      var options = {
+        increasingX: true
+      };
+
+      expect(Chartist.splitIntoSegments(coords, values, options)).toEqual([{
+        pathCoordinates: [1,2,3,4,5,6],
+        valueData: makeValues([1,2,3])
+      }, {
+        pathCoordinates: [5,6,7,8],
+        valueData: makeValues([4,5])
+      }, {
+        pathCoordinates: [1,2],
+        valueData: makeValues([6])
+      }]);
+    });
+  });
+
+  describe('createGrid', function() {
+    var group, axis, classes, eventEmitter, position, length, offset;
+
+    beforeEach(function() {
+      eventEmitter = Chartist.EventEmitter();
+      group = new Chartist.Svg('g');
+      axis = {
+        units: {
+          pos : 'x'
+        },
+        counterUnits: {
+          pos : 'y'
+        }
+      };
+      classes = [];
+      position = 10;
+      length = 100;
+      offset = 20;
+    });
+
+    function onCreated(fn, done) {
+      eventEmitter.addEventHandler('draw', function(grid) {
+        fn(grid);
+        done();
+      });
+      Chartist.createGrid(position, 1, axis, offset, length, group, classes, eventEmitter);
+    }
+
+    it('should add single grid line to group', function(done) {
+      onCreated(function() {
+        expect(group.querySelectorAll('line').svgElements.length).toBe(1);
+      }, done);
+    });
+
+    it('should draw line', function(done) {
+      onCreated(function() {
+        var line = group.querySelector('line');
+        expect(line.attr('x1')).toBe('10');
+        expect(line.attr('x2')).toBe('10');
+        expect(line.attr('y1')).toBe('20');
+        expect(line.attr('y2')).toBe('120');
+      }, done);
+    });
+
+    it('should draw horizontal line', function(done) {
+      axis.units.pos = 'y';
+      axis.counterUnits.pos = 'x';
+      onCreated(function() {
+        var line = group.querySelector('line');
+        expect(line.attr('y1')).toBe('10');
+        expect(line.attr('y2')).toBe('10');
+        expect(line.attr('x1')).toBe('20');
+        expect(line.attr('x2')).toBe('120');
+      }, done);
+    });
+
+  });
+
+  describe('createGridBackground', function() {
+    var group, chartRect, className, eventEmitter;
+
+    beforeEach(function() {
+      eventEmitter = Chartist.EventEmitter();
+      group = new Chartist.Svg('g');
+      className = 'ct-test';
+      chartRect = {
+        x1 : 5,
+        y2 : 10,
+        _width : 100,
+        _height : 50,
+        width : function() { return this._width; },
+        height : function() { return this._height; },
+      };
+    });
+
+    function onCreated(fn, done) {
+      eventEmitter.addEventHandler('draw', function(data) {
+        fn(data);
+        done();
+      });
+      Chartist.createGridBackground(group, chartRect, className, eventEmitter);
+    }
+
+    it('should add rect', function(done) {
+      onCreated(function() {
+        var rects = group.querySelectorAll('rect').svgElements;
+        expect(rects.length).toBe(1);
+        var rect = rects[0];
+        expect(rect.attr('x')).toBe('5');
+        expect(rect.attr('y')).toBe('10');
+        expect(rect.attr('width')).toBe('100');
+        expect(rect.attr('height')).toBe('50');
+        expect(rect.classes()).toEqual(['ct-test']);
+      }, done);
+    });
+
+    it('should pass grid to event', function(done) {
+      onCreated(function(data) {
+        expect(data.type).toBe('gridBackground');
+        var rect = data.element;
+        expect(rect.attr('x')).toBe('5');
+        expect(rect.attr('y')).toBe('10');
+      }, done);
+    });
+
+
   });
 });

@@ -23,7 +23,9 @@
    */
   function update(data, options, override) {
     if(data) {
-      this.data = data;
+      this.data = data || {};
+      this.data.labels = this.data.labels || [];
+      this.data.series = this.data.series || [];
       // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
       this.eventEmitter.emit('data', {
         type: 'update',
@@ -143,7 +145,9 @@
    */
   function Base(query, data, defaultOptions, options, responsiveOptions) {
     this.container = Chartist.querySelector(query);
-    this.data = data;
+    this.data = data || {};
+    this.data.labels = this.data.labels || [];
+    this.data.series = this.data.series || [];
     this.defaultOptions = defaultOptions;
     this.options = options;
     this.responsiveOptions = responsiveOptions;

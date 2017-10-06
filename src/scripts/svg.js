@@ -7,16 +7,6 @@
 (function(window, document, Chartist) {
   'use strict';
 
-  var svgNs = 'http://www.w3.org/2000/svg',
-    xmlNs = 'http://www.w3.org/2000/xmlns/',
-    xhtmlNs = 'http://www.w3.org/1999/xhtml';
-
-  Chartist.xmlNs = {
-    qualifiedName: 'xmlns:ct',
-    prefix: 'ct',
-    uri: 'http://gionkunz.github.com/chartist-js/ct'
-  };
-
   /**
    * Chartist.Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
    *
@@ -33,11 +23,13 @@
     if(name instanceof Element) {
       this._node = name;
     } else {
-      this._node = document.createElementNS(svgNs, name);
+      this._node = document.createElementNS(Chartist.namespaces.svg, name);
 
       // If this is an SVG element created then custom namespace
       if(name === 'svg') {
-        this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
+        this.attr({
+          'xmlns:ct': Chartist.namespaces.ct
+        });
       }
     }
 
@@ -63,7 +55,7 @@
    *
    * @memberof Chartist.Svg
    * @param {Object|String} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added. If this parameter is a String then the function is used as a getter and will return the attribute value.
-   * @param {String} ns If specified, the attributes will be set as namespace attributes with ns as prefix.
+   * @param {String} [ns] If specified, the attribute will be obtained using getAttributeNs. In order to write namepsaced attributes you can use the namespace:attribute notation within the attributes object.
    * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
   function attr(attributes, ns) {
@@ -81,8 +73,9 @@
         return;
       }
 
-      if(ns) {
-        this._node.setAttributeNS(ns, [Chartist.xmlNs.prefix, ':', key].join(''), attributes[key]);
+      if (key.indexOf(':') !== -1) {
+        var namespacedAttribute = key.split(':');
+        this._node.setAttributeNS(Chartist.namespaces[namespacedAttribute[0]], key, attributes[key]);
       } else {
         this._node.setAttribute(key, attributes[key]);
       }
@@ -154,6 +147,16 @@
   }
 
   /**
+   * Returns the underlying SVG node for the current element.
+   *
+   * @memberof Chartist.Svg
+   * @returns {Node}
+   */
+  function getNode() {
+    return this._node;
+  }
+
+  /**
    * This method creates a foreignObject (see https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) that allows to embed HTML content into a SVG graphic. With the help of foreignObjects you can enable the usage of regular HTML elements inside of SVG where they are subject for SVG positioning and transformation but the Browser will use the HTML rendering capabilities for the containing DOM.
    *
    * @memberof Chartist.Svg
@@ -173,7 +176,7 @@
     }
 
     // Adding namespace to content element
-    content.setAttribute('xmlns', xhtmlNs);
+    content.setAttribute('xmlns', Chartist.namespaces.xmlns);
 
     // Creating the foreignObject without required extension attribute (as described here
     // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
@@ -311,43 +314,23 @@
   }
 
   /**
-   * "Save" way to get property value from svg BoundingBox.
-   * This is a workaround. Firefox throws an NS_ERROR_FAILURE error if getBBox() is called on an invisible node.
-   * See [NS_ERROR_FAILURE: Component returned failure code: 0x80004005](http://jsfiddle.net/sym3tri/kWWDK/)
-   *
-   * @memberof Chartist.Svg
-   * @param {SVGElement} node The svg node to
-   * @param {String} prop The property to fetch (ex.: height, width, ...)
-   * @returns {Number} The value of the given bbox property
-   */
-  function getBBoxProperty(node, prop) {
-    try {
-      return node.getBBox()[prop];
-    } catch(e) {}
-
-    return 0;
-  }
-
-  /**
-   * Get element height with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+   * Get element height using `getBoundingClientRect`
    *
    * @memberof Chartist.Svg
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.clientHeight || Math.round(getBBoxProperty(this._node, 'height')) || this._node.parentNode.clientHeight;
+    return this._node.getBoundingClientRect().height;
   }
 
   /**
-   * Get element width with fallback to svg BoundingBox or parent container dimensions:
-   * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
+   * Get element width using `getBoundingClientRect`
    *
    * @memberof Chartist.Core
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.clientWidth || Math.round(getBBoxProperty(this._node, 'width')) || this._node.parentNode.clientWidth;
+    return this._node.getBoundingClientRect().width;
   }
 
   /**
@@ -510,6 +493,7 @@
     root: root,
     querySelector: querySelector,
     querySelectorAll: querySelectorAll,
+    getNode: getNode,
     foreignObject: foreignObject,
     text: text,
     empty: empty,

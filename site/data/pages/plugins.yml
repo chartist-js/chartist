@@ -155,32 +155,6 @@ sections:
 
       - type: sub-section
         data:
-          title: Sketchy Plugin
-          level: 4
-          items:
-            - type: text
-              data:
-                text: >
-                        The sketchy plugin makes your charts look like they have been drawn by hand. This plugin makes use
-                        of SVG filters and works on IE10+, Safari 7+ and Android 4.4+. Also note that SVG filters are not
-                        very performant and they will eat your users mobile battery quickly for sure.
-            - type: live-example
-              data:
-                id: example-plugin-sketchy
-                classes: ct-golden-section
-                intro: >
-                         Create beautiful hand drawn charts using the Chartist Sketchy plugin.
-            - type: table
-              data:
-                rows:
-                  -
-                    - '<strong>Author:</strong>'
-                    - Gion Kunz
-                  -
-                    - '<strong>Link:</strong>'
-                    - '<a href="https://github.com/gionkunz/chartist-plugin-sketchy" target="_blank">chartist-plugin-sketchy</a>'
-      - type: sub-section
-        data:
           title: Axis Title Plugin
           level: 4
           items:
@@ -253,7 +227,7 @@ sections:
                     - Moxx
                   -
                     - '<strong>Link:</strong>'
-                    - '<a href="https://github.com/gionkunz/chartist-plugin-threshold" target="_blank">chartist-plugin-threshold</a>'
+                    - '<a href="https://github.com/moxx/chartist-plugin-fill-donut" target="_blank">chartist-plugin-fill-donut</a>'
       - type: sub-section
         data:
           title: Zoom Plugin
@@ -278,6 +252,30 @@ sections:
                   -
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/hansmaad/chartist-plugin-zoom" target="_blank">chartist-plugin-zoom</a>'
+      - type: sub-section
+        data:
+          title: Target Line Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The target line plugin allows you to draw a target line on your chart.
+            - type: live-example
+              data:
+                id: example-plugin-targetline
+                classes: ct-golden-section
+                intro: >
+                          Pass a value to the plugin to draw a target line on the chart.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Harry Twyford
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/htwyford/chartist-plugin-targetline" target="_blank">chartist-plugin-targetline</a>'
   - title: Develop a plugin
     level: 3
     items:

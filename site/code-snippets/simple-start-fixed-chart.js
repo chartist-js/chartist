@@ -17,4 +17,4 @@ var options = {
 // Create a new line chart object where as first parameter we pass in a selector
 // that is resolving to our chart container element. The Second parameter
 // is the actual data object. As a third parameter we pass in our custom options.
-new Chartist.Bar('.ct-chart', data, options);
+new Chartist.Line('.ct-chart', data, options);

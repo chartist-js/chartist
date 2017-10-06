@@ -107,7 +107,7 @@
     stroke: $color;
   }
 
-  .#{$ct-class-slice-pie}, .#{$ct-class-area} {
+  .#{$ct-class-slice-pie}, .#{$ct-class-slice-donut-solid}, .#{$ct-class-area} {
     fill: $color;
   }
 }
@@ -121,6 +121,11 @@
   .#{$ct-class-chart-line} .#{$ct-class-label},
   .#{$ct-class-chart-bar} .#{$ct-class-label} {
     @include ct-flex();
+  }
+
+  .#{$ct-class-chart-pie} .#{$ct-class-label},
+  .#{$ct-class-chart-donut} .#{$ct-class-label} {
+    dominant-baseline: central;
   }
 
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
@@ -186,6 +191,10 @@
 
   .#{$ct-class-grid} {
     @include ct-chart-grid($ct-grid-color, $ct-grid-width, $ct-grid-dasharray);
+  }
+
+  .#{$ct-class-grid-background} {
+    fill: $ct-grid-background-fill;
   }
 
   .#{$ct-class-point} {
