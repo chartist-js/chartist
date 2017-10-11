@@ -197,6 +197,7 @@
       // index, value and meta data
       var path = smoothing(pathCoordinates, pathData);
 
+/*
       // If we should show points we need to create them now to avoid secondary loop
       // Points are drawn from the pathElements returned by the interpolation function
       // Small offset for Firefox to render squares correctly
@@ -229,7 +230,7 @@
           });
         }.bind(this));
       }
-
+*/
       if(seriesOptions.showLine) {
         var line = seriesElement.elem('path', {
           d: path.stringify()
@@ -251,6 +252,7 @@
         });
       }
 
+/*
       // Area currently only works with axes that support a range!
       if(seriesOptions.showArea && axisY.range) {
         // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
@@ -304,6 +306,7 @@
           });
         }.bind(this));
       }
+*/
     }.bind(this));
 
     this.eventEmitter.emit('created', {
