@@ -155,6 +155,7 @@
    * @param {Object} options The options of the cardinal factory function.
    * @return {Function}
    */
+/*
   Chartist.Interpolation.cardinal = function(options) {
     var defaultOptions = {
       tension: 1,
@@ -240,6 +241,7 @@
       }
     };
   };
+  */
 
   /**
    * Monotone Cubic spline interpolation produces a smooth curve which preserves monotonicity. Unlike cardinal splines, the curve will not extend beyond the range of y-values of the original data points.
@@ -265,7 +267,6 @@
    * @return {Function}
    */
 
-/*
   Chartist.Interpolation.monotoneCubic = function(options) {
     var defaultOptions = {
       fillHoles: false
@@ -373,7 +374,6 @@
       }
     };
   };
-  */
 
   /**
    * Step interpolation will cause the line chart to move in steps rather than diagonal or smoothed lines. This interpolation will create additional points that will also be drawn when the `showPoint` option is enabled.

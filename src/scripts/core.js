@@ -610,6 +610,13 @@ var Chartist = {
       }
     }
 
+    if (typeof options.autoScaleMargin === 'number') {
+        var delta = Math.abs(highLow.high - highLow.low);
+
+        highLow.low -= options.autoScaleMargin * delta;
+        highLow.high += options.autoScaleMargin * delta;
+    }
+
     return highLow;
   };
 

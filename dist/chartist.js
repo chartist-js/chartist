@@ -632,6 +632,13 @@ var Chartist = {
       }
     }
 
+    if (typeof options.autoScaleMargin === 'number') {
+        var delta = Math.abs(highLow.high - highLow.low);
+
+        highLow.low -= options.autoScaleMargin * delta;
+        highLow.high += options.autoScaleMargin * delta;
+    }
+
     return highLow;
   };
 
@@ -1325,6 +1332,7 @@ var Chartist = {
    * @param {Object} options The options of the cardinal factory function.
    * @return {Function}
    */
+/*
   Chartist.Interpolation.cardinal = function(options) {
     var defaultOptions = {
       tension: 1,
@@ -1410,6 +1418,7 @@ var Chartist = {
       }
     };
   };
+  */
 
   /**
    * Monotone Cubic spline interpolation produces a smooth curve which preserves monotonicity. Unlike cardinal splines, the curve will not extend beyond the range of y-values of the original data points.
@@ -1435,7 +1444,6 @@ var Chartist = {
    * @return {Function}
    */
 
-/*
   Chartist.Interpolation.monotoneCubic = function(options) {
     var defaultOptions = {
       fillHoles: false
@@ -1543,7 +1551,6 @@ var Chartist = {
       }
     };
   };
-  */
 
   /**
    * Step interpolation will cause the line chart to move in steps rather than diagonal or smoothed lines. This interpolation will create additional points that will also be drawn when the `showPoint` option is enabled.
@@ -3275,10 +3282,7 @@ var Chartist = {
     var axisX, axisY;
 
     if(options.axisX.type === undefined) {
-      axisX = new Chartist.StepAxis(Chartist.Axis.units.x, data.normalized.series, chartRect, Chartist.extend({}, options.axisX, {
-        ticks: data.normalized.labels,
-        stretch: options.fullWidth
-      }));
+      axisX = new Chartist.AutoScaleAxis(Chartist.Axis.units.x, data.normalized.series, chartRect, Chartist.extend({}, options.axisX, {}));
     } else {
       axisX = options.axisX.type.call(Chartist, Chartist.Axis.units.x, data.normalized.series, chartRect, options.axisX);
     }
