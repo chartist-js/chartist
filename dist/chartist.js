@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.1.0
+/* Chartist.js 0.1.3
  * Copyright © 2017 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.1.0'
+  version: '0.1.3'
 };
 
 (function (window, document, Chartist) {
@@ -1925,8 +1925,10 @@ var Chartist = {
       this.options.plugins.forEach(function(plugin) {
         if(plugin instanceof Array) {
           plugin[0](this, plugin[1]);
-        } else {
+      } else if (typeof plugin === 'function') {
           plugin(this);
+      } else if (typeof plugin === 'object') {
+          Chartist.plugins[plugin.name](plugin.options)(this);
         }
       }.bind(this));
     }

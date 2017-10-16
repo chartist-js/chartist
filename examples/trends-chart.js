@@ -18,23 +18,24 @@ new Chartist.Line('.ct-chart', {
       showGrid: false
   },
   plugins: [
-    Chartist.plugins.tooltip2({
-        // Value transform function
-        // It receives a single argument that contains the current value
-        // "this" is the current chart
-        // It must return the formatted value to be added in the tooltip (eg: currency format)
-        valueTransformFunction: null,
+    {
+      name: 'tooltip2',
+      options:
+        {
+            // Value transform function
+            // It receives a single argument that contains the current value
+            // "this" is the current chart
+            // It must return the formatted value to be added in the tooltip (eg: currency format)
+            valueTransformFunction: null,
 
-        // Use an already existing element as a template for the tooltip
-        // the content of the element must be a Mustache-style template
-        // {{value}} {{metaElement}}
-        elementTemplateSelector: null,
+            // Use an already existing element as a template for the tooltip
+            // the content of the element must be a Mustache-style template
+            // {{value}} {{metaElement}}
+            elementTemplateSelector: null,
 
-        // Markup to use as a template for the content of the tooltip
-        template: '<span>{{value}}</span>',
-
-        // The delay before hiding the tooltip after the mouse has left the point, slice or bar
-        hideDelay: 500,
-    })
+            // Markup to use as a template for the content of the tooltip
+            template: '<span>{{value}}</span>',
+        }
+    }
   ]
 });

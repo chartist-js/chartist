@@ -113,8 +113,10 @@
       this.options.plugins.forEach(function(plugin) {
         if(plugin instanceof Array) {
           plugin[0](this, plugin[1]);
-        } else {
+      } else if (typeof plugin === 'function') {
           plugin(this);
+      } else if (typeof plugin === 'object') {
+          Chartist.plugins[plugin.name](plugin.options)(this);
         }
       }.bind(this));
     }
