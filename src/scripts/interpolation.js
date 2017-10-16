@@ -81,6 +81,8 @@
    * @param {Object} options The options of the simple interpolation factory function.
    * @return {Function}
    */
+
+ /*
   Chartist.Interpolation.simple = function(options) {
     var defaultOptions = {
       divisor: 2,
@@ -129,6 +131,8 @@
     };
   };
 
+*/
+
   /**
    * Cardinal / Catmull-Rome spline interpolation is the default smoothing function in Chartist. It produces nice results where the splines will always meet the points. It produces some artifacts though when data values are increased or decreased rapidly. The line may not follow a very accurate path and if the line should be accurate this smoothing function does not produce the best results.
    *
@@ -151,6 +155,7 @@
    * @param {Object} options The options of the cardinal factory function.
    * @return {Function}
    */
+/*
   Chartist.Interpolation.cardinal = function(options) {
     var defaultOptions = {
       tension: 1,
@@ -236,6 +241,7 @@
       }
     };
   };
+  */
 
   /**
    * Monotone Cubic spline interpolation produces a smooth curve which preserves monotonicity. Unlike cardinal splines, the curve will not extend beyond the range of y-values of the original data points.
@@ -260,6 +266,7 @@
    * @param {Object} options The options of the monotoneCubic factory function.
    * @return {Function}
    */
+
   Chartist.Interpolation.monotoneCubic = function(options) {
     var defaultOptions = {
       fillHoles: false
@@ -388,6 +395,7 @@
    * @param options
    * @returns {Function}
    */
+/*
   Chartist.Interpolation.step = function(options) {
     var defaultOptions = {
       postpone: true,
@@ -433,5 +441,6 @@
       return path;
     };
   };
+ */
 
 }(window, document, Chartist));
