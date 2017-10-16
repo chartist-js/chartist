@@ -1,9 +1,0 @@
-/* Pie charts consist of solid slices where you can use this selector to override the default style. */
-.ct-series-a .ct-slice-pie {
-  /* fill of the pie slieces */
-  fill: hsl(120, 40%, 60%);
-  /* give your pie slices some outline or separate them visually by using the background color here */
-  stroke: white;
-  /* outline width */
-  stroke-width: 4px;
-}
