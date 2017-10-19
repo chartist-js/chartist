@@ -35,7 +35,7 @@
     Chartist.AutoScaleAxis.super.constructor.call(this,
       axisUnit,
       chartRect,
-      this.bounds.values,
+      (options.tickGenerator && options.tickGenerator(this.range)) || this.bounds.values,
       options);
   }
 
@@ -43,9 +43,14 @@
     return this.axisLength * (+Chartist.getMultiValue(value, this.units.pos) - this.bounds.min) / this.bounds.range;
   }
 
+  function projectPixel(pixel) {
+      return this.bounds.min + ((this.axisLength - pixel) / this.axisLength) * this.bounds.range;
+  }
+
   Chartist.AutoScaleAxis = Chartist.Axis.extend({
     constructor: AutoScaleAxis,
-    projectValue: projectValue
+    projectValue: projectValue,
+    projectPixel: projectPixel,
   });
 
 }(window, document, Chartist));

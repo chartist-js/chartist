@@ -86,7 +86,7 @@
         }
       }
 
-      if(axisOptions.showGrid) {
+      if(axisOptions.showGrid || axisOptions.showTicks) {
         Chartist.createGrid(projectedValue, index, this, this.gridOffset, this.chartRect[this.counterUnits.len](), gridGroup, [
           chartOptions.classNames.grid,
           chartOptions.classNames[this.units.dir]

@@ -912,18 +912,40 @@ var Chartist = {
     positionalData[axis.counterUnits.pos + '1'] = offset;
     positionalData[axis.counterUnits.pos + '2'] = offset + length;
 
-    var gridElement = group.elem('line', positionalData, classes.join(' '));
+    if (axis.options.showGrid) {
+        var gridElement = group.elem('line', positionalData, classes.join(' '));
 
-    // Event for grid draw
-    eventEmitter.emit('draw',
-      Chartist.extend({
-        type: 'grid',
-        axis: axis,
-        index: index,
-        group: group,
-        element: gridElement
-      }, positionalData)
-    );
+        // Event for grid draw
+        eventEmitter.emit('draw',
+          Chartist.extend({
+            type: 'grid',
+            axis: axis,
+            index: index,
+            group: group,
+            element: gridElement
+          }, positionalData)
+        );
+    }
+
+    if (axis.options.showTicks) {
+        var tickPositionalData = {}
+        tickPositionalData[axis.units.pos + '1'] = position;
+        tickPositionalData[axis.units.pos + '2'] = position;
+        tickPositionalData[axis.counterUnits.pos + '1'] = offset + length;
+        tickPositionalData[axis.counterUnits.pos + '2'] = offset + length + (axis.options.tickLength || 5);
+        var tickElement = group.elem('line', tickPositionalData, classes.concat('tick').join(' '));
+
+        // Event for tick draw
+        eventEmitter.emit('draw',
+          Chartist.extend({
+            type: 'tick',
+            axis: axis,
+            index: index,
+            group: group,
+            element: tickElement
+        }, tickPositionalData)
+        );
+    }
   };
 
   /**

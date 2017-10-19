@@ -14,16 +14,13 @@
             x: 5,
             y: 0,
         },
-        offsetCollision: {
-            x: 20,
-            y: 0, // vertical collision not implemented
-        },
 
         // Value transform function
         // It receives a single argument that contains the current value
         // "this" is the current chart
         // It must return the formatted value to be added in the tooltip (eg: currency format)
         valueTransformFunction: null,
+        xValueTransformFunction: null,
 
         // Markup to use as a template for the content of the tooltip
         template: '<p>{{meta}}: {{value}}</p>',
@@ -56,8 +53,11 @@
             var triggerSelector = getTriggerSelector();
             var hoverClass = getDefaultTriggerClass() + '--hover';
             var pointValues = getPointValues();
+            var chartRect;
+            var axisY;
 
             var tooltipElements = [];
+            var axisTooltips = {};
 
             init();
 
@@ -75,7 +75,7 @@
                 // Offer support for multiple series line charts
                 if (chart instanceof Chartist.Line) {
                     chart.on('created', function() {
-                        chart.container.querySelector('svg').addEventListener('mousemove', prepareLineTooltip);
+                        chart.container.querySelector('svg').addEventListener('mousemove', prepareLineTooltips);
                         chart.container.addEventListener('mouseleave', function(e) {
                             hideTooltips();
                         });
@@ -85,13 +85,12 @@
                 }
             }
 
-
             /**
-             * Prepare line tooltip
+             * Prepare tooltips
              * Calculates the closest point on the line according to the current position of the mouse
              * @param Event e
              */
-            function prepareLineTooltip(e) {
+            function prepareLineTooltips(e) {
                 var boxData = this.getBoundingClientRect();
                 var currentXPosition = e.pageX - (boxData.left + (document.documentElement.scrollLeft || document.body.scrollLeft));
                 var currentYPosition = e.pageY - (boxData.top + (document.documentElement.scrollTop || document.body.scrollTop));
@@ -99,12 +98,24 @@
                     return getClosestPointFromArray(currentXPosition, pv);
                 });
 
+                if (currentYPosition < chartRect.y2) {
+                    currentYPosition = chartRect.y2;
+                }
+
+                if (currentYPosition > chartRect.y1) {
+                    currentYPosition = chartRect.y1;
+                }
+
                 showTooltips(closestPointsOnX);
+                showAxisTooltips(closestPointsOnX[0].pixelX, currentYPosition, {
+                    x: closestPointsOnX[0].x,
+                    y: axisY.projectPixel(currentYPosition - chartRect.y2)
+                });
             }
 
             /**
              * Show tooltip
-             * @param Element triggerElement
+             * @param array of the closest points on the plots
              */
             function showTooltips(points) {
                 var meta;
@@ -143,6 +154,7 @@
                     if (posY > prev) {
                         posY = prev;
                     }
+
                     setTooltipPosition(i, chart.container,
                         {
                             x: point.pixelX,
@@ -155,11 +167,52 @@
             }
 
             /**
-             * Hide tooltip
-             * @param number the number of tooltip to hide
+             * Show axis tooltips
+             * @param x pointer coordinate relative to the chart element
+             * @param y pointer coordinate relative to the chart element
              */
-            function hideTooltip(i) {
-                var tooltipElement = tooltipElements[i];
+            function showAxisTooltips(x, y, point) {
+                var xTooltipElement = getAxisTooltipElement('x');
+                var yTooltipElement = getAxisTooltipElement('y');
+                var value = point.y;
+                var xvalue = point.x;
+
+                if (typeof options.valueTransformFunction === 'function') {
+                    value = options.valueTransformFunction.call(chart, value);
+                }
+
+                if (typeof options.xValueTransformFunction === 'function') {
+                    xvalue = options.xValueTransformFunction.call(chart, xvalue);
+                }
+
+                xTooltipElement.innerHTML = xvalue;
+                xTooltipElement.removeAttribute('hidden');
+                setAxisTooltipPosition(xTooltipElement, chart.container,
+                    {
+                        x: x,
+                        y: chartRect.y1 + 1
+                    }, false, true
+                );
+
+                yTooltipElement.innerHTML = value;
+                yTooltipElement.removeAttribute('hidden');
+
+                setAxisTooltipPosition(yTooltipElement, chart.container,
+                    {
+                        x: 0,
+                        y: y
+                    }, true
+                );
+
+                yTooltipElement.style.width = chartRect.x1;
+            }
+
+            /**
+             * Hide tooltip
+             * @param number the id of tooltip to hide
+             */
+            function hideTooltip(id) {
+                var tooltipElement = tooltipElements[id];
                 tooltipElement.setAttribute('hidden', true);
             }
 
@@ -167,9 +220,13 @@
              * Hide tooltips
              */
             function hideTooltips() {
-                for (var i = 0; i < tooltipElements.length; i++) {
+                tooltipElements.forEach(function (el, i) {
                     hideTooltip(i);
-                }
+                });
+
+                Object.keys(axisTooltips).forEach(function (key) {
+                    axisTooltips[key].setAttribute('hidden', true);
+                })
             }
 
             /**
@@ -184,6 +241,43 @@
                     tooltipElements[index] = tooltipElement;
                     setTooltipPosition(index, chart.container, {x:0, y: 0}, true);
                 }
+
+                return tooltipElement;
+            }
+
+            /**
+             * Get tooltip element
+             * @return Element
+             */
+            function getAxisTooltipElement(axisId) {
+                var tooltipElement = document.getElementById(options.id + '-axis-' + axisId);
+
+                if (!tooltipElement) {
+                    tooltipElement = createAxisTooltipElement(axisId);
+                    axisTooltips[axisId] = tooltipElement;
+                    setAxisTooltipPosition(tooltipElement, chart.container, {x:0, y: 0}, true);
+                }
+
+                return tooltipElement;
+            }
+
+            /**
+             * Create tooltip element
+             * @return Element
+             */
+            function createAxisTooltipElement(axisId) {
+                var tooltipElement = document.createElement('div');
+
+                tooltipElement.innerHTML = options.template;
+
+                tooltipElement.classList.add('ct-axis-tooltip-'+axisId);
+
+                tooltipElement.id = options.id + '-axis-' + axisId;
+
+                tooltipElement.setAttribute('role', 'tooltip');
+                tooltipElement.setAttribute('hidden', 'true');
+
+                chart.container.appendChild(tooltipElement);
 
                 return tooltipElement;
             }
@@ -214,24 +308,24 @@
             /**
              * Set tooltip position
              * @param Element relativeElement
-             * @param Boolean ignoreClasses
              */
-            function setTooltipPosition(index, relativeElement, offset, ignoreClasses) {
-                var positionData = getTooltipPosition(index, relativeElement, offset);
+            function setTooltipPosition(index, relativeElement, offset) {
                 var tooltipElement = tooltipElements[index];
+                var positionData = getTooltipPosition(tooltipElement, relativeElement, offset, true);
 
                 tooltipElement.style.transform = 'translate(' + Math.round(positionData.left) + 'px, ' + Math.round(positionData.top) + 'px)';
+            }
 
-                if (ignoreClasses) {
-                    return;
-                }
+            /**
+             * Set axis tooltip position
+             * @param Element relativeElement
+             */
+            function setAxisTooltipPosition(tooltipElement, relativeElement, offset, vAlign, hAlign) {
+                var positionData = getTooltipPosition(tooltipElement, relativeElement, offset, vAlign, hAlign);
 
-                /*
-                tooltipElement.classList.remove(options.cssClass + '--right');
-                tooltipElement.classList.remove(options.cssClass + '--left');
-                tooltipElement.classList.add(options.cssClass + '--' + positionData.alignment);
-                */
-                tooltipElement.classList.add(options.cssClass);
+                positionData.left -= options.offset.x;
+
+                tooltipElement.style.transform = 'translate(' + Math.round(positionData.left) + 'px, ' + Math.round(positionData.top) + 'px)';
             }
 
             /**
@@ -239,27 +333,16 @@
              * @param Element relativeElement
              * @return Object positionData
              */
-            function getTooltipPosition(index, relativeElement, offset) {
+            function getTooltipPosition(tooltipElement, relativeElement, offset, verticalAlign, horizontalAlign) {
                 var positionData = {
                     alignment: 'center',
                 };
-                var tooltipElement = tooltipElements[index];
                 var width = tooltipElement.offsetWidth;
                 var height = tooltipElement.offsetHeight;
 
-
                 var boxData = relativeElement.getBoundingClientRect();
-                var left = boxData.left + offset.x + window.scrollX + options.offset.x ;//+ boxData.width / 2;
-                var top = boxData.top + offset.y + window.scrollY - height/2 + options.offset.y;
-
-                // Minimum horizontal collision detection
-                if (left + width > document.body.clientWidth) {
-                    left = left - width / 2 + options.offsetCollision.x;
-                    positionData.alignment = 'right';
-                } else if (left < 0) {
-                    left = boxData.left + window.scrollX - options.offsetCollision.x;
-                    positionData.alignment = 'left';
-                }
+                var left = boxData.left + offset.x + window.scrollX - (horizontalAlign ? width/2 : 0) + options.offset.x;//+ boxData.width / 2;
+                var top = boxData.top + offset.y + window.scrollY - (verticalAlign ? height/2 : 0) + options.offset.y;
 
                 positionData.left = left;
                 positionData.top = top;
@@ -300,6 +383,9 @@
 
                 chart.on('draw', function(data) {
                     if (data.type == 'line') {
+                        chartRect = data.chartRect;
+                        axisY = data.axisY;
+
                         pointValues.push(
                             data.values.map( function(point) {
                                 var xoffset  = data.chartRect.x1;
@@ -313,8 +399,9 @@
                             })
                         );
                     }
+
                     if (data.type == 'grid') {
-                        pointValues.length = 0 ;
+                        pointValues.length = 0;
                     }
                 });
 

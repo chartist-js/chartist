@@ -1,13 +1,56 @@
 <html>
 <head>
-    <script defer src="../dist/chartist.min.js"></script>
-    <script defer src="../src/scripts/plugins/chartist-plugin-tooltip2.js"></script>
+    <script defer src="../dist/chartist.js"></script>
+    <xscript defer src="../src/scripts/plugins/chartist-plugin-tooltip2.js"></xscript>
     <script defer src="trends-chart.js"></script>
     <link href = "../dist/chartist.css"  type="text/css" rel="stylesheet" />
     <link href = "../src/scripts/plugins/chartist-plugin-tooltip2.css"  type="text/css" rel="stylesheet" />
+    <style>
+        .ct-axis-tooltip-x,
+        .ct-axis-tooltip-y {
+          position: absolute;
+          left: 0;
+          top: 0;
+          padding: 1px 3px;
+          visibility: hidden;
+          display: block;
+          background: rgb(221, 82, 107);
+          border-right: 6px solid white;
+          color: white;
+          transition: transform 0.2s ease-in-out;
+          pointer-events: none;
+          box-sizing: border-box;
+        }
+
+        .ct-axis-tooltip-y {
+            transition: none;
+        }
+
+        .ct-axis-tooltip-x:not([hidden]),
+        .ct-axis-tooltip-y:not([hidden]) {
+          visibility: visible;
+          transform: none;
+        }
+
+        .ct-axis-tooltip-y:after {
+        	left: 100%;
+        	top: 50%;
+        	border: solid transparent;
+        	content: " ";
+        	height: 0;
+        	width: 0;
+        	position: absolute;
+        	pointer-events: none;
+        	border-color: rgba(136, 183, 213, 0);
+        	border-left-color: rgb(221, 82, 107);
+        	border-width: 6px;
+        	margin-top: -6px;
+        }
+
+    </style>
 </head>
     <body>
-        <div class="ct-chart" style="width: 640px; height: 320px;">
+        <div class="ct-chart" style="width: 680px; height: 300px;">
         </div>
     </body>
 </html>
