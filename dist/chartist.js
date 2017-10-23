@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.1.4
+/* Chartist.js 0.1.5
  * Copyright © 2017 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.1.4'
+  version: '0.1.5'
 };
 
 (function (window, document, Chartist) {
@@ -3741,6 +3741,8 @@ var Chartist = {
 
                     if (typeof options.valueTransformFunction === 'function') {
                         value = options.valueTransformFunction.call(chart, value);
+                    } else if (typeof axisY.options.labelInterpolationFnc === 'function') {
+                        value = axisY.options.labelInterpolationFnc(value);
                     }
 
                     // value
@@ -3778,6 +3780,8 @@ var Chartist = {
 
                 if (typeof options.valueTransformFunction === 'function') {
                     value = options.valueTransformFunction.call(chart, value);
+                } else if (typeof axisY.options.labelInterpolationFnc === 'function') {
+                    value = axisY.options.labelInterpolationFnc(value);
                 }
 
                 if (typeof options.xValueTransformFunction === 'function') {

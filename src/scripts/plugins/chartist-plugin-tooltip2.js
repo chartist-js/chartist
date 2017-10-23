@@ -142,6 +142,8 @@
 
                     if (typeof options.valueTransformFunction === 'function') {
                         value = options.valueTransformFunction.call(chart, value);
+                    } else if (typeof axisY.options.labelInterpolationFnc === 'function') {
+                        value = axisY.options.labelInterpolationFnc(value);
                     }
 
                     // value
@@ -179,6 +181,8 @@
 
                 if (typeof options.valueTransformFunction === 'function') {
                     value = options.valueTransformFunction.call(chart, value);
+                } else if (typeof axisY.options.labelInterpolationFnc === 'function') {
+                    value = axisY.options.labelInterpolationFnc(value);
                 }
 
                 if (typeof options.xValueTransformFunction === 'function') {
