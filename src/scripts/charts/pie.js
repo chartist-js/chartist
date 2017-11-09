@@ -298,6 +298,7 @@
     }.bind(this));
 
     this.eventEmitter.emit('created', {
+      instance: this,
       chartRect: chartRect,
       svg: this.svg,
       options: options
