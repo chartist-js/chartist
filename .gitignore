@@ -1,3 +1,10 @@
+
+# Systems Folders
+.DS_Store
+
+# IDE
+.idea/
+
 # modules
 node_modules/
 site/bower_components/
