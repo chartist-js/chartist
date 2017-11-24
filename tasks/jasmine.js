@@ -25,6 +25,7 @@ module.exports = function (grunt) {
         '<%= pkg.config.src %>/scripts/axes/auto-scale-axis.js',
         '<%= pkg.config.src %>/scripts/axes/fixed-scale-axis.js',
         '<%= pkg.config.src %>/scripts/charts/line.js',
+        '<%= pkg.config.src %>/scripts/charts/stack.js',
         '<%= pkg.config.src %>/scripts/charts/bar.js',
         '<%= pkg.config.src %>/scripts/charts/pie.js'
       ],
