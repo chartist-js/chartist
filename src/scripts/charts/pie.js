@@ -218,6 +218,7 @@
 
       // Adding the pie series value to the path
       pathElement.attr({
+        'ct:index': index,
         'ct:value': data.normalized.series[index],
         'ct:meta': Chartist.serialize(series.meta)
       });
