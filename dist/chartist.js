@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.1.5
+/* Chartist.js 0.1.6
  * Copyright © 2017 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.1.5'
+  version: '0.1.6'
 };
 
 (function (window, document, Chartist) {
@@ -3943,9 +3943,9 @@ var Chartist = {
                 var width = tooltipElement.offsetWidth;
                 var height = tooltipElement.offsetHeight;
 
-                var boxData = relativeElement.getBoundingClientRect();
-                var left = boxData.left + offset.x + window.scrollX - (horizontalAlign ? width/2 : 0) + options.offset.x;//+ boxData.width / 2;
-                var top = boxData.top + offset.y + window.scrollY - (verticalAlign ? height/2 : 0) + options.offset.y;
+                //var boxData = relativeElement.getBoundingClientRect();
+                var left = offset.x  - (horizontalAlign ? width/2 : 0) + options.offset.x;//+ boxData.width / 2;
+                var top = offset.y - (verticalAlign ? height/2 : 0) + options.offset.y;
 
                 positionData.left = left;
                 positionData.top = top;

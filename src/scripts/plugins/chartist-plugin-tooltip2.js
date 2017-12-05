@@ -344,9 +344,8 @@
                 var width = tooltipElement.offsetWidth;
                 var height = tooltipElement.offsetHeight;
 
-                var boxData = relativeElement.getBoundingClientRect();
-                var left = boxData.left + offset.x + window.scrollX - (horizontalAlign ? width/2 : 0) + options.offset.x;//+ boxData.width / 2;
-                var top = boxData.top + offset.y + window.scrollY - (verticalAlign ? height/2 : 0) + options.offset.y;
+                var left = offset.x  - (horizontalAlign ? width/2 : 0) + options.offset.x;//+ boxData.width / 2;
+                var top = offset.y - (verticalAlign ? height/2 : 0) + options.offset.y;
 
                 positionData.left = left;
                 positionData.top = top;
