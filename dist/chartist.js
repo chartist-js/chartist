@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.1.6
+/* Chartist.js 0.1.7
  * Copyright © 2017 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.1.6'
+  version: '0.1.7'
 };
 
 (function (window, document, Chartist) {
