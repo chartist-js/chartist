@@ -4,8 +4,11 @@
  * @module Chartist.Bar
  */
 /* global Chartist */
-(function(window, document, Chartist){
+(function(globalRoot, Chartist){
   'use strict';
+
+  var window = globalRoot.window;
+  var document = globalRoot.document;
 
   /**
    * Default options in bar charts. Expand the code view to see a detailed list of options with comments.
@@ -440,4 +443,4 @@
     createChart: createChart
   });
 
-}(window, document, Chartist));
+}(this, Chartist));

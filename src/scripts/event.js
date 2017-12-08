@@ -4,7 +4,7 @@
  * @module Chartist.Event
  */
 /* global Chartist */
-(function (window, document, Chartist) {
+(function (globalRoot, Chartist) {
   'use strict';
 
   Chartist.EventEmitter = function () {
@@ -75,4 +75,4 @@
     };
   };
 
-}(window, document, Chartist));
+}(this, Chartist));

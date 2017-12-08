@@ -4,7 +4,7 @@
  * @module Chartist.Svg.Path
  */
 /* global Chartist */
-(function(window, document, Chartist) {
+(function(globalRoot, Chartist) {
   'use strict';
 
   /**
@@ -382,4 +382,4 @@
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;
   Chartist.Svg.Path.join = join;
-}(window, document, Chartist));
+}(this, Chartist));
