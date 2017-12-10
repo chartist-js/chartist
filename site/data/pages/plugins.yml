@@ -57,6 +57,31 @@ sections:
 
       - type: sub-section
         data:
+          title: Crosshair Cursor Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The crosshair cursor plugin easily adds a customizable data crosshair to your line charts, making it super simple to quickly access more information about your chart data.
+            - type: live-example
+              data:
+                id: example-plugin-crosshairCursor
+                classes: ct-golden-section
+                intro: >
+                         Hover over the chart to quickly see meta data about your highlighted points logged below. Click to freeze the cursor in place at any position.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Sroop Sunar
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/sroop/chartist-plugin-crosshairCursor" target="_blank">chartist-plugin-crosshairCursor</a>'
+
+      - type: sub-section
+        data:
           title: Accessibility Plugin
           level: 4
           items:

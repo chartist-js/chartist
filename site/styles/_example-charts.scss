@@ -142,3 +142,27 @@
   .chartist-tooltip.tooltip-show {
     opacity: 1; }
 }
+
+#example-plugin-crosshairCursor {
+  #crosshairCursor-x, #crosshairCursor-y {
+    background-color: #FFDA34 !important;
+  }
+  .ct-point {
+    stroke: #d70206;
+  }
+  .ct-point.crosshairCursor-highlight {
+    stroke: #FFDA34;
+  }
+  .crosshairCursor-hoveredInfo {
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 100px;
+    padding: 20px;
+    font-size: 12px;
+  }
+  .crosshairCursor-frozenStatus {
+    background-color: rgba(0, 0, 0, 0.1);
+    height: 30px;
+    padding: 20px;
+    font-size: 12px;
+  }
+}
