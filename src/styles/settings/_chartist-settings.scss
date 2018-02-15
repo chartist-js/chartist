@@ -53,7 +53,7 @@ $ct-area-opacity: 0.1 !default;
 // Bar chart bar width
 $ct-bar-width: 10px !default;
 
-// Donut width (If donut width is to big it can cause issues where the shape gets distorted)
+// Donut width (If donut width is too big it can cause issues where the shape gets distorted)
 $ct-donut-width: 60px !default;
 
 // If set to true it will include the default classes and generate CSS output. If you're planning to use the mixins you
