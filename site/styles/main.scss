@@ -7,9 +7,9 @@
 @import "../../src/styles/settings/chartist-settings";
 @import "../../src/styles/chartist";
 
-@import "compass-mixins/lib/compass/css3";
-@import "foundation/scss/normalize";
-@import "foundation/scss/foundation";
+@import "../../bower_components/compass-mixins/lib/compass/css3";
+@import "../../bower_components/foundation/scss/normalize";
+@import "../../bower_components/foundation/scss/foundation";
 @import "base";
 @import "landing";
 @import "highlight";
@@ -305,4 +305,3 @@ code {
     opacity: 0;
   }
 }
-

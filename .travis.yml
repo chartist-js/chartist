@@ -2,5 +2,5 @@ language: node_js
 node_js:
   - '5.5.0'
 before_script:
-  - 'npm install -g bower grunt-cli'
-  - 'bower install'
+  - 'npm install -g yarn grunt-cli'
+  - 'yarn install'

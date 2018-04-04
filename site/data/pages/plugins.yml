@@ -50,7 +50,7 @@ sections:
       - type: text
         data:
           text: >
-                  Here you can find a list of known plugins. Usually plugins should be available from both Bower and NPM for
+                  Here you can find a list of known plugins. Usually plugins should be available from both Yarn and NPM for
                   installation. If you have developed your own plugin but can't find it here, you should create a
                   <a href="https://github.com/gionkunz/chartist-js/blob/develop/site/data/pages/examples.yml" target="_blank">pull request
                   for this page</a> and add your plugin to the list.

@@ -12,7 +12,7 @@
 module.exports = function (grunt) {
   return {
     options: {
-      includePaths: ['<%= pkg.config.site %>/bower_components'],
+      includePaths: ['<%= pkg.config.site %>/node_modules/@bower_components'],
       imagePath: '<%= pkg.config.site %>/images'
     },
     public: { // without sourcemaps

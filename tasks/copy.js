@@ -22,7 +22,7 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             '.htaccess',
             '*.html',
-            'bower_components/**/*',
+            'node_modules/@bower_components/**/*',
             'images/{,*/}*.{webp}',
             'fonts/*'
           ]

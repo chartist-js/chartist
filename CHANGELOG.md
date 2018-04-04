@@ -1,4 +1,10 @@
+v0.12.0 - 04 Apr 2018
+---------------------
+- Migrated from `bower` to `yarn` thanks to [bower-away](https://github.com/sheerun/bower-away) tool recommended on
+  bower [author's blog](https://bower.io/blog/2017/how-to-migrate-away-from-bower/)
+
 v0.11.0 - 11 Apr 2017
+---------------------
 - Added CSP compatibility by using CSSOM instead of style attributes (Francisco Silva)
 - Added feature to render pie / donut chart as solid shape, allowing outlines (Sergey Kovalyov, Chris Carson)
 - Fixed XMLNS for foreignObjet content (Alfredo Matos)
@@ -148,7 +154,7 @@ v0.7.4 - 19 Apr 2015
 
 v0.7.3 - 27 Feb 2015
 --------------------
-- Fixed bugs in the chart.update method 
+- Fixed bugs in the chart.update method
 - Fixed rounding precision issues in order of magnitude calculation
 - Fixed bug in Chartist.extend which caused merge problems from object properties into non-objects
 - Added possibility to use chartPadding with a padding object that contains top, right, bottom and left properties
@@ -229,4 +235,3 @@ v0.4.0 - 17 Nov 2014
 - Including event when line and area is drawn
 - Changed default scaleMinSpace to 20 to be more mobile friendly
 - Fixed bug with line area base
-
