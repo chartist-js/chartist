@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - '5.5.0'
+  - '5.7.0'
 before_script:
   - 'npm install -g yarn grunt-cli'
   - 'yarn install'

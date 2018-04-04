@@ -1,6 +1,6 @@
 # modules
 node_modules/
-site/bower_components/
+site/bower_components
 
 # build
 .tmp/

@@ -96,7 +96,7 @@
     "time-grunt": "^1.0.0"
   },
   "engines": {
-    "node": ">=4.6.0",
+    "node": ">=5.7.0",
     "yarn": ">= 1.0.0"
   },
   "scripts": {
