@@ -82,7 +82,8 @@
     // If set to true this property will cause the series bars to be stacked. Check the `stackMode` option for further stacking options.
     stackBars: false,
     // If set to 'overlap' this property will force the stacked bars to draw from the zero line.
-    // If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+    // If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect
+    // If set to 'accumulate-relative' positive and negative values will be handled separately
     stackMode: 'accumulate',
     // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
     horizontalBars: false,
@@ -231,7 +232,10 @@
     // Projected 0 point
     var zeroPoint = options.horizontalBars ? (chartRect.x1 + valueAxis.projectValue(0)) : (chartRect.y1 - valueAxis.projectValue(0));
     // Used to track the screen coordinates of stacked bars
-    var stackedBarValues = [];
+    var stackedBarValues = {
+        pos: [],
+        neg: []
+    }
 
     labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
     valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
@@ -284,6 +288,8 @@
           previousStack,
           labelAxisValueIndex;
 
+        var sign = 'pos';
+
         // We need to set labelAxisValueIndex based on some options combinations
         if(options.distributeSeries && !options.stackBars) {
           // If distributed series are enabled but stacked bars aren't, we can use the seriesIndex for later projection
@@ -324,9 +330,18 @@
           projected[labelAxis.units.pos] += (options.stackBars || options.distributeSeries) ? 0 : biPol * options.seriesBarDistance * (options.horizontalBars ? -1 : 1);
         }
 
+        // distinguish between positive and negative values in relative stack mode
+        if (options.stackMode === 'accumulate-relative') {
+            if (value.y >= 0 || value.x >= 0) {
+                sign = 'pos'
+            } else {
+                sign = 'neg'
+            }
+        }
+
         // Enter value in stacked bar values used to remember previous screen value for stacking up bars
-        previousStack = stackedBarValues[valueIndex] || zeroPoint;
-        stackedBarValues[valueIndex] = previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
+        previousStack = stackedBarValues[sign][valueIndex] || zeroPoint;
+        stackedBarValues[sign][valueIndex] = previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
 
         // Skip if value is undefined
         if(value === undefined) {
@@ -337,13 +352,14 @@
         positions[labelAxis.units.pos + '1'] = projected[labelAxis.units.pos];
         positions[labelAxis.units.pos + '2'] = projected[labelAxis.units.pos];
 
-        if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode)) {
+        if(options.stackBars && 
+            (options.stackMode === 'accumulate' || options.stackMode === 'accumulate-relative' || !options.stackMode)) {
           // Stack mode: accumulate (default)
           // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
           // We want backwards compatibility, so the expected fallback without the 'stackMode' option
           // to be the original behaviour (accumulate)
           positions[labelAxis.counterUnits.pos + '1'] = previousStack;
-          positions[labelAxis.counterUnits.pos + '2'] = stackedBarValues[valueIndex];
+          positions[labelAxis.counterUnits.pos + '2'] = stackedBarValues[sign][valueIndex];
         } else {
           // Draw from the zero line normally
           // This is also the same code for Stack mode: overlap

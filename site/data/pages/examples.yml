@@ -182,6 +182,15 @@ sections:
                     <code>stackBars</code> property in your configuration.
       - type: live-example
         data:
+          title: Stacked Accumulated bar chart relative to zero
+          level: 4
+          id: example-bar-accumulate-relative
+          classes: ct-golden-section
+          intro: >
+                    You can accumulated data relatively to zero by setting <code>stackMode</code> to <code>accumulate-relative</code>
+
+      - type: live-example
+        data:
           title: Horizontal bar chart
           level: 4
           id: example-bar-horizontal
