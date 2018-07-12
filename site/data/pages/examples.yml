@@ -187,7 +187,7 @@ sections:
           id: example-bar-accumulate-relative
           classes: ct-golden-section
           intro: >
-                    You can accumulated data relatively to zero by setting <code>stackMode</code> to <code>accumulate-relative</code>
+                    You can accumulate data relatively to zero by setting <code>stackMode</code> to <code>accumulate-relative</code>
 
       - type: live-example
         data:
