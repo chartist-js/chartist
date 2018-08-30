@@ -246,6 +246,9 @@ sections:
             -
               -'<a href="https://github.com/eriklieben/aurelia-chartist" target="_blank">aurelia-chartist</a>'
               - Aurelia plugin
+            -
+              -'<a href="https://github.com/byashimov/django-controlcenter" target="_blank">django-controlcenter</a>'
+              - Django app
   - title: Chart CSS animation example
     level: 3
     items:
