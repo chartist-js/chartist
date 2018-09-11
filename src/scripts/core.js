@@ -66,7 +66,7 @@ var Chartist = {
       source = arguments[i];
       for (var prop in source) {
         sourceProp = source[prop];
-        if (typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
+        if (typeof sourceProp === 'object' && sourceProp !== null && !(Array.isArray(sourceProp))) {
           target[prop] = Chartist.extend(target[prop], sourceProp);
         } else {
           target[prop] = sourceProp;
@@ -350,7 +350,7 @@ var Chartist = {
     // If all elements of the normalized data array are arrays we're dealing with
     // multi series data and we need to find the largest series if they are un-even
     if (output.normalized.series.every(function(value) {
-        return value instanceof Array;
+        return Array.isArray(value);
       })) {
       // Getting the series with the the most elements
       labelCount = Math.max.apply(null, output.normalized.series.map(function(series) {
@@ -414,7 +414,7 @@ var Chartist = {
     for (var i = 0; i < data.series.length; i++) {
       if(typeof(data.series[i]) === 'object' && data.series[i].data !== undefined) {
         data.series[i].data.reverse();
-      } else if(data.series[i] instanceof Array) {
+      } else if(Array.isArray(data.series[i])) {
         data.series[i].reverse();
       }
     }
@@ -439,7 +439,7 @@ var Chartist = {
       } else if(Chartist.safeHasProperty(value, 'data')) {
         // We are dealing with series object notation so we need to recurse on data property
         return recursiveConvert(value.data);
-      } else if(value instanceof Array) {
+      } else if(Array.isArray(value)) {
         // Data is of type array so we need to recurse on the series
         return value.map(recursiveConvert);
       } else if(Chartist.isDataHoleValue(value)) {
@@ -564,7 +564,7 @@ var Chartist = {
     function recursiveHighLow(data) {
       if(data === undefined) {
         return undefined;
-      } else if(data instanceof Array) {
+      } else if(Array.isArray(data)) {
         for (var i = 0; i < data.length; i++) {
           recursiveHighLow(data[i]);
         }

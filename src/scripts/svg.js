@@ -393,7 +393,7 @@
         // be part of the animate element attributes.
         if(animationDefinition.easing) {
           // If already an easing Bézier curve array we take it or we lookup a easing array in the Easing object
-          easing = animationDefinition.easing instanceof Array ?
+          easing = Array.isArray(animationDefinition.easing) ?
             animationDefinition.easing :
             Chartist.Svg.Easing[animationDefinition.easing];
           delete animationDefinition.easing;
@@ -474,7 +474,7 @@
       }
 
       // If current attribute is an array of definition objects we create an animate for each and disable guided mode
-      if(animations[attribute] instanceof Array) {
+      if(Array.isArray(animations[attribute])) {
         animations[attribute].forEach(function(animationDefinition) {
           createAnimate.bind(this)(animationDefinition, false);
         }.bind(this));

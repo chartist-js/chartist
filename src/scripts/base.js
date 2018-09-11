@@ -113,7 +113,7 @@
     // Initialize all relevant plugins with our chart object and the plugin options specified in the config
     if(this.options.plugins) {
       this.options.plugins.forEach(function(plugin) {
-        if(plugin instanceof Array) {
+        if(Array.isArray(plugin)) {
           plugin[0](this, plugin[1]);
         } else {
           plugin(this);
