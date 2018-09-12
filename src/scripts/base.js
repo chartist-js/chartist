@@ -21,9 +21,10 @@
    * @param {Object} [data] Optional data you'd like to set for the chart before it will update. If not specified the update method will use the data that is already configured with the chart.
    * @param {Object} [options] Optional options you'd like to add to the previous options for the chart before it will update. If not specified the update method will use the options that have been already configured with the chart.
    * @param {Boolean} [override] If set to true, the passed options will be used to extend the options that have been configured already. Otherwise the chart default options will be used as the base
+   * @param {Array} [responsiveOptions] Optional array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    * @memberof Chartist.Base
    */
-  function update(data, options, override) {
+  function update(data, options, override, responsiveOptions) {
     if(data) {
       this.data = data || {};
       this.data.labels = this.data.labels || [];
@@ -33,6 +34,10 @@
         type: 'update',
         data: this.data
       });
+    }
+
+    if(responsiveOptions) {
+      this.responsiveOptions = responsiveOptions;
     }
 
     if(options) {
