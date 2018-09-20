@@ -430,8 +430,8 @@ sections:
             - type: text
               data:
                 text: >
-                        Chartist generates predefined classes for series by default. Those class names are alpha
-                        numerated and always start with <code>ct-series-a</code>, where the letter a will be iterated
+                        Chartist generates predefined classes for series by default. Those class names are alphabetically 
+                        ordered and always start with <code>ct-series-a</code>, where the letter a will be iterated
                         with each series count (a, b, c, d etc.). To address a specific series in styling, you’ll
                         need to create some styles for the corresponding series class name.
 
