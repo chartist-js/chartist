@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.1.7
+/* Chartist.js 0.1.8
  * Copyright © 2018 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.1.7'
+  version: '0.1.8'
 };
 
 (function (window, document, Chartist) {
@@ -3154,7 +3154,7 @@ var Chartist = {
   function AutoScaleAxis(axisUnit, data, chartRect, options) {
     // Usually we calculate highLow based on the data but this can be overriden by a highLow object in the options
     var highLow = options.highLow || Chartist.getHighLow(data, options, axisUnit.pos);
-    this.bounds = (options.getounds || Chartist.getBounds)(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], highLow, options.scaleMinSpace || 20, options.onlyInteger);
+    this.bounds = (options.getBounds || Chartist.getBounds)(chartRect[axisUnit.rectEnd] - chartRect[axisUnit.rectStart], highLow, options.scaleMinSpace || 20, options.onlyInteger);
     this.range = {
       min: this.bounds.min,
       max: this.bounds.max
