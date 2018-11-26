@@ -12,6 +12,8 @@
  *   divisor: 4,
  *   // If ticks is explicitly set, then the axis will not compute the ticks with the divisor, but directly use the data in ticks to determine at what points on the axis a tick need to be generated.
  *   ticks: [1, 10, 20, 30]
+ *   // If set to true the full width will be used to distribute the values where the last value will be at the maximum of the axis length. If false the spaces between the ticks will be evenly distributed instead.
+ *   stretch: true
  * };
  * ```
  *
@@ -27,7 +29,7 @@
   function FixedScaleAxis(axisUnit, data, chartRect, options) {
     var highLow = options.highLow || Chartist.getHighLow(data, options, axisUnit.pos);
     this.divisor = options.divisor || 1;
-    this.ticks = options.ticks || Chartist.times(this.divisor).map(function(value, index) {
+    this.ticks = options.ticks || Chartist.times(this.divisor + (options.stretch ? 1 : 0)).map(function(value, index) {
       return highLow.low + (highLow.high - highLow.low) / this.divisor * index;
     }.bind(this));
     this.ticks.sort(function(a, b) {
