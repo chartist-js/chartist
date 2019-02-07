@@ -598,7 +598,7 @@ sections:
             - type: text
               data:
                 text: >
-                        The following simple example shows you how to created a delayed fade in effect for the a scatter chart.
+                        The following simple example shows you how to create a delayed fade in effect for the a scatter chart.
                         You can also edit the example to play around with the settings.
 
             - type: live-example
