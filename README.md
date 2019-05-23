@@ -3,6 +3,12 @@
 [![Join the chat at https://gitter.im/gionkunz/chartist-js](https://badges.gitter.im/gionkunz/chartist-js.svg)](https://gitter.im/gionkunz/chartist-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](http://img.shields.io/npm/v/chartist.svg)](https://npmjs.org/package/chartist) [![build status](http://img.shields.io/travis/gionkunz/chartist-js.svg)](https://travis-ci.org/gionkunz/chartist-js) [![Inline docs](http://inch-ci.org/github/gionkunz/chartist-js.svg?branch=develop)](http://inch-ci.org/github/gionkunz/chartist-js)
 
+# Chartist needs your help! Please, help me save Chartist!
+**Do you like Chartist? Then please help me bring it to the next level and make its maintenance more sustainable in the future.**
+
+[> HELP TO SAVE CHARTIST <](https://www.kickstarter.com/projects/gionkunz/chartist-10-next-generation-charts-for-the-web)
+
+
 ![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/site/images/chartist-guy.gif "The Chartist Guy")
 
 *Checkout the documentation site at http://gionkunz.github.io/chartist-js/*
