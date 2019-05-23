@@ -2,7 +2,7 @@
   "name": "chartist",
   "title": "Chartist.js",
   "description": "Simple, responsive charts",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "author": "Gion Kunz",
   "homepage": "https://gionkunz.github.io/chartist-js",
   "repository": {
@@ -23,7 +23,8 @@
     "LICENSE-WTFPL",
     "LICENSE-MIT",
     "package.json",
-    "README.md"
+    "README.md",
+    "rescue-campaign.js"
   ],
   "style": "dist/chartist.min.css",
   "main": "dist/chartist.js",
