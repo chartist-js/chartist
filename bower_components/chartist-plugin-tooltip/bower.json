@@ -1,8 +1,8 @@
 {
   "name": "chartist-plugin-tooltip",
-  "version": "0.0.12",
   "main": [
-    "./dist/chartist-plugin-tooltip.min.js"
+    "./dist/chartist-plugin-tooltip.min.js",
+    "./dist/chartist-plugin-tooltip.css"
   ],
   "dependencies": {
     "chartist": "~0.9.4"

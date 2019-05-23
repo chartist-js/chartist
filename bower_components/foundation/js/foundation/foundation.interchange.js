@@ -4,7 +4,7 @@
   Foundation.libs.interchange = {
     name : 'interchange',
 
-    version : '5.5.2',
+    version : '5.5.3',
 
     cache : {},
 
@@ -49,7 +49,8 @@
           // });
 
           if (el !== null && /IMG/.test(el[0].nodeName)) {
-            var orig_path = el[0].src;
+            var orig_path = $.each(el, function(){this.src = path;});
+            // var orig_path = el[0].src;
 
             if (new RegExp(path, 'i').test(orig_path)) {
               return;

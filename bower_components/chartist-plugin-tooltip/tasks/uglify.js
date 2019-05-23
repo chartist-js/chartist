@@ -18,7 +18,7 @@ module.exports = function (grunt) {
         sourceMapIncludeSources: true
       },
       files: {
-        '<%= pkg.config.dist %>/<%= pkg.name %>.min.js': ['<%= pkg.config.dist %>/<%= pkg.name %>.js']
+        '<%= pkg.config.dist %>/<%= pkg.config.src_name %>.min.js': ['<%= pkg.config.dist %>/<%= pkg.config.src_name %>.js']
       }
     }
   };

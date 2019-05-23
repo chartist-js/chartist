@@ -1,13 +1,11 @@
 //! moment.js locale configuration
-//! locale : Klingon [tlh]
-//! author : Dominika Kruk : https://github.com/amaranthrose
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     var numbersNouns = 'pagh_wa’_cha’_wej_loS_vagh_jav_Soch_chorgh_Hut'.split('_');
@@ -39,6 +37,8 @@
     function translate(number, withoutSuffix, string, isFuture) {
         var numberNoun = numberAsNoun(number);
         switch (string) {
+            case 'ss':
+                return numberNoun + ' lup';
             case 'mm':
                 return numberNoun + ' tup';
             case 'hh':
@@ -96,6 +96,7 @@
             future : translateFuture,
             past : translatePast,
             s : 'puS lup',
+            ss : translate,
             m : 'wa’ tup',
             mm : translate,
             h : 'wa’ rep',
@@ -107,7 +108,7 @@
             y : 'wa’ DIS',
             yy : translate
         },
-        ordinalParse: /\d{1,2}\./,
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
@@ -117,4 +118,4 @@
 
     return tlh;
 
-}));
+})));

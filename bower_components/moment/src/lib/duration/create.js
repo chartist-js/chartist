@@ -1,18 +1,20 @@
 import { Duration, isDuration } from './constructor';
+import isNumber from '../utils/is-number';
 import toInt from '../utils/to-int';
 import absRound from '../utils/abs-round';
 import hasOwnProp from '../utils/has-own-prop';
 import { DATE, HOUR, MINUTE, SECOND, MILLISECOND } from '../units/constants';
 import { cloneWithOffset } from '../units/offset';
 import { createLocal } from '../create/local';
+import { createInvalid as invalid } from './valid';
 
 // ASP.NET json date format regex
-var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
+var aspNetRegex = /^(\-|\+)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)(\.\d*)?)?$/;
 
 // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
 // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
 // and further modified to allow for strings containing both week and day
-var isoRegex = /^(-)?P(?:(-?[0-9,.]*)Y)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)W)?(?:(-?[0-9,.]*)D)?(?:T(?:(-?[0-9,.]*)H)?(?:(-?[0-9,.]*)M)?(?:(-?[0-9,.]*)S)?)?$/;
+var isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
 
 export function createDuration (input, key) {
     var duration = input,
@@ -28,7 +30,7 @@ export function createDuration (input, key) {
             d  : input._days,
             M  : input._months
         };
-    } else if (typeof input === 'number') {
+    } else if (isNumber(input)) {
         duration = {};
         if (key) {
             duration[key] = input;
@@ -76,6 +78,7 @@ export function createDuration (input, key) {
 }
 
 createDuration.fn = Duration.prototype;
+createDuration.invalid = invalid;
 
 function parseIso (inp, sign) {
     // We'd normally use ~~inp for this, but unfortunately it also
@@ -87,7 +90,7 @@ function parseIso (inp, sign) {
 }
 
 function positiveMomentsDifference(base, other) {
-    var res = {milliseconds: 0, months: 0};
+    var res = {};
 
     res.months = other.month() - base.month() +
         (other.year() - base.year()) * 12;

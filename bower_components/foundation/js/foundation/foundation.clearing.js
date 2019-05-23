@@ -4,7 +4,7 @@
   Foundation.libs.clearing = {
     name : 'clearing',
 
-    version : '5.5.2',
+    version : '5.5.3',
 
     settings : {
       templates : {
@@ -28,7 +28,7 @@
 
       touch_label : '',
 
-      // event initializers and locks
+      // event initializer and locks
       init : false,
       locked : false
     },
@@ -453,9 +453,9 @@
       var caption = $image.attr('data-caption');
 
       if (caption) {
-        container
-          .html(caption)
-          .show();
+      	var containerPlain = container.get(0);
+      	containerPlain.innerHTML = caption;
+        container.show();
       } else {
         container
           .text('')

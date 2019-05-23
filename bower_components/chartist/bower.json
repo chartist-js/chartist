@@ -1,6 +1,5 @@
 {
   "name": "chartist",
-  "version": "0.9.0",
   "main": [
     "./dist/chartist.min.js",
     "./dist/chartist.min.css"
@@ -12,10 +11,13 @@
     "compass-mixins": "~1.0.2",
     "codemirror": "~4.12.0",
     "base64": "~0.3.0",
-    "chartist-plugin-pointlabels": "~0.0.3",
-    "chartist-plugin-sketchy": "~0.0.2",
+    "chartist-plugin-pointlabels": "~0.0.4",
     "chartist-plugin-accessibility": "~0.0.2",
-    "chartist-plugin-tooltip": "~0.0.8",
+    "chartist-plugin-tooltip": "~0.0.12",
+    "chartist-plugin-axistitle": "~0.0.1",
+    "chartist-plugin-threshold": "~0.0.1",
+    "chartist-plugin-fill-donut": "~0.0.1",
+    "chartist-plugin-zoom": "~0.2.1",
     "matchMedia": "~0.2.0"
   },
   "ignore": [
@@ -30,6 +32,6 @@
     "test"
   ],
   "resolutions": {
-    "chartist": "~0.8.0"
+    "chartist": "~0.9.0"
   }
 }

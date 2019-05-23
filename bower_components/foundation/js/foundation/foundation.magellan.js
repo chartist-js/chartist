@@ -4,7 +4,7 @@
   Foundation.libs['magellan-expedition'] = {
     name : 'magellan-expedition',
 
-    version : '5.5.2',
+    version : '5.5.3',
 
     settings : {
       active_class : 'active',
@@ -59,11 +59,10 @@
               'scrollTop' : scroll_top
             }, settings.duration, settings.easing, function () {
               if (history.pushState) {
-                        history.pushState(null, null, anchor.pathname + '#' + hash);
+                history.pushState(null, null, anchor.pathname + anchor.search + '#' + hash);
+              } else {
+                location.hash = anchor.pathname + anchor.search + '#' + hash;
               }
-                    else {
-                        location.hash = anchor.pathname + '#' + hash;
-                    }
             });
           }
         })

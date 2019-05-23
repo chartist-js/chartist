@@ -1,6 +1,6 @@
 {
   "name": "chartist-plugin-fill-donut",
-  "version": "0.0.1-beta",
+  "version": "0.0.4",
   "authors": [
     "moxx <mo@sbg.at>"
   ],
@@ -29,13 +29,13 @@
   "dependencies": {
     "chartist": "~0.9.4"
   },
-  "_release": "0.0.1-beta",
+  "_release": "0.0.4",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1-beta",
-    "commit": "60167d5f4bdfcb15d32da6bfa129f0d76de9ed71"
+    "tag": "v0.0.4",
+    "commit": "65854b555ec620d8b458dcbf7331db730b9c0e04"
   },
-  "_source": "git://github.com/moxx/chartist-plugin-fill-donut.git",
+  "_source": "https://github.com/moxx/chartist-plugin-fill-donut.git",
   "_target": "~0.0.1",
   "_originalSource": "chartist-plugin-fill-donut"
 }

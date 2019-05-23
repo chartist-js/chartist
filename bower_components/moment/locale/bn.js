@@ -1,13 +1,11 @@
 //! moment.js locale configuration
-//! locale : Bengali [bn]
-//! author : Kaushik Gandhi : https://github.com/kaushikgandhi
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     var symbolMap = {
@@ -61,6 +59,7 @@
             future : '%s পরে',
             past : '%s আগে',
             s : 'কয়েক সেকেন্ড',
+            ss : '%d সেকেন্ড',
             m : 'এক মিনিট',
             mm : '%d মিনিট',
             h : 'এক ঘন্টা',
@@ -110,10 +109,10 @@
         },
         week : {
             dow : 0, // Sunday is the first day of the week.
-            doy : 6  // The week that contains Jan 1st is the first week of the year.
+            doy : 6  // The week that contains Jan 6th is the first week of the year.
         }
     });
 
     return bn;
 
-}));
+})));

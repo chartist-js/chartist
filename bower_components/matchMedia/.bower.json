@@ -15,7 +15,7 @@
     "tag": "0.2.0",
     "commit": "3c67d9bfb525b1b0549448aa27769a289ba5be98"
   },
-  "_source": "git://github.com/paulirish/matchMedia.js.git",
+  "_source": "https://github.com/paulirish/matchMedia.js.git",
   "_target": "~0.2.0",
   "_originalSource": "matchMedia"
 }

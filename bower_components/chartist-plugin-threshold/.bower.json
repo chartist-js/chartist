@@ -22,7 +22,7 @@
     "tag": "0.0.2",
     "commit": "28fab7ba79dd682470df5b2064b32d7ac6e6d1fe"
   },
-  "_source": "git://github.com/gionkunz/chartist-plugin-threshold.git",
+  "_source": "https://github.com/gionkunz/chartist-plugin-threshold.git",
   "_target": "~0.0.1",
   "_originalSource": "chartist-plugin-threshold"
 }

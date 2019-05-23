@@ -4,7 +4,7 @@
   Foundation.libs.tooltip = {
     name : 'tooltip',
 
-    version : '5.5.2',
+    version : '5.5.3',
 
     settings : {
       additional_inheritable_classes : [],
@@ -13,6 +13,8 @@
       touch_close_text : 'Tap To Close',
       disable_for_touch : false,
       hover_delay : 200,
+      fade_in_duration : 150,
+      fade_out_duration : 150,
       show_on : 'all',
       tip_template : function (selector, content) {
         return '<span data-selector="' + selector + '" id="' + selector + '" class="'
@@ -208,14 +210,14 @@
     },
 
     reposition : function (target, tip, classes) {
-      var width, nub, nubHeight, nubWidth, column, objPos;
+      var width, nub, nubHeight, nubWidth, objPos;
 
       tip.css('visibility', 'hidden').show();
 
       width = target.data('width');
       nub = tip.children('.nub');
       nubHeight = nub.outerHeight();
-      nubWidth = nub.outerHeight();
+      nubWidth = nub.outerWidth();
 
       if (this.small()) {
         tip.css({'width' : '100%'});
@@ -231,39 +233,46 @@
           'right' : (right) ? right : 'auto'
         }).end();
       };
+      
+      var o_top = target.offset().top;
+      var o_left = target.offset().left;
+      var outerHeight = target.outerHeight();
 
-      objPos(tip, (target.offset().top + target.outerHeight() + 10), 'auto', 'auto', target.offset().left);
+      objPos(tip, (o_top + outerHeight + 10), 'auto', 'auto', o_left);
 
       if (this.small()) {
-        objPos(tip, (target.offset().top + target.outerHeight() + 10), 'auto', 'auto', 12.5, $(this.scope).width());
+        objPos(tip, (o_top + outerHeight + 10), 'auto', 'auto', 12.5, $(this.scope).width());
         tip.addClass('tip-override');
-        objPos(nub, -nubHeight, 'auto', 'auto', target.offset().left);
+        objPos(nub, -nubHeight, 'auto', 'auto', o_left);
       } else {
-        var left = target.offset().left;
+        
         if (Foundation.rtl) {
           nub.addClass('rtl');
-          left = target.offset().left + target.outerWidth() - tip.outerWidth();
+          o_left = o_left + target.outerWidth() - tip.outerWidth();
         }
 
-        objPos(tip, (target.offset().top + target.outerHeight() + 10), 'auto', 'auto', left);
+        objPos(tip, (o_top + outerHeight + 10), 'auto', 'auto', o_left);
         // reset nub from small styles, if they've been applied
         if (nub.attr('style')) {
           nub.removeAttr('style');
         }
         
         tip.removeClass('tip-override');
+        
+        var tip_outerHeight = tip.outerHeight();
+        
         if (classes && classes.indexOf('tip-top') > -1) {
           if (Foundation.rtl) {
             nub.addClass('rtl');
           }
-          objPos(tip, (target.offset().top - tip.outerHeight()), 'auto', 'auto', left)
+          objPos(tip, (o_top - tip_outerHeight), 'auto', 'auto', o_left)
             .removeClass('tip-override');
         } else if (classes && classes.indexOf('tip-left') > -1) {
-          objPos(tip, (target.offset().top + (target.outerHeight() / 2) - (tip.outerHeight() / 2)), 'auto', 'auto', (target.offset().left - tip.outerWidth() - nubHeight))
+          objPos(tip, (o_top + (outerHeight / 2) - (tip_outerHeight / 2)), 'auto', 'auto', (o_left - tip.outerWidth() - nubHeight))
             .removeClass('tip-override');
           nub.removeClass('rtl');
         } else if (classes && classes.indexOf('tip-right') > -1) {
-          objPos(tip, (target.offset().top + (target.outerHeight() / 2) - (tip.outerHeight() / 2)), 'auto', 'auto', (target.offset().left + target.outerWidth() + nubHeight))
+          objPos(tip, (o_top + (outerHeight / 2) - (tip_outerHeight / 2)), 'auto', 'auto', (o_left + target.outerWidth() + nubHeight))
             .removeClass('tip-override');
           nub.removeClass('rtl');
         }
@@ -307,19 +316,19 @@
 
     show : function ($target) {
       var $tip = this.getTip($target);
-
       if ($target.data('tooltip-open-event-type') == 'touch') {
         this.convert_to_touch($target);
       }
 
       this.reposition($target, $tip, $target.attr('class'));
       $target.addClass('open');
-      $tip.fadeIn(150);
+      $tip.fadeIn(this.settings.fade_in_duration);
     },
 
     hide : function ($target) {
       var $tip = this.getTip($target);
-      $tip.fadeOut(150, function () {
+
+      $tip.fadeOut(this.settings.fade_out_duration, function () {
         $tip.find('.tap-to-close').remove();
         $tip.off('click.fndtn.tooltip.tapclose MSPointerDown.fndtn.tapclose');
         $target.removeClass('open');

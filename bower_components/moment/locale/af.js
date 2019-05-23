@@ -1,13 +1,11 @@
 //! moment.js locale configuration
-//! locale : Afrikaans [af]
-//! author : Werner Mollentze : https://github.com/wernerm
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     var af = moment.defineLocale('af', {
@@ -47,6 +45,7 @@
             future : 'oor %s',
             past : '%s gelede',
             s : '\'n paar sekondes',
+            ss : '%d sekondes',
             m : '\'n minuut',
             mm : '%d minute',
             h : '\'n uur',
@@ -58,7 +57,7 @@
             y : '\'n jaar',
             yy : '%d jaar'
         },
-        ordinalParse: /\d{1,2}(ste|de)/,
+        dayOfMonthOrdinalParse: /\d{1,2}(ste|de)/,
         ordinal : function (number) {
             return number + ((number === 1 || number === 8 || number >= 20) ? 'ste' : 'de'); // Thanks to Joris Röling : https://github.com/jjupiter
         },
@@ -70,4 +69,4 @@
 
     return af;
 
-}));
+})));

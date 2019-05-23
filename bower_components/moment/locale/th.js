@@ -1,13 +1,11 @@
 //! moment.js locale configuration
-//! locale : Thai [th]
-//! author : Kridsada Thanabulpong : https://github.com/sirn
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     var th = moment.defineLocale('th', {
@@ -21,7 +19,7 @@
         longDateFormat : {
             LT : 'H:mm',
             LTS : 'H:mm:ss',
-            L : 'YYYY/MM/DD',
+            L : 'DD/MM/YYYY',
             LL : 'D MMMM YYYY',
             LLL : 'D MMMM YYYY เวลา H:mm',
             LLLL : 'วันddddที่ D MMMM YYYY เวลา H:mm'
@@ -49,6 +47,7 @@
             future : 'อีก %s',
             past : '%sที่แล้ว',
             s : 'ไม่กี่วินาที',
+            ss : '%d วินาที',
             m : '1 นาที',
             mm : '%d นาที',
             h : '1 ชั่วโมง',
@@ -64,4 +63,4 @@
 
     return th;
 
-}));
+})));

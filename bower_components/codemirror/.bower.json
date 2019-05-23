@@ -16,14 +16,14 @@
     "index.html",
     "package.json"
   ],
-  "homepage": "https://github.com/marijnh/CodeMirror",
+  "homepage": "https://github.com/components/codemirror",
   "_release": "4.12.0",
   "_resolution": {
     "type": "version",
     "tag": "4.12.0",
     "commit": "bed3de39aa62616393db2bab4b5fec6ee2238747"
   },
-  "_source": "git://github.com/marijnh/CodeMirror.git",
+  "_source": "https://github.com/components/codemirror.git",
   "_target": "~4.12.0",
   "_originalSource": "codemirror"
 }

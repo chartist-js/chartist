@@ -5,6 +5,12 @@ as an example plugin package and can be used as starting point to create your ow
 
 Please visit http://gionkunz.github.io/chartist-js/plugins.html for more information.
 
+## Download 
+The easiest way to get started, using Bower
+```
+bower install chartist-plugin-pointlabels --save
+```
+
 ## Available options and their defaults
 
 ```javascript

@@ -10,6 +10,7 @@ default:
 # create the plugin
 build:
   - 'clean:dist'
+  - 'sass:dist'
   - 'copy:dist'
   - 'umd'
   - 'uglify:dist'

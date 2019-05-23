@@ -1,19 +1,25 @@
 //! moment.js locale configuration
-//! locale : Bosnian [bs]
-//! author : Nedim Cholich : https://github.com/frontyard
-//! based on (hr) translation by Bojan Marković
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     function translate(number, withoutSuffix, key) {
         var result = number + ' ';
         switch (key) {
+            case 'ss':
+                if (number === 1) {
+                    result += 'sekunda';
+                } else if (number === 2 || number === 3 || number === 4) {
+                    result += 'sekunde';
+                } else {
+                    result += 'sekundi';
+                }
+                return result;
             case 'm':
                 return withoutSuffix ? 'jedna minuta' : 'jedne minute';
             case 'mm':
@@ -119,6 +125,7 @@
             future : 'za %s',
             past   : 'prije %s',
             s      : 'par sekundi',
+            ss     : translate,
             m      : translate,
             mm     : translate,
             h      : translate,
@@ -130,14 +137,14 @@
             y      : 'godinu',
             yy     : translate
         },
-        ordinalParse: /\d{1,2}\./,
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
     return bs;
 
-}));
+})));

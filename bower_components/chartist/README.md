@@ -1,4 +1,6 @@
 # Big welcome by the Chartist Guy
+
+[![Join the chat at https://gitter.im/gionkunz/chartist-js](https://badges.gitter.im/gionkunz/chartist-js.svg)](https://gitter.im/gionkunz/chartist-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm version](http://img.shields.io/npm/v/chartist.svg)](https://npmjs.org/package/chartist) [![build status](http://img.shields.io/travis/gionkunz/chartist-js.svg)](https://travis-ci.org/gionkunz/chartist-js) [![Inline docs](http://inch-ci.org/github/gionkunz/chartist-js.svg?branch=develop)](http://inch-ci.org/github/gionkunz/chartist-js)
 
 ![The Chartist Guy](https://raw.github.com/gionkunz/chartist-js/develop/site/images/chartist-guy.gif "The Chartist Guy")
@@ -54,6 +56,20 @@ to the masses.
 4. Better interfaces to the library (i.e. jQuery with data-* attributes for configuration), Angular.js directive etc.
 5. Richer Sass / CSS framework
 6. Other charts types (spider etc.)
+
+## Plugins
+
+Some features aren't right for the core product
+but there is a great set of plugins available
+which add features like:
+
+* [Axis labels](http://gionkunz.github.io/chartist-js/plugins.html#axis-title-plugin)
+* [Tooltips at data points](https://gionkunz.github.io/chartist-js/plugins.html#tooltip-plugin)
+* [Coloring above/below a threshold](https://gionkunz.github.io/chartist-js/plugins.html#threshold-plugin)
+
+and more.
+
+See all the plugins [here](https://gionkunz.github.io/chartist-js/plugins.html).
 
 ## Contribution
 

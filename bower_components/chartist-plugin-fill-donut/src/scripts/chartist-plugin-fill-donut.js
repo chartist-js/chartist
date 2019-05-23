@@ -1,5 +1,5 @@
 /**
- * Chartist.js plugin to pre fill donouts with animations
+ * Chartist.js plugin to pre fill donuts with animations
  * author: moxx
  * author-url: https://github.com/moxx/chartist-plugin-fill-donut
  *
@@ -9,11 +9,11 @@
 
     var defaultOptions = {
         fillClass: 'ct-fill-donut',
-        label : {
+        label: {
             html: '<div></div>',
             class: 'ct-fill-donut-label test'
         },
-        items : [{}]
+        items: [{}]
     };
 
     Chartist.plugins = Chartist.plugins || {};
@@ -25,7 +25,7 @@
                 $chart.css('position', 'relative');
                 var $svg;
 
-                chart.on('draw', function(data) {
+                function drawDonut(data){
                     if(data.type == 'slice'){
                         if(data.index == 0)
                             $svg = $chart.find('svg').eq(0);
@@ -41,17 +41,26 @@
                         $svg.prepend($clone);
 
                     }
+                }
+
+                chart.on('draw', function(data) {
+                    drawDonut(data);
                 });
 
                 chart.on('created', function(data){
                     var itemIndex = 0;
 
+                    if(chart.options.fillDonutOptions){
+                        options = Chartist.extend({}, options, chart.options.fillDonutOptions);
+                        drawDonut(data);
+                    }
+
                     $.each(options.items, function(){
                         var $wrapper = $(options.label.html).addClass(options.label.class);
                         var item = $.extend({}, {
-                            class : '',
+                            class: '',
                             id: '',
-                            content : 'fillText',
+                            content: 'fillText',
                             position: 'center', //bottom, top, left, right
                             offsetY: 0, //top, bottom in px
                             offsetX: 0 //left, right in px
@@ -80,24 +89,24 @@
                         var wHeight = $wrapper.height() / 2;
 
                         var style = {
-                            bottom : {
-                                bottom : 0 + item.offsetY,
+                            bottom: {
+                                bottom: 0 + item.offsetY,
                                 left: (cWidth - wWidth) + item.offsetX,
                             },
-                            top : {
-                                top : 0  + item.offsetY,
+                            top: {
+                                top: 0  + item.offsetY,
                                 left: (cWidth - wWidth) + item.offsetX,
                             },
-                            left : {
-                                top : (cHeight - wHeight) + item.offsetY,
+                            left: {
+                                top: (cHeight - wHeight) + item.offsetY,
                                 left: 0 + item.offsetX,
                             },
-                            right : {
-                                top : (cHeight - wHeight) + item.offsetY,
+                            right: {
+                                top: (cHeight - wHeight) + item.offsetY,
                                 right: 0 + item.offsetX,
                             },
-                            center : {
-                                top : (cHeight - wHeight) + item.offsetY,
+                            center: {
+                                top: (cHeight - wHeight) + item.offsetY,
                                 left: (cWidth - wWidth) + item.offsetX,
                             }
                         };

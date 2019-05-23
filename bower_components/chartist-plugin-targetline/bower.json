@@ -1,0 +1,23 @@
+{
+  "name": "chartist-plugin-targetline",
+  "description": "Target line plugin for Chartist.js charting library",
+  "main": "chartist-plugin-targetline.js",
+  "authors": [
+    "Harry Twyford"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "chartist",
+    "plugin",
+    "charting",
+    "charts"
+  ],
+  "homepage": "https://github.com/htwyford/chartist-plugin-targetline",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

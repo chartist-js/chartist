@@ -1,13 +1,11 @@
 //! moment.js locale configuration
-//! locale : Galician [gl]
-//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     var gl = moment.defineLocale('gl', {
@@ -53,6 +51,7 @@
             },
             past : 'hai %s',
             s : 'uns segundos',
+            ss : '%d segundos',
             m : 'un minuto',
             mm : '%d minutos',
             h : 'unha hora',
@@ -64,7 +63,7 @@
             y : 'un ano',
             yy : '%d anos'
         },
-        ordinalParse : /\d{1,2}º/,
+        dayOfMonthOrdinalParse : /\d{1,2}º/,
         ordinal : '%dº',
         week : {
             dow : 1, // Monday is the first day of the week.
@@ -74,4 +73,4 @@
 
     return gl;
 
-}));
+})));

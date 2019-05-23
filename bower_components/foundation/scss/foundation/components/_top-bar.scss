@@ -76,7 +76,7 @@ $topbar-menu-icon-position: $opposite-direction !default; // Change to $default-
 $topbar-transition-speed: 300ms !default;
 // Using rem-calc for the below breakpoint causes issues with top bar
 $topbar-breakpoint: #{lower-bound($medium-range)} !default; // Change to 9999px for always mobile layout
-$topbar-media-query: "#{$screen} and (min-width:#{lower-bound($topbar-breakpoint)})";
+$topbar-media-query: "#{$screen} and (min-width:#{lower-bound($topbar-breakpoint)})" !default;
 
 // Top-bar input styles
 $topbar-input-height: rem-calc(28) !default;
@@ -329,7 +329,7 @@ $topbar-dropdown-arrows: true !default; //Set false to remove the \00bb >> text 
       }
 
       ul li {
-        background: $topbar-dropdown-bg;
+      background: $topbar-dropdown-bg;
 
         > a {
           color: $topbar-link-color;
@@ -514,14 +514,22 @@ $topbar-dropdown-arrows: true !default; //Set false to remove the \00bb >> text 
           top: (($topbar-height - $topbar-input-height) / 2);
         }
 
+        .has-form > .button,
+        .has-form > button {
+          font-size: rem-calc(14);
+          height: $topbar-input-height;
+          position: relative; 
+          top: (($topbar-height - $topbar-input-height) / 2);
+        }
+
         &.expanded {
           background: $topbar-bg;
         }
       }
 
       .contain-to-grid .top-bar {
-        margin-bottom: $topbar-margin-bottom;
         margin: 0 auto;
+        margin-bottom: $topbar-margin-bottom;
         max-width: $row-width;
       }
 

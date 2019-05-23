@@ -1,17 +1,16 @@
 //! moment.js locale configuration
-//! locale : Montenegrin [me]
-//! author : Miodrag Nikač <miodrag@restartit.me> : https://github.com/miodragnikac
 
 ;(function (global, factory) {
    typeof exports === 'object' && typeof module !== 'undefined'
        && typeof require === 'function' ? factory(require('../moment')) :
    typeof define === 'function' && define.amd ? define(['../moment'], factory) :
    factory(global.moment)
-}(this, function (moment) { 'use strict';
+}(this, (function (moment) { 'use strict';
 
 
     var translator = {
         words: { //Different grammatical cases
+            ss: ['sekund', 'sekunda', 'sekundi'],
             m: ['jedan minut', 'jednog minuta'],
             mm: ['minut', 'minuta', 'minuta'],
             h: ['jedan sat', 'jednog sata'],
@@ -87,6 +86,7 @@
             future : 'za %s',
             past   : 'prije %s',
             s      : 'nekoliko sekundi',
+            ss     : translator.translate,
             m      : translator.translate,
             mm     : translator.translate,
             h      : translator.translate,
@@ -98,14 +98,14 @@
             y      : 'godinu',
             yy     : translator.translate
         },
-        ordinalParse: /\d{1,2}\./,
+        dayOfMonthOrdinalParse: /\d{1,2}\./,
         ordinal : '%d.',
         week : {
             dow : 1, // Monday is the first day of the week.
-            doy : 7  // The week that contains Jan 1st is the first week of the year.
+            doy : 7  // The week that contains Jan 7th is the first week of the year.
         }
     });
 
     return me;
 
-}));
+})));
