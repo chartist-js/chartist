@@ -382,6 +382,7 @@
     }.bind(this));
 
     this.eventEmitter.emit('created', {
+      instance: this,
       bounds: valueAxis.bounds,
       chartRect: chartRect,
       axisX: axisX,
