@@ -4343,11 +4343,27 @@ var Chartist = {
         var interpolatedValue = options.labelInterpolationFnc(rawValue, index);
 
         if(interpolatedValue || interpolatedValue === 0) {
-          var labelElement = labelsGroup.elem('text', {
-            dx: labelPosition.x,
-            dy: labelPosition.y,
-            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-          }, options.classNames.label).text('' + interpolatedValue);
+          var labelElement;
+
+          if (Array.isArray(rawValue)) {
+            labelElement = labelsGroup.elem('text', {
+              dx: labelPosition.x,
+              dy: labelPosition.y,
+              'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+            }, options.classNames.label).text('' + rawValue[0]);
+
+            labelElement = labelElement + labelsGroup.elem('text', {
+              dx: labelPosition.x,
+              dy: labelPosition.y + 20,
+              'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+            }, options.classNames.label).text('' + rawValue[1]);
+          } else {
+            labelElement = labelsGroup.elem('text', {
+              dx: labelPosition.x,
+              dy: labelPosition.y,
+              'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
+            }, options.classNames.label).text('' + interpolatedValue);
+          }
 
           // Fire off draw event
           this.eventEmitter.emit('draw', {
