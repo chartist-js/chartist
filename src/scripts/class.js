@@ -108,4 +108,4 @@
     cloneDefinitions: cloneDefinitions
   };
 
-}(this, Chartist));
+}(this || global, Chartist));

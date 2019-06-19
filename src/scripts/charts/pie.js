@@ -391,4 +391,4 @@
     determineAnchorPosition: determineAnchorPosition
   });
 
-}(this, Chartist));
+}(this || global, Chartist));

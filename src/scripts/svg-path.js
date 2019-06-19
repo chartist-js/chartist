@@ -382,4 +382,4 @@
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;
   Chartist.Svg.Path.join = join;
-}(this, Chartist));
+}(this || global, Chartist));

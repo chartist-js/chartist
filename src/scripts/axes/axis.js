@@ -116,4 +116,4 @@
 
   Chartist.Axis.units = axisUnits;
 
-}(this, Chartist));
+}(this || global, Chartist));

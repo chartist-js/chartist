@@ -192,4 +192,4 @@
     supportsForeignObject: false
   });
 
-}(this, Chartist));
+}(this || global, Chartist));

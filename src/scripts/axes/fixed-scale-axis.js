@@ -56,4 +56,4 @@
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(this || global, Chartist));

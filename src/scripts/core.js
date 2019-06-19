@@ -1148,4 +1148,4 @@ var Chartist = {
 
     return segments;
   };
-}(this, Chartist));
+}(this || global, Chartist));
