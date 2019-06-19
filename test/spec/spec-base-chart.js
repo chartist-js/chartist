@@ -1,17 +1,18 @@
+import 'utils/dom-prepare-before-each';
+import 'utils/dom-cleanup-after-each';
+
+import Chartist from '../../dist/chartist';
+
+import { appendToDom } from 'utils/dom';
+
 describe('Base chart tests', function() {
   'use strict';
 
   beforeEach(function() {
-
-  });
-
-  afterEach(function() {
-
+    appendToDom('<div class="ct-chart ct-golden-section"></div>');
   });
 
   it('should fire initial data event correctly', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var chart = new Chartist.Line('.ct-chart', {
       labels: [1, 2, 3, 4],
       series: [[0, 1, 2, 3]]
@@ -25,8 +26,6 @@ describe('Base chart tests', function() {
   });
 
   it('should fire update data event correctly', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var chart = new Chartist.Line('.ct-chart', {
       labels: [1, 2, 3, 4],
       series: [[0, 1, 2, 3]]
@@ -46,8 +45,6 @@ describe('Base chart tests', function() {
   });
 
   it('should transform data before rendering with data event', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var chart = new Chartist.Line('.ct-chart', {
       labels: [1, 2, 3, 4],
       series: [[0, 1, 2, 3]]
@@ -64,8 +61,6 @@ describe('Base chart tests', function() {
   });
 
   it('should update correctly with data only in same call stack', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var dataEventsSpy = jasmine.createSpy('dataEventSpy');
 
     var chart = new Chartist.Line('.ct-chart', {
@@ -92,8 +87,6 @@ describe('Base chart tests', function() {
   });
 
   it('should update correctly with data only in a different call stack', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var dataEventsSpy = jasmine.createSpy('dataEventSpy');
 
     var createdCount = 0;
@@ -134,8 +127,6 @@ describe('Base chart tests', function() {
   });
 
   it('should update correctly with options only in same call stack', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var dataEventsSpy = jasmine.createSpy('dataEventSpy');
     var optionsChangedEventsSpy = jasmine.createSpy('optionsChangedEventsSpy');
 
@@ -173,8 +164,6 @@ describe('Base chart tests', function() {
   });
 
   it('should update correctly with options only in a different call stack', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var createdCount = 0;
     var dataEventsSpy = jasmine.createSpy('dataEventSpy');
     var optionsChangedEventsSpy = jasmine.createSpy('optionsChangedEventsSpy');
@@ -220,8 +209,6 @@ describe('Base chart tests', function() {
   });
 
   it('should update options with override=false correctly', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var chart = new Chartist.Line('.ct-chart', {
       labels: [1, 2, 3, 4],
       series: [[0, 1, 2, 3]]
@@ -246,8 +233,6 @@ describe('Base chart tests', function() {
   });
 
   it('should update options with override=true correctly', function(done) {
-    jasmine.getFixtures().set('<div class="ct-chart ct-golden-section"></div>');
-
     var chart = new Chartist.Line('.ct-chart', {
       labels: [1, 2, 3, 4],
       series: [[0, 1, 2, 3]]

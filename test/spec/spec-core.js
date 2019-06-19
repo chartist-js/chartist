@@ -1,8 +1,15 @@
+import 'utils/dom-prepare-before-each';
+import 'utils/dom-cleanup-after-each';
+
+import Chartist from '../../dist/chartist';
+
+import { appendToDom } from 'utils/dom';
+
 describe('Chartist core', function() {
   'use strict';
 
   beforeEach(function() {
-
+    appendToDom('<div id="chart-container"><svg id="foo"></svg><div><svg id="bar"></svg></div></div>');
   });
 
   afterEach(function() {
@@ -11,32 +18,30 @@ describe('Chartist core', function() {
 
   describe('createSvg tests', function () {
     it('should not remove non-chartist svg elements', function() {
-      jasmine.getFixtures().set('<div id="chart-container"><svg id="foo"></svg><div><svg id="bar"></svg></div></div>');
-
-      var container = $('#chart-container'),
-        // We use get(0) because we want the DOMElement, not the jQuery object.
-        svg = Chartist.createSvg(container.get(0), '500px', '400px', 'ct-fish-bar');
+      var container = document.querySelector('#chart-container');
+        // We firstChild because we want the DOMElement, not the jQuery object.
+      var firstChild = container.children[0];
+      var svg = Chartist.createSvg(firstChild, '500px', '400px', 'ct-fish-bar');
 
       expect(svg).toBeDefined();
       expect(svg.classes()).toContain('ct-fish-bar');
-      expect(container).toContainElement('#foo');
-      expect(container).toContainElement('#bar');
+      expect(container.querySelector('#foo')).toBeTruthy();
+      expect(container.querySelector('#bar')).toBeTruthy();
     });
 
     it('should remove previous chartist svg elements', function() {
-      jasmine.getFixtures().set('<div id="chart-container"></div>');
-
-      var container = $('#chart-container'),
-        // We use get(0) because we want the DOMElement, not the jQuery object.
-        svg1 = Chartist.createSvg(container.get(0), '500px', '400px', 'ct-fish-bar'),
-        svg2 = Chartist.createSvg(container.get(0), '800px', '200px', 'ct-snake-bar');
+      var container = document.querySelector('#chart-container'),
+        // We firstChild because we want the DOMElement, not the jQuery object.
+        firstChild = container.children[0],
+        svg1 = Chartist.createSvg(firstChild, '500px', '400px', 'ct-fish-bar'),
+        svg2 = Chartist.createSvg(firstChild, '800px', '200px', 'ct-snake-bar');
 
       expect(svg1).toBeDefined();
       expect(svg1.classes()).toContain('ct-fish-bar');
       expect(svg2).toBeDefined();
       expect(svg2.classes()).toContain('ct-snake-bar');
-      expect(container).not.toContainElement('.ct-fish-bar');
-      expect(container).toContainElement('.ct-snake-bar');
+      expect(container.querySelector('.ct-fish-bar')).not.toBeTruthy();
+      expect(container.querySelector('.ct-snake-bar')).toBeTruthy();
     });
   });
 
@@ -77,9 +82,9 @@ describe('Chartist core', function() {
     });
 
     it('should serialize and deserialize null, undefined and NaN', function() {
-      expect(null).toEqual(Chartist.deserialize(Chartist.serialize(null)));
-      expect(undefined).toEqual(Chartist.deserialize(Chartist.serialize(undefined)));
-      expect(NaN).toMatch(Chartist.deserialize(Chartist.serialize('NaN')));
+      expect(Chartist.deserialize(Chartist.serialize(null))).toBeNull();
+      expect(Chartist.deserialize(Chartist.serialize(undefined))).toBeUndefined();
+      expect(Chartist.deserialize(Chartist.serialize(NaN))).toMatch(/NaN/);
     });
   });
 

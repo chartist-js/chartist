@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pie chart tests Pie with empty values Pie should render without NaN values and points 1`] = `"M5.5,5A0.5,0.5,0,0,0,5.5,5L5.5,5.5Z"`;
+
+exports[`Pie chart tests Pie with empty values Pie should render without NaN values and points 2`] = `"M5.5,5A0.5,0.5,0,0,0,5.5,5L5.5,5.5Z"`;
+
+exports[`Pie chart tests Pie with empty values Pie should render without NaN values and points 3`] = `"M5.5,5A0.5,0.5,0,0,0,5.5,5L5.5,5.5Z"`;

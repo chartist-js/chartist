@@ -1,3 +1,8 @@
+import 'utils/dom-prepare-before-each';
+import 'utils/dom-cleanup-after-each';
+
+import Chartist from '../../dist/chartist';
+
 describe('Axes tests', function() {
   'use strict';
 

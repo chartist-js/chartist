@@ -1,3 +1,10 @@
+import 'utils/dom-prepare-before-each';
+import 'utils/dom-cleanup-after-each';
+
+import Chartist from '../../dist/chartist';
+
+window.Chartist = Chartist;
+
 //TODO: Add tests!
 describe('Chartist SVG', function () {
   'use strict';
