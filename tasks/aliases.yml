@@ -39,7 +39,8 @@ test:
   - 'clean:tmp'
   - 'concurrent:test'
   - 'connect:test'
-  - 'jasmine'
+  - 'build'
+  - 'run:jest'
 
 # local version with livereload
 dev:

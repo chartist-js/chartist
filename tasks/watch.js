@@ -31,7 +31,7 @@ module.exports = function (grunt) {
     },
     jsTest: {
       files: ['<%= pkg.config.test %>/spec/{,*/}*.js'],
-      tasks: ['newer:jshint:test', 'jasmine']
+      tasks: ['newer:jshint:test', 'run:jest']
     },
     sass: {
       files: [
