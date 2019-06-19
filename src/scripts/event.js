@@ -75,4 +75,4 @@
     };
   };
 
-}(this, Chartist));
+}(this || global, Chartist));

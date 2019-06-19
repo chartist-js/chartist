@@ -443,4 +443,4 @@
     createChart: createChart
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
