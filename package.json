@@ -23,7 +23,8 @@
     "LICENSE-WTFPL",
     "LICENSE-MIT",
     "package.json",
-    "README.md"
+    "README.md",
+    "rescue-campaign.js"
   ],
   "style": "dist/chartist.min.css",
   "main": "dist/chartist.js",
