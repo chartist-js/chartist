@@ -16,7 +16,7 @@ module.exports = function (grunt) {
         {
           expand: true,
           cwd: '<%= pkg.config.site %>/images',
-          src: '{,*/}*.{png,jpg,jpeg,gif}',
+          src: '{,*/}*.{png,jpg,jpeg}',
           dest: '<%= pkg.config.public %>/images'
         }
       ]
