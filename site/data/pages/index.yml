@@ -1,3 +1,19 @@
+affiliate-projects:
+  - title: Material Dashboard Pro
+    link: https://www.creative-tim.com/product/material-dashboard-pro?ref=chartist.io
+    image:
+      src: https://s3.amazonaws.com/creativetim_bucket/products/51/original/opt_mdp_thumbnail.jpg
+      alt: Material Dashboard Pro
+  - title: Material Dashboard Pro Angular
+    link: https://www.creative-tim.com/product/material-dashboard-pro-angular2?ref=chartist.io
+    image:
+      src: https://s3.amazonaws.com/creativetim_bucket/products/55/original/opt_mdp_angular_thumbnail.jpg
+      alt: Material Dashboard Pro Angular
+  - title: Light Bootstrap Dashboard PRO React
+    link: https://www.creative-tim.com/product/light-bootstrap-dashboard-pro-react?ref=chartist.io
+    image:
+      src: https://s3.amazonaws.com/creativetim_bucket/products/66/original/opt_lbdp_react_thumbnail.jpg
+      alt: Light Bootstrap Dashboard PRO React
 gallery-examples:
   - id: example-gallery-one
     classes: ct-golden-section
