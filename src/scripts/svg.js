@@ -597,4 +597,4 @@
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-}(this, Chartist));
+}(this || global, Chartist));
