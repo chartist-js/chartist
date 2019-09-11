@@ -14,7 +14,7 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.11.3
+/* Chartist.js 0.11.4
  * Copyright © 2019 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.11.3'
+  version: '0.11.4'
 };
 
 (function (globalRoot, Chartist) {
@@ -1170,7 +1170,7 @@ var Chartist = {
 
     return segments;
   };
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * Chartist path interpolation functions.
  *
@@ -1607,7 +1607,7 @@ var Chartist = {
     };
   };
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * A very basic event module that helps to generate and catch events.
  *
@@ -1685,7 +1685,7 @@ var Chartist = {
     };
   };
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * This module provides some basic prototype inheritance utilities.
  *
@@ -1796,7 +1796,7 @@ var Chartist = {
     cloneDefinitions: cloneDefinitions
   };
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * Base for all chart types. The methods in Chartist.Base are inherited to all chart types.
  *
@@ -1991,7 +1991,7 @@ var Chartist = {
     supportsForeignObject: false
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * Chartist SVG module for simple SVG DOM abstraction
  *
@@ -2591,7 +2591,7 @@ var Chartist = {
   Chartist.Svg.List = Chartist.Class.extend({
     constructor: SvgList
   });
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * Chartist SVG path module for SVG path description creation and modification.
  *
@@ -2976,7 +2976,7 @@ var Chartist = {
 
   Chartist.Svg.Path.elementDescriptions = elementDescriptions;
   Chartist.Svg.Path.join = join;
-}(this, Chartist));
+}(this || global, Chartist));
 ;/* global Chartist */
 (function (globalRoot, Chartist) {
   'use strict';
@@ -3095,7 +3095,7 @@ var Chartist = {
 
   Chartist.Axis.units = axisUnits;
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.
  * **Options**
@@ -3149,7 +3149,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * The fixed scale axis uses standard linear projection of values along an axis. It makes use of a divisor option to divide the range provided from the minimum and maximum value or the options high and low that will override the computed minimum and maximum.
  * **Options**
@@ -3208,7 +3208,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * The step axis for step based charts like bar chart or step based line charts. It uses a fixed amount of ticks that will be equally distributed across the whole axis length. The projection is done using the index of the data value rather than the value itself and therefore it's only useful for distribution purpose.
  * **Options**
@@ -3251,7 +3251,7 @@ var Chartist = {
     projectValue: projectValue
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * The Chartist line chart can be used to draw Line or Scatter charts. If used in the browser you can access the global `Chartist` namespace where you find the `Line` function as a main entry point.
  *
@@ -3669,7 +3669,7 @@ var Chartist = {
     createChart: createChart
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * The bar chart module of Chartist that can be used to draw unipolar or bipolar bar and grouped bar charts.
  *
@@ -4115,7 +4115,7 @@ var Chartist = {
     createChart: createChart
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 ;/**
  * The pie chart module of Chartist that can be used to draw pie, donut or gauge charts
  *
@@ -4509,7 +4509,7 @@ var Chartist = {
     determineAnchorPosition: determineAnchorPosition
   });
 
-}(this, Chartist));
+}(this || global, Chartist));
 
 return Chartist;
 
