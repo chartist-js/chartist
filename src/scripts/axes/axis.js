@@ -54,8 +54,11 @@
       } else {
         // If we don't have a label ahead and we have only two labels in total, we just take the remaining distance to
         // on the whole axis length. We limit that to a minimum of 30 pixel, so that labels close to the border will
-        // still be visible inside of the chart padding.
-        labelLength = Math.max(this.axisLength - projectedValue, 30);
+        // still be visible inside of the chart padding. The value is configurable through the "labelMinimumEndLength" axis option.
+        var minValue = axisOptions['labelMinimumEndLength'];
+        if (typeof minValue == "undefined")
+          minValue = 30;
+        labelLength = Math.max(this.axisLength - projectedValue, minValue);
       }
 
       // Skip grid lines and labels where interpolated label values are falsey (execpt for 0)
