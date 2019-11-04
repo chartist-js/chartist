@@ -212,6 +212,7 @@
             x2: pathElement.x + 0.01,
             y2: pathElement.y
           }, options.classNames.point).attr({
+            'ct:index': pathElement.data.valueIndex,
             'ct:value': [pathElement.data.value.x, pathElement.data.value.y].filter(Chartist.isNumeric).join(','),
             'ct:meta': Chartist.serialize(pathElement.data.meta)
           });
