@@ -260,6 +260,9 @@ sections:
               -'<a href="https://github.com/Yopadd/vue-chartist" target="_blank">vue-chartist</a>'
               - Vue plugin
             -
+              -'<a href="https://github.com/lakb248/vue-chartist" target="_blank">v-chartist</a>'
+              - Vue Component
+            -
               -'<a href="https://github.com/eriklieben/aurelia-chartist" target="_blank">aurelia-chartist</a>'
               - Aurelia plugin
   - title: Chart CSS animation example
