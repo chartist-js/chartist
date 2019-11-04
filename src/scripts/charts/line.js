@@ -97,13 +97,15 @@
     classNames: {
       chart: 'ct-chart-line',
       label: 'ct-label',
-      labelGroup: 'ct-labels',
+      labelGroupVertical: 'ct-labels-vertical',
+      labelGroupHorizontal: 'ct-labels-horizontal',
       series: 'ct-series',
       line: 'ct-line',
       point: 'ct-point',
       area: 'ct-area',
       grid: 'ct-grid',
-      gridGroup: 'ct-grids',
+      gridGroupVertical: 'ct-grids-vertical',
+      gridGroupHorizontal: 'ct-grids-horizontal',
       gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
@@ -122,9 +124,11 @@
     // Create new svg object
     this.svg = Chartist.createSvg(this.container, options.width, options.height, options.classNames.chart);
     // Create groups for labels, grid and series
-    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+    var gridGroupVertical = this.svg.elem('g').addClass(options.classNames.gridGroupVertical);
+    var gridGroupHorizontal = this.svg.elem('g').addClass(options.classNames.gridGroupHorizontal);
     var seriesGroup = this.svg.elem('g');
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
+    var labelGroupVertical = this.svg.elem('g').addClass(options.classNames.labelGroupVertical);
+    var labelGroupHorizontal = this.svg.elem('g').addClass(options.classNames.labelGroupHorizontal);
 
     var chartRect = Chartist.createChartRect(this.svg, options, defaultOptions.padding);
     var axisX, axisY;
@@ -147,11 +151,11 @@
       axisY = options.axisY.type.call(Chartist, Chartist.Axis.units.y, data.normalized.series, chartRect, options.axisY);
     }
 
-    axisX.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-    axisY.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    axisX.createGridAndLabels(gridGroupHorizontal, labelGroupHorizontal, this.supportsForeignObject, options, this.eventEmitter);
+    axisY.createGridAndLabels(gridGroupVertical, labelGroupVertical, this.supportsForeignObject, options, this.eventEmitter);
 
     if (options.showGridBackground) {
-      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
+      Chartist.createGridBackground(gridGroupHorizontal, chartRect, options.classNames.gridBackground, this.eventEmitter);
     }
 
     // Draw the series

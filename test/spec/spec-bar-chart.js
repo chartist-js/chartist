@@ -40,17 +40,18 @@ describe('Bar chart tests', function() {
       chart.on('created', fn);      
     }
 
-    it('should contain ct-grids group', function(done) {
+    it('should contain ct-grids groups', function(done) {
       onCreated(function () {
-        expect($('g.ct-grids').length).toBe(1);        
+        expect($('g.ct-grids-horizontal').length).toBe(1);        
+        expect($('g.ct-grids-vertical').length).toBe(1);        
         done();
       });
     });
 
     it('should draw grid lines', function(done) {
       onCreated(function () {
-        expect($('g.ct-grids line.ct-grid.ct-horizontal').length).toBe(3);
-        expect($('g.ct-grids line.ct-grid.ct-vertical').length).toBe(6);        
+        expect($('g.ct-grids-horizontal line.ct-grid.ct-horizontal').length).toBe(3);
+        expect($('g.ct-grids-vertical line.ct-grid.ct-vertical').length).toBe(6);        
         done();
       });
     });
@@ -58,7 +59,7 @@ describe('Bar chart tests', function() {
     it('should draw grid background', function(done) {
       options.showGridBackground = true;
       onCreated(function () {
-        expect($('g.ct-grids rect.ct-grid-background').length).toBe(1);
+        expect($('g.ct-grids-horizontal rect.ct-grid-background').length).toBe(1);
         done();
       });
     });
@@ -66,7 +67,7 @@ describe('Bar chart tests', function() {
     it('should not draw grid background if option set to false', function(done) {
       options.showGridBackground = false;
       onCreated(function () {
-        expect($('g.ct-grids rect.ct-grid-background').length).toBe(0);
+        expect($('g.ct-grids-horizontal rect.ct-grid-background').length).toBe(0);
         done();
       });
     });
@@ -230,9 +231,9 @@ describe('Bar chart tests', function() {
 
       chart.on('created', function () {
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(document.querySelector('.ct-grids-vertical .ct-grid.ct-vertical')).toBeDefined();
         // Find exactly as many horizontal grid lines as labels were specified (Step Axis)
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(data.labels.length);
+        expect(document.querySelectorAll('.ct-grids-horizontal .ct-grid.ct-horizontal').length).toBe(data.labels.length);
         done();
       });
     });
@@ -251,9 +252,9 @@ describe('Bar chart tests', function() {
 
       chart.on('created', function () {
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(document.querySelector('.ct-grids-vertical .ct-grid.ct-vertical')).toBeDefined();
         // Should generate the labels using the largest series count
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(Math.max.apply(null, data.series.map(function(series) {
+        expect(document.querySelectorAll('.ct-grids-horizontal .ct-grid.ct-horizontal').length).toBe(Math.max.apply(null, data.series.map(function(series) {
           return series.length;
         })));
         done();
@@ -272,7 +273,7 @@ describe('Bar chart tests', function() {
 
       chart.on('created', function () {
         // Find first and last label
-        var labels = document.querySelectorAll('.ct-labels .ct-label.ct-vertical');
+        var labels = document.querySelectorAll('.ct-labels-vertical .ct-label.ct-vertical');
         var firstLabel = labels[0];
         var lastLabel = labels[labels.length - 1];
 

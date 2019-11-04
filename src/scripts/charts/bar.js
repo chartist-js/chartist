@@ -97,11 +97,13 @@
       chart: 'ct-chart-bar',
       horizontalBars: 'ct-horizontal-bars',
       label: 'ct-label',
-      labelGroup: 'ct-labels',
+      labelGroupVertical: 'ct-labels-vertical',
+      labelGroupHorizontal: 'ct-labels-horizontal',
       series: 'ct-series',
       bar: 'ct-bar',
       grid: 'ct-grid',
-      gridGroup: 'ct-grids',
+      gridGroupVertical: 'ct-grids-vertical',
+      gridGroupHorizontal: 'ct-grids-horizontal',
       gridBackground: 'ct-grid-background',
       vertical: 'ct-vertical',
       horizontal: 'ct-horizontal',
@@ -136,9 +138,11 @@
     );
 
     // Drawing groups in correct order
-    var gridGroup = this.svg.elem('g').addClass(options.classNames.gridGroup);
+    var gridGroupVertical = this.svg.elem('g').addClass(options.classNames.gridGroupVertical);
+    var gridGroupHorizontal = this.svg.elem('g').addClass(options.classNames.gridGroupHorizontal);
     var seriesGroup = this.svg.elem('g');
-    var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
+    var labelGroupVertical = this.svg.elem('g').addClass(options.classNames.labelGroupVertical);
+    var labelGroupHorizontal = this.svg.elem('g').addClass(options.classNames.labelGroupHorizontal);
 
     if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode) && data.normalized.series.length !== 0) {
 
@@ -233,11 +237,11 @@
     // Used to track the screen coordinates of stacked bars
     var stackedBarValues = [];
 
-    labelAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
-    valueAxis.createGridAndLabels(gridGroup, labelGroup, this.supportsForeignObject, options, this.eventEmitter);
+    labelAxis.createGridAndLabels(gridGroupHorizontal, labelGroupHorizontal, this.supportsForeignObject, options, this.eventEmitter);
+    valueAxis.createGridAndLabels(gridGroupVertical, labelGroupVertical, this.supportsForeignObject, options, this.eventEmitter);
 
     if (options.showGridBackground) {
-      Chartist.createGridBackground(gridGroup, chartRect, options.classNames.gridBackground, this.eventEmitter);
+      Chartist.createGridBackground(gridGroupHorizontal, chartRect, options.classNames.gridBackground, this.eventEmitter);
     }
 
     // Draw the series
