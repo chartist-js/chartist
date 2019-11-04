@@ -982,9 +982,8 @@ var Chartist = {
       content.style[axis.units.len] = Math.round(positionalData[axis.units.len]) + 'px';
       content.style[axis.counterUnits.len] = Math.round(positionalData[axis.counterUnits.len]) + 'px';
 
-      labelElement = group.foreignObject(content, Chartist.extend({
-        style: 'overflow: visible;'
-      }, positionalData));
+      labelElement = group.foreignObject(content, positionalData);
+      labelElement._node.style.overflow = 'visible';
     } else {
       labelElement = group.elem('text', positionalData, classes.join(' ')).text(labels[index]);
     }
