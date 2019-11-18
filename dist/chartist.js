@@ -4394,11 +4394,14 @@ var Chartist = {
         var interpolatedValue = options.labelInterpolationFnc(rawValue, index);
 
         if(interpolatedValue || interpolatedValue === 0) {
+          // Get custom className or 'default' className of this series, so we can add it to the labelElement
+          var labelClassName = data.raw.series[index].className || options.classNames.series + '-' + Chartist.alphaNumerate(index)
+
           var labelElement = labelsGroup.elem('text', {
             dx: labelPosition.x,
             dy: labelPosition.y,
             'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-          }, options.classNames.label).text('' + interpolatedValue);
+          }, options.classNames.label + ' ' + labelClassName).text('' + interpolatedValue);
 
           // Fire off draw event
           this.eventEmitter.emit('draw', {
