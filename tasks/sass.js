@@ -9,6 +9,8 @@
 
 'use strict';
 
+const sass = require('node-sass');
+
 module.exports = function (grunt) {
   return {
     options: {
@@ -17,6 +19,7 @@ module.exports = function (grunt) {
     },
     public: { // without sourcemaps
       options: {
+        implementation: sass,
         sourceMap: false
       },
       files: [
@@ -31,6 +34,7 @@ module.exports = function (grunt) {
     },
     dist: {
       options: {
+        implementation: sass,
         sourceMap: true
       },
       files: [
@@ -45,6 +49,7 @@ module.exports = function (grunt) {
     },
     tmp: { // with sourcemaps
       options: {
+        implementation: sass,
         sourceMap: true
       },
       files: [
