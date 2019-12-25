@@ -13,7 +13,6 @@
     "base64": "~0.3.0",
     "chartist-plugin-pointlabels": "~0.0.4",
     "chartist-plugin-accessibility": "~0.0.2",
-    "chartist-plugin-tooltip": "~0.0.12",
     "chartist-plugin-axistitle": "~0.0.1",
     "chartist-plugin-threshold": "~0.0.1",
     "chartist-plugin-fill-donut": "~0.0.1",

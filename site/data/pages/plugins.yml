@@ -124,7 +124,7 @@ sections:
                     - Markus Padourek
                   -
                     - '<strong>Link:</strong>'
-                    - '<a href="https://github.com/Globegitter/chartist-plugin-tooltip" target="_blank">chartist-plugin-tooltip</a>'
+                    - '<a href="https://github.com/LukBukkit/chartist-plugin-tooltip" target="_blank">chartist-plugin-tooltips-updated</a>'
 
       - type: sub-section
         data:
