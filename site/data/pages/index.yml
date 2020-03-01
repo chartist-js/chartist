@@ -237,10 +237,13 @@ sections:
               - Node Package for Server-side Charts
             -
               - '<a href="https://github.com/paradox41/ng-chartist.js" target="_blank">ng-chartist.js</a>'
-              - Angular Directive
+              - AngularJS Directive
             -
               - '<a href="https://github.com/gruberb/chartistAngularDirective" target="_blank">chartistAngularDirective.js</a>'
-              - Angular Directive
+              - AngularJS Directive
+            -
+              - '<a href="https://github.com/willsoto/ng-chartist" target="_blank">ng-chartist</a>'
+              - Angular 4+ Directive
             -
               - '<a href="https://fraserxu.me/react-chartist" target="_blank">react-chartist</a>'
               - React Component
