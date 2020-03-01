@@ -53,7 +53,7 @@ to the masses.
 1. Jasmine Tests!
 2. Documentation: JSDoc, Getting started documentation and landing page
 3. Better accessibility using ARIA and other optimizations
-4. Better interfaces to the library (i.e. jQuery with data-* attributes for configuration), Angular.js directive etc.
+4. Better interfaces to the library (i.e. jQuery with data-* attributes for configuration) etc.
 5. Richer Sass / CSS framework
 6. Other charts types (spider etc.)
 
