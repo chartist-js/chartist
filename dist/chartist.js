@@ -4173,7 +4173,7 @@ var Chartist = {
     labelDirection: 'neutral',
     // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
     reverseData: false,
-    // If true empty values will be ignored to avoid drawing unncessary slices and labels
+    // If true empty values will be ignored to avoid drawing unnecessary slices and labels
     ignoreEmptyValues: false
   };
 
