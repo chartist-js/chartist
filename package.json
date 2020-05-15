@@ -1,16 +1,16 @@
 {
-  "name": "chartist",
+  "name": "@matteoraf/chartist",
   "title": "Chartist.js",
   "description": "Simple, responsive charts",
-  "version": "0.11.4",
-  "author": "Gion Kunz",
+  "version": "0.11.5",
+  "author": "Matteoraf & Gion Kunz",
   "homepage": "https://gionkunz.github.io/chartist-js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gionkunz/chartist-js.git"
+    "url": "https://github.com/matteoraf/chartist-js.git"
   },
   "bugs": {
-    "url": "https://github.com/gionkunz/chartist-js/issues"
+    "url": "https://github.com/matteoraf/chartist-js/issues"
   },
   "keywords": [
     "chartist",
@@ -33,11 +33,11 @@
   "licenses": [
     {
       "type": "WTFPL",
-      "url": "https://github.com/gionkunz/chartist-js/blob/master/LICENSE-WTFPL"
+      "url": "https://github.com/matteoraf/chartist-js/blob/master/LICENSE-WTFPL"
     },
     {
       "type": "MIT",
-      "url": "https://github.com/gionkunz/chartist-js/blob/master/LICENSE-MIT"
+      "url": "https://github.com/matteoraf/chartist-js/blob/master/LICENSE-MIT"
     }
   ],
   "dependencies": {},

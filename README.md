@@ -1,3 +1,12 @@
+# Fork details
+This fork includes the ability to provide the update() method with a responsiveOptions array too.
+I needed this extra feature in my project, so while I wait for the Chartist team to check my pull request, I'm publishing this package by myself.
+Feel free to use it by running
+```
+$ npm install @matteoraf/chartist --save
+```
+
+
 # Big welcome by the Chartist Guy
 
 [![Join the chat at https://gitter.im/gionkunz/chartist-js](https://badges.gitter.im/gionkunz/chartist-js.svg)](https://gitter.im/gionkunz/chartist-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
