@@ -14,8 +14,8 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.11.4
- * Copyright © 2019 Gion Kunz
+/* Chartist.js 0.11.5
+ * Copyright © 2020 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.11.4'
+  version: '0.11.5'
 };
 
 (function (globalRoot, Chartist) {
@@ -3819,7 +3819,7 @@ var Chartist = {
     var seriesGroup = this.svg.elem('g');
     var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-    if(options.stackBars && data.normalized.series.length !== 0) {
+    if(options.stackBars && (options.stackMode === 'accumulate' || !options.stackMode) && data.normalized.series.length !== 0) {
 
       // If stacked bars we need to calculate the high low from stacked values from each series
       var serialSums = Chartist.serialMap(data.normalized.series, function serialSums() {
