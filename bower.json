@@ -1,5 +1,5 @@
 {
-  "name": "chartist",
+  "name": "@matteoraf/chartist",
   "main": [
     "./dist/chartist.js",
     "./dist/chartist.css"
@@ -34,6 +34,6 @@
     "test"
   ],
   "resolutions": {
-    "chartist": "~0.9.0"
+    "@matteoraf/chartist": "~0.11.5"
   }
 }
