@@ -24,6 +24,17 @@ out there, but they are either:
 
 That's why we started Chartist.js and our goal is to solve all of the above issues.
 
+## Differences in this fork
+
+### The version of grunt-sass has been updated to ^3.1.0
+
+The version it was on would not build when running `npm install` on OSX.
+
+### Types have been copied under the types/ directory
+
+Test the types by running `npm run dtslint`.
+
+
 ## What is it made for?
 
 Chartist's goal is to provide a simple, lightweight and unintrusive library to responsively craft charts on your website. 
