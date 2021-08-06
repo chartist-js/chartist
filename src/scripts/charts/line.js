@@ -249,7 +249,6 @@
         });
       }
 
-/*
       // Area currently only works with axes that support a range!
       if(seriesOptions.showArea && axisY.range) {
         // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
@@ -303,7 +302,6 @@
           });
         }.bind(this));
       }
-*/
     }.bind(this));
 
     this.eventEmitter.emit('created', {
