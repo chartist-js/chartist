@@ -14,8 +14,8 @@
   }
 }(this, function () {
 
-/* Chartist.js 0.1.8
- * Copyright © 2018 Gion Kunz
+/* Chartist.js 0.1.9
+ * Copyright © 2021 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-WTFPL
  * https://raw.githubusercontent.com/gionkunz/chartist-js/master/LICENSE-MIT
@@ -26,7 +26,7 @@
  * @module Chartist.Core
  */
 var Chartist = {
-  version: '0.1.8'
+  version: '0.1.9'
 };
 
 (function (window, document, Chartist) {
@@ -3433,7 +3433,6 @@ var Chartist = {
         });
       }
 
-/*
       // Area currently only works with axes that support a range!
       if(seriesOptions.showArea && axisY.range) {
         // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
@@ -3487,7 +3486,6 @@ var Chartist = {
           });
         }.bind(this));
       }
-*/
     }.bind(this));
 
     this.eventEmitter.emit('created', {
