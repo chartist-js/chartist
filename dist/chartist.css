@@ -7,8 +7,6 @@
 .ct-chart-line .ct-label,
 .ct-chart-bar .ct-label {
   display: block;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex; }
 
 .ct-chart-pie .ct-label,
@@ -16,101 +14,61 @@
   dominant-baseline: central; }
 
 .ct-label.ct-horizontal.ct-start {
-  -webkit-box-align: flex-end;
-  -ms-flex-align: flex-end;
   align-items: flex-end;
-  -webkit-box-pack: flex-start;
-  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
   text-anchor: start; }
 
 .ct-label.ct-horizontal.ct-end {
-  -webkit-box-align: flex-start;
-  -ms-flex-align: flex-start;
   align-items: flex-start;
-  -webkit-box-pack: flex-start;
-  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
   text-anchor: start; }
 
 .ct-label.ct-vertical.ct-start {
-  -webkit-box-align: flex-end;
-  -ms-flex-align: flex-end;
   align-items: flex-end;
-  -webkit-box-pack: flex-end;
-  -ms-flex-pack: flex-end;
   justify-content: flex-end;
   text-align: right;
   text-anchor: end; }
 
 .ct-label.ct-vertical.ct-end {
-  -webkit-box-align: flex-end;
-  -ms-flex-align: flex-end;
   align-items: flex-end;
-  -webkit-box-pack: flex-start;
-  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
   text-anchor: start; }
 
 .ct-chart-bar .ct-label.ct-horizontal.ct-start {
-  -webkit-box-align: flex-end;
-  -ms-flex-align: flex-end;
   align-items: flex-end;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
   text-anchor: start; }
 
 .ct-chart-bar .ct-label.ct-horizontal.ct-end {
-  -webkit-box-align: flex-start;
-  -ms-flex-align: flex-start;
   align-items: flex-start;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
   text-align: center;
   text-anchor: start; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-horizontal.ct-start {
-  -webkit-box-align: flex-end;
-  -ms-flex-align: flex-end;
   align-items: flex-end;
-  -webkit-box-pack: flex-start;
-  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
   text-anchor: start; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-horizontal.ct-end {
-  -webkit-box-align: flex-start;
-  -ms-flex-align: flex-start;
   align-items: flex-start;
-  -webkit-box-pack: flex-start;
-  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
   text-anchor: start; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-vertical.ct-start {
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: flex-end;
-  -ms-flex-pack: flex-end;
   justify-content: flex-end;
   text-align: right;
   text-anchor: end; }
 
 .ct-chart-bar.ct-horizontal-bars .ct-label.ct-vertical.ct-end {
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: flex-start;
-  -ms-flex-pack: flex-start;
   justify-content: flex-start;
   text-align: left;
   text-anchor: end; }

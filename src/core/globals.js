@@ -1,4 +1,3 @@
-export {version} from 'package.json!version';
 
 /**
  * This object contains all namespaces used within Chartist.

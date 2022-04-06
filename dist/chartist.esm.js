@@ -1,11 +1,9 @@
 /* Chartist.js 1.0.0
- * Copyright © 2016 Gion Kunz
+ * Copyright © 2022 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
  * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-WTFPL
  * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-MIT
  */
-var version = '1.0.0';
-
 /**
  * This object contains all namespaces used within Chartist.
  *
@@ -58,7 +56,7 @@ function replaceAll(str, subStr, newSubStr) {
  * @param {String|Node} query The query to use for selecting a Node or a DOM node that will be returned directly
  * @return {Node}
  */
-function querySelector$1(query) {
+function querySelector(query) {
   return query instanceof Node ? query : document.querySelector(query);
 }
 
@@ -962,7 +960,6 @@ var Svg = function () {
    * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
 
-
   _createClass(Svg, [{
     key: 'attr',
     value: function attr(attributes, ns) {
@@ -1048,7 +1045,7 @@ var Svg = function () {
 
   }, {
     key: 'querySelector',
-    value: function querySelector(selector) {
+    value: function querySelector$$1(selector) {
       var foundNode = this._node.querySelector(selector);
       return foundNode ? new Svg(foundNode) : null;
     }
@@ -1791,7 +1788,6 @@ var EventEmitter = function () {
    * @param {Function} handler A event handler function
    */
 
-
   _createClass(EventEmitter, [{
     key: 'addEventHandler',
     value: function addEventHandler(event, handler) {
@@ -1871,7 +1867,7 @@ var BaseChart = function () {
 
     _classCallCheck(this, BaseChart);
 
-    this.container = querySelector$1(query);
+    this.container = querySelector(query);
     this.data = data || {};
     this.data.labels = this.data.labels || [];
     this.data.series = this.data.series || [];
@@ -2325,7 +2321,7 @@ var elementDescriptions = {
  * @memberof SvgPath
  * @type {Object}
  */
-var defaultOptions$1 = {
+var defaultOptions = {
   // The accuracy in digit count after the decimal point. This will be used to round numbers in the SVG path. If this option is set to false then no rounding will be performed.
   accuracy: 3
 };
@@ -2385,7 +2381,7 @@ var SvgPath = function () {
     this.pathElements = [];
     this.pos = 0;
     this.close = close;
-    this.options = extend({}, defaultOptions$1, options);
+    this.options = extend({}, defaultOptions, options);
   }
 
   /**
@@ -2395,7 +2391,6 @@ var SvgPath = function () {
    * @param {Number} [pos] If a number is passed then the cursor is set to this position in the path element array.
    * @return {SvgPath|Number} If the position parameter was passed then the return value will be the path object for easy call chaining. If no position parameter was passed then the current position is returned.
    */
-
 
   _createClass(SvgPath, [{
     key: 'position',
@@ -3102,12 +3097,12 @@ function monotoneCubic(options) {
 
 
 
-var interpolation = Object.freeze({
-	none: none,
-	simple: simple,
-	step: step,
-	cardinal: cardinal,
-	monotoneCubic: monotoneCubic
+var interpolation = /*#__PURE__*/Object.freeze({
+  none: none,
+  simple: simple,
+  step: step,
+  cardinal: cardinal,
+  monotoneCubic: monotoneCubic
 });
 
 /**
@@ -3115,7 +3110,7 @@ var interpolation = Object.freeze({
  *
  * @memberof Chartist.Line
  */
-var defaultOptions = {
+var defaultOptions$1 = {
   // Options for X-Axis
   axisX: {
     // The offset of the labels to the chart area
@@ -3297,14 +3292,13 @@ var LineChart = function (_BaseChart) {
   function LineChart(query, data, options, responsiveOptions) {
     _classCallCheck(this, LineChart);
 
-    return _possibleConstructorReturn(this, (LineChart.__proto__ || Object.getPrototypeOf(LineChart)).call(this, query, data, defaultOptions, extend({}, defaultOptions, options), responsiveOptions));
+    return _possibleConstructorReturn(this, (LineChart.__proto__ || Object.getPrototypeOf(LineChart)).call(this, query, data, defaultOptions$1, extend({}, defaultOptions$1, options), responsiveOptions));
   }
 
   /**
    * Creates a new chart
    *
    */
-
 
   _createClass(LineChart, [{
     key: 'createChart',
@@ -3320,7 +3314,7 @@ var LineChart = function (_BaseChart) {
       var seriesGroup = this.svg.elem('g');
       var labelGroup = this.svg.elem('g').addClass(options.classNames.labelGroup);
 
-      var chartRect = createChartRect(this.svg, options, defaultOptions.padding);
+      var chartRect = createChartRect(this.svg, options, defaultOptions$1.padding);
       var axisX = void 0;
       var axisY = void 0;
 
@@ -3669,7 +3663,6 @@ var BarChart = function (_BaseChart) {
    * Creates a new chart
    *
    */
-
 
   _createClass(BarChart, [{
     key: 'createChart',
@@ -4089,7 +4082,6 @@ var PieChart = function (_BaseChart) {
    * @param options
    */
 
-
   _createClass(PieChart, [{
     key: 'createChart',
     value: function createChart(options) {
@@ -4290,6 +4282,6 @@ var PieChart = function (_BaseChart) {
   return PieChart;
 }(BaseChart);
 
-export { interpolation as Interpolation, EventEmitter, extend, optionsProvider, namespaces, precision, escapingMap, version, replaceAll, querySelector$1 as querySelector, safeHasProperty, isNumeric, isFalseyButZero, getNumberOrUndefined, ensureUnit, quantity, alphaNumerate, noop, times, sum, serialMap, EPSILON, orderOfMagnitude, projectLength, roundWithPrecision, rho, polarToCartesian, serialize, deserialize, normalizeData, getMetaData, isDataHoleValue, reverseData, getDataArray, isMultiValue, getMultiValue, getSeriesOption, splitIntoSegments, getHighLow, getBounds, createSvg, normalizePadding, createChartRect, createGrid, createGridBackground, createLabel, BaseChart, LineChart, BarChart, PieChart, Axis, axisUnits, AutoScaleAxis, FixedScaleAxis, StepAxis, Svg, isSupported, easings, SvgList, SvgPath };
+export { interpolation as Interpolation, EventEmitter, extend, optionsProvider, namespaces, precision, escapingMap, replaceAll, querySelector, safeHasProperty, isNumeric, isFalseyButZero, getNumberOrUndefined, ensureUnit, quantity, alphaNumerate, noop, times, sum, serialMap, EPSILON, orderOfMagnitude, projectLength, roundWithPrecision, rho, polarToCartesian, serialize, deserialize, normalizeData, getMetaData, isDataHoleValue, reverseData, getDataArray, isMultiValue, getMultiValue, getSeriesOption, splitIntoSegments, getHighLow, getBounds, createSvg, normalizePadding, createChartRect, createGrid, createGridBackground, createLabel, BaseChart, LineChart, BarChart, PieChart, Axis, axisUnits, AutoScaleAxis, FixedScaleAxis, StepAxis, Svg, isSupported, easings, SvgList, SvgPath };
 
 //# sourceMappingURL=chartist.esm.js.map
