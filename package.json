@@ -39,16 +39,20 @@
       "url": "https://github.com/chartist-js/chartist/blob/master/LICENSE-MIT"
     }
   ],
-  "dependencies": {},
   "devDependencies": {
+    "@commitlint/cli": "^16.2.3",
+    "@commitlint/config-conventional": "^16.2.1",
+    "@commitlint/cz-commitlint": "^16.2.3",
     "autoprefixer": "^10.4.4",
     "babel-eslint": "^7.1.0",
     "browser-sync": "^2.27.9",
     "chokidar": "^3.5.3",
+    "commitizen": "^4.2.4",
     "cssnano": "^5.1.7",
     "debounce": "^1.2.1",
     "eslint": "^8.12.0",
     "fs-promise": "^0.5.0",
+    "inquirer": "^8.0.0",
     "interpolate": "^0.1.0",
     "jasmine-core": "^4.0.1",
     "jspm": "beta",
@@ -58,7 +62,8 @@
     "karma-nyan-reporter": "^0.2.5",
     "karma-phantomjs-launcher": "^1.0.4",
     "node-sass": "^7.0.1",
-    "postcss": "^8.4.12"
+    "postcss": "^8.4.12",
+    "simple-git-hooks": "^2.7.0"
   },
   "engines": {
     "node": ">=6.9.0"
@@ -83,7 +88,9 @@
     "build": "pnpm build-styles && pnpm build-umd && pnpm build-esm",
     "build-umd": "jspm build chartist dist/chartist.umd.js --format umd --global-name Chartist --minify --source-map-contents && ./tooling/node/banner.js dist/chartist.umd.js dist/chartist.umd.js",
     "build-esm": "jspm build chartist dist/chartist.esm.js --format esm && ./tooling/node/banner.js dist/chartist.esm.js dist/chartist.esm.js",
-    "build-styles": "./tooling/node/styles.js src/styles/chartist.scss dist"
+    "build-styles": "./tooling/node/styles.js src/styles/chartist.scss dist",
+    "commit": "cz",
+    "updateGitHooks": "simple-git-hooks"
   },
   "config": {
     "banner": "/* Chartist.js {pkg.version}\n * Copyright © {year} Gion Kunz\n * Free to use under either the WTFPL license or the MIT license.\n * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-WTFPL\n * https://raw.githubusercontent.com/chartist-js/chartist/master/LICENSE-MIT\n */\n"
