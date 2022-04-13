@@ -74,15 +74,15 @@
     }
   },
   "scripts": {
-    "start": "yarn run test-watch & yarn run server & yarn run styles-watch",
-    "test": "./node_modules/.bin/karma start karma.ci.config.js",
-    "test-watch": "./node_modules/.bin/karma start karma.watch.config.js",
+    "start": "pnpm test-watch & pnpm run server & pnpm styles-watch",
+    "test": "karma start karma.ci.config.js",
+    "test-watch": "karma start karma.watch.config.js",
     "styles-watch": "./tooling/node/styles-watch.js",
-    "server": "./node_modules/.bin/browser-sync start --config 'bs-config.js'",
-    "lint": "./node_modules/.bin/eslint src",
-    "build": "yarn run build-styles && yarn run build-umd && yarn run build-esm",
-    "build-umd": "./node_modules/.bin/jspm build chartist dist/chartist.umd.js --format umd --global-name Chartist --minify --source-map-contents && ./tooling/node/banner.js dist/chartist.umd.js dist/chartist.umd.js",
-    "build-esm": "./node_modules/.bin/jspm build chartist dist/chartist.esm.js --format esm && ./tooling/node/banner.js dist/chartist.esm.js dist/chartist.esm.js",
+    "server": "browser-sync start --config 'bs-config.js'",
+    "lint": "eslint src",
+    "build": "pnpm build-styles && pnpm build-umd && pnpm build-esm",
+    "build-umd": "jspm build chartist dist/chartist.umd.js --format umd --global-name Chartist --minify --source-map-contents && ./tooling/node/banner.js dist/chartist.umd.js dist/chartist.umd.js",
+    "build-esm": "jspm build chartist dist/chartist.esm.js --format esm && ./tooling/node/banner.js dist/chartist.esm.js dist/chartist.esm.js",
     "build-styles": "./tooling/node/styles.js src/styles/chartist.scss dist"
   },
   "config": {

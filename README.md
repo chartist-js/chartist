@@ -5,11 +5,11 @@ Note: This is the readme of chartist 1 and should be rewritten for version 2 whi
 ## Developer information Version 2 WIP
 
 ```
-npm i
-npx jspm i
-npm run build
+pnpm i
+pnpm jspm i
+pnpm build
 OR
-npm start
+pnpm start
 ```
 
 [![Join the chat at https://gitter.im/gionkunz/chartist-js](https://badges.gitter.im/gionkunz/chartist-js.svg)](https://gitter.im/gionkunz/chartist-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
