@@ -40,16 +40,24 @@
     }
   ],
   "devDependencies": {
+    "@babel/core": "^7.17.9",
     "@commitlint/cli": "^16.2.3",
     "@commitlint/config-conventional": "^16.2.1",
     "@commitlint/cz-commitlint": "^16.2.3",
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-controls": "^6.4.22",
+    "@storybook/addon-docs": "^6.4.22",
+    "@storybook/html": "^6.4.22",
+    "@storybook/preset-scss": "^1.0.3",
     "autoprefixer": "^10.4.4",
     "babel-eslint": "^7.1.0",
-    "browser-sync": "^2.27.9",
+    "babel-loader": "^8.2.4",
     "chokidar": "^3.5.3",
     "commitizen": "^4.2.4",
+    "css-loader": "^5.0.0",
     "cssnano": "^5.1.7",
     "debounce": "^1.2.1",
+    "del-cli": "^4.0.1",
     "eslint": "^8.12.0",
     "fs-promise": "^0.5.0",
     "inquirer": "^8.0.0",
@@ -63,7 +71,10 @@
     "karma-phantomjs-launcher": "^1.0.4",
     "node-sass": "^7.0.1",
     "postcss": "^8.4.12",
-    "simple-git-hooks": "^2.7.0"
+    "sass": "^1.50.0",
+    "sass-loader": "^10.0.0",
+    "simple-git-hooks": "^2.7.0",
+    "style-loader": "^2.0.0"
   },
   "engines": {
     "node": ">=6.9.0"
@@ -79,11 +90,11 @@
     }
   },
   "scripts": {
-    "start": "pnpm test-watch & pnpm run server & pnpm styles-watch",
+    "start:storybook": "start-storybook -p 6006 --ci",
+    "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
     "test": "karma start karma.ci.config.js",
     "test-watch": "karma start karma.watch.config.js",
     "styles-watch": "./tooling/node/styles-watch.js",
-    "server": "browser-sync start --config 'bs-config.js'",
     "lint": "eslint src",
     "build": "pnpm build-styles && pnpm build-umd && pnpm build-esm",
     "build-umd": "jspm build chartist dist/chartist.umd.js --format umd --global-name Chartist --minify --source-map-contents && ./tooling/node/banner.js dist/chartist.umd.js dist/chartist.umd.js",
