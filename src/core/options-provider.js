@@ -40,7 +40,7 @@ export function optionsProvider(options, responsiveOptions, eventEmitter) {
   }
 
   if(!window.matchMedia) {
-    throw 'window.matchMedia not found! Make sure you\'re using a polyfill.';
+    throw new Error('window.matchMedia not found! Make sure you\'re using a polyfill.');
   } else if(responsiveOptions) {
     responsiveOptions.forEach((responsiveOption) => {
       const mql = window.matchMedia(responsiveOption[0]);

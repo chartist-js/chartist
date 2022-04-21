@@ -37,6 +37,10 @@ export function deserialize(data) {
     return data;
   }
 
+  if(data === 'NaN') {
+    return NaN;
+  }
+
   data = Object.keys(escapingMap)
     .reduce((result, key) => replaceAll(result, escapingMap[key], key), data);
 

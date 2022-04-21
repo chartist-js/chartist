@@ -1,5 +1,6 @@
 import '../styles/chartist.scss';
 import { BarChart } from './bar';
+import {AutoScaleAxis} from '../axes/axes';
 
 export default {
   title: 'BarChart',
@@ -51,6 +52,31 @@ export function Default() {
       seriesBarDistance: 15
     }]
   ]);
+
+  return root
+}
+
+export function SimpleGrid() {
+  const root = document.createElement('div');
+
+  new BarChart(root, {
+    series: [[
+      {x: 1, y: 1},
+      {x: 3, y: 5}
+    ]]
+  }, {
+    axisX: {
+      type: AutoScaleAxis,
+      onlyInteger: true
+    },
+    axisY: {
+      type: AutoScaleAxis,
+      onlyInteger: true
+    }
+  }).on('created', () => {
+    console.log(document.querySelectorAll('g.ct-grids line.ct-grid.ct-horizontal').length)
+    console.log(document.querySelectorAll('g.ct-grids line.ct-grid.ct-vertical').length)
+  });
 
   return root
 }
