@@ -35,7 +35,7 @@
   "style": "./src/styles/chartist.scss",
   "main": "./src/index.js",
   "publishConfig": {
-    "style": "./dist/chartist.css",
+    "style": "./dist/index.css",
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
     "exports": {
@@ -50,7 +50,7 @@
     "LICENSE-MIT"
   ],
   "scripts": {
-    "build:styles": "./scripts/styles.js src/styles/chartist.scss dist",
+    "build:styles": "./scripts/styles.js",
     "build": "rollup -c & pnpm build:styles",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
@@ -70,32 +70,25 @@
     "@storybook/addon-controls": "^6.4.22",
     "@storybook/addon-docs": "^6.4.22",
     "@storybook/html": "^6.4.22",
-    "@storybook/preset-scss": "^1.0.3",
     "@swc/core": "^1.2.165",
     "@swc/helpers": "^0.3.8",
     "@swc/jest": "^0.2.20",
     "@testing-library/jest-dom": "^5.16.4",
-    "autoprefixer": "^10.4.4",
     "babel-eslint": "^7.1.0",
-    "babel-loader": "^8.2.4",
     "browserslist": "^4.20.2",
-    "chokidar": "^3.5.3",
     "commitizen": "^4.2.4",
-    "css-loader": "^5.0.0",
     "cssnano": "^5.1.7",
     "del-cli": "^4.0.1",
     "eslint": "^8.12.0",
-    "fs-promise": "^0.5.0",
     "inquirer": "^8.0.0",
     "jest": "^27.5.1",
-    "node-sass": "^7.0.1",
     "postcss": "^8.4.12",
+    "postcss-preset-env": "^7.4.3",
     "rollup": "^2.70.1",
     "rollup-plugin-swc": "^0.2.1",
-    "sass": "^1.50.0",
+    "sass": "^1.50.1",
     "sass-loader": "^10.0.0",
-    "simple-git-hooks": "^2.7.0",
-    "style-loader": "^2.0.0"
+    "simple-git-hooks": "^2.7.0"
   },
   "readme": ""
 }
