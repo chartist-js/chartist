@@ -14,12 +14,14 @@ specifiers:
   '@swc/helpers': ^0.3.8
   '@swc/jest': ^0.2.20
   '@testing-library/jest-dom': ^5.16.4
+  '@types/faker': ^5.5.8
   babel-eslint: ^7.1.0
   browserslist: ^4.20.2
   commitizen: ^4.2.4
   cssnano: ^5.1.7
   del-cli: ^4.0.1
   eslint: ^8.12.0
+  faker: ^5.5.3
   inquirer: ^8.0.0
   jest: ^27.5.1
   postcss: ^8.4.12
@@ -44,12 +46,14 @@ devDependencies:
   '@swc/helpers': 0.3.8
   '@swc/jest': 0.2.20_@swc+core@1.2.165
   '@testing-library/jest-dom': 5.16.4
+  '@types/faker': 5.5.9
   babel-eslint: 7.2.3
   browserslist: 4.20.2
   commitizen: 4.2.4_@swc+core@1.2.165
   cssnano: 5.1.7_postcss@8.4.12
   del-cli: 4.0.1
   eslint: 8.13.0
+  faker: 5.5.3
   inquirer: 8.2.2
   jest: 27.5.1
   postcss: 8.4.12
@@ -4166,6 +4170,10 @@ packages:
     resolution: {integrity: sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==}
     dev: true
 
+  /@types/faker/5.5.9:
+    resolution: {integrity: sha512-uCx6mP3UY5SIO14XlspxsGjgaemrxpssJI0Ol+GfhxtcKpv9pgRZYsS4eeKeHVLje6Qtc8lGszuBI461+gVZBA==}
+    dev: true
+
   /@types/glob/7.2.0:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
@@ -7325,6 +7333,10 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    dev: true
+
+  /faker/5.5.3:
+    resolution: {integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==}
     dev: true
 
   /fast-deep-equal/3.1.3:
