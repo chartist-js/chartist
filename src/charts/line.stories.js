@@ -1,6 +1,6 @@
+import 'chartist-dev/styles';
 import faker from 'faker'
-import '../styles/chartist.scss';
-import { LineChart, AutoScaleAxis, Interpolation, Svg, easings } from '..';
+import { LineChart, AutoScaleAxis, Interpolation, Svg, easings } from 'chartist-dev';
 
 export default {
   title: 'LineChart',

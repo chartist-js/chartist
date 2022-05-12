@@ -1,5 +1,5 @@
-import '../styles/chartist.scss';
-import { BarChart, AutoScaleAxis, Svg, getMultiValue } from '..';
+import 'chartist-dev/styles';
+import { BarChart, AutoScaleAxis, Svg, getMultiValue } from 'chartist-dev';
 
 export default {
   title: 'BarChart',

@@ -1,3 +1,7 @@
+const path = require('path');
+
+const isCompatMode = process.env.CHARTIST_COMPAT === 'true'
+
 module.exports = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
@@ -16,6 +20,13 @@ module.exports = {
         'sass-loader'
       ].map(require.resolve)
     });
+
+    config.resolve.alias['chartist-dev/styles$'] = isCompatMode
+      ? 'chartist/dist/chartist.css'
+      : path.resolve(__dirname, '..', 'src', 'styles', 'chartist.scss');
+    config.resolve.alias['chartist-dev$'] = isCompatMode
+      ? path.resolve(__dirname, '..', 'test', 'compat.js')
+      : path.resolve(__dirname, '..', 'src');
 
     return config;
   },

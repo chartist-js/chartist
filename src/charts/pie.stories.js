@@ -1,5 +1,5 @@
-import '../styles/chartist.scss';
-import { PieChart } from '..';
+import 'chartist-dev/styles';
+import { PieChart } from 'chartist-dev';
 
 export default {
   title: 'PieChart',
