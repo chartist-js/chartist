@@ -1,4 +1,4 @@
-import {addMockWrapper, mockDom, destroyMockDom} from '../../test/mock';
+import {addMockWrapper, mockDom, destroyMockDom} from '../../test/mock/dom';
 import {createSvg, createGrid, createGridBackground, normalizePadding} from './creation';
 import {EventEmitter} from '../event/event-emitter';
 import {Svg} from '../svg/svg';

@@ -453,7 +453,7 @@ export function PathAnimation() {
     showPoint: false,
     fullWidth: true
   }).on('draw', (data) => {
-    if(data.type === 'line' || data.type === 'area') {
+    if (!process.env.STORYBOOK_STORYSHOTS && (data.type === 'line' || data.type === 'area')) {
       data.element.animate({
         d: {
           begin: 2000 * data.index,

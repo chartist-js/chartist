@@ -25,7 +25,7 @@ module.exports = {
       ? 'chartist/dist/chartist.css'
       : path.resolve(__dirname, '..', 'src', 'styles', 'chartist.scss');
     config.resolve.alias['chartist-dev$'] = isCompatMode
-      ? path.resolve(__dirname, '..', 'test', 'compat.js')
+      ? path.resolve(__dirname, '..', 'test', 'mock', 'compat.js')
       : path.resolve(__dirname, '..', 'src');
 
     return config;

@@ -11,6 +11,10 @@
       }
     }]
   },
+  "moduleNameMapper": {
+    "^chartist-dev$": "<rootDir>/src",
+    "^chartist-dev/styles$": "<rootDir>/test/mock/cssModule.js"
+  },
   "collectCoverage": true,
   "collectCoverageFrom": [
     "src/**/*.{js,jsx,ts,tsx}",

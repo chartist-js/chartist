@@ -5,7 +5,7 @@ import {
   addMockWrapper,
   destroyMockDom,
   mockDom,
-} from '../../test/mock';
+} from '../../test/mock/dom';
 
 describe('Charts', () => {
   describe('PieChart', () => {

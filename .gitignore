@@ -6,6 +6,7 @@ node_modules
 # builds
 package
 dist
+storybook-static
 
 # misc
 .DS_Store

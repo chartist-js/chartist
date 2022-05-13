@@ -8,7 +8,7 @@ import {
   mockDom,
   mockDomRects,
   destroyMockDomRects
-} from '../../test/mock';
+} from '../../test/mock/dom';
 
 describe('Charts', () => {
   describe('BarChart', () => {
