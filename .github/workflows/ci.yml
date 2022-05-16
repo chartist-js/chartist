@@ -1,0 +1,45 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stage:
+          - unit
+          - storyshots
+      fail-fast: false
+    name: ${{ matrix.stage }} tests
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.2.1
+        with:
+          version: 6
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Run tests
+        run: pnpm test:${{ matrix.stage }}
+      - name: Collect coverage
+        uses: codecov/codecov-action@v3
+        if: "success() && matrix.stage == 'unit'"
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: true
+      - name: Collect artifacts
+        uses: actions/upload-artifact@v3
+        if: "failure() && matrix.stage != 'unit'"
+        with:
+          name: Image snapshots (${{ matrix.stage }})
+          path: test/__image_snapshots__/

@@ -1,3 +1,4 @@
 {
-  "commit-msg": "pnpm commitlint --edit \"$1\""
+  "commit-msg": "pnpm commitlint --edit \"$1\"",
+  "pre-push": "pnpm test"
 }

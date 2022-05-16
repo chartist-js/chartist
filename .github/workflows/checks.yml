@@ -1,0 +1,34 @@
+name: Checks
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+jobs:
+  storybook:
+    runs-on: ubuntu-latest
+    name: storybook
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 6
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check storybook
+        run: pnpm build:storybook
+  editorconfig:
+    runs-on: ubuntu-latest
+    name: editorconfig
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Check editorconfig
+        uses: editorconfig-checker/action-editorconfig-checker@v1

@@ -1,7 +1,7 @@
 # Contributing to chartist-js
 
- - [Issues and Bugs](#issue)
- - [Submission Guidelines](#submit)
+- [Issues and Bugs](#issue)
+- [Submission Guidelines](#submit)
 
 ## <a name="issue"></a> Found an Issue?
 
