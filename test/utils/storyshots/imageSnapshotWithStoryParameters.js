@@ -95,10 +95,6 @@ export function imageSnapshotWithStoryParameters(config) {
         currentViewport,
       }
 
-      if (currentViewport) {
-        context.id += `&${currentViewport}`
-      }
-
       await test(options)
 
       context.id = originalId

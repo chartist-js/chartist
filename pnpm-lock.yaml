@@ -11,6 +11,7 @@ specifiers:
   '@storybook/addon-docs': ^6.4.22
   '@storybook/addon-storyshots': ^6.4.22
   '@storybook/addon-storyshots-puppeteer': ^6.4.22
+  '@storybook/addon-viewport': ^6.4.22
   '@storybook/html': ^6.4.22
   '@swc/core': ^1.2.165
   '@swc/helpers': ^0.3.8
@@ -50,6 +51,7 @@ devDependencies:
   '@storybook/addon-docs': 6.4.22_7fd729fae3ed30395c91a6c3899e19ab
   '@storybook/addon-storyshots': 6.4.22_eslint@8.13.0+jest@27.5.1
   '@storybook/addon-storyshots-puppeteer': 6.4.22_ee73af2950fdda0cdee7b156fb6cc3b7
+  '@storybook/addon-viewport': 6.4.22
   '@storybook/html': 6.4.22_@babel+core@7.17.9+eslint@8.13.0
   '@swc/core': 1.2.165
   '@swc/helpers': 0.3.8
@@ -2580,6 +2582,32 @@ packages:
       - webpack
       - webpack-cli
       - webpack-command
+    dev: true
+
+  /@storybook/addon-viewport/6.4.22:
+    resolution: {integrity: sha512-6jk0z49LemeTblez5u2bYXYr6U+xIdLbywe3G283+PZCBbEDE6eNYy2d2HDL+LbCLbezJBLYPHPalElphjJIcw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      '@storybook/addons': 6.4.22
+      '@storybook/api': 6.4.22
+      '@storybook/client-logger': 6.4.22
+      '@storybook/components': 6.4.22
+      '@storybook/core-events': 6.4.22
+      '@storybook/theming': 6.4.22
+      core-js: 3.21.1
+      global: 4.4.0
+      memoizerific: 1.11.3
+      prop-types: 15.8.1
+      regenerator-runtime: 0.13.9
+    transitivePeerDependencies:
+      - '@types/react'
     dev: true
 
   /@storybook/addons/6.4.22:
@@ -5240,7 +5268,7 @@ packages:
     dev: true
 
   /babel-plugin-syntax-jsx/6.18.0:
-    resolution: {integrity: sha1-CvMqmm4Tyno/1QaeYtew9Y0NiUY=}
+    resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
     dev: true
 
   /babel-preset-current-node-syntax/1.0.1_@babel+core@7.17.9:

@@ -72,6 +72,7 @@
     "@storybook/addon-docs": "^6.4.22",
     "@storybook/addon-storyshots": "^6.4.22",
     "@storybook/addon-storyshots-puppeteer": "^6.4.22",
+    "@storybook/addon-viewport": "^6.4.22",
     "@storybook/html": "^6.4.22",
     "@swc/core": "^1.2.165",
     "@swc/helpers": "^0.3.8",

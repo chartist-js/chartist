@@ -1,5 +1,6 @@
 import 'chartist-dev/styles';
 import { BarChart, AutoScaleAxis, Svg, getMultiValue } from 'chartist-dev';
+import { Viewport } from '../../test/utils/storyshots/viewport';
 
 export default {
   title: 'BarChart',
@@ -254,6 +255,12 @@ export function Adaptive() {
   return root
 }
 
+Adaptive.parameters = {
+  storyshots: {
+    viewports: [Viewport.Default, Viewport.Tablet, Viewport.MobileLandscape, Viewport.Mobile],
+  }
+}
+
 export function OverlappingBarsOnMobile() {
   const root = document.createElement('div');
 
@@ -277,6 +284,12 @@ export function OverlappingBarsOnMobile() {
   ]);
 
   return root
+}
+
+OverlappingBarsOnMobile.parameters = {
+  storyshots: {
+    viewports: [Viewport.Default, Viewport.Mobile],
+  }
 }
 
 export function PeakCircles() {
