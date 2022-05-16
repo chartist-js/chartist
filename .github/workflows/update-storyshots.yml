@@ -2,6 +2,7 @@ name: Update storyshots
 on: workflow_dispatch
 jobs:
   update-storyshots:
+    runs-on: ubuntu-latest
     name: storyshots
     steps:
       - name: Checkout the repository
@@ -23,9 +24,10 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: Updated image snapshots
+          name: Updated storyshots
           path: test/__image_snapshots__/
   update-legacy-storyshots:
+    runs-on: ubuntu-latest
     name: legacy storyshots
     steps:
       - name: Checkout the repository
@@ -49,5 +51,5 @@ jobs:
         uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: Updated image snapshots
+          name: Updated legacy storyshots
           path: test/__image_snapshots__/
