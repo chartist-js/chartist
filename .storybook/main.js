@@ -1,6 +1,6 @@
 const path = require('path');
 
-const isCompatMode = process.env.CHARTIST_COMPAT === 'true'
+const isCompatMode = process.env.CHARTIST_COMPAT === 'true';
 
 module.exports = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
@@ -10,16 +10,13 @@ module.exports = {
     '@storybook/addon-actions',
     '@storybook/addon-viewport'
   ],
-  webpackFinal: async (config) => {
+  webpackFinal: async config => {
     config.module.rules.push({
       test: /\.scss$/,
       sideEffects: true,
-      use: [
-        'style-loader',
-        'css-loader',
-        'postcss-loader',
-        'sass-loader'
-      ].map(require.resolve)
+      use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'].map(
+        require.resolve
+      )
     });
 
     config.resolve.alias['chartist-dev/styles$'] = isCompatMode
@@ -30,5 +27,5 @@ module.exports = {
       : path.resolve(__dirname, '..', 'src');
 
     return config;
-  },
+  }
 };

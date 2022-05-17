@@ -1,6 +1,6 @@
-import {precision as globalPrecision} from './globals';
+import { precision as globalPrecision } from './globals';
 
-export const EPSILON = 2.221E-16;
+export const EPSILON = 2.221e-16;
 
 /**
  * Calculate the order of magnitude for the chart scale
@@ -23,7 +23,7 @@ export function orderOfMagnitude(value) {
  * @return {Number} The projected data length in pixels
  */
 export function projectLength(axisLength, length, bounds) {
-  return length / bounds.range * axisLength;
+  return (length / bounds.range) * axisLength;
 }
 
 /**
@@ -47,12 +47,12 @@ export function roundWithPrecision(value, digits) {
  * @returns {Number} The smallest integer factor of the parameter num.
  */
 export function rho(num) {
-  if(num === 1) {
+  if (num === 1) {
     return num;
   }
 
   function gcd(p, q) {
-    if(p % q === 0) {
+    if (p % q === 0) {
       return q;
     } else {
       return gcd(q, p % q);
@@ -66,7 +66,7 @@ export function rho(num) {
   let x1 = 2;
   let x2 = 2;
   let divisor;
-  if(num % 2 === 0) {
+  if (num % 2 === 0) {
     return 2;
   }
 
@@ -74,7 +74,7 @@ export function rho(num) {
     x1 = f(x1) % num;
     x2 = f(f(x2)) % num;
     divisor = gcd(Math.abs(x1 - x2), num);
-  } while(divisor === 1);
+  } while (divisor === 1);
 
   return divisor;
 }
@@ -90,10 +90,10 @@ export function rho(num) {
  * @return {{x:Number, y:Number}} Coordinates of point on circumference
  */
 export function polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0;
+  const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
 
   return {
-    x: centerX + (radius * Math.cos(angleInRadians)),
-    y: centerY + (radius * Math.sin(angleInRadians))
+    x: centerX + radius * Math.cos(angleInRadians),
+    y: centerY + radius * Math.sin(angleInRadians)
   };
 }

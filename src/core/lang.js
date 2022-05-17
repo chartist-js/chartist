@@ -29,9 +29,11 @@ export function querySelector(query) {
  * @returns {boolean} Returns true if the object owns the specified property
  */
 export function safeHasProperty(object, property) {
-  return object !== null &&
+  return (
+    object !== null &&
     typeof object === 'object' &&
-    object.hasOwnProperty(property);
+    Reflect.has(object, property)
+  );
 }
 
 /**
@@ -76,7 +78,7 @@ export function getNumberOrUndefined(value) {
  * @return {String} Returns the passed number value with unit.
  */
 export function ensureUnit(value, unit) {
-  if(typeof value === 'number') {
+  if (typeof value === 'number') {
     value = value + unit;
   }
 
@@ -91,8 +93,8 @@ export function ensureUnit(value, unit) {
  * @return {Object} Returns an object containing the value as number and the unit as string.
  */
 export function quantity(input) {
-  if(typeof input === 'string') {
-    const match = (/^(\d+)\s*(.*)$/g).exec(input);
+  if (typeof input === 'string') {
+    const match = /^(\d+)\s*(.*)$/g.exec(input);
     return {
       value: +match[1],
       unit: match[2] || undefined
@@ -113,5 +115,5 @@ export function quantity(input) {
  */
 export function alphaNumerate(n) {
   // Limit to a-z
-  return String.fromCharCode(97 + n % 26);
+  return String.fromCharCode(97 + (n % 26));
 }

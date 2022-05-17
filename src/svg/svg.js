@@ -1,5 +1,5 @@
-import {namespaces, ensureUnit, quantity, extend} from '../core/core';
-import {SvgList} from './svg-list';
+import { namespaces, ensureUnit, quantity, extend } from '../core/core';
+import { SvgList } from './svg-list';
 
 /**
  * Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
@@ -13,32 +13,31 @@ import {SvgList} from './svg-list';
  * @param {Boolean} insertFirst If this param is set to true in conjunction with a parent element the newly created element will be added as first child element in the parent element
  */
 export class Svg {
-
   constructor(name, attributes, className, parent, insertFirst) {
     // If Svg is getting called with an SVG element we just return the wrapper
-    if(name instanceof Element) {
+    if (name instanceof Element) {
       this._node = name;
     } else {
       this._node = document.createElementNS(namespaces.svg, name);
 
       // If this is an SVG element created then custom namespace
-      if(name === 'svg') {
+      if (name === 'svg') {
         this.attr({
           'xmlns:ct': namespaces.ct
         });
       }
     }
 
-    if(attributes) {
+    if (attributes) {
       this.attr(attributes);
     }
 
-    if(className) {
+    if (className) {
       this.addClass(className);
     }
 
-    if(parent) {
-      if(insertFirst && parent._node.firstChild) {
+    if (parent) {
+      if (insertFirst && parent._node.firstChild) {
         parent._node.insertBefore(this._node, parent._node.firstChild);
       } else {
         parent._node.appendChild(this._node);
@@ -55,27 +54,33 @@ export class Svg {
    * @return {Object|String} The current wrapper object will be returned so it can be used for chaining or the attribute value if used as getter function.
    */
   attr(attributes, ns) {
-    if(typeof attributes === 'string') {
-      if(ns) {
+    if (typeof attributes === 'string') {
+      if (ns) {
         return this._node.getAttributeNS(ns, attributes);
       } else {
         return this._node.getAttribute(attributes);
       }
     }
 
-    Object.keys(attributes).forEach(function(key) {
-      // If the attribute value is undefined we can skip this one
-      if(attributes[key] === undefined) {
-        return;
-      }
+    Object.keys(attributes).forEach(
+      function (key) {
+        // If the attribute value is undefined we can skip this one
+        if (attributes[key] === undefined) {
+          return;
+        }
 
-      if(key.indexOf(':') !== -1) {
-        const namespacedAttribute = key.split(':');
-        this._node.setAttributeNS(namespaces[namespacedAttribute[0]], key, attributes[key]);
-      } else {
-        this._node.setAttribute(key, attributes[key]);
-      }
-    }.bind(this));
+        if (key.indexOf(':') !== -1) {
+          const namespacedAttribute = key.split(':');
+          this._node.setAttributeNS(
+            namespaces[namespacedAttribute[0]],
+            key,
+            attributes[key]
+          );
+        } else {
+          this._node.setAttribute(key, attributes[key]);
+        }
+      }.bind(this)
+    );
 
     return this;
   }
@@ -101,7 +106,9 @@ export class Svg {
    * @return {Svg} Returns a Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
    */
   parent() {
-    return this._node.parentNode instanceof SVGElement ? new Svg(this._node.parentNode) : null;
+    return this._node.parentNode instanceof SVGElement
+      ? new Svg(this._node.parentNode)
+      : null;
   }
 
   /**
@@ -112,7 +119,7 @@ export class Svg {
    */
   root() {
     let node = this._node;
-    while(node.nodeName !== 'svg') {
+    while (node.nodeName !== 'svg') {
       node = node.parentNode;
     }
     return new Svg(node);
@@ -165,7 +172,7 @@ export class Svg {
   foreignObject(content, attributes, className, insertFirst) {
     // If content is string then we convert it to DOM
     // TODO: Handle case where content is not a string nor a DOM Node
-    if(typeof content === 'string') {
+    if (typeof content === 'string') {
       const container = document.createElement('div');
       container.innerHTML = content;
       content = container.firstChild;
@@ -176,7 +183,12 @@ export class Svg {
 
     // Creating the foreignObject without required extension attribute (as described here
     // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
-    const fnObj = this.elem('foreignObject', attributes, className, insertFirst);
+    const fnObj = this.elem(
+      'foreignObject',
+      attributes,
+      className,
+      insertFirst
+    );
 
     // Add content to foreignObjectElement
     fnObj._node.appendChild(content);
@@ -203,7 +215,7 @@ export class Svg {
    * @return {Svg} The same wrapper object that got emptied
    */
   empty() {
-    while(this._node.firstChild) {
+    while (this._node.firstChild) {
       this._node.removeChild(this._node.firstChild);
     }
 
@@ -242,7 +254,7 @@ export class Svg {
    * @return {Svg} The wrapper of the appended object
    */
   append(element, insertFirst) {
-    if(insertFirst && this._node.firstChild) {
+    if (insertFirst && this._node.firstChild) {
       this._node.insertBefore(element._node, this._node.firstChild);
     } else {
       this._node.appendChild(element._node);
@@ -258,7 +270,9 @@ export class Svg {
    * @return {Array} A list of classes or an empty array if there are no classes on the current element
    */
   classes() {
-    return this._node.getAttribute('class') ? this._node.getAttribute('class').trim().split(/\s+/) : [];
+    return this._node.getAttribute('class')
+      ? this._node.getAttribute('class').trim().split(/\s+/)
+      : [];
   }
 
   /**
@@ -269,12 +283,14 @@ export class Svg {
    * @return {Svg} The wrapper of the current element
    */
   addClass(names) {
-    this._node.setAttribute('class',
+    this._node.setAttribute(
+      'class',
       this.classes()
         .concat(names.trim().split(/\s+/))
-        .filter(function(elem, pos, self) {
+        .filter(function (elem, pos, self) {
           return self.indexOf(elem) === pos;
-        }).join(' ')
+        })
+        .join(' ')
     );
 
     return this;
@@ -290,8 +306,12 @@ export class Svg {
   removeClass(names) {
     const removedClasses = names.trim().split(/\s+/);
 
-    this._node.setAttribute('class',
-      this.classes().filter((name) => removedClasses.indexOf(name) === -1).join(' '));
+    this._node.setAttribute(
+      'class',
+      this.classes()
+        .filter(name => removedClasses.indexOf(name) === -1)
+        .join(' ')
+    );
 
     return this;
   }
@@ -332,23 +352,23 @@ export class Svg {
    * **An animations object could look like this:**
    * ```javascript
    * element.animate({
- *   opacity: {
- *     dur: 1000,
- *     from: 0,
- *     to: 1
- *   },
- *   x1: {
- *     dur: '1000ms',
- *     from: 100,
- *     to: 200,
- *     easing: 'easeOutQuart'
- *   },
- *   y1: {
- *     dur: '2s',
- *     from: 0,
- *     to: 100
- *   }
- * });
+   *   opacity: {
+   *     dur: 1000,
+   *     from: 0,
+   *     to: 1
+   *   },
+   *   x1: {
+   *     dur: '1000ms',
+   *     from: 100,
+   *     to: 200,
+   *     easing: 'easeOutQuart'
+   *   },
+   *   y1: {
+   *     dur: '2s',
+   *     from: 0,
+   *     to: 100
+   *   }
+   * });
    * ```
    * **Automatic unit conversion**
    * For the `dur` and the `begin` animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.
@@ -369,12 +389,11 @@ export class Svg {
    * @return {Svg} The current element where the animation was added
    */
   animate(animations, guided, eventEmitter) {
-    if(guided === undefined) {
+    if (guided === undefined) {
       guided = true;
     }
 
-    Object.keys(animations).forEach((attribute) => {
-
+    Object.keys(animations).forEach(attribute => {
       const createAnimate = (animationDefinition, createGuided) => {
         const attributeProperties = {};
         let animationEasing;
@@ -382,11 +401,12 @@ export class Svg {
 
         // Check if an easing is specified in the definition object and delete it from the object as it will not
         // be part of the animate element attributes.
-        if(animationDefinition.easing) {
+        if (animationDefinition.easing) {
           // If already an easing Bézier curve array we take it or we lookup a easing array in the Easing object
-          animationEasing = animationDefinition.easing instanceof Array ?
-            animationDefinition.easing :
-            easings[animationDefinition.easing];
+          animationEasing =
+            animationDefinition.easing instanceof Array
+              ? animationDefinition.easing
+              : easings[animationDefinition.easing];
           delete animationDefinition.easing;
         }
 
@@ -394,14 +414,14 @@ export class Svg {
         animationDefinition.begin = ensureUnit(animationDefinition.begin, 'ms');
         animationDefinition.dur = ensureUnit(animationDefinition.dur, 'ms');
 
-        if(animationEasing) {
+        if (animationEasing) {
           animationDefinition.calcMode = 'spline';
           animationDefinition.keySplines = animationEasing.join(' ');
           animationDefinition.keyTimes = '0;1';
         }
 
         // Adding "fill: freeze" if we are in guided mode and set initial attribute values
-        if(createGuided) {
+        if (createGuided) {
           animationDefinition.fill = 'freeze';
           // Animated property on our element should already be set to the animation from value in guided mode
           attributeProperties[attribute] = animationDefinition.from;
@@ -413,11 +433,17 @@ export class Svg {
           animationDefinition.begin = 'indefinite';
         }
 
-        const animate = this.elem('animate', extend({
-          attributeName: attribute
-        }, animationDefinition));
+        const animate = this.elem(
+          'animate',
+          extend(
+            {
+              attributeName: attribute
+            },
+            animationDefinition
+          )
+        );
 
-        if(createGuided) {
+        if (createGuided) {
           // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
           setTimeout(() => {
             // If beginElement fails we set the animated attribute to the end position and remove the animate element
@@ -425,7 +451,7 @@ export class Svg {
             // the browser. (Currently FF 34 does not support animate elements in foreignObjects)
             try {
               animate._node.beginElement();
-            } catch(err) {
+            } catch (err) {
               // Set animated attribute to current animated value
               attributeProperties[attribute] = animationDefinition.to;
               this.attr(attributeProperties);
@@ -435,7 +461,7 @@ export class Svg {
           }, timeout);
         }
 
-        if(eventEmitter) {
+        if (eventEmitter) {
           animate._node.addEventListener('beginEvent', () =>
             eventEmitter.emit('animationBegin', {
               element: this,
@@ -446,7 +472,7 @@ export class Svg {
         }
 
         animate._node.addEventListener('endEvent', () => {
-          if(eventEmitter) {
+          if (eventEmitter) {
             eventEmitter.emit('animationEnd', {
               element: this,
               animate: animate._node,
@@ -454,7 +480,7 @@ export class Svg {
             });
           }
 
-          if(createGuided) {
+          if (createGuided) {
             // Set animated attribute to current animated value
             attributeProperties[attribute] = animationDefinition.to;
             this.attr(attributeProperties);
@@ -465,9 +491,10 @@ export class Svg {
       };
 
       // If current attribute is an array of definition objects we create an animate for each and disable guided mode
-      if(animations[attribute] instanceof Array) {
-        animations[attribute]
-          .forEach((animationDefinition) => createAnimate(animationDefinition, false));
+      if (animations[attribute] instanceof Array) {
+        animations[attribute].forEach(animationDefinition =>
+          createAnimate(animationDefinition, false)
+        );
       } else {
         createAnimate(animations[attribute], guided);
       }
@@ -485,7 +512,10 @@ export class Svg {
  * @return {Boolean} True of false if the feature is supported or not
  */
 export function isSupported(feature) {
-  return document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#' + feature, '1.1');
+  return document.implementation.hasFeature(
+    'http://www.w3.org/TR/SVG11/feature#' + feature,
+    '1.1'
+  );
 }
 
 /**

@@ -1,4 +1,4 @@
-import Chartist from 'chartist'
+import Chartist from 'chartist';
 
 export const {
   Bar: BarChart,
@@ -8,8 +8,6 @@ export const {
   Svg,
   Interpolation,
   getMultiValue
-} = Chartist
+} = Chartist;
 
-export const {
-  Easing: easings
-} = Svg
+export const { Easing: easings } = Svg;

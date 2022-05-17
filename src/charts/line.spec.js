@@ -1,8 +1,8 @@
-import {AutoScaleAxis, FixedScaleAxis} from '../axes/axes';
-import {LineChart} from './line';
+import { AutoScaleAxis, FixedScaleAxis } from '../axes/axes';
+import { LineChart } from './line';
 import * as Interpolation from '../interpolation/interpolation';
-import {namespaces} from '../core/globals';
-import {deserialize} from '../core/data';
+import { namespaces } from '../core/globals';
+import { deserialize } from '../core/data';
 import {
   addMockWrapper,
   destroyMockDom,
@@ -19,15 +19,20 @@ describe('Charts', () => {
     let data;
 
     function createChart() {
-      return new Promise((resolve) => {
-        fixture = addMockWrapper('<div class="ct-chart ct-golden-section"></div>');
-        const { wrapper } = fixture
-        chart = new LineChart(wrapper.querySelector('.ct-chart'), data, options)
-          .on('created', () => {
-            resolve();
-            chart.off('created');
-          });
-      })
+      return new Promise(resolve => {
+        fixture = addMockWrapper(
+          '<div class="ct-chart ct-golden-section"></div>'
+        );
+        const { wrapper } = fixture;
+        chart = new LineChart(
+          wrapper.querySelector('.ct-chart'),
+          data,
+          options
+        ).on('created', () => {
+          resolve();
+          chart.off('created');
+        });
+      });
     }
 
     beforeEach(() => {
@@ -44,10 +49,12 @@ describe('Charts', () => {
     describe('grids', () => {
       beforeEach(() => {
         data = {
-          series: [[
-            {x: 1, y: 1},
-            {x: 3, y: 5}
-          ]]
+          series: [
+            [
+              { x: 1, y: 1 },
+              { x: 3, y: 5 }
+            ]
+          ]
         };
         options = {
           axisX: {
@@ -70,32 +77,46 @@ describe('Charts', () => {
       it('should draw grid lines', async () => {
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(3);
-        expect(fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-vertical').length).toBe(5);
+        expect(
+          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-horizontal')
+            .length
+        ).toBe(3);
+        expect(
+          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-vertical')
+            .length
+        ).toBe(5);
       });
 
       it('should draw grid background', async () => {
         options.showGridBackground = true;
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('.ct-grids .ct-grid-background').length).toBe(1);
+        expect(
+          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid-background')
+            .length
+        ).toBe(1);
       });
 
       it('should not draw grid background if option set to false', async () => {
         options.showGridBackground = false;
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('.ct-grids .ct-grid-background').length).toBe(0);
+        expect(
+          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid-background')
+            .length
+        ).toBe(0);
       });
     });
 
     describe('AxisY position tests', () => {
       beforeEach(() => {
         data = {
-          series: [[
-            {x: 1, y: 1},
-            {x: 3, y: 5}
-          ]]
+          series: [
+            [
+              { x: 1, y: 1 },
+              { x: 3, y: 5 }
+            ]
+          ]
         };
         options = {};
       });
@@ -108,8 +129,14 @@ describe('Charts', () => {
         };
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-label.ct-vertical'))
-          .forEach((element) => expect(element.getAttribute('class')).toBe('ct-label ct-vertical ct-start'));
+        Array.from(
+          fixture.wrapper.querySelectorAll('.ct-label.ct-vertical')
+        ).forEach(element =>
+          expect(element).toHaveAttribute(
+            'class',
+            'ct-label ct-vertical ct-start'
+          )
+        );
       });
 
       it('should have ct-end class if position is any other value than start', async () => {
@@ -120,18 +147,26 @@ describe('Charts', () => {
         };
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-label.ct-vertical'))
-          .forEach((element) => expect(element.getAttribute('class')).toBe('ct-label ct-vertical ct-end'));
+        Array.from(
+          fixture.wrapper.querySelectorAll('.ct-label.ct-vertical')
+        ).forEach(element =>
+          expect(element).toHaveAttribute(
+            'class',
+            'ct-label ct-vertical ct-end'
+          )
+        );
       });
     });
 
     describe('ct:value attribute', () => {
       it('should contain x and y value for each datapoint', async () => {
         data = {
-          series: [[
-            {x: 1, y: 2},
-            {x: 3, y: 4}
-          ]]
+          series: [
+            [
+              { x: 1, y: 2 },
+              { x: 3, y: 4 }
+            ]
+          ]
         };
         options = {
           axisX: {
@@ -147,11 +182,13 @@ describe('Charts', () => {
 
       it('should render values that are zero', async () => {
         data = {
-          series: [[
-            {x: 0, y: 1},
-            {x: 1, y: 0},
-            {x: 0, y: 0}
-          ]]
+          series: [
+            [
+              { x: 0, y: 1 },
+              { x: 1, y: 0 },
+              { x: 0, y: 0 }
+            ]
+          ]
         };
         options = {
           axisX: {
@@ -176,16 +213,24 @@ describe('Charts', () => {
         data = {
           labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'],
           series: [
-            [5, 2, 4, {
-              value: 2,
-              meta: meta
-            }, 0]
+            [
+              5,
+              2,
+              4,
+              {
+                value: 2,
+                meta: meta
+              },
+              0
+            ]
           ]
         };
         await createChart();
 
         const points = fixture.wrapper.querySelectorAll('.ct-point');
-        expect(deserialize(points[3].getAttributeNS(namespaces.ct, 'meta'))).toEqual(meta);
+        expect(
+          deserialize(points[3].getAttributeNS(namespaces.ct, 'meta'))
+        ).toEqual(meta);
       });
 
       it('should render meta data correctly with mixed value array and different normalized data length', async () => {
@@ -196,16 +241,24 @@ describe('Charts', () => {
         data = {
           labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           series: [
-            [5, 2, 4, {
-              value: 2,
-              meta: meta
-            }, 0]
+            [
+              5,
+              2,
+              4,
+              {
+                value: 2,
+                meta: meta
+              },
+              0
+            ]
           ]
         };
         await createChart();
 
         const points = fixture.wrapper.querySelectorAll('.ct-point');
-        expect(deserialize(points[3].getAttributeNS(namespaces.ct, 'meta'))).toEqual(meta);
+        expect(
+          deserialize(points[3].getAttributeNS(namespaces.ct, 'meta'))
+        ).toEqual(meta);
       });
 
       it('should render meta data correctly with mixed value array and mixed series notation', async () => {
@@ -217,16 +270,27 @@ describe('Charts', () => {
         data = {
           labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           series: [
-            [5, 2, 4, {
-              value: 2,
-              meta: valueMeta
-            }, 0],
-            {
-              meta: seriesMeta,
-              data: [5, 2, {
+            [
+              5,
+              2,
+              4,
+              {
                 value: 2,
                 meta: valueMeta
-              }, 0]
+              },
+              0
+            ],
+            {
+              meta: seriesMeta,
+              data: [
+                5,
+                2,
+                {
+                  value: 2,
+                  meta: valueMeta
+                },
+                0
+              ]
             }
           ]
         };
@@ -234,21 +298,24 @@ describe('Charts', () => {
 
         expect(
           deserialize(
-            fixture.wrapper.querySelectorAll('.ct-series-a .ct-point')[3]
+            fixture.wrapper
+              .querySelectorAll('.ct-series-a .ct-point')[3]
               .getAttributeNS(namespaces.ct, 'meta')
           )
         ).toEqual(valueMeta);
 
         expect(
           deserialize(
-            fixture.wrapper.querySelector('.ct-series-b')
+            fixture.wrapper
+              .querySelector('.ct-series-b')
               .getAttributeNS(namespaces.ct, 'meta')
           )
         ).toEqual(seriesMeta);
 
         expect(
           deserialize(
-            fixture.wrapper.querySelectorAll('.ct-series-b .ct-point')[2]
+            fixture.wrapper
+              .querySelectorAll('.ct-series-b .ct-point')[2]
               .getAttributeNS(namespaces.ct, 'meta')
           )
         ).toEqual(valueMeta);
@@ -260,7 +327,18 @@ describe('Charts', () => {
         data = {
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           series: [
-            [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+            [
+              NaN,
+              15,
+              0,
+              null,
+              2,
+              3,
+              4,
+              undefined,
+              { value: 1, meta: 'meta data' },
+              null
+            ]
           ]
         };
         options = {
@@ -269,20 +347,64 @@ describe('Charts', () => {
 
         await createChart();
 
-        chart.on('draw', (context) => {
-          if(context.type === 'line') {
-            expect(context.path.pathElements.map((pathElement) => {
-              return {
-                command: pathElement.command,
-                data: pathElement.data
-              };
-            })).toEqual([
-              {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+        chart.on('draw', context => {
+          if (context.type === 'line') {
+            expect(
+              context.path.pathElements.map(pathElement => {
+                return {
+                  command: pathElement.command,
+                  data: pathElement.data
+                };
+              })
+            ).toEqual([
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 8,
+                  value: { x: undefined, y: 1 },
+                  meta: 'meta data'
+                }
+              }
             ]);
           }
         });
@@ -292,7 +414,18 @@ describe('Charts', () => {
         data = {
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           series: [
-            [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+            [
+              NaN,
+              15,
+              0,
+              null,
+              2,
+              3,
+              4,
+              undefined,
+              { value: 1, meta: 'meta data' },
+              null
+            ]
           ]
         };
         options = {
@@ -301,22 +434,66 @@ describe('Charts', () => {
 
         await createChart();
 
-        chart.on('draw', (context) => {
-          if(context.type === 'line') {
-            expect(context.path.pathElements.map((pathElement) => {
-              return {
-                command: pathElement.command,
-                data: pathElement.data
-              };
-            })).toEqual([
-              {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+        chart.on('draw', context => {
+          if (context.type === 'line') {
+            expect(
+              context.path.pathElements.map(pathElement => {
+                return {
+                  command: pathElement.command,
+                  data: pathElement.data
+                };
+              })
+            ).toEqual([
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
               // Cardinal should create Line path segment if only one connection
-              {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
               // Cardinal should create Curve path segment for 2 or more connections
-              {command: 'C', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'C', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 8,
+                  value: { x: undefined, y: 1 },
+                  meta: 'meta data'
+                }
+              }
             ]);
           }
         });
@@ -326,7 +503,18 @@ describe('Charts', () => {
         data = {
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           series: [
-            [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+            [
+              NaN,
+              15,
+              0,
+              null,
+              2,
+              3,
+              4,
+              undefined,
+              { value: 1, meta: 'meta data' },
+              null
+            ]
           ]
         };
         options = {
@@ -335,22 +523,66 @@ describe('Charts', () => {
 
         await createChart();
 
-        chart.on('draw', (context) => {
-          if(context.type === 'line') {
-            expect(context.path.pathElements.map((pathElement) => {
-              return {
-                command: pathElement.command,
-                data: pathElement.data
-              };
-            })).toEqual([
-              {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
+        chart.on('draw', context => {
+          if (context.type === 'line') {
+            expect(
+              context.path.pathElements.map(pathElement => {
+                return {
+                  command: pathElement.command,
+                  data: pathElement.data
+                };
+              })
+            ).toEqual([
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
               // Monotone cubic should create Line path segment if only one connection
-              {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
               // Monotone cubic should create Curve path segment for 2 or more connections
-              {command: 'C', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'C', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 8,
+                  value: { x: undefined, y: 1 },
+                  meta: 'meta data'
+                }
+              }
             ]);
           }
         });
@@ -360,7 +592,18 @@ describe('Charts', () => {
         data = {
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           series: [
-            [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+            [
+              NaN,
+              15,
+              0,
+              null,
+              2,
+              3,
+              4,
+              undefined,
+              { value: 1, meta: 'meta data' },
+              null
+            ]
           ]
         };
         options = {
@@ -369,20 +612,64 @@ describe('Charts', () => {
 
         await createChart();
 
-        chart.on('draw', (context) => {
-          if(context.type === 'line') {
-            expect(context.path.pathElements.map((pathElement) => {
-              return {
-                command: pathElement.command,
-                data: pathElement.data
-              };
-            })).toEqual([
-              {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
-              {command: 'C', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
-              {command: 'C', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'C', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+        chart.on('draw', context => {
+          if (context.type === 'line') {
+            expect(
+              context.path.pathElements.map(pathElement => {
+                return {
+                  command: pathElement.command,
+                  data: pathElement.data
+                };
+              })
+            ).toEqual([
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'C',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 8,
+                  value: { x: undefined, y: 1 },
+                  meta: 'meta data'
+                }
+              }
             ]);
           }
         });
@@ -392,7 +679,18 @@ describe('Charts', () => {
         data = {
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           series: [
-            [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+            [
+              NaN,
+              15,
+              0,
+              null,
+              2,
+              3,
+              4,
+              undefined,
+              { value: 1, meta: 'meta data' },
+              null
+            ]
           ]
         };
         options = {
@@ -401,23 +699,88 @@ describe('Charts', () => {
 
         await createChart();
 
-        chart.on('draw', (context) => {
-          if(context.type === 'line') {
-            expect(context.path.pathElements.map((pathElement) => {
-              return {
-                command: pathElement.command,
-                data: pathElement.data
-              };
-            })).toEqual([
-              {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+        chart.on('draw', context => {
+          if (context.type === 'line') {
+            expect(
+              context.path.pathElements.map(pathElement => {
+                return {
+                  command: pathElement.command,
+                  data: pathElement.data
+                };
+              })
+            ).toEqual([
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 8,
+                  value: { x: undefined, y: 1 },
+                  meta: 'meta data'
+                }
+              }
             ]);
           }
         });
@@ -427,7 +790,18 @@ describe('Charts', () => {
         data = {
           labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
           series: [
-            [NaN, 15, 0, null, 2, 3, 4, undefined, {value: 1, meta: 'meta data'}, null]
+            [
+              NaN,
+              15,
+              0,
+              null,
+              2,
+              3,
+              4,
+              undefined,
+              { value: 1, meta: 'meta data' },
+              null
+            ]
           ]
         };
         options = {
@@ -438,23 +812,88 @@ describe('Charts', () => {
 
         await createChart();
 
-        chart.on('draw', (context) => {
-          if(context.type === 'line') {
-            expect(context.path.pathElements.map((pathElement) => {
-              return {
-                command: pathElement.command,
-                data: pathElement.data
-              };
-            })).toEqual([
-              {command: 'M', data: {valueIndex: 1, value: {x: undefined, y: 15}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 2, value: {x: undefined, y: 0}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 4, value: {x: undefined, y: 2}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 5, value: {x: undefined, y: 3}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'L', data: {valueIndex: 6, value: {x: undefined, y: 4}, meta: undefined}},
-              {command: 'M', data: {valueIndex: 8, value: {x: undefined, y: 1}, meta: 'meta data'}}
+        chart.on('draw', context => {
+          if (context.type === 'line') {
+            expect(
+              context.path.pathElements.map(pathElement => {
+                return {
+                  command: pathElement.command,
+                  data: pathElement.data
+                };
+              })
+            ).toEqual([
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 1,
+                  value: { x: undefined, y: 15 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 2,
+                  value: { x: undefined, y: 0 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 4,
+                  value: { x: undefined, y: 2 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 5,
+                  value: { x: undefined, y: 3 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'L',
+                data: {
+                  valueIndex: 6,
+                  value: { x: undefined, y: 4 },
+                  meta: undefined
+                }
+              },
+              {
+                command: 'M',
+                data: {
+                  valueIndex: 8,
+                  value: { x: undefined, y: 1 },
+                  meta: 'meta data'
+                }
+              }
             ]);
           }
         });
@@ -472,9 +911,15 @@ describe('Charts', () => {
       it('should render without NaN values and points', async () => {
         await createChart();
 
-        expect(document.querySelector('.ct-line').getAttribute('d')).toBe('M50,15');
-        expect(document.querySelector('.ct-point').getAttribute('x1')).toBe('50');
-        expect(document.querySelector('.ct-point').getAttribute('x2')).toBe('50.01');
+        expect(document.querySelector('.ct-line')).toHaveAttribute(
+          'd',
+          'M50,15'
+        );
+        expect(document.querySelector('.ct-point')).toHaveAttribute('x1', '50');
+        expect(document.querySelector('.ct-point')).toHaveAttribute(
+          'x2',
+          '50.01'
+        );
       });
     });
 
@@ -482,7 +927,9 @@ describe('Charts', () => {
       it('should render empty grid with no data', async () => {
         await createChart();
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
 
       it('should render empty grid with only labels', async () => {
@@ -492,9 +939,13 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
         // Find exactly as many horizontal grid lines as labels were specified (Step Axis)
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(data.labels.length);
+        expect(
+          document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length
+        ).toBe(data.labels.length);
       });
 
       it('should generate labels and render empty grid with only series in data', async () => {
@@ -508,10 +959,13 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
         // Should generate the labels using the largest series count
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length)
-          .toBe(Math.max(...data.series.map((series) => series.length)));
+        expect(
+          document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length
+        ).toBe(Math.max(...data.series.map(series => series.length)));
       });
 
       it('should render empty grid with no data and specified high low', async () => {
@@ -525,7 +979,9 @@ describe('Charts', () => {
         await createChart();
 
         // Find first and last label
-        const labels = document.querySelectorAll('.ct-labels .ct-label.ct-vertical');
+        const labels = document.querySelectorAll(
+          '.ct-labels .ct-label.ct-vertical'
+        );
         const firstLabel = labels[0];
         const lastLabel = labels[labels.length - 1];
 
@@ -541,24 +997,28 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
     });
 
     describe('x1 and x2 attribute', () => {
       it('should contain just a datapoint', async () => {
         data = {
-          series: [[
-            {x: 1, y: 2}
-          ]]
+          series: [[{ x: 1, y: 2 }]]
         };
         options = {
           fullWidth: true
         };
         await createChart();
 
-        expect(document.querySelector('.ct-point').getAttribute('x1')).not.toBe('NaN');
-        expect(document.querySelector('.ct-point').getAttribute('x2')).not.toBe('NaN');
+        expect(document.querySelector('.ct-point').getAttribute('x1')).not.toBe(
+          'NaN'
+        );
+        expect(document.querySelector('.ct-point').getAttribute('x2')).not.toBe(
+          'NaN'
+        );
       });
     });
   });

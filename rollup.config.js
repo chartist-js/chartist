@@ -6,29 +6,29 @@ const extensions = ['.js', '.ts', '.tsx'];
 const external = _ => /node_modules/.test(_) && !/@swc\/helpers/.test(_);
 const plugins = targets => [
   nodeResolve({
-    extensions,
+    extensions
   }),
   swc({
     jsc: {
       parser: {
         syntax: 'typescript',
-        tsx: true,
+        tsx: true
       },
       transform: {
         react: {
-          useBuiltins: true,
-        },
+          useBuiltins: true
+        }
       },
-      externalHelpers: true,
+      externalHelpers: true
     },
     env: {
-      targets,
+      targets
     },
     module: {
-      type: 'es6',
+      type: 'es6'
     },
-    sourceMaps: true,
-  }),
+    sourceMaps: true
+  })
 ];
 
 export default [
@@ -40,8 +40,8 @@ export default [
       file: pkg.publishConfig.main,
       format: 'cjs',
       exports: 'named',
-      sourcemap: true,
-    },
+      sourcemap: true
+    }
   },
   {
     input: pkg.main,
@@ -50,7 +50,7 @@ export default [
     output: {
       file: pkg.publishConfig.module,
       format: 'es',
-      sourcemap: true,
-    },
-  },
+      sourcemap: true
+    }
+  }
 ];

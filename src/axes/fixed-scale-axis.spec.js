@@ -1,4 +1,4 @@
-import {FixedScaleAxis} from './fixed-scale-axis';
+import { FixedScaleAxis } from './fixed-scale-axis';
 
 describe('Axes', () => {
   describe('FixedScaleAxis', () => {
@@ -13,7 +13,11 @@ describe('Axes', () => {
         rectOffset: 'x1'
       };
       const data = [
-        [{x: 1, y: 10}, {x: 2, y: 5}, {x: 3, y: -5}]
+        [
+          { x: 1, y: 10 },
+          { x: 2, y: 5 },
+          { x: 3, y: -5 }
+        ]
       ];
       const chartRect = {
         padding: {
@@ -30,7 +34,7 @@ describe('Axes', () => {
       const options = {
         offset: 40,
         position: 'start',
-        labelOffset: {'x': 0, 'y': 0},
+        labelOffset: { x: 0, y: 0 },
         showLabel: true,
         showGrid: true,
         scaleMinSpace: 20,

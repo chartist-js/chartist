@@ -1,7 +1,12 @@
-import {addMockWrapper, mockDom, destroyMockDom} from '../../test/mock/dom';
-import {createSvg, createGrid, createGridBackground, normalizePadding} from './creation';
-import {EventEmitter} from '../event/event-emitter';
-import {Svg} from '../svg/svg';
+import { addMockWrapper, mockDom, destroyMockDom } from '../../test/mock/dom';
+import {
+  createSvg,
+  createGrid,
+  createGridBackground,
+  normalizePadding
+} from './creation';
+import { EventEmitter } from '../event/event-emitter';
+import { Svg } from '../svg/svg';
 
 describe('Core', () => {
   describe('Creation', () => {
@@ -39,8 +44,12 @@ describe('Core', () => {
         expect(svg1.classes()).toContain('ct-fish-bar');
         expect(svg2).toBeDefined();
         expect(svg2.classes()).toContain('ct-snake-bar');
-        expect(container).not.toContainElement(document.querySelector('.ct-fish-bar'));
-        expect(container).toContainElement(document.querySelector('.ct-snake-bar'));
+        expect(container).not.toContainElement(
+          document.querySelector('.ct-fish-bar')
+        );
+        expect(container).toContainElement(
+          document.querySelector('.ct-snake-bar')
+        );
       });
     });
 
@@ -65,18 +74,31 @@ describe('Core', () => {
       });
 
       function onCreated(fn, done) {
-        eventEmitter.addEventHandler('draw', (grid) => {
+        eventEmitter.addEventHandler('draw', grid => {
           fn(grid);
           done();
         });
-        createGrid(position, 1, axis, offset, length, group, classes, eventEmitter);
+        createGrid(
+          position,
+          1,
+          axis,
+          offset,
+          length,
+          group,
+          classes,
+          eventEmitter
+        );
       }
 
-      it('should add single grid line to group', (done) => {
-        onCreated(() => expect(group.querySelectorAll('line').svgElements.length).toBe(1), done);
+      it('should add single grid line to group', done => {
+        onCreated(
+          () =>
+            expect(group.querySelectorAll('line').svgElements.length).toBe(1),
+          done
+        );
       });
 
-      it('should draw line', (done) => {
+      it('should draw line', done => {
         onCreated(() => {
           const line = group.querySelector('line');
           expect(line.attr('x1')).toBe('10');
@@ -86,7 +108,7 @@ describe('Core', () => {
         }, done);
       });
 
-      it('should draw horizontal line', (done) => {
+      it('should draw horizontal line', done => {
         axis.units.pos = 'y';
         axis.counterUnits.pos = 'x';
         onCreated(() => {
@@ -121,14 +143,14 @@ describe('Core', () => {
       });
 
       function onCreated(fn, done) {
-        eventEmitter.addEventHandler('draw', (data) => {
+        eventEmitter.addEventHandler('draw', data => {
           fn(data);
           done();
         });
         createGridBackground(group, chartRect, className, eventEmitter);
       }
 
-      it('should add rect', (done) => {
+      it('should add rect', done => {
         onCreated(() => {
           const rects = group.querySelectorAll('rect').svgElements;
           expect(rects.length).toBe(1);
@@ -141,8 +163,8 @@ describe('Core', () => {
         }, done);
       });
 
-      it('should pass grid to event', (done) => {
-        onCreated((data) => {
+      it('should pass grid to event', done => {
+        onCreated(data => {
           expect(data.type).toBe('gridBackground');
           const rect = data.element;
           expect(rect.attr('x')).toBe('5');
@@ -189,10 +211,15 @@ describe('Core', () => {
       });
 
       it('should normalize partial padding object with specified fallback', () => {
-        expect(normalizePadding({
-          top: 5,
-          left: 5
-        }, 10)).toEqual({
+        expect(
+          normalizePadding(
+            {
+              top: 5,
+              left: 5
+            },
+            10
+          )
+        ).toEqual({
           top: 5,
           right: 10,
           bottom: 10,
@@ -201,12 +228,17 @@ describe('Core', () => {
       });
 
       it('should not modify complete padding object', () => {
-        expect(normalizePadding({
-          top: 5,
-          right: 5,
-          bottom: 5,
-          left: 5
-        }, 10)).toEqual({
+        expect(
+          normalizePadding(
+            {
+              top: 5,
+              right: 5,
+              bottom: 5,
+              left: 5
+            },
+            10
+          )
+        ).toEqual({
           top: 5,
           right: 5,
           bottom: 5,

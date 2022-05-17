@@ -1,5 +1,5 @@
-import {isFalseyButZero} from '../core/lang';
-import {createGrid, createLabel} from '../core/creation';
+import { isFalseyButZero } from '../core/lang';
+import { createGrid, createLabel } from '../core/creation';
 
 export const axisUnits = {
   x: {
@@ -26,16 +26,23 @@ export class Axis {
     this.counterUnits = units === axisUnits.x ? axisUnits.y : axisUnits.x;
     this.options = options;
     this.chartRect = chartRect;
-    this.axisLength = chartRect[this.units.rectEnd] - chartRect[this.units.rectStart];
+    this.axisLength =
+      chartRect[this.units.rectEnd] - chartRect[this.units.rectStart];
     this.gridOffset = chartRect[this.units.rectOffset];
     this.ticks = ticks;
   }
 
-  projectValue(value, index, data) {
-    throw new Error('Base axis can\'t be instantiated!');
+  projectValue() {
+    throw new Error("Base axis can't be instantiated!");
   }
 
-  createGridAndLabels(gridGroup, labelGroup, useForeignObject, chartOptions, eventEmitter) {
+  createGridAndLabels(
+    gridGroup,
+    labelGroup,
+    useForeignObject,
+    chartOptions,
+    eventEmitter
+  ) {
     const axisOptions = chartOptions['axis' + this.units.pos.toUpperCase()];
     const projectedValues = this.ticks.map(this.projectValue.bind(this));
     const labelValues = this.ticks.map(axisOptions.labelInterpolationFnc);
@@ -49,7 +56,7 @@ export class Axis {
       // TODO: Find better solution for solving this problem
       // Calculate how much space we have available for the label
       let labelLength;
-      if(projectedValues[index + 1]) {
+      if (projectedValues[index + 1]) {
         // If we still have one label ahead, we can calculate the distance to the next tick / label
         labelLength = projectedValues[index + 1] - projectedValue;
       } else {
@@ -60,55 +67,83 @@ export class Axis {
       }
 
       // Skip grid lines and labels where interpolated label values are falsey (except for 0)
-      if(isFalseyButZero(labelValues[index]) && labelValues[index] !== '') {
+      if (isFalseyButZero(labelValues[index]) && labelValues[index] !== '') {
         return;
       }
 
       // Transform to global coordinates using the chartRect
       // We also need to set the label offset for the createLabel function
-      if(this.units.pos === 'x') {
+      if (this.units.pos === 'x') {
         projectedValue = this.chartRect.x1 + projectedValue;
         labelOffset.x = chartOptions.axisX.labelOffset.x;
 
         // If the labels should be positioned in start position (top side for vertical axis) we need to set a
         // different offset as for positioned with end (bottom)
-        if(chartOptions.axisX.position === 'start') {
-          labelOffset.y = this.chartRect.padding.top +
+        if (chartOptions.axisX.position === 'start') {
+          labelOffset.y =
+            this.chartRect.padding.top +
             chartOptions.axisX.labelOffset.y +
             (useForeignObject ? 5 : 20);
         } else {
-          labelOffset.y = this.chartRect.y1 +
+          labelOffset.y =
+            this.chartRect.y1 +
             chartOptions.axisX.labelOffset.y +
             (useForeignObject ? 5 : 20);
         }
       } else {
         projectedValue = this.chartRect.y1 - projectedValue;
-        labelOffset.y = chartOptions.axisY.labelOffset.y - (useForeignObject ? labelLength : 0);
+        labelOffset.y =
+          chartOptions.axisY.labelOffset.y -
+          (useForeignObject ? labelLength : 0);
 
         // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
         // different offset as for positioned with end (right side)
-        if(chartOptions.axisY.position === 'start') {
-          labelOffset.x = useForeignObject ?
-          this.chartRect.padding.left + chartOptions.axisY.labelOffset.x :
-          this.chartRect.x1 - 10;
+        if (chartOptions.axisY.position === 'start') {
+          labelOffset.x = useForeignObject
+            ? this.chartRect.padding.left + chartOptions.axisY.labelOffset.x
+            : this.chartRect.x1 - 10;
         } else {
-          labelOffset.x = this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
+          labelOffset.x =
+            this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
         }
       }
 
-      if(axisOptions.showGrid) {
-        createGrid(projectedValue, index, this, this.gridOffset, this.chartRect[this.counterUnits.len](), gridGroup, [
-          chartOptions.classNames.grid,
-          chartOptions.classNames[this.units.dir]
-        ], eventEmitter);
+      if (axisOptions.showGrid) {
+        createGrid(
+          projectedValue,
+          index,
+          this,
+          this.gridOffset,
+          this.chartRect[this.counterUnits.len](),
+          gridGroup,
+          [
+            chartOptions.classNames.grid,
+            chartOptions.classNames[this.units.dir]
+          ],
+          eventEmitter
+        );
       }
 
-      if(axisOptions.showLabel) {
-        createLabel(projectedValue, labelLength, index, labelValues, this, axisOptions.offset, labelOffset, labelGroup, [
-          chartOptions.classNames.label,
-          chartOptions.classNames[this.units.dir],
-          (axisOptions.position === 'start' ? chartOptions.classNames[axisOptions.position] : chartOptions.classNames.end)
-        ], useForeignObject, eventEmitter);
+      if (axisOptions.showLabel) {
+        createLabel(
+          projectedValue,
+          labelLength,
+          index,
+          labelValues,
+          this,
+          axisOptions.offset,
+          labelOffset,
+          labelGroup,
+          [
+            chartOptions.classNames.label,
+            chartOptions.classNames[this.units.dir],
+            axisOptions.position === 'start'
+              ? chartOptions.classNames[axisOptions.position]
+              : chartOptions.classNames.end
+          ],
+          useForeignObject,
+          eventEmitter
+        );
       }
     });
   }

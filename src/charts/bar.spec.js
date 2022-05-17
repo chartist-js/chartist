@@ -1,7 +1,7 @@
-import {AutoScaleAxis} from '../axes/axes';
-import {BarChart} from './bar';
-import {namespaces} from '../core/globals';
-import {deserialize} from '../core/data';
+import { AutoScaleAxis } from '../axes/axes';
+import { BarChart } from './bar';
+import { namespaces } from '../core/globals';
+import { deserialize } from '../core/data';
 import {
   addMockWrapper,
   destroyMockDom,
@@ -18,15 +18,20 @@ describe('Charts', () => {
     let data;
 
     function createChart() {
-      return new Promise((resolve) => {
-        fixture = addMockWrapper('<div class="ct-chart ct-golden-section"></div>');
-        const { wrapper } = fixture
-        chart = new BarChart(wrapper.querySelector('.ct-chart'), data, options)
-          .on('created', () => {
-            resolve();
-            chart.off('created');
-          });
-      })
+      return new Promise(resolve => {
+        fixture = addMockWrapper(
+          '<div class="ct-chart ct-golden-section"></div>'
+        );
+        const { wrapper } = fixture;
+        chart = new BarChart(
+          wrapper.querySelector('.ct-chart'),
+          data,
+          options
+        ).on('created', () => {
+          resolve();
+          chart.off('created');
+        });
+      });
     }
 
     beforeEach(() => {
@@ -43,10 +48,12 @@ describe('Charts', () => {
     describe('grids', () => {
       beforeEach(() => {
         data = {
-          series: [[
-            {x: 1, y: 1},
-            {x: 3, y: 5}
-          ]]
+          series: [
+            [
+              { x: 1, y: 1 },
+              { x: 3, y: 5 }
+            ]
+          ]
         };
         options = {
           axisX: {
@@ -71,33 +78,48 @@ describe('Charts', () => {
       it('should draw grid lines', async () => {
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('g.ct-grids line.ct-grid.ct-horizontal').length).toBe(3);
-        expect(fixture.wrapper.querySelectorAll('g.ct-grids line.ct-grid.ct-vertical').length).toBe(6);
+        expect(
+          fixture.wrapper.querySelectorAll(
+            'g.ct-grids line.ct-grid.ct-horizontal'
+          ).length
+        ).toBe(3);
+        expect(
+          fixture.wrapper.querySelectorAll(
+            'g.ct-grids line.ct-grid.ct-vertical'
+          ).length
+        ).toBe(6);
       });
 
       it('should draw grid background', async () => {
         options.showGridBackground = true;
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('g.ct-grids rect.ct-grid-background').length).toBe(1);
+        expect(
+          fixture.wrapper.querySelectorAll('g.ct-grids rect.ct-grid-background')
+            .length
+        ).toBe(1);
       });
 
       it('should not draw grid background if option set to false', async () => {
         options.showGridBackground = false;
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('g.ct-grids rect.ct-grid-background').length).toBe(0);
+        expect(
+          fixture.wrapper.querySelectorAll('g.ct-grids rect.ct-grid-background')
+            .length
+        ).toBe(0);
       });
-
     });
 
     describe('ct:value attribute', () => {
       it('should contain x and y value for each bar', async () => {
         data = {
-          series: [[
-            {x: 1, y: 2},
-            {x: 3, y: 4}
-          ]]
+          series: [
+            [
+              { x: 1, y: 2 },
+              { x: 3, y: 4 }
+            ]
+          ]
         };
         options = {
           axisX: {
@@ -113,11 +135,13 @@ describe('Charts', () => {
 
       it('should render values that are zero', async () => {
         data = {
-          series: [[
-            {x: 0, y: 1},
-            {x: 2, y: 0},
-            {x: 0, y: 0}
-          ]]
+          series: [
+            [
+              { x: 0, y: 1 },
+              { x: 2, y: 0 },
+              { x: 0, y: 0 }
+            ]
+          ]
         };
         options = {
           axisX: {
@@ -142,16 +166,24 @@ describe('Charts', () => {
         data = {
           labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu'],
           series: [
-            [5, 2, 4, {
-              value: 2,
-              meta: meta
-            }, 0]
+            [
+              5,
+              2,
+              4,
+              {
+                value: 2,
+                meta: meta
+              },
+              0
+            ]
           ]
         };
         await createChart();
 
         const bar = fixture.wrapper.querySelectorAll('.ct-bar')[3];
-        expect(deserialize(bar.getAttributeNS(namespaces.ct, 'meta'))).toEqual(meta);
+        expect(deserialize(bar.getAttributeNS(namespaces.ct, 'meta'))).toEqual(
+          meta
+        );
       });
 
       it('should render meta data correctly with mixed value array and different normalized data length', async () => {
@@ -162,16 +194,24 @@ describe('Charts', () => {
         data = {
           labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           series: [
-            [5, 2, 4, {
-              value: 2,
-              meta: meta
-            }, 0]
+            [
+              5,
+              2,
+              4,
+              {
+                value: 2,
+                meta: meta
+              },
+              0
+            ]
           ]
         };
         await createChart();
 
         const bar = fixture.wrapper.querySelectorAll('.ct-bar')[3];
-        expect(deserialize(bar.getAttributeNS(namespaces.ct, 'meta'))).toEqual(meta);
+        expect(deserialize(bar.getAttributeNS(namespaces.ct, 'meta'))).toEqual(
+          meta
+        );
       });
 
       it('should render meta data correctly with mixed value array and mixed series notation', async () => {
@@ -183,16 +223,27 @@ describe('Charts', () => {
         data = {
           labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
           series: [
-            [5, 2, 4, {
-              value: 2,
-              meta: valueMeta
-            }, 0],
-            {
-              meta: seriesMeta,
-              data: [5, 2, {
+            [
+              5,
+              2,
+              4,
+              {
                 value: 2,
                 meta: valueMeta
-              }, 0]
+              },
+              0
+            ],
+            {
+              meta: seriesMeta,
+              data: [
+                5,
+                2,
+                {
+                  value: 2,
+                  meta: valueMeta
+                },
+                0
+              ]
             }
           ]
         };
@@ -200,21 +251,24 @@ describe('Charts', () => {
 
         expect(
           deserialize(
-            fixture.wrapper.querySelectorAll('.ct-series-a .ct-bar')[3]
+            fixture.wrapper
+              .querySelectorAll('.ct-series-a .ct-bar')[3]
               .getAttributeNS(namespaces.ct, 'meta')
           )
         ).toEqual(valueMeta);
 
         expect(
           deserialize(
-            fixture.wrapper.querySelector('.ct-series-b')
+            fixture.wrapper
+              .querySelector('.ct-series-b')
               .getAttributeNS(namespaces.ct, 'meta')
           )
         ).toEqual(seriesMeta);
 
         expect(
           deserialize(
-            fixture.wrapper.querySelectorAll('.ct-series-b .ct-bar')[2]
+            fixture.wrapper
+              .querySelectorAll('.ct-series-b .ct-bar')[2]
               .getAttributeNS(namespaces.ct, 'meta')
           )
         ).toEqual(valueMeta);
@@ -228,7 +282,9 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
 
       it('should render empty grid with only labels', async () => {
@@ -238,9 +294,13 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
         // Find exactly as many horizontal grid lines as labels were specified (Step Axis)
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length).toBe(data.labels.length);
+        expect(
+          document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length
+        ).toBe(data.labels.length);
       });
 
       it('should generate labels and render empty grid with only series in data', async () => {
@@ -254,10 +314,13 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
         // Should generate the labels using the largest series count
-        expect(document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length)
-          .toBe(Math.max(...data.series.map((series) => series.length)));
+        expect(
+          document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length
+        ).toBe(Math.max(...data.series.map(series => series.length)));
       });
 
       it('should render empty grid with no data and specified high low', async () => {
@@ -270,7 +333,9 @@ describe('Charts', () => {
         await createChart();
 
         // Find first and last label
-        const labels = document.querySelectorAll('.ct-labels .ct-label.ct-vertical');
+        const labels = document.querySelectorAll(
+          '.ct-labels .ct-label.ct-vertical'
+        );
         const firstLabel = labels[0];
         const lastLabel = labels[labels.length - 1];
 
@@ -285,7 +350,9 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
 
       it('should render empty grid with no data and stackBars option', async () => {
@@ -295,7 +362,9 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
 
       it('should render empty grid with no data and horizontalBars option', async () => {
@@ -306,7 +375,9 @@ describe('Charts', () => {
 
         // Find at least one vertical grid line
         // TODO: In theory the axis should be created with ct-horizontal class
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
 
       it('should render empty grid with no data and distributeSeries option', async () => {
@@ -316,7 +387,9 @@ describe('Charts', () => {
         await createChart();
 
         // Find at least one vertical grid line
-        expect(document.querySelector('.ct-grids .ct-grid.ct-vertical')).toBeDefined();
+        expect(
+          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+        ).toBeDefined();
       });
     });
   });

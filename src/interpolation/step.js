@@ -1,5 +1,5 @@
-import {extend} from '../core/core';
-import {SvgPath} from '../svg/svg-path';
+import { extend } from '../core/core';
+import { SvgPath } from '../svg/svg-path';
 
 /**
  * Step interpolation will cause the line chart to move in steps rather than diagonal or smoothed lines. This interpolation will create additional points that will also be drawn when the `showPoint` option is enabled.
@@ -8,14 +8,14 @@ import {SvgPath} from '../svg/svg-path';
  *
  * @example
  * var chart = new Chartist.Line('.ct-chart', {
-   *   labels: [1, 2, 3, 4, 5],
-   *   series: [[1, 2, 8, 1, 7]]
-   * }, {
-   *   lineSmooth: Chartist.Interpolation.step({
-   *     postpone: true,
-   *     fillHoles: false
-   *   })
-   * });
+ *   labels: [1, 2, 3, 4, 5],
+ *   series: [[1, 2, 8, 1, 7]]
+ * }, {
+ *   lineSmooth: Chartist.Interpolation.step({
+ *     postpone: true,
+ *     fillHoles: false
+ *   })
+ * });
  *
  * @memberof Chartist.Interpolation
  * @param options
@@ -36,17 +36,17 @@ export function step(options) {
     let prevY;
     let prevData;
 
-    for(let i = 0; i < pathCoordinates.length; i += 2) {
+    for (let i = 0; i < pathCoordinates.length; i += 2) {
       const currX = pathCoordinates[i];
       const currY = pathCoordinates[i + 1];
       const currData = valueData[i / 2];
 
       // If the current point is also not a hole we can draw the step lines
-      if(currData.value !== undefined) {
-        if(prevData === undefined) {
+      if (currData.value !== undefined) {
+        if (prevData === undefined) {
           path.move(currX, currY, false, currData);
         } else {
-          if(options.postpone) {
+          if (options.postpone) {
             // If postponed we should draw the step line with the value of the previous value
             path.line(currX, prevY, false, prevData);
           } else {
@@ -60,7 +60,7 @@ export function step(options) {
         prevX = currX;
         prevY = currY;
         prevData = currData;
-      } else if(!options.fillHoles) {
+      } else if (!options.fillHoles) {
         prevX = prevY = prevData = undefined;
       }
     }

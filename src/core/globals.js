@@ -1,4 +1,3 @@
-
 /**
  * This object contains all namespaces used within Chartist.
  *
@@ -29,5 +28,5 @@ export let escapingMap = {
   '<': '&lt;',
   '>': '&gt;',
   '"': '&quot;',
-  '\'': '&#039;'
+  "'": '&#039;'
 };

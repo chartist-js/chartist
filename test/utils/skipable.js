@@ -5,5 +5,5 @@
  * @returns Skipable block definition methid.
  */
 export function skipable(fn, skip) {
-  return skip ? fn.skip : fn
+  return skip ? fn.skip : fn;
 }

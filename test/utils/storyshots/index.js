@@ -1,3 +1,3 @@
-export * from './initStoryshots'
-export * from './imageSnapshotWithStoryParameters'
-export * from './storybook'
+export * from './initStoryshots';
+export * from './imageSnapshotWithStoryParameters';
+export * from './storybook';

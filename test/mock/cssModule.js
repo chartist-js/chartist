@@ -2,9 +2,9 @@ const mock = new Proxy(
   {},
   {
     get() {
-      return ''
-    },
+      return '';
+    }
   }
-)
+);
 
-module.exports = mock
+module.exports = mock;

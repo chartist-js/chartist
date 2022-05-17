@@ -24,11 +24,11 @@ export class EventEmitter {
    */
   removeEventHandler(event, handler) {
     // Only do something if there are event handlers with this name existing
-    if(this.handlers[event]) {
+    if (this.handlers[event]) {
       // If handler is set we will look for a specific handler and only remove this
-      if(handler) {
+      if (handler) {
         this.handlers[event].splice(this.handlers[event].indexOf(handler), 1);
-        if(this.handlers[event].length === 0) {
+        if (this.handlers[event].length === 0) {
           delete this.handlers[event];
         }
       } else {
@@ -47,13 +47,13 @@ export class EventEmitter {
    */
   emit(event, data) {
     // Only do something if there are event handlers with this name existing
-    if(this.handlers[event]) {
-      this.handlers[event].forEach((handler) => handler(data));
+    if (this.handlers[event]) {
+      this.handlers[event].forEach(handler => handler(data));
     }
 
     // Emit event to star event handlers
-    if(this.handlers['*']) {
-      this.handlers['*'].forEach((starHandler) => starHandler(event, data));
+    if (this.handlers['*']) {
+      this.handlers['*'].forEach(starHandler => starHandler(event, data));
     }
   }
 }

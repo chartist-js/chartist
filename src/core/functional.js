@@ -5,7 +5,7 @@
  * @param {*} n This exact value will be returned by the noop function
  * @return {*} The same value that was provided to the n parameter
  */
-export const noop = (n) => n;
+export const noop = n => n;
 
 /**
  * Functional style helper to produce array with given length initialized with undefined values
@@ -14,7 +14,7 @@ export const noop = (n) => n;
  * @param length
  * @return {Array}
  */
-export const times = (length) => Array.from({length});
+export const times = length => Array.from({ length });
 
 /**
  * Sum helper to be used in reduce functions
@@ -46,5 +46,6 @@ export const sum = (previous, current) => previous + (current ? current : 0);
  * @return {Array}
  */
 export const serialMap = (array, callback) =>
-  times(Math.max(...array.map((element) => element.length)))
-    .map((inner, index) => callback(...array.map((element) => element[index])));
+  times(Math.max(...array.map(element => element.length))).map((inner, index) =>
+    callback(...array.map(element => element[index]))
+  );

@@ -1,4 +1,4 @@
-import {StepAxis} from './step-axis';
+import { StepAxis } from './step-axis';
 
 describe('Axes', () => {
   describe('StepAxis', () => {

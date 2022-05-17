@@ -1,4 +1,4 @@
-import {extend} from './extend';
+import { extend } from './extend';
 
 /**
  * Provides options handling functionality with callback for options changes triggered by responsive options and media query matches
@@ -18,16 +18,16 @@ export function optionsProvider(options, responsiveOptions, eventEmitter) {
     const previousOptions = currentOptions;
     currentOptions = extend({}, baseOptions);
 
-    if(responsiveOptions) {
-      responsiveOptions.forEach((responsiveOption) => {
+    if (responsiveOptions) {
+      responsiveOptions.forEach(responsiveOption => {
         const mql = window.matchMedia(responsiveOption[0]);
-        if(mql.matches) {
+        if (mql.matches) {
           currentOptions = extend(currentOptions, responsiveOption[1]);
         }
       });
     }
 
-    if(eventEmitter && mediaEvent) {
+    if (eventEmitter && mediaEvent) {
       eventEmitter.emit('optionsChanged', {
         previousOptions,
         currentOptions
@@ -36,13 +36,17 @@ export function optionsProvider(options, responsiveOptions, eventEmitter) {
   }
 
   function removeMediaQueryListeners() {
-    mediaQueryListeners.forEach((mql) => mql.removeListener(updateCurrentOptions));
+    mediaQueryListeners.forEach(mql =>
+      mql.removeListener(updateCurrentOptions)
+    );
   }
 
-  if(!window.matchMedia) {
-    throw new Error('window.matchMedia not found! Make sure you\'re using a polyfill.');
-  } else if(responsiveOptions) {
-    responsiveOptions.forEach((responsiveOption) => {
+  if (!window.matchMedia) {
+    throw new Error(
+      "window.matchMedia not found! Make sure you're using a polyfill."
+    );
+  } else if (responsiveOptions) {
+    responsiveOptions.forEach(responsiveOption => {
       const mql = window.matchMedia(responsiveOption[0]);
       mql.addListener(updateCurrentOptions);
       mediaQueryListeners.push(mql);

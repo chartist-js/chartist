@@ -9,26 +9,34 @@ export default {
 export function Default() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [5, 3, 4]
-  }, {
-    width: 100,
-    height: 100,
-    chartPadding: 10
-  });
+  new PieChart(
+    root,
+    {
+      series: [5, 3, 4]
+    },
+    {
+      width: 100,
+      height: 100,
+      chartPadding: 10
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function Labels() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    labels: ['A', 'B', 'C'],
-    series: [5, 8, 1]
-  }, {});
+  new PieChart(
+    root,
+    {
+      labels: ['A', 'B', 'C'],
+      series: [5, 8, 1]
+    },
+    {}
+  );
 
-  return root
+  return root;
 }
 
 export function LabelInterpolation() {
@@ -42,110 +50,139 @@ export function LabelInterpolation() {
     width: 100,
     height: 100,
     chartPadding: 10,
-    labelInterpolationFnc: (value) => `${Math.round(value / data.series.reduce(sum) * 100)}%`
+    labelInterpolationFnc: value =>
+      `${Math.round((value / data.series.reduce(sum)) * 100)}%`
   });
 
-  return root
+  return root;
 }
 
 export function StartAngle() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [5, 3, 4]
-  }, {
-    startAngle: 90
-  });
+  new PieChart(
+    root,
+    {
+      series: [5, 3, 4]
+    },
+    {
+      startAngle: 90
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function SmallSlices() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [0.001, 2]
-  }, {
-    width: 100,
-    height: 100,
-    chartPadding: 0
-  });
+  new PieChart(
+    root,
+    {
+      series: [0.001, 2]
+    },
+    {
+      width: 100,
+      height: 100,
+      chartPadding: 0
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function IgnoreEmptyValues() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [1, 2, 0, 4]
-  }, {
-    ignoreEmptyValues: true
-  });
+  new PieChart(
+    root,
+    {
+      series: [1, 2, 0, 4]
+    },
+    {
+      ignoreEmptyValues: true
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function Donut() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [5, 3, 4]
-  }, {
-    donut: true
-  });
+  new PieChart(
+    root,
+    {
+      series: [5, 3, 4]
+    },
+    {
+      donut: true
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function GaugeDonut() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [20, 10, 30, 40]
-  }, {
-    chartPadding: 50,
-    height: 500,
-    width: 500,
-    donut: true,
-    donutWidth: 60,
-    startAngle: 270,
-    total: 200,
-    showLabel: false
-  });
+  new PieChart(
+    root,
+    {
+      series: [20, 10, 30, 40]
+    },
+    {
+      chartPadding: 50,
+      height: 500,
+      width: 500,
+      donut: true,
+      donutWidth: 60,
+      startAngle: 270,
+      total: 200,
+      showLabel: false
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function RelativeDonutWidth() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [20, 10, 30, 40]
-  }, {
-    chartPadding: 50,
-    height: 500,
-    width: 500,
-    donut: true,
-    donutWidth: '25%',
-    showLabel: false
-  });
+  new PieChart(
+    root,
+    {
+      series: [20, 10, 30, 40]
+    },
+    {
+      chartPadding: 50,
+      height: 500,
+      width: 500,
+      donut: true,
+      donutWidth: '25%',
+      showLabel: false
+    }
+  );
 
-  return root
+  return root;
 }
 
 export function Solid() {
   const root = document.createElement('div');
 
-  new PieChart(root, {
-    series: [20, 10, 30, 40]
-  }, {
-    donut: true,
-    donutWidth: 60,
-    donutSolid: true,
-    startAngle: 270,
-    showLabel: true
-  });
+  new PieChart(
+    root,
+    {
+      series: [20, 10, 30, 40]
+    },
+    {
+      donut: true,
+      donutWidth: 60,
+      donutSolid: true,
+      startAngle: 270,
+      showLabel: true
+    }
+  );
 
-  return root
+  return root;
 }

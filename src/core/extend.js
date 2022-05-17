@@ -9,11 +9,15 @@
 export function extend(target = {}, ...sources) {
   target = target || {};
 
-  for(let i = 0; i < sources.length; i++) {
+  for (let i = 0; i < sources.length; i++) {
     const source = sources[i];
-    for(let prop in source) {
+    for (let prop in source) {
       const sourceProp = source[prop];
-      if(typeof sourceProp === 'object' && sourceProp !== null && !(sourceProp instanceof Array)) {
+      if (
+        typeof sourceProp === 'object' &&
+        sourceProp !== null &&
+        !(sourceProp instanceof Array)
+      ) {
         target[prop] = extend(target[prop], sourceProp);
       } else {
         target[prop] = sourceProp;

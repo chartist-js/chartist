@@ -1,5 +1,5 @@
-import {extend} from '../core/core';
-import {SvgPath} from '../svg/svg-path';
+import { extend } from '../core/core';
+import { SvgPath } from '../svg/svg-path';
 
 /**
  * Simple smoothing creates horizontal handles that are positioned with a fraction of the length between two data points. You can use the divisor option to specify the amount of smoothing.
@@ -10,14 +10,14 @@ import {SvgPath} from '../svg/svg-path';
  *
  * @example
  * var chart = new Chartist.Line('.ct-chart', {
-   *   labels: [1, 2, 3, 4, 5],
-   *   series: [[1, 2, 8, 1, 7]]
-   * }, {
-   *   lineSmooth: Chartist.Interpolation.simple({
-   *     divisor: 2,
-   *     fillHoles: false
-   *   })
-   * });
+ *   labels: [1, 2, 3, 4, 5],
+ *   series: [[1, 2, 8, 1, 7]]
+ * }, {
+ *   lineSmooth: Chartist.Interpolation.simple({
+ *     divisor: 2,
+ *     fillHoles: false
+ *   })
+ * });
  *
  *
  * @memberof Chartist.Interpolation
@@ -40,15 +40,14 @@ export function simple(options) {
     let prevY;
     let prevData;
 
-    for(let i = 0; i < pathCoordinates.length; i += 2) {
+    for (let i = 0; i < pathCoordinates.length; i += 2) {
       const currX = pathCoordinates[i];
       const currY = pathCoordinates[i + 1];
       const length = (currX - prevX) * d;
       const currData = valueData[i / 2];
 
-      if(currData.value !== undefined) {
-
-        if(prevData === undefined) {
+      if (currData.value !== undefined) {
+        if (prevData === undefined) {
           path.move(currX, currY, false, currData);
         } else {
           path.curve(
@@ -66,7 +65,7 @@ export function simple(options) {
         prevX = currX;
         prevY = currY;
         prevData = currData;
-      } else if(!options.fillHoles) {
+      } else if (!options.fillHoles) {
         prevX = prevY = prevData = undefined;
       }
     }

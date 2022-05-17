@@ -1,6 +1,6 @@
-import {Svg} from '../svg/svg';
-import {EventEmitter} from '../event/event-emitter';
-import {Axis, axisUnits} from './axis';
+import { Svg } from '../svg/svg';
+import { EventEmitter } from '../event/event-emitter';
+import { Axis, axisUnits } from './axis';
 
 describe('Axes', () => {
   describe('Axis', () => {
@@ -55,42 +55,66 @@ describe('Axes', () => {
     });
 
     it('should skip all grid lines and labels for interpolated value of null', () => {
-      chartOptions.axisX.labelInterpolationFnc =
-        (value, index) => index === 0 ? null : value;
+      chartOptions.axisX.labelInterpolationFnc = (value, index) =>
+        index === 0 ? null : value;
 
       const axis = new Axis();
       axis.initialize(axisUnits.x, chartRect, ticks, null);
-      axis.projectValue = (value) => value;
+      axis.projectValue = value => value;
 
-      axis.createGridAndLabels(gridGroup, labelGroup, true, chartOptions, eventEmitter);
+      axis.createGridAndLabels(
+        gridGroup,
+        labelGroup,
+        true,
+        chartOptions,
+        eventEmitter
+      );
       expect(gridGroup.querySelectorAll('.ct-grid').svgElements.length).toBe(1);
-      expect(labelGroup.querySelectorAll('.ct-label').svgElements.length).toBe(1);
+      expect(labelGroup.querySelectorAll('.ct-label').svgElements.length).toBe(
+        1
+      );
     });
 
     it('should skip all grid lines and labels for interpolated value of undefined', () => {
-      chartOptions.axisX.labelInterpolationFnc =
-        (value, index) => index === 0 ? undefined : value;
+      chartOptions.axisX.labelInterpolationFnc = (value, index) =>
+        index === 0 ? undefined : value;
 
       const axis = new Axis();
       axis.initialize(axisUnits.x, chartRect, ticks, null);
-      axis.projectValue = (value) => value;
+      axis.projectValue = value => value;
 
-      axis.createGridAndLabels(gridGroup, labelGroup, true, chartOptions, eventEmitter);
+      axis.createGridAndLabels(
+        gridGroup,
+        labelGroup,
+        true,
+        chartOptions,
+        eventEmitter
+      );
       expect(gridGroup.querySelectorAll('.ct-grid').svgElements.length).toBe(1);
-      expect(labelGroup.querySelectorAll('.ct-label').svgElements.length).toBe(1);
+      expect(labelGroup.querySelectorAll('.ct-label').svgElements.length).toBe(
+        1
+      );
     });
 
     it('should include all grid lines and labels for interpolated value of empty strings', () => {
-      chartOptions.axisX.labelInterpolationFnc =
-        (value, index) => index === 0 ? '' : value;
+      chartOptions.axisX.labelInterpolationFnc = (value, index) =>
+        index === 0 ? '' : value;
 
       const axis = new Axis();
       axis.initialize(axisUnits.x, chartRect, ticks, null);
-      axis.projectValue = (value) => value;
+      axis.projectValue = value => value;
 
-      axis.createGridAndLabels(gridGroup, labelGroup, true, chartOptions, eventEmitter);
+      axis.createGridAndLabels(
+        gridGroup,
+        labelGroup,
+        true,
+        chartOptions,
+        eventEmitter
+      );
       expect(gridGroup.querySelectorAll('.ct-grid').svgElements.length).toBe(2);
-      expect(labelGroup.querySelectorAll('.ct-label').svgElements.length).toBe(2);
+      expect(labelGroup.querySelectorAll('.ct-label').svgElements.length).toBe(
+        2
+      );
     });
   });
 });

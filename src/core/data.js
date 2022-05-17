@@ -1,8 +1,14 @@
-import {escapingMap} from './globals';
-import {replaceAll, safeHasProperty, getNumberOrUndefined} from './lang';
-import {times} from './functional';
-import {extend} from './extend';
-import {orderOfMagnitude, projectLength, roundWithPrecision, rho, EPSILON} from './math';
+import { escapingMap } from './globals';
+import { replaceAll, safeHasProperty, getNumberOrUndefined } from './lang';
+import { times } from './functional';
+import { extend } from './extend';
+import {
+  orderOfMagnitude,
+  projectLength,
+  roundWithPrecision,
+  rho,
+  EPSILON
+} from './math';
 
 /**
  * This function serializes arbitrary data to a string. In case of data that can't be easily converted to a string, this function will create a wrapper object and serialize the data using JSON.stringify. The outcoming string will always be escaped using Chartist.escapingMap.
@@ -13,16 +19,18 @@ import {orderOfMagnitude, projectLength, roundWithPrecision, rho, EPSILON} from 
  * @return {String}
  */
 export function serialize(data) {
-  if(data === null || data === undefined) {
+  if (data === null || data === undefined) {
     return data;
-  } else if(typeof data === 'number') {
+  } else if (typeof data === 'number') {
     data = '' + data;
-  } else if(typeof data === 'object') {
-    data = JSON.stringify({data: data});
+  } else if (typeof data === 'object') {
+    data = JSON.stringify({ data: data });
   }
 
-  return Object.keys(escapingMap)
-    .reduce((result, key) => replaceAll(result, key, escapingMap[key]), data);
+  return Object.keys(escapingMap).reduce(
+    (result, key) => replaceAll(result, key, escapingMap[key]),
+    data
+  );
 }
 
 /**
@@ -33,21 +41,24 @@ export function serialize(data) {
  * @return {String|Number|Object}
  */
 export function deserialize(data) {
-  if(typeof data !== 'string') {
+  if (typeof data !== 'string') {
     return data;
   }
 
-  if(data === 'NaN') {
+  if (data === 'NaN') {
     return NaN;
   }
 
-  data = Object.keys(escapingMap)
-    .reduce((result, key) => replaceAll(result, escapingMap[key], key), data);
+  data = Object.keys(escapingMap).reduce(
+    (result, key) => replaceAll(result, escapingMap[key], key),
+    data
+  );
 
   try {
     data = JSON.parse(data);
     data = data.data !== undefined ? data.data : data;
-  } catch(e) {
+  } catch (e) {
+    /* Ingore */
   }
 
   return data;
@@ -67,15 +78,21 @@ export function normalizeData(data, reverse, multi) {
   };
 
   // Check if we should generate some labels based on existing series data
-  output.normalized.series = getDataArray({
-    series: data.series || []
-  }, reverse, multi);
+  output.normalized.series = getDataArray(
+    {
+      series: data.series || []
+    },
+    reverse,
+    multi
+  );
 
   // If all elements of the normalized data array are arrays we're dealing with
   // multi series data and we need to find the largest series if they are un-even
-  if(output.normalized.series.every((value) => value instanceof Array)) {
+  if (output.normalized.series.every(value => value instanceof Array)) {
     // Getting the series with the the most elements
-    labelCount = Math.max(...output.normalized.series.map((series) => series.length));
+    labelCount = Math.max(
+      ...output.normalized.series.map(series => series.length)
+    );
   } else {
     // We're dealing with Pie data so we just take the normalized array length
     labelCount = output.normalized.series.length;
@@ -83,11 +100,13 @@ export function normalizeData(data, reverse, multi) {
 
   output.normalized.labels = (data.labels || []).slice();
   // Padding the labels to labelCount with empty strings
-  output.normalized.labels
-    .push(...times(Math.max(0, labelCount - output.normalized.labels.length))
-      .map(() => ''));
+  output.normalized.labels.push(
+    ...times(Math.max(0, labelCount - output.normalized.labels.length)).map(
+      () => ''
+    )
+  );
 
-  if(reverse) {
+  if (reverse) {
     reverseData(output.normalized);
   }
 
@@ -113,9 +132,11 @@ export function getMetaData(series, index) {
  * @returns {boolean} True if the value is considered a data hole
  */
 export function isDataHoleValue(value) {
-  return value === null ||
+  return (
+    value === null ||
     value === undefined ||
-    (typeof value === 'number' && isNaN(value));
+    (typeof value === 'number' && isNaN(value))
+  );
 }
 
 /**
@@ -127,10 +148,10 @@ export function isDataHoleValue(value) {
 export function reverseData(data) {
   data.labels.reverse();
   data.series.reverse();
-  for(let series of data.series) {
-    if(typeof(series) === 'object' && series.data !== undefined) {
+  for (let series of data.series) {
+    if (typeof series === 'object' && series.data !== undefined) {
       series.data.reverse();
-    } else if(series instanceof Array) {
+    } else if (series instanceof Array) {
       series.reverse();
     }
   }
@@ -149,38 +170,41 @@ export function getDataArray(data, reverse, multi) {
   // Recursively walks through nested arrays and convert string values to numbers and objects with value properties
   // to values. Check the tests in data core -> data normalization for a detailed specification of expected values
   function recursiveConvert(value) {
-    if(safeHasProperty(value, 'value')) {
+    if (safeHasProperty(value, 'value')) {
       // We are dealing with value object notation so we need to recurse on value property
       return recursiveConvert(value.value);
-    } else if(safeHasProperty(value, 'data')) {
+    } else if (safeHasProperty(value, 'data')) {
       // We are dealing with series object notation so we need to recurse on data property
       return recursiveConvert(value.data);
-    } else if(value instanceof Array) {
+    } else if (value instanceof Array) {
       // Data is of type array so we need to recurse on the series
       return value.map(recursiveConvert);
-    } else if(isDataHoleValue(value)) {
+    } else if (isDataHoleValue(value)) {
       // We're dealing with a hole in the data and therefore need to return undefined
       // We're also returning undefined for multi value output
       return undefined;
     } else {
       // We need to prepare multi value output (x and y data)
-      if(multi) {
+      if (multi) {
         const multiValue = {};
 
         // Single series value arrays are assumed to specify the Y-Axis value
         // For example: [1, 2] => [{x: undefined, y: 1}, {x: undefined, y: 2}]
         // If multi is a string then it's assumed that it specified which dimension should be filled as default
-        if(typeof multi === 'string') {
+        if (typeof multi === 'string') {
           multiValue[multi] = getNumberOrUndefined(value);
         } else {
           multiValue.y = getNumberOrUndefined(value);
         }
 
-        multiValue.x = value.hasOwnProperty('x') ? getNumberOrUndefined(value.x) : multiValue.x;
-        multiValue.y = value.hasOwnProperty('y') ? getNumberOrUndefined(value.y) : multiValue.y;
+        multiValue.x = safeHasProperty(value, 'x')
+          ? getNumberOrUndefined(value.x)
+          : multiValue.x;
+        multiValue.y = safeHasProperty(value, 'y')
+          ? getNumberOrUndefined(value.y)
+          : multiValue.y;
 
         return multiValue;
-
       } else {
         // We can return simple data
         return getNumberOrUndefined(value);
@@ -198,8 +222,10 @@ export function getDataArray(data, reverse, multi) {
  * @param value
  */
 export function isMultiValue(value) {
-  return typeof value === 'object' &&
-    (value.hasOwnProperty('x') || value.hasOwnProperty('y'));
+  return (
+    typeof value === 'object' &&
+    (Reflect.has(value, 'x') || Reflect.has(value, 'y'))
+  );
 }
 
 /**
@@ -211,7 +237,7 @@ export function isMultiValue(value) {
  * @returns {*}
  */
 export function getMultiValue(value, dimension = 'y') {
-  if(isMultiValue(value)) {
+  if (isMultiValue(value)) {
     return getNumberOrUndefined(value[dimension]);
   } else {
     return getNumberOrUndefined(value);
@@ -228,9 +254,9 @@ export function getMultiValue(value, dimension = 'y') {
  * @returns {*}
  */
 export function getSeriesOption(series, options, key) {
-  if(series.name && options.series && options.series[series.name]) {
+  if (series.name && options.series && options.series[series.name]) {
     const seriesOptions = options.series[series.name];
-    return seriesOptions.hasOwnProperty(key) ? seriesOptions[key] : options[key];
+    return Reflect.has(seriesOptions, key) ? seriesOptions[key] : options[key];
   } else {
     return options[key];
   }
@@ -271,22 +297,25 @@ export function splitIntoSegments(pathCoordinates, valueData, options) {
   const segments = [];
   let hole = true;
 
-  for(let i = 0; i < pathCoordinates.length; i += 2) {
+  for (let i = 0; i < pathCoordinates.length; i += 2) {
     // If this value is a "hole" we set the hole flag
-    if(getMultiValue(valueData[i / 2].value) === undefined) {
+    if (getMultiValue(valueData[i / 2].value) === undefined) {
       // if(valueData[i / 2].value === undefined) {
-      if(!options.fillHoles) {
+      if (!options.fillHoles) {
         hole = true;
       }
     } else {
-      if(options.increasingX && i >= 2 && pathCoordinates[i] <= pathCoordinates[i - 2]) {
+      if (
+        options.increasingX &&
+        i >= 2 &&
+        pathCoordinates[i] <= pathCoordinates[i - 2]
+      ) {
         // X is not increasing, so we need to make sure we start a new segment
         hole = true;
       }
 
-
       // If it's a valid value we need to check if we're coming out of a hole and create a new empty segment
-      if(hole) {
+      if (hole) {
         segments.push({
           pathCoordinates: [],
           valueData: []
@@ -296,7 +325,10 @@ export function splitIntoSegments(pathCoordinates, valueData, options) {
       }
 
       // Add to the segment pathCoordinates and valueData
-      segments[segments.length - 1].pathCoordinates.push(pathCoordinates[i], pathCoordinates[i + 1]);
+      segments[segments.length - 1].pathCoordinates.push(
+        pathCoordinates[i],
+        pathCoordinates[i + 1]
+      );
       segments[segments.length - 1].valueData.push(valueData[i / 2]);
     }
   }
@@ -315,7 +347,11 @@ export function splitIntoSegments(pathCoordinates, valueData, options) {
  */
 export function getHighLow(data, options, dimension) {
   // TODO: Remove workaround for deprecated global high / low config. Axis high / low configuration is preferred
-  options = extend({}, options, dimension ? options['axis' + dimension.toUpperCase()] : {});
+  options = extend(
+    {},
+    options,
+    dimension ? options['axis' + dimension.toUpperCase()] : {}
+  );
 
   const highLow = {
     high: options.high === undefined ? -Number.MAX_VALUE : +options.high,
@@ -326,48 +362,48 @@ export function getHighLow(data, options, dimension) {
 
   // Function to recursively walk through arrays and find highest and lowest number
   function recursiveHighLow(sourceData) {
-    if(sourceData === undefined) {
+    if (sourceData === undefined) {
       return undefined;
-    } else if(sourceData instanceof Array) {
-      for(let i = 0; i < sourceData.length; i++) {
+    } else if (sourceData instanceof Array) {
+      for (let i = 0; i < sourceData.length; i++) {
         recursiveHighLow(sourceData[i]);
       }
     } else {
       const value = dimension ? +sourceData[dimension] : +sourceData;
 
-      if(findHigh && value > highLow.high) {
+      if (findHigh && value > highLow.high) {
         highLow.high = value;
       }
 
-      if(findLow && value < highLow.low) {
+      if (findLow && value < highLow.low) {
         highLow.low = value;
       }
     }
   }
 
   // Start to find highest and lowest number recursively
-  if(findHigh || findLow) {
+  if (findHigh || findLow) {
     recursiveHighLow(data);
   }
 
   // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
   // used to generate the chart. This is useful when the chart always needs to contain the position of the
   // invisible reference value in the view i.e. for bipolar scales.
-  if(options.referenceValue || options.referenceValue === 0) {
+  if (options.referenceValue || options.referenceValue === 0) {
     highLow.high = Math.max(options.referenceValue, highLow.high);
     highLow.low = Math.min(options.referenceValue, highLow.low);
   }
 
   // If high and low are the same because of misconfiguration or flat data (only the same value) we need
   // to set the high or low to 0 depending on the polarity
-  if(highLow.high <= highLow.low) {
+  if (highLow.high <= highLow.low) {
     // If both values are 0 we set high to 1
-    if(highLow.low === 0) {
+    if (highLow.low === 0) {
       highLow.high = 1;
-    } else if(highLow.low < 0) {
+    } else if (highLow.low < 0) {
       // If we have the same negative value for the bounds we set bounds.high to 0
       highLow.high = 0;
-    } else if(highLow.high > 0) {
+    } else if (highLow.high > 0) {
       // If we have the same positive value for the bounds we set bounds.low to 0
       highLow.low = 0;
     } else {
@@ -411,9 +447,13 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   const smallestFactor = onlyInteger ? rho(bounds.range) : 0;
 
   // First check if we should only use integer steps and if step 1 is still larger than scaleMinSpace so we can use 1
-  if(onlyInteger && projectLength(axisLength, 1, bounds) >= scaleMinSpace) {
+  if (onlyInteger && projectLength(axisLength, 1, bounds) >= scaleMinSpace) {
     bounds.step = 1;
-  } else if(onlyInteger && smallestFactor < bounds.step && projectLength(axisLength, smallestFactor, bounds) >= scaleMinSpace) {
+  } else if (
+    onlyInteger &&
+    smallestFactor < bounds.step &&
+    projectLength(axisLength, smallestFactor, bounds) >= scaleMinSpace
+  ) {
     // If step 1 was too small, we can try the smallest factor of range
     // If the smallest factor is smaller than the current bounds.step and the projected length of smallest factor
     // is larger than the scaleMinSpace we should go for it.
@@ -421,12 +461,18 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   } else {
     // Trying to divide or multiply by 2 and find the best step value
     let optimizationCounter = 0;
-    while(true) {
-      if(scaleUp && projectLength(axisLength, bounds.step, bounds) <= scaleMinSpace) {
+    for (;;) {
+      if (
+        scaleUp &&
+        projectLength(axisLength, bounds.step, bounds) <= scaleMinSpace
+      ) {
         bounds.step *= 2;
-      } else if(!scaleUp && projectLength(axisLength, bounds.step / 2, bounds) >= scaleMinSpace) {
+      } else if (
+        !scaleUp &&
+        projectLength(axisLength, bounds.step / 2, bounds) >= scaleMinSpace
+      ) {
         bounds.step /= 2;
-        if(onlyInteger && bounds.step % 1 !== 0) {
+        if (onlyInteger && bounds.step % 1 !== 0) {
           bounds.step *= 2;
           break;
         }
@@ -434,8 +480,10 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
         break;
       }
 
-      if(optimizationCounter++ > 1000) {
-        throw new Error('Exceeded maximum number of iterations while optimizing scale step!');
+      if (optimizationCounter++ > 1000) {
+        throw new Error(
+          'Exceeded maximum number of iterations while optimizing scale step!'
+        );
       }
     }
   }
@@ -443,8 +491,8 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   bounds.step = Math.max(bounds.step, EPSILON);
   function safeIncrement(value, increment) {
     // If increment is too small use *= (1+EPSILON) as a simple nextafter
-    if(value === (value += increment)) {
-      value *= (1 + (increment > 0 ? EPSILON : -EPSILON));
+    if (value === (value += increment)) {
+      value *= 1 + (increment > 0 ? EPSILON : -EPSILON);
     }
     return value;
   }
@@ -452,10 +500,10 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   // Narrow min and max based on new step
   let newMin = bounds.min;
   let newMax = bounds.max;
-  while(newMin + bounds.step <= bounds.low) {
+  while (newMin + bounds.step <= bounds.low) {
     newMin = safeIncrement(newMin, bounds.step);
   }
-  while(newMax - bounds.step >= bounds.high) {
+  while (newMax - bounds.step >= bounds.high) {
     newMax = safeIncrement(newMax, -bounds.step);
   }
   bounds.min = newMin;
@@ -463,9 +511,9 @@ export function getBounds(axisLength, highLow, scaleMinSpace, onlyInteger) {
   bounds.range = bounds.max - bounds.min;
 
   const values = [];
-  for(let i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
+  for (let i = bounds.min; i <= bounds.max; i = safeIncrement(i, bounds.step)) {
     const value = roundWithPrecision(i);
-    if(value !== values[values.length - 1]) {
+    if (value !== values[values.length - 1]) {
       values.push(value);
     }
   }

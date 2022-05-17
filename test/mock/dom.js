@@ -1,9 +1,9 @@
 export let container = null;
 
-let getBoundingClientRect = SVGElement.prototype.getBoundingClientRect
+let getBoundingClientRect = SVGElement.prototype.getBoundingClientRect;
 
 export function mockDom() {
-  if(!container) {
+  if (!container) {
     container = document.createElement('div');
     container.setAttribute('data-fixture-container', `${+new Date()}`);
     document.body.appendChild(container);
@@ -11,7 +11,7 @@ export function mockDom() {
 }
 
 export function destroyMockDom() {
-  if(container) {
+  if (container) {
     document.body.removeChild(container);
     container = null;
   }
@@ -37,7 +37,7 @@ export function mockDomRects() {
     top: 0,
     right: 0,
     bottom: 0,
-    left: 0,
+    left: 0
   });
 }
 

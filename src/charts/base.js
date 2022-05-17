@@ -1,6 +1,6 @@
-import {querySelector, extend, optionsProvider} from '../core/core';
-import {EventEmitter} from '../event/event-emitter';
-import {isSupported} from '../svg/svg';
+import { querySelector, extend, optionsProvider } from '../core/core';
+import { EventEmitter } from '../event/event-emitter';
+import { isSupported } from '../svg/svg';
 
 export class BaseChart {
   /**
@@ -26,9 +26,9 @@ export class BaseChart {
     this.supportsAnimations = isSupported('AnimationEventsAttribute');
     this.resizeListener = () => this.update();
 
-    if(this.container) {
+    if (this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
-      if(this.container.__chartist__) {
+      if (this.container.__chartist__) {
         this.container.__chartist__.detach();
       }
 
@@ -41,7 +41,7 @@ export class BaseChart {
   }
 
   createChart() {
-    throw new Error('Base chart type can\'t be instantiated!');
+    throw new Error("Base chart type can't be instantiated!");
   }
 
   // TODO: Currently we need to re-draw the chart on window resize. This is usually very bad and will affect performance.
@@ -59,7 +59,7 @@ export class BaseChart {
    * @memberof Chartist.Base
    */
   update(data, options, override) {
-    if(data) {
+    if (data) {
       this.data = data || {};
       this.data.labels = this.data.labels || [];
       this.data.series = this.data.series || [];
@@ -70,19 +70,27 @@ export class BaseChart {
       });
     }
 
-    if(options) {
-      this.options = extend({}, override ? this.options : this.defaultOptions, options);
+    if (options) {
+      this.options = extend(
+        {},
+        override ? this.options : this.defaultOptions,
+        options
+      );
 
       // If chartist was not initialized yet, we just set the options and leave the rest to the initialization
       // Otherwise we re-create the optionsProvider at this point
-      if(!this.initializeTimeoutId) {
+      if (!this.initializeTimeoutId) {
         this.optionsProvider.removeMediaQueryListeners();
-        this.optionsProvider = optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+        this.optionsProvider = optionsProvider(
+          this.options,
+          this.responsiveOptions,
+          this.eventEmitter
+        );
       }
     }
 
     // Only re-created the chart if it has been initialized yet
-    if(!this.initializeTimeoutId) {
+    if (!this.initializeTimeoutId) {
       this.createChart(this.optionsProvider.getCurrentOptions());
     }
 
@@ -98,7 +106,7 @@ export class BaseChart {
   detach() {
     // Only detach if initialization already occurred on this chart. If this chart still hasn't initialized (therefore
     // the initializationTimeoutId is still a valid timeout reference, we will clear the timeout
-    if(!this.initializeTimeoutId) {
+    if (!this.initializeTimeoutId) {
       window.removeEventListener('resize', this.resizeListener);
       this.optionsProvider.removeMediaQueryListeners();
     } else {
@@ -138,15 +146,19 @@ export class BaseChart {
 
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes
-    this.optionsProvider = optionsProvider(this.options, this.responsiveOptions, this.eventEmitter);
+    this.optionsProvider = optionsProvider(
+      this.options,
+      this.responsiveOptions,
+      this.eventEmitter
+    );
     // Register options change listener that will trigger a chart update
     this.eventEmitter.addEventHandler('optionsChanged', () => this.update());
 
     // Before the first chart creation we need to register us with all plugins that are configured
     // Initialize all relevant plugins with our chart object and the plugin options specified in the config
-    if(this.options.plugins) {
-      this.options.plugins.forEach((plugin) => {
-        if(plugin instanceof Array) {
+    if (this.options.plugins) {
+      this.options.plugins.forEach(plugin => {
+        if (plugin instanceof Array) {
           plugin[0](this, plugin[1]);
         } else {
           plugin(this);

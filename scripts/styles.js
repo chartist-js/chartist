@@ -14,13 +14,15 @@ const output = pkg.publishConfig.style;
 const sourceMapOutput = pkg.publishConfig.style.replace('.css', '.css.map');
 
 (async () => {
-  let styles
+  let styles;
 
   styles = sass.compile(pkg.style, {
     sourceMap: true
-  })
+  });
 
-  styles.sourceMap.sources = styles.sourceMap.sources.map(_ => _.replace(cwd, ''))
+  styles.sourceMap.sources = styles.sourceMap.sources.map(_ =>
+    _.replace(cwd, '')
+  );
 
   styles = await postcss(plugins).process(styles.css, {
     from: input,
@@ -28,16 +30,17 @@ const sourceMapOutput = pkg.publishConfig.style.replace('.css', '.css.map');
     map: {
       prev: styles.sourceMap
     }
-  })
+  });
 
-  const map = styles.map.toString()
-  const css = styles.css + `\n/*# sourceMappingURL=${path.basename(sourceMapOutput)} */`
+  const map = styles.map.toString();
+  const css =
+    styles.css + `\n/*# sourceMappingURL=${path.basename(sourceMapOutput)} */`;
 
   await fs.mkdir(path.dirname(output), {
     recursive: true
-  })
+  });
   await Promise.all([
     fs.writeFile(output, css),
     fs.writeFile(sourceMapOutput, map)
-  ])
-})()
+  ]);
+})();

@@ -1,6 +1,6 @@
-import {extend, splitIntoSegments} from '../core/core';
-import {SvgPath} from '../svg/svg-path';
-import {none} from './none';
+import { extend, splitIntoSegments } from '../core/core';
+import { SvgPath } from '../svg/svg-path';
+import { none } from './none';
 
 /**
  * Monotone Cubic spline interpolation produces a smooth curve which preserves monotonicity. Unlike cardinal splines, the curve will not extend beyond the range of y-values of the original data points.
@@ -13,13 +13,13 @@ import {none} from './none';
  *
  * @example
  * var chart = new Chartist.Line('.ct-chart', {
-   *   labels: [1, 2, 3, 4, 5],
-   *   series: [[1, 2, 8, 1, 7]]
-   * }, {
-   *   lineSmooth: Chartist.Interpolation.monotoneCubic({
-   *     fillHoles: false
-   *   })
-   * });
+ *   labels: [1, 2, 3, 4, 5],
+ *   series: [[1, 2, 8, 1, 7]]
+ * }, {
+ *   lineSmooth: Chartist.Interpolation.monotoneCubic({
+ *     fillHoles: false
+ *   })
+ * });
  *
  * @memberof Chartist.Interpolation
  * @param {Object} [options] The options of the monotoneCubic factory function.
@@ -40,16 +40,18 @@ export function monotoneCubic(options) {
       increasingX: true
     });
 
-    if(!segments.length) {
+    if (!segments.length) {
       // If there were no segments return 'Chartist.Interpolation.none'
       return none()([]);
-    } else if(segments.length > 1) {
+    } else if (segments.length > 1) {
       // If the split resulted in more that one segment we need to interpolate each segment individually and join them
       // afterwards together into a single path.
       // For each segment we will recurse the monotoneCubic fn function
       // Join the segment path data into a single path and return
       return SvgPath.join(
-        segments.map((segment) => monotoneCubicInterpolation(segment.pathCoordinates, segment.valueData))
+        segments.map(segment =>
+          monotoneCubicInterpolation(segment.pathCoordinates, segment.valueData)
+        )
       );
     } else {
       // If there was only one segment we can proceed regularly by using pathCoordinates and valueData from the first
@@ -58,7 +60,7 @@ export function monotoneCubic(options) {
       valueData = segments[0].valueData;
 
       // If less than three points we need to fallback to no smoothing
-      if(pathCoordinates.length <= 4) {
+      if (pathCoordinates.length <= 4) {
         return none()(pathCoordinates, valueData);
       }
 
@@ -71,13 +73,13 @@ export function monotoneCubic(options) {
       const dxs = [];
 
       // Populate x and y coordinates into separate arrays, for readability
-      for(let i = 0; i < n; i++) {
+      for (let i = 0; i < n; i++) {
         xs[i] = pathCoordinates[i * 2];
         ys[i] = pathCoordinates[i * 2 + 1];
       }
 
       // Calculate deltas and derivative
-      for(let i = 0; i < n - 1; i++) {
+      for (let i = 0; i < n - 1; i++) {
         dys[i] = ys[i + 1] - ys[i];
         dxs[i] = xs[i + 1] - xs[i];
         ds[i] = dys[i] / dxs[i];
@@ -88,15 +90,16 @@ export function monotoneCubic(options) {
       ms[0] = ds[0];
       ms[n - 1] = ds[n - 2];
 
-      for(let i = 1; i < n - 1; i++) {
-        if(ds[i] === 0 || ds[i - 1] === 0 || (ds[i - 1] > 0) !== (ds[i] > 0)) {
+      for (let i = 1; i < n - 1; i++) {
+        if (ds[i] === 0 || ds[i - 1] === 0 || ds[i - 1] > 0 !== ds[i] > 0) {
           ms[i] = 0;
         } else {
-          ms[i] = 3 * (dxs[i - 1] + dxs[i]) / (
-            (2 * dxs[i] + dxs[i - 1]) / ds[i - 1] +
-            (dxs[i] + 2 * dxs[i - 1]) / ds[i]);
+          ms[i] =
+            (3 * (dxs[i - 1] + dxs[i])) /
+            ((2 * dxs[i] + dxs[i - 1]) / ds[i - 1] +
+              (dxs[i] + 2 * dxs[i - 1]) / ds[i]);
 
-          if(!isFinite(ms[i])) {
+          if (!isFinite(ms[i])) {
             ms[i] = 0;
           }
         }
@@ -105,14 +108,14 @@ export function monotoneCubic(options) {
       // Now build a path from the slopes
       const path = new SvgPath().move(xs[0], ys[0], false, valueData[0]);
 
-      for(let i = 0; i < n - 1; i++) {
+      for (let i = 0; i < n - 1; i++) {
         path.curve(
           // First control point
           xs[i] + dxs[i] / 3,
-          ys[i] + ms[i] * dxs[i] / 3,
+          ys[i] + (ms[i] * dxs[i]) / 3,
           // Second control point
           xs[i + 1] - dxs[i] / 3,
-          ys[i + 1] - ms[i + 1] * dxs[i] / 3,
+          ys[i + 1] - (ms[i + 1] * dxs[i]) / 3,
           // End point
           xs[i + 1],
           ys[i + 1],

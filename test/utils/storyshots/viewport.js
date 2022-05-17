@@ -7,5 +7,5 @@ export const Viewport = {
   Tablet: 'iPad',
   TabletLandscape: 'iPad landscape',
   SmallTablet: 'Nexus 7',
-  SmallTabletLandscape: 'Nexus 7 landscape',
-}
+  SmallTabletLandscape: 'Nexus 7 landscape'
+};

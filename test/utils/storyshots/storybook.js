@@ -1,10 +1,10 @@
-import { spawn } from 'child_process'
+import { spawn } from 'child_process';
 
-import { createServer } from 'http-server'
-import del from 'del'
+import { createServer } from 'http-server';
+import del from 'del';
 
-const STORYBOOK_STATIC = 'storybook-static'
-const errorMatcher = /ERR!|Error:|ERROR in|UnhandledPromiseRejectionWarning/
+const STORYBOOK_STATIC = 'storybook-static';
+const errorMatcher = /ERR!|Error:|ERROR in|UnhandledPromiseRejectionWarning/;
 
 /**
  * Run storybook static build.
@@ -20,33 +20,33 @@ export async function buildStorybook({ env = {}, verbose = false }) {
       env: {
         ...process.env,
         NODE_ENV: 'production',
-        ...env,
+        ...env
       },
-      detached: true,
-    })
-    const onData = (data) => {
-      const message = data.toString('utf8')
+      detached: true
+    });
+    const onData = data => {
+      const message = data.toString('utf8');
 
       if (verbose) {
-        process.stdout.write(message)
+        process.stdout.write(message);
       }
 
       if (errorMatcher.test(message)) {
-        reject(new Error(message))
+        reject(new Error(message));
       }
-    }
+    };
 
     buildProcess.on('exit', (code, signal) => {
       if (code === 0) {
-        resolve()
-        return
+        resolve();
+        return;
       }
 
-      reject(new Error(`Exit code: ${code || signal || 'unknown'}`))
-    })
-    buildProcess.stdout.on('data', onData)
-    buildProcess.stderr.on('data', onData)
-  })
+      reject(new Error(`Exit code: ${code || signal || 'unknown'}`));
+    });
+    buildProcess.stdout.on('data', onData);
+    buildProcess.stderr.on('data', onData);
+  });
 }
 
 /**
@@ -55,28 +55,32 @@ export async function buildStorybook({ env = {}, verbose = false }) {
  * @returns Server controls.
  */
 export function startStorybook(options) {
-  const { url, skipBuild } = options
-  const parsedUrl = new URL(url)
+  const { url, skipBuild } = options;
+  const parsedUrl = new URL(url);
   const server = createServer({
-    root: STORYBOOK_STATIC,
-  })
+    root: STORYBOOK_STATIC
+  });
 
   return {
     async start() {
       if (!skipBuild) {
-        await buildStorybook(options)
+        await buildStorybook(options);
       }
 
-      await new Promise((resolve) => {
-        server.listen(parseInt(parsedUrl.port, 10), parsedUrl.hostname, resolve)
-      })
+      await new Promise(resolve => {
+        server.listen(
+          parseInt(parsedUrl.port, 10),
+          parsedUrl.hostname,
+          resolve
+        );
+      });
     },
     async stop() {
-      server.close()
+      server.close();
 
       if (!skipBuild) {
-        await del(STORYBOOK_STATIC)
+        await del(STORYBOOK_STATIC);
       }
-    },
-  }
+    }
+  };
 }

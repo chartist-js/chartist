@@ -1,4 +1,4 @@
-import {Axis} from './axis';
+import { Axis } from './axis';
 
 export class StepAxis extends Axis {
   constructor(axisUnit, data, chartRect, options) {

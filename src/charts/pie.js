@@ -1,11 +1,16 @@
-import {alphaNumerate, quantity, isFalseyButZero} from '../core/lang';
-import {noop, sum} from '../core/functional';
-import {polarToCartesian} from '../core/math';
-import {extend} from '../core/extend';
-import {normalizeData, serialize} from '../core/data';
-import {createSvg, createChartRect} from '../core/creation';
-import {SvgPath} from '../svg/svg-path';
-import {BaseChart} from './base';
+import {
+  alphaNumerate,
+  quantity,
+  isFalseyButZero,
+  safeHasProperty
+} from '../core/lang';
+import { noop, sum } from '../core/functional';
+import { polarToCartesian } from '../core/math';
+import { extend } from '../core/extend';
+import { normalizeData, serialize } from '../core/data';
+import { createSvg, createChartRect } from '../core/creation';
+import { SvgPath } from '../svg/svg-path';
+import { BaseChart } from './base';
 
 /**
  * Default options in line charts. Expand the code view to see a detailed list of options with comments.
@@ -64,11 +69,15 @@ const defaultOptions = {
 export function determineAnchorPosition(center, label, direction) {
   const toTheRight = label.x > center.x;
 
-  if(toTheRight && direction === 'explode' ||
-    !toTheRight && direction === 'implode') {
+  if (
+    (toTheRight && direction === 'explode') ||
+    (!toTheRight && direction === 'implode')
+  ) {
     return 'start';
-  } else if(toTheRight && direction === 'implode' ||
-    !toTheRight && direction === 'explode') {
+  } else if (
+    (toTheRight && direction === 'implode') ||
+    (!toTheRight && direction === 'explode')
+  ) {
     return 'end';
   } else {
     return 'middle';
@@ -145,7 +154,13 @@ export class PieChart extends BaseChart {
    * });
    */
   constructor(query, data, options, responsiveOptions) {
-    super(query, data, defaultOptions, extend({}, defaultOptions, options), responsiveOptions);
+    super(
+      query,
+      data,
+      defaultOptions,
+      extend({}, defaultOptions, options),
+      responsiveOptions
+    );
   }
 
   /**
@@ -161,17 +176,27 @@ export class PieChart extends BaseChart {
     let startAngle = options.startAngle;
 
     // Create SVG.js draw
-    this.svg = createSvg(this.container, options.width, options.height, options.donut ? options.classNames.chartDonut : options.classNames.chartPie);
+    this.svg = createSvg(
+      this.container,
+      options.width,
+      options.height,
+      options.donut
+        ? options.classNames.chartDonut
+        : options.classNames.chartPie
+    );
     // Calculate charting rect
-    const chartRect = createChartRect(this.svg, options, defaultOptions.padding);
+    const chartRect = createChartRect(
+      this.svg,
+      options,
+      defaultOptions.padding
+    );
     // Get biggest circle radius possible within chartRect
     let radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
     // Calculate total of all series to get reference value or use total reference from optional options
-    const totalDataSum = options.total ||
-      data.normalized.series.reduce(sum, 0);
+    const totalDataSum = options.total || data.normalized.series.reduce(sum, 0);
 
     const donutWidth = quantity(options.donutWidth);
-    if(donutWidth.unit === '%') {
+    if (donutWidth.unit === '%') {
       donutWidth.value *= radius / 100;
     }
 
@@ -182,9 +207,9 @@ export class PieChart extends BaseChart {
 
     // If labelPosition is set to `outside` or a donut chart is drawn then the label position is at the radius,
     // if regular pie chart it's half of the radius
-    if(options.labelPosition === 'outside' || options.donut) {
+    if (options.labelPosition === 'outside' || options.donut) {
       labelRadius = radius;
-    } else if(options.labelPosition === 'center') {
+    } else if (options.labelPosition === 'center') {
       // If labelPosition is center we start with 0 and will later wait for the labelOffset
       labelRadius = 0;
     } else {
@@ -202,15 +227,17 @@ export class PieChart extends BaseChart {
     };
 
     // Check if there is only one non-zero value in the series array.
-    const hasSingleValInSeries = data.raw.series
-        .filter((val) => val.hasOwnProperty('value') ? val.value !== 0 : val !== 0)
-        .length === 1;
+    const hasSingleValInSeries =
+      data.raw.series.filter(val =>
+        safeHasProperty(val, 'value') ? val.value !== 0 : val !== 0
+      ).length === 1;
 
     // Creating the series groups
-    data.raw.series
-      .forEach((series, index) => seriesGroups[index] = this.svg.elem('g', null, null));
+    data.raw.series.forEach(
+      (series, index) => (seriesGroups[index] = this.svg.elem('g', null, null))
+    );
     // if we need to show labels we create the label group now
-    if(options.showLabel) {
+    if (options.showLabel) {
       labelsGroup = this.svg.elem('g', null, null);
     }
 
@@ -218,7 +245,7 @@ export class PieChart extends BaseChart {
     // initialize series groups
     data.raw.series.forEach((series, index) => {
       // If current value is zero and we are ignoring empty values then skip to next value
-      if(data.normalized.series[index] === 0 && options.ignoreEmptyValues) {
+      if (data.normalized.series[index] === 0 && options.ignoreEmptyValues) {
         return;
       }
 
@@ -228,41 +255,69 @@ export class PieChart extends BaseChart {
       });
 
       // Use series class from series data or if not set generate one
-      seriesGroups[index].addClass([
-        options.classNames.series,
-        series.className || `${options.classNames.series}-${alphaNumerate(index)}`
-      ].join(' '));
+      seriesGroups[index].addClass(
+        [
+          options.classNames.series,
+          series.className ||
+            `${options.classNames.series}-${alphaNumerate(index)}`
+        ].join(' ')
+      );
 
       // If the whole dataset is 0 endAngle should be zero. Can't divide by 0.
-      let endAngle = (totalDataSum > 0 ? startAngle + data.normalized.series[index] / totalDataSum * 360 : 0);
+      let endAngle =
+        totalDataSum > 0
+          ? startAngle + (data.normalized.series[index] / totalDataSum) * 360
+          : 0;
 
       // Use slight offset so there are no transparent hairline issues
-      const overlappigStartAngle = Math.max(0, startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2));
+      const overlappigStartAngle = Math.max(
+        0,
+        startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2)
+      );
 
       // If we need to draw the arc for all 360 degrees we need to add a hack where we close the circle
       // with Z and use 359.99 degrees
-      if(endAngle - overlappigStartAngle >= 359.99) {
+      if (endAngle - overlappigStartAngle >= 359.99) {
         endAngle = overlappigStartAngle + 359.99;
       }
 
-      const start = polarToCartesian(center.x, center.y, radius, overlappigStartAngle);
+      const start = polarToCartesian(
+        center.x,
+        center.y,
+        radius,
+        overlappigStartAngle
+      );
       const end = polarToCartesian(center.x, center.y, radius, endAngle);
 
       // Create a new path element for the pie chart. If this isn't a donut chart we should close the path for a correct stroke
       const path = new SvgPath(!options.donut)
         .move(end.x, end.y)
-        .arc(radius, radius, 0, endAngle - startAngle > 180, 0, start.x, start.y);
+        .arc(
+          radius,
+          radius,
+          0,
+          endAngle - startAngle > 180,
+          0,
+          start.x,
+          start.y
+        );
 
       // If regular pie chart (no donut) we add a line to the center of the circle for completing the pie
-      if(!options.donut) {
+      if (!options.donut) {
         path.line(center.x, center.y);
       }
 
       // Create the SVG path
       // If this is a donut chart we add the donut class, otherwise just a regular slice
-      const pathElement = seriesGroups[index].elem('path', {
-        d: path.stringify()
-      }, options.donut ? options.classNames.sliceDonut : options.classNames.slicePie);
+      const pathElement = seriesGroups[index].elem(
+        'path',
+        {
+          d: path.stringify()
+        },
+        options.donut
+          ? options.classNames.sliceDonut
+          : options.classNames.slicePie
+      );
 
       // Adding the pie series value to the path
       pathElement.attr({
@@ -271,9 +326,9 @@ export class PieChart extends BaseChart {
       });
 
       // If this is a donut, we add the stroke-width as style attribute
-      if(options.donut) {
+      if (options.donut) {
         pathElement.attr({
-          'style': 'stroke-width: ' + donutWidth.value + 'px'
+          style: 'stroke-width: ' + donutWidth.value + 'px'
         });
       }
 
@@ -295,10 +350,10 @@ export class PieChart extends BaseChart {
       });
 
       // If we need to show labels we need to add the label for this slice now
-      if(options.showLabel) {
+      if (options.showLabel) {
         let labelPosition;
 
-        if(data.raw.series.length === 1) {
+        if (data.raw.series.length === 1) {
           // If we have only 1 series, we can position the label in the center of the pie
           labelPosition = {
             x: center.x,
@@ -315,20 +370,36 @@ export class PieChart extends BaseChart {
         }
 
         let rawValue;
-        if(data.normalized.labels && !isFalseyButZero(data.normalized.labels[index])) {
+        if (
+          data.normalized.labels &&
+          !isFalseyButZero(data.normalized.labels[index])
+        ) {
           rawValue = data.normalized.labels[index];
         } else {
           rawValue = data.normalized.series[index];
         }
 
-        const interpolatedValue = options.labelInterpolationFnc(rawValue, index);
+        const interpolatedValue = options.labelInterpolationFnc(
+          rawValue,
+          index
+        );
 
-        if(interpolatedValue || interpolatedValue === 0) {
-          const labelElement = labelsGroup.elem('text', {
-            dx: labelPosition.x,
-            dy: labelPosition.y,
-            'text-anchor': determineAnchorPosition(center, labelPosition, options.labelDirection)
-          }, options.classNames.label).text('' + interpolatedValue);
+        if (interpolatedValue || interpolatedValue === 0) {
+          const labelElement = labelsGroup
+            .elem(
+              'text',
+              {
+                dx: labelPosition.x,
+                dy: labelPosition.y,
+                'text-anchor': determineAnchorPosition(
+                  center,
+                  labelPosition,
+                  options.labelDirection
+                )
+              },
+              options.classNames.label
+            )
+            .text('' + interpolatedValue);
 
           // Fire off draw event
           this.eventEmitter.emit('draw', {

@@ -1,11 +1,7 @@
-import {namespaces} from '../core/globals';
-import {deserialize} from '../core/data';
-import {PieChart} from './pie';
-import {
-  addMockWrapper,
-  destroyMockDom,
-  mockDom,
-} from '../../test/mock/dom';
+import { namespaces } from '../core/globals';
+import { deserialize } from '../core/data';
+import { PieChart } from './pie';
+import { addMockWrapper, destroyMockDom, mockDom } from '../../test/mock/dom';
 
 describe('Charts', () => {
   describe('PieChart', () => {
@@ -15,15 +11,20 @@ describe('Charts', () => {
     let data;
 
     function createChart() {
-      return new Promise((resolve) => {
-        fixture = addMockWrapper('<div class="ct-chart ct-golden-section"></div>');
-        const { wrapper } = fixture
-        chart = new PieChart(wrapper.querySelector('.ct-chart'), data, options)
-          .on('created', () => {
-            resolve();
-            chart.off('created');
-          });
-      })
+      return new Promise(resolve => {
+        fixture = addMockWrapper(
+          '<div class="ct-chart ct-golden-section"></div>'
+        );
+        const { wrapper } = fixture;
+        chart = new PieChart(
+          wrapper.querySelector('.ct-chart'),
+          data,
+          options
+        ).on('created', () => {
+          resolve();
+          chart.off('created');
+        });
+      });
     }
 
     beforeEach(() => {
@@ -36,19 +37,24 @@ describe('Charts', () => {
     });
 
     describe('Meta data tests', () => {
-
       it('should render meta data correctly on slice with mixed value array', async () => {
-        const fixture = addMockWrapper('<div class="ct-chart ct-golden-section"></div>');
+        const fixture = addMockWrapper(
+          '<div class="ct-chart ct-golden-section"></div>'
+        );
         const meta = {
           test: 'Serialized Test'
         };
 
         const data = {
           labels: ['A', 'B', 'C'],
-          series: [5, {
-            value: 8,
-            meta: meta
-          }, 1]
+          series: [
+            5,
+            {
+              value: 8,
+              meta: meta
+            },
+            1
+          ]
         };
 
         const chartContainer = fixture.wrapper.querySelector('.ct-chart');
@@ -76,14 +82,17 @@ describe('Charts', () => {
           width: 100,
           height: 100,
           chartPadding: 10,
-          labelInterpolationFnc: (value) => `${Math.round(value / data.series.reduce(sum) * 100)}%`
+          labelInterpolationFnc: value =>
+            `${Math.round((value / data.series.reduce(sum)) * 100)}%`
         };
       });
 
       it('should render three slices', async () => {
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('.ct-slice-pie').length).toBe(3);
+        expect(fixture.wrapper.querySelectorAll('.ct-slice-pie').length).toBe(
+          3
+        );
       });
 
       it('should set value attribute', async () => {
@@ -98,20 +107,24 @@ describe('Charts', () => {
       it('should create slice path', async () => {
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-pie')).forEach((element) => {
-          const pattern = new RegExp(`M${num},${num}A40,40,0,0,0,${num},${num}L50,50Z$`);
-          const path = element.getAttribute('d');
-          expect(path).toMatch(pattern);
-        });
+        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-pie')).forEach(
+          element => {
+            const pattern = new RegExp(
+              `M${num},${num}A40,40,0,0,0,${num},${num}L50,50Z$`
+            );
+            const path = element.getAttribute('d');
+            expect(path).toMatch(pattern);
+          }
+        );
       });
 
       it('should add labels', async () => {
         await createChart();
 
         const labels = fixture.wrapper.querySelectorAll('.ct-label');
-        expect(labels[0].textContent).toBe('42%');
-        expect(labels[1].textContent).toBe('25%');
-        expect(labels[2].textContent).toBe('33%');
+        expect(labels[0]).toHaveTextContent('42%');
+        expect(labels[1]).toHaveTextContent('25%');
+        expect(labels[2]).toHaveTextContent('33%');
       });
 
       it('should overlap slices', async () => {
@@ -120,10 +133,18 @@ describe('Charts', () => {
         };
         await createChart();
 
-        const [slice1, slice2] = Array.from(fixture.wrapper.querySelectorAll('.ct-slice-pie'));
+        const [slice1, slice2] = Array.from(
+          fixture.wrapper.querySelectorAll('.ct-slice-pie')
+        );
 
-        expect(slice1.getAttribute('d')).toMatch(/^M50,90A40,40,0,0,0,50,10L50,50Z/);
-        expect(slice2.getAttribute('d')).toMatch(/^M50,10A40,40,0,0,0,50.\d+,90L50,50Z/);
+        expect(slice1).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M50,90A40,40,0,0,0,50,10L50,50Z/)
+        );
+        expect(slice2).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M50,10A40,40,0,0,0,50.\d+,90L50,50Z/)
+        );
       });
 
       it('should set large arc sweep flag', async () => {
@@ -133,7 +154,10 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[1];
-        expect(slice.getAttribute('d')).toMatch(/^M50,10A40,40,0,1,0/);
+        expect(slice).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M50,10A40,40,0,1,0/)
+        );
       });
 
       it('should draw complete circle with gap', async () => {
@@ -143,7 +167,10 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[0];
-        expect(slice.getAttribute('d')).toMatch(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/);
+        expect(slice).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/)
+        );
       });
 
       it('should draw complete circle with startAngle', async () => {
@@ -152,7 +179,10 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[0];
-        expect(slice.getAttribute('d')).toMatch(/^M90,49.9\d+A40,40,0,1,0,90,50L50,50Z/);
+        expect(slice).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M90,49.9\d+A40,40,0,1,0,90,50L50,50Z/)
+        );
       });
 
       it('should draw complete circle if values are 0', async () => {
@@ -162,9 +192,11 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[1];
-        expect(slice.getAttribute('d')).toMatch(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/);
+        expect(slice).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/)
+        );
       });
-
     });
 
     describe('Pie with small slices', () => {
@@ -182,30 +214,54 @@ describe('Charts', () => {
       it('should render correctly with very small slices', async () => {
         await createChart();
 
-        const [slice1, slice2] = Array.from(fixture.wrapper.querySelectorAll('.ct-slice-pie'));
+        const [slice1, slice2] = Array.from(
+          fixture.wrapper.querySelectorAll('.ct-slice-pie')
+        );
 
-        expect(slice1.getAttribute('d')).toMatch(/^M50.1\d+,0A50,50,0,0,0,50,0/);
-        expect(slice2.getAttribute('d')).toMatch(/^M49.9\d*,0A50,50,0,1,0,50,0/);
+        expect(slice1).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M50.1\d+,0A50,50,0,0,0,50,0/)
+        );
+        expect(slice2).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M49.9\d*,0A50,50,0,1,0,50,0/)
+        );
       });
 
       it('should render correctly with very small slices on startAngle', async () => {
         options.startAngle = 90;
         await createChart();
 
-        const [slice1, slice2] = Array.from(fixture.wrapper.querySelectorAll('.ct-slice-pie'));
+        const [slice1, slice2] = Array.from(
+          fixture.wrapper.querySelectorAll('.ct-slice-pie')
+        );
 
-        expect(slice1.getAttribute('d')).toMatch(/^M100,50.1\d*A50,50,0,0,0,100,50/);
-        expect(slice2.getAttribute('d')).toMatch(/^M100,49.97\d*A50,50,0,1,0,100,49.98\d*/);
+        expect(slice1).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M100,50.1\d*A50,50,0,0,0,100,50/)
+        );
+        expect(slice2).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M100,49.97\d*A50,50,0,1,0,100,49.98\d*/)
+        );
       });
 
       it('should render correctly with very small slices', async () => {
         options.donut = true;
         await createChart();
 
-        const [slice1, slice2] = Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut'));
+        const [slice1, slice2] = Array.from(
+          fixture.wrapper.querySelectorAll('.ct-slice-donut')
+        );
 
-        expect(slice1.getAttribute('d')).toMatch(/^M50.\d+,30A20,20,0,0,0,50,30/);
-        expect(slice2.getAttribute('d')).toMatch(/^M49.9\d*,30A20,20,0,1,0,50,30/);
+        expect(slice1).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M50.\d+,30A20,20,0,0,0,50,30/)
+        );
+        expect(slice2).toHaveAttribute(
+          'd',
+          expect.stringMatching(/^M49.9\d*,30A20,20,0,1,0,50,30/)
+        );
       });
     });
 
@@ -250,9 +306,18 @@ describe('Charts', () => {
         expect(slices[1].getAttributeNS(namespaces.ct, 'value')).toBe('0');
         expect(slices[2].getAttributeNS(namespaces.ct, 'value')).toBe('0');
 
-        expect(slices[0].getAttribute('d')).toBe('M200,5A195,195,0,0,0,200,5L200,200Z');
-        expect(slices[1].getAttribute('d')).toBe('M200,5A195,195,0,0,0,200,5L200,200Z');
-        expect(slices[2].getAttribute('d')).toBe('M200,5A195,195,0,0,0,200,5L200,200Z');
+        expect(slices[0]).toHaveAttribute(
+          'd',
+          'M200,5A195,195,0,0,0,200,5L200,200Z'
+        );
+        expect(slices[1]).toHaveAttribute(
+          'd',
+          'M200,5A195,195,0,0,0,200,5L200,200Z'
+        );
+        expect(slices[2]).toHaveAttribute(
+          'd',
+          'M200,5A195,195,0,0,0,200,5L200,200Z'
+        );
       });
 
       it('should render empty slices', async () => {
@@ -291,13 +356,15 @@ describe('Charts', () => {
           startAngle: 270,
           total: 200,
           showLabel: false
-        }
+        };
       });
 
       it('should render four strokes', async () => {
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('.ct-slice-donut').length).toBe(4);
+        expect(fixture.wrapper.querySelectorAll('.ct-slice-donut').length).toBe(
+          4
+        );
       });
 
       it('should set value attribute', async () => {
@@ -312,19 +379,29 @@ describe('Charts', () => {
 
       it('should create slice path', async () => {
         const num = '\\d+(\\.\\d*)?';
-        const pattern = new RegExp(`^M${num},${num}A170,170,0,0,0,${num},${num}$`);
+        const pattern = new RegExp(
+          `^M${num},${num}A170,170,0,0,0,${num},${num}$`
+        );
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut'))
-          .forEach((element) => expect(element.getAttribute('d')).toMatch(pattern));
+        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
+          element =>
+            expect(element).toHaveAttribute('d', expect.stringMatching(pattern))
+        );
       });
 
       it('should set stroke-width', async () => {
         const strokeWidth = new RegExp('stroke-width:\\s*60px');
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut'))
-          .forEach((element) => expect(element.getAttribute('style')).toMatch(strokeWidth));
+        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
+          element =>
+            expect(element).toHaveAttribute(
+              // eslint-disable-next-line jest-dom/prefer-to-have-style
+              'style',
+              expect.stringMatching(strokeWidth)
+            )
+        );
       });
 
       it('should not add labels', async () => {
@@ -353,24 +430,36 @@ describe('Charts', () => {
       it('should render four strokes', async () => {
         await createChart();
 
-        expect(fixture.wrapper.querySelectorAll('.ct-slice-donut').length).toBe(4);
+        expect(fixture.wrapper.querySelectorAll('.ct-slice-donut').length).toBe(
+          4
+        );
       });
 
       it('should create slice path', async () => {
         const num = '\\d+(\\.\\d*)?';
-        const pattern = new RegExp(`^M${num},${num}A175,175,0,0,0,${num},${num}$`);
+        const pattern = new RegExp(
+          `^M${num},${num}A175,175,0,0,0,${num},${num}$`
+        );
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut'))
-          .forEach((element) => expect(element.getAttribute('d')).toMatch(pattern));
+        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
+          element =>
+            expect(element).toHaveAttribute('d', expect.stringMatching(pattern))
+        );
       });
 
       it('should set stroke-width', async () => {
         const strokeWidth = new RegExp('stroke-width:\\s?50px');
         await createChart();
 
-        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut'))
-          .forEach((element) => expect(element.getAttribute('style')).toMatch(strokeWidth));
+        Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
+          element =>
+            expect(element).toHaveAttribute(
+              // eslint-disable-next-line jest-dom/prefer-to-have-style
+              'style',
+              expect.stringMatching(strokeWidth)
+            )
+        );
       });
     });
   });

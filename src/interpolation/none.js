@@ -1,5 +1,5 @@
-import {extend, getMultiValue} from '../core/core';
-import {SvgPath} from '../svg/svg-path';
+import { extend, getMultiValue } from '../core/core';
+import { SvgPath } from '../svg/svg-path';
 
 /**
  * This interpolation function does not smooth the path and the result is only containing lines and no curves.
@@ -29,21 +29,20 @@ export function none(options) {
     const path = new SvgPath();
     let hole = true;
 
-    for(let i = 0; i < pathCoordinates.length; i += 2) {
+    for (let i = 0; i < pathCoordinates.length; i += 2) {
       const currX = pathCoordinates[i];
       const currY = pathCoordinates[i + 1];
       const currData = valueData[i / 2];
 
-      if(getMultiValue(currData.value) !== undefined) {
-
-        if(hole) {
+      if (getMultiValue(currData.value) !== undefined) {
+        if (hole) {
           path.move(currX, currY, false, currData);
         } else {
           path.line(currX, currY, false, currData);
         }
 
         hole = false;
-      } else if(!options.fillHoles) {
+      } else if (!options.fillHoles) {
         hole = true;
       }
     }
