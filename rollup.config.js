@@ -11,13 +11,7 @@ const plugins = targets => [
   swc({
     jsc: {
       parser: {
-        syntax: 'typescript',
-        tsx: true
-      },
-      transform: {
-        react: {
-          useBuiltins: true
-        }
+        syntax: 'typescript'
       },
       externalHelpers: true
     },

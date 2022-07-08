@@ -33,7 +33,6 @@
     "no-array-constructor": 2,
     "no-mixed-spaces-and-tabs": 2,
     "no-multiple-empty-lines": 2,
-    "no-nested-ternary": 2,
     "semi-spacing": 2,
     "no-spaced-func": 2,
     "no-trailing-spaces": 2,
@@ -43,7 +42,13 @@
   },
   "overrides": [
     {
-      "files": ["test/**/*.js", "*.spec.js", "*.stories.js"],
+      "files": ["**/*.ts"],
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint"],
+      "extends": ["plugin:@typescript-eslint/recommended"]
+    },
+    {
+      "files": ["test/**/*.{js,ts}", "*.spec.{js,ts}", "*.stories.{js,ts}"],
       "plugins": [
         "jest",
         "testing-library",
@@ -55,7 +60,8 @@
       },
       "rules": {
         "no-console": 0,
-        "no-shadow": 0
+        "no-shadow": 0,
+        "@typescript-eslint/no-explicit-any": 0
       }
     }
   ]

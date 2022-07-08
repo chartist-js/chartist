@@ -32,8 +32,9 @@
     "node": ">=14"
   },
   "sideEffects": false,
+  "types": "./dist/index.d.ts",
   "style": "./src/styles/chartist.scss",
-  "main": "./src/index.js",
+  "main": "./src/index.ts",
   "publishConfig": {
     "style": "./dist/index.css",
     "main": "./dist/index.cjs",
@@ -50,15 +51,17 @@
     "LICENSE-MIT"
   ],
   "scripts": {
+    "emitDeclarations": "tsc --emitDeclarationOnly",
     "build:styles": "./scripts/styles.js",
-    "build": "rollup -c & pnpm build:styles",
+    "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
+    "jest": "jest -c jest.config.json",
     "test:unit": "jest -c jest.config.json ./src",
     "test:storyshots": "jest -c jest.config.json ./test/storyshots.spec.js",
     "test": "pnpm lint && pnpm test:unit",
-    "lint": "eslint './*.js' 'test/**/*.js' 'src/**/*.js' '.storybook/**/*.js' 'scripts/**/*.js'",
-    "format": "prettier --write './*.js' 'test/**/*.js' 'src/**/*.js' '.storybook/**/*.js' 'scripts/**/*.js'",
+    "lint": "eslint './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts}'",
+    "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts}'",
     "commit": "cz",
     "updateGitHooks": "simple-git-hooks"
   },
@@ -81,6 +84,10 @@
     "@swc/jest": "^0.2.20",
     "@testing-library/jest-dom": "^5.16.4",
     "@types/faker": "^5.5.8",
+    "@types/jest": "^27.5.1",
+    "@types/node": "^17.0.34",
+    "@typescript-eslint/eslint-plugin": "^5.25.0",
+    "@typescript-eslint/parser": "^5.25.0",
     "browserslist": "^4.20.2",
     "chartist": "^0.11.4",
     "commitizen": "^4.2.4",
@@ -107,7 +114,10 @@
     "rollup-plugin-swc": "^0.2.1",
     "sass": "^1.50.1",
     "sass-loader": "^10.0.0",
-    "simple-git-hooks": "^2.7.0"
+    "simple-git-hooks": "^2.7.0",
+    "swc-loader": "^0.2.3",
+    "tsd": "^0.20.0",
+    "typescript": "^4.6.4"
   },
   "readme": ""
 }
