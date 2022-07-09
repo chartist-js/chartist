@@ -4,7 +4,7 @@ import type {
   NormalizedSeries,
   NormalizedSeriesValue
 } from '../types';
-import { extend, safeHasProperty } from '../../utils';
+import { safeHasProperty } from '../../utils';
 import { isDataHoleValue } from './data';
 
 /**
@@ -20,11 +20,10 @@ export function getHighLow(
   dimension?: AxisName
 ) {
   // TODO: Remove workaround for deprecated global high / low config. Axis high / low configuration is preferred
-  options = extend(
-    {},
-    options,
-    dimension ? (dimension === 'x' ? options.axisX : options.axisY) : {}
-  );
+  options = {
+    ...options,
+    ...(dimension ? (dimension === 'x' ? options.axisX : options.axisY) : {})
+  };
 
   const highLow = {
     high: options.high === undefined ? -Number.MAX_VALUE : +options.high,

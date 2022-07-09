@@ -1,4 +1,3 @@
-import { extend } from '../utils';
 import type { SegmentData } from '../core';
 import type { SvgPathOptions, PathCommand, PathParams } from './types';
 
@@ -28,13 +27,11 @@ function element(
   relative: boolean,
   data?: SegmentData
 ) {
-  const pathElement: PathCommand = extend(
-    {
-      command: relative ? command.toLowerCase() : command.toUpperCase()
-    },
-    params,
-    data ? { data: data } : {}
-  );
+  const pathElement: PathCommand = {
+    command: relative ? command.toLowerCase() : command.toUpperCase(),
+    ...params,
+    ...(data ? { data } : {})
+  };
 
   pathElements.splice(pos, 0, pathElement);
 }
@@ -92,7 +89,7 @@ export class SvgPath {
    * @param options Options object that overrides the default objects. See default options for more details.
    */
   constructor(private readonly close = false, options?: SvgPathOptions) {
-    this.options = extend({}, defaultOptions, options);
+    this.options = { ...defaultOptions, ...options };
   }
 
   /**
@@ -281,18 +278,16 @@ export class SvgPath {
       const command = chunk.shift() as string;
       const description = elementDescriptions[command.toLowerCase()];
 
-      return extend(
-        {
-          command: command
-        },
-        description.reduce<Record<string, number>>(
+      return {
+        command,
+        ...description.reduce<Record<string, number>>(
           (result, paramName, index) => {
             result[paramName] = +chunk[index];
             return result;
           },
           {}
         )
-      ) as PathCommand;
+      } as PathCommand;
     });
 
     // Preparing a splice call with the elements array as var arg params and insert the parsed elements at the current position
@@ -398,8 +393,8 @@ export class SvgPath {
     clone.pos = this.pos;
     clone.pathElements = this.pathElements
       .slice()
-      .map(pathElement => extend({}, pathElement));
-    clone.options = extend({}, this.options);
+      .map(pathElement => ({ ...pathElement }));
+    clone.options = { ...this.options };
     return clone;
   }
 

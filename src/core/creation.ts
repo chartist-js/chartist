@@ -4,7 +4,6 @@ import type { Axis } from '../axes';
 import { namespaces } from './constants';
 import { Svg } from '../svg/Svg';
 import { quantity } from './lang';
-import { extend } from '../utils';
 
 /**
  * Create or reinitialize the SVG element for the chart
@@ -189,19 +188,14 @@ export function createGrid(
   const gridElement = group.elem('line', positionalData, classes.join(' '));
 
   // Event for grid draw
-  eventEmitter.emit(
-    'draw',
-    extend(
-      {
-        type: 'grid',
-        axis,
-        index,
-        group,
-        element: gridElement
-      },
-      positionalData
-    )
-  );
+  eventEmitter.emit('draw', {
+    type: 'grid',
+    axis,
+    index,
+    group,
+    element: gridElement,
+    ...positionalData
+  });
 }
 
 /**
@@ -271,33 +265,23 @@ export function createLabel(
       </span>
     `.trim();
 
-    labelElement = group.foreignObject(
-      content,
-      extend(
-        {
-          style: 'overflow: visible;'
-        },
-        positionalData
-      )
-    );
+    labelElement = group.foreignObject(content, {
+      style: 'overflow: visible;',
+      ...positionalData
+    });
   } else {
     labelElement = group
       .elem('text', positionalData, classes.join(' '))
       .text(String(label));
   }
 
-  eventEmitter.emit(
-    'draw',
-    extend(
-      {
-        type: 'label',
-        axis,
-        index,
-        group,
-        element: labelElement,
-        text: label
-      },
-      positionalData
-    )
-  );
+  eventEmitter.emit('draw', {
+    type: 'label',
+    axis,
+    index,
+    group,
+    element: labelElement,
+    text: label,
+    ...positionalData
+  });
 }

@@ -5,9 +5,11 @@
  * @param sources This object (objects) will be merged into target and then target is returned
  * @return An object that has the same reference as target but is extended and merged with the properties of source
  */
+export function extend<T>(target: T): T;
+export function extend<T, A>(target: T, a: A): T & A;
+export function extend<T, A, B>(target: T, a: A, b: B): T & A & B;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function extend(target: any = {}, ...sources: any[]) {
-  target = target || {};
-
   for (let i = 0; i < sources.length; i++) {
     const source = sources[i];
     for (const prop in source) {

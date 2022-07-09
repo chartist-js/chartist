@@ -279,10 +279,7 @@ export class BarChart extends BaseChart {
           axisUnits.x,
           normalizedData.series,
           chartRect,
-          extend({}, options.axisX, {
-            highLow: highLow,
-            referenceValue: 0
-          })
+          { ...options.axisX, highLow: highLow, referenceValue: 0 }
         );
       } else {
         // eslint-disable-next-line new-cap
@@ -290,10 +287,7 @@ export class BarChart extends BaseChart {
           axisUnits.x,
           normalizedData.series,
           chartRect,
-          extend({}, options.axisX, {
-            highLow: highLow,
-            referenceValue: 0
-          })
+          { ...options.axisX, highLow: highLow, referenceValue: 0 }
         );
       }
 
@@ -340,10 +334,7 @@ export class BarChart extends BaseChart {
           axisUnits.y,
           normalizedData.series,
           chartRect,
-          extend({}, options.axisY, {
-            highLow: highLow,
-            referenceValue: 0
-          })
+          { ...options.axisY, highLow: highLow, referenceValue: 0 }
         );
       } else {
         // eslint-disable-next-line new-cap
@@ -351,10 +342,7 @@ export class BarChart extends BaseChart {
           axisUnits.y,
           normalizedData.series,
           chartRect,
-          extend({}, options.axisY, {
-            highLow: highLow,
-            referenceValue: 0
-          })
+          { ...options.axisY, highLow: highLow, referenceValue: 0 }
         );
       }
     }

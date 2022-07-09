@@ -33,7 +33,7 @@ import { BaseChart } from '../BaseChart';
 /**
  * Default options in line charts. Expand the code view to see a detailed list of options with comments.
  */
-const defaultOptions: PieChartOptions = {
+const defaultOptions = {
   // Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
   width: undefined,
   // Specify a fixed height for the chart as a string (i.e. '100px' or '50%')

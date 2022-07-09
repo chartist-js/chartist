@@ -18,13 +18,12 @@ export function optionsProvider<T = unknown>(
   responsiveOptions: [string, T][] | undefined,
   eventEmitter: EventEmitter
 ): OptionsProvider<T> {
-  const baseOptions = extend({}, options);
   let currentOptions: T;
   const mediaQueryListeners: MediaQueryList[] = [];
 
   function updateCurrentOptions(mediaEvent?: Event) {
     const previousOptions = currentOptions;
-    currentOptions = extend({}, baseOptions);
+    currentOptions = extend({}, options);
 
     if (responsiveOptions) {
       responsiveOptions.forEach(responsiveOption => {
@@ -66,7 +65,7 @@ export function optionsProvider<T = unknown>(
   return {
     removeMediaQueryListeners,
     getCurrentOptions() {
-      return extend({}, currentOptions) as T;
+      return currentOptions;
     }
   };
 }

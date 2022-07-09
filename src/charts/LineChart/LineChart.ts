@@ -286,15 +286,11 @@ export class LineChart extends BaseChart {
     let axisY: Axis;
 
     if (options.axisX.type === undefined) {
-      axisX = new StepAxis(
-        axisUnits.x,
-        normalizedData.series,
-        chartRect,
-        extend({}, options.axisX, {
-          ticks: normalizedData.labels,
-          stretch: options.fullWidth
-        })
-      );
+      axisX = new StepAxis(axisUnits.x, normalizedData.series, chartRect, {
+        ...options.axisX,
+        ticks: normalizedData.labels,
+        stretch: options.fullWidth
+      });
     } else {
       // eslint-disable-next-line new-cap
       axisX = new options.axisX.type(
@@ -306,15 +302,11 @@ export class LineChart extends BaseChart {
     }
 
     if (options.axisY.type === undefined) {
-      axisY = new AutoScaleAxis(
-        axisUnits.y,
-        normalizedData.series,
-        chartRect,
-        extend({}, options.axisY, {
-          high: isNumeric(options.high) ? options.high : options.axisY.high,
-          low: isNumeric(options.low) ? options.low : options.axisY.low
-        })
-      );
+      axisY = new AutoScaleAxis(axisUnits.y, normalizedData.series, chartRect, {
+        ...options.axisY,
+        high: isNumeric(options.high) ? options.high : options.axisY.high,
+        low: isNumeric(options.low) ? options.low : options.axisY.low
+      });
     } else {
       // eslint-disable-next-line new-cap
       axisY = new options.axisY.type(

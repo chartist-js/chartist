@@ -1,6 +1,5 @@
 import type { EventEmitter } from '../event';
 import { ensureUnit, quantity } from '../core/lang';
-import { extend } from '../utils';
 import type { Attributes, AnimationDefinition } from './types';
 import type { Svg } from './Svg';
 
@@ -40,7 +39,7 @@ export const easings = {
 export function createAnimation(
   element: Svg,
   attribute: string,
-  animationDefinition: AnimationDefinition,
+  { easing, ...animationDefinition }: AnimationDefinition,
   createGuided = false,
   eventEmitter?: EventEmitter
 ) {
@@ -50,12 +49,9 @@ export function createAnimation(
 
   // Check if an easing is specified in the definition object and delete it from the object as it will not
   // be part of the animate element attributes.
-  if (animationDefinition.easing) {
+  if (easing) {
     // If already an easing Bézier curve array we take it or we lookup a easing array in the Easing object
-    animationEasing = Array.isArray(animationDefinition.easing)
-      ? animationDefinition.easing
-      : easings[animationDefinition.easing];
-    delete animationDefinition.easing;
+    animationEasing = Array.isArray(easing) ? easing : easings[easing];
   }
 
   // If numeric dur or begin was provided we assume milli seconds
@@ -81,15 +77,10 @@ export function createAnimation(
     animationDefinition.begin = 'indefinite';
   }
 
-  const animate = element.elem(
-    'animate',
-    extend(
-      {
-        attributeName: attribute
-      },
-      animationDefinition
-    )
-  );
+  const animate = element.elem('animate', {
+    attributeName: attribute,
+    ...animationDefinition
+  });
 
   if (createGuided) {
     // If guided we take the value that was put aside in timeout and trigger the animation manually with a timeout
