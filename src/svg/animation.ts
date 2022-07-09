@@ -2,7 +2,7 @@ import type { EventEmitter } from '../event';
 import { ensureUnit, quantity } from '../core/lang';
 import { extend } from '../utils';
 import type { Attributes, AnimationDefinition } from './types';
-import type { Svg } from './svg';
+import type { Svg } from './Svg';
 
 /**
  * This Object contains some standard easing cubic bezier curves.

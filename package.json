@@ -57,6 +57,7 @@
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
     "jest": "jest -c jest.config.json",
+    "test:size": "size-limit",
     "test:unit": "jest -c jest.config.json ./src",
     "test:storyshots": "jest -c jest.config.json ./test/storyshots.spec.js",
     "test": "pnpm lint && pnpm test:unit",
@@ -72,6 +73,7 @@
     "@commitlint/config-conventional": "^16.2.1",
     "@commitlint/cz-commitlint": "^16.2.3",
     "@rollup/plugin-node-resolve": "^13.2.0",
+    "@size-limit/preset-big-lib": "^7.0.8",
     "@storybook/addon-actions": "^6.4.22",
     "@storybook/addon-controls": "^6.4.22",
     "@storybook/addon-docs": "^6.4.22",
@@ -115,6 +117,7 @@
     "sass": "^1.50.1",
     "sass-loader": "^10.0.0",
     "simple-git-hooks": "^2.7.0",
+    "size-limit": "^7.0.8",
     "swc-loader": "^0.2.3",
     "tsd": "^0.20.0",
     "typescript": "^4.6.4"

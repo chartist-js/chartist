@@ -1,0 +1,24 @@
+[
+  {
+    "path": "dist/index.cjs",
+    "limit": "36.45 kB",
+    "webpack": false,
+    "running": false
+  },
+  {
+    "path": "dist/index.cjs",
+    "limit": "7.5 kB",
+    "import": "{ BarChart }"
+  },
+  {
+    "path": "dist/index.js",
+    "limit": "36.2 kB",
+    "webpack": false,
+    "running": false
+  },
+  {
+    "path": "dist/index.js",
+    "limit": "7.45 kB",
+    "import": "{ BarChart }"
+  }
+]
