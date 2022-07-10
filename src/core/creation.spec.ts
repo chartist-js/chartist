@@ -82,7 +82,7 @@ describe('Core', () => {
       });
 
       function onCreated(fn: any, done: any) {
-        eventEmitter.addEventHandler('draw', grid => {
+        eventEmitter.on('draw', grid => {
           fn(grid);
           done();
         });
@@ -154,7 +154,7 @@ describe('Core', () => {
       });
 
       function onCreated(fn: any, done: any) {
-        eventEmitter.addEventHandler('draw', (data: any) => {
+        eventEmitter.on('draw', (data: any) => {
           fn(data);
           done();
         });

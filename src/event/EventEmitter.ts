@@ -9,13 +9,12 @@ export class EventEmitter {
 
   /**
    * Add an event handler for a specific event
-   * @todo Rename to `on`. Replace `'*'` with single argument.
    * @param event The event name
    * @param listener A event handler function
    */
-  addEventHandler(event: '*', listener: AllEventsListener): void;
-  addEventHandler(event: string, listener: EventListener): void;
-  addEventHandler(event: string, listener: EventListener | AllEventsListener) {
+  on(event: '*', listener: AllEventsListener): void;
+  on(event: string, listener: EventListener): void;
+  on(event: string, listener: EventListener | AllEventsListener) {
     const { allListeners, listeners } = this;
 
     if (event === '*') {
@@ -33,16 +32,12 @@ export class EventEmitter {
 
   /**
    * Remove an event handler of a specific event name or remove all event handlers for a specific event.
-   * @todo Rename to `off`. Replace `'*'` with single argument.
    * @param event The event name where a specific or all handlers should be removed
    * @param [listener] An optional event handler function. If specified only this specific handler will be removed and otherwise all handlers are removed.
    */
-  removeEventHandler(event: '*', listener?: AllEventsListener): void;
-  removeEventHandler(event: string, listener?: EventListener): void;
-  removeEventHandler(
-    event: string,
-    listener?: EventListener | AllEventsListener
-  ) {
+  off(event: '*', listener?: AllEventsListener): void;
+  off(event: string, listener?: EventListener): void;
+  off(event: string, listener?: EventListener | AllEventsListener) {
     const { allListeners, listeners } = this;
 
     if (event === '*') {

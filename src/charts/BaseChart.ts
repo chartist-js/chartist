@@ -130,7 +130,7 @@ export abstract class BaseChart {
   on(event: string, listener: EventListener): this;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   on(event: string, listener: any) {
-    this.eventEmitter.addEventHandler(event, listener);
+    this.eventEmitter.on(event, listener);
     return this;
   }
 
@@ -143,7 +143,7 @@ export abstract class BaseChart {
   off(event: string, listener?: EventListener): this;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   off(event: string, listener?: any) {
-    this.eventEmitter.removeEventHandler(event, listener);
+    this.eventEmitter.off(event, listener);
     return this;
   }
 
@@ -159,7 +159,7 @@ export abstract class BaseChart {
       this.eventEmitter
     );
     // Register options change listener that will trigger a chart update
-    this.eventEmitter.addEventHandler('optionsChanged', () => this.update());
+    this.eventEmitter.on('optionsChanged', () => this.update());
 
     // Before the first chart creation we need to register us with all plugins that are configured
     // Initialize all relevant plugins with our chart object and the plugin options specified in the config

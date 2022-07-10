@@ -1,6 +1,5 @@
 /**
  * Simple recursive object extend
- * @todo Replace with Object.assign
  * @param target Target object where the source will be merged into
  * @param sources This object (objects) will be merged into target and then target is returned
  * @return An object that has the same reference as target but is extended and merged with the properties of source
