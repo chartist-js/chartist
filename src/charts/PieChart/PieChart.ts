@@ -221,12 +221,7 @@ export class PieChart extends BaseChart {
     this.svg = svg;
 
     // Calculate charting rect
-    const chartRect = createChartRect(
-      svg,
-      options
-      // @todo Fix padding.
-      // defaultOptions.padding
-    );
+    const chartRect = createChartRect(svg, options);
     // Get biggest circle radius possible within chartRect
     let radius = Math.min(chartRect.width() / 2, chartRect.height() / 2);
     // Calculate total of all series to get reference value or use total reference from optional options
@@ -289,7 +284,6 @@ export class PieChart extends BaseChart {
       const seriesName = safeHasProperty(series, 'name') && series.name;
       const seriesClassName =
         safeHasProperty(series, 'className') && series.className;
-      // @todo getMetaData
       const seriesMeta = safeHasProperty(series, 'meta')
         ? series.meta
         : undefined;

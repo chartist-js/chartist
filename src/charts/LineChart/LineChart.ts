@@ -276,12 +276,7 @@ export class LineChart extends BaseChart {
     const seriesGroup = svg.elem('g');
     const labelGroup = svg.elem('g').addClass(options.classNames.labelGroup);
 
-    const chartRect = createChartRect(
-      svg,
-      options
-      // @todo Fix padding.
-      // defaultOptions.padding
-    );
+    const chartRect = createChartRect(svg, options);
     let axisX: Axis;
     let axisY: Axis;
 
@@ -508,7 +503,6 @@ export class LineChart extends BaseChart {
         );
 
         // We project the areaBase value into screen coordinates
-        // @todo Check with StepAxis
         const areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
 
         // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
@@ -570,8 +564,6 @@ export class LineChart extends BaseChart {
     });
 
     this.eventEmitter.emit<LineChartCreatedEvent>('created', {
-      // @todo Remove redundant
-      // bounds: axisY.bounds,
       chartRect,
       axisX,
       axisY,

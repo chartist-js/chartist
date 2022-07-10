@@ -211,51 +211,6 @@ describe('Core', () => {
           left: 0
         });
       });
-
-      it('should normalize empty padding object with specified fallback', () => {
-        expect(normalizePadding({}, 10)).toEqual({
-          top: 10,
-          right: 10,
-          bottom: 10,
-          left: 10
-        });
-      });
-
-      it('should normalize partial padding object with specified fallback', () => {
-        expect(
-          normalizePadding(
-            {
-              top: 5,
-              left: 5
-            },
-            10
-          )
-        ).toEqual({
-          top: 5,
-          right: 10,
-          bottom: 10,
-          left: 5
-        });
-      });
-
-      it('should not modify complete padding object', () => {
-        expect(
-          normalizePadding(
-            {
-              top: 5,
-              right: 5,
-              bottom: 5,
-              left: 5
-            },
-            10
-          )
-        ).toEqual({
-          top: 5,
-          right: 5,
-          bottom: 5,
-          left: 5
-        });
-      });
     });
   });
 });

@@ -53,8 +53,7 @@ export function createSvg(
  * @returns Returns a padding object containing top, right, bottom, left properties filled with the padding number passed in as argument. If the argument is something else than a number (presumably already a correct padding object) then this argument is directly returned.
  */
 export function normalizePadding(
-  padding: number | Partial<ChartPadding> | undefined,
-  fallback = 0
+  padding: number | Partial<ChartPadding> | undefined
 ) {
   return typeof padding === 'number'
     ? {
@@ -64,12 +63,12 @@ export function normalizePadding(
         left: padding
       }
     : padding === undefined
-    ? { top: fallback, right: fallback, bottom: fallback, left: fallback }
+    ? { top: 0, right: 0, bottom: 0, left: 0 }
     : {
-        top: typeof padding.top === 'number' ? padding.top : fallback,
-        right: typeof padding.right === 'number' ? padding.right : fallback,
-        bottom: typeof padding.bottom === 'number' ? padding.bottom : fallback,
-        left: typeof padding.left === 'number' ? padding.left : fallback
+        top: typeof padding.top === 'number' ? padding.top : 0,
+        right: typeof padding.right === 'number' ? padding.right : 0,
+        bottom: typeof padding.bottom === 'number' ? padding.bottom : 0,
+        left: typeof padding.left === 'number' ? padding.left : 0
       };
 }
 
@@ -77,14 +76,9 @@ export function normalizePadding(
  * Initialize chart drawing rectangle (area where chart is drawn) x1,y1 = bottom left / x2,y2 = top right
  * @param svg The svg element for the chart
  * @param options The Object that contains all the optional values for the chart
- * @param fallbackPadding The fallback padding if partial padding objects are used
  * @return The chart rectangles coordinates inside the svg element plus the rectangles measurements
  */
-export function createChartRect(
-  svg: Svg,
-  options: Options,
-  fallbackPadding?: number
-) {
+export function createChartRect(svg: Svg, options: Options) {
   const hasAxis = Boolean(options.axisX || options.axisY);
   const yAxisOffset = options.axisY?.offset || 0;
   const xAxisOffset = options.axisX?.offset || 0;
@@ -93,10 +87,7 @@ export function createChartRect(
   // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
   let width = svg.width() || quantity(options.width).value || 0;
   let height = svg.height() || quantity(options.height).value || 0;
-  const normalizedPadding = normalizePadding(
-    options.chartPadding,
-    fallbackPadding
-  );
+  const normalizedPadding = normalizePadding(options.chartPadding);
 
   // If settings were to small to cope with offset (legacy) and padding, we'll adjust
   width = Math.max(
@@ -114,11 +105,9 @@ export function createChartRect(
     y1: 0,
     y2: 0,
     padding: normalizedPadding,
-    /** @todo Is it even used?? */
     width() {
       return this.x2 - this.x1;
     },
-    /** @todo Is it even used?? */
     height() {
       return this.y1 - this.y2;
     }

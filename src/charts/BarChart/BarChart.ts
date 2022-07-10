@@ -252,12 +252,7 @@ export class BarChart extends BaseChart {
       highLow.low = options.low;
     }
 
-    const chartRect = createChartRect(
-      svg,
-      options
-      // @todo Fix padding.
-      // defaultOptions.padding
-    );
+    const chartRect = createChartRect(svg, options);
     let valueAxis: Axis;
     const labelAxisTicks = // We need to set step count based on some options combinations
       options.distributeSeries && options.stackBars
