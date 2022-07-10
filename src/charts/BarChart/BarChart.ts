@@ -26,7 +26,7 @@ import {
   createGridBackground
 } from '../../core';
 import { AutoScaleAxis, StepAxis, axisUnits } from '../../axes';
-import { BaseChart, supportsForeignObject } from '../BaseChart';
+import { BaseChart } from '../BaseChart';
 
 function getSerialSums(series: NormalizedSeries[]) {
   return serialMap(series, (...args) =>
@@ -357,14 +357,12 @@ export class BarChart extends BaseChart {
     labelAxis.createGridAndLabels(
       gridGroup,
       labelGroup,
-      supportsForeignObject,
       options,
       this.eventEmitter
     );
     valueAxis.createGridAndLabels(
       gridGroup,
       labelGroup,
-      supportsForeignObject,
       options,
       this.eventEmitter
     );

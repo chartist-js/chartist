@@ -240,40 +240,30 @@ export function createLabel(
   labelOffset: { x: number; y: number },
   group: Svg,
   classes: string[],
-  useForeignObject: boolean,
   eventEmitter: EventEmitter
 ) {
-  let labelElement;
   const positionalData = {
     [axis.units.pos]: position + labelOffset[axis.units.pos],
     [axis.counterUnits.pos]: labelOffset[axis.counterUnits.pos],
     [axis.units.len]: length,
     [axis.counterUnits.len]: Math.max(0, axisOffset - 10)
   };
-
-  if (useForeignObject) {
-    // We need to set width and height explicitly to px as span will not expand with width and height being
-    // 100% in all browsers
-    const stepLength = Math.round(positionalData[axis.units.len]);
-    const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
-    const content = `
+  // We need to set width and height explicitly to px as span will not expand with width and height being
+  // 100% in all browsers
+  const stepLength = Math.round(positionalData[axis.units.len]);
+  const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
+  const content = `
       <span class="${classes.join(' ')}"
             style="${axis.units.len}: ${stepLength}px; ${
-      axis.counterUnits.len
-    }: ${stepCounterLength}px">
+    axis.counterUnits.len
+  }: ${stepCounterLength}px">
         ${label}
       </span>
     `.trim();
-
-    labelElement = group.foreignObject(content, {
-      style: 'overflow: visible;',
-      ...positionalData
-    });
-  } else {
-    labelElement = group
-      .elem('text', positionalData, classes.join(' '))
-      .text(String(label));
-  }
+  const labelElement = group.foreignObject(content, {
+    style: 'overflow: visible;',
+    ...positionalData
+  });
 
   eventEmitter.emit('draw', {
     type: 'label',

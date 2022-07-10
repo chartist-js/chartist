@@ -3,10 +3,6 @@ import type { Svg } from '../svg';
 import { OptionsProvider, optionsProvider } from '../core';
 import { extend } from '../utils';
 import { EventListener, AllEventsListener, EventEmitter } from '../event';
-import { isSupported } from '../svg';
-
-export const supportsForeignObject = isSupported('Extensibility');
-export const supportsAnimations = isSupported('AnimationEventsAttribute');
 
 const instances = new WeakMap<Element, BaseChart>();
 

@@ -411,16 +411,3 @@ export class Svg {
     return this;
   }
 }
-
-/**
- * This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check http://www.w3.org/TR/SVG11/feature for a detailed list.
- * @todo Drop.
- * @param feature The SVG 1.1 feature that should be checked for support.
- * @return True of false if the feature is supported or not
- */
-export function isSupported(feature: string) {
-  return document.implementation.hasFeature(
-    'http://www.w3.org/TR/SVG11/feature#' + feature,
-    '1.1'
-  );
-}

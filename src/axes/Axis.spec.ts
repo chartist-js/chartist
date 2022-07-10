@@ -77,7 +77,6 @@ describe('Axes', () => {
       axis.createGridAndLabels(
         gridGroup,
         labelGroup,
-        true,
         chartOptions,
         eventEmitter
       );
@@ -100,7 +99,6 @@ describe('Axes', () => {
       axis.createGridAndLabels(
         gridGroup,
         labelGroup,
-        true,
         chartOptions,
         eventEmitter
       );
@@ -123,7 +121,6 @@ describe('Axes', () => {
       axis.createGridAndLabels(
         gridGroup,
         labelGroup,
-        true,
         chartOptions,
         eventEmitter
       );

@@ -22,7 +22,7 @@ import {
 import { isNumeric, noop, extend, safeHasProperty } from '../../utils';
 import { StepAxis, AutoScaleAxis, axisUnits } from '../../axes';
 import { monotoneCubic, none } from '../../interpolation';
-import { BaseChart, supportsForeignObject } from './../BaseChart';
+import { BaseChart } from './../BaseChart';
 
 export function getSeriesOption<
   T extends keyof Omit<LineChartOptionsWithDefaults, 'series'>
@@ -320,14 +320,12 @@ export class LineChart extends BaseChart {
     axisX.createGridAndLabels(
       gridGroup,
       labelGroup,
-      supportsForeignObject,
       options,
       this.eventEmitter
     );
     axisY.createGridAndLabels(
       gridGroup,
       labelGroup,
-      supportsForeignObject,
       options,
       this.eventEmitter
     );

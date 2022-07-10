@@ -64,7 +64,6 @@ export abstract class Axis {
   createGridAndLabels(
     gridGroup: Svg,
     labelGroup: Svg,
-    useForeignObject: boolean,
     chartOptions: OptionsWithDefaults,
     eventEmitter: EventEmitter
   ) {
@@ -110,27 +109,20 @@ export abstract class Axis {
         // different offset as for positioned with end (bottom)
         if (chartOptions.axisX.position === 'start') {
           labelOffset.y =
-            this.chartRect.padding.top +
-            chartOptions.axisX.labelOffset.y +
-            (useForeignObject ? 5 : 20);
+            this.chartRect.padding.top + chartOptions.axisX.labelOffset.y + 5;
         } else {
           labelOffset.y =
-            this.chartRect.y1 +
-            chartOptions.axisX.labelOffset.y +
-            (useForeignObject ? 5 : 20);
+            this.chartRect.y1 + chartOptions.axisX.labelOffset.y + 5;
         }
       } else {
         projectedValue = this.chartRect.y1 - projectedValue;
-        labelOffset.y =
-          chartOptions.axisY.labelOffset.y -
-          (useForeignObject ? labelLength : 0);
+        labelOffset.y = chartOptions.axisY.labelOffset.y - labelLength;
 
         // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
         // different offset as for positioned with end (right side)
         if (chartOptions.axisY.position === 'start') {
-          labelOffset.x = useForeignObject
-            ? this.chartRect.padding.left + chartOptions.axisY.labelOffset.x
-            : this.chartRect.x1 - 10;
+          labelOffset.x =
+            this.chartRect.padding.left + chartOptions.axisY.labelOffset.x;
         } else {
           labelOffset.x =
             this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
@@ -170,7 +162,6 @@ export abstract class Axis {
               ? chartOptions.classNames[axisOptions.position]
               : chartOptions.classNames.end
           ],
-          useForeignObject,
           eventEmitter
         );
       }
