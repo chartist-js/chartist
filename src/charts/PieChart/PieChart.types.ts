@@ -9,6 +9,7 @@ import type {
 } from '../../core';
 import type { RequiredKeys } from '../../utils';
 import type { SvgPath } from '../../svg';
+import type { BaseChartEventsTypes } from '../types';
 
 export type PieChartData = Data<FlatSeries>;
 
@@ -75,10 +76,15 @@ export interface SliceDrawEvent
   endAngle: number;
 }
 
-export interface LabelDrawEvent
+export interface SliceLabelDrawEvent
   extends Omit<DrawEvent, 'axisX' | 'axisY' | 'seriesIndex'> {
   type: 'label';
   text: string;
   x: number;
   y: number;
 }
+
+export type PieChartEventsTypes = BaseChartEventsTypes<
+  PieChartCreatedEvent,
+  SliceDrawEvent | SliceLabelDrawEvent
+>;

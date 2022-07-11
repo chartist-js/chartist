@@ -1,4 +1,5 @@
 import type { EventEmitter } from '../event';
+import type { OptionsChangedEvent } from './types';
 import { extend } from '../utils';
 
 export interface OptionsProvider<T = unknown> {
@@ -35,7 +36,7 @@ export function optionsProvider<T = unknown>(
     }
 
     if (eventEmitter && mediaEvent) {
-      eventEmitter.emit('optionsChanged', {
+      eventEmitter.emit<OptionsChangedEvent<T>>('optionsChanged', {
         previousOptions,
         currentOptions
       });

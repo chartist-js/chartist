@@ -8,10 +8,12 @@ import type {
   CreatedEvent,
   DrawEvent,
   NormalizedSeriesValue,
-  NormalizedSeries
+  NormalizedSeries,
+  AxesDrawEvent
 } from '../../core';
 import type { SvgPath } from '../../svg';
 import type { RequiredKeys } from '../../utils';
+import type { BaseChartEventsTypes } from '../types';
 
 export type LineInterpolation = (
   pathCoordinates: number[],
@@ -106,3 +108,8 @@ export interface AreaDrawEvent extends DrawEvent {
   values: NormalizedSeries;
   path: SvgPath;
 }
+
+export type LineChartEventsTypes = BaseChartEventsTypes<
+  LineChartCreatedEvent,
+  AxesDrawEvent | PointDrawEvent | LineDrawEvent | AreaDrawEvent
+>;

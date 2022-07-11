@@ -1,4 +1,12 @@
-import type { ChartPadding, ChartRect, Options, Label } from './types';
+import type {
+  ChartPadding,
+  ChartRect,
+  Options,
+  Label,
+  GridDrawEvent,
+  GridBackgroundDrawEvent,
+  LabelDrawEvent
+} from './types';
 import type { EventEmitter } from '../event';
 import type { Axis } from '../axes';
 import { namespaces } from './constants';
@@ -172,12 +180,12 @@ export function createGrid(
     [`${axis.units.pos}2`]: position,
     [`${axis.counterUnits.pos}1`]: offset,
     [`${axis.counterUnits.pos}2`]: offset + length
-  };
+  } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
 
   const gridElement = group.elem('line', positionalData, classes.join(' '));
 
   // Event for grid draw
-  eventEmitter.emit('draw', {
+  eventEmitter.emit<GridDrawEvent>('draw', {
     type: 'grid',
     axis,
     index,
@@ -209,7 +217,7 @@ export function createGridBackground(
   );
 
   // Event for grid background draw
-  eventEmitter.emit('draw', {
+  eventEmitter.emit<GridBackgroundDrawEvent>('draw', {
     type: 'gridBackground',
     group: gridGroup,
     element: gridBackground
@@ -236,7 +244,7 @@ export function createLabel(
     [axis.counterUnits.pos]: labelOffset[axis.counterUnits.pos],
     [axis.units.len]: length,
     [axis.counterUnits.len]: Math.max(0, axisOffset - 10)
-  };
+  } as Record<'x' | 'y' | 'width' | 'height', number>;
   // We need to set width and height explicitly to px as span will not expand with width and height being
   // 100% in all browsers
   const stepLength = Math.round(positionalData[axis.units.len]);
@@ -254,7 +262,7 @@ export function createLabel(
     ...positionalData
   });
 
-  eventEmitter.emit('draw', {
+  eventEmitter.emit<LabelDrawEvent>('draw', {
     type: 'label',
     axis,
     index,

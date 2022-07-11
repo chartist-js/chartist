@@ -1,6 +1,6 @@
 import type { EventEmitter } from '../event';
 import { ensureUnit, quantity } from '../core/lang';
-import type { Attributes, AnimationDefinition } from './types';
+import type { Attributes, AnimationDefinition, AnimationEvent } from './types';
 import type { Svg } from './Svg';
 
 /**
@@ -39,10 +39,11 @@ export const easings = {
 export function createAnimation(
   element: Svg,
   attribute: string,
-  { easing, ...animationDefinition }: AnimationDefinition,
+  animationDefinition: AnimationDefinition,
   createGuided = false,
   eventEmitter?: EventEmitter
 ) {
+  const { easing, ...def } = animationDefinition;
   const attributeProperties: Attributes = {};
   let animationEasing;
   let timeout;
@@ -55,31 +56,31 @@ export function createAnimation(
   }
 
   // If numeric dur or begin was provided we assume milli seconds
-  animationDefinition.begin = ensureUnit(animationDefinition.begin, 'ms');
-  animationDefinition.dur = ensureUnit(animationDefinition.dur, 'ms');
+  def.begin = ensureUnit(def.begin, 'ms');
+  def.dur = ensureUnit(def.dur, 'ms');
 
   if (animationEasing) {
-    animationDefinition.calcMode = 'spline';
-    animationDefinition.keySplines = animationEasing.join(' ');
-    animationDefinition.keyTimes = '0;1';
+    def.calcMode = 'spline';
+    def.keySplines = animationEasing.join(' ');
+    def.keyTimes = '0;1';
   }
 
   // Adding "fill: freeze" if we are in guided mode and set initial attribute values
   if (createGuided) {
-    animationDefinition.fill = 'freeze';
+    def.fill = 'freeze';
     // Animated property on our element should already be set to the animation from value in guided mode
-    attributeProperties[attribute] = animationDefinition.from;
+    attributeProperties[attribute] = def.from;
     element.attr(attributeProperties);
 
     // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
     // which needs to be in ms aside
-    timeout = quantity(animationDefinition.begin || 0).value;
-    animationDefinition.begin = 'indefinite';
+    timeout = quantity(def.begin || 0).value;
+    def.begin = 'indefinite';
   }
 
   const animate = element.elem('animate', {
     attributeName: attribute,
-    ...animationDefinition
+    ...def
   });
 
   if (createGuided) {
@@ -93,7 +94,7 @@ export function createAnimation(
         animate._node.beginElement();
       } catch (err) {
         // Set animated attribute to current animated value
-        attributeProperties[attribute] = animationDefinition.to;
+        attributeProperties[attribute] = def.to;
         element.attr(attributeProperties);
         // Remove the animate element as it's no longer required
         animate.remove();
@@ -105,7 +106,7 @@ export function createAnimation(
 
   if (eventEmitter) {
     animateNode.addEventListener('beginEvent', () =>
-      eventEmitter.emit('animationBegin', {
+      eventEmitter.emit<AnimationEvent>('animationBegin', {
         element: element,
         animate: animateNode,
         params: animationDefinition
@@ -115,7 +116,7 @@ export function createAnimation(
 
   animateNode.addEventListener('endEvent', () => {
     if (eventEmitter) {
-      eventEmitter.emit('animationEnd', {
+      eventEmitter.emit<AnimationEvent>('animationEnd', {
         element: element,
         animate: animateNode,
         params: animationDefinition
@@ -124,7 +125,7 @@ export function createAnimation(
 
     if (createGuided) {
       // Set animated attribute to current animated value
-      attributeProperties[attribute] = animationDefinition.to;
+      attributeProperties[attribute] = def.to;
       element.attr(attributeProperties);
       // Remove the animate element as it's no longer required
       animate.remove();

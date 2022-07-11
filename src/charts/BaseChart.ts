@@ -1,12 +1,13 @@
-import type { Data, Options } from '../core';
+import type { Data, Options, DataEvent } from '../core';
 import type { Svg } from '../svg';
+import type { BaseChartEventsTypes } from './types';
 import { OptionsProvider, optionsProvider } from '../core';
 import { extend } from '../utils';
 import { EventListener, AllEventsListener, EventEmitter } from '../event';
 
-const instances = new WeakMap<Element, BaseChart>();
+const instances = new WeakMap<Element, BaseChart<unknown>>();
 
-export abstract class BaseChart {
+export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
   protected svg?: Svg;
   protected readonly container: Element;
   protected readonly eventEmitter = new EventEmitter();
@@ -65,7 +66,7 @@ export abstract class BaseChart {
       this.data.labels = this.data.labels || [];
       this.data.series = this.data.series || [];
       // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
-      this.eventEmitter.emit('data', {
+      this.eventEmitter.emit<DataEvent>('data', {
         type: 'update',
         data: this.data
       });
@@ -122,6 +123,10 @@ export abstract class BaseChart {
    * @param event Name of the event. Check the examples for supported events.
    * @param listener The handler function that will be called when an event with the given name was emitted. This function will receive a data argument which contains event data. See the example for more details.
    */
+  on<T extends keyof TEventsTypes>(
+    event: T,
+    listener: EventListener<TEventsTypes[T]>
+  ): this;
   on(event: '*', listener: AllEventsListener): this;
   on(event: string, listener: EventListener): this;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -135,6 +140,10 @@ export abstract class BaseChart {
    * @param event Name of the event for which a handler should be removed
    * @param listener The handler function that that was previously used to register a new event handler. This handler will be removed from the event handler list. If this parameter is omitted then all event handlers for the given event are removed from the list.
    */
+  off<T extends keyof TEventsTypes>(
+    event: T,
+    listener?: EventListener<TEventsTypes[T]>
+  ): this;
   off(event: '*', listener?: AllEventsListener): this;
   off(event: string, listener?: EventListener): this;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -170,7 +179,7 @@ export abstract class BaseChart {
     }
 
     // Event for data transformation that allows to manipulate the data before it gets rendered in the charts
-    this.eventEmitter.emit('data', {
+    this.eventEmitter.emit<DataEvent>('data', {
       type: 'initial',
       data: this.data
     });

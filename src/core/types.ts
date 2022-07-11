@@ -250,3 +250,51 @@ export interface DrawEvent {
   series: FlatSeriesValue | Series | SeriesObject;
   seriesIndex: number;
 }
+
+export interface DataEvent {
+  type: 'initial' | 'update';
+  data: Data;
+}
+
+export interface OptionsChangedEvent<T = Options> {
+  previousOptions: T;
+  currentOptions: T;
+}
+
+export interface GridDrawEvent
+  extends Omit<
+    DrawEvent,
+    'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
+  > {
+  type: 'grid';
+  axis: Axis;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
+export interface GridBackgroundDrawEvent {
+  type: 'gridBackground';
+  group: Svg;
+  element: Svg;
+}
+
+export interface LabelDrawEvent
+  extends Omit<
+    DrawEvent,
+    'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
+  > {
+  type: 'label';
+  axis: Axis;
+  text: Label;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export type AxesDrawEvent =
+  | GridDrawEvent
+  | GridBackgroundDrawEvent
+  | LabelDrawEvent;

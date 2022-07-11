@@ -1,5 +1,6 @@
 import type { SegmentData } from '../core';
 import type { easings } from './animation';
+import type { Svg } from './Svg';
 
 export interface BasePathParams {
   x: number;
@@ -54,4 +55,10 @@ export interface AnimationDefinition {
   dur: number | string;
   from: number | string;
   to: number | string;
+}
+
+export interface AnimationEvent {
+  element: Svg;
+  animate: Element;
+  params: AnimationDefinition;
 }

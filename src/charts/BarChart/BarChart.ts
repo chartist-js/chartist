@@ -4,10 +4,10 @@ import type {
   BarChartOptions,
   BarChartOptionsWithDefaults,
   BarChartCreatedEvent,
-  BarDrawEvent
+  BarDrawEvent,
+  BarChartEventsTypes
 } from './BarChart.types';
 import type { NormalizedSeries } from '../../core';
-import type { EventListener, AllEventsListener } from '../../event';
 import {
   isNumeric,
   noop,
@@ -140,7 +140,7 @@ const defaultOptions = {
   }
 };
 
-export class BarChart extends BaseChart {
+export class BarChart extends BaseChart<BarChartEventsTypes> {
   /**
    * This method creates a new bar chart and returns API object that you can use for later changes.
    * @param query A selector query string or directly a DOM element
@@ -189,18 +189,6 @@ export class BarChart extends BaseChart {
       extend({}, defaultOptions, options),
       responsiveOptions
     );
-  }
-
-  override on(
-    event: 'created',
-    listener: EventListener<BarChartCreatedEvent>
-  ): this;
-  override on(event: 'draw', listener: EventListener<BarDrawEvent>): this;
-  override on(event: '*', listener: AllEventsListener): this;
-  override on(event: string, listener: EventListener): this;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override on(event: string, listener: any) {
-    return super.on(event, listener);
   }
 
   /**
@@ -508,9 +496,10 @@ export class BarChart extends BaseChart {
           return;
         }
 
-        const positions: Record<string, number> = {};
-        positions[`${labelAxis.units.pos}1`] = projected[labelAxis.units.pos];
-        positions[`${labelAxis.units.pos}2`] = projected[labelAxis.units.pos];
+        const positions = {
+          [`${labelAxis.units.pos}1`]: projected[labelAxis.units.pos],
+          [`${labelAxis.units.pos}2`]: projected[labelAxis.units.pos]
+        } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
 
         if (
           options.stackBars &&
@@ -576,10 +565,7 @@ export class BarChart extends BaseChart {
           chartRect,
           group: seriesElement,
           element: bar,
-          x1: positions.x1,
-          y1: positions.y1,
-          x2: positions.x2,
-          y2: positions.y2
+          ...positions
         });
       });
     });

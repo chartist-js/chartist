@@ -57,7 +57,7 @@
     "prepublishOnly": "pnpm test && pnpm build && pnpm clear:package && clean-publish",
     "postpublish": "pnpm clear:package",
     "emitDeclarations": "tsc --emitDeclarationOnly",
-    "build:styles": "./scripts/styles.js",
+    "build:styles": "./scripts/styles.cjs",
     "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",

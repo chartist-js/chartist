@@ -7,10 +7,10 @@ import type {
   PieChartOptionsWithDefaults,
   PieChartCreatedEvent,
   SliceDrawEvent,
-  LabelDrawEvent
+  SliceLabelDrawEvent,
+  PieChartEventsTypes
 } from './PieChart.types';
 import type { Svg } from '../../svg';
-import type { EventListener, AllEventsListener } from '../../event';
 import {
   alphaNumerate,
   quantity,
@@ -99,7 +99,7 @@ export function determineAnchorPosition(
   }
 }
 
-export class PieChart extends BaseChart {
+export class PieChart extends BaseChart<PieChartEventsTypes> {
   /**
    * This method creates a new pie chart and returns an object that can be used to redraw the chart.
    * @param query A selector query string or directly a DOM element
@@ -178,21 +178,6 @@ export class PieChart extends BaseChart {
       extend({}, defaultOptions, options),
       responsiveOptions
     );
-  }
-
-  override on(
-    event: 'created',
-    listener: EventListener<PieChartCreatedEvent>
-  ): this;
-  override on(
-    event: 'draw',
-    listener: EventListener<SliceDrawEvent | LabelDrawEvent>
-  ): this;
-  override on(event: '*', listener: AllEventsListener): this;
-  override on(event: string, listener: EventListener): this;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override on(event: string, listener: any) {
-    return super.on(event, listener);
   }
 
   /**
@@ -444,17 +429,16 @@ export class PieChart extends BaseChart {
             .text(String(interpolatedValue));
 
           // Fire off draw event
-          this.eventEmitter.emit<LabelDrawEvent>('draw', {
+          this.eventEmitter.emit<SliceLabelDrawEvent>('draw', {
             type: 'label',
             index,
             group: labelsGroup,
             element: labelElement,
             text: '' + interpolatedValue,
-            x: labelPosition.x,
-            y: labelPosition.y,
             chartRect,
             series,
-            meta: seriesMeta
+            meta: seriesMeta,
+            ...labelPosition
           });
         }
       }

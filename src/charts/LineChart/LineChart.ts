@@ -6,10 +6,10 @@ import type {
   LineChartCreatedEvent,
   PointDrawEvent,
   LineDrawEvent,
-  AreaDrawEvent
+  AreaDrawEvent,
+  LineChartEventsTypes
 } from './LineChart.types';
 import type { SegmentData, Series, SeriesObject } from '../../core';
-import type { EventListener, AllEventsListener } from '../../event';
 import {
   alphaNumerate,
   normalizeData,
@@ -144,7 +144,7 @@ const defaultOptions = {
   }
 };
 
-export class LineChart extends BaseChart {
+export class LineChart extends BaseChart<LineChartEventsTypes> {
   /**
    * This method creates a new line chart.
    * @param query A selector query string or directly a DOM element
@@ -237,21 +237,6 @@ export class LineChart extends BaseChart {
       extend({}, defaultOptions, options),
       responsiveOptions
     );
-  }
-
-  override on(
-    event: 'created',
-    listener: EventListener<LineChartCreatedEvent>
-  ): this;
-  override on(
-    event: 'draw',
-    listener: EventListener<PointDrawEvent | LineDrawEvent | AreaDrawEvent>
-  ): this;
-  override on(event: '*', listener: AllEventsListener): this;
-  override on(event: string, listener: EventListener): this;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  override on(event: string, listener: any) {
-    return super.on(event, listener);
   }
 
   /**

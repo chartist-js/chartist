@@ -5,7 +5,7 @@ const path = require('path');
 const sass = require('sass');
 const postcss = require('postcss');
 
-const { plugins } = require('../postcss.config');
+const { plugins } = require('../postcss.config.cjs');
 const pkg = require('../package.json');
 
 const cwd = process.cwd();

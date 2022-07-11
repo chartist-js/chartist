@@ -4,9 +4,11 @@ import type {
   Data,
   CreatedEvent,
   DrawEvent,
-  NormalizedMulti
+  NormalizedMulti,
+  AxesDrawEvent
 } from '../../core';
 import type { RequiredKeys } from '../../utils';
+import type { BaseChartEventsTypes } from '../types';
 
 export type BarChartData = Data;
 
@@ -80,3 +82,8 @@ export interface BarDrawEvent extends DrawEvent {
   x2: number;
   y2: number;
 }
+
+export type BarChartEventsTypes = BaseChartEventsTypes<
+  BarChartCreatedEvent,
+  AxesDrawEvent | BarDrawEvent
+>;
