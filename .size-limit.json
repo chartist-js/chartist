@@ -20,5 +20,11 @@
     "path": "dist/index.js",
     "limit": "7.45 kB",
     "import": "{ BarChart }"
+  },
+  {
+    "path": "dist/index.css",
+    "limit": "1.3 kB",
+    "webpack": false,
+    "running": false
   }
 ]
