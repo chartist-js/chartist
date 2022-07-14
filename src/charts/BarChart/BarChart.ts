@@ -211,7 +211,9 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
         (options.horizontalBars ? ' ' + options.classNames.horizontalBars : '')
     );
     const highLow =
-      options.stackBars && normalizedData.series.length
+      options.stackBars &&
+      options.stackMode !== true &&
+      normalizedData.series.length
         ? // If stacked bars we need to calculate the high low from stacked values from each series
           getHighLow(
             [getSerialSums(normalizedData.series)],

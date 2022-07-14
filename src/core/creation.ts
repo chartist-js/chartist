@@ -249,14 +249,13 @@ export function createLabel(
   // 100% in all browsers
   const stepLength = Math.round(positionalData[axis.units.len]);
   const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
-  const content = `
-      <span class="${classes.join(' ')}"
-            style="${axis.units.len}: ${stepLength}px; ${
-    axis.counterUnits.len
-  }: ${stepCounterLength}px">
-        ${label}
-      </span>
-    `.trim();
+  const content = document.createElement('span');
+
+  content.className = classes.join(' ');
+  content.style[axis.units.len] = stepLength + 'px';
+  content.style[axis.counterUnits.len] = stepCounterLength + 'px';
+  content.textContent = String(label);
+
   const labelElement = group.foreignObject(content, {
     style: 'overflow: visible;',
     ...positionalData
