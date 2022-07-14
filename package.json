@@ -66,7 +66,7 @@
     "test:unit": "jest -c jest.config.json ./src",
     "test:storyshots": "jest -c jest.config.json ./test/storyshots.spec.js",
     "test": "pnpm lint && pnpm test:unit",
-    "lint": "eslint './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts}'",
+    "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}'",
     "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts}'",
     "commit": "cz",
     "bumpVersion": "standard-version",
