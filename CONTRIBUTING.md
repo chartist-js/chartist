@@ -1,4 +1,4 @@
-# Contributing to chartist-js
+# Contributing to Chartist
 
 - [Issues and Bugs](#issue)
 - [Submission Guidelines](#submit)
@@ -17,12 +17,11 @@ You will need the following to run a local development enviroment.
 - pnpm (`npm install -g pnpm`)
 - Text editor of your choice
 
-
 ## How to Run a Local Distribution
 
 1. `cd` into your local copy of the repository.
 2. Run `pnpm i` to install dependencies located in `package.json`.
-5. Run `pnpm start` to start the watch task, and the web server should automatically open. Congrats, you should now be able to see your local copy of the Chartist testbed.
+5. Run `pnpm start:storybook` to start Storybook, or run `pnpm jest --watch` to run tests in watch mode. Congrats, you should now be able to see your local copy of the Chartist testbed.
 
 ## <a name="submit"></a> Submission Guidelines
 
