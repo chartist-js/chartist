@@ -2,12 +2,18 @@ import type { EventEmitter } from '../event';
 import { namespaces } from '../core/constants';
 import type { Attributes, AnimationDefinition } from './types';
 import { SvgList } from './SvgList';
-import { createAnimation } from './animation';
+import { createAnimation, easings } from './animation';
 
 /**
  * Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
  */
 export class Svg {
+  /**
+   * @todo Only there for chartist <1 compatibility. Remove after deprecation warining.
+   * @deprecated Use the animation module export `easings` directly.
+   */
+  static readonly Easing = easings;
+
   private _node: Element;
 
   /**
