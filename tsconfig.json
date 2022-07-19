@@ -35,9 +35,5 @@
   },
   "include": [
     "src"
-  ],
-  "exclude": [
-    "**/*.stories.ts",
-    "**/*.spec.ts"
   ]
 }
