@@ -32,7 +32,8 @@ export default [
     external,
     output: {
       file: pkg.publishConfig.main,
-      format: 'cjs',
+      format: 'umd',
+      name: 'Chartist',
       exports: 'named',
       sourcemap: true
     }
