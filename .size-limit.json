@@ -18,7 +18,7 @@
   },
   {
     "path": "dist/index.js",
-    "limit": "7.45 kB",
+    "limit": "9.2 kB",
     "import": "{ BarChart }"
   },
   {

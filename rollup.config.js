@@ -1,5 +1,6 @@
 import swc from 'rollup-plugin-swc';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const extensions = ['.js', '.ts', '.tsx'];
@@ -22,7 +23,8 @@ const plugins = targets => [
       type: 'es6'
     },
     sourceMaps: true
-  })
+  }),
+  terser()
 ];
 
 export default [
