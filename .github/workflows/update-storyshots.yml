@@ -1,0 +1,55 @@
+name: Update storyshots
+on: workflow_dispatch
+jobs:
+  update-storyshots:
+    runs-on: ubuntu-latest
+    name: storyshots
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7.5.0
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Update snapshots
+        run: pnpm test:storyshots -- -u
+      - name: Collect artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Updated storyshots
+          path: test/__image_snapshots__/
+  update-legacy-storyshots:
+    runs-on: ubuntu-latest
+    name: legacy storyshots
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7.5.0
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Update snapshots
+        run: pnpm test:storyshots -- -u
+        env:
+          CHARTIST_COMPAT: true
+      - name: Collect artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: Updated legacy storyshots
+          path: test/__image_snapshots__/

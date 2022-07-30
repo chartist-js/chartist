@@ -1,0 +1,53 @@
+name: Checks
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+jobs:
+  size:
+    runs-on: ubuntu-latest
+    name: size-limit
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7.5.0
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Check size
+        uses: andresz1/size-limit-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+  storybook:
+    runs-on: ubuntu-latest
+    name: storybook
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Check storybook
+        run: pnpm build:storybook
+  editorconfig:
+    runs-on: ubuntu-latest
+    name: editorconfig
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Check editorconfig
+        uses: editorconfig-checker/action-editorconfig-checker@v1

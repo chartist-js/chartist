@@ -1,14 +1,17 @@
-# modules
-node_modules/
-site/bower_components/
+# See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# build
-.tmp/
-.public/
-# dist/
+# dependencies
+node_modules
 
-# generated
-.sass-cache
+# builds
+package
+dist
+storybook-static
 
-# debug
-npm-debug.log
+# misc
+.DS_Store
+
+npm-debug.log*
+
+# testing
+coverage

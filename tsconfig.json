@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* Type Checking */
+    "strict": true,
+    "strictBindCallApply": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    /* Modules */
+    "baseUrl": ".",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "chartist-dev": ["src"]
+    },
+    /* Emit */
+    "declaration": true,
+    "declarationMap": true,
+    "inlineSourceMap": true,
+    "outDir": "dist",
+    /* Interop Constraints */
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    /* Language and Environment */
+    "lib": [
+      "dom",
+      "esnext"
+    ],
+    "target": "esnext",
+    /* Completeness */
+    "skipLibCheck": true
+  },
+  "include": [
+    "src"
+  ]
+}

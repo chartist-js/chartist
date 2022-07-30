@@ -1,0 +1,28 @@
+{
+  "testEnvironment": "jsdom",
+  "testRegex": "(test|src)/.*\\.spec\\.(jsx?|tsx?)$",
+  "setupFilesAfterEnv": ["<rootDir>/test/setup.js"],
+  "transform": {
+    "^.+\\.(t|j)sx?$": ["@swc/jest", {
+      "env": {
+        "targets": {
+          "node": 14
+        }
+      }
+    }]
+  },
+  "moduleNameMapper": {
+    "^chartist-dev$": "<rootDir>/src",
+    "^chartist-dev/styles$": "<rootDir>/test/mock/cssModule.js"
+  },
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!**/node_modules/**",
+    "!**/*.stories.*"
+  ],
+  "coverageReporters": [
+    "lcovonly",
+    "text"
+  ]
+}

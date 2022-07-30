@@ -1,9 +1,0 @@
-/* Donut charts get built from Pie charts but with a fundamentally difference in the drawing approach. The donut is drawn using arc strokes for maximum freedom in styling */
-.ct-series-a .ct-slice-donut {
-  /* give the donut slice a custom colour */
-  stroke: blue;
-  /* customize stroke width of the donut slices in CSS. Note that this property is already set in JavaScript and label positioning also relies on this. In the right situation though it can be very useful to style this property. You need to use !important to override the style attribute */
-  stroke-width: 5px !important;
-  /* create modern looking rounded donut charts */
-  stroke-linecap: round;
-}
