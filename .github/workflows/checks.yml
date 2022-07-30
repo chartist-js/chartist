@@ -31,9 +31,9 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v2
       - name: Install pnpm
-        uses: pnpm/action-setup@v2.0.1
+        uses: pnpm/action-setup@v2
         with:
-          version: 7
+          version: 7.5.0
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
