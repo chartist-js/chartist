@@ -49,5 +49,17 @@ export default [
       format: 'es',
       sourcemap: true
     }
+  },
+  {
+    input: pkg.main,
+    plugins: plugins('defaults, not ie 11, not ie_mob 11'),
+    external,
+    output: {
+      file: pkg.publishConfig.browser[pkg.publishConfig.main],
+      format: 'iife',
+      name: 'Chartist',
+      exports: 'named',
+      sourcemap: true
+    }
   }
 ];

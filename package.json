@@ -39,10 +39,13 @@
   "publishConfig": {
     "style": "./dist/index.css",
     "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
+    "module": "./dist/index.esm.js",
+    "browser": {
+      "./dist/index.cjs": "./dist/index.umd.js"
+    },
     "exports": {
       "require": "./dist/index.cjs",
-      "import": "./dist/index.js"
+      "import": "./dist/index.esm.js"
     },
     "directory": "package"
   },
