@@ -34,18 +34,16 @@
   },
   "sideEffects": false,
   "types": "./dist/index.d.ts",
-  "style": "./src/styles/chartist.scss",
+  "style": "./dist/index.css",
+  "unpkg": "./dist/index.umd.js",
+  "jsdelivr": "./dist/index.umd.js",
   "main": "./src/index.ts",
   "publishConfig": {
-    "style": "./dist/index.css",
     "main": "./dist/index.cjs",
-    "module": "./dist/index.esm.js",
-    "browser": {
-      "./dist/index.cjs": "./dist/index.umd.js"
-    },
+    "module": "./dist/index.js",
     "exports": {
       "require": "./dist/index.cjs",
-      "import": "./dist/index.esm.js"
+      "import": "./dist/index.js"
     },
     "directory": "package"
   },
@@ -60,7 +58,7 @@
     "prepublishOnly": "pnpm test && pnpm build && pnpm clear:package && clean-publish",
     "postpublish": "pnpm clear:package",
     "emitDeclarations": "tsc --project ./tsconfig.build.json --emitDeclarationOnly",
-    "build:styles": "./scripts/styles.cjs",
+    "build:styles": "./scripts/styles.cjs ./src/styles/chartist.scss",
     "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
