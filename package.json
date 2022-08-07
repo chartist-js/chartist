@@ -40,13 +40,10 @@
   "main": "./src/index.ts",
   "publishConfig": {
     "main": "./dist/index.cjs",
-    "module": "./dist/index.esm.js",
-    "browser": {
-      "./dist/index.cjs": "./dist/index.umd.js"
-    },
+    "module": "./dist/index.js",
     "exports": {
       "require": "./dist/index.cjs",
-      "import": "./dist/index.esm.js"
+      "import": "./dist/index.js"
     },
     "directory": "package"
   },
