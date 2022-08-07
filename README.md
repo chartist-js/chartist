@@ -26,7 +26,7 @@
 [chat-url]: https://gitter.im/gionkunz/chartist-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 <p align="center">
-  <img width="400" alt="The Chartist Guy" src="https://raw.github.com/gionkunz/chartist-js/master/site/images/chartist-guy.gif">
+  <img width="400" alt="The Chartist Guy" src="https://raw.github.com/chartist-js/chartist/master/site/images/chartist-guy.gif">
 </p>
 
 Chartist is a simple responsive charting library built with SVG. There are hundreds of nice charting libraries already
