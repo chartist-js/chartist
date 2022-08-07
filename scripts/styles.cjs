@@ -9,14 +9,14 @@ const { plugins } = require('../postcss.config.cjs');
 const pkg = require('../package.json');
 
 const cwd = process.cwd();
-const input = pkg.style;
-const output = pkg.publishConfig.style;
-const sourceMapOutput = pkg.publishConfig.style.replace('.css', '.css.map');
+const input = process.argv[2];
+const output = pkg.style;
+const sourceMapOutput = output.replace('.css', '.css.map');
 
 (async () => {
   let styles;
 
-  styles = sass.compile(pkg.style, {
+  styles = sass.compile(input, {
     sourceMap: true
   });
 
