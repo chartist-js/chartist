@@ -19,7 +19,7 @@ specifiers:
   '@swc/helpers': ^0.3.8
   '@swc/jest': ^0.2.20
   '@testing-library/jest-dom': ^5.16.4
-  '@types/faker': ^5.5.8
+  '@types/faker': ^6.0.0
   '@types/jest': ^27.5.1
   '@types/node': ^17.0.34
   '@typescript-eslint/eslint-plugin': ^5.25.0
@@ -37,7 +37,7 @@ specifiers:
   eslint-plugin-jest-dom: ^4.0.1
   eslint-plugin-prettier: ^4.0.0
   eslint-plugin-testing-library: ^5.5.0
-  faker: ^5.5.3
+  faker: ^6.0.0
   http-server: ^14.1.0
   inquirer: ^8.0.0
   jest: ^27.5.1
@@ -78,7 +78,7 @@ devDependencies:
   '@swc/helpers': 0.3.8
   '@swc/jest': 0.2.20_@swc+core@1.2.165
   '@testing-library/jest-dom': 5.16.4
-  '@types/faker': 5.5.9
+  '@types/faker': 6.6.9
   '@types/jest': 27.5.1
   '@types/node': 17.0.34
   '@typescript-eslint/eslint-plugin': 5.25.0_qo2hgs5jt7x2a3p77h2rutcdae
@@ -96,7 +96,7 @@ devDependencies:
   eslint-plugin-jest-dom: 4.0.1_eslint@8.15.0
   eslint-plugin-prettier: 4.0.0_iqftbjqlxzn3ny5nablrkczhqi
   eslint-plugin-testing-library: 5.5.0_hcfsmds2fshutdssjqluwm76uu
-  faker: 5.5.3
+  faker: 6.6.6
   http-server: 14.1.0
   inquirer: 8.2.2
   jest: 27.5.1
@@ -4619,8 +4619,11 @@ packages:
     resolution: {integrity: sha512-CuPgU6f3eT/XgKKPqKd/gLZV1Xmvf1a2R5POBOGQa6uv82xpls89HU5zKeVoyR8XzHd1RGNOlQlvUe3CFkjWNQ==}
     dev: true
 
-  /@types/faker/5.5.9:
-    resolution: {integrity: sha512-uCx6mP3UY5SIO14XlspxsGjgaemrxpssJI0Ol+GfhxtcKpv9pgRZYsS4eeKeHVLje6Qtc8lGszuBI461+gVZBA==}
+  /@types/faker/6.6.9:
+    resolution: {integrity: sha512-Y9YYm5L//8ooiiknO++4Gr539zzdI0j3aXnOBjo1Vk+kTvffY10GuE2wn78AFPECwZ5MYGTjiDVw1naLLdDimw==}
+    deprecated: This is a stub types definition. faker provides its own type definitions, so you do not need this installed.
+    dependencies:
+      faker: 6.6.6
     dev: true
 
   /@types/git-url-parse/9.0.1:
@@ -6260,7 +6263,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -7024,8 +7027,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
-      is-text-path: 1.0.1
       JSONStream: 1.3.5
+      is-text-path: 1.0.1
       lodash: 4.17.21
       meow: 8.1.2
       split2: 3.2.2
@@ -8594,8 +8597,8 @@ packages:
       - supports-color
     dev: true
 
-  /faker/5.5.3:
-    resolution: {integrity: sha512-wLTv2a28wjUyWkbnX7u/ABZBkUkIF2fCd73V6P2oFqEGEktDfzWx4UxrSqtPRw0xPRAcjeAOIiJWqZm3pP4u3g==}
+  /faker/6.6.6:
+    resolution: {integrity: sha512-9tCqYEDHI5RYFQigXFwF1hnCwcWCOJl/hmll0lr5D2Ljjb0o4wphb69wikeJDz5qCEzXCoPvG6ss5SDP6IfOdg==}
     dev: true
 
   /fast-deep-equal/3.1.3:
@@ -13434,6 +13437,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM=}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise.allsettled/1.0.5:
