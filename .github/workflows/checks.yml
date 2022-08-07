@@ -2,8 +2,7 @@ name: Checks
 on:
   pull_request:
     branches:
-      - master
-      - develop
+      - main
 jobs:
   size:
     runs-on: ubuntu-latest
