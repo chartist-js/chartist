@@ -121,7 +121,7 @@
     "postcss": "^7.0.39",
     "postcss-preset-env": "^6.7.1",
     "prettier": "^2.6.2",
-    "puppeteer": "^14.0.0",
+    "puppeteer": "^16.0.0",
     "rollup": "^2.70.1",
     "rollup-plugin-swc": "^0.2.1",
     "rollup-plugin-terser": "^7.0.2",

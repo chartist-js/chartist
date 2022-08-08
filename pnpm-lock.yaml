@@ -46,7 +46,7 @@ specifiers:
   postcss: ^7.0.39
   postcss-preset-env: ^6.7.1
   prettier: ^2.6.2
-  puppeteer: ^14.0.0
+  puppeteer: ^16.0.0
   rollup: ^2.70.1
   rollup-plugin-swc: ^0.2.1
   rollup-plugin-terser: ^7.0.2
@@ -71,7 +71,7 @@ devDependencies:
   '@storybook/addon-controls': 6.4.22_hcfsmds2fshutdssjqluwm76uu
   '@storybook/addon-docs': 6.4.22_lvtg7nnzyr43hwih556es7ptka
   '@storybook/addon-storyshots': 6.4.22_dd4i5mzpotzxf2zfmskcgyw5ia
-  '@storybook/addon-storyshots-puppeteer': 6.4.22_5zz26kkq7xnazxxhwflpw3gdw4
+  '@storybook/addon-storyshots-puppeteer': 6.4.22_3g52nhlcvqalt3hsmvy45hhi2e
   '@storybook/addon-viewport': 6.4.22
   '@storybook/html': 6.4.22_tgvqbxx3i4v5lht4r2tvmykgia
   '@swc/core': 1.2.165
@@ -105,7 +105,7 @@ devDependencies:
   postcss: 7.0.39
   postcss-preset-env: 6.7.1
   prettier: 2.6.2
-  puppeteer: 14.0.0
+  puppeteer: 16.1.0
   rollup: 2.70.1
   rollup-plugin-swc: 0.2.1_se5dfsysqsuwchop2hfe5dxcvm
   rollup-plugin-terser: 7.0.2_rollup@2.70.1
@@ -127,14 +127,14 @@ packages:
       '@jridgewell/trace-mapping': 0.3.4
     dev: true
 
-  /@axe-core/puppeteer/4.4.2_puppeteer@14.0.0:
+  /@axe-core/puppeteer/4.4.2_puppeteer@16.1.0:
     resolution: {integrity: sha512-HsiXUALjQ5fcWZZgGUvYGr/b7qvWbQXeDuW2z+2YYOJsavlPV9z0IGdm4rmX0lmsdJ9usA5vq5LNLiz23ZyXmw==}
     engines: {node: '>=6.4.0'}
     peerDependencies:
       puppeteer: '>=1.10.0 <= 13'
     dependencies:
       axe-core: 4.4.2
-      puppeteer: 14.0.0
+      puppeteer: 16.1.0
     dev: true
 
   /@babel/code-frame/7.16.7:
@@ -2778,7 +2778,7 @@ packages:
       - webpack-command
     dev: true
 
-  /@storybook/addon-storyshots-puppeteer/6.4.22_5zz26kkq7xnazxxhwflpw3gdw4:
+  /@storybook/addon-storyshots-puppeteer/6.4.22_3g52nhlcvqalt3hsmvy45hhi2e:
     resolution: {integrity: sha512-vmi0slsy8jo+NZL+KSDSvm71vKPv4EKH4xZvZgCAQ6Pm47KgmQxce1tVchmEtP4cBCmhTx7VHjDEe+QgtBvtDw==}
     peerDependencies:
       '@storybook/addon-storyshots': 6.4.22
@@ -2787,14 +2787,14 @@ packages:
       puppeteer:
         optional: true
     dependencies:
-      '@axe-core/puppeteer': 4.4.2_puppeteer@14.0.0
+      '@axe-core/puppeteer': 4.4.2_puppeteer@16.1.0
       '@storybook/addon-storyshots': 6.4.22_dd4i5mzpotzxf2zfmskcgyw5ia
       '@storybook/csf': 0.0.2--canary.87bc651.0
       '@storybook/node-logger': 6.4.22
       '@types/jest-image-snapshot': 4.3.1
       core-js: 3.21.1
       jest-image-snapshot: 4.5.1_jest@27.5.1
-      puppeteer: 14.0.0
+      puppeteer: 16.1.0
       regenerator-runtime: 0.13.9
     transitivePeerDependencies:
       - jest
@@ -3711,7 +3711,7 @@ packages:
       util-deprecate: 1.0.2
       watchpack: 2.3.1
       webpack: 4.46.0
-      ws: 8.6.0
+      ws: 8.8.1
     transitivePeerDependencies:
       - '@types/react'
       - bluebird
@@ -3785,7 +3785,7 @@ packages:
       util-deprecate: 1.0.2
       watchpack: 2.3.1
       webpack: 4.46.0
-      ws: 8.6.0
+      ws: 8.8.1
     transitivePeerDependencies:
       - '@types/react'
       - bluebird
@@ -6207,7 +6207,7 @@ packages:
     dev: true
 
   /buffer-crc32/0.2.13:
-    resolution: {integrity: sha1-DTM+PwDqxQqhRUq9MO+MKl2ackI=}
+    resolution: {integrity: sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==}
     dev: true
 
   /buffer-from/1.1.2:
@@ -6270,7 +6270,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -7784,12 +7784,12 @@ packages:
       - supports-color
     dev: true
 
-  /devtools-protocol/0.0.981744:
-    resolution: {integrity: sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==}
+  /devtools-protocol/0.0.1019158:
+    resolution: {integrity: sha512-wvq+KscQ7/6spEV7czhnZc9RM/woz1AY+/Vpd8/h2HFMwJSdTliu7f/yr1A6vDdJfKICZsShqsYpEQbdhg8AFQ==}
     dev: true
 
-  /devtools-protocol/0.0.982423:
-    resolution: {integrity: sha512-FnVW2nDbjGNw1uD/JRC+9U5768W7e1TfUwqbDTcSsAu1jXFjITSX8w3rkW5FEpHRMPPGpvNSmO1pOpqByiWscA==}
+  /devtools-protocol/0.0.981744:
+    resolution: {integrity: sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==}
     dev: true
 
   /diff-sequences/26.6.2:
@@ -8694,7 +8694,7 @@ packages:
     dev: true
 
   /fd-slicer/1.1.0:
-    resolution: {integrity: sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=}
+    resolution: {integrity: sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==}
     dependencies:
       pend: 1.2.0
     dev: true
@@ -9923,7 +9923,7 @@ packages:
     dev: true
 
   /inherits/2.0.3:
-    resolution: {integrity: sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=}
+    resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
     dev: true
 
   /inherits/2.0.4:
@@ -11964,7 +11964,7 @@ packages:
     dev: true
 
   /ms/2.0.0:
-    resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
+    resolution: {integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==}
     dev: true
 
   /ms/2.1.1:
@@ -12685,7 +12685,7 @@ packages:
     dev: true
 
   /pend/1.2.0:
-    resolution: {integrity: sha1-elfrVQpng/kRUzH89GY9XI4AelA=}
+    resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
     dev: true
 
   /picocolors/0.2.1:
@@ -13500,17 +13500,6 @@ packages:
         optional: true
     dev: true
 
-  /promise-inflight/1.0.1_bluebird@3.7.2:
-    resolution: {integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM=}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-    dependencies:
-      bluebird: 3.7.2
-    dev: true
-
   /promise.allsettled/1.0.5:
     resolution: {integrity: sha512-tVDqeZPoBC0SlzJHzWGZ2NKAguVq2oiYj7gbggbiTvH2itHohijTp7njOUA0aQ/nl+0lr/r6egmhoYu63UZ/pQ==}
     engines: {node: '>= 0.4'}
@@ -13651,14 +13640,14 @@ packages:
       - utf-8-validate
     dev: true
 
-  /puppeteer/14.0.0:
-    resolution: {integrity: sha512-Aj/cySGBMWpUYEWV0YOcwyhq5lOxuuiGScgdj/OvslAm/ydoywiI8OzAIXT4HzKmNTmzm/fKKHHtcsQa/fFgdw==}
+  /puppeteer/16.1.0:
+    resolution: {integrity: sha512-lhykJLbH2bbBaP3NfYI2Vj0T4ctrdfVdEVf8glZITPnLfqrJ0nfUzAYuIz5YcA79k5lmFKANIhEXex+jQChU3g==}
     engines: {node: '>=14.1.0'}
     requiresBuild: true
     dependencies:
       cross-fetch: 3.1.5
       debug: 4.3.4
-      devtools-protocol: 0.0.982423
+      devtools-protocol: 0.0.1019158
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.1
       pkg-dir: 4.2.0
@@ -13667,7 +13656,7 @@ packages:
       rimraf: 3.0.2
       tar-fs: 2.1.1
       unbzip2-stream: 1.4.3
-      ws: 8.6.0
+      ws: 8.8.1
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -16638,8 +16627,8 @@ packages:
         optional: true
     dev: true
 
-  /ws/8.6.0:
-    resolution: {integrity: sha512-AzmM3aH3gk0aX7/rZLYvjdvZooofDu3fFOzGqcSnQ1tOcTWwhM/o+q++E8mAyVVIyUdajrkzWUGftaVSDLn1bw==}
+  /ws/8.8.1:
+    resolution: {integrity: sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -16723,7 +16712,7 @@ packages:
     dev: true
 
   /yauzl/2.10.0:
-    resolution: {integrity: sha1-x+sXyT4RLLEIb6bY5R+wZnt5pfk=}
+    resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
     dependencies:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
