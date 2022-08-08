@@ -9,11 +9,11 @@
   "licenses": [
     {
       "type": "WTFPL",
-      "url": "https://github.com/chartist-js/chartist/blob/master/LICENSE-WTFPL"
+      "url": "https://github.com/chartist-js/chartist/blob/main/LICENSE-WTFPL"
     },
     {
       "type": "MIT",
-      "url": "https://github.com/chartist-js/chartist/blob/master/LICENSE-MIT"
+      "url": "https://github.com/chartist-js/chartist/blob/main/LICENSE-MIT"
     }
   ],
   "repository": {
@@ -72,7 +72,7 @@
     "commit": "cz",
     "bumpVersion": "standard-version",
     "createGithubRelease": "simple-github-release",
-    "release": "pnpm bumpVersion && git push origin master --tags && pnpm createGithubRelease",
+    "release": "pnpm bumpVersion && git push origin main --tags && pnpm createGithubRelease",
     "updateGitHooks": "simple-git-hooks"
   },
   "devDependencies": {

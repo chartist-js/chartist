@@ -1,3 +1,21 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [1.0.0](https://github.com/chartist-js/chartist/compare/v0.11.4...v1.0.0) (2022-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* [new exports names](https://github.com/chartist-js/chartist#esm)
+* methods in EventEmitter were renamed: `addEventHandler` -> `on`, `removeEventHandler` -> `off` ([73e1c44](https://github.com/chartist-js/chartist/commit/73e1c44dc1abab4938dc623a3dc22caad92af6a8))
+
+### Features
+
+* [TypeScript support](https://github.com/chartist-js/chartist#typescript) ([ee4106e](https://github.com/chartist-js/chartist/commit/ee4106e04f3c081805dd79675340378f895c8290))
+* [ESM support](https://github.com/chartist-js/chartist#esm)
+
+
 v0.11.0 - 11 Apr 2017
 - Added CSP compatibility by using CSSOM instead of style attributes (Francisco Silva)
 - Added feature to render pie / donut chart as solid shape, allowing outlines (Sergey Kovalyov, Chris Carson)
@@ -229,4 +247,3 @@ v0.4.0 - 17 Nov 2014
 - Including event when line and area is drawn
 - Changed default scaleMinSpace to 20 to be more mobile friendly
 - Fixed bug with line area base
-
