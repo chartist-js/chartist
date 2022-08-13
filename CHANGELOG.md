@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/chartist-js/chartist/compare/v1.0.0...v1.1.0) (2022-08-13)
+
+
+### Features
+
+* add ResponsiveOptions type helper, add generic type to Svg#getNode method ([#1347](https://github.com/chartist-js/chartist/issues/1347)) ([7dd3ba2](https://github.com/chartist-js/chartist/commit/7dd3ba2992751976bfdff9603021afa8fad140d8))
+
+
+### Bug Fixes
+
+* add Date type to members of Multi type ([#1348](https://github.com/chartist-js/chartist/issues/1348)) ([9bd8679](https://github.com/chartist-js/chartist/commit/9bd867958dd457b26cb697cf6b4d101944443755))
+
 ## [1.0.0](https://github.com/chartist-js/chartist/compare/v0.11.4...v1.0.0) (2022-08-08)
 
 
