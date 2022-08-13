@@ -14,7 +14,6 @@ module.exports = {
     config.module.rules[0].use = [require.resolve('swc-loader')];
     config.module.rules.push({
       test: /\.scss$/,
-      sideEffects: true,
       use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader'].map(
         require.resolve
       )
