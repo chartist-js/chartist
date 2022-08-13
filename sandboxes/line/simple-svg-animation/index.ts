@@ -59,7 +59,7 @@ chart.on('draw', data => {
   }
 });
 
-let timerId: NodeJS.Timeout;
+let timerId: any;
 
 // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
 chart.on('created', () => {
