@@ -7,7 +7,7 @@ import type {
   BarDrawEvent,
   BarChartEventsTypes
 } from './BarChart.types';
-import type { NormalizedSeries } from '../../core';
+import type { NormalizedSeries, ResponsiveOptions } from '../../core';
 import {
   isNumeric,
   noop,
@@ -180,7 +180,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
     query: string | Element | null,
     protected override data: BarChartData,
     options?: BarChartOptions,
-    responsiveOptions?: [string, BarChartOptions][]
+    responsiveOptions?: ResponsiveOptions<BarChartOptions>
   ) {
     super(
       query,

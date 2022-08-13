@@ -11,6 +11,7 @@ import type {
   PieChartEventsTypes
 } from './PieChart.types';
 import type { Svg } from '../../svg';
+import type { ResponsiveOptions } from '../../core';
 import {
   alphaNumerate,
   quantity,
@@ -169,7 +170,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
     query: string | Element | null,
     protected override data: PieChartData,
     options?: PieChartOptions,
-    responsiveOptions?: [string, PieChartOptions][]
+    responsiveOptions?: ResponsiveOptions<PieChartOptions>
   ) {
     super(
       query,

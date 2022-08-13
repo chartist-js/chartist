@@ -81,6 +81,8 @@ export type OptionsWithDefaults = RequiredKeys<
   'axisX' | 'axisY' | 'classNames'
 >;
 
+export type ResponsiveOptions<T = Options> = [string, T][];
+
 export interface Bounds {
   high: number;
   low: number;

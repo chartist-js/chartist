@@ -167,8 +167,8 @@ export class Svg {
   /**
    * Returns the underlying SVG node for the current element.
    */
-  getNode() {
-    return this._node;
+  getNode<T extends Element = Element>() {
+    return this._node as T;
   }
 
   /**

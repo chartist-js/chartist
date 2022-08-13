@@ -1,5 +1,5 @@
 import type { EventEmitter } from '../event';
-import type { OptionsChangedEvent } from './types';
+import type { OptionsChangedEvent, ResponsiveOptions } from './types';
 import { extend } from '../utils';
 
 export interface OptionsProvider<T = unknown> {
@@ -16,7 +16,7 @@ export interface OptionsProvider<T = unknown> {
  */
 export function optionsProvider<T = unknown>(
   options: T,
-  responsiveOptions: [string, T][] | undefined,
+  responsiveOptions: ResponsiveOptions<T> | undefined,
   eventEmitter: EventEmitter
 ): OptionsProvider<T> {
   let currentOptions: T;

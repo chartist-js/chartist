@@ -1,4 +1,4 @@
-import type { Data, Options, DataEvent } from '../core';
+import type { Data, Options, DataEvent, ResponsiveOptions } from '../core';
 import type { Svg } from '../svg';
 import type { BaseChartEventsTypes } from './types';
 import { OptionsProvider, optionsProvider } from '../core';
@@ -25,7 +25,7 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
     protected data: Data,
     private readonly defaultOptions: Options,
     private options: Options,
-    private readonly responsiveOptions?: [string, Options][]
+    private readonly responsiveOptions?: ResponsiveOptions<Options>
   ) {
     const container =
       typeof query === 'string' ? document.querySelector(query) : query;
