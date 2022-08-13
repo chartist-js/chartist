@@ -9,7 +9,12 @@ import type {
   AreaDrawEvent,
   LineChartEventsTypes
 } from './LineChart.types';
-import type { SegmentData, Series, SeriesObject } from '../../core';
+import type {
+  SegmentData,
+  Series,
+  SeriesObject,
+  ResponsiveOptions
+} from '../../core';
 import {
   alphaNumerate,
   normalizeData,
@@ -228,7 +233,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     query: string | Element | null,
     protected override data: LineChartData,
     options?: LineChartOptions,
-    responsiveOptions?: [string, LineChartOptions][]
+    responsiveOptions?: ResponsiveOptions<LineChartOptions>
   ) {
     super(
       query,
