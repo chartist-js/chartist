@@ -32,7 +32,10 @@
   "engines": {
     "node": ">=14"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
   "types": "./dist/index.d.ts",
   "style": "./dist/index.css",
   "unpkg": "./dist/index.umd.js",
