@@ -109,14 +109,14 @@ export type AxisName = 'x' | 'y';
 
 export type Multi =
   | {
-      x: number | string | null;
-      y: number | string | null;
+      x: number | string | Date | null;
+      y: number | string | Date | null;
     }
   | {
-      x: number | string | null;
+      x: number | string | Date | null;
     }
   | {
-      y: number | string | null;
+      y: number | string | Date | null;
     };
 
 export type NormalizedMulti =
