@@ -1,0 +1,8 @@
+{
+  "name": "line-modify-drawing",
+  "description": "Using events to replace graphics",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

@@ -47,6 +47,8 @@ That's why we started Chartist and our goal is to solve all of the above issues.
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="#whats-new-in-v1">What's new in v1?</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+<a href="#examples">Examples</a>
+<span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="#contribution">Contribution</a>
 <hr />
 
@@ -155,6 +157,57 @@ import type {
   PieChartOptions
 } from 'chartist'
 ```
+
+</details>
+
+## Examples
+
+<details>
+  <summary>Bar Chart</summary>
+
+- [Bi-polar bar chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/bi-polar-interpolated)
+- [Distributed series](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/distributed-series)
+- [Extreme responsive configuration](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/extreme-responsive)
+- [Horizontal bar chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/horizontal)
+- [Label placement](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/label-position)
+- [Multi-line labels](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/multiline)
+- [Overlapping bars on mobile](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/overlapping-bars)
+- [Stacked bar chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/stacked)
+- [Add peak circles using the draw events](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/bar/with-circle-modify-drawing)
+
+</details>
+
+<details>
+  <summary>Line Chart</summary>
+
+- [Line chart with area](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/area)
+- [Auto scale axis](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/axis-auto)
+- [Fixed and auto scale axis](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/axis-fixed-and-auto)
+- [Bi-polar Line chart with area only](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/bipolar-area)
+- [Filled holes in data](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/data-fill-holes)
+- [Holes in data](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/data-holes)
+- [Using events to replace graphics](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/modify-drawing)
+- [Only whole numbers](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/only-integer)
+- [SVG Path animation](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/path-animation)
+- [Line scatter diagram with responsive settings](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/scatter-random)
+- [Series Overrides](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/series-override)
+- [Simple line chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/simple)
+- [Simple responsive options](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/simple-responsive)
+- [Line Interpolation / Smoothing](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/simple-smoothing)
+- [Simple SMIL Animations](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/simple-svg-animation)
+- [Advanced SMIL Animations](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/svg-animation)
+- [Timeseries](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/line/timeseries)
+
+</details>
+
+<details>
+  <summary>Pie Chart</summary>
+
+- [Pie chart with custom labels](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/pie/custom-labels)
+- [Animating a Donut with Svg.animate](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/pie/donut-animation)
+- [Donut chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/pie/donut-chart)
+- [Simple pie chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/pie/simple)
+- [Gauge chart](http://codesandbox.io/s/github/chartist-js/chartist/master/sandboxes/pie/simple-gauge)
 
 </details>
 

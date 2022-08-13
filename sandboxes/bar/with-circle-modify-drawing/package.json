@@ -1,0 +1,8 @@
+{
+  "name": "bar-with-circle-modify-drawing",
+  "description": "Add peak circles using the draw events",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

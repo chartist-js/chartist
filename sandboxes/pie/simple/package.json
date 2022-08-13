@@ -1,0 +1,8 @@
+{
+  "name": "pie-simple",
+  "description": "Simple pie chart",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

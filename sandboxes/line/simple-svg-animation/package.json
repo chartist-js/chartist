@@ -1,0 +1,8 @@
+{
+  "name": "line-simple-svg-animation",
+  "description": "Simple SMIL Animations",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

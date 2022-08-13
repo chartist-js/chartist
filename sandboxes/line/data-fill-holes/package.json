@@ -1,0 +1,8 @@
+{
+  "name": "line-data-fill-holes",
+  "description": "Filled holes in data",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "bar-extreme-responsive",
+  "description": "Extreme responsive configuration",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

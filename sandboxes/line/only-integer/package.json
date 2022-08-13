@@ -1,0 +1,8 @@
+{
+  "name": "line-only-integer",
+  "description": "Only whole numbers",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

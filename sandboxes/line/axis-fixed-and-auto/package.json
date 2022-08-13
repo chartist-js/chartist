@@ -1,0 +1,8 @@
+{
+  "name": "line-axis-fixed-and-auto",
+  "description": "Fixed and auto scale axis",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "line-scatter-random",
+  "description": "Line scatter diagram with responsive settings",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

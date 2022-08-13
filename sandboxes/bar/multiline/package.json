@@ -1,0 +1,8 @@
+{
+  "name": "bar-multiline",
+  "description": "Multi-line labels",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}
