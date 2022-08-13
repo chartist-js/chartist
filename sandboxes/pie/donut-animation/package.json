@@ -1,0 +1,8 @@
+{
+  "name": "pie-donut-animation",
+  "description": "Animating a Donut with Svg.animate",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

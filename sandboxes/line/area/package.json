@@ -1,0 +1,8 @@
+{
+  "name": "line-area",
+  "description": "Line chart with area",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

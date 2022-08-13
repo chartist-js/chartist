@@ -1,0 +1,8 @@
+{
+  "name": "bar-label-position",
+  "description": "Label placement",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

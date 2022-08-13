@@ -1,0 +1,8 @@
+{
+  "name": "line-path-animation",
+  "description": "SVG Path animation",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

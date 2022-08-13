@@ -1,0 +1,8 @@
+{
+  "name": "bar-bi-polar-interpolated",
+  "description": "Bi-polar bar chart",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

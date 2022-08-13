@@ -1,0 +1,8 @@
+{
+  "name": "line-bipolar-area",
+  "description": "Bi-polar Line chart with area only",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

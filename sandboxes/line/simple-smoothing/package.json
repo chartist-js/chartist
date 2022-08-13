@@ -1,0 +1,8 @@
+{
+  "name": "line-simple-smoothing",
+  "description": "Line Interpolation / Smoothing",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

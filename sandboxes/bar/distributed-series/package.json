@@ -1,0 +1,8 @@
+{
+  "name": "bar-distributed-series",
+  "description": "Distributed series",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

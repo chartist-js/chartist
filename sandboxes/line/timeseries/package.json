@@ -1,0 +1,8 @@
+{
+  "name": "line-timeseries",
+  "description": "Timeseries",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}
