@@ -40,6 +40,7 @@ export interface SvgPathOptions {
 export type Attributes = Record<string, number | string | undefined | null>;
 
 export interface AnimationDefinition {
+  id?: string;
   easing?: number[] | keyof typeof easings;
   calcMode?: 'discrete' | 'linear' | 'paced' | 'spline';
   restart?: 'always' | 'whenNotActive' | 'never';

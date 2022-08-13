@@ -1,5 +1,5 @@
 import 'chartist/dist/index.css';
-import { PieChart, easings } from 'chartist';
+import { PieChart, easings, AnimationDefinition } from 'chartist';
 
 const chart = new PieChart(
   '#chart',
@@ -26,7 +26,7 @@ chart.on('draw', data => {
     });
 
     // Create animation definition while also assigning an ID to the animation for later sync usage
-    const animationDefinition = {
+    const animationDefinition: Record<string, AnimationDefinition> = {
       'stroke-dashoffset': {
         id: 'anim' + data.index,
         dur: 1000,
@@ -34,8 +34,7 @@ chart.on('draw', data => {
         to: '0px',
         easing: easings.easeOutQuint,
         // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
-        fill: 'freeze',
-        begin: ''
+        fill: 'freeze'
       }
     };
 
@@ -55,7 +54,7 @@ chart.on('draw', data => {
   }
 });
 
-let timerId: NodeJS.Timeout;
+let timerId: any;
 
 // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
 chart.on('created', () => {
