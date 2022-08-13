@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/chartist-js/chartist/compare/v1.1.0...v1.1.1) (2022-08-13)
+
+
+### Bug Fixes
+
+* add styles to side effects ([#1350](https://github.com/chartist-js/chartist/issues/1350)) ([053bf97](https://github.com/chartist-js/chartist/commit/053bf978d825c6285da93af3558b8c0667676212))
+
 ## [1.1.0](https://github.com/chartist-js/chartist/compare/v1.0.0...v1.1.0) (2022-08-13)
 
 

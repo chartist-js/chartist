@@ -1,7 +1,7 @@
 {
   "name": "chartist",
   "type": "module",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Simple, responsive charts",
   "author": "Gion Kunz",
   "homepage": "https://chartist-js.github.io",
