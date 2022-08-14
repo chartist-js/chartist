@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/chartist-js/chartist/compare/v1.1.1...v1.1.2) (2022-08-14)
+
+
+### Bug Fixes
+
+* add id field to AnimationDefinition interface ([#1351](https://github.com/chartist-js/chartist/issues/1351)) ([4012c43](https://github.com/chartist-js/chartist/commit/4012c43942e2dd243a4e5983f25bf4c22ea42d91))
+
 ### [1.1.1](https://github.com/chartist-js/chartist/compare/v1.1.0...v1.1.1) (2022-08-13)
 
 
