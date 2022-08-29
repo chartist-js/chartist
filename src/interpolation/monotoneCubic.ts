@@ -17,6 +17,7 @@ export interface MonotoneCubicInterpolationOptions {
  * All smoothing functions within Chartist are factory functions that accept an options parameter.
  *
  * @example
+ * ```ts
  * const chart = new LineChart('.ct-chart', {
  *   labels: [1, 2, 3, 4, 5],
  *   series: [[1, 2, 8, 1, 7]]
@@ -25,6 +26,7 @@ export interface MonotoneCubicInterpolationOptions {
  *     fillHoles: false
  *   })
  * });
+ * ```
  *
  * @param options The options of the monotoneCubic factory function.
  */

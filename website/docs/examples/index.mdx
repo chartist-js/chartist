@@ -1,0 +1,17 @@
+---
+slug: /examples
+description: List of Chartist usage examples.
+---
+
+import Link from '@docusaurus/Link';
+import { docs } from './docs';
+
+# Examples
+
+<ul>
+  {docs.map(({ title, slug }, i) => (
+    <li key={i}>
+      <Link to={slug}>{title}</Link>
+    </li>
+  ))}
+</ul>

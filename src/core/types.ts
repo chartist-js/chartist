@@ -29,14 +29,41 @@ export interface Options<
   TXAxisOptions = AxisOptions,
   TYAxisOptions = TXAxisOptions
 > {
+  /**
+   * Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
+   */
   width?: number | string;
+  /**
+   * Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
+   */
   height?: number | string;
+  /**
+   * Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+   */
   low?: number;
+  /**
+   * Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
+   */
   high?: number;
+  /**
+   * Unless low/high are explicitly set, bar chart will be centered at zero by default. Set referenceValue to null to auto scale.
+   */
   referenceValue?: number;
+  /**
+   *  Padding of the chart drawing area to the container element and labels as a number or padding object.
+   */
   chartPadding?: number | Partial<ChartPadding>;
+  /**
+   * Options for X-Axis
+   */
   axisX?: TXAxisOptions;
+  /**
+   * Options for Y-Axis
+   */
   axisY?: TYAxisOptions;
+  /**
+   * Override the class names that get used to generate the SVG structure of the chart
+   */
   classNames?: Record<string, string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   plugins?: (Plugin | [Plugin, any])[];
@@ -44,19 +71,53 @@ export interface Options<
 
 export interface AxisOptions {
   type?: AxisType;
+  /**
+   * Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+   */
   low?: number;
+  /**
+   * Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
+   */
   high?: number;
+  /**
+   * Unless low/high are explicitly set, bar chart will be centered at zero by default. Set referenceValue to null to auto scale.
+   */
   referenceValue?: number;
+  /**
+   * The offset of the chart drawing area to the border of the container
+   */
   offset?: number;
+  /**
+   * Position where labels are placed.
+   * Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
+   */
   position?: 'start' | 'end';
+  /**
+   * Allows you to correct label positioning on this axis by positive or negative x and y offset.
+   */
   labelOffset?: {
     x: number;
     y: number;
   };
+  /**
+   * If labels should be shown or not
+   */
   showLabel?: boolean;
+  /**
+   * If the axis grid should be drawn or not
+   */
   showGrid?: boolean;
+  /**
+   * Interpolation function that allows you to intercept the value from the axis label
+   */
   labelInterpolationFnc?(value: Label, index: number): Label | null | undefined;
+  /**
+   * This value specifies the minimum width in pixel of the scale steps
+   */
   scaleMinSpace?: number;
+  /**
+   * Use only integer values (whole numbers) for the scale steps
+   */
   onlyInteger?: boolean;
   ticks?: Label[];
   stretch?: boolean;

@@ -14,6 +14,7 @@ export interface SimpleInteractionOptions {
  * All smoothing functions within Chartist are factory functions that accept an options parameter. The simple interpolation function accepts one configuration parameter `divisor`, between 1 and ∞, which controls the smoothing characteristics.
  *
  * @example
+ * ```ts
  * const chart = new LineChart('.ct-chart', {
  *   labels: [1, 2, 3, 4, 5],
  *   series: [[1, 2, 8, 1, 7]]
@@ -23,6 +24,7 @@ export interface SimpleInteractionOptions {
  *     fillHoles: false
  *   })
  * });
+ * ```
  *
  * @param options The options of the simple interpolation factory function.
  */

@@ -22,7 +22,7 @@ export const sum = (previous: number, current: number) =>
  *
  * For example:
  * @example
- * ```javascript
+ * ```ts
  * const data = [[1, 2], [3], []];
  * serialMap(data, cb);
  *

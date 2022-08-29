@@ -12,7 +12,8 @@ export interface StepInterpolationOptions {
  * All smoothing functions within Chartist are factory functions that accept an options parameter. The step interpolation function accepts one configuration parameter `postpone`, that can be `true` or `false`. The default value is `true` and will cause the step to occur where the value actually changes. If a different behaviour is needed where the step is shifted to the left and happens before the actual value, this option can be set to `false`.
  *
  * @example
- * var chart = new Chartist.Line('.ct-chart', {
+ * ```ts
+ * const chart = new Chartist.Line('.ct-chart', {
  *   labels: [1, 2, 3, 4, 5],
  *   series: [[1, 2, 8, 1, 7]]
  * }, {
@@ -21,6 +22,7 @@ export interface StepInterpolationOptions {
  *     fillHoles: false
  *   })
  * });
+ * ```
  */
 export function step(options?: StepInterpolationOptions) {
   const finalOptions = {

@@ -159,6 +159,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
    * @return An object which exposes the API for the created chart
    *
    * @example
+   * ```ts
    * // Create a simple line chart
    * const data = {
    *   // A labels array that can contain any sort of values
@@ -177,8 +178,10 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
    *
    * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
    * new LineChart('.ct-chart', data, options);
+   * ```
    *
    * @example
+   * ```ts
    * // Use specific interpolation function with configuration from the Chartist.Interpolation module
    *
    * const chart = new LineChart('.ct-chart', {
@@ -191,8 +194,10 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
    *     tension: 0.2
    *   })
    * });
+   * ```
    *
    * @example
+   * ```ts
    * // Create a line chart with responsive options
    *
    * const data = {
@@ -227,7 +232,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
    * ];
    *
    * new LineChart('.ct-chart', data, null, responsiveOptions);
-   *
+   * ```
    */
   constructor(
     query: string | Element | null,
