@@ -70,13 +70,18 @@ const config = {
             label: 'Plugins'
           },
           {
-            href: 'https://slack.cube.dev/?ref=eco-chartist',
-            label: 'Slack',
+            href: 'https://stackoverflow.com/questions/tagged/chartist.js',
+            label: 'Stack Overflow',
             position: 'right'
           },
           {
-            href: 'https://stackoverflow.com/questions/tagged/chartist.js',
-            label: 'Stack Overflow',
+            href: 'https://gitter.im/gionkunz/chartist-js',
+            label: 'Gitter',
+            position: 'right'
+          },
+          {
+            href: 'https://github.com/chartist-js/chartist/discussions',
+            label: 'Discussions',
             position: 'right'
           },
           {
