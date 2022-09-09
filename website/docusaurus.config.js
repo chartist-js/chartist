@@ -31,8 +31,7 @@ const config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/chartist-js/chartist/edit/master/website/'
+          editUrl: 'https://github.com/chartist-js/chartist/edit/main/website/'
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css')
