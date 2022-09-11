@@ -9,7 +9,7 @@ const currentBranch = process.env.BRANCH || branch.sync();
 const config = {
   title: 'Chartist',
   tagline: 'A simple responsive charting library built with SVG',
-  url: 'https://chartist.js.org',
+  url: 'https://chartist.dev',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
