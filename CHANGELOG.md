@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.3](https://github.com/chartist-js/chartist/compare/v1.1.2...v1.1.3) (2022-09-23)
+
+
+### Bug Fixes
+
+* B and I series have the same color value ([#1356](https://github.com/chartist-js/chartist/issues/1356)) ([6f5ad92](https://github.com/chartist-js/chartist/commit/6f5ad92795755b1e50775cf7b837d20700f3e334))
+* label position fix ([#1357](https://github.com/chartist-js/chartist/issues/1357)) ([fbc13e2](https://github.com/chartist-js/chartist/commit/fbc13e22c334a46e9097f7115c1616fc0cc1077d)), closes [#1266](https://github.com/chartist-js/chartist/issues/1266)
+
 ### [1.1.2](https://github.com/chartist-js/chartist/compare/v1.1.1...v1.1.2) (2022-08-14)
 
 
