@@ -1,7 +1,5 @@
 const path = require('path');
 
-const isCompatMode = process.env.CHARTIST_COMPAT === 'true';
-
 module.exports = {
   stories: ['../src/**/*.stories.@(js|jsx|ts|tsx)'],
   addons: [
@@ -19,12 +17,18 @@ module.exports = {
       )
     });
 
-    config.resolve.alias['chartist-dev/styles$'] = isCompatMode
-      ? 'chartist/dist/chartist.css'
-      : path.resolve(__dirname, '..', 'src', 'styles', 'chartist.scss');
-    config.resolve.alias['chartist-dev$'] = isCompatMode
-      ? path.resolve(__dirname, '..', 'test', 'mock', 'compat.ts')
-      : path.resolve(__dirname, '..', 'src');
+    config.resolve.alias['chartist-dev/styles$'] = path.resolve(
+      __dirname,
+      '..',
+      'src',
+      'styles',
+      'chartist.scss'
+    );
+    config.resolve.alias['chartist-dev$'] = path.resolve(
+      __dirname,
+      '..',
+      'src'
+    );
 
     return config;
   }
