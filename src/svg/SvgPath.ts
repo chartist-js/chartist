@@ -255,7 +255,7 @@ export class SvgPath {
   parse(path: string) {
     // Parsing the SVG path string into an array of arrays [['M', '10', '10'], ['L', '100', '100']]
     const chunks = path
-      .replace(/([A-Za-z])([0-9])/g, '$1 $2')
+      .replace(/([A-Za-z])(-?[0-9])/g, '$1 $2')
       .replace(/([0-9])([A-Za-z])/g, '$1 $2')
       .split(/[\s,]+/)
       .reduce<string[][]>((result, pathElement) => {
