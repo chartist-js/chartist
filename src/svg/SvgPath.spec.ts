@@ -191,5 +191,17 @@ describe('Svg', () => {
       expect(paths[1].pathElements.length).toBe(4);
       expect(paths[1].pathElements[0].command).toBe('M');
     });
+
+    it('should correctly parse negative values', () => {
+      const paths: any = new SvgPath().parse('M-10,10L-100,-100');
+      expect(paths.pathElements.length).toBe(2);
+      expect(paths.pathElements[0].command).toBe('M');
+      expect(paths.pathElements[1].command).toBe('L');
+
+      expect(paths.pathElements[0].x).toBe(-10);
+      expect(paths.pathElements[0].y).toBe(10);
+      expect(paths.pathElements[1].x).toBe(-100);
+      expect(paths.pathElements[1].y).toBe(-100);
+    });
   });
 });
