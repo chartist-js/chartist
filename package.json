@@ -121,7 +121,7 @@
     "jest": "^27.5.1",
     "jest-image-snapshot": "^4.5.1",
     "nano-staged": "^0.8.0",
-    "postcss": "^7.0.39",
+    "postcss": "^8.0.0",
     "postcss-loader": "^4.3.0",
     "postcss-preset-env": "^6.7.1",
     "prettier": "^2.6.2",

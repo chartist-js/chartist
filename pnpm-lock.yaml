@@ -46,7 +46,7 @@ importers:
       jest: ^27.5.1
       jest-image-snapshot: ^4.5.1
       nano-staged: ^0.8.0
-      postcss: ^7.0.39
+      postcss: ^8.0.0
       postcss-loader: ^4.3.0
       postcss-preset-env: ^6.7.1
       prettier: ^2.6.2
@@ -105,8 +105,8 @@ importers:
       jest: 27.5.1
       jest-image-snapshot: 4.5.1_jest@27.5.1
       nano-staged: 0.8.0
-      postcss: 7.0.39
-      postcss-loader: 4.3.0_postcss@7.0.39
+      postcss: 8.4.16
+      postcss-loader: 4.3.0_postcss@8.4.16
       postcss-preset-env: 6.7.1
       prettier: 2.6.2
       puppeteer: 14.0.0
@@ -16179,7 +16179,6 @@ packages:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-    dev: false
 
   /nanomatch/1.2.13:
     resolution: {integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==}
@@ -17309,7 +17308,7 @@ packages:
       webpack: 4.46.0
     dev: true
 
-  /postcss-loader/4.3.0_postcss@7.0.39:
+  /postcss-loader/4.3.0_postcss@8.4.16:
     resolution: {integrity: sha512-M/dSoIiNDOo8Rk0mUqoj4kpGq91gcxCfb9PoyZVdZ76/AuhxylHDYZblNE8o+EQ9AMSASeMFEKxZf5aU6wlx1Q==}
     engines: {node: '>= 10.13.0'}
     peerDependencies:
@@ -17319,7 +17318,7 @@ packages:
       cosmiconfig: 7.0.1
       klona: 2.0.5
       loader-utils: 2.0.2
-      postcss: 7.0.39
+      postcss: 8.4.16
       schema-utils: 3.1.1
       semver: 7.3.7
     dev: true
@@ -18036,7 +18035,6 @@ packages:
       nanoid: 3.3.4
       picocolors: 1.0.0
       source-map-js: 1.0.2
-    dev: false
 
   /preact-render-to-string/5.2.0:
     resolution: {integrity: sha512-+RGwSW78Cl+NsZRUbFW1MGB++didsfqRk+IyRVTaqy+3OjtpKK/6HgBtfszUX0YXMfo41k2iaQSseAHGKEwrbg==}
