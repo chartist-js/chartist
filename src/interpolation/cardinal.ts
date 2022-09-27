@@ -16,6 +16,7 @@ export interface CardinalInterpolationOptions {
  * All smoothing functions within Chartist are factory functions that accept an options parameter. The cardinal interpolation function accepts one configuration parameter `tension`, between 0 and 1, which controls the smoothing intensity.
  *
  * @example
+ * ```ts
  * const chart = new LineChart('.ct-chart', {
  *   labels: [1, 2, 3, 4, 5],
  *   series: [[1, 2, 8, 1, 7]]
@@ -25,6 +26,7 @@ export interface CardinalInterpolationOptions {
  *     fillHoles: false
  *   })
  * });
+ * ```
  *
  * @param options The options of the cardinal factory function.
  */

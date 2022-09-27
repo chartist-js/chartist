@@ -150,6 +150,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
    * @return An object which exposes the API for the created chart
    *
    * @example
+   * ```ts
    * // Create a simple bar chart
    * const data = {
    *   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -160,8 +161,10 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
    *
    * // In the global name space Chartist we call the Bar function to initialize a bar chart. As a first parameter we pass in a selector where we would like to get our chart created and as a second parameter we pass our data object.
    * new BarChart('.ct-chart', data);
+   * ```
    *
    * @example
+   * ```ts
    * // This example creates a bipolar grouped bar chart where the boundaries are limitted to -10 and 10
    * new BarChart('.ct-chart', {
    *   labels: [1, 2, 3, 4, 5, 6, 7],
@@ -174,7 +177,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
    *   low: -10,
    *   high: 10
    * });
-   *
+   * ```
    */
   constructor(
     query: string | Element | null,

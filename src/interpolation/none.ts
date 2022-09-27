@@ -10,6 +10,7 @@ export interface NoneInterpolationOptions {
  * This interpolation function does not smooth the path and the result is only containing lines and no curves.
  *
  * @example
+ * ```ts
  * const chart = new LineChart('.ct-chart', {
  *   labels: [1, 2, 3, 4, 5],
  *   series: [[1, 2, 8, 1, 7]]
@@ -18,6 +19,7 @@ export interface NoneInterpolationOptions {
  *     fillHoles: false
  *   })
  * });
+ * ```
  */
 export function none(options?: NoneInterpolationOptions) {
   const finalOptions = {

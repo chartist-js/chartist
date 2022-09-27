@@ -1,0 +1,113 @@
+---
+slug: /
+description: A simple responsive charting library built with SVG
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import logoUrl from '@site/static/img/chartist-guy.gif';
+
+# Big welcome by the Chartist Guy
+
+[![NPM version][npm]][npm-url]
+[![Downloads][downloads]][downloads-url]
+[![Build status][build]][build-url]
+[![Coverage status][coverage]][coverage-url]
+[![Bundle size][size]][size-url]
+[![Join the chat at https://gitter.im/gionkunz/chartist-js][chat]][chat-url]
+
+[npm]: https://img.shields.io/npm/v/chartist.svg
+[npm-url]: https://www.npmjs.com/package/chartist
+
+[downloads]: https://img.shields.io/npm/dm/chartist.svg
+[downloads-url]: https://www.npmjs.com/package/chartist
+
+[build]: https://img.shields.io/github/workflow/status/chartist-js/chartist/CI.svg
+[build-url]: https://github.com/chartist-js/chartist/actions
+
+[coverage]: https://img.shields.io/codecov/c/github/chartist-js/chartist.svg
+[coverage-url]: https://app.codecov.io/gh/chartist-js/chartist
+
+[size]: https://img.shields.io/bundlephobia/minzip/chartist
+[size-url]: https://bundlephobia.com/package/chartist
+
+[chat]: https://badges.gitter.im/gionkunz/chartist-js.svg
+[chat-url]: https://gitter.im/gionkunz/chartist-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
+<p align="center">
+  <img width="400" alt="The Chartist Guy" src={logoUrl}/>
+</p>
+
+Chartist is a simple responsive charting library built with SVG. There are hundreds of nice charting libraries already
+out there, but they are either:
+
+- use the wrong technologies for illustration (canvas)
+- weighs hundreds of kilobytes
+- are not flexible enough while keeping the configuration simple
+- are not friendly to designers
+- more annoying things
+
+That's why we started Chartist and our goal is to solve all of the above issues.
+
+## Quickstart
+
+Install this library using your favorite package manager:
+
+<Tabs>
+  <TabItem value="pnpm" default>
+
+  ```bash
+  pnpm add chartist
+  ```
+
+  </TabItem>
+  <TabItem value="yarn">
+
+  ```bash
+  yarn add chartist
+  ```
+
+  </TabItem>
+  <TabItem value="npm">
+
+  ```bash
+  npm install --save chartist
+  ```
+
+  </TabItem>
+</Tabs>
+
+Then, just import chart you want and use it:
+
+```js
+import { BarChart } from 'chartist';
+
+new BarChart('#chart', {
+  labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'],
+  series: [
+    [1, 2, 4, 8, 6, -2, -1, -4, -6, -2]
+  ]
+}, {
+  high: 10,
+  low: -10,
+  axisX: {
+    labelInterpolationFnc: (value, index) => (index % 2 === 0 ? value : null)
+  }
+});
+```
+
+:::tip Need an API to fetch data?
+Please consider [Cube](https://cube.dev/?ref=eco-chartist), an open-source API for data apps.
+:::
+
+[![supported by Cube](https://user-images.githubusercontent.com/986756/154330861-d79ab8ec-aacb-4af8-9e17-1b28f1eccb01.svg)](https://cube.dev/?ref=eco-chartist)
+
+## Examples
+
+Please see [live examples](/examples).
+
+## Getting Help
+
+Need help? Ask your question on [Gitter](https://gitter.im/gionkunz/chartist-js), [GitHub Discussions](https://github.com/chartist-js/chartist/discussions) or [Stack Overflow](https://stackoverflow.com/questions/tagged/chartist.js).
+
+If you've encountered an issue, please [file it on GitHub](https://github.com/chartist-js/chartist/issues).

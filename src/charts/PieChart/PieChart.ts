@@ -109,20 +109,25 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
    * @param responsiveOptions Specify an array of responsive option arrays which are a media query and options object pair => [[mediaQueryString, optionsObject],[more...]]
    *
    * @example
+   * ```ts
    * // Simple pie chart example with four series
    * new PieChart('.ct-chart', {
    *   series: [10, 2, 4, 3]
    * });
+   * ```
    *
    * @example
+   * ```ts
    * // Drawing a donut chart
    * new PieChart('.ct-chart', {
    *   series: [10, 2, 4, 3]
    * }, {
    *   donut: true
    * });
+   * ```
    *
    * @example
+   * ```ts
    * // Using donut, startAngle and total to draw a gauge chart
    * new PieChart('.ct-chart', {
    *   series: [20, 10, 30, 40]
@@ -132,8 +137,10 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
    *   startAngle: 270,
    *   total: 200
    * });
+   * ```
    *
    * @example
+   * ```ts
    * // Drawing a pie chart with padding and labels that are outside the pie
    * new PieChart('.ct-chart', {
    *   series: [20, 10, 30, 40]
@@ -142,8 +149,10 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
    *   labelOffset: 50,
    *   labelDirection: 'explode'
    * });
+   * ```
    *
    * @example
+   * ```ts
    * // Overriding the class names for individual series as well as a name and meta data.
    * // The name will be written as ct:series-name attribute and the meta data will be serialized and written
    * // to a ct:meta attribute.
@@ -165,6 +174,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
    *     meta: 'Meta Three'
    *   }]
    * });
+   * ```
    */
   constructor(
     query: string | Element | null,
