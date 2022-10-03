@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/chartist-js/chartist/compare/v1.1.3...v1.2.0) (2022-10-03)
+
+
+### Features
+
+* dist scss styles sources ([#1362](https://github.com/chartist-js/chartist/issues/1362)) ([d0efcb0](https://github.com/chartist-js/chartist/commit/d0efcb00aa45e1d4611a16472da758ead8148f7b))
+* remove legacy styles fallbacks ([#1363](https://github.com/chartist-js/chartist/issues/1363)) ([831673f](https://github.com/chartist-js/chartist/commit/831673f9dff080d1c762db2bc5da397eb0b55ab9))
+
+
+### Bug Fixes
+
+* SvgPath.parse fails on negative values ([#1360](https://github.com/chartist-js/chartist/issues/1360)) ([cf6831d](https://github.com/chartist-js/chartist/commit/cf6831d2f7e08dddb497d6b7ce5354e0976779ab))
+
 ### [1.1.3](https://github.com/chartist-js/chartist/compare/v1.1.2...v1.1.3) (2022-09-23)
 
 
