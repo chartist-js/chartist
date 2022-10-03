@@ -61,7 +61,7 @@
     "prepublishOnly": "pnpm test && pnpm build && pnpm clear:package && clean-publish",
     "postpublish": "pnpm clear:package",
     "emitDeclarations": "tsc --project ./tsconfig.build.json --emitDeclarationOnly",
-    "build:styles": "./scripts/styles.cjs ./src/styles/chartist.scss",
+    "build:styles": "./scripts/styles.cjs ./src/styles/index.scss",
     "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",

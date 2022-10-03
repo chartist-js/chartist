@@ -22,7 +22,7 @@ module.exports = {
       '..',
       'src',
       'styles',
-      'chartist.scss'
+      'index.scss'
     );
     config.resolve.alias['chartist-dev$'] = path.resolve(
       __dirname,
