@@ -29,13 +29,7 @@
 }
 
 @mixin ct-align-justify($ct-text-align: $ct-text-align, $ct-text-justify: $ct-text-justify) {
-  -webkit-box-align: $ct-text-align;
-  -webkit-align-items: $ct-text-align;
-  -ms-flex-align: $ct-text-align;
   align-items: $ct-text-align;
-  -webkit-box-pack: $ct-text-justify;
-  -webkit-justify-content: $ct-text-justify;
-  -ms-flex-pack: $ct-text-justify;
   justify-content: $ct-text-justify;
   // Fallback to text-align for non-flex browsers
   @if ($ct-text-justify == 'flex-start') {
@@ -45,16 +39,6 @@
   } @else {
     text-align: center;
   }
-}
-
-@mixin ct-flex() {
-  // Fallback to block
-  display: block;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
 }
 
 @mixin ct-chart-label($ct-text-color: $ct-text-color, $ct-text-size: $ct-text-size, $ct-text-line-height: $ct-text-line-height) {
@@ -120,7 +104,7 @@
 
   .#{$ct-class-chart-line} .#{$ct-class-label},
   .#{$ct-class-chart-bar} .#{$ct-class-label} {
-    @include ct-flex();
+    display: flex;
   }
 
   .#{$ct-class-chart-pie} .#{$ct-class-label},
@@ -130,63 +114,42 @@
 
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, flex-start);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-end);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: end;
   }
 
   .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end} {
     @include ct-align-justify(flex-end, flex-start);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, center);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, center);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, flex-start);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: start;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
-    //@include ct-chart-label($ct-text-color, $ct-text-size, center, $ct-vertical-text-justify);
     @include ct-align-justify(center, flex-end);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: end;
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end} {
     @include ct-align-justify(center, flex-start);
-    // Fallback for browsers that don't support foreignObjects
-    text-anchor: end;
   }
 
   .#{$ct-class-grid} {
