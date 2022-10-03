@@ -13,7 +13,7 @@ const input = process.argv[2];
 const output = pkg.style;
 const sourceMapOutput = output.replace('.css', '.css.map');
 
-(async () => {
+async function compile() {
   let styles;
 
   styles = sass.compile(input, {
@@ -43,4 +43,18 @@ const sourceMapOutput = output.replace('.css', '.css.map');
     fs.writeFile(output, css),
     fs.writeFile(sourceMapOutput, map)
   ]);
-})();
+}
+
+async function copySrc() {
+  const srcDir = path.dirname(input);
+  const distDir = path.dirname(output);
+  const srcFiles = await fs.readdir(srcDir);
+
+  await Promise.all(
+    srcFiles.map(file =>
+      fs.copyFile(path.join(srcDir, file), path.join(distDir, file))
+    )
+  );
+}
+
+Promise.all([compile(), copySrc()]);
