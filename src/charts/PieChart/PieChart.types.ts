@@ -79,10 +79,6 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
    */
   labelDirection?: LabelDirection;
   /**
-   * If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
-   */
-  reverseData?: boolean;
-  /**
    * If true empty values will be ignored to avoid drawing unnecessary slices and labels
    */
   ignoreEmptyValues?: boolean;

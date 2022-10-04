@@ -7,13 +7,18 @@ import type {
   BarDrawEvent,
   BarChartEventsTypes
 } from './BarChart.types';
-import type { NormalizedSeries, ResponsiveOptions } from '../../core';
+import type {
+  NormalizedSeries,
+  ResponsiveOptions,
+  AllSeriesTypes
+} from '../../core';
 import {
   isNumeric,
   noop,
   serialMap,
   extend,
-  safeHasProperty
+  safeHasProperty,
+  each
 } from '../../utils';
 import {
   alphaNumerate,
@@ -365,215 +370,221 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
     }
 
     // Draw the series
-    data.series.forEach((series, seriesIndex) => {
-      // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
-      const biPol = seriesIndex - (data.series.length - 1) / 2;
-      // Half of the period width between vertical grid lines used to position bars
-      let periodHalfLength: number;
+    each<AllSeriesTypes[number]>(
+      data.series,
+      (series, seriesIndex) => {
+        // Calculating bi-polar value of index for seriesOffset. For i = 0..4 biPol will be -1.5, -0.5, 0.5, 1.5 etc.
+        const biPol = seriesIndex - (data.series.length - 1) / 2;
+        // Half of the period width between vertical grid lines used to position bars
+        let periodHalfLength: number;
 
-      // We need to set periodHalfLength based on some options combinations
-      if (options.distributeSeries && !options.stackBars) {
-        // If distributed series are enabled but stacked bars aren't, we need to use the length of the normaizedData array
-        // which is the series count and divide by 2
-        periodHalfLength =
-          labelAxis.axisLength / normalizedData.series.length / 2;
-      } else if (options.distributeSeries && options.stackBars) {
-        // If distributed series and stacked bars are enabled we'll only get one bar so we should just divide the axis
-        // length by 2
-        periodHalfLength = labelAxis.axisLength / 2;
-      } else {
-        // On regular bar charts we should just use the series length
-        periodHalfLength =
-          labelAxis.axisLength / normalizedData.series[seriesIndex].length / 2;
-      }
-
-      // Adding the series group to the series element
-      const seriesElement = seriesGroup.elem('g');
-      const seriesName = safeHasProperty(series, 'name') && series.name;
-      const seriesClassName =
-        safeHasProperty(series, 'className') && series.className;
-      const seriesMeta = safeHasProperty(series, 'meta')
-        ? series.meta
-        : undefined;
-
-      // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
-      if (seriesName) {
-        seriesElement.attr({
-          'ct:series-name': seriesName
-        });
-      }
-
-      if (seriesMeta) {
-        seriesElement.attr({
-          'ct:meta': serialize(seriesMeta)
-        });
-      }
-
-      // Use series class from series data or if not set generate one
-      seriesElement.addClass(
-        [
-          options.classNames.series,
-          seriesClassName ||
-            `${options.classNames.series}-${alphaNumerate(seriesIndex)}`
-        ].join(' ')
-      );
-
-      normalizedData.series[seriesIndex].forEach((value, valueIndex) => {
-        let labelAxisValueIndex;
-        // We need to set labelAxisValueIndex based on some options combinations
+        // We need to set periodHalfLength based on some options combinations
         if (options.distributeSeries && !options.stackBars) {
-          // If distributed series are enabled but stacked bars aren't, we can use the seriesIndex for later projection
-          // on the step axis for label positioning
-          labelAxisValueIndex = seriesIndex;
+          // If distributed series are enabled but stacked bars aren't, we need to use the length of the normaizedData array
+          // which is the series count and divide by 2
+          periodHalfLength =
+            labelAxis.axisLength / normalizedData.series.length / 2;
         } else if (options.distributeSeries && options.stackBars) {
-          // If distributed series and stacked bars are enabled, we will only get one bar and therefore always use
-          // 0 for projection on the label step axis
-          labelAxisValueIndex = 0;
+          // If distributed series and stacked bars are enabled we'll only get one bar so we should just divide the axis
+          // length by 2
+          periodHalfLength = labelAxis.axisLength / 2;
         } else {
-          // On regular bar charts we just use the value index to project on the label step axis
-          labelAxisValueIndex = valueIndex;
+          // On regular bar charts we should just use the series length
+          periodHalfLength =
+            labelAxis.axisLength /
+            normalizedData.series[seriesIndex].length /
+            2;
         }
 
-        let projected;
-        // We need to transform coordinates differently based on the chart layout
-        if (options.horizontalBars) {
-          projected = {
-            x:
-              chartRect.x1 +
-              valueAxis.projectValue(
-                safeHasProperty(value, 'x') ? value.x : 0,
-                valueIndex,
-                normalizedData.series[seriesIndex]
-              ),
-            y:
-              chartRect.y1 -
-              labelAxis.projectValue(
-                safeHasProperty(value, 'y') ? value.y : 0,
-                labelAxisValueIndex,
-                normalizedData.series[seriesIndex]
-              )
-          };
-        } else {
-          projected = {
-            x:
-              chartRect.x1 +
-              labelAxis.projectValue(
-                safeHasProperty(value, 'x') ? value.x : 0,
-                labelAxisValueIndex,
-                normalizedData.series[seriesIndex]
-              ),
-            y:
-              chartRect.y1 -
-              valueAxis.projectValue(
-                safeHasProperty(value, 'y') ? value.y : 0,
-                valueIndex,
-                normalizedData.series[seriesIndex]
-              )
-          };
-        }
+        // Adding the series group to the series element
+        const seriesElement = seriesGroup.elem('g');
+        const seriesName = safeHasProperty(series, 'name') && series.name;
+        const seriesClassName =
+          safeHasProperty(series, 'className') && series.className;
+        const seriesMeta = safeHasProperty(series, 'meta')
+          ? series.meta
+          : undefined;
 
-        // If the label axis is a step based axis we will offset the bar into the middle of between two steps using
-        // the periodHalfLength value. Also we do arrange the different series so that they align up to each other using
-        // the seriesBarDistance. If we don't have a step axis, the bar positions can be chosen freely so we should not
-        // add any automated positioning.
-        if (labelAxis instanceof StepAxis) {
-          // Offset to center bar between grid lines, but only if the step axis is not stretched
-          if (!labelAxis.stretch) {
-            projected[labelAxis.units.pos] +=
-              periodHalfLength * (options.horizontalBars ? -1 : 1);
-          }
-          // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
-          projected[labelAxis.units.pos] +=
-            options.stackBars || options.distributeSeries
-              ? 0
-              : biPol *
-                options.seriesBarDistance *
-                (options.horizontalBars ? -1 : 1);
-        }
-
-        // Enter value in stacked bar values used to remember previous screen value for stacking up bars
-        const previousStack = stackedBarValues[valueIndex] || zeroPoint;
-        stackedBarValues[valueIndex] =
-          previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
-
-        // Skip if value is undefined
-        if (value === undefined) {
-          return;
-        }
-
-        const positions = {
-          [`${labelAxis.units.pos}1`]: projected[labelAxis.units.pos],
-          [`${labelAxis.units.pos}2`]: projected[labelAxis.units.pos]
-        } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
-
-        if (
-          options.stackBars &&
-          (options.stackMode === 'accumulate' || !options.stackMode)
-        ) {
-          // Stack mode: accumulate (default)
-          // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
-          // We want backwards compatibility, so the expected fallback without the 'stackMode' option
-          // to be the original behaviour (accumulate)
-          positions[`${labelAxis.counterUnits.pos}1`] = previousStack;
-          positions[`${labelAxis.counterUnits.pos}2`] =
-            stackedBarValues[valueIndex];
-        } else {
-          // Draw from the zero line normally
-          // This is also the same code for Stack mode: overlap
-          positions[`${labelAxis.counterUnits.pos}1`] = zeroPoint;
-          positions[`${labelAxis.counterUnits.pos}2`] =
-            projected[labelAxis.counterUnits.pos];
-        }
-
-        // Limit x and y so that they are within the chart rect
-        positions.x1 = Math.min(
-          Math.max(positions.x1, chartRect.x1),
-          chartRect.x2
-        );
-        positions.x2 = Math.min(
-          Math.max(positions.x2, chartRect.x1),
-          chartRect.x2
-        );
-        positions.y1 = Math.min(
-          Math.max(positions.y1, chartRect.y2),
-          chartRect.y1
-        );
-        positions.y2 = Math.min(
-          Math.max(positions.y2, chartRect.y2),
-          chartRect.y1
-        );
-
-        const metaData = getMetaData(series, valueIndex);
-
-        // Create bar element
-        const bar = seriesElement
-          .elem('line', positions, options.classNames.bar)
-          .attr({
-            'ct:value': [
-              safeHasProperty(value, 'x') && value.x,
-              safeHasProperty(value, 'y') && value.y
-            ]
-              .filter(isNumeric)
-              .join(','),
-            'ct:meta': serialize(metaData)
+        // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
+        if (seriesName) {
+          seriesElement.attr({
+            'ct:series-name': seriesName
           });
+        }
 
-        this.eventEmitter.emit<BarDrawEvent>('draw', {
-          type: 'bar',
-          value,
-          index: valueIndex,
-          meta: metaData,
-          series,
-          seriesIndex,
-          axisX,
-          axisY,
-          chartRect,
-          group: seriesElement,
-          element: bar,
-          ...positions
+        if (seriesMeta) {
+          seriesElement.attr({
+            'ct:meta': serialize(seriesMeta)
+          });
+        }
+
+        // Use series class from series data or if not set generate one
+        seriesElement.addClass(
+          [
+            options.classNames.series,
+            seriesClassName ||
+              `${options.classNames.series}-${alphaNumerate(seriesIndex)}`
+          ].join(' ')
+        );
+
+        normalizedData.series[seriesIndex].forEach((value, valueIndex) => {
+          let labelAxisValueIndex;
+          // We need to set labelAxisValueIndex based on some options combinations
+          if (options.distributeSeries && !options.stackBars) {
+            // If distributed series are enabled but stacked bars aren't, we can use the seriesIndex for later projection
+            // on the step axis for label positioning
+            labelAxisValueIndex = seriesIndex;
+          } else if (options.distributeSeries && options.stackBars) {
+            // If distributed series and stacked bars are enabled, we will only get one bar and therefore always use
+            // 0 for projection on the label step axis
+            labelAxisValueIndex = 0;
+          } else {
+            // On regular bar charts we just use the value index to project on the label step axis
+            labelAxisValueIndex = valueIndex;
+          }
+
+          let projected;
+          // We need to transform coordinates differently based on the chart layout
+          if (options.horizontalBars) {
+            projected = {
+              x:
+                chartRect.x1 +
+                valueAxis.projectValue(
+                  safeHasProperty(value, 'x') ? value.x : 0,
+                  valueIndex,
+                  normalizedData.series[seriesIndex]
+                ),
+              y:
+                chartRect.y1 -
+                labelAxis.projectValue(
+                  safeHasProperty(value, 'y') ? value.y : 0,
+                  labelAxisValueIndex,
+                  normalizedData.series[seriesIndex]
+                )
+            };
+          } else {
+            projected = {
+              x:
+                chartRect.x1 +
+                labelAxis.projectValue(
+                  safeHasProperty(value, 'x') ? value.x : 0,
+                  labelAxisValueIndex,
+                  normalizedData.series[seriesIndex]
+                ),
+              y:
+                chartRect.y1 -
+                valueAxis.projectValue(
+                  safeHasProperty(value, 'y') ? value.y : 0,
+                  valueIndex,
+                  normalizedData.series[seriesIndex]
+                )
+            };
+          }
+
+          // If the label axis is a step based axis we will offset the bar into the middle of between two steps using
+          // the periodHalfLength value. Also we do arrange the different series so that they align up to each other using
+          // the seriesBarDistance. If we don't have a step axis, the bar positions can be chosen freely so we should not
+          // add any automated positioning.
+          if (labelAxis instanceof StepAxis) {
+            // Offset to center bar between grid lines, but only if the step axis is not stretched
+            if (!labelAxis.stretch) {
+              projected[labelAxis.units.pos] +=
+                periodHalfLength * (options.horizontalBars ? -1 : 1);
+            }
+            // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
+            projected[labelAxis.units.pos] +=
+              options.stackBars || options.distributeSeries
+                ? 0
+                : biPol *
+                  options.seriesBarDistance *
+                  (options.horizontalBars ? -1 : 1);
+          }
+
+          // Enter value in stacked bar values used to remember previous screen value for stacking up bars
+          const previousStack = stackedBarValues[valueIndex] || zeroPoint;
+          stackedBarValues[valueIndex] =
+            previousStack - (zeroPoint - projected[labelAxis.counterUnits.pos]);
+
+          // Skip if value is undefined
+          if (value === undefined) {
+            return;
+          }
+
+          const positions = {
+            [`${labelAxis.units.pos}1`]: projected[labelAxis.units.pos],
+            [`${labelAxis.units.pos}2`]: projected[labelAxis.units.pos]
+          } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+
+          if (
+            options.stackBars &&
+            (options.stackMode === 'accumulate' || !options.stackMode)
+          ) {
+            // Stack mode: accumulate (default)
+            // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
+            // We want backwards compatibility, so the expected fallback without the 'stackMode' option
+            // to be the original behaviour (accumulate)
+            positions[`${labelAxis.counterUnits.pos}1`] = previousStack;
+            positions[`${labelAxis.counterUnits.pos}2`] =
+              stackedBarValues[valueIndex];
+          } else {
+            // Draw from the zero line normally
+            // This is also the same code for Stack mode: overlap
+            positions[`${labelAxis.counterUnits.pos}1`] = zeroPoint;
+            positions[`${labelAxis.counterUnits.pos}2`] =
+              projected[labelAxis.counterUnits.pos];
+          }
+
+          // Limit x and y so that they are within the chart rect
+          positions.x1 = Math.min(
+            Math.max(positions.x1, chartRect.x1),
+            chartRect.x2
+          );
+          positions.x2 = Math.min(
+            Math.max(positions.x2, chartRect.x1),
+            chartRect.x2
+          );
+          positions.y1 = Math.min(
+            Math.max(positions.y1, chartRect.y2),
+            chartRect.y1
+          );
+          positions.y2 = Math.min(
+            Math.max(positions.y2, chartRect.y2),
+            chartRect.y1
+          );
+
+          const metaData = getMetaData(series, valueIndex);
+
+          // Create bar element
+          const bar = seriesElement
+            .elem('line', positions, options.classNames.bar)
+            .attr({
+              'ct:value': [
+                safeHasProperty(value, 'x') && value.x,
+                safeHasProperty(value, 'y') && value.y
+              ]
+                .filter(isNumeric)
+                .join(','),
+              'ct:meta': serialize(metaData)
+            });
+
+          this.eventEmitter.emit<BarDrawEvent>('draw', {
+            type: 'bar',
+            value,
+            index: valueIndex,
+            meta: metaData,
+            series,
+            seriesIndex,
+            axisX,
+            axisY,
+            chartRect,
+            group: seriesElement,
+            element: bar,
+            ...positions
+          });
         });
-      });
-    });
+      },
+      options.reverseData
+    );
 
     this.eventEmitter.emit<BarChartCreatedEvent>('created', {
       chartRect,
