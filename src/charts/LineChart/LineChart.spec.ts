@@ -1028,5 +1028,33 @@ describe('Charts', () => {
         ).not.toBe('NaN');
       });
     });
+
+    it('should correct apply class names', async () => {
+      data = {
+        labels: ['A', 'B', 'C'],
+        series: [
+          {
+            className: 'series-1',
+            data: [1, 2, 3]
+          },
+          {
+            className: 'series-2',
+            data: [4, 5, 6]
+          }
+        ]
+      };
+      options = {
+        reverseData: true
+      };
+      await createChart();
+
+      const seriesElements = document.querySelectorAll('.ct-series');
+
+      expect(seriesElements[0]).toHaveClass('series-2');
+      expect(seriesElements[0]).toContainHTML('ct:value="6"');
+
+      expect(seriesElements[1]).toHaveClass('series-1');
+      expect(seriesElements[1]).toContainHTML('ct:value="3"');
+    });
   });
 });

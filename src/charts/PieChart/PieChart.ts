@@ -69,8 +69,6 @@ const defaultOptions = {
   labelInterpolationFnc: noop,
   // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
   labelDirection: 'neutral',
-  // If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
-  reverseData: false,
   // If true empty values will be ignored to avoid drawing unnecessary slices and labels
   ignoreEmptyValues: false
 };

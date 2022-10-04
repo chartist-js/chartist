@@ -55,3 +55,19 @@ export function isArrayOfArrays(data: unknown): data is unknown[][] {
 
   return data.every(Array.isArray);
 }
+
+/**
+ * Loop over array.
+ */
+export function each<T>(
+  list: T[],
+  callback: (item: T, index: number, itemIndex: number) => void,
+  reverse = false
+) {
+  let index = 0;
+
+  list[reverse ? 'reduceRight' : 'reduce']<void>(
+    (_, item, itemIndex) => callback(item, index++, itemIndex),
+    void 0
+  );
+}

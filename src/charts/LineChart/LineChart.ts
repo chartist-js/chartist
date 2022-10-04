@@ -24,7 +24,7 @@ import {
   createChartRect,
   createGridBackground
 } from '../../core';
-import { isNumeric, noop, extend, safeHasProperty } from '../../utils';
+import { isNumeric, noop, extend, safeHasProperty, each } from '../../utils';
 import { StepAxis, AutoScaleAxis, axisUnits } from '../../axes';
 import { monotoneCubic, none } from '../../interpolation';
 import { BaseChart } from './../BaseChart';
@@ -330,233 +330,237 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     }
 
     // Draw the series
-    data.series.forEach((series, seriesIndex) => {
-      const seriesElement = seriesGroup.elem('g');
-      const seriesName = safeHasProperty(series, 'name') && series.name;
-      const seriesClassName =
-        safeHasProperty(series, 'className') && series.className;
-      const seriesMeta = safeHasProperty(series, 'meta')
-        ? series.meta
-        : undefined;
+    each(
+      data.series,
+      (series, seriesIndex) => {
+        const seriesElement = seriesGroup.elem('g');
+        const seriesName = safeHasProperty(series, 'name') && series.name;
+        const seriesClassName =
+          safeHasProperty(series, 'className') && series.className;
+        const seriesMeta = safeHasProperty(series, 'meta')
+          ? series.meta
+          : undefined;
 
-      // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
-      if (seriesName) {
-        seriesElement.attr({
-          'ct:series-name': seriesName
-        });
-      }
+        // Write attributes to series group element. If series name or meta is undefined the attributes will not be written
+        if (seriesName) {
+          seriesElement.attr({
+            'ct:series-name': seriesName
+          });
+        }
 
-      if (seriesMeta) {
-        seriesElement.attr({
-          'ct:meta': serialize(seriesMeta)
-        });
-      }
+        if (seriesMeta) {
+          seriesElement.attr({
+            'ct:meta': serialize(seriesMeta)
+          });
+        }
 
-      // Use series class from series data or if not set generate one
-      seriesElement.addClass(
-        [
-          options.classNames.series,
-          seriesClassName ||
-            `${options.classNames.series}-${alphaNumerate(seriesIndex)}`
-        ].join(' ')
-      );
+        // Use series class from series data or if not set generate one
+        seriesElement.addClass(
+          [
+            options.classNames.series,
+            seriesClassName ||
+              `${options.classNames.series}-${alphaNumerate(seriesIndex)}`
+          ].join(' ')
+        );
 
-      const pathCoordinates: number[] = [];
-      const pathData: SegmentData[] = [];
+        const pathCoordinates: number[] = [];
+        const pathData: SegmentData[] = [];
 
-      normalizedData.series[seriesIndex].forEach((value, valueIndex) => {
-        const p = {
-          x:
-            chartRect.x1 +
-            axisX.projectValue(
-              value,
-              valueIndex,
-              normalizedData.series[seriesIndex]
-            ),
-          y:
-            chartRect.y1 -
-            axisY.projectValue(
-              value,
-              valueIndex,
-              normalizedData.series[seriesIndex]
-            )
-        };
-        pathCoordinates.push(p.x, p.y);
-        pathData.push({
-          value,
-          valueIndex,
-          meta: getMetaData(series, valueIndex)
-        });
-      });
-
-      const seriesOptions = {
-        lineSmooth: getSeriesOption(series, options, 'lineSmooth'),
-        showPoint: getSeriesOption(series, options, 'showPoint'),
-        showLine: getSeriesOption(series, options, 'showLine'),
-        showArea: getSeriesOption(series, options, 'showArea'),
-        areaBase: getSeriesOption(series, options, 'areaBase')
-      };
-
-      let smoothing;
-      if (typeof seriesOptions.lineSmooth === 'function') {
-        smoothing = seriesOptions.lineSmooth;
-      } else {
-        smoothing = seriesOptions.lineSmooth ? monotoneCubic() : none();
-      }
-
-      // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
-      // index, value and meta data
-      const path = smoothing(pathCoordinates, pathData);
-
-      // If we should show points we need to create them now to avoid secondary loop
-      // Points are drawn from the pathElements returned by the interpolation function
-      // Small offset for Firefox to render squares correctly
-      if (seriesOptions.showPoint) {
-        path.pathElements.forEach(pathElement => {
-          const { data: pathElementData } = pathElement;
-          const point = seriesElement.elem(
-            'line',
-            {
-              x1: pathElement.x,
-              y1: pathElement.y,
-              x2: pathElement.x + 0.01,
-              y2: pathElement.y
-            },
-            options.classNames.point
-          );
-
-          if (pathElementData) {
-            let x: number | undefined;
-            let y: number | undefined;
-
-            if (safeHasProperty(pathElementData.value, 'x')) {
-              x = pathElementData.value.x;
-            }
-
-            if (safeHasProperty(pathElementData.value, 'y')) {
-              y = pathElementData.value.y;
-            }
-
-            point.attr({
-              'ct:value': [x, y].filter(isNumeric).join(','),
-              'ct:meta': serialize(pathElementData.meta)
-            });
-          }
-
-          this.eventEmitter.emit<PointDrawEvent>('draw', {
-            type: 'point',
-            value: pathElementData?.value,
-            index: pathElementData?.valueIndex || 0,
-            meta: pathElementData?.meta,
-            series,
-            seriesIndex,
-            axisX,
-            axisY,
-            group: seriesElement,
-            element: point,
-            x: pathElement.x,
-            y: pathElement.y,
-            chartRect
+        normalizedData.series[seriesIndex].forEach((value, valueIndex) => {
+          const p = {
+            x:
+              chartRect.x1 +
+              axisX.projectValue(
+                value,
+                valueIndex,
+                normalizedData.series[seriesIndex]
+              ),
+            y:
+              chartRect.y1 -
+              axisY.projectValue(
+                value,
+                valueIndex,
+                normalizedData.series[seriesIndex]
+              )
+          };
+          pathCoordinates.push(p.x, p.y);
+          pathData.push({
+            value,
+            valueIndex,
+            meta: getMetaData(series, valueIndex)
           });
         });
-      }
 
-      if (seriesOptions.showLine) {
-        const line = seriesElement.elem(
-          'path',
-          {
-            d: path.stringify()
-          },
-          options.classNames.line,
-          true
-        );
+        const seriesOptions = {
+          lineSmooth: getSeriesOption(series, options, 'lineSmooth'),
+          showPoint: getSeriesOption(series, options, 'showPoint'),
+          showLine: getSeriesOption(series, options, 'showLine'),
+          showArea: getSeriesOption(series, options, 'showArea'),
+          areaBase: getSeriesOption(series, options, 'areaBase')
+        };
 
-        this.eventEmitter.emit<LineDrawEvent>('draw', {
-          type: 'line',
-          values: normalizedData.series[seriesIndex],
-          path: path.clone(),
-          chartRect,
-          // TODO: Remove redundant
-          index: seriesIndex,
-          series,
-          seriesIndex,
-          meta: seriesMeta,
-          axisX,
-          axisY,
-          group: seriesElement,
-          element: line
-        });
-      }
+        let smoothing;
+        if (typeof seriesOptions.lineSmooth === 'function') {
+          smoothing = seriesOptions.lineSmooth;
+        } else {
+          smoothing = seriesOptions.lineSmooth ? monotoneCubic() : none();
+        }
 
-      // Area currently only works with axes that support a range!
-      if (seriesOptions.showArea && axisY.range) {
-        // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
-        // the area is not drawn outside the chart area.
-        const areaBase = Math.max(
-          Math.min(seriesOptions.areaBase, axisY.range.max),
-          axisY.range.min
-        );
+        // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
+        // index, value and meta data
+        const path = smoothing(pathCoordinates, pathData);
 
-        // We project the areaBase value into screen coordinates
-        const areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
-
-        // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
-        path
-          .splitByCommand('M')
-          // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
-          .filter(pathSegment => pathSegment.pathElements.length > 1)
-          .map(solidPathSegments => {
-            // Receiving the filtered solid path segments we can now convert those segments into fill areas
-            const firstElement = solidPathSegments.pathElements[0];
-            const lastElement =
-              solidPathSegments.pathElements[
-                solidPathSegments.pathElements.length - 1
-              ];
-
-            // Cloning the solid path segment with closing option and removing the first move command from the clone
-            // We then insert a new move that should start at the area base and draw a straight line up or down
-            // at the end of the path we add an additional straight line to the projected area base value
-            // As the closing option is set our path will be automatically closed
-            return solidPathSegments
-              .clone(true)
-              .position(0)
-              .remove(1)
-              .move(firstElement.x, areaBaseProjected)
-              .line(firstElement.x, firstElement.y)
-              .position(solidPathSegments.pathElements.length + 1)
-              .line(lastElement.x, areaBaseProjected);
-          })
-          .forEach(areaPath => {
-            // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
-            // and adding the created DOM elements to the correct series group
-            const area = seriesElement.elem(
-              'path',
+        // If we should show points we need to create them now to avoid secondary loop
+        // Points are drawn from the pathElements returned by the interpolation function
+        // Small offset for Firefox to render squares correctly
+        if (seriesOptions.showPoint) {
+          path.pathElements.forEach(pathElement => {
+            const { data: pathElementData } = pathElement;
+            const point = seriesElement.elem(
+              'line',
               {
-                d: areaPath.stringify()
+                x1: pathElement.x,
+                y1: pathElement.y,
+                x2: pathElement.x + 0.01,
+                y2: pathElement.y
               },
-              options.classNames.area,
-              true
+              options.classNames.point
             );
 
-            // Emit an event for each area that was drawn
-            this.eventEmitter.emit<AreaDrawEvent>('draw', {
-              type: 'area',
-              values: normalizedData.series[seriesIndex],
-              path: areaPath.clone(),
+            if (pathElementData) {
+              let x: number | undefined;
+              let y: number | undefined;
+
+              if (safeHasProperty(pathElementData.value, 'x')) {
+                x = pathElementData.value.x;
+              }
+
+              if (safeHasProperty(pathElementData.value, 'y')) {
+                y = pathElementData.value.y;
+              }
+
+              point.attr({
+                'ct:value': [x, y].filter(isNumeric).join(','),
+                'ct:meta': serialize(pathElementData.meta)
+              });
+            }
+
+            this.eventEmitter.emit<PointDrawEvent>('draw', {
+              type: 'point',
+              value: pathElementData?.value,
+              index: pathElementData?.valueIndex || 0,
+              meta: pathElementData?.meta,
               series,
               seriesIndex,
               axisX,
               axisY,
-              chartRect,
-              // TODO: Remove redundant
-              index: seriesIndex,
               group: seriesElement,
-              element: area,
-              meta: seriesMeta
+              element: point,
+              x: pathElement.x,
+              y: pathElement.y,
+              chartRect
             });
           });
-      }
-    });
+        }
+
+        if (seriesOptions.showLine) {
+          const line = seriesElement.elem(
+            'path',
+            {
+              d: path.stringify()
+            },
+            options.classNames.line,
+            true
+          );
+
+          this.eventEmitter.emit<LineDrawEvent>('draw', {
+            type: 'line',
+            values: normalizedData.series[seriesIndex],
+            path: path.clone(),
+            chartRect,
+            // TODO: Remove redundant
+            index: seriesIndex,
+            series,
+            seriesIndex,
+            meta: seriesMeta,
+            axisX,
+            axisY,
+            group: seriesElement,
+            element: line
+          });
+        }
+
+        // Area currently only works with axes that support a range!
+        if (seriesOptions.showArea && axisY.range) {
+          // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
+          // the area is not drawn outside the chart area.
+          const areaBase = Math.max(
+            Math.min(seriesOptions.areaBase, axisY.range.max),
+            axisY.range.min
+          );
+
+          // We project the areaBase value into screen coordinates
+          const areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
+
+          // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
+          path
+            .splitByCommand('M')
+            // We filter only "solid" segments that contain more than one point. Otherwise there's no need for an area
+            .filter(pathSegment => pathSegment.pathElements.length > 1)
+            .map(solidPathSegments => {
+              // Receiving the filtered solid path segments we can now convert those segments into fill areas
+              const firstElement = solidPathSegments.pathElements[0];
+              const lastElement =
+                solidPathSegments.pathElements[
+                  solidPathSegments.pathElements.length - 1
+                ];
+
+              // Cloning the solid path segment with closing option and removing the first move command from the clone
+              // We then insert a new move that should start at the area base and draw a straight line up or down
+              // at the end of the path we add an additional straight line to the projected area base value
+              // As the closing option is set our path will be automatically closed
+              return solidPathSegments
+                .clone(true)
+                .position(0)
+                .remove(1)
+                .move(firstElement.x, areaBaseProjected)
+                .line(firstElement.x, firstElement.y)
+                .position(solidPathSegments.pathElements.length + 1)
+                .line(lastElement.x, areaBaseProjected);
+            })
+            .forEach(areaPath => {
+              // For each of our newly created area paths, we'll now create path elements by stringifying our path objects
+              // and adding the created DOM elements to the correct series group
+              const area = seriesElement.elem(
+                'path',
+                {
+                  d: areaPath.stringify()
+                },
+                options.classNames.area,
+                true
+              );
+
+              // Emit an event for each area that was drawn
+              this.eventEmitter.emit<AreaDrawEvent>('draw', {
+                type: 'area',
+                values: normalizedData.series[seriesIndex],
+                path: areaPath.clone(),
+                series,
+                seriesIndex,
+                axisX,
+                axisY,
+                chartRect,
+                // TODO: Remove redundant
+                index: seriesIndex,
+                group: seriesElement,
+                element: area,
+                meta: seriesMeta
+              });
+            });
+        }
+      },
+      options.reverseData
+    );
 
     this.eventEmitter.emit<LineChartCreatedEvent>('created', {
       chartRect,
