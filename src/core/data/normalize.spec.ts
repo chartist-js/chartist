@@ -14,9 +14,20 @@ describe('Core', () => {
         };
 
         expect(normalizeData(data).series).toEqual([
-          [1, 0, 3, 4, 5, 6],
-          [1, 0, 3, 4, 5, 6, 7, 8],
-          [1, 0, 3]
+          [1, 0, 3, 4, 5, 6, undefined, undefined, undefined, undefined],
+          [1, 0, 3, 4, 5, 6, 7, 8, undefined, undefined],
+          [
+            1,
+            0,
+            3,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+          ]
         ]);
       });
 
@@ -47,9 +58,20 @@ describe('Core', () => {
         };
 
         expect(normalizeData(data).series).toEqual([
-          [1, 0, 3, 4, 5, 6],
-          [1, 0, 3, 4, 5, 6, 7, 8],
-          [1, 0, 3]
+          [1, 0, 3, 4, 5, 6, undefined, undefined, undefined, undefined],
+          [1, 0, 3, 4, 5, 6, 7, 8, undefined, undefined],
+          [
+            1,
+            0,
+            3,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+          ]
         ]);
       });
 
@@ -64,9 +86,31 @@ describe('Core', () => {
         };
 
         expect(normalizeData(data).series).toEqual([
-          [undefined, undefined, undefined, 4, 5, 6],
-          [1, undefined, 3, undefined, 5, 6, 7, 8],
-          [1, 0, undefined]
+          [
+            undefined,
+            undefined,
+            undefined,
+            4,
+            5,
+            6,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+          ],
+          [1, undefined, 3, undefined, 5, 6, 7, 8, undefined, undefined],
+          [
+            1,
+            0,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+          ]
         ]);
       });
 
@@ -139,6 +183,39 @@ describe('Core', () => {
         };
 
         expect(normalizeData(data).series).toEqual([[0, 1, 2, 3]]);
+      });
+
+      it('should align series data by holes', () => {
+        const data = {
+          series: [
+            [1, 2, 3, 4],
+            [1, 2, 3],
+            [1, 2]
+          ]
+        };
+
+        expect(normalizeData(data).series).toEqual([
+          [1, 2, 3, 4],
+          [1, 2, 3, undefined],
+          [1, 2, undefined, undefined]
+        ]);
+      });
+
+      it('should align series data with lables by holes', () => {
+        const data = {
+          labels: ['a', 'b', 'c', 'd', 'e', 'f'],
+          series: [
+            [1, 2, 3, 4],
+            [1, 2, 3],
+            [1, 2]
+          ]
+        };
+
+        expect(normalizeData(data).series).toEqual([
+          [1, 2, 3, 4, undefined, undefined],
+          [1, 2, 3, undefined, undefined, undefined],
+          [1, 2, undefined, undefined, undefined, undefined]
+        ]);
       });
     });
   });
