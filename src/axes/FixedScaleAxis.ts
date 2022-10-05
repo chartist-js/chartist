@@ -24,9 +24,9 @@ export class FixedScaleAxis extends Axis {
     const divisor = options.divisor || 1;
     const ticks = (
       options.ticks ||
-      times(divisor).map(
-        (_value, index) =>
-          highLow.low + ((highLow.high - highLow.low) / divisor) * index
+      times(
+        divisor,
+        index => highLow.low + ((highLow.high - highLow.low) / divisor) * index
       )
     ).sort((a, b) => Number(a) - Number(b));
     const range = {

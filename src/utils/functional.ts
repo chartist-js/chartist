@@ -8,8 +8,17 @@ export const noop = <T>(n: T) => n;
 /**
  * Functional style helper to produce array with given length initialized with undefined values
  */
-export const times = <T = unknown>(length: number): T[] =>
-  Array.from({ length });
+export function times(length: number): undefined[];
+export function times<T = unknown>(
+  length: number,
+  filler: (index: number) => T
+): T[];
+export function times<T = unknown>(
+  length: number,
+  filler?: (index: number) => T
+) {
+  return Array.from({ length }, filler ? (_, i) => filler(i) : () => void 0);
+}
 
 /**
  * Sum helper to be used in reduce functions
@@ -32,6 +41,6 @@ export const sum = (previous: number, current: number) =>
  * ```
  */
 export const serialMap = <T, K>(array: T[][], callback: (...args: T[]) => K) =>
-  times(Math.max(...array.map(element => element.length))).map(
-    (_inner, index) => callback(...array.map(element => element[index]))
+  times(Math.max(...array.map(element => element.length)), index =>
+    callback(...array.map(element => element[index]))
   );

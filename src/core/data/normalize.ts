@@ -53,24 +53,31 @@ export function normalizeData(
 ) {
   let labelCount: number;
   const normalized: NormalizedData = {
-    labels: [],
+    labels: (data.labels || []).slice(),
     series: normalizeSeries(data.series, multi, distributed)
   };
+  const inputLabelCount = normalized.labels.length;
 
   // If all elements of the normalized data array are arrays we're dealing with
   // multi series data and we need to find the largest series if they are un-even
   if (isArrayOfArrays(normalized.series)) {
     // Getting the series with the the most elements
-    labelCount = Math.max(...normalized.series.map(series => series.length));
+    labelCount = Math.max(
+      inputLabelCount,
+      ...normalized.series.map(series => series.length)
+    );
+
+    normalized.series.forEach(series => {
+      series.push(...times(Math.max(0, labelCount - series.length)));
+    });
   } else {
     // We're dealing with Pie data so we just take the normalized array length
     labelCount = normalized.series.length;
   }
 
-  normalized.labels = (data.labels || []).slice();
   // Padding the labels to labelCount with empty strings
   normalized.labels.push(
-    ...times(Math.max(0, labelCount - normalized.labels.length)).map(() => '')
+    ...times(Math.max(0, labelCount - inputLabelCount), () => '')
   );
 
   if (reverse) {
