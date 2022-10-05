@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/chartist-js/chartist/compare/v1.2.0...v1.2.1) (2022-10-05)
+
+
+### Bug Fixes
+
+* data normalization with alignment ([#1365](https://github.com/chartist-js/chartist/issues/1365)) ([fe11d2f](https://github.com/chartist-js/chartist/commit/fe11d2f6d9e55455286bc34d3eed93b587f1313c)), closes [#1235](https://github.com/chartist-js/chartist/issues/1235)
+* reverse data correctly [#1250](https://github.com/chartist-js/chartist/issues/1250) ([#1364](https://github.com/chartist-js/chartist/issues/1364)) ([0223b1f](https://github.com/chartist-js/chartist/commit/0223b1ff2c69a919e3d776b58fb9b5cc96654987))
+
 ## [1.2.0](https://github.com/chartist-js/chartist/compare/v1.1.3...v1.2.0) (2022-10-03)
 
 
