@@ -141,7 +141,7 @@ importers:
       prism-react-renderer: ^1.2.1
       react: ^17.0.1
       react-dom: ^17.0.1
-      typedoc: ^0.22.15
+      typedoc: ^0.23.0
       typedoc-plugin-markdown: ^3.12.1
       typescript: ^4.3.5
       url-loader: ^4.1.1
@@ -164,9 +164,9 @@ importers:
       '@docusaurus/module-type-aliases': 2.0.0-beta.14
       '@tsconfig/docusaurus': 1.0.6
       '@types/react': 17.0.49
-      docusaurus-plugin-typedoc: 0.17.5_5sd2ogn6yna3u32bhaz4cxx5ri
-      typedoc: 0.22.18_typescript@4.6.4
-      typedoc-plugin-markdown: 3.13.6_typedoc@0.22.18
+      docusaurus-plugin-typedoc: 0.17.5_7zab47scz53et6rw2zwvyhhfd4
+      typedoc: 0.23.15_typescript@4.6.4
+      typedoc-plugin-markdown: 3.13.6_typedoc@0.23.15
       typescript: 4.6.4
       webpack: 5.73.0
 
@@ -11537,14 +11537,14 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /docusaurus-plugin-typedoc/0.17.5_5sd2ogn6yna3u32bhaz4cxx5ri:
+  /docusaurus-plugin-typedoc/0.17.5_7zab47scz53et6rw2zwvyhhfd4:
     resolution: {integrity: sha512-mMTk4lRy2+wQ7fmMOv6RLfKkoGnHkBLE8qUoPfWFoqUYDDDInwVQKxz12FNnQx86eJSLgBiZmuY/zB/bYsZQlQ==}
     peerDependencies:
       typedoc: '>=0.22.0'
       typedoc-plugin-markdown: '>=3.11.10'
     dependencies:
-      typedoc: 0.22.18_typescript@4.6.4
-      typedoc-plugin-markdown: 3.13.6_typedoc@0.22.18
+      typedoc: 0.23.15_typescript@4.6.4
+      typedoc-plugin-markdown: 3.13.6_typedoc@0.23.15
     dev: true
 
   /dom-accessibility-api/0.5.13:
@@ -13165,17 +13165,6 @@ packages:
       minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
-
-  /glob/8.0.3:
-    resolution: {integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ==}
-    engines: {node: '>=12'}
-    dependencies:
-      fs.realpath: 1.0.0
-      inflight: 1.0.6
-      inherits: 2.0.4
-      minimatch: 5.1.0
-      once: 1.4.0
-    dev: true
 
   /global-dirs/0.1.1:
     resolution: {integrity: sha1-sxnA3UYH81PzvpzKTHL8FIxJ9EU=}
@@ -19933,12 +19922,12 @@ packages:
       rechoir: 0.6.2
     dev: false
 
-  /shiki/0.10.1:
-    resolution: {integrity: sha512-VsY7QJVzU51j5o1+DguUd+6vmCmZ5v/6gYu4vyYAhzjuNQU6P/vmSy4uQaOhvje031qQMiW0d2BwgMH52vqMng==}
+  /shiki/0.11.1:
+    resolution: {integrity: sha512-EugY9VASFuDqOexOgXR18ZV+TbFrQHeCpEYaXamO+SZlsnT/2LxuLBX25GGtIrwaEVFXUAbUQ601SWE2rMwWHA==}
     dependencies:
       jsonc-parser: 3.2.0
       vscode-oniguruma: 1.6.2
-      vscode-textmate: 5.2.0
+      vscode-textmate: 6.0.0
     dev: true
 
   /side-channel/1.0.4:
@@ -21104,27 +21093,26 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typedoc-plugin-markdown/3.13.6_typedoc@0.22.18:
+  /typedoc-plugin-markdown/3.13.6_typedoc@0.23.15:
     resolution: {integrity: sha512-ISSc9v3BK7HkokxSBuJPttXox4tJ6hP0N9wfSIk0fmLN67+eqtAxbk97gs2nDiuha+RTO5eW9gdeAb+RPP0mgg==}
     peerDependencies:
       typedoc: '>=0.23.0'
     dependencies:
       handlebars: 4.7.7
-      typedoc: 0.22.18_typescript@4.6.4
+      typedoc: 0.23.15_typescript@4.6.4
     dev: true
 
-  /typedoc/0.22.18_typescript@4.6.4:
-    resolution: {integrity: sha512-NK9RlLhRUGMvc6Rw5USEYgT4DVAUFk7IF7Q6MYfpJ88KnTZP7EneEa4RcP+tX1auAcz7QT1Iy0bUSZBYYHdoyA==}
-    engines: {node: '>= 12.10.0'}
+  /typedoc/0.23.15_typescript@4.6.4:
+    resolution: {integrity: sha512-x9Zu+tTnwxb9YdVr+zvX7LYzyBl1nieOr6lrSHbHsA22/RJK2m4Y525WIg5Mj4jWCmfL47v6f4hUzY7EIuwS5w==}
+    engines: {node: '>= 14.14'}
     hasBin: true
     peerDependencies:
-      typescript: 4.0.x || 4.1.x || 4.2.x || 4.3.x || 4.4.x || 4.5.x || 4.6.x || 4.7.x
+      typescript: 4.6.x || 4.7.x || 4.8.x
     dependencies:
-      glob: 8.0.3
       lunr: 2.3.9
       marked: 4.1.0
       minimatch: 5.1.0
-      shiki: 0.10.1
+      shiki: 0.11.1
       typescript: 4.6.4
     dev: true
 
@@ -21648,8 +21636,8 @@ packages:
     resolution: {integrity: sha512-KH8+KKov5eS/9WhofZR8M8dMHWN2gTxjMsG4jd04YhpbPR91fUj7rYQ2/XjeHCJWbg7X++ApRIU9NUwM2vTvLA==}
     dev: true
 
-  /vscode-textmate/5.2.0:
-    resolution: {integrity: sha512-Uw5ooOQxRASHgu6C7GVvUxisKXfSgW4oFlO+aa+PAkgmH89O3CXxEEzNRNtHSqtXFTl0nAC1uYj0GMSH27uwtQ==}
+  /vscode-textmate/6.0.0:
+    resolution: {integrity: sha512-gu73tuZfJgu+mvCSy4UZwd2JXykjK9zAZsfmDeut5dx/1a7FeTk0XwJsSuqQn+cuMCGVbIBfl+s53X4T19DnzQ==}
     dev: true
 
   /w3c-hr-time/1.0.2:
