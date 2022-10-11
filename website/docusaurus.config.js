@@ -1,7 +1,6 @@
 // @ts-check
 
 const branch = require('git-branch');
-const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 const currentBranch = process.env.BRANCH || branch.sync();
@@ -34,14 +33,17 @@ const config = {
           editUrl: 'https://github.com/chartist-js/chartist/edit/main/website/'
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css')
+          customCss: [
+            require.resolve('./src/css/custom.css'),
+            require.resolve('./src/css/recoloring.css')
+          ]
         }
       }
     ]
   ],
 
   themeConfig:
-    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
       navbar: {
         title: 'Chartist',
@@ -91,8 +93,7 @@ const config = {
         ]
       },
       prism: {
-        theme: lightCodeTheme,
-        darkTheme: darkCodeTheme
+        theme: darkCodeTheme
       }
       // algolia: {
       //   appId: '',
