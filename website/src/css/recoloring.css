@@ -17,7 +17,7 @@
 }
 
 
-:root {
+:root[data-theme='light'] {
   --accent: var(--red);
 
   --text-primary: var(--brown-dark);
@@ -32,23 +32,21 @@
   --separator: var(--brown-light_a02);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --accent: var(--red_light);
+:root[data-theme='dark'] {
+  --accent: var(--red_light);
 
-    --text-primary: var(--brown-light);
-    --text-link: var(--red_light);
-    --text-primary-invert: var(--white);
+  --text-primary: var(--brown-light);
+  --text-link: var(--red_light);
+  --text-primary-invert: var(--white);
 
-    --separator: var(--white_a02);
+  --separator: var(--white_a02);
 
-    --text_header: var(--white);
+  --text_header: var(--white);
 
-    --bg_main: var(--dark-01);
-    --bg-highlithed: var(--dark_03_a01);
-    --bg-header: var(--brown-darken);
-    --bg_menu: var(--dark);
-  }
+  --bg_main: var(--dark-01);
+  --bg-highlithed: var(--dark_03_a01);
+  --bg-header: var(--brown-darken);
+  --bg_menu: var(--dark);
 }
 
 html {
