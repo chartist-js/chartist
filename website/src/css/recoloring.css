@@ -3,7 +3,8 @@
   --brown-dark: #5B4421;
   --red: #D70205;
   --red_light: #F05B4F;
-  --white: #F7F2E9;
+  --white-dirty: #F7F2E9;
+  --white: #FFFFFF;
   --brown-light: #e3d8c3;
   --brown-lighter: #DFCFBB;
   --brown-ligher_a08: #f7f2e980;
@@ -22,7 +23,7 @@
 
   --text-primary: var(--brown-dark);
   --text-link: var(--red);
-  --text_header: var(--white);
+  --text_header: var(--white-dirty);
 
   --bg_main: var(--brown-light);
   --bg-highlithed: var(--brown-ligher_a08);
@@ -35,13 +36,12 @@
 :root[data-theme='dark'] {
   --accent: var(--red_light);
 
-  --text-primary: var(--brown-light);
+  --text-primary: var(--white);
   --text-link: var(--red_light);
-  --text-primary-invert: var(--white);
 
   --separator: var(--white_a02);
 
-  --text_header: var(--white);
+  --text_header: var(--white-dirty);
 
   --bg_main: var(--dark-01);
   --bg-highlithed: var(--dark_03_a01);
