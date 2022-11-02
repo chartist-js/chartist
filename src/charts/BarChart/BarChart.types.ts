@@ -43,10 +43,11 @@ export interface BarChartOptions<
    */
   stackBars?: boolean;
   /**
-   * If set to 'overlap' this property will force the stacked bars to draw from the zero line.
+   * If set to true this property will force the stacked bars to draw from the zero line.
    * If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+   * If set to 'accumulate-relative' positive and negative values will be handled separately.
    */
-  stackMode?: 'accumulate' | boolean;
+  stackMode?: 'accumulate' | 'accumulate-relative' | boolean;
   /**
    * Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
    */

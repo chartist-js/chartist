@@ -424,3 +424,24 @@ export function PeakCircles() {
 
   return root;
 }
+
+export function AccumulateRelativeStack() {
+  const root = document.createElement('div');
+
+  new BarChart(
+    root,
+    {
+      labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'],
+      series: [
+        [5, 4, -3, -5],
+        [5, -4, 3, -5]
+      ]
+    },
+    {
+      stackBars: true,
+      stackMode: 'accumulate-relative'
+    }
+  );
+
+  return root;
+}

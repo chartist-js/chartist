@@ -116,8 +116,9 @@ const defaultOptions = {
   seriesBarDistance: 15,
   // If set to true this property will cause the series bars to be stacked. Check the `stackMode` option for further stacking options.
   stackBars: false,
-  // If set to 'overlap' this property will force the stacked bars to draw from the zero line.
+  // If set to true this property will force the stacked bars to draw from the zero line.
   // If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
+  // If set to 'accumulate-relative' positive and negative values will be handled separately.
   stackMode: 'accumulate' as const,
   // Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
   horizontalBars: false,
@@ -344,8 +345,13 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
     const zeroPoint = options.horizontalBars
       ? chartRect.x1 + valueAxis.projectValue(0)
       : chartRect.y1 - valueAxis.projectValue(0);
+    const isAccumulateStackMode = options.stackMode === 'accumulate';
+    const isAccumulateRelativeStackMode =
+      options.stackMode === 'accumulate-relative';
     // Used to track the screen coordinates of stacked bars
-    const stackedBarValues: number[] = [];
+    const posStackedBarValues: number[] = [];
+    const negStackedBarValues: number[] = [];
+    let stackedBarValues = posStackedBarValues;
 
     labelAxis.createGridAndLabels(
       gridGroup,
@@ -428,6 +434,8 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
         );
 
         normalizedData.series[seriesIndex].forEach((value, valueIndex) => {
+          const valueX = safeHasProperty(value, 'x') && value.x;
+          const valueY = safeHasProperty(value, 'y') && value.y;
           let labelAxisValueIndex;
           // We need to set labelAxisValueIndex based on some options combinations
           if (options.distributeSeries && !options.stackBars) {
@@ -450,14 +458,14 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
               x:
                 chartRect.x1 +
                 valueAxis.projectValue(
-                  safeHasProperty(value, 'x') ? value.x : 0,
+                  valueX || 0,
                   valueIndex,
                   normalizedData.series[seriesIndex]
                 ),
               y:
                 chartRect.y1 -
                 labelAxis.projectValue(
-                  safeHasProperty(value, 'y') ? value.y : 0,
+                  valueY || 0,
                   labelAxisValueIndex,
                   normalizedData.series[seriesIndex]
                 )
@@ -467,14 +475,14 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
               x:
                 chartRect.x1 +
                 labelAxis.projectValue(
-                  safeHasProperty(value, 'x') ? value.x : 0,
+                  valueX || 0,
                   labelAxisValueIndex,
                   normalizedData.series[seriesIndex]
                 ),
               y:
                 chartRect.y1 -
                 valueAxis.projectValue(
-                  safeHasProperty(value, 'y') ? value.y : 0,
+                  valueY || 0,
                   valueIndex,
                   normalizedData.series[seriesIndex]
                 )
@@ -500,6 +508,14 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
                   (options.horizontalBars ? -1 : 1);
           }
 
+          // distinguish between positive and negative values in relative stack mode
+          if (isAccumulateRelativeStackMode) {
+            stackedBarValues =
+              valueY >= 0 || valueX >= 0
+                ? posStackedBarValues
+                : negStackedBarValues;
+          }
+
           // Enter value in stacked bar values used to remember previous screen value for stacking up bars
           const previousStack = stackedBarValues[valueIndex] || zeroPoint;
           stackedBarValues[valueIndex] =
@@ -517,7 +533,9 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
 
           if (
             options.stackBars &&
-            (options.stackMode === 'accumulate' || !options.stackMode)
+            (isAccumulateStackMode ||
+              isAccumulateRelativeStackMode ||
+              !options.stackMode)
           ) {
             // Stack mode: accumulate (default)
             // If bars are stacked we use the stackedBarValues reference and otherwise base all bars off the zero line
@@ -558,12 +576,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           const bar = seriesElement
             .elem('line', positions, options.classNames.bar)
             .attr({
-              'ct:value': [
-                safeHasProperty(value, 'x') && value.x,
-                safeHasProperty(value, 'y') && value.y
-              ]
-                .filter(isNumeric)
-                .join(','),
+              'ct:value': [valueX, valueY].filter(isNumeric).join(','),
               'ct:meta': serialize(metaData)
             });
 
