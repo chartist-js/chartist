@@ -173,6 +173,7 @@ import type {
 - [Multi-line labels](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/multiline)
 - [Overlapping bars on mobile](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/overlapping-bars)
 - [Stacked bar chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/stacked)
+- [Stacked bar chart with accumulate-relative stack mode](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/stacked-accumulate-relative)
 - [Add peak circles using the draw events](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/with-circle-modify-drawing)
 
 </details>

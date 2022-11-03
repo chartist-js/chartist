@@ -1,0 +1,8 @@
+{
+  "name": "bar-stacked",
+  "description": "Stacked bar chart with accumulate-relative stack mode",
+  "main": "index.ts",
+  "dependencies": {
+    "chartist": "^1.0.0"
+  }
+}

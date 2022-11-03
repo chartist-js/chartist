@@ -7,7 +7,7 @@
   },
   {
     "path": "dist/index.cjs",
-    "limit": "7.35 kB",
+    "limit": "7.40 kB",
     "import": "{ BarChart }"
   },
   {
@@ -18,7 +18,7 @@
   },
   {
     "path": "dist/index.js",
-    "limit": "7.3 kB",
+    "limit": "7.4 kB",
     "import": "{ BarChart }"
   },
   {
