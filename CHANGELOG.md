@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/chartist-js/chartist/compare/v1.2.1...v1.3.0) (2022-11-03)
+
+
+### Features
+
+* accumulate-relative stacked bar chart stack mode ([#1375](https://github.com/chartist-js/chartist/issues/1375)) ([ce13067](https://github.com/chartist-js/chartist/commit/ce13067acec9cee050af979d323dae5e728292c4)), closes [#1167](https://github.com/chartist-js/chartist/issues/1167)
+
+
+### Bug Fixes
+
+* add dist exports ([#1374](https://github.com/chartist-js/chartist/issues/1374)) ([1438bad](https://github.com/chartist-js/chartist/commit/1438bad5b8754fe0744c4c1c8540c08a4c4e6862)), closes [#1368](https://github.com/chartist-js/chartist/issues/1368)
+* add missing default for text-line-height ([#1373](https://github.com/chartist-js/chartist/issues/1373)) ([f94e559](https://github.com/chartist-js/chartist/commit/f94e559c2414d17002ee52421b860d91b6eae0af))
+
 ### [1.2.1](https://github.com/chartist-js/chartist/compare/v1.2.0...v1.2.1) (2022-10-05)
 
 
