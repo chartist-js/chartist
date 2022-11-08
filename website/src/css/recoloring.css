@@ -10,6 +10,7 @@
   --brown-ligher_a08: #f7f2e980;
   --brown-light_a02: rgba(68, 61, 63, 0.2);
   --brown-darken: #443D3F;
+  --yellow: #f4c63e;
 
   --dark: #363133;
   --dark-01: #2e2929;
@@ -62,7 +63,6 @@ a:hover {
   color: var(--text-link);
 }
 
-
 /* nav */
 
 .navbar {
@@ -78,8 +78,8 @@ a:hover {
   color: var(--text-primary);
 }
 
-.navbar a:hover {
-  color: var(--text-link);
+.navbar .navbar__link:hover {
+  color: var(--yellow);
 }
 
 .menu {
@@ -175,11 +175,16 @@ table tr:nth-child(2n) {
 }
 
 .navbar__logo {
-  background-color: #f4c63e;
+  background-color: var(--yellow);
   padding: 3px;
   height: calc(2em + 6px);
   border-radius: 50%;
   box-sizing: border-box;
+}
+
+.navbar-sidebar__back {
+  background-color: var(--bg-highlithed);
+  color: var(--text-primary);
 }
 
 .navbar-sidebar__brand {
