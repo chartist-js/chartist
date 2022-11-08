@@ -13,7 +13,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 7.5.0
+          version: 7
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
@@ -32,7 +32,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 7.5.0
+          version: 7
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
@@ -50,3 +50,26 @@ jobs:
         uses: actions/checkout@v3
       - name: Check editorconfig
         uses: editorconfig-checker/action-editorconfig-checker@v1
+  website:
+    runs-on: ubuntu-latest
+    name: website
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+      - name: Install website dependencies
+        run: pnpm install
+        working-directory: ./website
+      - name: Check website
+        run: pnpm build
+        working-directory: ./website
