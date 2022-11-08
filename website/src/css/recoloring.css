@@ -71,7 +71,11 @@ a:hover {
 }
 
 .navbar a {
-  color: var(--text-primary-invert);
+  color: var(--white);
+}
+
+.menu__list-item a {
+  color: var(--text-primary);
 }
 
 .navbar a:hover {
@@ -176,4 +180,8 @@ table tr:nth-child(2n) {
   height: calc(2em + 6px);
   border-radius: 50%;
   box-sizing: border-box;
+}
+
+.navbar-sidebar__brand {
+  background-color: var(--dark-01);
 }
