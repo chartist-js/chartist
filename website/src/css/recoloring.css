@@ -169,3 +169,11 @@ code {
 table tr:nth-child(2n) {
   background-color: var(--bg_menu);
 }
+
+.navbar__logo {
+  background-color: #f4c63e;
+  padding: 3px;
+  height: calc(2em + 6px);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
