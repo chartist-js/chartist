@@ -36,7 +36,7 @@ importers:
       del-cli: ^5.0.0
       eslint: ^8.15.0
       eslint-config-prettier: ^8.5.0
-      eslint-plugin-jest: ^26.2.2
+      eslint-plugin-jest: ^27.0.0
       eslint-plugin-jest-dom: ^4.0.1
       eslint-plugin-prettier: ^4.0.0
       eslint-plugin-testing-library: ^5.5.0
@@ -95,7 +95,7 @@ importers:
       del-cli: 5.0.0
       eslint: 8.15.0
       eslint-config-prettier: 8.5.0_eslint@8.15.0
-      eslint-plugin-jest: 26.2.2_soqyufh3dfswswdcr6xqvc2ymm
+      eslint-plugin-jest: 27.1.4_soqyufh3dfswswdcr6xqvc2ymm
       eslint-plugin-jest-dom: 4.0.1_eslint@8.15.0
       eslint-plugin-prettier: 4.0.0_iqftbjqlxzn3ny5nablrkczhqi
       eslint-plugin-testing-library: 5.5.0_hcfsmds2fshutdssjqluwm76uu
@@ -11927,12 +11927,12 @@ packages:
       requireindex: 1.2.0
     dev: true
 
-  /eslint-plugin-jest/26.2.2_soqyufh3dfswswdcr6xqvc2ymm:
-    resolution: {integrity: sha512-etSFZ8VIFX470aA6kTqDPhIq7YWe0tjBcboFNV3WeiC18PJ/AVonGhuTwlmuz2fBkH8FJHA7JQ4k7GsQIj1Gew==}
-    engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+  /eslint-plugin-jest/27.1.4_soqyufh3dfswswdcr6xqvc2ymm:
+    resolution: {integrity: sha512-evJ9E9id/z2Fu6LR+ncNySJ6UMs5RiJiv4JsmdA3gPWoq0AR+uZyva738+Y9Uln+3WaYX+3OYP9HJoau94Iurg==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     peerDependencies:
       '@typescript-eslint/eslint-plugin': ^5.0.0
-      eslint: ^6.0.0 || ^7.0.0 || ^8.0.0
+      eslint: ^7.0.0 || ^8.0.0
       jest: '*'
     peerDependenciesMeta:
       '@typescript-eslint/eslint-plugin':
@@ -11941,7 +11941,7 @@ packages:
         optional: true
     dependencies:
       '@typescript-eslint/eslint-plugin': 5.25.0_qo2hgs5jt7x2a3p77h2rutcdae
-      '@typescript-eslint/utils': 5.24.0_hcfsmds2fshutdssjqluwm76uu
+      '@typescript-eslint/utils': 5.25.0_hcfsmds2fshutdssjqluwm76uu
       eslint: 8.15.0
       jest: 27.5.1
     transitivePeerDependencies:

@@ -114,7 +114,7 @@
     "del-cli": "^5.0.0",
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-jest": "^26.2.2",
+    "eslint-plugin-jest": "^27.0.0",
     "eslint-plugin-jest-dom": "^4.0.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-testing-library": "^5.5.0",
