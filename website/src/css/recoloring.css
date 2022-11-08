@@ -78,7 +78,8 @@ a:hover {
   color: var(--text-primary);
 }
 
-.navbar .navbar__link:hover {
+.navbar .navbar__link:hover,
+.navbar .navbar__brand:hover {
   color: var(--yellow);
 }
 
