@@ -1,7 +1,7 @@
 // @ts-check
 
 const branch = require('git-branch');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const codeTheme = require('./src/prism-theme');
 
 const currentBranch = process.env.BRANCH || branch.sync();
 /** @type {import('@docusaurus/types').Config} */
@@ -43,7 +43,7 @@ const config = {
   ],
 
   themeConfig:
-  /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     {
       navbar: {
         title: 'Chartist',
@@ -98,7 +98,7 @@ const config = {
         respectPrefersColorScheme: false
       },
       prism: {
-        theme: darkCodeTheme
+        theme: codeTheme
       }
       // algolia: {
       //   appId: '',
