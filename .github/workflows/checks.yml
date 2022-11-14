@@ -67,9 +67,6 @@ jobs:
           cache: 'pnpm'
       - name: Install dependencies
         run: pnpm install
-      - name: Install website dependencies
-        run: pnpm install
-        working-directory: ./website
       - name: Check website
         run: pnpm build
         working-directory: ./website
