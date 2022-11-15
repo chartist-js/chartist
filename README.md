@@ -45,9 +45,11 @@ That's why we started Chartist and our goal is to solve all of the above issues.
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="#what-is-it-made-for">What is it made for?</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-<a href="#whats-new-in-v1">What's new in v1?</a>
+<a href="https://chartist.dev/docs/whats-new-in-v1">What's new in v1?</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-<a href="#examples">Examples</a>
+<a href="https://chartist.dev/">Docs</a>
+<span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+<a href="https://chartist.dev/examples">Examples</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="#contribution">Contribution</a>
 <hr />
@@ -102,115 +104,6 @@ Chartist works with inline-SVG and therefore leverages the power of the DOM to p
 also means that Chartist does not provide it's own event handling, labels, behaviors or anything else that can just be 
 done with plain HTML, JavaScript and CSS. The single and only responsibility of Chartist is to help you drawing "Simple 
 responsive Charts" using inline-SVG in the DOM, CSS to style and JavaScript to provide an API for configuring your charts.
-
-## What's new in v1?
-
-### ESM
-
-Now Chartist is truly an ES module and exposes its API through the exports, thus making Chartist [tree-shakable](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking).
-
-<details>
-  <summary>Migration from v0.11</summary>
-
-- Each property of Chartist object now is named export.
-- Chart classes were renamed.
-- Easing object now is named export.
-
-```js
-const Chartist = require('chartist')
-
-new Chartist.Bar(/* ... */);
-new Chartist.Line(/* ... */);
-new Chartist.Pie(/* ... */);
-new Chartist.Svg(/* ... */);
-Chartist.Svg.Easing
-// ...
-
-// ->
-
-import { BarChart, LineChart, PieChart, Svg, easings } from 'chartist'
-
-new BarChart(/* ... */)
-new LineChart(/* ... */)
-new PieChart(/* ... */)
-new Svg(/* ... */)
-easings
-// ...
-```
-
-</details>
-
-### TypeScript
-
-Chartist was rewritten and fully typed with TypeScript.
-
-<details>
-  <summary>Some of exposed types</summary>
-
-```ts
-import type {
-  BarChartData,
-  BarChartOptions,
-  LineChartData,
-  LineChartOptions,
-  PieChartData,
-  PieChartOptions
-} from 'chartist'
-```
-
-</details>
-
-## Examples
-
-<details>
-  <summary>Bar Chart</summary>
-
-- [Bi-polar bar chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/bi-polar-interpolated)
-- [Distributed series](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/distributed-series)
-- [Extreme responsive configuration](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/extreme-responsive)
-- [Horizontal bar chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/horizontal)
-- [Label placement](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/label-position)
-- [Multi-line labels](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/multiline)
-- [Overlapping bars on mobile](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/overlapping-bars)
-- [Stacked bar chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/stacked)
-- [Stacked bar chart with accumulate-relative stack mode](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/stacked-accumulate-relative)
-- [Add peak circles using the draw events](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/bar/with-circle-modify-drawing)
-
-</details>
-
-<details>
-  <summary>Line Chart</summary>
-
-- [Line chart with area](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/area)
-- [Auto scale axis](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/axis-auto)
-- [Fixed and auto scale axis](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/axis-fixed-and-auto)
-- [Bi-polar Line chart with area only](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/bipolar-area)
-- [Filled holes in data](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/data-fill-holes)
-- [Holes in data](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/data-holes)
-- [Using events to replace graphics](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/modify-drawing)
-- [Only whole numbers](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/only-integer)
-- [SVG Path animation](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/path-animation)
-- [Line scatter diagram with responsive settings](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/scatter-random)
-- [Series Overrides](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/series-override)
-- [Simple line chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/simple)
-- [Simple responsive options](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/simple-responsive)
-- [Line Interpolation / Smoothing](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/simple-smoothing)
-- [Simple SMIL Animations](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/simple-svg-animation)
-- [Advanced SMIL Animations](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/svg-animation)
-- [Timeseries](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/line/timeseries)
-
-</details>
-
-<details>
-  <summary>Pie Chart</summary>
-
-- [Pie chart with custom labels](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/pie/custom-labels)
-- [Animating a Donut with Svg.animate](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/pie/donut-animation)
-- [Donut chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/pie/donut-chart)
-- [Simple pie chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/pie/simple)
-- [Gauge chart](http://codesandbox.io/s/github/chartist-js/chartist/main/sandboxes/pie/simple-gauge)
-
-</details>
 
 ## Plugins
 
