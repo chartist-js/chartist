@@ -125,7 +125,7 @@
     "jest-image-snapshot": "^4.5.1",
     "nano-staged": "^0.8.0",
     "postcss": "^8.0.0",
-    "postcss-loader": "^4.3.0",
+    "postcss-loader": "^7.0.0",
     "postcss-preset-env": "^6.7.1",
     "prettier": "^2.6.2",
     "puppeteer": "^14.0.0",
