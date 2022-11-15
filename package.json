@@ -120,7 +120,6 @@
     "eslint-plugin-testing-library": "^5.5.0",
     "faker": "^5.5.3",
     "http-server": "^14.1.0",
-    "inquirer": "^9.0.0",
     "jest": "^27.5.1",
     "jest-image-snapshot": "^4.5.1",
     "nano-staged": "^0.8.0",
