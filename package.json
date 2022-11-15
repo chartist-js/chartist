@@ -126,7 +126,7 @@
     "nano-staged": "^0.8.0",
     "postcss": "^8.0.0",
     "postcss-loader": "^4.3.0",
-    "postcss-preset-env": "^6.7.1",
+    "postcss-preset-env": "^7.0.0",
     "prettier": "^2.6.2",
     "puppeteer": "^14.0.0",
     "rollup": "^2.70.1",
