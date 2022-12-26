@@ -27,6 +27,9 @@ export function createSvg(
   height: number | string = '100%',
   className?: string
 ) {
+  if (!container) {
+    throw new Error('Container element is not found');
+  }
   // Check if there is a previous SVG element in the container that contains the Chartist XML namespace and remove it
   // Since the DOM API does not support namespaces we need to manually search the returned list http://www.w3.org/TR/selectors-api/
   Array.from(container.querySelectorAll('svg'))
