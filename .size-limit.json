@@ -7,7 +7,7 @@
   },
   {
     "path": "dist/index.cjs",
-    "limit": "7.41 kB",
+    "limit": "7.45 kB",
     "import": "{ BarChart }"
   },
   {
