@@ -32,7 +32,9 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
 
     if (!container) {
       throw new Error(
-        `Target element ${typeof query === 'string' ? `"${query}"` : ''} is not found`
+        `Target element ${
+          typeof query === 'string' ? `"${query}"` : ''
+        } is not found`
       );
     }
 
