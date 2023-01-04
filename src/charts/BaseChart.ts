@@ -31,7 +31,11 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
       typeof query === 'string' ? document.querySelector(query) : query;
 
     if (!container) {
-      throw new Error('Target element is not found');
+      throw new Error(
+        `Target element ${
+          typeof query === 'string' ? `"${query}"` : ''
+        } is not found`
+      );
     }
 
     this.container = container;
