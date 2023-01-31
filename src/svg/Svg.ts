@@ -330,19 +330,19 @@ export class Svg {
   }
 
   /**
-   * Get element height using `getBoundingClientRect`
+   * Get element height using `clientHeight`
    * @return The elements height in pixels
    */
   height() {
-    return this._node.getBoundingClientRect().height;
+    return this._node.clientHeight;
   }
 
   /**
-   * Get element width using `getBoundingClientRect`
+   * Get element width using `clientWidth`
    * @return The elements width in pixels
    */
   width() {
-    return this._node.getBoundingClientRect().width;
+    return this._node.clientWidth;
   }
 
   /**

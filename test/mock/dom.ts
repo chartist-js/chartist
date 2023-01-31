@@ -42,8 +42,32 @@ export function mockDomRects() {
     bottom: 0,
     left: 0
   });
+
+  Object.defineProperties(SVGElement.prototype, {
+    clientWidth: {
+      configurable: true,
+      get: () => 500
+    },
+    clientHeight: {
+      configurable: true,
+      get: () => 500
+    }
+  });
 }
 
 export function destroyMockDomRects() {
   SVGElement.prototype.getBoundingClientRect = getBoundingClientRect;
+
+  // Redefine clientWidth and clientHeight properties from the prototype of SVGElement
+  const ElementPrototype = Object.getPrototypeOf(SVGElement.prototype);
+  Object.defineProperties(SVGElement.prototype, {
+    clientWidth: Object.getOwnPropertyDescriptor(
+      ElementPrototype,
+      'clientWidth'
+    )!,
+    clientHeight: Object.getOwnPropertyDescriptor(
+      ElementPrototype,
+      'clientHeight'
+    )!
+  });
 }
