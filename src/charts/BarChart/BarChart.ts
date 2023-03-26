@@ -217,7 +217,8 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       options.width,
       options.height,
       options.classNames.chart +
-        (options.horizontalBars ? ' ' + options.classNames.horizontalBars : '')
+        (options.horizontalBars ? ' ' + options.classNames.horizontalBars : ''),
+      options.viewBox
     );
     const highLow =
       options.stackBars &&
