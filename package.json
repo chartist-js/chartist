@@ -87,7 +87,7 @@
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@commitlint/cz-commitlint": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^13.2.0",
+    "@rollup/plugin-node-resolve": "^15.0.0",
     "@size-limit/preset-big-lib": "^7.0.8",
     "@storybook/addon-actions": "^6.4.22",
     "@storybook/addon-controls": "^6.4.22",
