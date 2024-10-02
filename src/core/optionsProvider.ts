@@ -30,7 +30,7 @@ export function optionsProvider<T = unknown>(
       responsiveOptions.forEach(responsiveOption => {
         const mql = window.matchMedia(responsiveOption[0]);
         if (mql.matches) {
-          currentOptions = extend(currentOptions, responsiveOption[1]);
+          currentOptions = extend({}, currentOptions, responsiveOption[1]);
         }
       });
     }
