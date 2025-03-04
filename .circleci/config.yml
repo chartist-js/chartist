@@ -1,0 +1,52 @@
+version: 2.1
+executors:
+  default:
+    docker:
+      - image: cimg/node:20.18.3
+        environment:
+          DOCKER_BUILDKIT: 1
+          IMAGE: chartist
+commands:
+  setup:
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+  build_image:
+    parameters:
+      image:
+        type: string
+        default: $IMAGE
+      tag:
+        type: string
+        default: latest
+    steps:
+      - run:
+          name: Building docker image
+          command: >
+            docker build --tag=<<parameters.image>>:<<parameters.tag>> .
+jobs:
+  build_test:
+    executor: default
+    steps:
+      - setup
+      - build_image
+      - run:
+          name: Lint
+          command: docker run $IMAGE pnpm run lint
+      - run:
+          name: Build
+          command: docker run $IMAGE pnpm run build
+      - run:
+          name: Test
+          command: docker run $IMAGE pnpm run test
+      - run:
+          name: Storybook
+          command: docker run $IMAGE pnpm run build:storybook
+workflows:
+  test:
+    jobs:
+      - build_test:
+          filters:
+            tags:
+              only: /.*/
