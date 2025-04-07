@@ -307,7 +307,7 @@ v0.4.1 - 21 Nov 2014
 
 - Added more functionality to Chartist.Svg: select child elements, parent, root as well as a Svg list wrapper with delegation functions
 - Fixed bug in strip unit
-- Added classes to the label and grid gorups
+- Added classes to the label and grid groups
 - Added this as return value so calls to chart can be chained up easily
 
 
