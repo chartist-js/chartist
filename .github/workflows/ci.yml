@@ -37,7 +37,7 @@ jobs:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
       - name: Collect artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: "failure() && matrix.stage != 'unit'"
         with:
           name: Image snapshots (${{ matrix.stage }})
