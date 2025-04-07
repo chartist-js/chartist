@@ -19,7 +19,7 @@ importers:
       '@storybook/addon-viewport': ^6.4.22
       '@storybook/html': ^6.4.22
       '@swc/core': ^1.2.165
-      '@swc/helpers': ^0.4.0
+      '@swc/helpers': ^0.5.0
       '@swc/jest': ^0.2.20
       '@testing-library/jest-dom': ^5.16.4
       '@types/faker': ^5.5.8
@@ -77,7 +77,7 @@ importers:
       '@storybook/addon-viewport': 6.4.22
       '@storybook/html': 6.4.22_tgvqbxx3i4v5lht4r2tvmykgia
       '@swc/core': 1.2.165
-      '@swc/helpers': 0.4.3
+      '@swc/helpers': 0.5.15
       '@swc/jest': 0.2.20_@swc+core@1.2.165
       '@testing-library/jest-dom': 5.16.4
       '@types/faker': 5.5.9
@@ -3704,7 +3704,7 @@ packages:
       '@docusaurus/react-loadable': 5.5.2_react@17.0.2
       '@docusaurus/types': 2.1.0_sfoxds7t5ydpegc3knd667wn6m
       '@types/history': 4.7.11
-      '@types/react': 18.0.5
+      '@types/react': 17.0.49
       '@types/react-router-config': 5.0.6
       '@types/react-router-dom': 5.3.3
       react: 17.0.2
@@ -4120,7 +4120,7 @@ packages:
     peerDependencies:
       react: '*'
     dependencies:
-      '@types/react': 18.0.5
+      '@types/react': 17.0.49
       prop-types: 15.8.1
       react: 17.0.2
     dev: false
@@ -4220,7 +4220,7 @@ packages:
       '@docusaurus/plugin-content-pages': 2.1.0_oagctitnqx3g7idiuq5vrj5arm
       '@docusaurus/utils': 2.1.0
       '@types/history': 4.7.11
-      '@types/react': 18.0.5
+      '@types/react': 17.0.49
       '@types/react-router-config': 5.0.6
       clsx: 1.2.1
       parse-numeric-range: 1.3.0
@@ -4371,7 +4371,7 @@ packages:
       react-dom: ^16.8.4 || ^17.0.0
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.5
+      '@types/react': 17.0.49
       commander: 5.1.0
       joi: 17.6.0
       react: 17.0.2
@@ -7453,10 +7453,10 @@ packages:
       '@swc/core-win32-x64-msvc': 1.2.165
     dev: true
 
-  /@swc/helpers/0.4.3:
-    resolution: {integrity: sha512-6JrF+fdUK2zbGpJIlN7G3v966PQjyx/dPt1T9km2wj+EUBqgrxCk3uX4Kct16MIm9gGxfKRcfax2hVf5jvlTzA==}
+  /@swc/helpers/0.5.15:
+    resolution: {integrity: sha512-JQ5TuMi45Owi4/BIMAJBoSQoOJu12oOk/gADqlcUL9JEdHB8vyjUSsxqeNXnmXHjYKMi2WcYtezGEEhqUI/E2g==}
     dependencies:
-      tslib: 2.4.0
+      tslib: 2.8.1
     dev: true
 
   /@swc/jest/0.2.20_@swc+core@1.2.165:
@@ -7844,12 +7844,12 @@ packages:
     resolution: {integrity: sha512-YYknwy0D0iOwKQgz9v8nOzt2J6l4gouBmDnWqUUznltOTaon+r8US8ky8HvN0tXvc38U9m6z/t2RsVsnd1zM0g==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.5
+      '@types/react': 17.0.49
 
   /@types/react-syntax-highlighter/11.0.5:
     resolution: {integrity: sha512-VIOi9i2Oj5XsmWWoB72p3KlZoEbdRAcechJa8Ztebw7bDl2YmR+odxIqhtJGp1q2EozHs02US+gzxJ9nuf56qg==}
     dependencies:
-      '@types/react': 18.0.5
+      '@types/react': 17.0.49
     dev: true
 
   /@types/react/17.0.49:
@@ -9571,7 +9571,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -12828,7 +12828,7 @@ packages:
     resolution: {integrity: sha512-oWb1Z6mkHIskLzEJ/XWX0srkpkTQ7vaopMQkyaEIoq0fmtFVxOthb8cCxeT+p3ynTdkk/RZwbgG4brR5BeWECw==}
     engines: {node: '>= 4.0'}
     os: [darwin]
-    deprecated: fsevents 1 will break on node v14+ and could be using insecure binaries. Upgrade to fsevents 2.
+    deprecated: Upgrade to fsevents v2 to mitigate potential security issues
     requiresBuild: true
     dependencies:
       bindings: 1.5.0
@@ -16241,7 +16241,7 @@ packages:
     dev: true
 
   /object-assign/4.1.1:
-    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=}
+    resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
   /object-copy/0.1.0:
@@ -17992,6 +17992,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM=}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise.allsettled/1.0.5:
@@ -20846,6 +20857,10 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
+
+  /tslib/2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+    dev: true
 
   /tsutils/3.21.0_typescript@4.6.4:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
