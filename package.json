@@ -121,7 +121,7 @@
     "faker": "^5.5.3",
     "http-server": "^14.1.0",
     "jest": "^27.5.1",
-    "jest-image-snapshot": "^4.5.1",
+    "jest-image-snapshot": "^6.0.0",
     "nano-staged": "^0.8.0",
     "postcss": "^8.0.0",
     "postcss-loader": "^4.3.0",
