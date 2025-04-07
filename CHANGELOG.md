@@ -2,16 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.4.0](https://github.com/chartist-js/chartist/compare/v1.3.0...v1.4.0) (2025-04-07)
-
-
-### Features
-
-* add an error message when chart container is not found ([#1392](https://github.com/chartist-js/chartist/issues/1392)) ([6ee19be](https://github.com/chartist-js/chartist/commit/6ee19be3a1936a3c1761aa2f3651683a02495543))
-
+### [1.3.1](https://github.com/chartist-js/chartist/compare/v1.3.0...v1.3.1) (2025-04-07)
 
 ### Bug Fixes
 
+* add an error message when chart container is not found ([#1392](https://github.com/chartist-js/chartist/issues/1392)) ([6ee19be](https://github.com/chartist-js/chartist/commit/6ee19be3a1936a3c1761aa2f3651683a02495543))
 * prototype pollution vulnerability in extend (CVE-2024-45435) ([#1433](https://github.com/chartist-js/chartist/issues/1433)) ([5a24b93](https://github.com/chartist-js/chartist/commit/5a24b933d2ab4a97c30a24e9fa1da21c9c8083f1)), closes [#1427](https://github.com/chartist-js/chartist/issues/1427)
 * use clientWidth/clientHeight instead of getBoundingClientRect ([#1395](https://github.com/chartist-js/chartist/issues/1395)) ([1067900](https://github.com/chartist-js/chartist/commit/10679003a8cec24f9c1f559bdd0c241ec02319a4))
 
