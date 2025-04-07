@@ -11,7 +11,11 @@ export function extend<T, A, B>(target: T, a: A, b: B): T & A & B;
 export function extend(target: any = {}, ...sources: any[]) {
   for (let i = 0; i < sources.length; i++) {
     const source = sources[i];
+    const targetProto = Object.getPrototypeOf(target);
     for (const prop in source) {
+      if (targetProto !== null && prop in targetProto) {
+        continue; // prevent prototype pollution
+      }
       const sourceProp = source[prop];
       if (
         typeof sourceProp === 'object' &&
