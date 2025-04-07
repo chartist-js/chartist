@@ -33,7 +33,7 @@
     "@docusaurus/module-type-aliases": "2.0.0-beta.14",
     "@tsconfig/docusaurus": "^1.0.4",
     "@types/react": "^17.0.36",
-    "docusaurus-plugin-typedoc": "^0.17.4",
+    "docusaurus-plugin-typedoc": "^0.22.0",
     "typedoc": "^0.23.0",
     "typedoc-plugin-markdown": "^3.12.1",
     "typescript": "^4.3.5",
