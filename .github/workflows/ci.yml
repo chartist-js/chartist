@@ -31,7 +31,7 @@ jobs:
       - name: Run tests
         run: pnpm test:${{ matrix.stage }}
       - name: Collect coverage
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
         if: "success() && matrix.stage == 'unit'"
         with:
           files: ./coverage/lcov.info
