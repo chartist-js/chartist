@@ -5,7 +5,8 @@ import type {
   Label,
   GridDrawEvent,
   GridBackgroundDrawEvent,
-  LabelDrawEvent
+  LabelDrawEvent,
+  ViewBox
 } from './types';
 import type { EventEmitter } from '../event';
 import type { Axis } from '../axes';
@@ -25,7 +26,8 @@ export function createSvg(
   container: Element,
   width: number | string = '100%',
   height: number | string = '100%',
-  className?: string
+  className?: string,
+  viewBox?: ViewBox
 ) {
   if (!container) {
     throw new Error('Container element is not found');
@@ -50,6 +52,10 @@ export function createSvg(
 
   if (className) {
     svg.addClass(className);
+  }
+
+  if (viewBox) {
+    svg.attr({ viewBox: `0 0 ${viewBox.width} ${viewBox.height}` });
   }
 
   // Add the DOM node to our container
@@ -97,8 +103,13 @@ export function createChartRect(svg: Svg, options: Options) {
   const yAxisPosition = options.axisY?.position;
   const xAxisPosition = options.axisX?.position;
   // If width or height results in invalid value (including 0) we fallback to the unitless settings or even 0
-  let width = svg.width() || quantity(options.width).value || 0;
-  let height = svg.height() || quantity(options.height).value || 0;
+  let width =
+    options.viewBox?.width || svg.width() || quantity(options.width).value || 0;
+  let height =
+    options.viewBox?.height ||
+    svg.height() ||
+    quantity(options.height).value ||
+    0;
   const normalizedPadding = normalizePadding(options.chartPadding);
 
   // If settings were to small to cope with offset (legacy) and padding, we'll adjust
