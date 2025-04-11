@@ -45,13 +45,7 @@ export function OverlappingLabels() {
   new PieChart(
     root,
     {
-      labels: [
-        'Big Slice',
-        'Small Slice 1',
-        'Small Slice 2',
-        'Small Slice 3',
-        'Small Slice 4'
-      ],
+      labels: ['Big Slice', 11231231, 'Test the string', new Date(), 124124124],
       series: [96, 1, 1, 1, 1]
     },
     {

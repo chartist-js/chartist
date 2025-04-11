@@ -428,8 +428,8 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
             const textSize = options.preventOverlappingLabelOffset;
 
             const labelMover = (lp: any, item: any) => {
-              const length =
-                (normalizedData.labels[index] as string)?.length ?? 1; // Default to 1 character length
+              const length = // Tested with all three data types string, number, and date.
+                ((normalizedData.labels[index] + '') as string)?.length ?? 1; // Default to 1 character length
 
               if (
                 lp.y > item.y - textSize &&
