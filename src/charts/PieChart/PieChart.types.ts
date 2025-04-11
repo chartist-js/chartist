@@ -82,6 +82,10 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
    * If true empty values will be ignored to avoid drawing unnecessary slices and labels
    */
   ignoreEmptyValues?: boolean;
+  /**
+   * If nonzero labels will not overlap.
+   */
+  preventOverlappingLabelOffset?: number;
 }
 
 export type PieChartOptionsWithDefaults = RequiredKeys<
@@ -93,7 +97,8 @@ export type PieChartOptionsWithDefaults = RequiredKeys<
   | 'labelOffset'
   | 'labelPosition'
   | 'labelInterpolationFnc'
-  | 'labelDirection',
+  | 'labelDirection'
+  | 'preventOverlappingLabelOffset',
   'classNames'
 >;
 
