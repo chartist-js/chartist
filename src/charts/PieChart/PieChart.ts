@@ -70,7 +70,9 @@ const defaultOptions = {
   // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
   labelDirection: 'neutral',
   // If true empty values will be ignored to avoid drawing unnecessary slices and labels
-  ignoreEmptyValues: false
+  ignoreEmptyValues: false,
+  // If Nonzero check if a label has overlapping text then move it the number of pixels up and left (Should be half of label font size + 1 but you can tweak it as you prefer)
+  preventOverlappingLabelOffset: 0
 };
 
 /**
@@ -199,6 +201,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
     const normalizedData = normalizeData(data);
     const seriesGroups: Svg[] = [];
     let labelsGroup: Svg;
+    const labelPositions: any[] = [];
     let labelRadius: number;
     let startAngle = options.startAngle;
 
@@ -387,7 +390,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
 
       // If we need to show labels we need to add the label for this slice now
       if (options.showLabel) {
-        let labelPosition;
+        let labelPosition: any;
 
         if (data.series.length === 1) {
           // If we have only 1 series, we can position the label in the center of the pie
@@ -421,6 +424,31 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
         );
 
         if (interpolatedValue || interpolatedValue === 0) {
+          if (options.preventOverlappingLabelOffset) {
+            const textSize = options.preventOverlappingLabelOffset;
+
+            const labelMover = (lp: any, item: any) => {
+              const length = // Tested with all three data types string, number, and date.
+                ((normalizedData.labels[index] + '') as string)?.length ?? 1; // Default to 1 character length
+
+              if (
+                lp.y > item.y - textSize &&
+                lp.y < item.y + textSize &&
+                lp.x > item.x - length * textSize &&
+                lp.x < item.x + length * textSize
+              ) {
+                lp.y -= textSize;
+                lp.x -= textSize;
+                labelMover(lp, item);
+              }
+            };
+
+            labelPositions.forEach(item => {
+              labelMover(labelPosition, item);
+            });
+            labelPositions.push(labelPosition);
+          }
+
           const labelElement = labelsGroup
             .elem(
               'text',
