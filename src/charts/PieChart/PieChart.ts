@@ -71,7 +71,7 @@ const defaultOptions = {
   labelDirection: 'neutral',
   // If true empty values will be ignored to avoid drawing unnecessary slices and labels
   ignoreEmptyValues: false,
-  // If Nonzero check if a label has overlapping text then move it the number of pixels up and left (Should be label size)
+  // If Nonzero check if a label has overlapping text then move it the number of pixels up and left (Should be half of label font size + 1 but you can tweak it as you prefer)
   preventOverlappingLabelOffset: 0
 };
 
