@@ -429,7 +429,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
 
             const labelMover = (lp: any, item: any) => {
               const length = // Tested with all three data types string, number, and date.
-                ((normalizedData.labels[index] + '') as string)?.length ?? 1; // Default to 1 character length
+                String(normalizedData.labels[index]).length ?? 1; // Default to 1 character length
 
               if (
                 lp.y > item.y - textSize &&
