@@ -192,6 +192,27 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
   }
 
   /**
+   * Check if a label has overlapping text then move it the number of pixels up and left based on textSize.
+   * 
+   * @param lp Label position that chartist will be checking does not overlap with the list of LabelPositions.
+   * @param lpExisting Label position that has already been placed that chartist will check against.
+   * @param textOffset this is configured with preventOverlappingLabelOffset option. 
+   * @param length How many characters long the label is.
+   */
+  labelMover(lp: Dot, lpExisting: Dot, textOffset: number, length: number) {
+    if (
+      lp.y > lpExisting.y - textOffset &&
+      lp.y < lpExisting.y + textOffset &&
+      lp.x > lpExisting.x - length * textOffset &&
+      lp.x < lpExisting.x + length * textOffset
+    ) {
+      lp.y -= textOffset;
+      lp.x -= textOffset;
+      this.labelMover(lp, lpExisting, textOffset, length);
+    }
+  };
+
+  /**
    * Creates the pie chart
    *
    * @param options
@@ -201,7 +222,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
     const normalizedData = normalizeData(data);
     const seriesGroups: Svg[] = [];
     let labelsGroup: Svg;
-    const labelPositions: any[] = [];
+    const labelPositions: Dot[] = [];
     let labelRadius: number;
     let startAngle = options.startAngle;
 
@@ -390,7 +411,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
 
       // If we need to show labels we need to add the label for this slice now
       if (options.showLabel) {
-        let labelPosition: any;
+        let labelPosition: Dot;
 
         if (data.series.length === 1) {
           // If we have only 1 series, we can position the label in the center of the pie
@@ -425,26 +446,12 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
 
         if (interpolatedValue || interpolatedValue === 0) {
           if (options.preventOverlappingLabelOffset) {
-            const textSize = options.preventOverlappingLabelOffset;
-
-            const labelMover = (lp: any, item: any) => {
-              const length = // Tested with all three data types string, number, and date.
-                String(normalizedData.labels[index]).length ?? 1; // Default to 1 character length
-
-              if (
-                lp.y > item.y - textSize &&
-                lp.y < item.y + textSize &&
-                lp.x > item.x - length * textSize &&
-                lp.x < item.x + length * textSize
-              ) {
-                lp.y -= textSize;
-                lp.x -= textSize;
-                labelMover(lp, item);
-              }
-            };
-
+            const textSize: number = options.preventOverlappingLabelOffset;
+            const length: number = // Tested with all three data types string, number, and date.
+              String(normalizedData.labels[index]).length ?? 1; // Default to 1 character length
+      
             labelPositions.forEach(item => {
-              labelMover(labelPosition, item);
+              this.labelMover(labelPosition, item, textSize, length);
             });
             labelPositions.push(labelPosition);
           }
