@@ -193,10 +193,10 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
 
   /**
    * Check if a label has overlapping text then move it the number of pixels up and left based on textSize.
-   * 
+   *
    * @param lp Label position that chartist will be checking does not overlap with the list of LabelPositions.
    * @param lpExisting Label position that has already been placed that chartist will check against.
-   * @param textOffset this is configured with preventOverlappingLabelOffset option. 
+   * @param textOffset this is configured with preventOverlappingLabelOffset option.
    * @param length How many characters long the label is.
    */
   labelMover(lp: Dot, lpExisting: Dot, textOffset: number, length: number) {
@@ -210,7 +210,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
       lp.x -= textOffset;
       this.labelMover(lp, lpExisting, textOffset, length);
     }
-  };
+  }
 
   /**
    * Creates the pie chart
@@ -448,8 +448,8 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
           if (options.preventOverlappingLabelOffset) {
             const textSize: number = options.preventOverlappingLabelOffset;
             const length: number = // Tested with all three data types string, number, and date.
-              String(normalizedData.labels[index]).length ?? 1; // Default to 1 character length
-      
+              String(normalizedData.labels[index]).length ?? 0; // Default to 0 character length
+
             labelPositions.forEach(item => {
               this.labelMover(labelPosition, item, textSize, length);
             });
