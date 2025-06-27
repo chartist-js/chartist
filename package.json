@@ -76,9 +76,6 @@
     "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}' 'sandboxes/**/*.{js,ts}'",
     "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{cjs,js,ts}' 'sandboxes/**/*.{js,ts}'",
     "commit": "cz",
-    "bumpVersion": "standard-version",
-    "createGithubRelease": "simple-github-release",
-    "release": "pnpm bumpVersion && git push origin main --tags && pnpm createGithubRelease",
     "updateGitHooks": "simple-git-hooks"
   },
   "devDependencies": {
@@ -134,9 +131,7 @@
     "sass": "^1.50.1",
     "sass-loader": "^10.0.0",
     "simple-git-hooks": "^2.7.0",
-    "simple-github-release": "^1.0.0",
     "size-limit": "^7.0.8",
-    "standard-version": "^9.5.0",
     "swc-loader": "^0.2.3",
     "typescript": "^4.6.4"
   }

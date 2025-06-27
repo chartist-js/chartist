@@ -1,11 +1,44 @@
 name: Release
 on:
-  release:
-    types: [created]
+  issue_comment:
+    types: [created, deleted]
+  push:
+    branches:
+      - main
 jobs:
-  build:
+  check:
     runs-on: ubuntu-latest
-    name: Publish package
+    name: Context check
+    outputs:
+      continue: ${{ steps.check.outputs.continue }}
+      workflow: ${{ steps.check.outputs.workflow }}
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Context check
+        id: check
+        uses: trigensoftware/simple-release-action@latest
+        with:
+          workflow: check
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+  pull-request:
+    runs-on: ubuntu-latest
+    name: Pull request
+    needs: check
+    if: needs.check.outputs.workflow == 'pull-request'
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Create or update pull request
+        uses: trigensoftware/simple-release-action@latest
+        with:
+          workflow: pull-request
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    runs-on: ubuntu-latest
+    name: Release
+    needs: check
+    if: needs.check.outputs.workflow == 'release'
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
@@ -21,7 +54,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Install dependencies
         run: pnpm install
-      - name: Publish
-        run: pnpm publish --no-git-checks
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Release
+        uses: trigensoftware/simple-release-action@latest
+        with:
+          workflow: release
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          npm-token: ${{ secrets.NPM_TOKEN }}
