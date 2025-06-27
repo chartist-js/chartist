@@ -43,7 +43,7 @@ importers:
       faker: ^5.5.3
       http-server: ^14.1.0
       jest: ^27.5.1
-      jest-image-snapshot: ^4.5.1
+      jest-image-snapshot: ^6.0.0
       nano-staged: ^0.8.0
       postcss: ^8.0.0
       postcss-loader: ^4.3.0
@@ -101,7 +101,7 @@ importers:
       faker: 5.5.3
       http-server: 14.1.0
       jest: 27.5.1
-      jest-image-snapshot: 4.5.1_jest@27.5.1
+      jest-image-snapshot: 6.5.1_jest@27.5.1
       nano-staged: 0.8.0
       postcss: 8.4.16
       postcss-loader: 4.3.0_postcss@8.4.16
@@ -7935,7 +7935,7 @@ packages:
   /@types/react-syntax-highlighter/11.0.5:
     resolution: {integrity: sha512-VIOi9i2Oj5XsmWWoB72p3KlZoEbdRAcechJa8Ztebw7bDl2YmR+odxIqhtJGp1q2EozHs02US+gzxJ9nuf56qg==}
     dependencies:
-      '@types/react': 19.1.8
+      '@types/react': 17.0.49
     dev: true
 
   /@types/react/17.0.49:
@@ -7951,12 +7951,6 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.0.11
-
-  /@types/react/19.1.8:
-    resolution: {integrity: sha512-AwAfQ2Wa5bCx9WP8nZL2uMZWod7J7/JSplxbTmBQ5ms6QpqNYm672H0Vu9ZVKVngQ+ii4R/byguVEUZQyeg44g==}
-    dependencies:
-      csstype: 3.0.11
-    dev: true
 
   /@types/resolve/1.17.1:
     resolution: {integrity: sha512-yy7HuzQhj0dhGpD8RLXSZWEkLsV9ibvxvi6EiJ3bkqLAO1RGo0WbkWQiwpRlSFymTJRz0d3k5LM3kkx8ArDbLw==}
@@ -9843,7 +9837,7 @@ packages:
     resolution: {integrity: sha512-vlNK021QdI7PNeiUh/lKkC/mNHHfV0m/Ad5JoI0TYtlBnJAslM/JIkm/tGC88bkLIwO6OQ5uV6ztS6kVAtCDlg==}
 
   /chalk/1.1.3:
-    resolution: {integrity: sha1-qBFcVeSnAv5NFQq9OHKCKn4J/Jg=}
+    resolution: {integrity: sha512-U3lRVLMSlsCfjqYPbLyVv11M9CPW4I728d6TCKMAOJueEeB9/8o+eSsMnxPJD+Q+K909sdESg7C+tIkoH6on1A==}
     engines: {node: '>=0.10.0'}
     dependencies:
       ansi-styles: 2.2.1
@@ -13089,7 +13083,7 @@ packages:
     dev: true
 
   /get-stdin/5.0.1:
-    resolution: {integrity: sha1-Ei4WFZHiH/TFJTAwVpPyDmOTo5g=}
+    resolution: {integrity: sha512-jZV7n6jGE3Gt7fgSTJoz91Ak5MuTLwMwkoYdjxuJ/AmjIsE1UC03y/IWkZCQGEvVNS9qoRNwy5BCqxImv0FVeA==}
     engines: {node: '>=0.12.0'}
     dev: true
 
@@ -13357,7 +13351,7 @@ packages:
     dev: true
 
   /glur/1.1.2:
-    resolution: {integrity: sha1-8g6jbbEDv8KSNDkh8fkeg8NGdok=}
+    resolution: {integrity: sha512-l+8esYHTKOx2G/Aao4lEQ0bnHWg4fWtJbVoZZT9Knxi01pB8C80BR85nONLFwkkQoFRCmXY+BUcGZN3yZ2QsRA==}
     dev: true
 
   /got/9.6.0:
@@ -14891,6 +14885,25 @@ packages:
       pixelmatch: 5.3.0
       pngjs: 3.4.0
       rimraf: 2.7.1
+      ssim.js: 3.5.0
+    dev: true
+
+  /jest-image-snapshot/6.5.1_jest@27.5.1:
+    resolution: {integrity: sha512-xlJFufgfY2Z4DsRsjcnTwxuynvo1bKdhf4OfcEftNuUAK+BwSCUtPmwlBGJhQ0XJXfm9JMAi/4BhQiHbaV8HrA==}
+    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+    peerDependencies:
+      jest: '>=20 <=29'
+    peerDependenciesMeta:
+      jest:
+        optional: true
+    dependencies:
+      chalk: 4.1.2
+      get-stdin: 5.0.1
+      glur: 1.1.2
+      jest: 27.5.1
+      lodash: 4.17.21
+      pixelmatch: 5.3.0
+      pngjs: 3.4.0
       ssim.js: 3.5.0
     dev: true
 
