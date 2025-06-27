@@ -39,6 +39,23 @@ export function Labels() {
   return root;
 }
 
+export function OverlappingLabels() {
+  const root = document.createElement('div');
+
+  new PieChart(
+    root,
+    {
+      labels: ['Big Slice', 11231231, 'Test the string', new Date(), 124124124],
+      series: [96, 1, 1, 1, 1]
+    },
+    {
+      preventOverlappingLabelOffset: 12
+    }
+  );
+
+  return root;
+}
+
 export function LabelInterpolation() {
   const root = document.createElement('div');
   const data = {

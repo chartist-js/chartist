@@ -70,7 +70,9 @@ const defaultOptions = {
   // Label direction can be 'neutral', 'explode' or 'implode'. The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart. Usually explode is useful when labels are positioned far away from the center.
   labelDirection: 'neutral',
   // If true empty values will be ignored to avoid drawing unnecessary slices and labels
-  ignoreEmptyValues: false
+  ignoreEmptyValues: false,
+  // If Nonzero check if a label has overlapping text then move it the number of pixels up and left (Should be half of label font size + 1 but you can tweak it as you prefer)
+  preventOverlappingLabelOffset: 0
 };
 
 /**
@@ -190,6 +192,31 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
   }
 
   /**
+   * Check if a label has overlapping text then move it the number of pixels up and left based on textSize.
+   * @param labelPos - Label position that chartist will be checking does not overlap with the list of LabelPositions.
+   * @param existingLabelPos - Label position that has already been placed that chartist will check against.
+   * @param textOffset - this is configured with preventOverlappingLabelOffset option.
+   * @param length - How many characters long the label is.
+   */
+  moveLabel(
+    labelPos: Dot,
+    existingLabelPos: Dot,
+    textOffset: number,
+    length: number
+  ) {
+    if (
+      labelPos.y > existingLabelPos.y - textOffset &&
+      labelPos.y < existingLabelPos.y + textOffset &&
+      labelPos.x > existingLabelPos.x - length * textOffset &&
+      labelPos.x < existingLabelPos.x + length * textOffset
+    ) {
+      labelPos.y -= textOffset;
+      labelPos.x -= textOffset;
+      this.moveLabel(labelPos, existingLabelPos, textOffset, length);
+    }
+  }
+
+  /**
    * Creates the pie chart
    *
    * @param options
@@ -199,6 +226,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
     const normalizedData = normalizeData(data);
     const seriesGroups: Svg[] = [];
     let labelsGroup: Svg;
+    const labelPositions: Dot[] = [];
     let labelRadius: number;
     let startAngle = options.startAngle;
 
@@ -387,7 +415,7 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
 
       // If we need to show labels we need to add the label for this slice now
       if (options.showLabel) {
-        let labelPosition;
+        let labelPosition: Dot;
 
         if (data.series.length === 1) {
           // If we have only 1 series, we can position the label in the center of the pie
@@ -421,6 +449,16 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
         );
 
         if (interpolatedValue || interpolatedValue === 0) {
+          if (options.preventOverlappingLabelOffset) {
+            const textOffset = options.preventOverlappingLabelOffset;
+            const length = String(normalizedData.labels[index]).length;
+
+            labelPositions.forEach(item => {
+              this.moveLabel(labelPosition, item, textOffset, length);
+            });
+            labelPositions.push(labelPosition);
+          }
+
           const labelElement = labelsGroup
             .elem(
               'text',
