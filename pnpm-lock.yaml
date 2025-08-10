@@ -19,7 +19,7 @@ importers:
       '@storybook/addon-viewport': ^6.4.22
       '@storybook/html': ^6.4.22
       '@swc/core': ^1.2.165
-      '@swc/helpers': ^0.4.0
+      '@swc/helpers': ^0.5.0
       '@swc/jest': ^0.2.20
       '@testing-library/jest-dom': ^5.16.4
       '@types/faker': ^5.5.8
@@ -75,7 +75,7 @@ importers:
       '@storybook/addon-viewport': 6.4.22
       '@storybook/html': 6.4.22_tgvqbxx3i4v5lht4r2tvmykgia
       '@swc/core': 1.2.165
-      '@swc/helpers': 0.4.3
+      '@swc/helpers': 0.5.17
       '@swc/jest': 0.2.20_@swc+core@1.2.165
       '@testing-library/jest-dom': 5.16.4
       '@types/faker': 5.5.9
@@ -7414,10 +7414,10 @@ packages:
       '@swc/core-win32-x64-msvc': 1.2.165
     dev: true
 
-  /@swc/helpers/0.4.3:
-    resolution: {integrity: sha512-6JrF+fdUK2zbGpJIlN7G3v966PQjyx/dPt1T9km2wj+EUBqgrxCk3uX4Kct16MIm9gGxfKRcfax2hVf5jvlTzA==}
+  /@swc/helpers/0.5.17:
+    resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
     dependencies:
-      tslib: 2.4.0
+      tslib: 2.8.1
     dev: true
 
   /@swc/jest/0.2.20_@swc+core@1.2.165:
@@ -21099,6 +21099,10 @@ packages:
 
   /tslib/2.4.0:
     resolution: {integrity: sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==}
+
+  /tslib/2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+    dev: true
 
   /tsutils/3.21.0_typescript@4.6.4:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
