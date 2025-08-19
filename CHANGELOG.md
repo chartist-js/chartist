@@ -99,6 +99,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 
 v0.11.0 - 11 Apr 2017
+---------------------
+
 - Added CSP compatibility by using CSSOM instead of style attributes (Francisco Silva)
 - Added feature to render pie / donut chart as solid shape, allowing outlines (Sergey Kovalyov, Chris Carson)
 - Fixed XMLNS for foreignObjet content (Alfredo Matos)
