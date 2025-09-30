@@ -38,15 +38,15 @@ export function createSvg(
     .forEach(svg => container.removeChild(svg));
 
   // Create svg object with width and height or use 100% as default
-  const svg = new Svg('svg')
-    .attr({
-      width,
-      height
-    })
-    .attr({
-      // TODO: Check better solution (browser support) and remove inline styles due to CSP
-      style: `width: ${width}; height: ${height};`
-    });
+  const svg = new Svg('svg').attr({
+    width,
+    height
+  });
+
+  // TODO: Check better solution (browser support)
+  const svgNode = <HTMLElement>svg.getNode();
+  svgNode.style.width = <string>width;
+  svgNode.style.height = <string>height;
 
   if (className) {
     svg.addClass(className);
@@ -261,9 +261,9 @@ export function createLabel(
   content.textContent = String(label);
 
   const labelElement = group.foreignObject(content, {
-    style: 'overflow: visible;',
     ...positionalData
   });
+  (<HTMLElement>labelElement.getNode()).style.overflow = 'visible';
 
   eventEmitter.emit<LabelDrawEvent>('draw', {
     type: 'label',
