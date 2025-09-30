@@ -237,7 +237,8 @@ export class PieChart extends BaseChart<PieChartEventsTypes> {
       options.height,
       options.donut
         ? options.classNames.chartDonut
-        : options.classNames.chartPie
+        : options.classNames.chartPie,
+      options.viewBox
     );
 
     this.svg = svg;

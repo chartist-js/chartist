@@ -30,6 +30,7 @@ describe('Core', () => {
 
         expect(svg).toBeDefined();
         expect(svg.classes()).toContain('ct-fish-bar');
+        expect(svg.attr('viewBox')).toBeFalsy();
         expect(container).toContainElement(document.querySelector('#foo'));
         expect(container).toContainElement(document.querySelector('#bar'));
       });
@@ -51,6 +52,27 @@ describe('Core', () => {
         );
         expect(container).toContainElement(
           document.querySelector('.ct-snake-bar')
+        );
+      });
+
+      it('should add viewBox to svg elements', () => {
+        const fixture = addMockWrapper(`
+          <div id="chart-container">
+          </div>
+        `);
+
+        const container: any =
+          fixture.wrapper.querySelector('#chart-container');
+        const svg = createSvg(container, '500px', '400px', 'ct-fish-bar', {
+          width: 300,
+          height: 200
+        });
+
+        expect(svg).toBeDefined();
+        expect(svg.classes()).toContain('ct-fish-bar');
+        expect(svg.attr('viewBox')).toEqual('0 0 300 200');
+        expect(container).toContainElement(
+          document.querySelector('.ct-fish-bar')
         );
       });
     });

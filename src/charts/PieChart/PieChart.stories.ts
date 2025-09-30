@@ -203,3 +203,34 @@ export function Solid() {
 
   return root;
 }
+
+export function ViewBox() {
+  const root = document.createElement('div');
+
+  new PieChart(
+    root,
+    {
+      series: [5, 3, 4]
+    },
+    {
+      chartPadding: 10,
+      viewBox: {
+        width: 350,
+        height: 350
+      }
+    },
+    [
+      [
+        'screen and (max-width: 575px)',
+        {
+          viewBox: {
+            width: 250,
+            height: 250
+          }
+        }
+      ]
+    ]
+  );
+
+  return root;
+}

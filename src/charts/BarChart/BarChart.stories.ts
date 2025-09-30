@@ -445,3 +445,46 @@ export function AccumulateRelativeStack() {
 
   return root;
 }
+
+export function ViewBox() {
+  const root = document.createElement('div');
+
+  new BarChart(
+    root,
+    {
+      series: [
+        [
+          { x: 1, y: 1 },
+          { x: 3, y: 5 }
+        ]
+      ]
+    },
+    {
+      axisX: {
+        type: AutoScaleAxis,
+        onlyInteger: true
+      },
+      axisY: {
+        type: AutoScaleAxis,
+        onlyInteger: true
+      },
+      viewBox: {
+        width: 800,
+        height: 300
+      }
+    },
+    [
+      [
+        'screen and (max-width: 575px)',
+        {
+          viewBox: {
+            width: 400,
+            height: 150
+          }
+        }
+      ]
+    ]
+  );
+
+  return root;
+}
