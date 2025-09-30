@@ -81,9 +81,9 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
-    "@commitlint/cli": "^17.0.0",
-    "@commitlint/config-conventional": "^17.0.0",
-    "@commitlint/cz-commitlint": "^17.0.0",
+    "@commitlint/cli": "^20.0.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@commitlint/cz-commitlint": "^20.0.0",
     "@rollup/plugin-node-resolve": "^13.2.0",
     "@size-limit/preset-big-lib": "^7.0.8",
     "@storybook/addon-actions": "^6.4.22",
