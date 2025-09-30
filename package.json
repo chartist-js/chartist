@@ -94,7 +94,7 @@
     "@storybook/addon-viewport": "^6.4.22",
     "@storybook/html": "^6.4.22",
     "@swc/core": "^1.2.165",
-    "@swc/helpers": "^0.4.0",
+    "@swc/helpers": "^0.5.0",
     "@swc/jest": "^0.2.20",
     "@testing-library/jest-dom": "^5.16.4",
     "@types/faker": "^5.5.8",
