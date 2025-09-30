@@ -9,7 +9,7 @@ jobs:
     name: size-limit
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -28,7 +28,7 @@ jobs:
     name: storybook
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -47,7 +47,7 @@ jobs:
     name: editorconfig
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Check editorconfig
         uses: editorconfig-checker/action-editorconfig-checker@v1
   website:
@@ -55,7 +55,7 @@ jobs:
     name: website
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
