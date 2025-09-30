@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/chartist-js/chartist/compare/v1.4.0...v1.5.0) (2025-09-30)
+
+### Features
+
+* support for viewport in SVG only providing width and height ([#1403](https://github.com/chartist-js/chartist/issues/1403)) ([752f0a7](https://github.com/chartist-js/chartist/commit/752f0a780cbff77e18ed43c1f1f9b9b4c63507b6))
+
 ## [1.4.0](https://github.com/chartist-js/chartist/compare/v1.3.1...v1.4.0) (2025-06-27)
 
 ### Features
