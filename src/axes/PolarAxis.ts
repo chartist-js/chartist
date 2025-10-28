@@ -7,17 +7,17 @@ import { Axis } from './Axis';
 
 export const polarAxisUnits = {
   x: {
-    pos: 'x',
+    pos: 'a',
     len: 'width',
-    dir: 'horizontal',
+    dir: 'angular',
     rectStart: 'x1',
     rectEnd: 'x2',
     rectOffset: 'y2'
   },
   y: {
-    pos: 'y',
+    pos: 'r',
     len: 'height',
-    dir: 'vertical',
+    dir: 'radial',
     rectStart: 'y2',
     rectEnd: 'y1',
     rectOffset: 'x1'
@@ -30,20 +30,26 @@ export type PolarAxisUnits = AngleAxisUnits | RadiusAxisUnits;
 
 export abstract class PolarAxis extends Axis {
   readonly counterUnits: PolarAxisUnits;
+  readonly radius: number;
+  readonly centerX: number;
+  readonly centerY: number;
 
   constructor(
     public readonly units: PolarAxisUnits,
     chartRect: ChartRect,
     ticks: Label[]
   ) {
-    super(
-      chartRect,
-      ticks,
-      chartRect[units.rectEnd] - chartRect[units.rectStart],
-      chartRect[units.rectOffset]
-    );
+    const _radius =
+      Math.min(chartRect.width(), chartRect.height()) / 2 -
+      Math.min(chartRect.x1, chartRect.y1);
+    const axisLength = units.pos === 'a' ? _radius * 2 * Math.PI : _radius;
+
+    super(chartRect, ticks, axisLength, 0);
+    this.radius = _radius;
     this.counterUnits =
       units === polarAxisUnits.x ? polarAxisUnits.y : polarAxisUnits.x;
+    this.centerX = chartRect.width() / 2;
+    this.centerY = chartRect.height() / 2;
   }
 
   createGridAndLabels(
@@ -53,7 +59,7 @@ export abstract class PolarAxis extends Axis {
     eventEmitter: EventEmitter
   ) {
     const axisOptions =
-      this.units.pos === 'x' ? chartOptions.axisX : chartOptions.axisY;
+      this.units.pos === 'a' ? chartOptions.axisX : chartOptions.axisY;
     const projectedValues = this.ticks.map((tick, i) =>
       this.projectValue(tick, i)
     );
@@ -89,32 +95,12 @@ export abstract class PolarAxis extends Axis {
 
       // Transform to global coordinates using the chartRect
       // We also need to set the label offset for the createLabel function
-      if (this.units.pos === 'x') {
-        projectedValue = this.chartRect.x1 + projectedValue;
+      if (this.units.pos === 'a') {
         labelOffset.x = chartOptions.axisX.labelOffset.x;
-
-        // If the labels should be positioned in start position (top side for vertical axis) we need to set a
-        // different offset as for positioned with end (bottom)
-        if (chartOptions.axisX.position === 'start') {
-          labelOffset.y =
-            this.chartRect.padding.top + chartOptions.axisX.labelOffset.y + 5;
-        } else {
-          labelOffset.y =
-            this.chartRect.y1 + chartOptions.axisX.labelOffset.y + 5;
-        }
+        labelOffset.y = chartOptions.axisX.labelOffset.y;
       } else {
-        projectedValue = this.chartRect.y1 - projectedValue;
-        labelOffset.y = chartOptions.axisY.labelOffset.y - labelLength;
-
-        // If the labels should be positioned in start position (left side for horizontal axis) we need to set a
-        // different offset as for positioned with end (right side)
-        if (chartOptions.axisY.position === 'start') {
-          labelOffset.x =
-            this.chartRect.padding.left + chartOptions.axisY.labelOffset.x;
-        } else {
-          labelOffset.x =
-            this.chartRect.x2 + chartOptions.axisY.labelOffset.x + 10;
-        }
+        labelOffset.x = chartOptions.axisY.labelOffset.x;
+        labelOffset.y = chartOptions.axisY.labelOffset.y;
       }
 
       if (axisOptions.showGrid) {
@@ -123,7 +109,7 @@ export abstract class PolarAxis extends Axis {
           index,
           this,
           this.gridOffset,
-          this.chartRect[this.counterUnits.len](),
+          this.axisLength,
           gridGroup,
           [
             chartOptions.classNames.grid,

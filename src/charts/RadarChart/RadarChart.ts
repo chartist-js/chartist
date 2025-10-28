@@ -77,7 +77,9 @@ const defaultOptions = {
     // Interpolation function that allows you to intercept the value from the axis label
     labelInterpolationFnc: noop,
     // Set the axis type to be used to project values on this axis. If not defined, Chartist.StepAxis will be used for the X-Axis, where the ticks option will be set to the labels in the data and the stretch option will be set to the global fullWidth option. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
-    type: undefined
+    type: undefined,
+
+    stretch: false
   },
   // Options for Y-Axis
   axisY: {
@@ -277,11 +279,11 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
     const labelGroup = svg.elem('g').addClass(options.classNames.labelGroup);
 
     const chartRect = createChartRect(svg, options);
-    let axisX: PolarAxis;
-    let axisY: PolarAxis;
+    let axisA: PolarAxis;
+    let axisR: PolarAxis;
 
     if (options.axisX.type === undefined) {
-      axisX = new PolarStepAxis(
+      axisA = new PolarStepAxis(
         polarAxisUnits.x,
         normalizedData.series,
         chartRect,
@@ -293,7 +295,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
       );
     } else {
       // eslint-disable-next-line new-cap
-      axisX = new options.axisX.type(
+      axisA = new options.axisX.type(
         polarAxisUnits.x,
         normalizedData.series,
         chartRect,
@@ -302,7 +304,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
     }
 
     if (options.axisY.type === undefined) {
-      axisY = new AutoScalePolarAxis(
+      axisR = new AutoScalePolarAxis(
         polarAxisUnits.y,
         normalizedData.series,
         chartRect,
@@ -314,7 +316,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
       );
     } else {
       // eslint-disable-next-line new-cap
-      axisY = new options.axisY.type(
+      axisR = new options.axisY.type(
         polarAxisUnits.y,
         normalizedData.series,
         chartRect,
@@ -322,13 +324,13 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
       ) as PolarAxis;
     }
 
-    axisX.createGridAndLabels(
+    axisA.createGridAndLabels(
       gridGroup,
       labelGroup,
       options,
       this.eventEmitter
     );
-    axisY.createGridAndLabels(
+    axisR.createGridAndLabels(
       gridGroup,
       labelGroup,
       options,

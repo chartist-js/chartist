@@ -11,7 +11,7 @@ new RadarChart(
     ]
   },
   {
-    fullWidth: true,
+    fullWidth: false,
     chartPadding: {
       right: 40
     }

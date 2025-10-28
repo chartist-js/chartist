@@ -301,17 +301,36 @@ export function createPolarGrid(
   classes: string[],
   eventEmitter: EventEmitter
 ) {
-  const positionalData = {
-    [`${axis.units.pos}1`]: position,
-    [`${axis.units.pos}2`]: position,
-    [`${axis.counterUnits.pos}1`]: offset,
-    [`${axis.counterUnits.pos}2`]: offset + length
-  } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+  if (axis.units.pos === 'r') {
+    const positionalData = {
+      cx: axis.centerX,
+      cy: axis.centerY,
+      r: position
+    } as Record<'cx' | 'cy' | 'r', number>;
 
-  const gridElement = group.elem('path', positionalData, classes.join(' '));
+    const gridElement = group.elem('circle', positionalData, classes.join(' '));
+    gridElement;
+  } else {
+    const angle = (360.0 * position) / length;
+    const xyPos = polarToCartesian(
+      axis.centerX,
+      axis.centerY,
+      axis.radius,
+      angle
+    );
+    const positionalData = {
+      x1: axis.centerX,
+      y1: axis.centerY,
+      x2: xyPos.x,
+      y2: xyPos.y
+    } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+
+    const gridElement = group.elem('line', positionalData, classes.join(' '));
+    gridElement;
+  }
   eventEmitter;
   index;
-  gridElement;
+  offset;
 
   // Event for grid draw
   /*
@@ -344,38 +363,51 @@ export function createPolarLabel(
   eventEmitter;
   index;
 
-  const angle = 15 * index;
-  const xyPos = polarToCartesian(
-    axis.axisLength / 2,
-    axis.axisLength / 2,
-    axis.axisLength / 3,
-    angle
-  );
+  if (axis.units.pos === 'r') {
+    const xyPos = polarToCartesian(axis.centerX, axis.centerY, position, 0);
+    const positionalData = {
+      x: xyPos.x + labelOffset.x,
+      y: xyPos.y + labelOffset.y,
+      width: length,
+      height: Math.max(0, axisOffset - 10)
+    } as Record<'x' | 'y' | 'width' | 'height', number>;
 
-  const positionalData = {
-    [axis.units.pos]: xyPos.x + labelOffset[axis.units.pos],
-    [axis.counterUnits.pos]: xyPos.y + labelOffset[axis.counterUnits.pos],
-    [axis.units.len]: length,
-    [axis.counterUnits.len]: Math.max(0, axisOffset - 10)
-  } as Record<'x' | 'y' | 'width' | 'height', number>;
+    const content = document.createElement('span');
+    content.className = classes.join(' ');
+    content.textContent = String(label);
 
-  // We need to set width and height explicitly to px as span will not expand with width and height being
-  // 100% in all browsers
-  const stepLength = Math.round(positionalData[axis.units.len]);
-  const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
-  const content = document.createElement('span');
+    const labelElement = group.foreignObject(content, {
+      style: 'overflow: visible;',
+      ...positionalData
+    });
 
-  content.className = classes.join(' ');
-  content.style['top'] = xyPos.y + 'px';
-  content.style['left'] = xyPos.x + 'px';
-  content.textContent = String(label);
+    labelElement;
+  } else {
+    const angle = (360.0 * position) / axis.axisLength;
+    const xyPos = polarToCartesian(
+      axis.centerX,
+      axis.centerY,
+      axis.radius,
+      angle
+    );
+    const positionalData = {
+      x: xyPos.x + labelOffset.x,
+      y: xyPos.y + labelOffset.y,
+      width: length,
+      height: Math.max(0, axisOffset - 10)
+    } as Record<'x' | 'y' | 'width' | 'height', number>;
 
-  const labelElement = group.foreignObject(content, {
-    style: 'overflow: visible;',
-    ...positionalData
-  });
+    const content = document.createElement('span');
+    content.className = classes.join(' ');
+    content.textContent = String(label);
 
-  labelElement;
+    const labelElement = group.foreignObject(content, {
+      style: 'overflow: visible;',
+      ...positionalData
+    });
+
+    labelElement;
+  }
   /*
   eventEmitter.emit<LabelDrawEvent>('draw', {
     type: 'label',
