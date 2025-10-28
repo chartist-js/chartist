@@ -14,9 +14,18 @@
           stroke-width: 2px;
           fill: none;
         }
+        .ct-label.ct-radial {
+          transform: translate(-100%, -100%) translate(-4px,-4px);
+          position: absolute;
+        }
+
+        .ct-label.ct-angular {
+          transform: translate(-50%, -50%);
+          position: absolute;
+        }
     </style>
   </head>
   <body>
-    <div id="chart" style="height: 50vh"></div>
+    <div id="chart" style="width: 640px; height: 640px; position:relative; background-color: #e0e0e0;"></div>
   </body>
 </html>

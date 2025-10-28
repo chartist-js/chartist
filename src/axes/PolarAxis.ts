@@ -48,8 +48,8 @@ export abstract class PolarAxis extends Axis {
     this.radius = _radius;
     this.counterUnits =
       units === polarAxisUnits.x ? polarAxisUnits.y : polarAxisUnits.x;
-    this.centerX = chartRect.width() / 2;
-    this.centerY = chartRect.height() / 2;
+    this.centerX = chartRect.width() / 2 + chartRect.x1;
+    this.centerY = chartRect.height() / 2 + chartRect.y2;
   }
 
   createGridAndLabels(

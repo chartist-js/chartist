@@ -79,7 +79,7 @@ const defaultOptions = {
     labelInterpolationFnc: noop,
     // Set the axis type to be used to project values on this axis. If not defined, Chartist.StepAxis will be used for the X-Axis, where the ticks option will be set to the labels in the data and the stretch option will be set to the global fullWidth option. This type can be changed to any axis constructor available (e.g. Chartist.FixedScaleAxis), where all axis options should be present here.
     type: undefined,
-
+    // Don't collapse the last arc segment
     stretch: false
   },
   // Options for Y-Axis
@@ -149,8 +149,8 @@ const defaultOptions = {
     grid: 'ct-grid',
     gridGroup: 'ct-grids',
     gridBackground: 'ct-grid-background',
-    vertical: 'ct-vertical',
-    horizontal: 'ct-horizontal',
+    angular: 'ct-angular',
+    radial: 'ct-radial',
     start: 'ct-start',
     end: 'ct-end'
   }
@@ -443,12 +443,22 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
           const xyPos = cxy(pathElement.x, pathElement.y);
           pathElement.x = xyPos.x;
           pathElement.y = xyPos.y;
-          const xy1Pos = cxy(pathElement.x1, pathElement.y1);
-          pathElement.x1 = xy1Pos.x;
-          pathElement.y1 = xy1Pos.y;
-          const xy2Pos = cxy(pathElement.x2, pathElement.y2);
-          pathElement.x2 = xy2Pos.x;
-          pathElement.y2 = xy2Pos.y;
+          if (
+            safeHasProperty(pathElement, 'x1') &&
+            safeHasProperty(pathElement, 'y1')
+          ) {
+            const xy1Pos = cxy(pathElement.x1, pathElement.y1);
+            pathElement.x1 = xy1Pos.x;
+            pathElement.y1 = xy1Pos.y;
+          }
+          if (
+            safeHasProperty(pathElement, 'x2') &&
+            safeHasProperty(pathElement, 'y2')
+          ) {
+            const xy2Pos = cxy(pathElement.x2, pathElement.y2);
+            pathElement.x2 = xy2Pos.x;
+            pathElement.y2 = xy2Pos.y;
+          }
         });
 
         // If we should show points we need to create them now to avoid secondary loop

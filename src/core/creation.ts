@@ -368,8 +368,8 @@ export function createPolarLabel(
     const positionalData = {
       x: xyPos.x + labelOffset.x,
       y: xyPos.y + labelOffset.y,
-      width: length,
-      height: Math.max(0, axisOffset - 10)
+      width: 1,
+      height: 1
     } as Record<'x' | 'y' | 'width' | 'height', number>;
 
     const content = document.createElement('span');
@@ -384,6 +384,7 @@ export function createPolarLabel(
     labelElement;
   } else {
     const angle = (360.0 * position) / axis.axisLength;
+    const angleRadians = (-Math.PI * angle) / 180.0;
     const xyPos = polarToCartesian(
       axis.centerX,
       axis.centerY,
@@ -391,8 +392,8 @@ export function createPolarLabel(
       angle
     );
     const positionalData = {
-      x: xyPos.x + labelOffset.x,
-      y: xyPos.y + labelOffset.y,
+      x: xyPos.x - Math.sin(angleRadians) * labelOffset.x,
+      y: xyPos.y - Math.cos(angleRadians) * labelOffset.y,
       width: length,
       height: Math.max(0, axisOffset - 10)
     } as Record<'x' | 'y' | 'width' | 'height', number>;

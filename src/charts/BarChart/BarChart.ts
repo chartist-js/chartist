@@ -497,11 +497,11 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           if (labelAxis instanceof StepAxis) {
             // Offset to center bar between grid lines, but only if the step axis is not stretched
             if (!labelAxis.stretch) {
-              projected[labelAxis.counterUnits.pos] +=
+              projected[labelAxis.units.pos] +=
                 periodHalfLength * (options.horizontalBars ? -1 : 1);
             }
             // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
-            projected[labelAxis.counterUnits.pos] +=
+            projected[labelAxis.units.pos] +=
               options.stackBars || options.distributeSeries
                 ? 0
                 : biPol *

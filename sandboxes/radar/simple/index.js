@@ -12,8 +12,16 @@ new RadarChart(
   },
   {
     fullWidth: false,
-    chartPadding: {
-      right: 40
+    chartPadding: 40,
+    axisX: {
+      offset: 0,
+      labelOffset: {
+        x: 40,
+        y: 20
+      }
+    },
+    axisY: {
+      offset: 0
     }
   }
 );
