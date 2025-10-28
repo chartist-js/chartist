@@ -1,14 +1,13 @@
-import type { Axis } from '../../axes';
 import type {
-  LineChartData,
-  LineChartOptions,
-  LineChartOptionsWithDefaults,
-  LineChartCreatedEvent,
-  PointDrawEvent,
-  LineDrawEvent,
-  AreaDrawEvent,
-  LineChartEventsTypes
-} from './LineChart.types';
+  RadarChartData,
+  RadarChartOptions,
+  RadarChartOptionsWithDefaults,
+  RadarChartCreatedEvent,
+  RadarPointDrawEvent,
+  RadarLineDrawEvent,
+  RadarAreaDrawEvent,
+  RadarChartEventsTypes
+} from './RadarChart.types';
 import type {
   SegmentData,
   Series,
@@ -25,15 +24,20 @@ import {
   createGridBackground
 } from '../../core';
 import { isNumeric, noop, extend, safeHasProperty, each } from '../../utils';
-import { StepAxis, AutoScaleAxis, cartesianAxisUnits } from '../../axes';
+import {
+  PolarStepAxis,
+  PolarAxis,
+  AutoScalePolarAxis,
+  polarAxisUnits
+} from '../../axes';
 import { monotoneCubic, none } from '../../interpolation';
 import { BaseChart } from './../BaseChart';
 
-export function getSeriesOption<
-  T extends keyof Omit<LineChartOptionsWithDefaults, 'series'>
+function getSeriesOption<
+  T extends keyof Omit<RadarChartOptionsWithDefaults, 'series'>
 >(
   series: Series | SeriesObject,
-  options: LineChartOptionsWithDefaults,
+  options: RadarChartOptionsWithDefaults,
   key: T
 ) {
   if (
@@ -45,7 +49,7 @@ export function getSeriesOption<
     const value = seriesOptions[key];
     const result = value === undefined ? options[key] : value;
 
-    return result as LineChartOptionsWithDefaults[T];
+    return result as RadarChartOptionsWithDefaults[T];
   } else {
     return options[key];
   }
@@ -149,7 +153,7 @@ const defaultOptions = {
   }
 };
 
-export class LineChart extends BaseChart<LineChartEventsTypes> {
+export class RadarChart extends BaseChart<RadarChartEventsTypes> {
   /**
    * This method creates a new line chart.
    * @param query A selector query string or directly a DOM element
@@ -177,14 +181,14 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
    * };
    *
    * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
-   * new LineChart('.ct-chart', data, options);
+   * new RadarChart('.ct-chart', data, options);
    * ```
    *
    * @example
    * ```ts
    * // Use specific interpolation function with configuration from the Chartist.Interpolation module
    *
-   * const chart = new LineChart('.ct-chart', {
+   * const chart = new RadarChart('.ct-chart', {
    *   labels: [1, 2, 3, 4, 5],
    *   series: [
    *     [1, 1, 8, 1, 7]
@@ -231,14 +235,14 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
    *   }]
    * ];
    *
-   * new LineChart('.ct-chart', data, null, responsiveOptions);
+   * new RadarChart('.ct-chart', data, null, responsiveOptions);
    * ```
    */
   constructor(
     query: string | Element | null,
-    protected override data: LineChartData,
-    options?: LineChartOptions,
-    responsiveOptions?: ResponsiveOptions<LineChartOptions>
+    protected override data: RadarChartData,
+    options?: RadarChartOptions,
+    responsiveOptions?: ResponsiveOptions<RadarChartOptions>
   ) {
     super(
       query,
@@ -252,7 +256,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
   /**
    * Creates a new chart
    */
-  createChart(options: LineChartOptionsWithDefaults) {
+  createChart(options: RadarChartOptionsWithDefaults) {
     const { data } = this;
     const normalizedData = normalizeData(data, options.reverseData, true);
 
@@ -273,12 +277,12 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     const labelGroup = svg.elem('g').addClass(options.classNames.labelGroup);
 
     const chartRect = createChartRect(svg, options);
-    let axisX: Axis;
-    let axisY: Axis;
+    let axisX: PolarAxis;
+    let axisY: PolarAxis;
 
     if (options.axisX.type === undefined) {
-      axisX = new StepAxis(
-        cartesianAxisUnits.x,
+      axisX = new PolarStepAxis(
+        polarAxisUnits.x,
         normalizedData.series,
         chartRect,
         {
@@ -290,16 +294,16 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     } else {
       // eslint-disable-next-line new-cap
       axisX = new options.axisX.type(
-        cartesianAxisUnits.x,
+        polarAxisUnits.x,
         normalizedData.series,
         chartRect,
         options.axisX
-      );
+      ) as PolarAxis;
     }
 
     if (options.axisY.type === undefined) {
-      axisY = new AutoScaleAxis(
-        cartesianAxisUnits.y,
+      axisY = new AutoScalePolarAxis(
+        polarAxisUnits.y,
         normalizedData.series,
         chartRect,
         {
@@ -311,11 +315,11 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     } else {
       // eslint-disable-next-line new-cap
       axisY = new options.axisY.type(
-        cartesianAxisUnits.y,
+        polarAxisUnits.y,
         normalizedData.series,
         chartRect,
         options.axisY
-      );
+      ) as PolarAxis;
     }
 
     axisX.createGridAndLabels(
@@ -456,7 +460,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
               });
             }
 
-            this.eventEmitter.emit<PointDrawEvent>('draw', {
+            this.eventEmitter.emit<RadarPointDrawEvent>('draw', {
               type: 'point',
               value: pathElementData?.value,
               index: pathElementData?.valueIndex || 0,
@@ -484,7 +488,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
             true
           );
 
-          this.eventEmitter.emit<LineDrawEvent>('draw', {
+          this.eventEmitter.emit<RadarLineDrawEvent>('draw', {
             type: 'line',
             values: normalizedData.series[seriesIndex],
             path: path.clone(),
@@ -552,7 +556,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
               );
 
               // Emit an event for each area that was drawn
-              this.eventEmitter.emit<AreaDrawEvent>('draw', {
+              this.eventEmitter.emit<RadarAreaDrawEvent>('draw', {
                 type: 'area',
                 values: normalizedData.series[seriesIndex],
                 path: areaPath.clone(),
@@ -573,7 +577,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
       options.reverseData
     );
 
-    this.eventEmitter.emit<LineChartCreatedEvent>('created', {
+    this.eventEmitter.emit<RadarChartCreatedEvent>('created', {
       chartRect,
       axisX,
       axisY,

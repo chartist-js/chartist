@@ -9,7 +9,7 @@ import type {
   ViewBox
 } from './types';
 import type { EventEmitter } from '../event';
-import type { Axis } from '../axes';
+import type { CartesianAxis, PolarAxis } from '../axes';
 import { namespaces } from './constants';
 import { Svg } from '../svg/Svg';
 import { quantity } from './lang';
@@ -183,7 +183,7 @@ export function createChartRect(svg: Svg, options: Options) {
 export function createGrid(
   position: number,
   index: number,
-  axis: Axis,
+  axis: CartesianAxis,
   offset: number,
   length: number,
   group: Svg,
@@ -191,8 +191,8 @@ export function createGrid(
   eventEmitter: EventEmitter
 ) {
   const positionalData = {
-    [`${axis.units.pos}1`]: position,
-    [`${axis.units.pos}2`]: position,
+    [`${axis.counterUnits.pos}1`]: position,
+    [`${axis.counterUnits.pos}2`]: position,
     [`${axis.counterUnits.pos}1`]: offset,
     [`${axis.counterUnits.pos}2`]: offset + length
   } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
@@ -247,13 +247,102 @@ export function createLabel(
   length: number,
   index: number,
   label: Label,
-  axis: Axis,
+  axis: CartesianAxis,
   axisOffset: number,
   labelOffset: { x: number; y: number },
   group: Svg,
   classes: string[],
   eventEmitter: EventEmitter
 ) {
+  const positionalData = {
+    [axis.counterUnits.pos]: position + labelOffset[axis.counterUnits.pos],
+    [axis.counterUnits.pos]: labelOffset[axis.counterUnits.pos],
+    [axis.counterUnits.len]: length,
+    [axis.counterUnits.len]: Math.max(0, axisOffset - 10)
+  } as Record<'x' | 'y' | 'width' | 'height', number>;
+  // We need to set width and height explicitly to px as span will not expand with width and height being
+  // 100% in all browsers
+  const stepLength = Math.round(positionalData[axis.counterUnits.len]);
+  const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
+  const content = document.createElement('span');
+
+  content.className = classes.join(' ');
+  content.style[axis.counterUnits.len] = stepLength + 'px';
+  content.style[axis.counterUnits.len] = stepCounterLength + 'px';
+  content.textContent = String(label);
+
+  const labelElement = group.foreignObject(content, {
+    style: 'overflow: visible;',
+    ...positionalData
+  });
+
+  eventEmitter.emit<LabelDrawEvent>('draw', {
+    type: 'label',
+    axis,
+    index,
+    group,
+    element: labelElement,
+    text: label,
+    ...positionalData
+  });
+}
+
+/**
+ * Creates a grid line based on a projected value.
+ */
+export function createPolarGrid(
+  position: number,
+  index: number,
+  axis: PolarAxis,
+  offset: number,
+  length: number,
+  group: Svg,
+  classes: string[],
+  eventEmitter: EventEmitter
+) {
+  const positionalData = {
+    [`${axis.units.pos}1`]: position,
+    [`${axis.units.pos}2`]: position,
+    [`${axis.counterUnits.pos}1`]: offset,
+    [`${axis.counterUnits.pos}2`]: offset + length
+  } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+
+  const gridElement = group.elem('path', positionalData, classes.join(' '));
+  eventEmitter;
+  index;
+  gridElement;
+
+  // Event for grid draw
+  /*
+  eventEmitter.emit<GridDrawEvent>('draw', {
+    type: 'grid',
+    axis,
+    index,
+    group,
+    element: gridElement,
+    ...positionalData
+  });
+  */
+}
+
+/**
+ * Creates a label based on a projected value and an axis.
+ */
+export function createPolarLabel(
+  position: number,
+  length: number,
+  index: number,
+  label: Label,
+  axis: PolarAxis,
+  axisOffset: number,
+  labelOffset: { x: number; y: number },
+  group: Svg,
+  classes: string[],
+  eventEmitter: EventEmitter
+) {
+  eventEmitter;
+  index;
+
   const positionalData = {
     [axis.units.pos]: position + labelOffset[axis.units.pos],
     [axis.counterUnits.pos]: labelOffset[axis.counterUnits.pos],
@@ -276,6 +365,8 @@ export function createLabel(
     ...positionalData
   });
 
+  labelElement;
+  /*
   eventEmitter.emit<LabelDrawEvent>('draw', {
     type: 'label',
     axis,
@@ -285,4 +376,5 @@ export function createLabel(
     text: label,
     ...positionalData
   });
+  */
 }

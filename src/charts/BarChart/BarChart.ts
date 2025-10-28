@@ -1,4 +1,4 @@
-import type { Axis } from '../../axes';
+import type { CartesianAxis } from '../../axes';
 import type {
   BarChartData,
   BarChartOptions,
@@ -30,7 +30,7 @@ import {
   createChartRect,
   createGridBackground
 } from '../../core';
-import { AutoScaleAxis, StepAxis, axisUnits } from '../../axes';
+import { AutoScaleAxis, StepAxis, cartesianAxisUnits } from '../../axes';
 import { BaseChart } from '../BaseChart';
 
 function getSerialSums(series: NormalizedSeries[]) {
@@ -253,7 +253,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
     }
 
     const chartRect = createChartRect(svg, options);
-    let valueAxis: Axis;
+    let valueAxis: CartesianAxis;
     const labelAxisTicks = // We need to set step count based on some options combinations
       options.distributeSeries && options.stackBars
         ? // If distributed series are enabled and bars need to be stacked, we'll only have one bar and therefore should
@@ -263,15 +263,15 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           // If we are drawing a regular bar chart with two dimensional series data, we just use the labels array
           // as the bars are normalized
           normalizedData.labels;
-    let labelAxis: Axis;
-    let axisX: Axis;
-    let axisY: Axis;
+    let labelAxis: CartesianAxis;
+    let axisX: CartesianAxis;
+    let axisY: CartesianAxis;
 
     // Set labelAxis and valueAxis based on the horizontalBars setting. This setting will flip the axes if necessary.
     if (options.horizontalBars) {
       if (options.axisX.type === undefined) {
         valueAxis = axisX = new AutoScaleAxis(
-          axisUnits.x,
+          cartesianAxisUnits.x,
           normalizedData.series,
           chartRect,
           { ...options.axisX, highLow: highLow, referenceValue: 0 }
@@ -279,7 +279,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         valueAxis = axisX = new options.axisX.type(
-          axisUnits.x,
+          cartesianAxisUnits.x,
           normalizedData.series,
           chartRect,
           { ...options.axisX, highLow: highLow, referenceValue: 0 }
@@ -288,7 +288,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
 
       if (options.axisY.type === undefined) {
         labelAxis = axisY = new StepAxis(
-          axisUnits.y,
+          cartesianAxisUnits.y,
           normalizedData.series,
           chartRect,
           {
@@ -298,7 +298,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         labelAxis = axisY = new options.axisY.type(
-          axisUnits.y,
+          cartesianAxisUnits.y,
           normalizedData.series,
           chartRect,
           options.axisY
@@ -307,7 +307,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
     } else {
       if (options.axisX.type === undefined) {
         labelAxis = axisX = new StepAxis(
-          axisUnits.x,
+          cartesianAxisUnits.x,
           normalizedData.series,
           chartRect,
           {
@@ -317,7 +317,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         labelAxis = axisX = new options.axisX.type(
-          axisUnits.x,
+          cartesianAxisUnits.x,
           normalizedData.series,
           chartRect,
           options.axisX
@@ -326,7 +326,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
 
       if (options.axisY.type === undefined) {
         valueAxis = axisY = new AutoScaleAxis(
-          axisUnits.y,
+          cartesianAxisUnits.y,
           normalizedData.series,
           chartRect,
           { ...options.axisY, highLow: highLow, referenceValue: 0 }
@@ -334,7 +334,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         valueAxis = axisY = new options.axisY.type(
-          axisUnits.y,
+          cartesianAxisUnits.y,
           normalizedData.series,
           chartRect,
           { ...options.axisY, highLow: highLow, referenceValue: 0 }
@@ -497,11 +497,11 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           if (labelAxis instanceof StepAxis) {
             // Offset to center bar between grid lines, but only if the step axis is not stretched
             if (!labelAxis.stretch) {
-              projected[labelAxis.units.pos] +=
+              projected[labelAxis.counterUnits.pos] +=
                 periodHalfLength * (options.horizontalBars ? -1 : 1);
             }
             // Using bi-polar offset for multiple series if no stacked bars or series distribution is used
-            projected[labelAxis.units.pos] +=
+            projected[labelAxis.counterUnits.pos] +=
               options.stackBars || options.distributeSeries
                 ? 0
                 : biPol *
@@ -528,8 +528,10 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           }
 
           const positions = {
-            [`${labelAxis.units.pos}1`]: projected[labelAxis.units.pos],
-            [`${labelAxis.units.pos}2`]: projected[labelAxis.units.pos]
+            [`${labelAxis.counterUnits.pos}1`]:
+              projected[labelAxis.counterUnits.pos],
+            [`${labelAxis.counterUnits.pos}2`]:
+              projected[labelAxis.counterUnits.pos]
           } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
 
           if (

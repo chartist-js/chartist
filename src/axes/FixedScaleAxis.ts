@@ -6,16 +6,16 @@ import type {
 } from '../core';
 import { getMultiValue, getHighLow } from '../core/data';
 import { times } from '../utils';
-import { AxisUnits, Axis } from './Axis';
+import { CartesianAxisUnits, CartesianAxis } from './CartesianAxis';
 
-export class FixedScaleAxis extends Axis {
+export class FixedScaleAxis extends CartesianAxis {
   public override readonly range: {
     min: number;
     max: number;
   };
 
   constructor(
-    axisUnit: AxisUnits,
+    axisUnit: CartesianAxisUnits,
     data: NormalizedSeries[],
     chartRect: ChartRect,
     options: AxisOptions
@@ -40,7 +40,7 @@ export class FixedScaleAxis extends Axis {
   }
 
   projectValue(value: NormalizedSeriesPrimitiveValue) {
-    const finalValue = Number(getMultiValue(value, this.units.pos));
+    const finalValue = Number(getMultiValue(value, this.counterUnits.pos));
 
     return (
       (this.axisLength * (finalValue - this.range.min)) /
