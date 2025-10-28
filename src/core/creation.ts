@@ -301,7 +301,7 @@ export function createPolarGrid(
   classes: string[],
   eventEmitter: EventEmitter
 ) {
-  if (axis.units.pos === 'r') {
+  if (axis.units.pos === 'y') {
     const positionalData = {
       cx: axis.centerX,
       cy: axis.centerY,
@@ -363,7 +363,7 @@ export function createPolarLabel(
   eventEmitter;
   index;
 
-  if (axis.units.pos === 'r') {
+  if (axis.units.pos === 'y') {
     const xyPos = polarToCartesian(axis.centerX, axis.centerY, position, 0);
     const positionalData = {
       x: xyPos.x + labelOffset.x,

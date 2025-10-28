@@ -7,7 +7,7 @@ import { Axis } from './Axis';
 
 export const polarAxisUnits = {
   x: {
-    pos: 'a',
+    pos: 'x',
     len: 'width',
     dir: 'angular',
     rectStart: 'x1',
@@ -15,7 +15,7 @@ export const polarAxisUnits = {
     rectOffset: 'y2'
   },
   y: {
-    pos: 'r',
+    pos: 'y',
     len: 'height',
     dir: 'radial',
     rectStart: 'y2',
@@ -42,7 +42,7 @@ export abstract class PolarAxis extends Axis {
     const _radius =
       Math.min(chartRect.width(), chartRect.height()) / 2 -
       Math.min(chartRect.x1, chartRect.y1);
-    const axisLength = units.pos === 'a' ? _radius * 2 * Math.PI : _radius;
+    const axisLength = units.pos === 'x' ? _radius * 2 * Math.PI : _radius;
 
     super(chartRect, ticks, axisLength, 0);
     this.radius = _radius;
@@ -59,7 +59,7 @@ export abstract class PolarAxis extends Axis {
     eventEmitter: EventEmitter
   ) {
     const axisOptions =
-      this.units.pos === 'a' ? chartOptions.axisX : chartOptions.axisY;
+      this.units.pos === 'x' ? chartOptions.axisX : chartOptions.axisY;
     const projectedValues = this.ticks.map((tick, i) =>
       this.projectValue(tick, i)
     );
@@ -95,7 +95,7 @@ export abstract class PolarAxis extends Axis {
 
       // Transform to global coordinates using the chartRect
       // We also need to set the label offset for the createLabel function
-      if (this.units.pos === 'a') {
+      if (this.units.pos === 'x') {
         labelOffset.x = chartOptions.axisX.labelOffset.x;
         labelOffset.y = chartOptions.axisX.labelOffset.y;
       } else {

@@ -21,7 +21,8 @@ import {
   getMetaData,
   createSvg,
   createChartRect,
-  createGridBackground
+  createGridBackground,
+  polarToCartesian
 } from '../../core';
 import { isNumeric, noop, extend, safeHasProperty, each } from '../../utils';
 import {
@@ -385,20 +386,16 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
 
         normalizedData.series[seriesIndex].forEach((value, valueIndex) => {
           const p = {
-            x:
-              chartRect.x1 +
-              axisX.projectValue(
-                value,
-                valueIndex,
-                normalizedData.series[seriesIndex]
-              ),
-            y:
-              chartRect.y1 -
-              axisY.projectValue(
-                value,
-                valueIndex,
-                normalizedData.series[seriesIndex]
-              )
+            x: axisA.projectValue(
+              value,
+              valueIndex,
+              normalizedData.series[seriesIndex]
+            ),
+            y: axisR.projectValue(
+              value,
+              valueIndex,
+              normalizedData.series[seriesIndex]
+            )
           };
           pathCoordinates.push(p.x, p.y);
           pathData.push({
@@ -407,6 +404,11 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
             meta: getMetaData(series, valueIndex)
           });
         });
+        pathCoordinates.push(
+          pathCoordinates[0] + axisA.axisLength,
+          pathCoordinates[1]
+        );
+        pathData.push(pathData[0]);
 
         const seriesOptions = {
           lineSmooth: getSeriesOption(series, options, 'lineSmooth'),
@@ -426,6 +428,28 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
         // Interpolating path where pathData will be used to annotate each path element so we can trace back the original
         // index, value and meta data
         const path = smoothing(pathCoordinates, pathData);
+
+        path.pathElements.forEach(pathElement => {
+          function cxy(x, y) {
+            const angle = (360 * x) / axisA.axisLength;
+            const radius = y;
+            return polarToCartesian(
+              axisA.centerX,
+              axisA.centerY,
+              radius,
+              angle
+            );
+          }
+          const xyPos = cxy(pathElement.x, pathElement.y);
+          pathElement.x = xyPos.x;
+          pathElement.y = xyPos.y;
+          const xy1Pos = cxy(pathElement.x1, pathElement.y1);
+          pathElement.x1 = xy1Pos.x;
+          pathElement.y1 = xy1Pos.y;
+          const xy2Pos = cxy(pathElement.x2, pathElement.y2);
+          pathElement.x2 = xy2Pos.x;
+          pathElement.y2 = xy2Pos.y;
+        });
 
         // If we should show points we need to create them now to avoid secondary loop
         // Points are drawn from the pathElements returned by the interpolation function
@@ -461,7 +485,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
                 'ct:meta': serialize(pathElementData.meta)
               });
             }
-
+            /*
             this.eventEmitter.emit<RadarPointDrawEvent>('draw', {
               type: 'point',
               value: pathElementData?.value,
@@ -470,13 +494,14 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
               series,
               seriesIndex,
               axisX,
-              axisY,
+              axisR,
               group: seriesElement,
               element: point,
               x: pathElement.x,
               y: pathElement.y,
               chartRect
             });
+            */
           });
         }
 
@@ -489,7 +514,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
             options.classNames.line,
             true
           );
-
+          /*
           this.eventEmitter.emit<RadarLineDrawEvent>('draw', {
             type: 'line',
             values: normalizedData.series[seriesIndex],
@@ -505,19 +530,20 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
             group: seriesElement,
             element: line
           });
+          */
         }
 
         // Area currently only works with axes that support a range!
-        if (seriesOptions.showArea && axisY.range) {
+        if (seriesOptions.showArea && axisR.range) {
           // If areaBase is outside the chart area (< min or > max) we need to set it respectively so that
           // the area is not drawn outside the chart area.
           const areaBase = Math.max(
-            Math.min(seriesOptions.areaBase, axisY.range.max),
-            axisY.range.min
+            Math.min(seriesOptions.areaBase, axisR.range.max),
+            axisR.range.min
           );
 
           // We project the areaBase value into screen coordinates
-          const areaBaseProjected = chartRect.y1 - axisY.projectValue(areaBase);
+          const areaBaseProjected = chartRect.y1 - axisR.projectValue(areaBase);
 
           // In order to form the area we'll first split the path by move commands so we can chunk it up into segments
           path
@@ -556,7 +582,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
                 options.classNames.area,
                 true
               );
-
+              /*
               // Emit an event for each area that was drawn
               this.eventEmitter.emit<RadarAreaDrawEvent>('draw', {
                 type: 'area',
@@ -564,27 +590,27 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
                 path: areaPath.clone(),
                 series,
                 seriesIndex,
-                axisX,
-                axisY,
+                axisA,
+                axisR,
                 chartRect,
                 // TODO: Remove redundant
                 index: seriesIndex,
                 group: seriesElement,
                 element: area,
                 meta: seriesMeta
-              });
+              });*/
             });
         }
       },
       options.reverseData
     );
-
+    /*
     this.eventEmitter.emit<RadarChartCreatedEvent>('created', {
       chartRect,
       axisX,
       axisY,
       svg,
       options
-    });
+    });*/
   }
 }
