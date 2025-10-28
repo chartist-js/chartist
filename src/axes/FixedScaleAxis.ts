@@ -40,7 +40,7 @@ export class FixedScaleAxis extends CartesianAxis {
   }
 
   projectValue(value: NormalizedSeriesPrimitiveValue) {
-    const finalValue = Number(getMultiValue(value, this.counterUnits.pos));
+    const finalValue = Number(getMultiValue(value, this.units.pos));
 
     return (
       (this.axisLength * (finalValue - this.range.min)) /

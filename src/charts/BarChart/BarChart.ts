@@ -528,10 +528,8 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           }
 
           const positions = {
-            [`${labelAxis.counterUnits.pos}1`]:
-              projected[labelAxis.counterUnits.pos],
-            [`${labelAxis.counterUnits.pos}2`]:
-              projected[labelAxis.counterUnits.pos]
+            [`${labelAxis.units.pos}1`]: projected[labelAxis.units.pos],
+            [`${labelAxis.units.pos}2`]: projected[labelAxis.units.pos]
           } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
 
           if (

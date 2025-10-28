@@ -13,6 +13,7 @@ import type { CartesianAxis, PolarAxis } from '../axes';
 import { namespaces } from './constants';
 import { Svg } from '../svg/Svg';
 import { quantity } from './lang';
+import { polarToCartesian } from './math';
 
 /**
  * Create or reinitialize the SVG element for the chart
@@ -191,8 +192,8 @@ export function createGrid(
   eventEmitter: EventEmitter
 ) {
   const positionalData = {
-    [`${axis.counterUnits.pos}1`]: position,
-    [`${axis.counterUnits.pos}2`]: position,
+    [`${axis.units.pos}1`]: position,
+    [`${axis.units.pos}2`]: position,
     [`${axis.counterUnits.pos}1`]: offset,
     [`${axis.counterUnits.pos}2`]: offset + length
   } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
@@ -255,19 +256,19 @@ export function createLabel(
   eventEmitter: EventEmitter
 ) {
   const positionalData = {
-    [axis.counterUnits.pos]: position + labelOffset[axis.counterUnits.pos],
+    [axis.units.pos]: position + labelOffset[axis.units.pos],
     [axis.counterUnits.pos]: labelOffset[axis.counterUnits.pos],
-    [axis.counterUnits.len]: length,
+    [axis.units.len]: length,
     [axis.counterUnits.len]: Math.max(0, axisOffset - 10)
   } as Record<'x' | 'y' | 'width' | 'height', number>;
   // We need to set width and height explicitly to px as span will not expand with width and height being
   // 100% in all browsers
-  const stepLength = Math.round(positionalData[axis.counterUnits.len]);
+  const stepLength = Math.round(positionalData[axis.units.len]);
   const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
   const content = document.createElement('span');
 
   content.className = classes.join(' ');
-  content.style[axis.counterUnits.len] = stepLength + 'px';
+  content.style[axis.units.len] = stepLength + 'px';
   content.style[axis.counterUnits.len] = stepCounterLength + 'px';
   content.textContent = String(label);
 
@@ -343,12 +344,21 @@ export function createPolarLabel(
   eventEmitter;
   index;
 
+  const angle = 15 * index;
+  const xyPos = polarToCartesian(
+    axis.axisLength / 2,
+    axis.axisLength / 2,
+    axis.axisLength / 3,
+    angle
+  );
+
   const positionalData = {
-    [axis.units.pos]: position + labelOffset[axis.units.pos],
-    [axis.counterUnits.pos]: labelOffset[axis.counterUnits.pos],
+    [axis.units.pos]: xyPos.x + labelOffset[axis.units.pos],
+    [axis.counterUnits.pos]: xyPos.y + labelOffset[axis.counterUnits.pos],
     [axis.units.len]: length,
     [axis.counterUnits.len]: Math.max(0, axisOffset - 10)
   } as Record<'x' | 'y' | 'width' | 'height', number>;
+
   // We need to set width and height explicitly to px as span will not expand with width and height being
   // 100% in all browsers
   const stepLength = Math.round(positionalData[axis.units.len]);
@@ -356,8 +366,8 @@ export function createPolarLabel(
   const content = document.createElement('span');
 
   content.className = classes.join(' ');
-  content.style[axis.units.len] = stepLength + 'px';
-  content.style[axis.counterUnits.len] = stepCounterLength + 'px';
+  content.style['top'] = xyPos.y + 'px';
+  content.style['left'] = xyPos.x + 'px';
   content.textContent = String(label);
 
   const labelElement = group.foreignObject(content, {

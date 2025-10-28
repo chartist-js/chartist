@@ -65,7 +65,7 @@
     "postpublish": "pnpm clear:package",
     "emitDeclarations": "tsc --project ./tsconfig.build.json --emitDeclarationOnly",
     "build:styles": "./scripts/styles.cjs ./src/styles/index.scss",
-    "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
+    "build": "rollup -c",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
     "jest": "jest -c jest.config.json",

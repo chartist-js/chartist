@@ -31,7 +31,11 @@ export type CartesianAxisUnits = XAxisUnits | YAxisUnits;
 export abstract class CartesianAxis extends Axis {
   readonly counterUnits: CartesianAxisUnits;
 
-  constructor(units: CartesianAxisUnits, chartRect: ChartRect, ticks: Label[]) {
+  constructor(
+    public readonly units: CartesianAxisUnits,
+    chartRect: ChartRect,
+    ticks: Label[]
+  ) {
     super(
       chartRect,
       ticks,
@@ -51,7 +55,7 @@ export abstract class CartesianAxis extends Axis {
     eventEmitter: EventEmitter
   ) {
     const axisOptions =
-      this.counterUnits.pos === 'x' ? chartOptions.axisX : chartOptions.axisY;
+      this.units.pos === 'x' ? chartOptions.axisX : chartOptions.axisY;
     const projectedValues = this.ticks.map((tick, i) =>
       this.projectValue(tick, i)
     );
@@ -87,7 +91,7 @@ export abstract class CartesianAxis extends Axis {
 
       // Transform to global coordinates using the chartRect
       // We also need to set the label offset for the createLabel function
-      if (this.counterUnits.pos === 'x') {
+      if (this.units.pos === 'x') {
         projectedValue = this.chartRect.x1 + projectedValue;
         labelOffset.x = chartOptions.axisX.labelOffset.x;
 
@@ -125,7 +129,7 @@ export abstract class CartesianAxis extends Axis {
           gridGroup,
           [
             chartOptions.classNames.grid,
-            chartOptions.classNames[this.counterUnits.dir]
+            chartOptions.classNames[this.units.dir]
           ],
           eventEmitter
         );
@@ -143,7 +147,7 @@ export abstract class CartesianAxis extends Axis {
           labelGroup,
           [
             chartOptions.classNames.label,
-            chartOptions.classNames[this.counterUnits.dir],
+            chartOptions.classNames[this.units.dir],
             axisOptions.position === 'start'
               ? chartOptions.classNames[axisOptions.position]
               : chartOptions.classNames.end
