@@ -6,9 +6,9 @@ import type {
   NormalizedSeriesPrimitiveValue
 } from '../core';
 import { getBounds, getHighLow, getMultiValue } from '../core';
-import { CartesianAxisUnits, CartesianAxis } from './CartesianAxis';
+import { PolarAxisUnits, PolarAxis } from './PolarAxis';
 
-export class AutoScaleAxis extends CartesianAxis {
+export class AutoScalePolarAxis extends PolarAxis {
   private readonly bounds: Bounds;
   public override readonly range: {
     min: number;
@@ -16,7 +16,7 @@ export class AutoScaleAxis extends CartesianAxis {
   };
 
   constructor(
-    axisUnit: CartesianAxisUnits,
+    axisUnit: PolarAxisUnits,
     data: NormalizedSeries[],
     chartRect: ChartRect,
     options: AxisOptions

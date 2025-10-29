@@ -14,7 +14,7 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
   private readonly resizeListener = () => this.update();
   // Using event loop for first draw to make it possible to register event listeners in the same call stack where
   // the chart was created.
-  private initializeTimeoutId: NodeJS.Timer | null = setTimeout(
+  private initializeTimeoutId: NodeJS.Timeout | null = setTimeout(
     () => this.initialize(),
     0
   );

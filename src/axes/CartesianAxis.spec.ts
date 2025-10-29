@@ -1,9 +1,9 @@
 import type { ChartRect } from '../core';
 import { Svg } from '../svg';
 import { EventEmitter } from '../event';
-import { Axis, axisUnits } from './Axis';
+import { CartesianAxis, cartesianAxisUnits } from './CartesianAxis';
 
-class MockAxis extends Axis {
+class MockAxis extends CartesianAxis {
   projectValue(value: number) {
     return value;
   }
@@ -72,7 +72,7 @@ describe('Axes', () => {
         index: number
       ) => (index === 0 ? null : value);
 
-      const axis = new MockAxis(axisUnits.x, chartRect, ticks);
+      const axis = new MockAxis(cartesianAxisUnits.x, chartRect, ticks);
 
       axis.createGridAndLabels(
         gridGroup,
@@ -94,7 +94,7 @@ describe('Axes', () => {
         index: number
       ) => (index === 0 ? undefined : value);
 
-      const axis = new MockAxis(axisUnits.x, chartRect, ticks);
+      const axis = new MockAxis(cartesianAxisUnits.x, chartRect, ticks);
 
       axis.createGridAndLabels(
         gridGroup,
@@ -116,7 +116,7 @@ describe('Axes', () => {
         index: number
       ) => (index === 0 ? '' : value);
 
-      const axis = new MockAxis(axisUnits.x, chartRect, ticks);
+      const axis = new MockAxis(cartesianAxisUnits.x, chartRect, ticks);
 
       axis.createGridAndLabels(
         gridGroup,

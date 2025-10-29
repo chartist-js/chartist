@@ -1,12 +1,12 @@
 import type { ChartRect, AxisOptions } from '../core';
-import { CartesianAxisUnits, CartesianAxis } from './CartesianAxis';
+import { PolarAxisUnits, PolarAxis } from './PolarAxis';
 
-export class StepAxis extends CartesianAxis {
+export class StepPolarAxis extends PolarAxis {
   private readonly stepLength: number;
   public readonly stretch: boolean;
 
   constructor(
-    axisUnit: CartesianAxisUnits,
+    axisUnit: PolarAxisUnits,
     _data: unknown,
     chartRect: ChartRect,
     options: AxisOptions

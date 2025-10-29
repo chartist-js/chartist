@@ -9,10 +9,11 @@ import type {
   ViewBox
 } from './types';
 import type { EventEmitter } from '../event';
-import type { Axis } from '../axes';
+import type { CartesianAxis, PolarAxis } from '../axes';
 import { namespaces } from './constants';
 import { Svg } from '../svg/Svg';
 import { quantity } from './lang';
+import { polarToCartesian } from './math';
 
 /**
  * Create or reinitialize the SVG element for the chart
@@ -183,7 +184,7 @@ export function createChartRect(svg: Svg, options: Options) {
 export function createGrid(
   position: number,
   index: number,
-  axis: Axis,
+  axis: CartesianAxis,
   offset: number,
   length: number,
   group: Svg,
@@ -247,7 +248,7 @@ export function createLabel(
   length: number,
   index: number,
   label: Label,
-  axis: Axis,
+  axis: CartesianAxis,
   axisOffset: number,
   labelOffset: { x: number; y: number },
   group: Svg,
@@ -276,6 +277,138 @@ export function createLabel(
     ...positionalData
   });
 
+  eventEmitter.emit<LabelDrawEvent>('draw', {
+    type: 'label',
+    axis,
+    index,
+    group,
+    element: labelElement,
+    text: label,
+    ...positionalData
+  });
+}
+
+/**
+ * Creates a grid line based on a projected value.
+ */
+export function createPolarGrid(
+  position: number,
+  index: number,
+  axis: PolarAxis,
+  offset: number,
+  length: number,
+  group: Svg,
+  classes: string[],
+  eventEmitter: EventEmitter
+) {
+  let positionalData: Record<'x1' | 'y1' | 'x2' | 'y2', number> | null = null;
+  let gridElement: Svg | null = null;
+
+  if (axis.units.pos === 'y') {
+    const circlePositionalData = {
+      cx: axis.centerX,
+      cy: axis.centerY,
+      r: position
+    } as Record<'cx' | 'cy' | 'r', number>;
+
+    positionalData = {
+      x1: circlePositionalData.cx,
+      y1: circlePositionalData.cy,
+      x2: circlePositionalData.cx + circlePositionalData.r,
+      y2: circlePositionalData.cy + circlePositionalData.r
+    } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+
+    gridElement = group.elem('circle', circlePositionalData, classes.join(' '));
+  } else {
+    const angle = (360.0 * position) / length;
+    const xyPos = polarToCartesian(
+      axis.centerX,
+      axis.centerY,
+      axis.radius,
+      angle
+    );
+    positionalData = {
+      x1: axis.centerX,
+      y1: axis.centerY,
+      x2: xyPos.x,
+      y2: xyPos.y
+    } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+
+    gridElement = group.elem('line', positionalData, classes.join(' '));
+  }
+
+  // Event for grid draw
+  eventEmitter.emit<GridDrawEvent>('draw', {
+    type: 'grid',
+    axis,
+    index,
+    group,
+    element: gridElement,
+    ...positionalData
+  });
+}
+
+/**
+ * Creates a label based on a projected value and an axis.
+ */
+export function createPolarLabel(
+  position: number,
+  length: number,
+  index: number,
+  label: Label,
+  axis: PolarAxis,
+  axisOffset: number,
+  labelOffset: { x: number; y: number },
+  group: Svg,
+  classes: string[],
+  eventEmitter: EventEmitter
+) {
+  let labelElement: Svg | null = null;
+  let positionalData: Record<'x' | 'y' | 'width' | 'height', number> | null =
+    null;
+
+  if (axis.units.pos === 'y') {
+    const xyPos = polarToCartesian(axis.centerX, axis.centerY, position, 0);
+    positionalData = {
+      x: xyPos.x + labelOffset.x,
+      y: xyPos.y + labelOffset.y,
+      width: 1,
+      height: 1
+    } as Record<'x' | 'y' | 'width' | 'height', number>;
+
+    const content = document.createElement('span');
+    content.className = classes.join(' ');
+    content.textContent = String(label);
+
+    labelElement = group.foreignObject(content, {
+      style: 'overflow: visible;',
+      ...positionalData
+    });
+  } else {
+    const angle = (360.0 * position) / axis.axisLength;
+    const angleRadians = (-Math.PI * angle) / 180.0;
+    const xyPos = polarToCartesian(
+      axis.centerX,
+      axis.centerY,
+      axis.radius,
+      angle
+    );
+    positionalData = {
+      x: xyPos.x - Math.sin(angleRadians) * labelOffset.x,
+      y: xyPos.y - Math.cos(angleRadians) * labelOffset.y,
+      width: length,
+      height: Math.max(0, axisOffset - 10)
+    } as Record<'x' | 'y' | 'width' | 'height', number>;
+
+    const content = document.createElement('span');
+    content.className = classes.join(' ');
+    content.textContent = String(label);
+
+    labelElement = group.foreignObject(content, {
+      style: 'overflow: visible;',
+      ...positionalData
+    });
+  }
   eventEmitter.emit<LabelDrawEvent>('draw', {
     type: 'label',
     axis,

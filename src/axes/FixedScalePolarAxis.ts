@@ -6,16 +6,16 @@ import type {
 } from '../core';
 import { getMultiValue, getHighLow } from '../core/data';
 import { times } from '../utils';
-import { CartesianAxisUnits, CartesianAxis } from './CartesianAxis';
+import { PolarAxisUnits, PolarAxis } from './PolarAxis';
 
-export class FixedScaleAxis extends CartesianAxis {
+export class FixedScalePolarAxis extends PolarAxis {
   public override readonly range: {
     min: number;
     max: number;
   };
 
   constructor(
-    axisUnit: CartesianAxisUnits,
+    axisUnit: PolarAxisUnits,
     data: NormalizedSeries[],
     chartRect: ChartRect,
     options: AxisOptions
