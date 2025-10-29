@@ -1,4 +1,4 @@
-import { RadarChart, PolarStepAxis } from '/dist/index.js';
+import { RadarChart, StepPolarAxis } from '/dist/index.js';
 
 new RadarChart(
   '#chart',
@@ -14,7 +14,7 @@ new RadarChart(
     fullWidth: false,
     chartPadding: 40,
     axisX: {
-      type: PolarStepAxis,
+      type: StepPolarAxis,
       offset: 0,
       labelOffset: {
         x: 40,

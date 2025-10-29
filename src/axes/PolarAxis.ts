@@ -39,9 +39,7 @@ export abstract class PolarAxis extends Axis {
     chartRect: ChartRect,
     ticks: Label[]
   ) {
-    const _radius =
-      Math.min(chartRect.width(), chartRect.height()) / 2 -
-      Math.min(chartRect.x1, chartRect.y1);
+    const _radius = Math.min(chartRect.width(), chartRect.height()) / 2;
     const axisLength = units.pos === 'x' ? _radius * 2 * Math.PI : _radius;
 
     super(chartRect, ticks, axisLength, 0);

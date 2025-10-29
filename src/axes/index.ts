@@ -5,5 +5,6 @@ export * from './FixedScaleAxis';
 export * from './StepAxis';
 export * from './PolarAxis';
 export * from './AutoScalePolarAxis';
-export * from './PolarStepAxis';
+export * from './StepPolarAxis';
+export * from './FixedScalePolarAxis';
 export * from './types';

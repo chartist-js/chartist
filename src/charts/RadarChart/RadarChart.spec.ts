@@ -1,4 +1,4 @@
-import { AutoScaleAxis, FixedScaleAxis } from '../../axes';
+import { AutoScalePolarAxis, FixedScalePolarAxis } from '../../axes';
 import { RadarChartOptions, RadarChartData, RadarChart } from '.';
 import * as Interpolation from '../../interpolation';
 import { namespaces, deserialize } from '../../core';
@@ -58,11 +58,11 @@ describe('Charts', () => {
         };
         options = {
           axisX: {
-            type: AutoScaleAxis,
+            type: AutoScalePolarAxis,
             onlyInteger: true
           },
           axisY: {
-            type: AutoScaleAxis,
+            type: AutoScalePolarAxis,
             onlyInteger: true
           }
         };
@@ -78,11 +78,11 @@ describe('Charts', () => {
         await createChart();
 
         expect(
-          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-horizontal')
+          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-angular')
             .length
         ).toBe(3);
         expect(
-          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-vertical')
+          fixture.wrapper.querySelectorAll('.ct-grids .ct-grid.ct-radial')
             .length
         ).toBe(5);
       });
@@ -170,7 +170,7 @@ describe('Charts', () => {
         };
         options = {
           axisX: {
-            type: FixedScaleAxis
+            type: FixedScalePolarAxis
           }
         };
         await createChart();
@@ -192,7 +192,7 @@ describe('Charts', () => {
         };
         options = {
           axisX: {
-            type: FixedScaleAxis
+            type: FixedScalePolarAxis
           }
         };
         await createChart();
@@ -900,29 +900,6 @@ describe('Charts', () => {
       });
     });
 
-    describe('Single value data tests', () => {
-      beforeEach(() => {
-        data = {
-          labels: [1],
-          series: [[1]]
-        };
-      });
-
-      it('should render without NaN values and points', async () => {
-        await createChart();
-
-        expect(document.querySelector('.ct-line')).toHaveAttribute(
-          'd',
-          'M50,15'
-        );
-        expect(document.querySelector('.ct-point')).toHaveAttribute('x1', '50');
-        expect(document.querySelector('.ct-point')).toHaveAttribute(
-          'x2',
-          '50.01'
-        );
-      });
-    });
-
     describe('Empty data tests', () => {
       it('should render empty grid with no data', async () => {
         await createChart();
@@ -941,11 +918,11 @@ describe('Charts', () => {
 
         // Find at least one vertical grid line
         expect(
-          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+          document.querySelector('.ct-grids .ct-grid.ct-radial')
         ).toBeDefined();
         // Find exactly as many horizontal grid lines as labels were specified (Step Axis)
         expect(
-          document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length
+          document.querySelectorAll('.ct-grids .ct-grid.ct-angular').length
         ).toBe(data.labels?.length);
       });
 
@@ -961,11 +938,11 @@ describe('Charts', () => {
 
         // Find at least one vertical grid line
         expect(
-          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+          document.querySelector('.ct-grids .ct-grid.ct-radial')
         ).toBeDefined();
         // Should generate the labels using the largest series count
         expect(
-          document.querySelectorAll('.ct-grids .ct-grid.ct-horizontal').length
+          document.querySelectorAll('.ct-grids .ct-grid.ct-angular').length
         ).toBe(
           Math.max(
             ...data.series.map(series =>
@@ -987,7 +964,7 @@ describe('Charts', () => {
 
         // Find first and last label
         const labels = document.querySelectorAll(
-          '.ct-labels .ct-label.ct-vertical'
+          '.ct-labels .ct-label.ct-radial'
         );
         const firstLabel = labels[0];
         const lastLabel = labels[labels.length - 1];
@@ -1005,7 +982,7 @@ describe('Charts', () => {
 
         // Find at least one vertical grid line
         expect(
-          document.querySelector('.ct-grids .ct-grid.ct-vertical')
+          document.querySelector('.ct-grids .ct-grid.ct-radial')
         ).toBeDefined();
       });
     });

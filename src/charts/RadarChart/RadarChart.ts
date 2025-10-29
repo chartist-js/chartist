@@ -26,7 +26,7 @@ import {
 } from '../../core';
 import { isNumeric, noop, extend, safeHasProperty, each } from '../../utils';
 import {
-  PolarStepAxis,
+  StepPolarAxis,
   PolarAxis,
   AutoScalePolarAxis,
   polarAxisUnits
@@ -284,7 +284,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
     let axisR: PolarAxis;
 
     if (options.axisX.type === undefined) {
-      axisA = new PolarStepAxis(
+      axisA = new StepPolarAxis(
         polarAxisUnits.x,
         normalizedData.series,
         chartRect,

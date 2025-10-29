@@ -1,7 +1,8 @@
 import type { AutoScaleAxis } from './AutoScaleAxis';
-import { AutoScalePolarAxis } from './AutoScalePolarAxis';
+import type { AutoScalePolarAxis } from './AutoScalePolarAxis';
 import type { FixedScaleAxis } from './FixedScaleAxis';
-import { PolarStepAxis } from './PolarStepAxis';
+import type { FixedScalePolarAxis } from './FixedScalePolarAxis';
+import type { StepPolarAxis } from './StepPolarAxis';
 import type { StepAxis } from './StepAxis';
 
 export type CartesianAxisType =
@@ -9,6 +10,9 @@ export type CartesianAxisType =
   | typeof FixedScaleAxis
   | typeof StepAxis;
 
-export type PolarAxisType = typeof AutoScalePolarAxis | typeof PolarStepAxis;
+export type PolarAxisType =
+  | typeof AutoScalePolarAxis
+  | typeof FixedScalePolarAxis
+  | typeof StepPolarAxis;
 
 export type AxisType = CartesianAxisType | PolarAxisType;

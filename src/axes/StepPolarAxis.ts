@@ -1,7 +1,7 @@
 import type { ChartRect, AxisOptions } from '../core';
 import { PolarAxisUnits, PolarAxis } from './PolarAxis';
 
-export class PolarStepAxis extends PolarAxis {
+export class StepPolarAxis extends PolarAxis {
   private readonly stepLength: number;
   public readonly stretch: boolean;
 
