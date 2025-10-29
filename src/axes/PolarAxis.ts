@@ -28,6 +28,16 @@ export type AngleAxisUnits = typeof polarAxisUnits.x;
 export type RadiusAxisUnits = typeof polarAxisUnits.y;
 export type PolarAxisUnits = AngleAxisUnits | RadiusAxisUnits;
 
+/**
+ * Base class for polar coordinate system axes. The axis can be either radial (goes from the center of the plot
+ * and outwards) or angular (goes around the plot, clockwise). The "length" of the axis is for radial simply
+ * the radius from the center to the edge of the plot, and for the angular case the circumference of the plot.
+ *
+ * Note: when plotting, it's easiest to do the plot and all computations in this (angle, radius) coordinate
+ * system, pretending it is a cartesian (x,y) system, and then convert all the numbers right before
+ * drawing the graph. This way you're essentially taking a normal rectangular chart and wrapping it
+ * into a circle.
+ */
 export abstract class PolarAxis extends Axis {
   readonly counterUnits: PolarAxisUnits;
   readonly radius: number;
