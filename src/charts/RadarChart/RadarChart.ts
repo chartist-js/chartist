@@ -158,7 +158,10 @@ const defaultOptions = {
 
 export class RadarChart extends BaseChart<RadarChartEventsTypes> {
   /**
-   * This method creates a new line chart.
+   * This method creates a new radar chart. A radar chart is a polar chart, much like taking a line chart and wrapping it around a circle - the vertical axis
+   * becomes a radial axis, and the horizontal axis wraps around the circle as an angular axis. In addition, the lat point of every series is connected to the
+   * first point.
+   *
    * @param query A selector query string or directly a DOM element
    * @param data The data object that needs to consist of a labels and a series array
    * @param options The options object with options that override the default options. Check the examples for a detailed list.
@@ -167,7 +170,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
    *
    * @example
    * ```ts
-   * // Create a simple line chart
+   * // Create a simple radar chart
    * const data = {
    *   // A labels array that can contain any sort of values
    *   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -183,8 +186,8 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
    *   height: '200px'
    * };
    *
-   * // In the global name space Chartist we call the Line function to initialize a line chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
-   * new RadarChart('.ct-chart', data, options);
+   * // In the global name space Chartist we call the RadarChart function to initialize a chart. As a first parameter we pass in a selector where we would like to get our chart created. Second parameter is the actual data object and as a third parameter we pass in our options
+   * new Chartist.RadarChart('.ct-chart', data, options);
    * ```
    *
    * @example
@@ -238,7 +241,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
    *   }]
    * ];
    *
-   * new RadarChart('.ct-chart', data, null, responsiveOptions);
+   * new Chartist.RadarChart('.ct-chart', data, null, responsiveOptions);
    * ```
    */
   constructor(
