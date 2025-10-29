@@ -1,6 +1,6 @@
 {
-  "name": "line-simple",
-  "description": "Simple line chart",
+  "name": "radar-simple",
+  "description": "Simple radar chart",
   "main": "index.ts",
   "dependencies": {
     "chartist": "^1.0.0"
