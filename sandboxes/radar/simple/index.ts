@@ -1,4 +1,5 @@
-import { RadarChart, StepPolarAxis } from '/dist/index.js';
+import 'chartist/dist/index.css';
+import { RadarChart, StepPolarAxis } from 'chartist';
 
 new RadarChart(
   '#chart',
