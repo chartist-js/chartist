@@ -1,4 +1,4 @@
-import type { CartesianAxis } from '../../axes';
+import { CartesianAxis } from '../../axes';
 import type {
   BarChartData,
   BarChartOptions,
@@ -279,11 +279,12 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         valueAxis = axisX = new options.axisX.type(
+          // @ts-expect-error we trust the user to have the right type of units
           cartesianAxisUnits.x,
           normalizedData.series,
           chartRect,
           { ...options.axisX, highLow: highLow, referenceValue: 0 }
-        );
+        ) as CartesianAxis;
       }
 
       if (options.axisY.type === undefined) {
@@ -298,11 +299,12 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         labelAxis = axisY = new options.axisY.type(
+          // @ts-expect-error we trust the user to have the right type of units
           cartesianAxisUnits.y,
           normalizedData.series,
           chartRect,
           options.axisY
-        );
+        ) as CartesianAxis;
       }
     } else {
       if (options.axisX.type === undefined) {
@@ -317,11 +319,12 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         labelAxis = axisX = new options.axisX.type(
+          // @ts-expect-error we trust the user to have the right type of units
           cartesianAxisUnits.x,
           normalizedData.series,
           chartRect,
           options.axisX
-        );
+        ) as CartesianAxis;
       }
 
       if (options.axisY.type === undefined) {
@@ -334,11 +337,12 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
       } else {
         // eslint-disable-next-line new-cap
         valueAxis = axisY = new options.axisY.type(
+          // @ts-expect-error we trust the user to have the right type of units
           cartesianAxisUnits.y,
           normalizedData.series,
           chartRect,
           { ...options.axisY, highLow: highLow, referenceValue: 0 }
-        );
+        ) as CartesianAxis;
       }
     }
 

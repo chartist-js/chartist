@@ -297,6 +297,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
     } else {
       // eslint-disable-next-line new-cap
       axisA = new options.axisX.type(
+        // @ts-expect-error we trust the user to have the right type of units
         polarAxisUnits.x,
         normalizedData.series,
         chartRect,
@@ -318,6 +319,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
     } else {
       // eslint-disable-next-line new-cap
       axisR = new options.axisY.type(
+        // @ts-expect-error we trust the user to have the right type of units
         polarAxisUnits.y,
         normalizedData.series,
         chartRect,
@@ -430,7 +432,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
         const path = smoothing(pathCoordinates, pathData);
 
         path.pathElements.forEach(pathElement => {
-          function cxy(x, y) {
+          function cxy(x: number, y: number) {
             const angle = (360 * x) / axisA.axisLength;
             const radius = y;
             return polarToCartesian(
@@ -495,7 +497,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
                 'ct:meta': serialize(pathElementData.meta)
               });
             }
-            /*
+
             this.eventEmitter.emit<RadarPointDrawEvent>('draw', {
               type: 'point',
               value: pathElementData?.value,
@@ -503,15 +505,14 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
               meta: pathElementData?.meta,
               series,
               seriesIndex,
-              axisX,
-              axisR,
+              axisX: axisA,
+              axisY: axisR,
               group: seriesElement,
               element: point,
               x: pathElement.x,
               y: pathElement.y,
               chartRect
             });
-            */
           });
         }
 
@@ -524,7 +525,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
             options.classNames.line,
             true
           );
-          /*
+
           this.eventEmitter.emit<RadarLineDrawEvent>('draw', {
             type: 'line',
             values: normalizedData.series[seriesIndex],
@@ -535,12 +536,11 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
             series,
             seriesIndex,
             meta: seriesMeta,
-            axisX,
-            axisY,
+            axisX: axisA,
+            axisY: axisR,
             group: seriesElement,
             element: line
           });
-          */
         }
 
         // Area currently only works with axes that support a range!
@@ -592,7 +592,7 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
                 options.classNames.area,
                 true
               );
-              /*
+
               // Emit an event for each area that was drawn
               this.eventEmitter.emit<RadarAreaDrawEvent>('draw', {
                 type: 'area',
@@ -600,27 +600,26 @@ export class RadarChart extends BaseChart<RadarChartEventsTypes> {
                 path: areaPath.clone(),
                 series,
                 seriesIndex,
-                axisA,
-                axisR,
+                axisX: axisA,
+                axisY: axisR,
                 chartRect,
                 // TODO: Remove redundant
                 index: seriesIndex,
                 group: seriesElement,
                 element: area,
                 meta: seriesMeta
-              });*/
+              });
             });
         }
       },
       options.reverseData
     );
-    /*
     this.eventEmitter.emit<RadarChartCreatedEvent>('created', {
       chartRect,
-      axisX,
-      axisY,
+      axisX: axisA,
+      axisY: axisR,
       svg,
       options
-    });*/
+    });
   }
 }

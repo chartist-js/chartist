@@ -290,6 +290,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     } else {
       // eslint-disable-next-line new-cap
       axisX = new options.axisX.type(
+        // @ts-expect-error we trust the user to have the right type of units
         cartesianAxisUnits.x,
         normalizedData.series,
         chartRect,
@@ -311,6 +312,7 @@ export class LineChart extends BaseChart<LineChartEventsTypes> {
     } else {
       // eslint-disable-next-line new-cap
       axisY = new options.axisY.type(
+        // @ts-expect-error we trust the user to have the right type of units
         cartesianAxisUnits.y,
         normalizedData.series,
         chartRect,
