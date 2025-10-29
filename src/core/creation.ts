@@ -301,15 +301,24 @@ export function createPolarGrid(
   classes: string[],
   eventEmitter: EventEmitter
 ) {
+  let positionalData: Record<'x1' | 'y1' | 'x2' | 'y2', number> | null = null;
+  let gridElement: Svg | null = null;
+
   if (axis.units.pos === 'y') {
-    const positionalData = {
+    const circlePositionalData = {
       cx: axis.centerX,
       cy: axis.centerY,
       r: position
     } as Record<'cx' | 'cy' | 'r', number>;
 
-    const gridElement = group.elem('circle', positionalData, classes.join(' '));
-    gridElement;
+    positionalData = {
+      x1: circlePositionalData.cx,
+      y1: circlePositionalData.cy,
+      x2: circlePositionalData.cx + circlePositionalData.r,
+      y2: circlePositionalData.cy + circlePositionalData.r
+    } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
+
+    gridElement = group.elem('circle', circlePositionalData, classes.join(' '));
   } else {
     const angle = (360.0 * position) / length;
     const xyPos = polarToCartesian(
@@ -318,22 +327,17 @@ export function createPolarGrid(
       axis.radius,
       angle
     );
-    const positionalData = {
+    positionalData = {
       x1: axis.centerX,
       y1: axis.centerY,
       x2: xyPos.x,
       y2: xyPos.y
     } as Record<'x1' | 'y1' | 'x2' | 'y2', number>;
 
-    const gridElement = group.elem('line', positionalData, classes.join(' '));
-    gridElement;
+    gridElement = group.elem('line', positionalData, classes.join(' '));
   }
-  eventEmitter;
-  index;
-  offset;
 
   // Event for grid draw
-  /*
   eventEmitter.emit<GridDrawEvent>('draw', {
     type: 'grid',
     axis,
@@ -342,7 +346,6 @@ export function createPolarGrid(
     element: gridElement,
     ...positionalData
   });
-  */
 }
 
 /**
@@ -360,12 +363,13 @@ export function createPolarLabel(
   classes: string[],
   eventEmitter: EventEmitter
 ) {
-  eventEmitter;
-  index;
+  let labelElement: Svg | null = null;
+  let positionalData: Record<'x' | 'y' | 'width' | 'height', number> | null =
+    null;
 
   if (axis.units.pos === 'y') {
     const xyPos = polarToCartesian(axis.centerX, axis.centerY, position, 0);
-    const positionalData = {
+    positionalData = {
       x: xyPos.x + labelOffset.x,
       y: xyPos.y + labelOffset.y,
       width: 1,
@@ -376,12 +380,10 @@ export function createPolarLabel(
     content.className = classes.join(' ');
     content.textContent = String(label);
 
-    const labelElement = group.foreignObject(content, {
+    labelElement = group.foreignObject(content, {
       style: 'overflow: visible;',
       ...positionalData
     });
-
-    labelElement;
   } else {
     const angle = (360.0 * position) / axis.axisLength;
     const angleRadians = (-Math.PI * angle) / 180.0;
@@ -391,7 +393,7 @@ export function createPolarLabel(
       axis.radius,
       angle
     );
-    const positionalData = {
+    positionalData = {
       x: xyPos.x - Math.sin(angleRadians) * labelOffset.x,
       y: xyPos.y - Math.cos(angleRadians) * labelOffset.y,
       width: length,
@@ -402,14 +404,11 @@ export function createPolarLabel(
     content.className = classes.join(' ');
     content.textContent = String(label);
 
-    const labelElement = group.foreignObject(content, {
+    labelElement = group.foreignObject(content, {
       style: 'overflow: visible;',
       ...positionalData
     });
-
-    labelElement;
   }
-  /*
   eventEmitter.emit<LabelDrawEvent>('draw', {
     type: 'label',
     axis,
@@ -419,5 +418,4 @@ export function createPolarLabel(
     text: label,
     ...positionalData
   });
-  */
 }
