@@ -49,7 +49,7 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v5
       - name: Check editorconfig
-        uses: editorconfig-checker/action-editorconfig-checker@v1
+        uses: editorconfig-checker/action-editorconfig-checker@v2
   website:
     runs-on: ubuntu-latest
     name: website
