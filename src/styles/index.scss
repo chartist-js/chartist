@@ -181,9 +181,9 @@
   }
 
   @if $ct-include-colored-series {
-    @for $i from 0 to length($ct-series-names) {
-      .#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
-        $color: nth($ct-series-colors, $i + 1);
+    @for $i from 0 to list.length($ct-series-names) {
+      .#{$ct-class-series}-#{list.nth($ct-series-names, $i + 1)} {
+        $color: list.nth($ct-series-colors, $i + 1);
 
         @include ct-chart-series-color($color);
       }
@@ -195,9 +195,9 @@
   @include ct-chart();
 
   @if $ct-include-alternative-responsive-containers {
-    @for $i from 0 to length($ct-scales-names) {
-      .#{nth($ct-scales-names, $i + 1)} {
-        @include ct-responsive-svg-container($ratio: nth($ct-scales, $i + 1));
+    @for $i from 0 to list.length($ct-scales-names) {
+      .#{list.nth($ct-scales-names, $i + 1)} {
+        @include ct-responsive-svg-container($ratio: list.nth($ct-scales, $i + 1));
       }
     }
   }
