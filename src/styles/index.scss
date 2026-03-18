@@ -112,20 +112,19 @@
     dominant-baseline: central;
   }
 
-  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
+  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start},
+  .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end},
+  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
   }
 
-  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
+  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end},
+  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, flex-start);
   }
 
   .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-end);
-  }
-
-  .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end} {
-    @include ct-align-justify(flex-end, flex-start);
   }
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
@@ -134,14 +133,6 @@
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, center);
-  }
-
-  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
-    @include ct-align-justify(flex-end, flex-start);
-  }
-
-  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
-    @include ct-align-justify(flex-start, flex-start);
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
