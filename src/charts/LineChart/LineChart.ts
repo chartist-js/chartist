@@ -132,7 +132,7 @@ const defaultOptions = {
   reverseData: false,
   // Override the class names that get used to generate the SVG structure of the chart
   classNames: {
-    chart: 'ct-chart-line',
+    chart: 'ct-chart ct-chart-line',
     label: 'ct-label',
     labelGroup: 'ct-labels',
     series: 'ct-series',
