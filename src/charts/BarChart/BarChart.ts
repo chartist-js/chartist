@@ -130,7 +130,7 @@ const defaultOptions = {
   showGridBackground: false,
   // Override the class names that get used to generate the SVG structure of the chart
   classNames: {
-    chart: 'ct-chart-bar',
+    chart: 'ct-chart ct-chart-bar',
     horizontalBars: 'ct-horizontal-bars',
     label: 'ct-label',
     labelGroup: 'ct-labels',
