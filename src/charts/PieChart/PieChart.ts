@@ -43,8 +43,8 @@ const defaultOptions = {
   chartPadding: 5,
   // Override the class names that are used to generate the SVG structure of the chart
   classNames: {
-    chartPie: 'ct-chart-pie',
-    chartDonut: 'ct-chart-donut',
+    chartPie: 'ct-chart ct-chart-pie',
+    chartDonut: 'ct-chart ct-chart-donut',
     series: 'ct-series',
     slicePie: 'ct-slice-pie',
     sliceDonut: 'ct-slice-donut',

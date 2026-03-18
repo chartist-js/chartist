@@ -1,31 +1,11 @@
 @import "settings";
 
-@mixin ct-responsive-svg-container($width: 100%, $ratio: $ct-container-ratio) {
-  display: block;
-  position: relative;
-  width: $width;
-
-  &:before {
-    display: block;
-    float: left;
-    content: "";
-    width: 0;
-    height: 0;
-    padding-bottom: $ratio * 100%;
+@function list-to-classes($list) {
+  $new-list: ();
+  @each $item in $list {
+    $new-list: list.append($new-list, #{"."}#{$item}, comma);
   }
-
-  &:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-  > svg {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
+  @return $new-list;
 }
 
 @mixin ct-align-justify($ct-text-align: $ct-text-align, $ct-text-justify: $ct-text-justify) {
@@ -86,13 +66,13 @@
   stroke-width: $ct-donut-width;
 }
 
-@mixin ct-chart-series-color($color) {
+@mixin ct-chart-series-color($series) {
   .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice-donut} {
-    stroke: $color;
+    stroke: var(--#{$ct-class-series}-#{$series}-color);
   }
 
   .#{$ct-class-slice-pie}, .#{$ct-class-area} {
-    fill: $color;
+    fill: var(--#{$ct-class-series}-#{$series}-color);
   }
 }
 
@@ -112,20 +92,19 @@
     dominant-baseline: central;
   }
 
-  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
+  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start},
+  .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end},
+  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-start);
   }
 
-  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
+  .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end},
+  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, flex-start);
   }
 
   .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
     @include ct-align-justify(flex-end, flex-end);
-  }
-
-  .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-end} {
-    @include ct-align-justify(flex-end, flex-start);
   }
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
@@ -134,14 +113,6 @@
 
   .#{$ct-class-chart-bar} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
     @include ct-align-justify(flex-start, center);
-  }
-
-  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-start} {
-    @include ct-align-justify(flex-end, flex-start);
-  }
-
-  .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-horizontal}.#{$ct-class-end} {
-    @include ct-align-justify(flex-start, flex-start);
   }
 
   .#{$ct-class-chart-bar}.#{$ct-class-horizontal-bars} .#{$ct-class-label}.#{$ct-class-vertical}.#{$ct-class-start} {
@@ -181,11 +152,17 @@
   }
 
   @if $ct-include-colored-series {
-    @for $i from 0 to length($ct-series-names) {
-      .#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
-        $color: nth($ct-series-colors, $i + 1);
-
-        @include ct-chart-series-color($color);
+    .#{$ct-class-series} {
+      @for $i from 0 to list.length($ct-series-names) {
+        $series: list.nth($ct-series-names, $i + 1);
+        $color: list.nth($ct-series-colors, $i + 1);
+        
+        --#{$ct-class-series}-#{$series}-color: #{$color};
+      }
+    }
+    @each $series in $ct-series-names {
+      .#{$ct-class-series}-#{$series} {
+        @include ct-chart-series-color($series);
       }
     }
   }
@@ -195,9 +172,32 @@
   @include ct-chart();
 
   @if $ct-include-alternative-responsive-containers {
-    @for $i from 0 to length($ct-scales-names) {
-      .#{nth($ct-scales-names, $i + 1)} {
-        @include ct-responsive-svg-container($ratio: nth($ct-scales, $i + 1));
+    #{list-to-classes($ct-scales-names)} {
+      display: block;
+      position: relative;
+      width: 100%;
+      &:before {
+        display: block;
+        float: left;
+        content: "";
+        width: 0;
+        height: 0;
+      }
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      > svg{
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    }
+    @each $name in $ct-scales-names {
+      .#{$name}:before {
+        padding-bottom: list.nth($ct-scales, list.index($ct-scales-names, $name)) * 100%;
       }
     }
   }
