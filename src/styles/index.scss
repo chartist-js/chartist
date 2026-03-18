@@ -66,13 +66,13 @@
   stroke-width: $ct-donut-width;
 }
 
-@mixin ct-chart-series-color($color) {
+@mixin ct-chart-series-color($series) {
   .#{$ct-class-point}, .#{$ct-class-line}, .#{$ct-class-bar}, .#{$ct-class-slice-donut} {
-    stroke: $color;
+    stroke: var(--#{$ct-class-series}-#{$series}-color);
   }
 
   .#{$ct-class-slice-pie}, .#{$ct-class-area} {
-    fill: $color;
+    fill: var(--#{$ct-class-series}-#{$series}-color);
   }
 }
 
@@ -152,11 +152,17 @@
   }
 
   @if $ct-include-colored-series {
-    @for $i from 0 to list.length($ct-series-names) {
-      .#{$ct-class-series}-#{list.nth($ct-series-names, $i + 1)} {
+    .#{$ct-class-series} {
+      @for $i from 0 to list.length($ct-series-names) {
+        $series: list.nth($ct-series-names, $i + 1);
         $color: list.nth($ct-series-colors, $i + 1);
-
-        @include ct-chart-series-color($color);
+        
+        --#{$ct-class-series}-#{$series}-color: #{$color};
+      }
+    }
+    @each $series in $ct-series-names {
+      .#{$ct-class-series}-#{$series} {
+        @include ct-chart-series-color($series);
       }
     }
   }
