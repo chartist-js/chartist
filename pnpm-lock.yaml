@@ -44,7 +44,7 @@ importers:
       http-server: ^14.1.0
       jest: ^27.5.1
       jest-image-snapshot: ^4.5.1
-      nano-staged: ^0.8.0
+      nano-staged: ^0.9.0
       postcss: ^8.0.0
       postcss-loader: ^4.3.0
       postcss-preset-env: ^6.7.1
@@ -100,7 +100,7 @@ importers:
       http-server: 14.1.0
       jest: 27.5.1
       jest-image-snapshot: 4.5.1_jest@27.5.1
-      nano-staged: 0.8.0
+      nano-staged: 0.9.0
       postcss: 8.4.31
       postcss-loader: 4.3.0_postcss@8.4.31
       postcss-preset-env: 6.7.1
@@ -15943,12 +15943,12 @@ packages:
     dev: true
     optional: true
 
-  /nano-staged/0.8.0:
-    resolution: {integrity: sha512-QSEqPGTCJbkHU2yLvfY6huqYPjdBrOaTMKatO1F8nCSrkQGXeKwtCiCnsdxnuMhbg3DTVywKaeWLGCE5oJpq0g==}
+  /nano-staged/0.9.0:
+    resolution: {integrity: sha512-0JfyX4i0Vp5HhC9RDtJ1kp7psz8CFuS3Gya3Z6WZv//QCwA9dPzi1S803VdR0c0P6R7sSvweZ5mSJmYQ/N+loQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
     hasBin: true
     dependencies:
-      picocolors: 1.0.0
+      picocolors: 1.1.1
     dev: true
 
   /nanoid/3.3.11:
@@ -15983,7 +15983,7 @@ packages:
   /nanospinner/1.1.0:
     resolution: {integrity: sha512-yFvNYMig4AthKYfHFl1sLj7B2nkHL4lzdig4osvl9/LdGbXwrdFRoqBS98gsEsOakr0yH+r5NZ/1Y9gdVB8trA==}
     dependencies:
-      picocolors: 1.0.0
+      picocolors: 1.1.1
     dev: true
 
   /natural-compare/1.4.0:
@@ -16167,7 +16167,7 @@ packages:
     dev: true
 
   /object-assign/4.1.1:
-    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=}
+    resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
 
   /object-copy/0.1.0:
