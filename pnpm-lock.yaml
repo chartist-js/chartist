@@ -129,7 +129,7 @@ importers:
       '@tsconfig/docusaurus': ^1.0.4
       '@types/react': ^17.0.36
       clsx: ^1.1.1
-      docusaurus-plugin-typedoc: ^0.17.4
+      docusaurus-plugin-typedoc: ^0.22.0
       file-loader: ^6.2.0
       git-branch: ^2.0.1
       prism-react-renderer: ^1.2.1
@@ -158,7 +158,7 @@ importers:
       '@docusaurus/module-type-aliases': 2.0.0-beta.14
       '@tsconfig/docusaurus': 1.0.6
       '@types/react': 17.0.49
-      docusaurus-plugin-typedoc: 0.17.5_7zab47scz53et6rw2zwvyhhfd4
+      docusaurus-plugin-typedoc: 0.22.0_7zab47scz53et6rw2zwvyhhfd4
       typedoc: 0.23.15_typescript@4.6.4
       typedoc-plugin-markdown: 3.13.6_typedoc@0.23.15
       typescript: 4.6.4
@@ -11410,11 +11410,11 @@ packages:
       esutils: 2.0.3
     dev: true
 
-  /docusaurus-plugin-typedoc/0.17.5_7zab47scz53et6rw2zwvyhhfd4:
-    resolution: {integrity: sha512-mMTk4lRy2+wQ7fmMOv6RLfKkoGnHkBLE8qUoPfWFoqUYDDDInwVQKxz12FNnQx86eJSLgBiZmuY/zB/bYsZQlQ==}
+  /docusaurus-plugin-typedoc/0.22.0_7zab47scz53et6rw2zwvyhhfd4:
+    resolution: {integrity: sha512-5q+oT+iq3g9DvsMin11pSSmqHRw0i62csHBzkWVtgmsqN/BwGDHnxDiTbHhhkBNQpmRIRgltyNdMnO5x+JUK8Q==}
     peerDependencies:
-      typedoc: '>=0.22.0'
-      typedoc-plugin-markdown: '>=3.11.10'
+      typedoc: '>=0.24.0'
+      typedoc-plugin-markdown: '>=3.15.0'
     dependencies:
       typedoc: 0.23.15_typescript@4.6.4
       typedoc-plugin-markdown: 3.13.6_typedoc@0.23.15
