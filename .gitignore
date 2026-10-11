@@ -15,3 +15,27 @@ npm-debug.log*
 
 # testing
 coverage
+storybook-static
+
+# Nx workspace
+out-tsc
+.nx/cache
+.nx/workspace-data
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs
+
+# Local reference clones of 0.x and 1.x
+/tmp
+
+# IDEs and editors
+/.idea
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Claude Code
+.claude/worktrees
+.claude/settings.local.json

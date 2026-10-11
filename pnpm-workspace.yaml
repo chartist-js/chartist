@@ -1,2 +1,3 @@
 packages:
-  - 'website'
+  - 'apps/*'
+  - 'packages/*'

@@ -1,0 +1,44 @@
+schema: spec-driven
+
+context: |
+  Chartist v2: SVG charting library + Astro docs site in an Nx/pnpm monorepo (apps/*, packages/*).
+  The library must work without a bundler: ship ESM, CJS and UMD; docs show plain ESM examples first.
+  Styling is CSS-first ("style with CSS, control with JS").
+  1.x behavior (tmp/chartist-v1) is the migration baseline. Call out every breaking change explicitly.
+  Vision and decisions: docs/v2-high-level-plan.md.
+
+rules:
+  proposal:
+    - State what is out of scope
+    - List breaking changes vs 1.x, or state there are none
+
+# Project context (optional)
+# Add only constraints that should guide OpenSpec artifacts and workflows.
+# Include constraints an agent cannot infer by reading the code.
+# Keep general project documentation and discoverable codebase facts out.
+# Example:
+#   context: |
+#     Designs and tasks must cover Windows, macOS, and Linux
+#     Write all artifacts in Spanish
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always state what is out of scope
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
