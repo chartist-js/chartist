@@ -132,9 +132,6 @@ importers:
       '@size-limit/file':
         specifier: 14.1.0
         version: 14.1.0(size-limit@14.1.0)
-      '@size-limit/preset-big-lib':
-        specifier: ^7.0.8
-        version: 7.0.8(@swc/core@1.15.8(@swc/helpers@0.5.18))(cssnano@4.1.11)(postcss@8.5.29)(size-limit@14.1.0)
       '@storybook/addon-actions':
         specifier: ^6.4.22
         version: 6.5.16(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -2499,10 +2496,6 @@ packages:
   '@sinonjs/fake-timers@8.1.0':
     resolution: {integrity: sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==}
 
-  '@sitespeed.io/tracium@0.3.3':
-    resolution: {integrity: sha512-dNZafjM93Y+F+sfwTO5gTpsGXlnc/0Q+c2+62ViqP3gkMWvHEMSKkaEHgVJLcLg3i/g19GSIPziiKpgyne07Bw==}
-    engines: {node: '>=8'}
-
   '@size-limit/esbuild@14.1.0':
     resolution: {integrity: sha512-VRkw9yssPhJ8aRO9RIN9rxbaNSFyUOz4IZiW5YnRfwN3+GkS2WhXCj/wTPA0afjbHlMZFnI5TEwmAz6Yg9PFhQ==}
     engines: {node: ^22.19.0 || ^24.5.0 || >=26.0.0}
@@ -2514,29 +2507,6 @@ packages:
     engines: {node: ^22.19.0 || ^24.5.0 || >=26.0.0}
     peerDependencies:
       size-limit: 14.1.0
-
-  '@size-limit/file@7.0.8':
-    resolution: {integrity: sha512-1KeFQuMXIXAH/iELqIX7x+YNYDFvzIvmxcp9PrdwEoSNL0dXdaDIo9WE/yz8xvOmUcKaLfqbWkL75DM0k91WHQ==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
-    peerDependencies:
-      size-limit: 7.0.8
-
-  '@size-limit/preset-big-lib@7.0.8':
-    resolution: {integrity: sha512-m9C+FPPmETg9vg3V3Aq4hTflX1GVRpjYO94C4gqrl26I5YqB+BlKf8WKHmna3IbmJyePf7M8qvya/ougzMVHkQ==}
-    peerDependencies:
-      size-limit: 7.0.8
-
-  '@size-limit/time@7.0.8':
-    resolution: {integrity: sha512-CS3pHTxeQXgrrMbhlqYfSR+b4QGp1rjEcYYkByIP+X/Go88R44yp19tyBFmmCQzs2Te2BAxfq3jv8FG+54oBew==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
-    peerDependencies:
-      size-limit: 7.0.8
-
-  '@size-limit/webpack@7.0.8':
-    resolution: {integrity: sha512-69YuY0o4geRNJDb55Vri+bNPs9+WZlK0pzcziip1p4uajCFMFQE0K8pKj3vsIOUADdTcimfypHciriCY/qrnJQ==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
-    peerDependencies:
-      size-limit: 7.0.8
 
   '@slorber/static-site-generator-webpack-plugin@4.0.7':
     resolution: {integrity: sha512-Ug7x6z5lwrz0WqdnNFOMYrDQNTPAprvHLSh6+/fmml3qUiz6l5eq+2MzLKWtn/q5K5NpSiFsZTP/fck/3vjSxA==}
@@ -4531,10 +4501,6 @@ packages:
     resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
     engines: {node: '>= 12'}
 
-  commander@9.5.0:
-    resolution: {integrity: sha512-KRs7WVDKg86PWiuAqhDrAQnTXZKraVcCc6vFdL14qrZ/DcWwuRo7VoiYXalXO7S5GKpqYiVEwCbgFDfxNHKJBQ==}
-    engines: {node: ^12.20.0 || >=14}
-
   commitizen@4.3.2:
     resolution: {integrity: sha512-1Zs37z9JPvAcuTSSricZZwBhOPVNNxJouuY4yDEt+eD70EoxT2TU9kViG8CuB/PmVg2G4XsAGQiK4YCst97aDQ==}
     engines: {node: '>= 18'}
@@ -5207,9 +5173,6 @@ packages:
   devtools-protocol@0.0.1001819:
     resolution: {integrity: sha512-G6OsIFnv/rDyxSqBa2lDLR6thp9oJioLsb2Gl+LbQlyoA9/OBAkrTU9jiCcQ8Pnh7z4d6slDiLaogR5hzgJLmQ==}
 
-  devtools-protocol@0.0.981744:
-    resolution: {integrity: sha512-0cuGS8+jhR67Fy7qG3i3Pc7Aw494sb9yG9QgpG97SFVWwolgYjlhJg7n+UaHxOQT30d1TYu/EYe9k01ivLErIg==}
-
   diff-sequences@26.6.2:
     resolution: {integrity: sha512-Mv/TDa3nZ9sbc5soK+OoA74BsS3mL37yixCvUAQkiuA4Wz6YtwP/K47n2rv2ovzHZvoiQeA5FTQOschKkEwB0Q==}
     engines: {node: '>= 10.14.2'}
@@ -5604,11 +5567,6 @@ packages:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
     engines: {node: '>=4.0'}
 
-  estimo@2.3.6:
-    resolution: {integrity: sha512-aPd3VTQAL1TyDyhFfn6fqBTJ9WvbRZVN4Z29Buk6+P6xsI0DuF5Mh3dGv6kYCUxWnZkB4Jt3aYglUxOtuwtxoA==}
-    engines: {node: '>=12'}
-    hasBin: true
-
   estraverse@4.3.0:
     resolution: {integrity: sha512-39nnKffWz8xN1BU/2c79n9nB9HDzo0niYUqx6xyqUnyoAnQyyWpOTdZEeiCch8BBu515t4wp9ZmgVfVhn9EBpw==}
     engines: {node: '>=4.0'}
@@ -5832,10 +5790,6 @@ packages:
   find-cache-dir@3.3.2:
     resolution: {integrity: sha512-wXZV5emFEjrridIgED11OoUKLxiYjAcqot/NJdAkOhlJ+vGzwhOAfcG5OX1jP+S0PcjEn8bdMJv+g2jwQ3Onig==}
     engines: {node: '>=8'}
-
-  find-chrome-bin@0.1.0:
-    resolution: {integrity: sha512-XoFZwaEn1R3pE6zNG8kH64l2e093hgB9+78eEKPmJK0o1EXEou+25cEWdtu2qq4DBQPDSe90VJAWVI2Sz9pX6Q==}
-    engines: {node: ^12.0.0 || ^14.0.0 || >=16.0.0}
 
   find-node-modules@2.1.3:
     resolution: {integrity: sha512-UC2I2+nx1ZuOBclWVNdcnbDR5dlrOdVb7xNjmT/lHE+LsgztWks3dG7boJ37yTS/venXw84B/mAW9uHVoC5QRg==}
@@ -9107,10 +9061,6 @@ packages:
     resolution: {integrity: sha512-l1jNAspIBSFqbT+y+5FosojNpVpF94nlI+wDUpqP9enwOTfHx9f0gh5nB96vl+6yTpsJsypeNrwfzPrKuHB41A==}
     engines: {node: '>=8'}
 
-  puppeteer-core@13.7.0:
-    resolution: {integrity: sha512-rXja4vcnAzFAP1OVLq/5dWNfwBGuzcOARJ6qGV7oAZhnLmVRU8G5MsdeQEAOy332ZhkIOnn9jp15R89LKHyp2Q==}
-    engines: {node: '>=10.18.1'}
-
   puppeteer@14.4.1:
     resolution: {integrity: sha512-+H0Gm84aXUvSLdSiDROtLlOofftClgw2TdceMvvCU9UvMryappoeS3+eOLfKvoy4sm8B8MWnYmPhWxVFudAOFQ==}
     engines: {node: '>=14.1.0'}
@@ -9795,11 +9745,6 @@ packages:
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
-    hasBin: true
-
-  semver@7.3.5:
-    resolution: {integrity: sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==}
-    engines: {node: '>=10'}
     hasBin: true
 
   semver@7.5.4:
@@ -11244,18 +11189,6 @@ packages:
     peerDependencies:
       bufferutil: ^4.0.1
       utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
-
-  ws@8.5.0:
-    resolution: {integrity: sha512-BWX0SWVgLPzYwF8lTzEy1egjhS4S4OEAHfsO8o65WOVsrnSRGaSiUaa9e0ggGlkMTtBlmOpEXiie9RUcBO86qg==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
     peerDependenciesMeta:
       bufferutil:
         optional: true
@@ -15119,12 +15052,6 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 1.8.6
 
-  '@sitespeed.io/tracium@0.3.3':
-    dependencies:
-      debug: 4.4.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@size-limit/esbuild@14.1.0(size-limit@14.1.0)':
     dependencies:
       esbuild: 0.28.2
@@ -15133,76 +15060,6 @@ snapshots:
   '@size-limit/file@14.1.0(size-limit@14.1.0)':
     dependencies:
       size-limit: 14.1.0
-
-  '@size-limit/file@7.0.8(size-limit@14.1.0)':
-    dependencies:
-      semver: 7.3.5
-      size-limit: 14.1.0
-
-  '@size-limit/preset-big-lib@7.0.8(@swc/core@1.15.8(@swc/helpers@0.5.18))(cssnano@4.1.11)(postcss@8.5.29)(size-limit@14.1.0)':
-    dependencies:
-      '@size-limit/file': 7.0.8(size-limit@14.1.0)
-      '@size-limit/time': 7.0.8(size-limit@14.1.0)
-      '@size-limit/webpack': 7.0.8(@swc/core@1.15.8(@swc/helpers@0.5.18))(cssnano@4.1.11)(postcss@8.5.29)(size-limit@14.1.0)
-      size-limit: 14.1.0
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@napi-rs/image'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - bufferutil
-      - clean-css
-      - cssnano
-      - csso
-      - encoding
-      - esbuild
-      - html-minifier-terser
-      - imagemin
-      - lightningcss
-      - postcss
-      - sharp
-      - supports-color
-      - svgo
-      - uglify-js
-      - utf-8-validate
-      - webpack-cli
-
-  '@size-limit/time@7.0.8(size-limit@14.1.0)':
-    dependencies:
-      estimo: 2.3.6
-      react: 17.0.2
-      size-limit: 14.1.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - supports-color
-      - utf-8-validate
-
-  '@size-limit/webpack@7.0.8(@swc/core@1.15.8(@swc/helpers@0.5.18))(cssnano@4.1.11)(postcss@8.5.29)(size-limit@14.1.0)':
-    dependencies:
-      escape-string-regexp: 4.0.0
-      nanoid: 3.3.20
-      size-limit: 14.1.0
-      webpack: 5.111.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(cssnano@4.1.11)(postcss@8.5.29)
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@napi-rs/image'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - imagemin
-      - lightningcss
-      - postcss
-      - sharp
-      - svgo
-      - uglify-js
-      - webpack-cli
 
   '@slorber/static-site-generator-webpack-plugin@4.0.7':
     dependencies:
@@ -18597,8 +18454,6 @@ snapshots:
 
   commander@8.3.0: {}
 
-  commander@9.5.0: {}
-
   commitizen@4.3.2(@types/node@18.19.130)(typescript@5.9.3):
     dependencies:
       cachedir: 2.4.0
@@ -19406,8 +19261,6 @@ snapshots:
 
   devtools-protocol@0.0.1001819: {}
 
-  devtools-protocol@0.0.981744: {}
-
   diff-sequences@26.6.2: {}
 
   diff-sequences@27.5.1: {}
@@ -19900,19 +19753,6 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  estimo@2.3.6:
-    dependencies:
-      '@sitespeed.io/tracium': 0.3.3
-      commander: 9.5.0
-      find-chrome-bin: 0.1.0
-      nanoid: 3.3.20
-      puppeteer-core: 13.7.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - supports-color
-      - utf-8-validate
-
   estraverse@4.3.0: {}
 
   estraverse@5.3.0: {}
@@ -20232,8 +20072,6 @@ snapshots:
       commondir: 1.0.1
       make-dir: 3.1.0
       pkg-dir: 4.2.0
-
-  find-chrome-bin@0.1.0: {}
 
   find-node-modules@2.1.3:
     dependencies:
@@ -24192,26 +24030,6 @@ snapshots:
     dependencies:
       escape-goat: 2.1.1
 
-  puppeteer-core@13.7.0:
-    dependencies:
-      cross-fetch: 3.1.5
-      debug: 4.3.4
-      devtools-protocol: 0.0.981744
-      extract-zip: 2.0.1
-      https-proxy-agent: 5.0.1
-      pkg-dir: 4.2.0
-      progress: 2.0.3
-      proxy-from-env: 1.1.0
-      rimraf: 3.0.2
-      tar-fs: 2.1.1
-      unbzip2-stream: 1.4.3
-      ws: 8.5.0
-    transitivePeerDependencies:
-      - bufferutil
-      - encoding
-      - supports-color
-      - utf-8-validate
-
   puppeteer@14.4.1:
     dependencies:
       cross-fetch: 3.1.5
@@ -25090,10 +24908,6 @@ snapshots:
   semver@5.7.2: {}
 
   semver@6.3.1: {}
-
-  semver@7.3.5:
-    dependencies:
-      lru-cache: 6.0.0
 
   semver@7.5.4:
     dependencies:
@@ -26841,8 +26655,6 @@ snapshots:
   ws@7.5.13: {}
 
   ws@8.22.0: {}
-
-  ws@8.5.0: {}
 
   ws@8.7.0: {}
 

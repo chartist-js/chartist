@@ -1,30 +1,51 @@
 [
   {
-    "path": "dist/index.cjs",
-    "limit": "36.76 kB",
-    "webpack": false,
-    "running": false
+    "name": "Browser ESM (dist/index.min.js)",
+    "path": "dist/index.min.js",
+    "limit": "12.1 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
   },
   {
-    "path": "dist/index.cjs",
-    "limit": "7.45 kB",
-    "import": "{ BarChart }"
+    "name": "UMD (dist/index.umd.js)",
+    "path": "dist/index.umd.js",
+    "limit": "12.2 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
   },
   {
+    "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
-    "limit": "36.48 kB",
-    "webpack": false,
-    "running": false
+    "import": "{ LineChart }",
+    "limit": "8.8 kB",
+    "gzip": true
   },
   {
+    "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
-    "limit": "7.4 kB",
-    "import": "{ BarChart }"
+    "import": "{ BarChart }",
+    "limit": "7.5 kB",
+    "gzip": true
   },
   {
-    "path": "dist/index.css",
+    "name": "import { PieChart } (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ PieChart }",
+    "limit": "6.25 kB",
+    "gzip": true
+  },
+  {
+    "name": "import * (everything, bundled)",
+    "path": "dist/index.js",
+    "import": "*",
+    "limit": "12.3 kB",
+    "gzip": true
+  },
+  {
+    "name": "CSS (dist/index.min.css)",
+    "path": "dist/index.min.css",
     "limit": "1.3 kB",
-    "webpack": false,
-    "running": false
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
   }
 ]

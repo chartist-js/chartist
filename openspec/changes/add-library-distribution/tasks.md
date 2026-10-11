@@ -20,7 +20,7 @@
 
 ## 5. Size budgets
 
-- [ ] 5.1 Replace `.size-limit.json` with gzip budgets for `index.min.js`, `index.umd.js`, tree-shaken `{ LineChart }`, `{ BarChart }`, `{ PieChart }` from `index.js`, and `index.min.css`; wire `test:size` as a cached Nx target depending on `build`; verify `pnpm nx run chartist:test:size` passes and fails when a budget is lowered below the actual size
+- [x] 5.1 Remove `@size-limit/preset-big-lib`, replace `.size-limit.json` with gzip budgets for `index.min.js`, `index.umd.js`, tree-shaken `{ LineChart }`, `{ BarChart }`, `{ PieChart }` from `index.js`, and `index.min.css`; wire `test:size` as a cached Nx target depending on `build`; verify `pnpm nx run chartist:test:size` passes and fails when a budget is lowered below the actual size
 
 ## 6. Standalone examples and smoke test
 
@@ -30,7 +30,7 @@
 
 ## 7. Cleanup
 
-- [ ] 7.1 Delete `rollup.config.js` in a deletion-only commit and remove `rollup`, `rollup-plugin-swc`, `rollup-plugin-terser`, `@rollup/plugin-node-resolve`, `@size-limit/preset-big-lib` and the obsolete `emitDeclarations` script; verify `pnpm install`, `pnpm nx build chartist` and `pnpm nx run chartist:test:unit` still pass
+- [ ] 7.1 Delete `rollup.config.js` in a deletion-only commit and remove `rollup`, `rollup-plugin-swc`, `rollup-plugin-terser`, `@rollup/plugin-node-resolve` and the obsolete `emitDeclarations` script; verify `pnpm install`, `pnpm nx build chartist` and `pnpm nx run chartist:test:unit` still pass
 
 ## 8. Integration check
 
