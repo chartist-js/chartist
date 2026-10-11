@@ -30,7 +30,7 @@
 
 ## 7. Cleanup
 
-- [ ] 7.1 Delete `rollup.config.js` in a deletion-only commit and remove `rollup`, `rollup-plugin-swc`, `rollup-plugin-terser`, `@rollup/plugin-node-resolve` and the obsolete `emitDeclarations` script; verify `pnpm install`, `pnpm nx build chartist` and `pnpm nx run chartist:test:unit` still pass
+- [x] 7.1 Delete `rollup.config.js` in a deletion-only commit and remove `rollup`, `rollup-plugin-swc`, `rollup-plugin-terser`, `@rollup/plugin-node-resolve` and the obsolete `emitDeclarations` script; verify `pnpm install`, `pnpm nx build chartist` and `pnpm nx run chartist:test:unit` still pass
 
 ## 8. Integration check
 
