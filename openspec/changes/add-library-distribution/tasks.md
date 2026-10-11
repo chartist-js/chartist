@@ -6,8 +6,8 @@
 
 ## 2. JavaScript and type builds
 
-- [ ] 2.1 Add `packages/chartist/tsdown.config.ts` with the five builds from design.md (ESM, CJS + `.d.cts`, ESM declarations, minified browser ESM, minified UMD `Chartist`) plus the `chartist.min.js` copy; verify `pnpm exec tsdown` in the package emits `index.js`, `index.cjs`, `index.d.ts`, `index.d.cts`, `index.min.js`, `index.umd.js`, `chartist.min.js` and maps, and that `index.js`/`index.min.js` are single files without imports
-- [ ] 2.2 Verify every JS source map embeds `sourcesContent` and that `node -e "require('./dist/index.cjs')"` exposes `LineChart`, `BarChart`, `PieChart` and `Interpolation`
+- [x] 2.1 Add `packages/chartist/tsdown.config.ts` with the five builds from design.md (ESM, CJS + `.d.cts`, ESM declarations, minified browser ESM, minified UMD `Chartist`) plus the `chartist.min.js` copy; verify `pnpm exec tsdown` in the package emits `index.js`, `index.cjs`, `index.d.ts`, `index.d.cts`, `index.min.js`, `index.umd.js`, `chartist.min.js` and maps, and that `index.js`/`index.min.js` are single files without imports
+- [x] 2.2 Verify every JS source map embeds `sourcesContent` and that `node -e "require('./dist/index.cjs')"` exposes `LineChart`, `BarChart`, `PieChart` and `Interpolation`
 
 ## 3. Styles and Sass sources
 
