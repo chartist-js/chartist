@@ -18,8 +18,35 @@
    - CJS for older Node tooling
    - Docs examples are shown as **plain ESM first**, bundler usage second.
 4. **Live, in-browser examples** like 0.x had: an embedded playground (editor + output) integrated into the docs, running sandboxed in the browser. Candidates: [almostnode](https://github.com/macaly/almostnode) or a similar in-browser bundler/runtime, or a lightweight iframe sandbox with import maps. To be evaluated.
-5. **Full migration from 1.x, plus fixes and new features.** Scope will be derived from the most-wanted GitHub issues of v0.x and v1.x, plus the author's own vision. (To be detailed.)
+5. **Full migration from 1.x, plus fixes and new features.** Scope research: `docs/v2-scoping.md`. Product decisions: see below.
 6. **Carry the brand's hidden details forward**, quietly.
+
+## Product and architecture decisions
+
+Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-scoping.md`).
+
+**Architecture**
+
+- **Rendering pipeline.** Data → normalization → layout (axes, scales, chart rect) → **Chartist SVG virtual DOM** (scene graph) → **renderer**. Chart code never touches the DOM. Rendering is the last step.
+- **Interchangeable renderers.** The default renders to the DOM as SVG. Alternatives include an SVG string/image renderer (SSR, export, Node) and later canvas or others. This also fixes `window is not defined` and the SSR issues.
+- **Event-based extension system** stays the core extension mechanism (it proved valuable in 0.x/1.x). It gets typed hooks at every pipeline stage: data, layout, scene/draw, render.
+- **Composable charts.** One chart can combine several series layers (e.g. bar + line) on shared axes. This answers #37, the most-wanted issue of all time.
+- **Composable multi-axis.** An XY chart can have several axes, e.g. a left and a right Y axis (#1058, #1405).
+- **Responsive configuration** supports both window media queries (1.x behavior) and **container queries**. It is switchable by config and builds on modern browser APIs (`ResizeObserver`, container query conditions).
+
+**Compatibility**
+
+- **Aim for zero breaking changes.** `LineChart`, `BarChart` and `PieChart` remain, as presets on top of the composable core.
+- Where v2 internals must differ, a **compat plugin** restores 1.x behavior (events, the `Svg` wrapper API in draw events, options). The same mechanism can let existing 0.x/1.x community plugins run on v2.
+
+**Ecosystem**
+
+- **Framework support: web components only**, maintained as a separate wrapper package in the monorepo. Other official wrappers may follow later.
+- **Official plugins:** only the ones originally maintained by the author: accessibility, point labels, threshold (and possibly sketchy and tooltip; to be confirmed). Community plugins are supported through the compat plugin.
+
+**Size**
+
+- **Remain the smallest charting library.** Make everything tree-shakable: renderers, layers, axis types and plugins are separate entry points. Enforce per-entry size budgets in CI. The 1.x core is the baseline (36 kB gzipped, unminified).
 
 ## Tech decisions (so far)
 
