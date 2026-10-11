@@ -11,7 +11,7 @@
 
 ## 3. Styles and Sass sources
 
-- [ ] 3.1 Rewrite `scripts/styles.cjs` to emit `index.css` (readable), `index.min.css`, `chartist.min.css`, self-contained maps pointing to the published `scss/` copies, `dist/scss/` sources and the `dist/index.scss`/`dist/_settings.scss` forwarders; verify the files exist and `index.css.map` has relative `sources` and `sourcesContent`
+- [x] 3.1 Rewrite `scripts/styles.cjs` to emit `index.css` (readable), `index.min.css`, `chartist.min.css`, self-contained maps pointing to the published `scss/` copies, `dist/scss/` sources and the `dist/index.scss`/`dist/_settings.scss` forwarders; verify the files exist and `index.css.map` has relative `sources` and `sourcesContent`
 
 ## 4. Package metadata and Nx target
 
