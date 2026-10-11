@@ -20,7 +20,7 @@
     "declaration": true,
     "declarationMap": true,
     "inlineSourceMap": true,
-    "outDir": "dist",
+    "outDir": "out-tsc",
     /* Interop Constraints */
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,

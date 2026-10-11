@@ -15,7 +15,7 @@
 
 ## 4. Package metadata and Nx target
 
-- [ ] 4.1 Update `packages/chartist/package.json`: top-level `main`/`module`/`types`/`style`/`sass`/`unpkg`/`jsdelivr` and the `exports` map from design.md, `publishConfig` reduced to `directory`, `build` script (`del-cli dist && tsdown && node scripts/styles.cjs`), and `nx.targets.build` with cache inputs and outputs; verify `pnpm nx build chartist` succeeds and a second run is a cache hit
+- [x] 4.1 Update `packages/chartist/package.json`: top-level `main`/`module`/`types`/`style`/`sass`/`unpkg`/`jsdelivr` and the `exports` map from design.md, `publishConfig` reduced to `directory`, `build` script (`del-cli dist && tsdown && node scripts/styles.cjs`), and `nx.targets.build` with cache inputs and outputs; verify `pnpm nx build chartist` succeeds and a second run is a cache hit
 - [ ] 4.2 Compare the new `package.json` against `tmp/chartist-v1/package.json` (published fields after `publishConfig` merge) and verify every 1.x field and path still resolves to a file of the same format
 
 ## 5. Size budgets

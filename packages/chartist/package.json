@@ -36,21 +36,33 @@
     "*.css",
     "*.scss"
   ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "style": "./dist/index.css",
+  "sass": "./dist/scss/index.scss",
   "unpkg": "./dist/index.umd.js",
   "jsdelivr": "./dist/index.umd.js",
-  "main": "./src/index.ts",
-  "publishConfig": {
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
-    "exports": {
-      ".": {
-        "require": "./dist/index.cjs",
-        "import": "./dist/index.js"
+  "exports": {
+    ".": {
+      "sass": "./dist/scss/index.scss",
+      "style": "./dist/index.css",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
-      "./dist/*": "./dist/*"
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": "./dist/index.js"
     },
+    "./styles.css": "./dist/index.css",
+    "./scss/*": "./dist/scss/*",
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
     "directory": "package"
   },
   "files": [
@@ -64,8 +76,8 @@
     "prepublishOnly": "pnpm test && pnpm build && pnpm clear:package && clean-publish",
     "postpublish": "pnpm clear:package",
     "emitDeclarations": "tsc --project ./tsconfig.build.json --emitDeclarationOnly",
-    "build:styles": "./scripts/styles.cjs ./src/styles/index.scss",
-    "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
+    "build:styles": "node ./scripts/styles.cjs",
+    "build": "del-cli ./dist && tsdown && node ./scripts/styles.cjs",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
     "jest": "jest -c jest.config.json",
@@ -138,5 +150,41 @@
     "swc-loader": "^0.2.3",
     "tsdown": "0.23.0",
     "typescript": "^5.9.3"
+  },
+  "nx": {
+    "namedInputs": {
+      "build": [
+        "{projectRoot}/src/**/*",
+        "!{projectRoot}/src/**/*.spec.ts",
+        "!{projectRoot}/src/**/*.stories.ts",
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsdown.config.ts",
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/tsconfig.build.json",
+        "{projectRoot}/scripts/styles.cjs",
+        "{projectRoot}/.browserslistrc",
+        {
+          "externalDependencies": [
+            "tsdown",
+            "typescript",
+            "sass",
+            "postcss",
+            "postcss-preset-env",
+            "cssnano"
+          ]
+        }
+      ]
+    },
+    "targets": {
+      "build": {
+        "cache": true,
+        "inputs": [
+          "build"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
+      }
+    }
   }
 }
