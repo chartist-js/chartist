@@ -88,7 +88,8 @@
     "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}' 'sandboxes/**/*.{js,ts}'",
     "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{cjs,js,ts}' 'sandboxes/**/*.{js,ts}'",
     "commit": "cz",
-    "updateGitHooks": "simple-git-hooks"
+    "updateGitHooks": "simple-git-hooks",
+    "test:smoke": "node --test \"test/smoke/*.test.mjs\""
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
@@ -197,6 +198,24 @@
               "size-limit",
               "@size-limit/file",
               "@size-limit/esbuild"
+            ]
+          }
+        ]
+      },
+      "test:smoke": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [
+          "build",
+          "{projectRoot}/test/smoke/**/*",
+          "{projectRoot}/examples/**/*",
+          {
+            "externalDependencies": [
+              "playwright",
+              "sass",
+              "typescript"
             ]
           }
         ]

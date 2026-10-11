@@ -1,0 +1,186 @@
+/**
+ * No-bundler smoke test: opens the standalone examples in headless Chromium
+ * and checks that the charts render. Requests to jsDelivr and unpkg are
+ * answered from the local dist/, so the examples run unchanged and offline.
+ *
+ * Run: pnpm nx run chartist:test:smoke (builds first).
+ */
+import { test, before, after } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { chromium } from 'playwright';
+
+const pkgDir = fileURLToPath(new URL('../..', import.meta.url));
+const pkg = JSON.parse(await readFile(path.join(pkgDir, 'package.json')));
+const ORIGIN = 'https://chartist.test';
+const CDNS = [
+  { prefix: 'https://cdn.jsdelivr.net/npm/', field: 'jsdelivr' },
+  { prefix: 'https://unpkg.com/', field: 'unpkg' }
+];
+const TYPES = {
+  '.html': 'text/html',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.map': 'application/json'
+};
+
+/** Maps a CDN URL to a published file, like jsDelivr/unpkg would. */
+function cdnFile(url) {
+  for (const { prefix, field } of CDNS) {
+    if (!url.startsWith(prefix)) {
+      continue;
+    }
+    const match = url
+      .slice(prefix.length)
+      .match(/^chartist(?:@[^/]+)?(\/.*)?$/);
+    if (!match) {
+      return null;
+    }
+    // A bare package URL serves the file named by the CDN's package field.
+    const subpath =
+      match[1] && match[1] !== '/' ? match[1].slice(1) : pkg[field];
+    const file = path.join(pkgDir, subpath);
+    // Only files in dist/ are published.
+    return file.startsWith(path.join(pkgDir, 'dist') + path.sep) ? file : null;
+  }
+  return null;
+}
+
+/** Extra test pages, served from ORIGIN/inline/<name>. */
+const inlinePages = {
+  'chartist-min-js': `<!doctype html>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/chartist.min.js"></script>`,
+  'bare-jsdelivr': `<!doctype html>
+    <script src="https://cdn.jsdelivr.net/npm/chartist"></script>`,
+  'bare-unpkg': `<!doctype html>
+    <script src="https://unpkg.com/chartist@1"></script>`,
+  esm: `<!doctype html>
+    <script type="module">
+      window.esm = await import('https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js');
+    </script>`
+};
+
+let browser;
+
+before(async () => {
+  browser = await chromium.launch();
+});
+
+after(async () => {
+  await browser?.close();
+});
+
+async function openPage(url) {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(`pageerror: ${error.message}`));
+  page.on('console', msg => {
+    if (msg.type() === 'error') {
+      errors.push(`console: ${msg.text()}`);
+    }
+  });
+  page.on('requestfailed', request =>
+    errors.push(`request failed: ${request.url()}`)
+  );
+
+  await page.route('**/*', async route => {
+    const url = route.request().url().split(/[?#]/)[0];
+    let file = null;
+    if (url.startsWith(`${ORIGIN}/examples/`)) {
+      file = path.join(pkgDir, 'examples', path.basename(url));
+    } else if (url.startsWith(`${ORIGIN}/inline/`)) {
+      const html = inlinePages[path.basename(url)];
+      return html
+        ? route.fulfill({ body: html, contentType: 'text/html' })
+        : route.fulfill({ status: 404 });
+    } else {
+      file = cdnFile(url);
+    }
+    if (!file) {
+      // Everything else stays offline.
+      return route.abort();
+    }
+    try {
+      await route.fulfill({
+        body: await readFile(file),
+        contentType: TYPES[path.extname(file)] ?? 'application/octet-stream',
+        // Like the real CDNs; required for cross-origin module scripts.
+        headers: { 'access-control-allow-origin': '*' }
+      });
+    } catch {
+      await route.fulfill({ status: 404 });
+    }
+  });
+
+  await page.goto(url);
+  return { page, errors };
+}
+
+// SVG lines (bars) have an empty bounding box, so wait for presence only.
+const attached = { state: 'attached' };
+
+async function assertChartsRender(page) {
+  await page.waitForSelector('#line svg .ct-line', attached);
+  await page.waitForSelector('#bar svg .ct-bar', attached);
+  await page.waitForSelector('#pie svg .ct-slice-pie', attached);
+
+  const result = await page.evaluate(() => ({
+    lines: document.querySelectorAll('#line .ct-series .ct-line').length,
+    points: document.querySelectorAll('#line .ct-point').length,
+    bars: document.querySelectorAll('#bar .ct-bar').length,
+    slices: document.querySelectorAll('#pie .ct-slice-pie').length,
+    // Proves the stylesheet loaded and applies to the rendered SVG.
+    lineStrokeWidth: getComputedStyle(document.querySelector('#line .ct-line'))
+      .strokeWidth,
+    width: document.querySelector('#line svg').getBoundingClientRect().width
+  }));
+
+  assert.equal(result.lines, 2);
+  assert.equal(result.points, 10);
+  assert.equal(result.bars, 4);
+  assert.equal(result.slices, 4);
+  assert.equal(result.lineStrokeWidth, '4px');
+  assert.ok(result.width > 0, 'chart has a width');
+}
+
+async function expectedExports() {
+  const esm = await import(pathToFileURL(path.join(pkgDir, 'dist/index.js')));
+  return Object.keys(esm).sort();
+}
+
+test('examples/umd.html renders with a classic script tag', async () => {
+  const { page, errors } = await openPage(`${ORIGIN}/examples/umd.html`);
+  await assertChartsRender(page);
+  assert.deepEqual(errors, []);
+  await page.close();
+});
+
+test('examples/esm.html renders with <script type="module">', async () => {
+  const { page, errors } = await openPage(`${ORIGIN}/examples/esm.html`);
+  await assertChartsRender(page);
+  assert.deepEqual(errors, []);
+  await page.close();
+});
+
+test('browser ESM build exposes every export', async () => {
+  const { page, errors } = await openPage(`${ORIGIN}/inline/esm`);
+  await page.waitForFunction(() => window.esm);
+  const keys = await page.evaluate(() => Object.keys(window.esm).sort());
+  assert.deepEqual(keys, await expectedExports());
+  assert.deepEqual(errors, []);
+  await page.close();
+});
+
+for (const name of ['chartist-min-js', 'bare-jsdelivr', 'bare-unpkg']) {
+  test(`UMD global via ${name}`, async () => {
+    const { page, errors } = await openPage(`${ORIGIN}/inline/${name}`);
+    const keys = await page.evaluate(() =>
+      window.Chartist ? Object.keys(window.Chartist).sort() : null
+    );
+    assert.deepEqual(keys, await expectedExports());
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+}
