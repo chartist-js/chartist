@@ -34,7 +34,7 @@
 
 ## 8. Integration check
 
-- [ ] 8.1 Run `pnpm nx run-many -t build test:unit test:size test:smoke -p chartist` from a clean `dist` and record the output file table with raw and gzip sizes against 1.x; validate with `pnpm exec openspec validate add-library-distribution`
+- [x] 8.1 Run `pnpm nx run-many -t build test:unit test:size test:smoke -p chartist` from a clean `dist` and record the output file table with raw and gzip sizes against 1.x; validate with `pnpm exec openspec validate add-library-distribution`
 
 ## Workflow follow-up
 
