@@ -2,7 +2,7 @@
 
 ## 1. Dependencies
 
-- [ ] 1.1 Add exact-pinned `tsdown`, `size-limit`, `@size-limit/file`, `@size-limit/esbuild` and `playwright` dev dependencies to `packages/chartist` (and `typescript` 5.x if the declaration bundler needs it); verify `pnpm install` succeeds and `pnpm nx run chartist:test:unit` still passes 146 tests
+- [x] 1.1 Add exact-pinned `tsdown`, `size-limit`, `@size-limit/file`, `@size-limit/esbuild` and `playwright` dev dependencies to `packages/chartist` (and `typescript` 5.x if the declaration bundler needs it); verify `pnpm install` succeeds and `pnpm nx run chartist:test:unit` still passes 146 tests
 
 ## 2. JavaScript and type builds
 
