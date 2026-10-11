@@ -26,7 +26,7 @@
 
 - [x] 6.1 Add `packages/chartist/examples/umd.html` and `examples/esm.html` (copy-paste standalone pages loading Chartist from jsDelivr) and verify they contain no bundler-specific code
 - [x] 6.2 Add `packages/chartist/test/smoke/` (Node test runner + Playwright) that serves the examples with CDN requests routed to the local `dist`, asserts charts render with no page errors, checks the 0.x `chartist.min.js` alias and bare CDN URLs, checks every 1.x and new import path through the `exports` map, and compiles the Sass entry points; wire `test:smoke` as an Nx target depending on `build`; verify `pnpm nx run chartist:test:smoke` passes
-- [ ] 6.3 Add a "Use it without a bundler" section with the CDN snippets to the README and verify the snippets match the tested examples
+- [x] 6.3 Add a "Use it without a bundler" section with the CDN snippets to the README and verify the snippets match the tested examples
 
 ## 7. Cleanup
 
