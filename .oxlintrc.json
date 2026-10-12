@@ -57,7 +57,7 @@
   "overrides": [
     {
       "files": ["**/test/**", "**/*.spec.ts", "**/*.test.ts", "**/*.test.mjs"],
-      "plugins": ["typescript", "unicorn", "oxc", "jest"],
+      "plugins": ["typescript", "unicorn", "oxc", "vitest"],
       "rules": {
         "no-console": "off",
         "no-shadow": "off",

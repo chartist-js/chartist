@@ -1,5 +1,18 @@
 /// <reference types="vitest/globals" />
 import '@testing-library/jest-dom/vitest';
+import type { TestingLibraryMatchers } from '@testing-library/jest-dom/matchers';
+
+// jest-dom 7 augments Vitest's `Assertion<T>`, which has two type parameters
+// since Vitest 5, so its matcher types get lost. Vitest 5 merges custom
+// matchers through `Matchers<R, T>` instead.
+// The type parameters must match Vitest's declaration.
+declare module 'vitest' {
+  // oxlint-disable-next-line typescript/no-empty-interface
+  interface Matchers<
+    R extends void | Promise<void> = void | Promise<void>,
+    T = unknown
+  > extends TestingLibraryMatchers<unknown, R> {}
+}
 
 window.matchMedia = () => ({}) as MediaQueryList;
 
@@ -28,5 +41,9 @@ function supportDoneCallback<T extends object>(testApi: T): T {
   });
 }
 
-globalThis.it = supportDoneCallback(globalThis.it);
-globalThis.test = supportDoneCallback(globalThis.test);
+const testGlobals = globalThis as unknown as {
+  it: typeof it;
+  test: typeof test;
+};
+testGlobals.it = supportDoneCallback(it);
+testGlobals.test = supportDoneCallback(test);

@@ -9,9 +9,11 @@ export default defineConfig({
     exclude: ['test/visual/**'],
     setupFiles: ['test/setup.ts'],
     coverage: {
+      enabled: true,
       provider: 'v8',
       include: ['src/**/*.ts'],
-      reporter: ['lcovonly', 'text']
+      reporter: ['lcovonly', 'text'],
+      reportsDirectory: 'coverage'
     }
   }
 });

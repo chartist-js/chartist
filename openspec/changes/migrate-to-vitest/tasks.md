@@ -11,6 +11,6 @@
 
 ## 3. Remove Jest
 
-- [ ] 3.1 Deletion commit: remove `packages/chartist/jest.config.json` and `test/setup.js`; verify the commit contains only deletions
-- [ ] 3.2 Edit commit: remove `jest`, `@swc/jest`, `@types/jest`, `@types/testing-library__jest-dom` and (if unused elsewhere) `@swc/core`/`@swc/helpers` from `packages/chartist`, drop the `jest` and `test:unit` scripts, point `test` at the Vitest target, switch spec-file lint settings from Jest to Vitest; verify `pnpm install` succeeds and `git grep -n -i jest -- ':!openspec/changes/archive' ':!CHANGELOG.md' ':!pnpm-lock.yaml'` finds only `jest-dom` references
+- [x] 3.1 Deletion commit: remove `packages/chartist/jest.config.json` and `test/setup.js`; verify the commit contains only deletions
+- [x] 3.2 Edit commit: remove `jest`, `@swc/jest`, `@types/jest`, `@types/testing-library__jest-dom` and (if unused elsewhere) `@swc/core`/`@swc/helpers` from `packages/chartist`, drop the `jest` and `test:unit` scripts, point `test` at the Vitest target, switch spec-file lint settings from Jest to Vitest; verify `pnpm install` succeeds and `git grep -n -i jest -- ':!openspec/changes/archive' ':!CHANGELOG.md' ':!pnpm-lock.yaml'` finds only `jest-dom` references
 - [ ] 3.3 Update `CONTRIBUTING.md` (watch mode: `pnpm nx test chartist --watch`) and the plan (Testing row, "Unit test runner" open question resolved, `test:unit` removed from the local gate); verify the full local gate passes (`pnpm nx run-many -t typecheck check build test test:smoke test:size test:visual test:visual:v1 test:e2e lint` and `pnpm nx format:check --all`)
