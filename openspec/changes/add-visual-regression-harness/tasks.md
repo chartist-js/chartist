@@ -33,8 +33,8 @@
 
 ## 6. Remove Storybook and storyshots
 
-- [ ] 6.1 Deletion commit: remove `.storybook/`, `src/charts/*/*.stories.ts`, `test/storyshots.spec.js`, `test/utils/storyshots/`, `test/__image_snapshots__/` and `.github/workflows/update-storyshots.yml`; verify the commit contains only deletions
-- [ ] 6.2 Edit commit: remove the Storybook, storyshots, Puppeteer, `jest-image-snapshot`, `faker` and `@storybook/*` dependencies; the `start:storybook`, `build:storybook` and `test:storyshots` scripts and Nx targets; the `.storybook` and `sandboxes` lint and format globs; the `storyshots` stage in `ci.yml` and the `build:storybook` job in `checks.yml`. Verify `pnpm install` succeeds and `pnpm nx run-many -p chartist examples -t build test:unit test:smoke test:size test:visual typecheck check lint` all pass
+- [x] 6.1 Deletion commit: remove `.storybook/`, `src/charts/*/*.stories.ts`, `test/storyshots.spec.js`, `test/utils/storyshots/`, `test/__image_snapshots__/` and `.github/workflows/update-storyshots.yml`; verify the commit contains only deletions
+- [x] 6.2 Edit commit: remove the Storybook, storyshots, Puppeteer, `jest-image-snapshot`, `faker` and `@storybook/*` dependencies; the `start:storybook`, `build:storybook` and `test:storyshots` scripts and Nx targets; the `.storybook` and `sandboxes` lint and format globs; the `storyshots` stage in `ci.yml` and the `build:storybook` job in `checks.yml`. Verify `pnpm install` succeeds and `pnpm nx run-many -p chartist examples -t build test:unit test:smoke test:size test:visual typecheck check lint` all pass
 
 ## 7. Docs
 
