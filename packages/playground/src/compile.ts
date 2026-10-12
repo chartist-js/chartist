@@ -1,4 +1,6 @@
-import { init, parse } from 'es-module-lexer';
+// The minimal build is half the size of the full one (no TypeScript lexing,
+// which isn't needed after type stripping).
+import { init, parse } from 'es-module-lexer/minimal';
 import { bootstrapScript } from './bootstrap.ts';
 import { CompileError, loadTransformer } from './transformers.ts';
 import type {
@@ -37,7 +39,7 @@ export async function compile(
 ): Promise<CompileResult> {
   const start = now();
   const transform = await loadTransformer(options.transformer ?? 'sucrase');
-  await init;
+  await init();
 
   const state: State = {
     files,
@@ -158,22 +160,18 @@ function rewriteImports(
   let output = '';
   let last = 0;
   for (const entry of imports) {
-    // `import.meta`, and dynamic imports with a computed argument.
-    if (entry.type === 'import-meta' || entry.specifier === undefined) {
+    // `import.meta` (d = -2), and dynamic imports with a computed argument.
+    if (entry.d === -2 || entry.n === undefined) {
       continue;
     }
-    if (entry.type === 'dynamic' && entry.glob) {
-      continue;
-    }
-    const specifier = entry.specifier;
-    const isDynamic = entry.type === 'dynamic';
+    const specifier = entry.n;
+    const isDynamic = entry.d > -1;
     if (specifier.endsWith('.css') && !isDynamic) {
       // Static `import './style.css'`: remove the statement, add a stylesheet.
-      addStyle(specifier, file, state, entry.start);
+      addStyle(specifier, file, state, entry.s);
       output +=
-        code.slice(last, entry.importStart) +
-        blank(code.slice(entry.importStart, entry.importEnd));
-      last = entry.importEnd;
+        code.slice(last, entry.ss) + blank(code.slice(entry.ss, entry.se));
+      last = entry.se;
       continue;
     }
     let replacement: string | undefined;
@@ -183,17 +181,17 @@ function rewriteImports(
         throw new CompileError({
           file,
           message: `Cannot resolve import "${specifier}"`,
-          ...position(code, entry.start)
+          ...position(code, entry.s)
         });
       }
       replacement = compileModule(target);
     }
     if (replacement !== undefined) {
-      // Dynamic imports include the quotes in start..end, static ones don't.
+      // Dynamic imports include the quotes in s..e, static ones don't.
       output +=
-        code.slice(last, entry.start) +
+        code.slice(last, entry.s) +
         (isDynamic ? JSON.stringify(replacement) : replacement);
-      last = entry.end;
+      last = entry.e;
     }
   }
   return output + code.slice(last);

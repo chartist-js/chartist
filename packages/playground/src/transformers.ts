@@ -42,7 +42,8 @@ async function loadSucrase(): Promise<Transformer> {
           .replace(/^Error transforming [^:]+: /, '')
           .replace(/ \(\d+:\d+\)$/, ''),
         line: err.loc?.line,
-        column: err.loc ? err.loc.column + 1 : undefined
+        // sucrase columns are already 1-based.
+        column: err.loc?.column
       });
     }
   };
