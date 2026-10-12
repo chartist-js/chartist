@@ -1,4 +1,4 @@
-import 'chartist/dist/index.css';
+import 'chartist/styles.css';
 import { BarChart } from 'chartist';
 
 new BarChart(

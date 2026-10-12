@@ -1,5 +1,9 @@
-import 'chartist/dist/index.css';
-import { LineChart, LineChartOptions, ResponsiveOptions } from 'chartist';
+import 'chartist/styles.css';
+import {
+  LineChart,
+  type LineChartOptions,
+  type ResponsiveOptions
+} from 'chartist';
 
 /* Add a basic data series with six labels and values */
 const data = {

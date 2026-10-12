@@ -1,4 +1,4 @@
-import 'chartist/dist/index.css';
+import 'chartist/styles.css';
 import { BarChart, Svg, getMultiValue } from 'chartist';
 
 // Create a simple bi-polar bar chart

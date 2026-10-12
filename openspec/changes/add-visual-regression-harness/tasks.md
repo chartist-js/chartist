@@ -8,8 +8,8 @@
 ## 2. Examples package
 
 - [x] 2.1 Scaffold `packages/examples`: private `@chartist/examples`, `chartist` as a `workspace:*` dependency, `vite` dev dependency, `tsconfig.json` (strict, `moduleResolution: bundler`, `vite/client` types, including `*/*/src/**/*.ts` and `index.ts`), `README.md`, picked up as an Nx project. Verify `pnpm install` succeeds and `pnpm nx show project examples` lists it
-- [ ] 2.2 Edit the 32 moved examples (design D4 step 3): module script tag, CSS through `chartist/styles.css`, seeded generator in `line/scatter-random`. Verify each example runs with `pnpm exec vite packages/examples/<type>/<name>` without console errors (spot-check one per chart type), and that no file references Parcel or `chartist/dist/`
-- [ ] 2.3 Add the `typecheck` target (`tsc --noEmit`, depends on `chartist:build`) and fix the type errors it reports in the examples; verify `pnpm nx typecheck examples` passes and fails after introducing a wrong option name
+- [x] 2.2 Edit the 32 moved examples (design D4 step 3): module script tag, CSS through `chartist/styles.css`, seeded generator in `line/scatter-random`. Verify each example runs with `pnpm exec vite packages/examples/<type>/<name>` without console errors (spot-check one per chart type), and that no file references Parcel or `chartist/dist/`
+- [x] 2.3 Add the `typecheck` target (`tsc --noEmit`, depends on `chartist:build`) and fix the type errors it reports in the examples; verify `pnpm nx typecheck examples` passes and fails after introducing a wrong option name
 - [ ] 2.4 Write the typed manifest in `index.ts` for the 32 examples (id, title, type, `docs: true`, `compat` for the 8 examples using `.on(...)` or `Svg`, viewports, size, settle) and a check script (Nx target `check`). It asserts unique ids, that each folder has `index.html` and `src/main.ts`, and that every example containing `.on(` or `Svg` has `compat: true`. Verify `pnpm nx check examples` passes
 
 ## 3. Port the Storybook story cases

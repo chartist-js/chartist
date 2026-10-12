@@ -1,4 +1,4 @@
-import 'chartist/dist/index.css';
+import 'chartist/styles.css';
 import { LineChart, AutoScaleAxis } from 'chartist';
 
 new LineChart(

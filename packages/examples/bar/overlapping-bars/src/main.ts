@@ -1,5 +1,9 @@
-import 'chartist/dist/index.css';
-import { BarChart, BarChartOptions, ResponsiveOptions } from 'chartist';
+import 'chartist/styles.css';
+import {
+  BarChart,
+  type BarChartOptions,
+  type ResponsiveOptions
+} from 'chartist';
 
 const data = {
   labels: [

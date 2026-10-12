@@ -1,5 +1,5 @@
-import 'chartist/dist/index.css';
-import { PieChart, easings, AnimationDefinition } from 'chartist';
+import 'chartist/styles.css';
+import { PieChart, easings, type AnimationDefinition } from 'chartist';
 
 const chart = new PieChart(
   '#chart',
