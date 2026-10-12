@@ -1,0 +1,153 @@
+/**
+ * The examples manifest: one entry per example folder in this package.
+ *
+ * Consumers (the docs site, the playground, the visual regression tests)
+ * read the example files from `<folder>/index.html` and `<folder>/src/`.
+ */
+
+export type ChartType = 'line' | 'bar' | 'pie';
+
+/** Named viewport presets the visual regression tests render an example at. */
+export type ViewportName = 'default' | 'tablet' | 'mobile' | 'mobile-landscape';
+
+export const viewportSizes: Record<
+  ViewportName,
+  { width: number; height: number }
+> = {
+  default: { width: 1024, height: 768 },
+  tablet: { width: 768, height: 1024 },
+  mobile: { width: 375, height: 812 },
+  'mobile-landscape': { width: 812, height: 375 }
+};
+
+export interface Example {
+  /** `<type>/<name>`, unique. */
+  id: string;
+  /** The example folder, relative to this package. Derived from `id`. */
+  folder: string;
+  title: string;
+  type: ChartType;
+  /** Shown in the docs (`true`) or only used by the tests (`false`). */
+  docs: boolean;
+  /**
+   * Uses a 1.x event listener (`.on(...)`) or the 1.x `Svg` API, so it needs
+   * the compat plugin in v2.
+   */
+  compat: boolean;
+  /** Viewports the visual regression tests render the example at. */
+  viewports: ViewportName[];
+  /**
+   * `fixed`: the tests give the chart container a fixed size.
+   * `viewport`: the container keeps the size the example's `index.html` gives
+   * it, for responsive examples tested at several viewports.
+   */
+  size: 'fixed' | 'viewport';
+  /**
+   * When the tests take the screenshot, in milliseconds after the chart was
+   * created: timers up to that time fire, and SMIL animations are seeked to
+   * it and paused. Animated examples use the end of their animations.
+   */
+  settle: { at: number };
+}
+
+type ExampleInput = Pick<Example, 'id' | 'title'> &
+  Partial<Omit<Example, 'id' | 'title' | 'folder' | 'type'>>;
+
+function example(input: ExampleInput): Example {
+  return {
+    folder: input.id,
+    type: input.id.split('/')[0] as ChartType,
+    docs: true,
+    compat: false,
+    viewports: ['default'],
+    size: 'fixed',
+    settle: { at: 0 },
+    ...input
+  };
+}
+
+export const examples: Example[] = [
+  // Line charts (1.x sandboxes)
+  example({ id: 'line/simple', title: 'Simple line chart' }),
+  example({ id: 'line/area', title: 'Line chart with area' }),
+  example({ id: 'line/axis-auto', title: 'Auto scale axis' }),
+  example({
+    id: 'line/axis-fixed-and-auto',
+    title: 'Fixed and auto scale axis'
+  }),
+  example({
+    id: 'line/bipolar-area',
+    title: 'Bi-polar Line chart with area only'
+  }),
+  example({ id: 'line/data-holes', title: 'Holes in data' }),
+  example({ id: 'line/data-fill-holes', title: 'Filled holes in data' }),
+  example({
+    id: 'line/modify-drawing',
+    title: 'Using events to replace graphics',
+    compat: true
+  }),
+  example({ id: 'line/only-integer', title: 'Only whole numbers' }),
+  example({
+    id: 'line/path-animation',
+    title: 'SVG Path animation',
+    compat: true,
+    settle: { at: 6000 }
+  }),
+  example({
+    id: 'line/scatter-random',
+    title: 'Line scatter diagram with responsive settings'
+  }),
+  example({ id: 'line/series-override', title: 'Series Overrides' }),
+  example({ id: 'line/simple-responsive', title: 'Simple responsive options' }),
+  example({
+    id: 'line/simple-smoothing',
+    title: 'Line Interpolation / Smoothing'
+  }),
+  example({
+    id: 'line/simple-svg-animation',
+    title: 'Simple SMIL Animations',
+    compat: true,
+    settle: { at: 4300 }
+  }),
+  example({
+    id: 'line/svg-animation',
+    title: 'Advanced SMIL Animations',
+    compat: true,
+    settle: { at: 7000 }
+  }),
+  example({ id: 'line/timeseries', title: 'Timeseries' }),
+
+  // Bar charts (1.x sandboxes)
+  example({ id: 'bar/bi-polar-interpolated', title: 'Bi-polar bar chart' }),
+  example({ id: 'bar/distributed-series', title: 'Distributed series' }),
+  example({
+    id: 'bar/extreme-responsive',
+    title: 'Extreme responsive configuration'
+  }),
+  example({ id: 'bar/horizontal', title: 'Horizontal bar chart' }),
+  example({ id: 'bar/label-position', title: 'Label placement' }),
+  example({ id: 'bar/multiline', title: 'Multi-line labels' }),
+  example({ id: 'bar/overlapping-bars', title: 'Overlapping bars on mobile' }),
+  example({ id: 'bar/stacked', title: 'Stacked bar chart', compat: true }),
+  example({
+    id: 'bar/stacked-accumulate-relative',
+    title: 'Stacked bar chart with accumulate-relative stack mode'
+  }),
+  example({
+    id: 'bar/with-circle-modify-drawing',
+    title: 'Add peak circles using the draw events',
+    compat: true
+  }),
+
+  // Pie charts (1.x sandboxes)
+  example({ id: 'pie/simple', title: 'Simple pie chart' }),
+  example({ id: 'pie/custom-labels', title: 'Pie chart with custom labels' }),
+  example({ id: 'pie/donut-chart', title: 'Donut chart' }),
+  example({
+    id: 'pie/donut-animation',
+    title: 'Animating a Donut with Svg.animate',
+    compat: true,
+    settle: { at: 7000 }
+  }),
+  example({ id: 'pie/simple-gauge', title: 'Gauge chart' })
+];
