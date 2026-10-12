@@ -6,7 +6,7 @@ Monorepo for Chartist v2, a simple, responsive SVG charting library (style with 
 - Layout: `apps/*` (Astro docs site), `packages/*` (library + internal libs).
 - `tmp/chartist-v0` (0.x, original 2014 site and library) and `tmp/chartist-v1` (1.x TypeScript + Docusaurus) are git-ignored reference clones. Read and copy from them, but never edit them.
 - Spec-driven: non-trivial work starts as an OpenSpec change (`/opsx:propose`, then `/opsx:apply`, then `/opsx:archive`). Specs live in `openspec/`.
-- Chartist must run without a bundler: ship ESM, CJS and UMD, and show plain ESM (`<script type="module">`) examples first in the docs.
+- Chartist is TypeScript-native: docs examples are HTML + TypeScript + CSS projects (Vite app shape), run live in a browser-only sandbox. It must still run without a bundler: `<script type="module">` with ESM from a CDN is the primary no-bundler path; UMD ships for backwards compatibility only; CJS for older Node tooling.
 - The docs should be playful and crafted like 0.x, not template-like. Brand and design come from a separate Claude Design handoff (`docs/design-handoff-prompt.md`).
 - Git: this is the `chartist-js/chartist` repo, and v2 work happens on `next`. Keep file moves, deletions and content edits in separate commits so git detects renames. Never squash-merge. Don't mass-reformat (the 1.x `.prettierrc` stays). Details: "Repository and migration strategy" in the plan.
 - Run tasks through Nx: `pnpm nx <target> <project>`.

@@ -12,14 +12,20 @@
 
 1. **Bring back the soul of 0.x, made for today.** The docs should be engaging, entertaining and crafted, not a template.
 2. **Modernize the brand.** That means a new Chartist Guy, logo, palette and typography. The redesign is running in parallel in Claude Design (brief: `docs/design-handoff-prompt.md`), and its output will be handed over for implementation.
-3. **No bundler required.** Chartist must work directly in the browser:
-   - ESM via `<script type="module">` / import from a CDN
-   - UMD for classic `<script>` tags
-   - CJS for older Node tooling
-   - Docs examples are shown as **plain ESM first**, bundler usage second.
-4. **Live, in-browser examples** like 0.x had: an embedded playground (editor + output) integrated into the docs, running sandboxed in the browser. Candidates: [almostnode](https://github.com/macaly/almostnode) or a similar in-browser bundler/runtime, or a lightweight iframe sandbox with import maps. To be evaluated.
-5. **Full migration from 1.x, plus fixes and new features.** Scope research: `docs/v2-scoping.md`. Product decisions: see below.
-6. **Carry the brand's hidden details forward**, quietly.
+3. **TypeScript-native** (decided 2026-10-12). Chartist is written in TypeScript and the docs foster typed usage:
+   - Every docs example is a small project of **HTML + TypeScript + CSS** (`index.html`, `index.ts`, styles), the shape of a Vite app.
+   - Types are part of the API: option and data types are exported and documented next to each example.
+4. **No bundler required.** Chartist must still work directly in the browser:
+   - **`<script type="module">`** importing ESM from a CDN is the primary no-bundler path and the successor of UMD. The getting-started docs show it next to the npm + TypeScript setup.
+   - **UMD** for classic `<script>` tags ships for **backwards compatibility only** (legacy, documented in the migration guide, not in examples).
+   - CJS for older Node tooling.
+5. **Live, in-browser examples** like 0.x had: an embedded playground (editor + output) integrated into the docs. It runs the HTML + TypeScript + CSS examples in a **browser-only sandbox** (no server, static hosting). Researched 2026-10-12, decided with the author:
+   - **Own small playground** (the approach of the Vue, Svelte and Solid playgrounds): strip the TypeScript in the browser (sucrase or ts-blank-space), run the result in a `sandbox="allow-scripts"` iframe, and resolve `chartist` to the docs' own build through an import map. No extra origin, no COOP/COEP headers, works on GitHub Pages and in Safari and Firefox, and the UI follows the brand.
+   - **"Open in StackBlitz"** button next to each example for real Vite in a full project. Example files follow the `npm create vite` vanilla-ts layout (`index.html`, `src/main.ts`, `src/style.css`), so they open and copy unchanged.
+   - Fallbacks: [LiveCodes](https://livecodes.io) (MIT, self-hostable, active) and Google's playground-elements.
+   - Rejected: almostnode (reimplemented Vite, inactive since 2026-02, needs a second sandbox origin), inline WebContainers (cross-origin isolation headers, weak Firefox/Safari support, commercial licensing), Sandpack (stalled, hosted bundler).
+6. **Full migration from 1.x, plus fixes and new features.** Scope research: `docs/v2-scoping.md`. Product decisions: see below.
+7. **Carry the brand's hidden details forward**, quietly.
 
 ## Product and architecture decisions
 
@@ -50,15 +56,15 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 
 ## Tech decisions (so far)
 
-| Area          | Decision                                                          | Notes                                                                                                                                                                                                                                                                              |
-| ------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Monorepo      | Nx 23 with a TypeScript project-references setup, pnpm workspaces | Layout: `apps/*` (docs site, playgrounds), `packages/*` (library and internal libs)                                                                                                                                                                                                |
-| Docs site     | Astro (SSG), in `apps/`                                           | `@nxtensions/astro` (the plugin from the original plan) is abandoned: Nx 19 / Astro ≤4 only. Candidates: `@geekvetica/nx-astro` (peer deps Nx 22–23, Astro 5–7, actively released) or plain Nx inferred tasks from the app's `package.json` scripts. Decide when creating the app. |
-| Specs         | OpenSpec (`openspec/`, schema `spec-driven`)                      | Workflow: `/opsx:propose` → `/opsx:apply` → `/opsx:archive`                                                                                                                                                                                                                        |
-| Formatting    | Prettier, keeping the 1.x `.prettierrc`                           | Avoids reformatting every line. Any future style change goes in its own `style:` commit, listed in `.git-blame-ignore-revs`.                                                                                                                                                       |
-| Library build | tsdown (Rolldown + Oxc), Sass + PostCSS for styles, size-limit budgets | ESM, minified browser ESM, CJS, UMD (`Chartist`), bundled `.d.ts`/`.d.cts`, CSS + Sass sources. Rationale: OpenSpec change `add-library-distribution` (design.md) |
-| Testing       | TBD                                                               | 1.x has Jest plus image snapshot tests (`packages/chartist/test/__image_snapshots__`), which are worth keeping as a visual regression baseline                                                                                                                                     |
-| Playground    | TBD                                                               | See goal 4                                                                                                                                                                                                                                                                         |
+| Area          | Decision                                                                  | Notes                                                                                                                                                                                                                                                                              |
+| ------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Monorepo      | Nx 23 with a TypeScript project-references setup, pnpm workspaces         | Layout: `apps/*` (docs site, playgrounds), `packages/*` (library and internal libs)                                                                                                                                                                                                |
+| Docs site     | Astro (SSG), in `apps/`                                                   | `@nxtensions/astro` (the plugin from the original plan) is abandoned: Nx 19 / Astro ≤4 only. Candidates: `@geekvetica/nx-astro` (peer deps Nx 22–23, Astro 5–7, actively released) or plain Nx inferred tasks from the app's `package.json` scripts. Decide when creating the app. |
+| Specs         | OpenSpec (`openspec/`, schema `spec-driven`)                              | Workflow: `/opsx:propose` → `/opsx:apply` → `/opsx:archive`                                                                                                                                                                                                                        |
+| Formatting    | Prettier, keeping the 1.x `.prettierrc`                                   | Avoids reformatting every line. Any future style change goes in its own `style:` commit, listed in `.git-blame-ignore-revs`.                                                                                                                                                       |
+| Library build | tsdown (Rolldown + Oxc), Sass + PostCSS for styles, size-limit budgets    | ESM, minified browser ESM, CJS, UMD (`Chartist`), bundled `.d.ts`/`.d.cts`, CSS + Sass sources. Rationale: OpenSpec change `add-library-distribution` (design.md)                                                                                                                  |
+| Testing       | TBD                                                                       | 1.x has Jest plus image snapshot tests (`packages/chartist/test/__image_snapshots__`), which are worth keeping as a visual regression baseline                                                                                                                                     |
+| Playground    | Own TS-stripping iframe playground + "Open in StackBlitz" (spike pending) | See goal 5                                                                                                                                                                                                                                                                         |
 
 ## Repository layout
 
@@ -111,11 +117,12 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 1. `add-library-distribution`: ESM/browser ESM/UMD/CJS builds, exports map, Sass sources, size budgets. Done (archived, spec `library-distribution`).
 2. `define-core-architecture`: pipeline phases, scene graph, renderers, composition, responsive modes, v1 compat. Proposal, specs and design are written.
 3. `add-visual-regression-harness`: Playwright screenshot tests that **reuse the example definitions shared with the docs site**:
-   - The examples live as plain ESM files in a shared package. The docs site and the test harness both consume them.
+   - The examples live in a shared package as small HTML + TypeScript + CSS projects (Vite app shape). The docs site, the playground and the test harness all consume them.
    - The harness renders each example in a minimal fixture page without docs chrome, so a docs redesign doesn't break the screenshots.
    - The baseline is recorded from unchanged 1.5 code, then Storybook/storyshots are removed (deletion-only commit).
 4. Core implementation steps (see `define-core-architecture` design, "Migration Plan").
-5. Docs site (Astro), implementing `docs/visual-design`. It runs in parallel once examples exist.
+5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
+6. Docs site (Astro), implementing `docs/visual-design`. It runs in parallel once examples exist.
 
 ## Open questions
 

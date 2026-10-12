@@ -2,7 +2,8 @@ schema: spec-driven
 
 context: |
   Chartist v2: SVG charting library + Astro docs site in an Nx/pnpm monorepo (apps/*, packages/*).
-  The library must work without a bundler: ship ESM, CJS and UMD; docs show plain ESM examples first.
+  TypeScript-native: docs examples are HTML + TypeScript + CSS projects (Vite app shape).
+  The library must still work without a bundler: ESM via <script type="module"> is the primary path, UMD is legacy compatibility only, plus CJS.
   Styling is CSS-first ("style with CSS, control with JS").
   1.x behavior (tmp/chartist-v1) is the migration baseline. Call out every breaking change explicitly.
   Vision and decisions: docs/v2-high-level-plan.md.
