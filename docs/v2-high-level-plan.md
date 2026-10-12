@@ -20,8 +20,9 @@
    - **UMD** for classic `<script>` tags ships for **backwards compatibility only** (legacy, documented in the migration guide, not in examples).
    - CJS for older Node tooling.
 5. **Live, in-browser examples** like 0.x had: an embedded playground (editor + output) integrated into the docs. It runs the HTML + TypeScript + CSS examples in a **browser-only sandbox** (no server, static hosting). Researched 2026-10-12, decided with the author:
-   - **Own small playground** (the approach of the Vue, Svelte and Solid playgrounds): strip the TypeScript in the browser (sucrase or ts-blank-space), run the result in a `sandbox="allow-scripts"` iframe, and resolve `chartist` to the docs' own build through an import map. No extra origin, no COOP/COEP headers, works on GitHub Pages and in Safari and Firefox, and the UI follows the brand.
+   - **Own small playground** (the approach of the Vue, Svelte and Solid playgrounds): strip the TypeScript in the browser (sucrase or ts-blank-space), turn CSS imports from TypeScript (`import 'chartist/styles.css'`) into `<link>`/`<style>` tags as Vite does, run the result in a `sandbox="allow-scripts"` iframe, and resolve `chartist` to the docs' own build through an import map. No extra origin, no COOP/COEP headers, works on GitHub Pages and in Safari and Firefox, and the UI follows the brand.
    - **"Open in StackBlitz"** button next to each example for real Vite in a full project. Example files follow the `npm create vite` vanilla-ts layout (`index.html`, `src/main.ts`, `src/style.css`), so they open and copy unchanged.
+   - Confirmed by a second, deeper research round (claude.ai, 2026-10-12): go with the DIY REPL and see how far it gets. If it falls short, evaluate `@rolldown/browser` (Vite 8's bundler as WASM, Vite-like resolution, ~12.5 MB unpacked) next. browser-vite (divriots) is archived since 2022.
    - Fallbacks: [LiveCodes](https://livecodes.io) (MIT, self-hostable, active) and Google's playground-elements.
    - Rejected: almostnode (reimplemented Vite, inactive since 2026-02, needs a second sandbox origin), inline WebContainers (cross-origin isolation headers, weak Firefox/Safari support, commercial licensing), Sandpack (stalled, hosted bundler).
 6. **Full migration from 1.x, plus fixes and new features.** Scope research: `docs/v2-scoping.md`. Product decisions: see below.
@@ -121,7 +122,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
    - The harness renders each example in a minimal fixture page without docs chrome, so a docs redesign doesn't break the screenshots.
    - The baseline is recorded from unchanged 1.5 code, then Storybook/storyshots are removed (deletion-only commit).
 4. Core implementation steps (see `define-core-architecture` design, "Migration Plan").
-5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
+5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
 6. Docs site (Astro), implementing `docs/visual-design`. It runs in parallel once examples exist.
 
 ## Open questions
