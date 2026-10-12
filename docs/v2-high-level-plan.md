@@ -108,7 +108,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 
 ## Change roadmap (OpenSpec)
 
-1. `add-library-distribution`: ESM/browser ESM/UMD/CJS builds, exports map, Sass sources, size budgets. Implemented on a separate branch, pending merge.
+1. `add-library-distribution`: ESM/browser ESM/UMD/CJS builds, exports map, Sass sources, size budgets. Done (archived, spec `library-distribution`).
 2. `define-core-architecture`: pipeline phases, scene graph, renderers, composition, responsive modes, v1 compat. Proposal, specs and design are written.
 3. `add-visual-regression-harness`: Playwright screenshot tests that **reuse the example definitions shared with the docs site**:
    - The examples live as plain ESM files in a shared package. The docs site and the test harness both consume them.
