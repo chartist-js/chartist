@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chartist without a bundler (ES module)</title>
+    <!-- Chartist's default styles. index.css is the readable version. -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/chartist/dist/index.min.css"
+    />
+  </head>
+  <body>
+    <div id="line" class="ct-chart ct-perfect-fourth"></div>
+    <div id="bar" class="ct-chart ct-perfect-fourth"></div>
+    <div id="pie" class="ct-chart ct-perfect-fourth"></div>
+
+    <script type="module">
+      // No build step, no import map: import the browser build straight from the CDN.
+      import {
+        LineChart,
+        BarChart,
+        PieChart
+      } from 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js';
+
+      new LineChart(
+        '#line',
+        {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+          series: [
+            [12, 9, 7, 8, 5],
+            [2, 1, 3.5, 7, 3]
+          ]
+        },
+        { fullWidth: true, chartPadding: { right: 40 } }
+      );
+
+      new BarChart('#bar', {
+        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+        series: [[5, 4, 3, 7]]
+      });
+
+      new PieChart('#pie', { series: [20, 10, 30, 40] });
+    </script>
+  </body>
+</html>

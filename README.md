@@ -85,6 +85,43 @@ new BarChart('#chart', {
 });
 ```
 
+Don't forget the styles: `import 'chartist/styles.css';` (or `chartist/dist/index.css`). Sass users can override the `$ct-*` variables with `@use 'pkg:chartist' with (...)` (Sass's Node package importer) or import `chartist/dist/index.scss` as before.
+
+### Use it without a bundler
+
+No npm, no build step: load Chartist from a CDN in a plain HTML page. As an ES module:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist/dist/index.min.css" />
+<div id="chart" class="ct-chart ct-perfect-fourth"></div>
+<script type="module">
+  import { LineChart } from 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js';
+
+  new LineChart('#chart', { labels: ['Mon', 'Tue', 'Wed'], series: [[5, 2, 4]] });
+</script>
+```
+
+Or with a classic script tag, which defines the global `Chartist`:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist/dist/index.min.css" />
+<div id="chart" class="ct-chart ct-perfect-fourth"></div>
+<script src="https://cdn.jsdelivr.net/npm/chartist/dist/index.umd.js"></script>
+<script>
+  new Chartist.LineChart('#chart', { labels: ['Mon', 'Tue', 'Wed'], series: [[5, 2, 4]] });
+</script>
+```
+
+Complete pages: [`packages/chartist/examples`](packages/chartist/examples). Pin a version in production (`chartist@<version>`). unpkg works the same way (`https://unpkg.com/chartist/dist/...`).
+
+| File | Use |
+| --- | --- |
+| `dist/index.min.js` | ES module for browsers and CDNs (minified) |
+| `dist/index.umd.js` (also `dist/chartist.min.js`) | Classic `<script>`, global `Chartist` (minified) |
+| `dist/index.js` / `dist/index.cjs` | ES module / CommonJS for bundlers and Node |
+| `dist/index.css` / `dist/index.min.css` | Default styles (readable / minified) |
+| `dist/scss/` | Sass sources (`index.scss`, `_settings.scss`) |
+
 <br />
 
 Need an API to fetch data? Consider [Cube](https://cube.dev/?ref=eco-chartist), an open-source API for data apps.

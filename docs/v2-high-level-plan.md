@@ -56,7 +56,7 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 | Docs site     | Astro (SSG), in `apps/`                                           | `@nxtensions/astro` (the plugin from the original plan) is abandoned: Nx 19 / Astro ≤4 only. Candidates: `@geekvetica/nx-astro` (peer deps Nx 22–23, Astro 5–7, actively released) or plain Nx inferred tasks from the app's `package.json` scripts. Decide when creating the app. |
 | Specs         | OpenSpec (`openspec/`, schema `spec-driven`)                      | Workflow: `/opsx:propose` → `/opsx:apply` → `/opsx:archive`                                                                                                                                                                                                                        |
 | Formatting    | Prettier, keeping the 1.x `.prettierrc`                           | Avoids reformatting every line. Any future style change goes in its own `style:` commit, listed in `.git-blame-ignore-revs`.                                                                                                                                                       |
-| Library build | TBD                                                               | Must emit ESM, CJS, UMD, `.d.ts` and CSS                                                                                                                                                                                                                                           |
+| Library build | tsdown (Rolldown + Oxc), Sass + PostCSS for styles, size-limit budgets | ESM, minified browser ESM, CJS, UMD (`Chartist`), bundled `.d.ts`/`.d.cts`, CSS + Sass sources. Rationale: OpenSpec change `add-library-distribution` (design.md) |
 | Testing       | TBD                                                               | 1.x has Jest plus image snapshot tests (`packages/chartist/test/__image_snapshots__`), which are worth keeping as a visual regression baseline                                                                                                                                     |
 | Playground    | TBD                                                               | See goal 4                                                                                                                                                                                                                                                                         |
 
@@ -120,7 +120,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 ## Open questions
 
 - Final npm package name and scope (`chartist` stays the main package?)
-- Library build tool and test runner
+- Unit test runner (Jest 27 from 1.x for now; the no-bundler smoke test uses Playwright)
 - Playground technology
 - Sponsor placement for Cube in README and site (agreed deal, carry over)
 - Hosting and domain (chartist.dev)

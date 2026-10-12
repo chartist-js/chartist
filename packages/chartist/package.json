@@ -36,21 +36,33 @@
     "*.css",
     "*.scss"
   ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "style": "./dist/index.css",
+  "sass": "./dist/scss/index.scss",
   "unpkg": "./dist/index.umd.js",
   "jsdelivr": "./dist/index.umd.js",
-  "main": "./src/index.ts",
-  "publishConfig": {
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.js",
-    "exports": {
-      ".": {
-        "require": "./dist/index.cjs",
-        "import": "./dist/index.js"
+  "exports": {
+    ".": {
+      "sass": "./dist/scss/index.scss",
+      "style": "./dist/index.css",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
-      "./dist/*": "./dist/*"
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": "./dist/index.js"
     },
+    "./styles.css": "./dist/index.css",
+    "./scss/*": "./dist/scss/*",
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
+  },
+  "publishConfig": {
     "directory": "package"
   },
   "files": [
@@ -63,9 +75,8 @@
     "clear": "del ./package ./dist ./coverage",
     "prepublishOnly": "pnpm test && pnpm build && pnpm clear:package && clean-publish",
     "postpublish": "pnpm clear:package",
-    "emitDeclarations": "tsc --project ./tsconfig.build.json --emitDeclarationOnly",
-    "build:styles": "./scripts/styles.cjs ./src/styles/index.scss",
-    "build": "rollup -c & pnpm build:styles & pnpm emitDeclarations",
+    "build:styles": "node ./scripts/styles.cjs",
+    "build": "del-cli ./dist && tsdown && node ./scripts/styles.cjs",
     "start:storybook": "start-storybook -p 6006 --ci",
     "build:storybook": "del ./storybook-static; NODE_ENV=production build-storybook",
     "jest": "jest -c jest.config.json",
@@ -76,7 +87,8 @@
     "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}' 'sandboxes/**/*.{js,ts}'",
     "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{cjs,js,ts}' 'sandboxes/**/*.{js,ts}'",
     "commit": "cz",
-    "updateGitHooks": "simple-git-hooks"
+    "updateGitHooks": "simple-git-hooks",
+    "test:smoke": "node --test \"test/smoke/*.test.mjs\""
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
@@ -84,8 +96,8 @@
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@commitlint/cz-commitlint": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^13.2.0",
-    "@size-limit/preset-big-lib": "^7.0.8",
+    "@size-limit/esbuild": "14.1.0",
+    "@size-limit/file": "14.1.0",
     "@storybook/addon-actions": "^6.4.22",
     "@storybook/addon-controls": "^6.4.22",
     "@storybook/addon-docs": "^6.4.22",
@@ -120,19 +132,89 @@
     "jest": "^27.5.1",
     "jest-image-snapshot": "^4.5.1",
     "nano-staged": "^0.8.0",
+    "playwright": "1.63.0",
     "postcss": "^8.0.0",
     "postcss-loader": "^4.3.0",
     "postcss-preset-env": "^6.7.1",
     "prettier": "^2.6.2",
     "puppeteer": "^14.0.0",
-    "rollup": "^2.70.1",
-    "rollup-plugin-swc": "^0.2.1",
-    "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.50.1",
     "sass-loader": "^10.0.0",
     "simple-git-hooks": "^2.7.0",
-    "size-limit": "^7.0.8",
+    "size-limit": "14.1.0",
     "swc-loader": "^0.2.3",
-    "typescript": "^4.6.4"
+    "tsdown": "0.23.0",
+    "typescript": "^5.9.3"
+  },
+  "nx": {
+    "namedInputs": {
+      "build": [
+        "{projectRoot}/src/**/*",
+        "!{projectRoot}/src/**/*.spec.ts",
+        "!{projectRoot}/src/**/*.stories.ts",
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsdown.config.ts",
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/tsconfig.build.json",
+        "{projectRoot}/scripts/styles.cjs",
+        "{projectRoot}/.browserslistrc",
+        {
+          "externalDependencies": [
+            "tsdown",
+            "typescript",
+            "sass",
+            "postcss",
+            "postcss-preset-env",
+            "cssnano"
+          ]
+        }
+      ]
+    },
+    "targets": {
+      "build": {
+        "cache": true,
+        "inputs": [
+          "build"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
+      },
+      "test:size": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [
+          "build",
+          "{projectRoot}/.size-limit.json",
+          {
+            "externalDependencies": [
+              "size-limit",
+              "@size-limit/file",
+              "@size-limit/esbuild"
+            ]
+          }
+        ]
+      },
+      "test:smoke": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [
+          "build",
+          "{projectRoot}/test/smoke/**/*",
+          "{projectRoot}/examples/**/*",
+          {
+            "externalDependencies": [
+              "playwright",
+              "sass",
+              "typescript"
+            ]
+          }
+        ]
+      }
+    }
   }
 }
