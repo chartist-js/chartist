@@ -38,4 +38,4 @@
 
 ## 7. Docs
 
-- [ ] 7.1 Update `docs/v2-high-level-plan.md` (testing row: Playwright visual regression with Vite-served examples; roadmap step 3 status; the note that chartist.dev's CodeSandbox embeds stay on `main` until release); verify the plan has no Storybook references left except history
+- [x] 7.1 Update `docs/v2-high-level-plan.md` (testing row: Playwright visual regression with Vite-served examples; roadmap step 3 status; the note that chartist.dev's CodeSandbox embeds stay on `main` until release); verify the plan has no Storybook references left except history
