@@ -14,13 +14,14 @@
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@playwright/test';
 
-const port = Number(process.env.VISUAL_PORT ?? 4173);
 const lib = process.env.CHARTIST_LIB === 'v1' ? 'v1' : 'local';
+// Separate ports, so both builds can be tested at the same time.
+const port = Number(process.env.VISUAL_PORT ?? (lib === 'v1' ? 4174 : 4173));
 
 export default defineConfig({
   testDir: '.',
   testMatch: 'visual.spec.ts',
-  outputDir: './test-results',
+  outputDir: `./test-results/${lib}`,
   // Platform-free names: one baseline, recorded on Linux (see above).
   snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
   // A missing baseline fails; recording is explicit (--update-snapshots).
@@ -30,13 +31,13 @@ export default defineConfig({
   retries: 0,
   reporter: [
     ['list'],
-    ['html', { open: 'never', outputFolder: './playwright-report' }]
+    ['html', { open: 'never', outputFolder: `./playwright-report/${lib}` }]
   ],
   expect: {
     toHaveScreenshot: {
       // Anti-aliasing noise passes; a grid line moved by 1px fails.
       maxDiffPixelRatio: 0.001,
-      threshold: 0.2,
+      threshold: 0.05,
       scale: 'css'
     }
   },

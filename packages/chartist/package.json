@@ -249,6 +249,7 @@
       "test:visual:v1": {
         "cache": true,
         "inputs": [
+          "{projectRoot}/package.json",
           "{projectRoot}/test/visual/**/*",
           "!{projectRoot}/test/visual/test-results/**/*",
           "!{projectRoot}/test/visual/playwright-report/**/*",
@@ -257,8 +258,7 @@
           {
             "externalDependencies": [
               "@playwright/test",
-              "vite",
-              "chartist-v1"
+              "vite"
             ]
           }
         ]

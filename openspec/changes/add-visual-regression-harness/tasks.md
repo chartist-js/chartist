@@ -28,8 +28,8 @@
 ## 5. Baseline
 
 - [ ] 5.1 Record the baseline with `pnpm nx run chartist:test:visual:update` against 1.5.0 and review every image; verify one PNG exists per example and viewport, and commit the baseline on its own
-- [ ] 5.2 Run `test:visual:v1` and `test:visual` (local `next` build); verify both pass, and fix any difference in the build, never in the baseline
-- [ ] 5.3 Check that the tolerance catches real changes: temporarily shift a grid line by 1 px in `dist/index.css` and confirm `test:visual` fails with a diff image, then revert
+- [x] 5.2 Run `test:visual:v1` and `test:visual` (local `next` build); verify both pass, and fix any difference in the build, never in the baseline
+- [x] 5.3 Check that the tolerance catches real changes: temporarily shift a grid line by 1 px in `dist/index.css` and confirm `test:visual` fails with a diff image, then revert
 
 ## 6. Remove Storybook and storyshots
 

@@ -140,9 +140,10 @@ packages/examples/line/area/
 
 - Baselines live in `test/visual/__screenshots__/<id>--<viewport>.png`. That is 67 images (63 examples, story viewports included) of roughly 10–30 kB; the `<id>` slash makes a folder per chart type.
 - **Tolerance:**
-  - `maxDiffPixelRatio: 0.001` and `threshold: 0.2`;
-  - anti-aliasing noise passes;
-  - a grid line moved by 1 px over the full chart width fails.
+  - `maxDiffPixelRatio: 0.001` and `threshold: 0.05` (revised from 0.2, see below);
+  - anti-aliasing noise passes (pixelmatch ignores anti-aliased pixels, and up to 0.1 % of the pixels may differ);
+  - a grid line moved by 1 px fails.
+  - _Why revised:_ Chartist's grid lines are `rgba(0, 0, 0, 0.2)` dashes. On white, a moved grid line changes pixels by at most about 50 of 255 (25 where the area fill covers it), which is below pixelmatch's per-pixel threshold at 0.2 and at 0.1, so a 1 px shift of a horizontal or vertical grid line passed every example (task 5.3). At 0.05 it fails 49 of 67 (horizontal line) and 45 of 67 (vertical line) tests; the rest are pies without grids. The local build renders byte-identical images to 1.5.0, and five repeated runs are byte-identical, so the tighter threshold costs no stability.
 - **Platform:** the baseline is authoritative for Linux x64 Chromium from the pinned Playwright version, as on GitHub `ubuntu-latest` runners and WSL2. Snapshot names carry no platform suffix, so macOS developers use the official Playwright Docker image or CI.
 - **Recording:** recorded once against `chartist@1.5.0`, then verified against the local build. If the local build differs, that is a regression in the `add-library-distribution` build and is fixed there.
 
