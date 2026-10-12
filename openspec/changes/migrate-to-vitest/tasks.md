@@ -7,7 +7,7 @@
 
 ## 2. Playground
 
-- [ ] 2.1 Move `packages/playground/test/unit/*.test.ts` from `node --test` to Vitest (keep file names; replace `node:test`/`node:assert` imports with Vitest's API); verify `pnpm nx test playground` passes with the same number of tests as before
+- [x] 2.1 Move `packages/playground/test/unit/*.test.ts` from `node --test` to Vitest (keep file names; replace `node:test`/`node:assert` imports with Vitest's API); verify `pnpm nx test playground` passes with the same number of tests as before
 
 ## 3. Remove Jest
 
