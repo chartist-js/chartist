@@ -128,9 +128,9 @@ describe('Charts', () => {
         await createChart();
 
         const labels = fixture.wrapper.querySelectorAll('.ct-label');
-        expect(labels[0]).toHaveTextContent('42%');
-        expect(labels[1]).toHaveTextContent('25%');
-        expect(labels[2]).toHaveTextContent('33%');
+        expect(labels[0]?.textContent).toContain('42%');
+        expect(labels[1]?.textContent).toContain('25%');
+        expect(labels[2]?.textContent).toContain('33%');
       });
 
       it('should overlap slices', async () => {
@@ -143,12 +143,10 @@ describe('Charts', () => {
           fixture.wrapper.querySelectorAll('.ct-slice-pie')
         );
 
-        expect(slice1).toHaveAttribute(
-          'd',
+        expect(slice1?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M50,90A40,40,0,0,0,50,10L50,50Z/)
         );
-        expect(slice2).toHaveAttribute(
-          'd',
+        expect(slice2?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M50,10A40,40,0,0,0,50.\d+,90L50,50Z/)
         );
       });
@@ -160,8 +158,7 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[1];
-        expect(slice).toHaveAttribute(
-          'd',
+        expect(slice?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M50,10A40,40,0,1,0/)
         );
       });
@@ -173,8 +170,7 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[0];
-        expect(slice).toHaveAttribute(
-          'd',
+        expect(slice?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/)
         );
       });
@@ -185,8 +181,7 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[0];
-        expect(slice).toHaveAttribute(
-          'd',
+        expect(slice?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M90,49.9\d+A40,40,0,1,0,90,50L50,50Z/)
         );
       });
@@ -198,8 +193,7 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[1];
-        expect(slice).toHaveAttribute(
-          'd',
+        expect(slice?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/)
         );
       });
@@ -224,12 +218,10 @@ describe('Charts', () => {
           fixture.wrapper.querySelectorAll('.ct-slice-pie')
         );
 
-        expect(slice1).toHaveAttribute(
-          'd',
+        expect(slice1?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M50.1\d+,0A50,50,0,0,0,50,0/)
         );
-        expect(slice2).toHaveAttribute(
-          'd',
+        expect(slice2?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M49.9\d*,0A50,50,0,1,0,50,0/)
         );
       });
@@ -242,12 +234,10 @@ describe('Charts', () => {
           fixture.wrapper.querySelectorAll('.ct-slice-pie')
         );
 
-        expect(slice1).toHaveAttribute(
-          'd',
+        expect(slice1?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M100,50.1\d*A50,50,0,0,0,100,50/)
         );
-        expect(slice2).toHaveAttribute(
-          'd',
+        expect(slice2?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M100,49.97\d*A50,50,0,1,0,100,49.98\d*/)
         );
       });
@@ -260,12 +250,10 @@ describe('Charts', () => {
           fixture.wrapper.querySelectorAll('.ct-slice-donut')
         );
 
-        expect(slice1).toHaveAttribute(
-          'd',
+        expect(slice1?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M50.\d+,30A20,20,0,0,0,50,30/)
         );
-        expect(slice2).toHaveAttribute(
-          'd',
+        expect(slice2?.getAttribute('d')).toEqual(
           expect.stringMatching(/^M49.9\d*,30A20,20,0,1,0,50,30/)
         );
       });
@@ -312,16 +300,13 @@ describe('Charts', () => {
         expect(slices[1].getAttributeNS(namespaces.ct, 'value')).toBe('0');
         expect(slices[2].getAttributeNS(namespaces.ct, 'value')).toBe('0');
 
-        expect(slices[0]).toHaveAttribute(
-          'd',
+        expect(slices[0]?.getAttribute('d')).toEqual(
           'M200,5A195,195,0,0,0,200,5L200,200Z'
         );
-        expect(slices[1]).toHaveAttribute(
-          'd',
+        expect(slices[1]?.getAttribute('d')).toEqual(
           'M200,5A195,195,0,0,0,200,5L200,200Z'
         );
-        expect(slices[2]).toHaveAttribute(
-          'd',
+        expect(slices[2]?.getAttribute('d')).toEqual(
           'M200,5A195,195,0,0,0,200,5L200,200Z'
         );
       });
@@ -392,7 +377,9 @@ describe('Charts', () => {
 
         Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
           element =>
-            expect(element).toHaveAttribute('d', expect.stringMatching(pattern))
+            expect(element?.getAttribute('d')).toEqual(
+              expect.stringMatching(pattern)
+            )
         );
       });
 
@@ -402,8 +389,7 @@ describe('Charts', () => {
 
         Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
           element =>
-            expect(element).toHaveAttribute(
-              'style',
+            expect(element?.getAttribute('style')).toEqual(
               expect.stringMatching(strokeWidth)
             )
         );
@@ -449,7 +435,9 @@ describe('Charts', () => {
 
         Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
           element =>
-            expect(element).toHaveAttribute('d', expect.stringMatching(pattern))
+            expect(element?.getAttribute('d')).toEqual(
+              expect.stringMatching(pattern)
+            )
         );
       });
 
@@ -459,8 +447,7 @@ describe('Charts', () => {
 
         Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
           element =>
-            expect(element).toHaveAttribute(
-              'style',
+            expect(element?.getAttribute('style')).toEqual(
               expect.stringMatching(strokeWidth)
             )
         );

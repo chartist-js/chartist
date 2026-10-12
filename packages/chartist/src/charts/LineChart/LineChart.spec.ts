@@ -132,8 +132,7 @@ describe('Charts', () => {
         Array.from(
           fixture.wrapper.querySelectorAll('.ct-label.ct-vertical')
         ).forEach(element =>
-          expect(element).toHaveAttribute(
-            'class',
+          expect(element?.getAttribute('class')).toEqual(
             'ct-label ct-vertical ct-start'
           )
         );
@@ -150,8 +149,7 @@ describe('Charts', () => {
         Array.from(
           fixture.wrapper.querySelectorAll('.ct-label.ct-vertical')
         ).forEach(element =>
-          expect(element).toHaveAttribute(
-            'class',
+          expect(element?.getAttribute('class')).toEqual(
             'ct-label ct-vertical ct-end'
           )
         );
@@ -911,13 +909,13 @@ describe('Charts', () => {
       it('should render without NaN values and points', async () => {
         await createChart();
 
-        expect(document.querySelector('.ct-line')).toHaveAttribute(
-          'd',
+        expect(document.querySelector('.ct-line')?.getAttribute('d')).toEqual(
           'M50,15'
         );
-        expect(document.querySelector('.ct-point')).toHaveAttribute('x1', '50');
-        expect(document.querySelector('.ct-point')).toHaveAttribute(
-          'x2',
+        expect(document.querySelector('.ct-point')?.getAttribute('x1')).toEqual(
+          '50'
+        );
+        expect(document.querySelector('.ct-point')?.getAttribute('x2')).toEqual(
           '50.01'
         );
       });
@@ -1050,11 +1048,11 @@ describe('Charts', () => {
 
       const seriesElements = document.querySelectorAll('.ct-series');
 
-      expect(seriesElements[0]).toHaveClass('series-2');
-      expect(seriesElements[0]).toContainHTML('ct:value="6"');
+      expect(Array.from(seriesElements[0].classList)).toContain('series-2');
+      expect(seriesElements[0].outerHTML).toContain('ct:value="6"');
 
-      expect(seriesElements[1]).toHaveClass('series-1');
-      expect(seriesElements[1]).toContainHTML('ct:value="3"');
+      expect(Array.from(seriesElements[1].classList)).toContain('series-1');
+      expect(seriesElements[1].outerHTML).toContain('ct:value="3"');
     });
   });
 });

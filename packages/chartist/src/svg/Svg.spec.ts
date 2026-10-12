@@ -19,8 +19,8 @@ describe('Svg', () => {
     expect(svg).toBeDefined();
     expect(svg.getNode()).toBeDefined();
     expect(svg.getNode().nodeName.toLowerCase()).toBe('svg');
-    expect(svg.getNode()).toHaveAttribute('width', '100%');
-    expect(svg.getNode()).toHaveAttribute('height', '100%');
+    expect(svg.getNode()?.getAttribute('width')).toEqual('100%');
+    expect(svg.getNode()?.getAttribute('height')).toEqual('100%');
   });
 
   it('should create nested objects with attributes', () => {
@@ -85,10 +85,14 @@ describe('Svg', () => {
 
     expect(svg.getNode()).toBeDefined();
     expect(svg.getNode().firstElementChild).toBeDefined();
-    expect(svg.getNode().firstElementChild).toHaveAttribute('x', '100');
-    expect(svg.getNode().firstElementChild).toHaveAttribute('y', '100');
-    expect(svg.getNode().firstElementChild).toHaveAttribute('width', '100');
-    expect(svg.getNode().firstElementChild).toHaveAttribute('height', '100');
+    expect(svg.getNode().firstElementChild?.getAttribute('x')).toEqual('100');
+    expect(svg.getNode().firstElementChild?.getAttribute('y')).toEqual('100');
+    expect(svg.getNode().firstElementChild?.getAttribute('width')).toEqual(
+      '100'
+    );
+    expect(svg.getNode().firstElementChild?.getAttribute('height')).toEqual(
+      '100'
+    );
     expect(
       svg.getNode().firstElementChild?.getAttributeNS(namespaces.xlink, 'href')
     ).toBe('image.jpg');
@@ -108,7 +112,7 @@ describe('Svg', () => {
     expect(svg.getNode().firstElementChild?.childNodes.length).toBe(0);
 
     svg.empty();
-    expect(svg.getNode()).toBeEmptyDOMElement();
+    expect(svg.getNode().childNodes.length).toBe(0);
   });
 
   it('should allow to remove a certain element', () => {
@@ -135,7 +139,7 @@ describe('Svg', () => {
       'text'
     );
     expect(svg.getNode().firstElementChild?.firstChild?.nodeType).toBe(3);
-    expect(svg.getNode().firstElementChild?.firstChild).toHaveTextContent(
+    expect(svg.getNode().firstElementChild?.firstChild?.textContent).toContain(
       'Hello World'
     );
   });
@@ -161,7 +165,7 @@ describe('Svg', () => {
     // Should allow multiple classes with whitespaces
     svg.removeClass('test-class-2        test-class-3');
 
-    expect(svg.getNode()).toHaveAttribute('class', 'test-class-4');
+    expect(svg.getNode()?.getAttribute('class')).toEqual('test-class-4');
   });
 
   it('should allow to travers up in the fluent API chain and set attributes on the way', () => {
@@ -190,8 +194,8 @@ describe('Svg', () => {
       });
 
     expect(svg.getNode()).toBeDefined();
-    expect(svg.getNode()).toHaveAttribute('width', '100%');
-    expect(svg.getNode()).toHaveAttribute('height', '100%');
+    expect(svg.getNode()?.getAttribute('width')).toEqual('100%');
+    expect(svg.getNode()?.getAttribute('height')).toEqual('100%');
 
     expect(svg.getNode().firstElementChild).toBeDefined();
     expect(svg.getNode().firstElementChild?.getAttribute('transform')).toBe(

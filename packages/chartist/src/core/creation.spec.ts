@@ -31,8 +31,8 @@ describe('Core', () => {
         expect(svg).toBeDefined();
         expect(svg.classes()).toContain('ct-fish-bar');
         expect(svg.attr('viewBox')).toBeFalsy();
-        expect(container).toContainElement(document.querySelector('#foo'));
-        expect(container).toContainElement(document.querySelector('#bar'));
+        expect(container.contains(document.querySelector('#foo'))).toBe(true);
+        expect(container.contains(document.querySelector('#bar'))).toBe(true);
       });
 
       it('should remove previous chartist svg elements', () => {
@@ -47,12 +47,12 @@ describe('Core', () => {
         expect(svg1.classes()).toContain('ct-fish-bar');
         expect(svg2).toBeDefined();
         expect(svg2.classes()).toContain('ct-snake-bar');
-        expect(container).not.toContainElement(
-          document.querySelector('.ct-fish-bar')
+        expect(container.contains(document.querySelector('.ct-fish-bar'))).toBe(
+          false
         );
-        expect(container).toContainElement(
-          document.querySelector('.ct-snake-bar')
-        );
+        expect(
+          container.contains(document.querySelector('.ct-snake-bar'))
+        ).toBe(true);
       });
 
       it('should add viewBox to svg elements', () => {
@@ -71,8 +71,8 @@ describe('Core', () => {
         expect(svg).toBeDefined();
         expect(svg.classes()).toContain('ct-fish-bar');
         expect(svg.attr('viewBox')).toEqual('0 0 300 200');
-        expect(container).toContainElement(
-          document.querySelector('.ct-fish-bar')
+        expect(container.contains(document.querySelector('.ct-fish-bar'))).toBe(
+          true
         );
       });
     });
@@ -103,51 +103,49 @@ describe('Core', () => {
         offset = 20;
       });
 
-      function onCreated(fn: any, done: any) {
-        eventEmitter.on('draw', grid => {
-          fn(grid);
-          done();
+      function onCreated(fn: any) {
+        return new Promise<void>(resolve => {
+          eventEmitter.on('draw', grid => {
+            fn(grid);
+            resolve();
+          });
+          createGrid(
+            position,
+            1,
+            axis,
+            offset,
+            length,
+            group,
+            classes,
+            eventEmitter
+          );
         });
-        createGrid(
-          position,
-          1,
-          axis,
-          offset,
-          length,
-          group,
-          classes,
-          eventEmitter
-        );
       }
 
-      it('should add single grid line to group', done => {
-        onCreated(
-          () =>
-            expect(group.querySelectorAll('line').svgElements.length).toBe(1),
-          done
-        );
-      });
+      it('should add single grid line to group', () =>
+        onCreated(() =>
+          expect(group.querySelectorAll('line').svgElements.length).toBe(1)
+        ));
 
-      it('should draw line', done => {
+      it('should draw line', () =>
         onCreated(() => {
           const line = group.querySelector('line');
           expect(line.attr('x1')).toBe('10');
           expect(line.attr('x2')).toBe('10');
           expect(line.attr('y1')).toBe('20');
           expect(line.attr('y2')).toBe('120');
-        }, done);
-      });
+        }));
 
-      it('should draw horizontal line', done => {
+      it('should draw horizontal line', () => {
         axis.units.pos = 'y';
         axis.counterUnits.pos = 'x';
-        onCreated(() => {
+        return onCreated(() => {
           const line = group.querySelector('line');
           expect(line.attr('y1')).toBe('10');
           expect(line.attr('y2')).toBe('10');
           expect(line.attr('x1')).toBe('20');
           expect(line.attr('x2')).toBe('120');
-        }, done);
+        });
       });
     });
 
@@ -175,15 +173,17 @@ describe('Core', () => {
         };
       });
 
-      function onCreated(fn: any, done: any) {
-        eventEmitter.on('draw', (data: any) => {
-          fn(data);
-          done();
+      function onCreated(fn: any) {
+        return new Promise<void>(resolve => {
+          eventEmitter.on('draw', (data: any) => {
+            fn(data);
+            resolve();
+          });
+          createGridBackground(group, chartRect, className, eventEmitter);
         });
-        createGridBackground(group, chartRect, className, eventEmitter);
       }
 
-      it('should add rect', done => {
+      it('should add rect', () =>
         onCreated(() => {
           const rects = group.querySelectorAll('rect').svgElements;
           expect(rects.length).toBe(1);
@@ -193,17 +193,15 @@ describe('Core', () => {
           expect(rect.attr('width')).toBe('100');
           expect(rect.attr('height')).toBe('50');
           expect(rect.classes()).toEqual(['ct-test']);
-        }, done);
-      });
+        }));
 
-      it('should pass grid to event', done => {
+      it('should pass grid to event', () =>
         onCreated((data: any) => {
           expect(data.type).toBe('gridBackground');
           const rect = data.element;
           expect(rect.attr('x')).toBe('5');
           expect(rect.attr('y')).toBe('10');
-        }, done);
-      });
+        }));
     });
 
     describe('padding normalization', () => {

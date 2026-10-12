@@ -92,7 +92,6 @@
     "@playwright/test": "1.63.0",
     "@size-limit/esbuild": "14.1.0",
     "@size-limit/file": "14.1.0",
-    "@testing-library/jest-dom": "^7.0.1",
     "@types/node": "^18.0.0",
     "browserslist": "^4.20.2",
     "chartist-v1": "npm:chartist@1.5.0",

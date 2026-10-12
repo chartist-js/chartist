@@ -421,11 +421,11 @@ describe('Charts', () => {
 
       const seriesElements = document.querySelectorAll('.ct-series');
 
-      expect(seriesElements[0]).toHaveClass('series-2');
-      expect(seriesElements[0]).toContainHTML('ct:value="6"');
+      expect(Array.from(seriesElements[0].classList)).toContain('series-2');
+      expect(seriesElements[0].outerHTML).toContain('ct:value="6"');
 
-      expect(seriesElements[1]).toHaveClass('series-1');
-      expect(seriesElements[1]).toContainHTML('ct:value="3"');
+      expect(Array.from(seriesElements[1].classList)).toContain('series-1');
+      expect(seriesElements[1].outerHTML).toContain('ct:value="3"');
     });
   });
 });
