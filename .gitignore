@@ -39,3 +39,7 @@ out-tsc
 # Claude Code
 .claude/worktrees
 .claude/settings.local.json
+
+# Visual regression test output (packages/chartist/test/visual)
+test-results
+playwright-report

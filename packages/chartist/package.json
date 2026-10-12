@@ -85,11 +85,14 @@
     "test:unit": "jest -c jest.config.json ./src",
     "test:storyshots": "jest -c jest.config.json ./test/storyshots.spec.js",
     "test": "pnpm lint && pnpm test:unit",
-    "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}' 'sandboxes/**/*.{js,ts}'",
-    "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{cjs,js,ts}' 'sandboxes/**/*.{js,ts}'",
+    "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}'",
+    "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' '.storybook/**/*.{js,ts}' 'scripts/**/*.{cjs,js,ts}'",
     "commit": "cz",
     "updateGitHooks": "simple-git-hooks",
-    "test:smoke": "node --test \"test/smoke/*.test.mjs\""
+    "test:smoke": "node --test \"test/smoke/*.test.mjs\"",
+    "test:visual": "playwright test -c test/visual/playwright.config.ts",
+    "test:visual:v1": "CHARTIST_LIB=v1 playwright test -c test/visual/playwright.config.ts",
+    "test:visual:update": "CHARTIST_LIB=v1 playwright test -c test/visual/playwright.config.ts --update-snapshots"
   },
   "devDependencies": {
     "@babel/core": "^7.17.9",
@@ -222,6 +225,46 @@
             ]
           }
         ]
+      },
+      "test:visual": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [
+          "build",
+          "{projectRoot}/test/visual/**/*",
+          "!{projectRoot}/test/visual/test-results/**/*",
+          "!{projectRoot}/test/visual/playwright-report/**/*",
+          "{workspaceRoot}/packages/examples/**/*",
+          "!{workspaceRoot}/packages/examples/node_modules/**/*",
+          {
+            "externalDependencies": [
+              "@playwright/test",
+              "vite"
+            ]
+          }
+        ]
+      },
+      "test:visual:v1": {
+        "cache": true,
+        "inputs": [
+          "{projectRoot}/test/visual/**/*",
+          "!{projectRoot}/test/visual/test-results/**/*",
+          "!{projectRoot}/test/visual/playwright-report/**/*",
+          "{workspaceRoot}/packages/examples/**/*",
+          "!{workspaceRoot}/packages/examples/node_modules/**/*",
+          {
+            "externalDependencies": [
+              "@playwright/test",
+              "vite",
+              "chartist-v1"
+            ]
+          }
+        ]
+      },
+      "test:visual:update": {
+        "cache": false
       }
     }
   }

@@ -96,7 +96,7 @@ export const examples: Example[] = [
     id: 'line/path-animation',
     title: 'SVG Path animation',
     compat: true,
-    settle: { at: 6000 }
+    settle: { at: 6100 }
   }),
   example({
     id: 'line/scatter-random',
@@ -112,13 +112,13 @@ export const examples: Example[] = [
     id: 'line/simple-svg-animation',
     title: 'Simple SMIL Animations',
     compat: true,
-    settle: { at: 4300 }
+    settle: { at: 4400 }
   }),
   example({
     id: 'line/svg-animation',
     title: 'Advanced SMIL Animations',
     compat: true,
-    settle: { at: 7000 }
+    settle: { at: 8600 }
   }),
   example({ id: 'line/timeseries', title: 'Timeseries' }),
 
@@ -152,7 +152,7 @@ export const examples: Example[] = [
     id: 'pie/donut-animation',
     title: 'Animating a Donut with Svg.animate',
     compat: true,
-    settle: { at: 7000 }
+    settle: { at: 7100 }
   }),
   example({ id: 'pie/simple-gauge', title: 'Gauge chart' }),
 
