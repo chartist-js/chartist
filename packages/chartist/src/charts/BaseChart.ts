@@ -14,10 +14,8 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
   private readonly resizeListener = () => this.update();
   // Using event loop for first draw to make it possible to register event listeners in the same call stack where
   // the chart was created.
-  private initializeTimeoutId: NodeJS.Timer | null = setTimeout(
-    () => this.initialize(),
-    0
-  );
+  private initializeTimeoutId: ReturnType<typeof setTimeout> | null =
+    setTimeout(() => this.initialize(), 0);
   private optionsProvider?: OptionsProvider<Options>;
 
   constructor(
@@ -114,7 +112,7 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
       window.removeEventListener('resize', this.resizeListener);
       this.optionsProvider?.removeMediaQueryListeners();
     } else {
-      window.clearTimeout(this.initializeTimeoutId);
+      clearTimeout(this.initializeTimeoutId);
     }
 
     instances.delete(this.container);

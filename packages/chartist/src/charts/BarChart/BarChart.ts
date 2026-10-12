@@ -512,7 +512,7 @@ export class BarChart extends BaseChart<BarChartEventsTypes> {
           // distinguish between positive and negative values in relative stack mode
           if (isAccumulateRelativeStackMode) {
             stackedBarValues =
-              valueY >= 0 || valueX >= 0
+              Number(valueY) >= 0 || Number(valueX) >= 0
                 ? posStackedBarValues
                 : negStackedBarValues;
           }
