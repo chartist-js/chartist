@@ -70,9 +70,10 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 ## Repository layout
 
 ```
-apps/docs-v1/       # 1.x Docusaurus site (moved, reference only, removed once the v2 docs ship)
-apps/               # v2 docs website (Astro), demos
+apps/               # v2 docs website (Astro), demos (none yet)
 packages/chartist/  # the library (moved from the 1.x repo root)
+packages/examples/  # shared examples (HTML + TypeScript + CSS), used by docs, playground and visual tests
+packages/playground/ # browser-only example playground (REPL)
 packages/           # internal packages
 openspec/           # specs and change proposals
 docs/               # planning docs, briefs
@@ -94,7 +95,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 - **Rename-friendly commits.** Git doesn't record renames. It infers them from how similar files are, so moves, deletions and content edits never share a commit:
   1. `chore: move v1 sources into monorepo layout`. Only `git mv` (`src`, `test`, build config and `package.json` → `packages/chartist/`; `website/` → `apps/docs-v1/`). All 304 files are detected as `R100` renames.
   2. `chore: set up Nx workspace, OpenSpec and Claude Code harness`. New root tooling.
-  3. Later: remove obsolete 1.x tooling in deletion-only commits, then regular OpenSpec-driven work.
+  3. Later: remove obsolete 1.x tooling in deletion-only commits, then regular OpenSpec-driven work. The 1.x Docusaurus site (`apps/docs-v1`) was removed on 2026-10-13 (`remove-1x-leftovers`); it lives on in `main` and `tmp/chartist-v1`.
 - **Branches.**
   - `main` = 1.x until the v2 release.
   - `next` = v2 development (pushed to `chartist-js/chartist`).
@@ -103,7 +104,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 - **npm.** Pre-releases are published as `2.0.0-alpha.x` / `-beta.x` under the `next` dist-tag. `npm i chartist` keeps installing v1 until the release.
 - **Issues.** Use a `v2` milestone and labels for the most-wanted issues picked during scoping.
 - **Cleanup (separate, optional).** About 25 stale Renovate/dependabot branches and an old `master` (last commit 2019).
-- **Docs hosting.** Check how chartist.dev is deployed today (`website/CNAME` says `chartist.js.org`) before replacing it. Plan versioned docs (v2 current, v1 and v0 archives).
+- **Docs hosting.** Check how chartist.dev is deployed today (on `main`, `website/CNAME` says `chartist.js.org`) before replacing it. Plan versioned docs (v2 current, v1 and v0 archives).
 
 ## Phases (rough)
 
@@ -112,7 +113,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 3. **Library core:** modernize the moved 1.x source in `packages/chartist`, set up the build pipeline (ESM/CJS/UMD), tests and visual regression.
 4. **Docs site:** Astro app, implement the Claude Design output, playground and example gallery.
 5. **Release:** v2 beta, migration guide, launch. Before the first push that can trigger the old workflows on `main`, rework GitHub Actions for the monorepo (deferred to this phase, decided 2026-10-13):
-   - Until then, the gate is local: `pnpm nx run-many -t typecheck check build test test:unit test:smoke test:size test:visual test:visual:v1 lint` must pass before merging into `next`.
+   - Until then, the gate is local: `pnpm nx run-many -t typecheck check build test test:unit test:smoke test:size test:visual test:visual:v1 test:e2e lint` must pass before merging into `next`.
    - The 1.x workflows (`ci.yml`, `checks.yml`, `release.yml`, `website.yml`) still call root scripts that no longer exist. They only trigger on `main` or on pull requests, so pushing `next` runs just `commit.yml` (commitlint, root `.commitlintrc.json`). Don't open pull requests against `next` until CI is reworked.
    - `website.yml` deploys chartist.dev from `main`. It must be replaced by the Astro docs deployment before `main` is fast-forwarded to `next`.
    - Visual regression in CI runs on Linux Chromium (the baseline's reference platform).
