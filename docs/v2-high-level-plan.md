@@ -65,7 +65,7 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 | Formatting    | Prettier, keeping the 1.x `.prettierrc`                                   | Avoids reformatting every line. Any future style change goes in its own `style:` commit, listed in `.git-blame-ignore-revs`.                                                                                                                                                       |
 | Library build | tsdown (Rolldown + Oxc), Sass + PostCSS for styles, size-limit budgets    | ESM, minified browser ESM, CJS, UMD (`Chartist`), bundled `.d.ts`/`.d.cts`, CSS + Sass sources. Rationale: OpenSpec change `add-library-distribution` (design.md)                                                                                                                  |
 | Testing       | TBD                                                                       | 1.x has Jest plus image snapshot tests (`packages/chartist/test/__image_snapshots__`), which are worth keeping as a visual regression baseline                                                                                                                                     |
-| Playground    | Own TS-stripping iframe playground + "Open in StackBlitz" (spike: passed) | See goal 5. Spike: `packages/playground`, OpenSpec change `add-playground-repl` (design.md, Findings). Works in Chromium, Firefox and WebKit under a base path; sucrase recommended (author to confirm)                                                                            |
+| Playground    | Own TS-stripping iframe playground + "Open in StackBlitz" (spike: passed) | See goal 5. Spike: `packages/playground`, OpenSpec change `add-playground-repl` (design.md, Findings). Works in Chromium, Firefox and WebKit under a base path. Type stripping: sucrase (decided)                                                                                  |
 
 ## Repository layout
 
@@ -124,16 +124,17 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 4. Core implementation steps (see `define-core-architecture` design, "Migration Plan").
 5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
    - Spike done 2026-10-12 (`add-playground-repl`, `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
-   - Recommendation: sucrase (44 kB gzipped, cold start ~1 s on a throttled connection) over ts-blank-space (944 kB with `typescript`, ~4 s). Error messages are comparable.
-   - Examples must import types with `import type` / inline `type`. The `npm create vite` tsconfig sets `verbatimModuleSyntax`, so Vite fails on the 1.x style too.
-   - The library URL needs `Access-Control-Allow-Origin` (GitHub Pages sends `*`).
-   - Open: real iOS Safari, a manual check of the StackBlitz export, editor weight (CodeMirror 155 kB gzipped).
+   - Decided with the author (2026-10-12):
+     - **sucrase** for type stripping (44 kB gzipped, cold start ~1 s on a throttled connection) over ts-blank-space (944 kB with `typescript`, ~4 s). Error messages are comparable.
+     - Examples import types with `import type` / inline `type` and use only erasable syntax (`verbatimModuleSyntax`, `erasableSyntaxOnly`, enforced by the examples' type check). The `npm create vite` tsconfig fails on the 1.x style too.
+     - The docs host must send `Access-Control-Allow-Origin` for the library files (GitHub Pages sends `*`); no inline fallback.
+     - The editor (CodeMirror, 155 kB gzipped) is lazy-loaded on the first interaction with the code.
+   - Open: real iOS Safari, a manual check of the StackBlitz export.
 6. Docs site (Astro), implementing `docs/visual-design`. It runs in parallel once examples exist.
 
 ## Open questions
 
 - Final npm package name and scope (`chartist` stays the main package?)
 - Unit test runner (Jest 27 from 1.x for now; the no-bundler smoke test uses Playwright)
-- Playground technology: DIY REPL confirmed by the spike (`add-playground-repl`); the type stripper (sucrase recommended) awaits confirmation
 - Sponsor placement for Cube in README and site (agreed deal, carry over)
 - Hosting and domain (chartist.dev)

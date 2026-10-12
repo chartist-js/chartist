@@ -59,7 +59,7 @@ Both are implemented behind one interface (`transform(code, file) → code`), lo
 - **sucrase** (`transforms: ['typescript']`, `disableESTransforms: true`): own parser, ~200 kB minified. Elides imports that are only used as types, like `tsc` with `isolatedModules`, so `import { PieChartOptions } from 'chartist'` works.
 - **ts-blank-space**: replaces type syntax with whitespace, so positions stay identical (no source maps needed). Needs the TypeScript parser (`typescript` package) in the browser. It does not elide imports that lack the `type` keyword.
 
-The choice is made from the measurements in "Findings". **Default: sucrase** (recommendation F2). ts-blank-space stays selectable for comparison until the author decides.
+The choice is made from the measurements in "Findings". **Decided: sucrase** (author, 2026-10-12, based on F2). ts-blank-space stays selectable in the spike for comparison; the docs integration ships sucrase only.
 
 ### D4 Library resolution
 
@@ -228,10 +228,10 @@ Both are far below the 300 ms edit debounce.
   - `@lezer/*` is pinned directly to keep transitive versions older than two weeks.
   - `chartist:typecheck` already fails on `next` (BarChart/BaseChart). Run `nx typecheck playground --exclude-task-dependencies`.
 
-### F6 Decisions for the author
+### F6 Author decisions (2026-10-12)
 
-1. **Transformer:** sucrase (recommended) or ts-blank-space.
-2. **Example rule:** types are imported with `import type` or inline `type` (`verbatimModuleSyntax`), and only erasable syntax is used (`erasableSyntaxOnly`), enforced by the examples' type check with the vanilla-ts tsconfig. Without the rule, examples break in StackBlitz/Vite and with ts-blank-space.
-3. **CORS:** whether the docs host must send `Access-Control-Allow-Origin` for the library, or whether to implement the inline-library fallback.
-4. **Editor weight:** lazy-load the editor on interaction, or accept 155 kB.
+1. **Transformer: sucrase.** 20× smaller and ~4× faster to start on slow connections; strictness comes from the examples' type check.
+2. **Example rule:** types are imported with `import type` or inline `type` (`verbatimModuleSyntax`), and only erasable syntax is used (`erasableSyntaxOnly`), enforced by the examples' type check with the vanilla-ts tsconfig.
+3. **CORS: required from the docs host** (`Access-Control-Allow-Origin` on the library files; GitHub Pages sends `*`). No inline-library fallback.
+4. **Editor: lazy-loaded** on the first interaction with the code; pages that only show charts don't load CodeMirror. Implemented in the docs integration.
 5. **Next steps:** verify on a real iOS device and click through the StackBlitz export by hand.
