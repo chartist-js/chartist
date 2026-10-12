@@ -21,6 +21,7 @@
     "/.claude",
     "/tmp",
     "/docs/visual-design/project",
-    "/packages/chartist/test/visual/__screenshots__"
+    "/packages/chartist/test/visual/__screenshots__",
+    "CHANGELOG.md"
   ]
 }
