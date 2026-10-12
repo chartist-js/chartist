@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "jsxSingleQuote": true,
+  "semi": true,
+  "tabWidth": 2,
+  "bracketSpacing": true,
+  "arrowParens": "avoid",
+  "trailingComma": "none",
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "dist",
+    "coverage",
+    "test-results",
+    "playwright-report",
+    "/.nx/cache",
+    "/.nx/workspace-data",
+    ".nx/self-healing/tmp",
+    "pnpm-lock.yaml",
+    "/.claude",
+    "/tmp",
+    "/docs/visual-design/project",
+    "/packages/chartist/test/visual/__screenshots__"
+  ]
+}

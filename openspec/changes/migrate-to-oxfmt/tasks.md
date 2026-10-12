@@ -2,8 +2,8 @@
 
 ## 1. Set up oxfmt
 
-- [ ] 1.1 Add exact-pinned `oxfmt` (a version released at least two weeks ago) to the root, run `oxfmt --migrate=prettier` to create `.oxfmtrc.json`, and move the `.prettierignore` patterns into its `ignorePatterns`; verify `pnpm nx format:check --all` runs with oxfmt (no "both configured" warning once Prettier's config is gone) and lists only the expected files
-- [ ] 1.2 Compare `oxfmt --list-different` with Prettier 3's `--check` output on the whole repo and review every file only oxfmt would change; verify the differences are acceptable formatting (no semantic changes) and note notable ones in the commit message
+- [x] 1.1 Add exact-pinned `oxfmt` (a version released at least two weeks ago) to the root, run `oxfmt --migrate=prettier` to create `.oxfmtrc.json`, and move the `.prettierignore` patterns into its `ignorePatterns`; verify `pnpm nx format:check --all` runs with oxfmt (no "both configured" warning once Prettier's config is gone) and lists only the expected files
+- [x] 1.2 Compare `oxfmt --list-different` with Prettier 3's `--check` output on the whole repo and review every file only oxfmt would change; verify the differences are acceptable formatting (no semantic changes) and note notable ones in the commit message
 
 ## 2. Switch over
 

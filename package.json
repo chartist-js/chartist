@@ -12,6 +12,7 @@
     "@swc/helpers": "0.5.18",
     "@types/node": "^24.0.0",
     "nx": "23.3.0",
+    "oxfmt": "0.71.0",
     "prettier": "^3.8.1",
     "tslib": "^2.3.0",
     "typescript": "~6.0.3"
