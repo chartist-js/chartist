@@ -2,8 +2,8 @@
 
 ## 1. Set up oxlint
 
-- [ ] 1.1 Add `@nx/oxlint` (same version as `nx`) and exact-pinned `oxlint` (released at least two weeks ago) at the root via the plugin's `init`/`configuration` generators (check `--help` first), and register the plugin in `nx.json`; verify `pnpm nx show project <p>` lists a `lint` target for `chartist`, `examples` and `playground`
-- [ ] 1.2 Write the root `.oxlintrc.json`: carry over every 1.x rule from `packages/chartist/.eslintrc.json` that oxlint supports, enable the `typescript` plugin with its recommended rules, the `vitest`/`jest` plugin for spec files, and overrides for tests and Node scripts; record the 1.x rules without an oxlint equivalent (and why they are dropped) in the commit message; verify `pnpm nx run chartist:lint` reports no more errors than ESLint did
+- [x] 1.1 Add `@nx/oxlint` (same version as `nx`) and exact-pinned `oxlint` (released at least two weeks ago) at the root via the plugin's `init`/`configuration` generators (check `--help` first), and register the plugin in `nx.json`; verify `pnpm nx show project <p>` lists a `lint` target for `chartist`, `examples` and `playground`
+- [x] 1.2 Write the root `.oxlintrc.json`: carry over every 1.x rule from `packages/chartist/.eslintrc.json` that oxlint supports, enable the `typescript` plugin with its recommended rules, the `vitest`/`jest` plugin for spec files, and overrides for tests and Node scripts; record the 1.x rules without an oxlint equivalent (and why they are dropped) in the commit message; verify `pnpm nx run chartist:lint` reports no more errors than ESLint did
 
 ## 2. Switch over
 

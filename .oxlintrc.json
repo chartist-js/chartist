@@ -1,0 +1,80 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error"
+  },
+  "env": {
+    "builtin": true,
+    "es2024": true,
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "no-case-declarations": "error",
+    "no-empty": "error",
+    "no-fallthrough": "error",
+    "no-inner-declarations": "error",
+    "no-prototype-builtins": "error",
+    "no-regex-spaces": "error",
+    "no-unexpected-multiline": "error",
+    "no-console": "error",
+    "curly": "error",
+    "dot-notation": "warn",
+    "eqeqeq": "error",
+    "no-alert": "error",
+    "no-caller": "error",
+    "no-eval": "error",
+    "no-extra-bind": "error",
+    "no-implied-eval": "error",
+    "no-with": "error",
+    "no-shadow": "error",
+    "no-shadow-restricted-names": "error",
+    "new-cap": "warn",
+    "no-array-constructor": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+    "typescript/adjacent-overload-signatures": "error",
+    "typescript/ban-ts-comment": "error",
+    "typescript/ban-types": "error",
+    "no-empty-function": "error",
+    "typescript/no-empty-interface": "error",
+    "typescript/no-explicit-any": "warn",
+    "typescript/no-inferrable-types": "error",
+    "typescript/no-namespace": "error",
+    "typescript/no-non-null-assertion": "warn",
+    "typescript/no-unnecessary-type-constraint": "error",
+    "no-unused-vars": [
+      "warn",
+      {
+        "caughtErrors": "none"
+      }
+    ],
+    "typescript/no-var-requires": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/test/**", "**/*.spec.ts", "**/*.test.ts", "**/*.test.mjs"],
+      "plugins": ["typescript", "unicorn", "oxc", "jest"],
+      "rules": {
+        "no-console": "off",
+        "no-shadow": "off",
+        "typescript/no-explicit-any": "off"
+      }
+    },
+    {
+      "files": ["**/*.cjs"],
+      "rules": {
+        "typescript/no-var-requires": "off"
+      }
+    },
+    {
+      "files": ["**/scripts/**/*.ts"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}
