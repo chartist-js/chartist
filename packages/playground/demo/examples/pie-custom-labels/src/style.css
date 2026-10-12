@@ -1,0 +1,18 @@
+/* Style with CSS: slice colors and label type come from here. */
+.ct-series-a .ct-slice-pie {
+  fill: #f4c63d;
+}
+
+.ct-series-b .ct-slice-pie {
+  fill: #d70206;
+}
+
+.ct-series-c .ct-slice-pie {
+  fill: #59922b;
+}
+
+.ct-label {
+  font-size: 1rem;
+  font-weight: bold;
+  fill: #fff;
+}
