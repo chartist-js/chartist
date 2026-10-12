@@ -8,5 +8,5 @@
 ## 2. Switch over
 
 - [x] 2.1 Edit commit: remove the `lint` script, `.eslintrc.json`, ESLint, `@typescript-eslint/*`, the `eslint-config-prettier`/`eslint-plugin-*` packages and Prettier 2 from `packages/chartist`; rename `eslint-disable` comments whose rules were renamed; verify `pnpm install` succeeds and `git grep -n eslint -- ':!openspec/changes/archive' ':!CHANGELOG.md' ':!pnpm-lock.yaml'` finds only intentional references
-- [ ] 2.2 Fix or suppress (with a reason) the findings in `examples` and `playground`; verify `pnpm nx run-many -t lint` passes with no errors
-- [ ] 2.3 Update the plan's tech table (Linting row); verify the full local gate passes (`pnpm nx run-many -t typecheck check build test test:unit test:smoke test:size test:visual test:visual:v1 test:e2e lint` and `pnpm nx format:check --all`)
+- [x] 2.2 Fix or suppress (with a reason) the findings in `examples` and `playground`; verify `pnpm nx run-many -t lint` passes with no errors
+- [x] 2.3 Update the plan's tech table (Linting row); verify the full local gate passes (`pnpm nx run-many -t typecheck check build test test:unit test:smoke test:size test:visual test:visual:v1 test:e2e lint` and `pnpm nx format:check --all`)
