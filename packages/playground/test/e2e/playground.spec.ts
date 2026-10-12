@@ -28,20 +28,18 @@ async function replaceCode(page: Page, code: string) {
   await page.keyboard.insertText(code);
 }
 
-for (const [id, type] of Object.entries(EXAMPLES)) {
-  test(`renders ${id}`, async ({ page }, info) => {
-    const start = Date.now();
-    await page.goto(`?example=${id}`);
-    await expect(preview(page).locator(`svg.ct-chart-${type}`)).toBeVisible();
-    // Cold start: navigation to first chart (includes the test's polling).
-    info.annotations.push({
-      type: 'cold-start-ms',
-      description: String(Date.now() - start)
+for (const transformer of ['sucrase', 'ts-blank-space']) {
+  for (const [id, type] of Object.entries(EXAMPLES)) {
+    test(`renders ${id} (${transformer})`, async ({ page }) => {
+      await page.goto(`?example=${id}&transformer=${transformer}`);
+      await expect(preview(page).locator(`svg.ct-chart-${type}`)).toBeVisible({
+        timeout: 20_000
+      });
+      await expect(errors(page)).toHaveCount(0);
+      const iframe = page.locator('iframe.playground-preview');
+      await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts');
     });
-    await expect(errors(page)).toHaveCount(0);
-    const iframe = page.locator('iframe.playground-preview');
-    await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts');
-  });
+  }
 }
 
 test('applies chartist/styles.css and the example style.css', async ({
@@ -137,18 +135,22 @@ test('a module that fails to load is reported', async ({ page }, info) => {
 });
 
 test.describe('ts-blank-space', () => {
-  test('renders an example with type imports', async ({ page }) => {
+  test('fails at runtime on type imports without the type keyword', async ({
+    page
+  }, info) => {
     await page.goto('?example=line-area&transformer=ts-blank-space');
     await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
       timeout: 20_000
     });
-    await expect(errors(page)).toHaveCount(0);
-  });
-
-  test('fails at runtime on type imports without the type keyword', async ({
-    page
-  }, info) => {
-    await page.goto('?example=pie-custom-labels&transformer=ts-blank-space');
+    // The 1.x sandbox style. Vite fails on it too once `verbatimModuleSyntax`
+    // is on, as in the `npm create vite` vanilla-ts tsconfig.
+    await replaceCode(
+      page,
+      `import { PieChart, PieChartOptions } from 'chartist';
+const options: PieChartOptions = {};
+new PieChart('#chart', { series: [1, 2] }, options);
+`
+    );
     await expect(errors(page).first()).toContainText(
       /PieChartOptions|export/i,
       {
