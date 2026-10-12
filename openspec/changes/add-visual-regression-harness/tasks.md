@@ -14,8 +14,8 @@
 
 ## 3. Port the Storybook story cases
 
-- [ ] 3.1 Compare all 49 stories with the sandbox examples. Merge only exact matches (same data, options and handlers). Write every other story as a new `docs: false` example folder, replacing `faker` with the seeded generator. Verify the README coverage table maps all 49 stories to an example id, and that `typecheck` and `check` pass
-- [ ] 3.2 Carry the story viewports over to the manifest (`Adaptive`: default, tablet, mobile, mobile-landscape; `OverlappingBarsOnMobile`: default, mobile; both `size: 'viewport'`) and extend the check script to assert them from the README table; verify `pnpm nx check examples` passes
+- [x] 3.1 Compare all 49 stories with the sandbox examples. Merge only exact matches (same data, options and handlers). Write every other story as a new `docs: false` example folder, replacing `faker` with the seeded generator. Verify the README coverage table maps all 49 stories to an example id, and that `typecheck` and `check` pass
+- [x] 3.2 Carry the story viewports over to the manifest (`Adaptive`: default, tablet, mobile, mobile-landscape; `OverlappingBarsOnMobile`: default, mobile; both `size: 'viewport'`) and extend the check script to assert them from the README table; verify `pnpm nx check examples` passes
 
 ## 4. Visual regression harness
 

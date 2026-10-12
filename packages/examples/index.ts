@@ -59,11 +59,16 @@ function example(input: ExampleInput): Example {
     type: input.id.split('/')[0] as ChartType,
     docs: true,
     compat: false,
-    viewports: ['default'],
+    viewports: ['default', 'mobile'],
     size: 'fixed',
     settle: { at: 0 },
     ...input
   };
+}
+
+/** A test-only example, not shown in the docs. */
+function testOnly(input: ExampleInput): Example {
+  return example({ docs: false, ...input });
 }
 
 export const examples: Example[] = [
@@ -149,5 +154,85 @@ export const examples: Example[] = [
     compat: true,
     settle: { at: 7000 }
   }),
-  example({ id: 'pie/simple-gauge', title: 'Gauge chart' })
+  example({ id: 'pie/simple-gauge', title: 'Gauge chart' }),
+
+  // Test-only cases ported from the 1.x Storybook stories (see README.md)
+  testOnly({ id: 'line/auto-scale', title: 'Line chart with auto scale axes' }),
+  testOnly({ id: 'line/labels', title: 'Line chart with labels' }),
+  testOnly({
+    id: 'line/multi-series',
+    title: 'Line chart with series of different lengths'
+  }),
+  testOnly({
+    id: 'line/no-interpolation-with-holes',
+    title: 'No interpolation with holes'
+  }),
+  testOnly({
+    id: 'line/cardinal-interpolation-with-holes',
+    title: 'Cardinal interpolation with holes'
+  }),
+  testOnly({
+    id: 'line/monotone-cubic-interpolation-with-holes',
+    title: 'Monotone cubic interpolation with holes'
+  }),
+  testOnly({
+    id: 'line/simple-interpolation-with-holes',
+    title: 'Simple interpolation with holes'
+  }),
+  testOnly({
+    id: 'line/step-interpolation-with-holes',
+    title: 'Step interpolation with holes'
+  }),
+  testOnly({
+    id: 'line/step-no-postpone-interpolation-with-holes',
+    title: 'Step interpolation without postpone, with holes'
+  }),
+  testOnly({ id: 'line/reverse-data', title: 'Line chart with reversed data' }),
+  testOnly({ id: 'line/full-width', title: 'Full width line chart' }),
+  testOnly({ id: 'line/scatter', title: 'Line scatter diagram' }),
+  testOnly({ id: 'line/view-box', title: 'Line chart with a view box' }),
+
+  testOnly({ id: 'bar/auto-scale', title: 'Bar chart with auto scale axes' }),
+  testOnly({ id: 'bar/labels', title: 'Bar chart with labels' }),
+  testOnly({
+    id: 'bar/multi-series',
+    title: 'Bar chart with series of different lengths'
+  }),
+  testOnly({ id: 'bar/reverse-data', title: 'Bar chart with reversed data' }),
+  testOnly({
+    id: 'bar/adaptive',
+    title: 'Adaptive bar chart',
+    viewports: ['default', 'tablet', 'mobile', 'mobile-landscape'],
+    size: 'viewport'
+  }),
+  testOnly({
+    id: 'bar/overlapping-bars-on-mobile',
+    title: 'Overlapping bars on mobile (story)',
+    viewports: ['default', 'mobile'],
+    size: 'viewport'
+  }),
+  testOnly({ id: 'bar/view-box', title: 'Bar chart with a view box' }),
+
+  testOnly({ id: 'pie/fixed-size', title: 'Pie chart with a fixed size' }),
+  testOnly({ id: 'pie/labels', title: 'Pie chart with labels' }),
+  testOnly({ id: 'pie/overlapping-labels', title: 'Overlapping pie labels' }),
+  testOnly({
+    id: 'pie/label-interpolation',
+    title: 'Pie chart with percentage labels'
+  }),
+  testOnly({ id: 'pie/start-angle', title: 'Pie chart with a start angle' }),
+  testOnly({ id: 'pie/small-slices', title: 'Pie chart with small slices' }),
+  testOnly({
+    id: 'pie/ignore-empty-values',
+    title: 'Pie chart ignoring empty values'
+  }),
+  testOnly({ id: 'pie/donut', title: 'Simple donut chart' }),
+  // Charts with a fixed size larger than the test container keep their size.
+  testOnly({ id: 'pie/gauge-donut', title: 'Gauge donut', size: 'viewport' }),
+  testOnly({
+    id: 'pie/relative-donut-width',
+    title: 'Donut with a relative width',
+    size: 'viewport'
+  }),
+  testOnly({ id: 'pie/view-box', title: 'Pie chart with a view box' })
 ];

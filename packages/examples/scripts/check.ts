@@ -6,7 +6,7 @@
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { examples, viewportSizes } from '../index.ts';
+import { examples, viewportSizes, type ViewportName } from '../index.ts';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const errors: string[] = [];
@@ -108,10 +108,55 @@ for (const example of examples) {
   }
 }
 
+// The README's story coverage table: every 1.x story maps to an example
+// that is tested at (at least) the story's viewports.
+const STORY_COUNT = 49;
+const byId = new Map(examples.map(example => [example.id, example]));
+const storyRows = read('README.md')
+  .split('\n')
+  .filter(line => /^\| (Line|Bar|Pie)Chart\//.test(line))
+  .map(line => line.split('|').map(cell => cell.trim()));
+const stories = new Set<string>();
+const storyExamples = new Set<string>();
+
+if (storyRows.length !== STORY_COUNT) {
+  fail(
+    `README.md: ${storyRows.length} stories in the table, expected ${STORY_COUNT}`
+  );
+}
+for (const [, story, id, viewports, mapping] of storyRows) {
+  if (stories.has(story)) {
+    fail(`README.md: story ${story} is listed twice`);
+  }
+  stories.add(story);
+  storyExamples.add(id);
+
+  const example = byId.get(id);
+  if (!example) {
+    fail(`README.md: story ${story} maps to unknown example ${id}`);
+    continue;
+  }
+  for (const viewport of viewports.split(',').map(name => name.trim())) {
+    if (!example.viewports.includes(viewport as ViewportName)) {
+      fail(`${id}: missing viewport "${viewport}" of story ${story}`);
+    }
+  }
+  if (mapping.startsWith('merged') !== example.docs) {
+    fail(`${id}: story ${story} is "${mapping}", but docs is ${example.docs}`);
+  }
+}
+for (const { id, docs } of examples) {
+  if (!docs && !storyExamples.has(id)) {
+    fail(`${id}: test-only example without a story in the README table`);
+  }
+}
+
 if (errors.length > 0) {
   console.error(errors.map(error => `✗ ${error}`).join('\n'));
   console.error(`\n${errors.length} problem(s) in the examples manifest.`);
   process.exit(1);
 }
 
-console.log(`✓ ${examples.length} examples checked.`);
+console.log(
+  `✓ ${examples.length} examples and ${stories.size} stories checked.`
+);
