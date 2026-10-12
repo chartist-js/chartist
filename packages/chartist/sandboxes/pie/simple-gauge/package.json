@@ -1,8 +1,0 @@
-{
-  "name": "pie-simple-gauge",
-  "description": "Gauge chart",
-  "main": "index.ts",
-  "dependencies": {
-    "chartist": "^1.0.0"
-  }
-}

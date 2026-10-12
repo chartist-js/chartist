@@ -11,7 +11,6 @@ jobs:
       matrix:
         stage:
           - unit
-          - storyshots
       fail-fast: false
     name: ${{ matrix.stage }} tests
     steps:
@@ -35,9 +34,3 @@ jobs:
         if: "success() && matrix.stage == 'unit'"
         with:
           files: ./coverage/lcov.info
-      - name: Collect artifacts
-        uses: actions/upload-artifact@v4
-        if: "failure() && matrix.stage != 'unit'"
-        with:
-          name: Image snapshots (${{ matrix.stage }})
-          path: test/__image_snapshots__/

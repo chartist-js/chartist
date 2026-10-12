@@ -18,7 +18,7 @@
   - `line/scatter-random` uses `Math.random()`.
   - Four sandboxes animate with SMIL through `draw` handlers: `path-animation`, `simple-svg-animation`, `svg-animation`, `donut-animation`. Three of them call `chart.update()` on a timer, every 8–12 s.
   - Chartist's `animate()` uses `fill: 'freeze'` in guided mode (`src/svg/animation.ts`).
-- **Compat candidates.** `.on('draw'|'created')` and `Svg` appear in 8 sandboxes and 4 story cases.
+- **Compat candidates.** `.on('draw'|'created')` and `Svg` appear in 7 sandboxes and 4 story cases.
 - **Existing tooling.**
   - `playwright` 1.63.0 is already a dev dependency, used by `test:smoke`.
   - Published `chartist@1.5.0` ships a dependency-free ESM `dist/index.js` and `dist/index.css`.
@@ -126,20 +126,24 @@ packages/examples/line/area/
 
 - **Viewports:** named presets: `default` 1024×768, plus `mobile` 375×812, `mobile-landscape` 812×375 and `tablet` 768×1024 (the story viewports). Device scale factor is 1, color scheme light, `reducedMotion: 'reduce'`.
 - **Screenshot:** the `#chart` element.
-- **Settling:**
-  - `page.clock.install()` before load freezes timers.
-  - The harness waits for the chart's `svg`, `document.fonts.ready` and two animation frames.
-  - Then `svg.pauseAnimations(); svg.setCurrentTime(settle.at)`.
-  - `settle.at` defaults to 0. Animated examples set it to their total duration, so the screenshot shows the end state (`fill: freeze`).
+- **Settling** (revised while implementing, see below):
+  - `page.clock.install()` and `page.clock.pauseAt()` before load freeze all timers, including Chartist's own `setTimeout(initialize, 0)` and, in guided mode, the `setTimeout(beginElement, begin)` that starts each SMIL animation.
+  - `page.clock.runFor(1)` initializes the chart. The harness waits for the chart's `svg` and loads the test font (`document.fonts.load()`, `document.fonts.ready`, `document.fonts.check()`). No animation-frame wait: the paused clock also fakes `requestAnimationFrame`.
+  - `svg.pauseAnimations()` stops the SVG timeline at its current time `start`.
+  - `page.clock.runFor(settle.at)` fires the timers due until then. A harness init script makes a `beginElement()` call at clock time `t` a `beginElementAt(t)` on the paused timeline, so every guided animation begins at `start + t`, as in a real playback.
+  - `svg.setCurrentTime(start + settle.at)`, then the screenshot.
+  - `settle.at` is in milliseconds and defaults to 0. Animated examples set it to the end of their last animation plus about 100 ms (`fill: freeze` keeps the end state), measured in a real playback: `line/path-animation` 6100, `line/simple-svg-animation` 4400, `line/svg-animation` 8600, `pie/donut-animation` 7100. All are below the examples' `chart.update()` timers (8–12 s), which therefore never fire.
+  - _Why revised:_ with timers frozen, `svg.setCurrentTime()` alone cannot show the end state, because guided animations have `begin="indefinite"` and only start when their timer fires. A first version stepped the clock and the SVG timeline in lockstep (20 ms steps); it produced the same images but took about 30 s per animated example.
 - _Alternative considered:_ stripping `<animate>` elements. Rejected: it shows a state users never see.
 
 ### D8 Baseline and tolerance
 
-- Baselines live in `test/visual/__screenshots__/<id>--<viewport>.png`. That is about 85 images of roughly 10–30 kB.
+- Baselines live in `test/visual/__screenshots__/<id>--<viewport>.png`. That is 67 images (63 examples, story viewports included) of roughly 10–30 kB; the `<id>` slash makes a folder per chart type.
 - **Tolerance:**
-  - `maxDiffPixelRatio: 0.001` and `threshold: 0.2`;
-  - anti-aliasing noise passes;
-  - a grid line moved by 1 px over the full chart width fails.
+  - `maxDiffPixelRatio: 0.001` and `threshold: 0.05` (revised from 0.2, see below);
+  - anti-aliasing noise passes (pixelmatch ignores anti-aliased pixels, and up to 0.1 % of the pixels may differ);
+  - a grid line moved by 1 px fails.
+  - _Why revised:_ Chartist's grid lines are `rgba(0, 0, 0, 0.2)` dashes. On white, a moved grid line changes pixels by at most about 50 of 255 (25 where the area fill covers it), which is below pixelmatch's per-pixel threshold at 0.2 and at 0.1, so a 1 px shift of a horizontal or vertical grid line passed every example (task 5.3). At 0.05 it fails 49 of 67 (horizontal line) and 45 of 67 (vertical line) tests; the rest are pies without grids. The local build renders byte-identical images to 1.5.0, and five repeated runs are byte-identical, so the tighter threshold costs no stability.
 - **Platform:** the baseline is authoritative for Linux x64 Chromium from the pinned Playwright version, as on GitHub `ubuntu-latest` runners and WSL2. Snapshot names carry no platform suffix, so macOS developers use the official Playwright Docker image or CI.
 - **Recording:** recorded once against `chartist@1.5.0`, then verified against the local build. If the local build differs, that is a regression in the `add-library-distribution` build and is fixed there.
 
@@ -169,6 +173,14 @@ The edit commit removes the `storyshots` matrix stage in `ci.yml` and the `build
 
 Rollback: revert the merge. The 1.x sources are still on `main`.
 
-## Open Questions
+## Implementation notes
 
-- The exact settle times of the four animation examples. They are measured when porting.
+- **Workspace linking.** `chartist` has `publishConfig.directory: "package"` (clean-publish), so pnpm linked the workspace package to the temporary `packages/chartist/package` folder. `publishConfig.linkDirectory: false` makes it link `packages/chartist` itself.
+- **Nx graph.** `@chartist/examples` depends on `chartist` (build, types), and `chartist` has `@chartist/examples` as a dev dependency for the harness. To avoid a project cycle, `chartist` declares `implicitDependencies: ["!examples"]`, and the `test:visual` targets list the example files as inputs.
+- **Type-only imports.** The examples tsconfig enables `verbatimModuleSyntax` and `erasableSyntaxOnly`, so type-only imports carry `type` and plain type stripping (Vite, a browser REPL) leaves no import of a type at runtime. Five sandboxes needed `type` on such imports.
+- **Compat count.** `.on(...)` or `Svg` appear in 7 sandboxes (not 8), plus the 4 story cases, which are all merged into those sandboxes.
+- **Story ports.** 18 stories merge into sandbox examples, 31 become test-only examples: 63 examples, 67 baseline images. `PieChart/GaugeDonut` and `PieChart/RelativeDonutWidth` draw a fixed 500×500 chart, larger than the 640×360 test container, so their container has no fixed height and they use `size: 'viewport'`. `PieChart/OverlappingLabels` uses a fixed date instead of `new Date()`.
+- **Locale and time zone.** `line/timeseries` and `pie/overlapping-labels` format dates, so the harness pins `locale: 'en-US'` and `timezoneId: 'UTC'`.
+- **Storybook removal.** `test/__image_snapshots__/` held 49 PNGs (not 55). `test/utils/skipable.js` was only used by storyshots and went with it; so did the Storybook-only webpack loaders (`postcss-loader`, `sass-loader`, `swc-loader`). CONTRIBUTING.md points to the examples and `test:visual` instead of `start:storybook`.
+- **`chartist:typecheck`.** The Nx-inferred `typecheck` target of `chartist` already fails on `next` (TS errors in `BarChart.ts` and `BaseChart.ts` after the TypeScript 5.9 upgrade). This change leaves it alone; `examples:typecheck` depends on `chartist:build`, not on it.
+- **Errors and network.** Each test fails on page errors, console errors or warnings, and any request to a host other than the harness server (aborted).

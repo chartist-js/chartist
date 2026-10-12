@@ -1,8 +1,0 @@
-{
-  "name": "pie-donut-chart",
-  "description": "Donut chart",
-  "main": "index.ts",
-  "dependencies": {
-    "chartist": "^1.0.0"
-  }
-}

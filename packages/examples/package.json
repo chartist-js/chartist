@@ -1,0 +1,50 @@
+{
+  "name": "@chartist/examples",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Chartist examples: small HTML + TypeScript + CSS projects shared by the docs, the playground and the visual regression tests",
+  "license": "MIT OR WTFPL",
+  "exports": {
+    ".": "./index.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json && tsc -p scripts/tsconfig.json",
+    "check": "node scripts/check.ts"
+  },
+  "dependencies": {
+    "chartist": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vite": "8.3.1"
+  },
+  "nx": {
+    "name": "examples",
+    "targets": {
+      "typecheck": {
+        "cache": true,
+        "dependsOn": [
+          "^build"
+        ],
+        "inputs": [
+          "{projectRoot}/**/*.ts",
+          "{projectRoot}/tsconfig.json",
+          "^build",
+          {
+            "externalDependencies": [
+              "typescript"
+            ]
+          }
+        ]
+      },
+      "check": {
+        "cache": true,
+        "inputs": [
+          "{projectRoot}/**/*"
+        ]
+      }
+    }
+  }
+}

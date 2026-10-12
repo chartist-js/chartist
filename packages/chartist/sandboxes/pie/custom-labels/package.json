@@ -1,8 +1,0 @@
-{
-  "name": "pie-custom-labels",
-  "description": "Pie chart with custom labels",
-  "main": "index.ts",
-  "dependencies": {
-    "chartist": "^1.0.0"
-  }
-}
