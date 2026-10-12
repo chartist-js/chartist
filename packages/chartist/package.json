@@ -63,7 +63,8 @@
     "./dist/*": "./dist/*"
   },
   "publishConfig": {
-    "directory": "package"
+    "directory": "package",
+    "linkDirectory": false
   },
   "files": [
     "dist",
