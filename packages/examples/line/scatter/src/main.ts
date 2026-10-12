@@ -17,14 +17,14 @@ const data = Array.from({ length: 52 }).reduce<{
   labels: number[];
   series: number[][];
 }>(
-  (data, _, index) => {
-    data.labels.push(index + 1);
-    data.series.forEach(series => {
+  (result, _, index) => {
+    result.labels.push(index + 1);
+    result.series.forEach(series => {
       // A whole number from 0 to 100
       series.push(Math.floor(random() * 101));
     });
 
-    return data;
+    return result;
   },
   {
     labels: [],

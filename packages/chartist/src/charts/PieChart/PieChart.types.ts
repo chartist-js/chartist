@@ -107,8 +107,10 @@ export type PieChartCreatedEvent = Omit<
   'axisX' | 'axisY'
 >;
 
-export interface SliceDrawEvent
-  extends Omit<DrawEvent, 'axisX' | 'axisY' | 'seriesIndex'> {
+export interface SliceDrawEvent extends Omit<
+  DrawEvent,
+  'axisX' | 'axisY' | 'seriesIndex'
+> {
   type: 'slice';
   value: NormalizedSeriesValue;
   totalDataSum: number;
@@ -119,8 +121,10 @@ export interface SliceDrawEvent
   endAngle: number;
 }
 
-export interface SliceLabelDrawEvent
-  extends Omit<DrawEvent, 'axisX' | 'axisY' | 'seriesIndex'> {
+export interface SliceLabelDrawEvent extends Omit<
+  DrawEvent,
+  'axisX' | 'axisY' | 'seriesIndex'
+> {
   type: 'label';
   text: string;
   x: number;

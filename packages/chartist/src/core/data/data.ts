@@ -17,8 +17,8 @@ export function getMetaData(
   const value = Array.isArray(seriesData)
     ? seriesData[index]
     : safeHasProperty(seriesData, 'data')
-    ? seriesData.data[index]
-    : null;
+      ? seriesData.data[index]
+      : null;
   return safeHasProperty(value, 'meta') ? value.meta : undefined;
 }
 

@@ -1,6 +1,10 @@
 import 'chartist/styles.css';
 import './style.css';
-import { PieChart, type PieChartOptions, type ResponsiveOptions } from 'chartist';
+import {
+  PieChart,
+  type PieChartOptions,
+  type ResponsiveOptions
+} from 'chartist';
 
 const data = {
   labels: ['Bananas', 'Apples', 'Grapes'],

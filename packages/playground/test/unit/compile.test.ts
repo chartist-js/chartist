@@ -1,5 +1,4 @@
-import { describe, test } from 'node:test';
-import assert from 'node:assert/strict';
+import { describe, expect, test } from 'vitest';
 import { compile } from '../../src/compile.ts';
 import { stackblitzProject } from '../../src/stackblitz.ts';
 import type { PlaygroundFiles, TransformerName } from '../../src/types.ts';
@@ -51,20 +50,21 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
         ),
         opts
       );
-      assert.deepEqual(result.diagnostics, []);
+      expect(result.diagnostics).toEqual([]);
       const doc = result.html!;
-      assert.match(
-        doc,
+      expect(doc).toMatch(
         /<script type="module">import "playground:\/src\/main.ts";<\/script>/
       );
-      assert.equal(importMap(doc).chartist, `${BASE}lib/chartist/index.js`);
-      assert.ok(
+      expect(importMap(doc).chartist).toBe(`${BASE}lib/chartist/index.js`);
+      expect(
         doc.indexOf('<script type="importmap">') <
           doc.indexOf('<script type="module">')
-      );
+      ).toBeTruthy();
       // Bootstrap, import map and styles go right after <head>.
-      assert.ok(doc.indexOf('<script>(') < doc.indexOf('<meta charset'));
-      assert.match(moduleCode(doc, 'src/main.ts'), /from 'chartist'/);
+      expect(
+        doc.indexOf('<script>(') < doc.indexOf('<meta charset')
+      ).toBeTruthy();
+      expect(moduleCode(doc, 'src/main.ts')).toMatch(/from 'chartist'/);
     });
 
     test('turns CSS imports into link and style tags, in import order', async () => {
@@ -80,13 +80,12 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
         `<link rel="stylesheet" href="${BASE}lib/chartist/index.css">`
       );
       const style = doc.indexOf('<style data-file="src/style.css">');
-      assert.ok(link > 0 && style > link, 'link before style');
-      assert.match(doc, /\.ct-line \{ stroke: red; \}/);
+      expect(link > 0 && style > link, 'link before style').toBeTruthy();
+      expect(doc).toMatch(/\.ct-line \{ stroke: red; \}/);
       const code = moduleCode(doc, 'src/main.ts');
-      assert.doesNotMatch(code, /\.css/);
+      expect(code).not.toMatch(/\.css/);
       // Line numbers are kept: the LineChart import stays on line 3.
-      assert.equal(
-        code.split('\n')[2].trim(),
+      expect(code.split('\n')[2].trim()).toBe(
         "import { LineChart } from 'chartist';"
       );
     });
@@ -103,26 +102,23 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
         ),
         opts
       );
-      assert.deepEqual(result.diagnostics, []);
+      expect(result.diagnostics).toEqual([]);
       const doc = result.html!;
-      assert.match(
-        moduleCode(doc, 'src/main.ts'),
+      expect(moduleCode(doc, 'src/main.ts')).toMatch(
         /from 'playground:\/src\/data.ts'/
       );
-      assert.match(
-        moduleCode(doc, 'src/main.ts'),
+      expect(moduleCode(doc, 'src/main.ts')).toMatch(
         /import\("playground:\/src\/lazy.ts"\)/
       );
-      assert.match(
-        moduleCode(doc, 'src/data.ts'),
+      expect(moduleCode(doc, 'src/data.ts')).toMatch(
         /playground:\/src\/nested\/label\.ts/
       );
-      assert.doesNotMatch(moduleCode(doc, 'src/data.ts'), /number\[\]/);
-      assert.ok(
+      expect(moduleCode(doc, 'src/data.ts')).not.toMatch(/number\[\]/);
+      expect(
         importMap(doc)['playground:/src/nested/label.ts'].startsWith(
           'data:text/javascript'
         )
-      );
+      ).toBeTruthy();
     });
 
     test('reports unresolved imports with file and line', async () => {
@@ -130,11 +126,10 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
         project(`\nimport { x } from './missing';\nconsole.log(x);`),
         opts
       );
-      assert.equal(result.html, null);
-      assert.equal(result.diagnostics[0].file, 'src/main.ts');
-      assert.equal(result.diagnostics[0].line, 2);
-      assert.match(
-        result.diagnostics[0].message,
+      expect(result.html).toBe(null);
+      expect(result.diagnostics[0].file).toBe('src/main.ts');
+      expect(result.diagnostics[0].line).toBe(2);
+      expect(result.diagnostics[0].message).toMatch(
         /Cannot resolve import "\.\/missing"/
       );
     });
@@ -146,11 +141,11 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
         ),
         opts
       );
-      assert.equal(result.html, null);
+      expect(result.html).toBe(null);
       const [diagnostic] = result.diagnostics;
-      assert.equal(diagnostic.file, 'src/main.ts');
-      assert.equal(diagnostic.line, 3);
-      assert.ok(diagnostic.message.length > 0);
+      expect(diagnostic.file).toBe('src/main.ts');
+      expect(diagnostic.line).toBe(3);
+      expect(diagnostic.message.length > 0).toBeTruthy();
     });
 
     test('type-only imports with the type keyword are removed', async () => {
@@ -161,7 +156,7 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
         opts
       );
       const code = moduleCode(result.html!, 'src/main.ts');
-      assert.doesNotMatch(code, /LineChartData|Options/);
+      expect(code).not.toMatch(/LineChartData|Options/);
     });
   });
 }
@@ -171,15 +166,14 @@ test('sucrase elides imports only used as types, ts-blank-space keeps them', asy
     `import { PieChart, PieChartOptions } from 'chartist';\nconst o: PieChartOptions = {};\nnew PieChart('#chart', { series: [1] }, o);`
   );
   const sucrase = await compile(files, { ...options, transformer: 'sucrase' });
-  assert.doesNotMatch(
-    moduleCode(sucrase.html!, 'src/main.ts'),
+  expect(moduleCode(sucrase.html!, 'src/main.ts')).not.toMatch(
     /PieChartOptions/
   );
   const blank = await compile(files, {
     ...options,
     transformer: 'ts-blank-space'
   });
-  assert.match(moduleCode(blank.html!, 'src/main.ts'), /PieChartOptions/);
+  expect(moduleCode(blank.html!, 'src/main.ts')).toMatch(/PieChartOptions/);
 });
 
 test('ts-blank-space rejects non-erasable syntax', async () => {
@@ -190,8 +184,10 @@ test('ts-blank-space rejects non-erasable syntax', async () => {
       transformer: 'ts-blank-space'
     }
   );
-  assert.equal(result.html, null);
-  assert.match(result.diagnostics[0].message, /Unsupported TypeScript syntax/);
+  expect(result.html).toBe(null);
+  expect(result.diagnostics[0].message).toMatch(
+    /Unsupported TypeScript syntax/
+  );
 });
 
 test('stackblitz project adds package.json and keeps the files', () => {
@@ -199,13 +195,13 @@ test('stackblitz project adds package.json and keeps the files', () => {
     { 'index.html': html, 'src/main.ts': 'x', 'src/style.css': 'y' },
     { title: 'Line chart', chartistVersion: '^1.5.0' }
   );
-  assert.equal(project.template, 'node');
-  assert.equal(project.files['src/main.ts'], 'x');
-  assert.equal(project.files['src/style.css'], 'y');
+  expect(project.template).toBe('node');
+  expect(project.files['src/main.ts']).toBe('x');
+  expect(project.files['src/style.css']).toBe('y');
   const pkg = JSON.parse(project.files['package.json']);
-  assert.equal(pkg.scripts.dev, 'vite');
-  assert.equal(pkg.dependencies.chartist, '^1.5.0');
-  assert.ok(pkg.devDependencies.vite);
-  assert.ok(pkg.devDependencies.typescript);
-  assert.ok(project.files['tsconfig.json']);
+  expect(pkg.scripts.dev).toBe('vite');
+  expect(pkg.dependencies.chartist).toBe('^1.5.0');
+  expect(pkg.devDependencies.vite).toBeTruthy();
+  expect(pkg.devDependencies.typescript).toBeTruthy();
+  expect(project.files['tsconfig.json']).toBeTruthy();
 });

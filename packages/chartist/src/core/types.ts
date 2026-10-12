@@ -333,11 +333,10 @@ export interface OptionsChangedEvent<T = Options> {
   currentOptions: T;
 }
 
-export interface GridDrawEvent
-  extends Omit<
-    DrawEvent,
-    'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
-  > {
+export interface GridDrawEvent extends Omit<
+  DrawEvent,
+  'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
+> {
   type: 'grid';
   axis: Axis;
   x1: number;
@@ -352,11 +351,10 @@ export interface GridBackgroundDrawEvent {
   element: Svg;
 }
 
-export interface LabelDrawEvent
-  extends Omit<
-    DrawEvent,
-    'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
-  > {
+export interface LabelDrawEvent extends Omit<
+  DrawEvent,
+  'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
+> {
   type: 'label';
   axis: Axis;
   text: Label;

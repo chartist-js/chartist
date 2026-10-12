@@ -30,13 +30,13 @@ See proposal.md for motivation. Current state of `packages/chartist` (the moved 
 
 Candidates, measured on the unchanged 1.x sources (gzip -9 of the browser ESM build):
 
-| Option | Notes | Minified ESM gzip |
-| --- | --- | --- |
-| Keep Rollup 2 + swc + terser | Plugins are unmaintained/deprecated; still needs a separate `tsc` pass for types and a d.ts tree without `.d.cts`. | 11.77 kB (1.x UMD) |
-| Rollup 4 + `@rollup/plugin-terser` + swc/esbuild + `rollup-plugin-dts` | Mature, but four or five plugins to wire and keep in sync. | ~11.70 kB (terser on the same input) |
-| **tsdown 0.23** (Rolldown + Oxc transform/minify + `rolldown-plugin-dts`) | One dev dependency. ESM, CJS, UMD and IIFE formats, bundled `.d.ts` **and** `.d.cts`, source maps with embedded sources, sub-second builds. Config is a typed array of builds, so new entry points are trivial. Maintained by the Vite/VoidZero team. | **11.76 kB** |
-| Vite library mode | Pulls in all of Vite; types need `vite-plugin-dts`; UMD is supported but CJS+UMD+ESM in one config is clumsy. | n/a |
-| esbuild / tsup | esbuild has no UMD output; tsup is in maintenance mode and recommends tsdown. | n/a |
+| Option                                                                    | Notes                                                                                                                                                                                                                                                 | Minified ESM gzip                    |
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Keep Rollup 2 + swc + terser                                              | Plugins are unmaintained/deprecated; still needs a separate `tsc` pass for types and a d.ts tree without `.d.cts`.                                                                                                                                    | 11.77 kB (1.x UMD)                   |
+| Rollup 4 + `@rollup/plugin-terser` + swc/esbuild + `rollup-plugin-dts`    | Mature, but four or five plugins to wire and keep in sync.                                                                                                                                                                                            | ~11.70 kB (terser on the same input) |
+| **tsdown 0.23** (Rolldown + Oxc transform/minify + `rolldown-plugin-dts`) | One dev dependency. ESM, CJS, UMD and IIFE formats, bundled `.d.ts` **and** `.d.cts`, source maps with embedded sources, sub-second builds. Config is a typed array of builds, so new entry points are trivial. Maintained by the Vite/VoidZero team. | **11.76 kB**                         |
+| Vite library mode                                                         | Pulls in all of Vite; types need `vite-plugin-dts`; UMD is supported but CJS+UMD+ESM in one config is clumsy.                                                                                                                                         | n/a                                  |
+| esbuild / tsup                                                            | esbuild has no UMD output; tsup is in maintenance mode and recommends tsdown.                                                                                                                                                                         | n/a                                  |
 
 Oxc's minifier lands within 0.5 % of terser (terser with `passes: 2`: 11.70 kB, Oxc: 11.76 kB), which is noise compared with what tree-shaking and the v2 architecture will save. tsdown is pre-1.0, so the version is pinned exactly and the config sticks to documented options; the build is small enough that switching back to Rollup 4 later would be a one-file change. Nx runs it through the package's `build` script (inferred target) with explicit cache inputs and outputs in the package's `nx` config, so no Nx plugin is needed.
 
@@ -78,7 +78,10 @@ The existing `sass`, `postcss`, `postcss-preset-env` and `cssnano` dev dependenc
       "sass": "./dist/scss/index.scss",
       "style": "./dist/index.css",
       "import": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-      "require": { "types": "./dist/index.d.cts", "default": "./dist/index.cjs" },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
       "default": "./dist/index.js"
     },
     "./styles.css": "./dist/index.css",

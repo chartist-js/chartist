@@ -13,7 +13,6 @@
     "dev": "vite",
     "build": "vite build --base /chartist/",
     "preview": "node test/e2e/serve.mjs",
-    "test": "node --test \"test/unit/*.test.ts\"",
     "test:e2e": "playwright test",
     "measure": "node scripts/measure.ts"
   },
@@ -65,9 +64,6 @@
           "build"
         ],
         "continuous": true
-      },
-      "test": {
-        "cache": true
       },
       "test:e2e": {
         "dependsOn": [

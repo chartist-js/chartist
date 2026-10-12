@@ -81,13 +81,13 @@ export function normalizePadding(
         left: padding
       }
     : padding === undefined
-    ? { top: 0, right: 0, bottom: 0, left: 0 }
-    : {
-        top: typeof padding.top === 'number' ? padding.top : 0,
-        right: typeof padding.right === 'number' ? padding.right : 0,
-        bottom: typeof padding.bottom === 'number' ? padding.bottom : 0,
-        left: typeof padding.left === 'number' ? padding.left : 0
-      };
+      ? { top: 0, right: 0, bottom: 0, left: 0 }
+      : {
+          top: typeof padding.top === 'number' ? padding.top : 0,
+          right: typeof padding.right === 'number' ? padding.right : 0,
+          bottom: typeof padding.bottom === 'number' ? padding.bottom : 0,
+          left: typeof padding.left === 'number' ? padding.left : 0
+        };
 }
 
 /**

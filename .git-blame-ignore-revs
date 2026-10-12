@@ -1,0 +1,6 @@
+# Formatting-only commits, skipped by `git blame --ignore-revs-file .git-blame-ignore-revs`
+# (GitHub applies this file automatically). Enable locally with:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# style: reformat with oxfmt
+78412a2f8ffceb2922738af5ad484f6465d2cfee

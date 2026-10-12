@@ -41,3 +41,5 @@ out-tsc
 # Visual regression test output (packages/chartist/test/visual)
 test-results
 playwright-report
+vitest.config.*.timestamp*
+.vitest

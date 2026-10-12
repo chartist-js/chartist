@@ -403,7 +403,6 @@ describe('Charts', () => {
         Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
           element =>
             expect(element).toHaveAttribute(
-              // eslint-disable-next-line jest-dom/prefer-to-have-style
               'style',
               expect.stringMatching(strokeWidth)
             )
@@ -461,7 +460,6 @@ describe('Charts', () => {
         Array.from(fixture.wrapper.querySelectorAll('.ct-slice-donut')).forEach(
           element =>
             expect(element).toHaveAttribute(
-              // eslint-disable-next-line jest-dom/prefer-to-have-style
               'style',
               expect.stringMatching(strokeWidth)
             )

@@ -1,9 +1,0 @@
-# Add files here to ignore them from prettier formatting
-/dist
-/coverage
-/.nx/cache
-/.nx/workspace-data
-.nx/self-healing/tmp
-pnpm-lock.yaml
-/.claude
-/docs/visual-design/project

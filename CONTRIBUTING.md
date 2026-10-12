@@ -21,7 +21,7 @@ You will need the following to run a local development enviroment.
 
 1. `cd` into your local copy of the repository.
 2. Run `pnpm i` to install dependencies located in `package.json`.
-5. Run an example from `packages/examples` with `pnpm --dir packages/examples exec vite line/simple`, or run `pnpm nx run chartist:jest --watch` to run tests in watch mode. `pnpm nx run chartist:test:visual` compares every example with the screenshot baseline.
+3. Run an example from `packages/examples` with `pnpm --dir packages/examples exec vite line/simple`, or run `pnpm nx test chartist --watch` to run tests in watch mode. `pnpm nx run chartist:test:visual` compares every example with the screenshot baseline.
 
 ## <a name="submit"></a> Submission Guidelines
 

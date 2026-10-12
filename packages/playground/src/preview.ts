@@ -36,7 +36,8 @@ export class Preview {
 
   #listener = (event: MessageEvent) => {
     const data = event.data as
-      (PreviewMessage & { source?: string; runId?: string }) | undefined;
+      | (PreviewMessage & { source?: string; runId?: string })
+      | undefined;
     if (
       event.source !== this.iframe.contentWindow ||
       data?.source !== MESSAGE_SOURCE ||

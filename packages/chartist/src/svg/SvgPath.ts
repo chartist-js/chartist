@@ -88,7 +88,10 @@ export class SvgPath {
    * @param close If set to true then this path will be closed when stringified (with a Z at the end)
    * @param options Options object that overrides the default objects. See default options for more details.
    */
-  constructor(private readonly close = false, options?: SvgPathOptions) {
+  constructor(
+    private readonly close = false,
+    options?: SvgPathOptions
+  ) {
     this.options = { ...defaultOptions, ...options };
   }
 
