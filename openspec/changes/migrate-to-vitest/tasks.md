@@ -2,8 +2,8 @@
 
 ## 1. Set up Vitest
 
-- [ ] 1.1 Add `@nx/vitest` (same version as `nx`) and exact-pinned `vitest`, `@vitest/coverage-v8` and `jsdom` (each released at least two weeks ago) via the plugin's generators (check `--help` first), and register the plugin in `nx.json`; verify `pnpm nx show project chartist` lists the inferred `test` target
-- [ ] 1.2 Add `packages/chartist/vitest.config.ts` (jsdom, globals, `(test|src)/**/*.spec.ts`, `test/setup.ts`, v8 coverage of `src`) and port `test/setup.js` to `test/setup.ts` (`@testing-library/jest-dom/vitest`, `matchMedia` stub); verify `pnpm nx test chartist` runs all 14 spec files and 146 tests pass without changing test content
+- [x] 1.1 Add `@nx/vitest` (same version as `nx`) and exact-pinned `vitest`, `@vitest/coverage-v8` and `jsdom` (each released at least two weeks ago) via the plugin's generators (check `--help` first), and register the plugin in `nx.json`; verify `pnpm nx show project chartist` lists the inferred `test` target
+- [x] 1.2 Add `packages/chartist/vitest.config.ts` (jsdom, globals, `(test|src)/**/*.spec.ts`, `test/setup.ts`, v8 coverage of `src`) and port `test/setup.js` to `test/setup.ts` (`@testing-library/jest-dom/vitest`, `matchMedia` stub); verify `pnpm nx test chartist` runs all 14 spec files and 146 tests pass without changing test content
 
 ## 2. Playground
 

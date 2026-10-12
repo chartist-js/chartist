@@ -98,7 +98,7 @@
     "@swc/core": "^1.2.165",
     "@swc/helpers": "^0.5.0",
     "@swc/jest": "^0.2.20",
-    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/jest-dom": "^7.0.1",
     "@types/jest": "^27.5.1",
     "@types/node": "^18.0.0",
     "@types/testing-library__jest-dom": "^5.14.5",
