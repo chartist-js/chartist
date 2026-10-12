@@ -1,0 +1,76 @@
+# Spec Delta
+
+## Purpose
+
+Defines the staged lifecycle every Chartist chart runs through, and how plugins and user code observe and transform each stage before anything is rendered.
+
+## ADDED Requirements
+
+### Requirement: Ordered pipeline phases
+
+Every chart render SHALL run the phases `resolve`, `prepare`, `layout`, `compose`, `scene`, `render` and `mount` in this order. Only `render` and `mount` SHALL produce or touch output (DOM, string or other renderer targets).
+
+#### Scenario: Phase order on initial render
+
+- **WHEN** a chart is created and rendered
+- **THEN** listeners observe the phase events in the order `resolve`, `prepare`, `layout`, `compose`, `scene`, `render`, `mount`
+
+#### Scenario: No output before render
+
+- **WHEN** listeners of `resolve`, `prepare`, `layout`, `compose` or `scene` run
+- **THEN** the chart has not created or modified any element in the output target
+
+### Requirement: Phase events can transform the chart
+
+Listeners of a phase event SHALL be able to modify that phase's payload: options in `resolve`, normalized data in `prepare`, axes, scales and chart area in `layout`, individual scene nodes in `compose` and the whole scene in `scene`. Later phases SHALL use the modified values.
+
+#### Scenario: Data transformation
+
+- **WHEN** a `prepare` listener appends a derived series to the normalized data
+- **THEN** the derived series is laid out and rendered like any other series
+
+#### Scenario: Reserving layout space
+
+- **WHEN** a `layout` listener reserves 40 px at the bottom of the chart for a legend
+- **THEN** the chart area, axes and series are laid out within the reduced area and the reserved space stays empty for the listener to fill
+
+### Requirement: Per-node compose events
+
+The `compose` phase SHALL emit one event per semantic scene node it creates (grid line, label, point, line, area, bar, slice, …). Each event SHALL carry the node, its role, and its data context (series index, value index, value, meta, axes, chart area).
+
+#### Scenario: Point event context
+
+- **WHEN** a line layer composes the third point of the second series
+- **THEN** a compose event is emitted with role `point`, series index 1, value index 2, the point's value and meta, and the scene node
+
+### Requirement: Synchronous, deterministic listeners
+
+Phase listeners SHALL run synchronously in registration order. Given the same data, options, size and listeners, the pipeline SHALL produce the same scene.
+
+#### Scenario: Registration order
+
+- **WHEN** two listeners are registered for the same phase
+- **THEN** the first registered listener runs first and the second sees its modifications
+
+### Requirement: Re-running the pipeline
+
+Data updates, option updates, responsive option changes and size changes SHALL re-run the pipeline from the earliest affected phase and emit the phase events again.
+
+#### Scenario: Container resize
+
+- **WHEN** the chart's container size changes
+- **THEN** the pipeline re-runs from `layout`, and `resolve` re-runs too if responsive options depend on size
+
+### Requirement: Plugin registration
+
+A v2 plugin SHALL be an object with a `name` and an `install(chart, options)` function, passed in the chart's `plugins` option. `install` runs before the first render and can register listeners for any phase event. The explicit shape lets v2 plugins be told apart from 1.x plugin functions.
+
+#### Scenario: Plugin hooks before first render
+
+- **WHEN** a chart is created with a v2 plugin in its options
+- **THEN** the plugin's `install` runs once and its listeners receive the events of the first render
+
+#### Scenario: Plugin with options
+
+- **WHEN** a plugin is passed as `[plugin, { position: 'bottom' }]`
+- **THEN** `install` receives the chart and `{ position: 'bottom' }`

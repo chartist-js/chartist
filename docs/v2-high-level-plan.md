@@ -37,7 +37,7 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 **Compatibility**
 
 - **Aim for zero breaking changes.** `LineChart`, `BarChart` and `PieChart` remain, as presets on top of the composable core.
-- Where v2 internals must differ, a **compat plugin** restores 1.x behavior (events, the `Svg` wrapper API in draw events, options). The same mechanism can let existing 0.x/1.x community plugins run on v2.
+- **Opt-in compat plugin** (`chartist/compat`, decided 2026-10-12). It restores the 1.x events, the `Svg` wrapper and 1.x plugins. The core ships no compat code; using 1.x events or plugins without it logs a one-time warning with migration instructions. The same mechanism can later let 0.x community plugins run on v2. Details: `openspec/changes/define-core-architecture` (design D6).
 
 **Ecosystem**
 
@@ -105,6 +105,17 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 3. **Library core:** modernize the moved 1.x source in `packages/chartist`, set up the build pipeline (ESM/CJS/UMD), tests and visual regression.
 4. **Docs site:** Astro app, implement the Claude Design output, playground and example gallery.
 5. **Release:** v2 beta, migration guide, launch.
+
+## Change roadmap (OpenSpec)
+
+1. `add-library-distribution`: ESM/browser ESM/UMD/CJS builds, exports map, Sass sources, size budgets. Implemented on a separate branch, pending merge.
+2. `define-core-architecture`: pipeline phases, scene graph, renderers, composition, responsive modes, v1 compat. Proposal, specs and design are written.
+3. `add-visual-regression-harness`: Playwright screenshot tests that **reuse the example definitions shared with the docs site**:
+   - The examples live as plain ESM files in a shared package. The docs site and the test harness both consume them.
+   - The harness renders each example in a minimal fixture page without docs chrome, so a docs redesign doesn't break the screenshots.
+   - The baseline is recorded from unchanged 1.5 code, then Storybook/storyshots are removed (deletion-only commit).
+4. Core implementation steps (see `define-core-architecture` design, "Migration Plan").
+5. Docs site (Astro), implementing `docs/visual-design`. It runs in parallel once examples exist.
 
 ## Open questions
 
