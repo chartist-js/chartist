@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chartist playground spike</title>
+    <style>
+      body {
+        margin: 0 auto;
+        padding: 16px;
+        max-width: 1280px;
+        font:
+          14px/1.4 system-ui,
+          sans-serif;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      nav button[aria-current='true'] {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Chartist playground spike</h1>
+    <nav>
+      <span id="examples"></span>
+      <label>
+        Type stripping
+        <select id="transformer">
+          <option value="sucrase">sucrase</option>
+          <option value="ts-blank-space">ts-blank-space</option>
+        </select>
+      </label>
+    </nav>
+    <div id="playground"></div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
