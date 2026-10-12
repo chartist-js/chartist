@@ -37,7 +37,8 @@
     "no-trailing-spaces": 2,
     "space-before-blocks": 2,
     "spaced-comment": 1,
-    "no-var": 2
+    "no-var": 2,
+    "prettier/prettier": 0
   },
   "overrides": [
     {

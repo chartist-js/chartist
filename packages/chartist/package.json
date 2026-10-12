@@ -83,7 +83,7 @@
     "test:unit": "jest -c jest.config.json ./src",
     "test": "pnpm lint && pnpm test:unit",
     "lint": "eslint './*.{js,ts,cjs}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' 'scripts/**/*.{js,ts,cjs}'",
-    "format": "prettier --write './*.{js,ts}' 'test/**/*.{js,ts}' 'src/**/*.{js,ts}' 'scripts/**/*.{cjs,js,ts}'",
+    "format": "echo \"Format from the workspace root: pnpm nx format\"",
     "test:smoke": "node --test \"test/smoke/*.test.mjs\"",
     "test:visual": "playwright test -c test/visual/playwright.config.ts",
     "test:visual:v1": "CHARTIST_LIB=v1 playwright test -c test/visual/playwright.config.ts",
