@@ -1,0 +1,95 @@
+/* Plain, unbranded layout. Brand styling comes with the docs site. */
+.playground {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border: 1px solid #ccc;
+  font:
+    14px/1.4 system-ui,
+    sans-serif;
+  min-height: 480px;
+}
+
+.playground-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid #ccc;
+  background: #f6f6f6;
+}
+
+.playground-tabs {
+  display: flex;
+  overflow-x: auto;
+}
+
+.playground-tab,
+.playground-stackblitz {
+  border: 0;
+  background: none;
+  padding: 6px 12px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.playground-tab[aria-selected='true'] {
+  background: #fff;
+  box-shadow: inset 0 -2px 0 #333;
+}
+
+.playground-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 0;
+}
+
+@media (max-width: 720px) {
+  .playground-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.playground-editor {
+  min-height: 240px;
+  overflow: auto;
+  border-right: 1px solid #ccc;
+}
+
+.playground-editor .cm-editor {
+  height: 100%;
+}
+
+.playground-output {
+  display: flex;
+}
+
+.playground-preview {
+  flex: 1;
+  border: 0;
+  min-height: 320px;
+  background: #fff;
+}
+
+.playground-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font:
+    12px/1.4 ui-monospace,
+    monospace;
+}
+
+.playground-panel li {
+  padding: 4px 8px;
+  border-top: 1px solid #eee;
+  white-space: pre-wrap;
+}
+
+.playground-error,
+.playground-log-error {
+  color: #b00020;
+  background: #fff0f0;
+}
+
+.playground-log-warn {
+  background: #fffbe6;
+}
