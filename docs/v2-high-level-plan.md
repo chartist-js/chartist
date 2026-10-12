@@ -117,14 +117,14 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 
 1. `add-library-distribution`: ESM/browser ESM/UMD/CJS builds, exports map, Sass sources, size budgets. Done (archived, spec `library-distribution`).
 2. `define-core-architecture`: pipeline phases, scene graph, renderers, composition, responsive modes, v1 compat. Proposal, specs and design are written.
-3. `add-visual-regression-harness`: Playwright screenshot tests that **reuse the example definitions shared with the docs site**. Implemented, pending archive:
+3. `add-visual-regression-harness`: Playwright screenshot tests that **reuse the example definitions shared with the docs site**. Done (archived, specs `chart-examples` and `visual-regression`):
    - The examples live in `packages/examples` (private `@chartist/examples`) as small HTML + TypeScript + CSS projects (Vite app shape) with a typed manifest: the 32 1.x sandboxes plus test-only ports of the 1.x story cases. The docs site, the playground and the test harness all consume them.
    - The harness serves each example's own page with Vite, adding only a test font and a fixed container size, so a docs redesign doesn't break the screenshots.
    - The baseline (67 images) is recorded from published 1.5.0, and the local build matches it. Storybook and storyshots are removed.
    - chartist.dev's CodeSandbox embeds point at the sandboxes on `main`, which keeps them until the v2 release.
 4. Core implementation steps (see `define-core-architecture` design, "Migration Plan").
 5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
-   - Spike done 2026-10-12 (`add-playground-repl`, `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
+   - Spike done 2026-10-12 (`add-playground-repl`, archived, spec `example-playground`; `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
    - Decided with the author (2026-10-12):
      - **sucrase** for type stripping (44 kB gzipped, cold start ~1 s on a throttled connection) over ts-blank-space (944 kB with `typescript`, ~4 s). Error messages are comparable.
      - Examples import types with `import type` / inline `type` and use only erasable syntax (`verbatimModuleSyntax`, `erasableSyntaxOnly`, enforced by the examples' type check). The `npm create vite` tsconfig fails on the 1.x style too.
