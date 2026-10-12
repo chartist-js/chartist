@@ -1,0 +1,286 @@
+{
+  "v": 3,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-11T21:46:37Z"
+  },
+  "title": "Chartist v2 — Brand & Docs Redesign",
+  "launch": {
+    "view": "canvas"
+  },
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 1000,
+      "title": "00 · Chartist v2 — the soul of 0.x, made for today"
+    },
+    "MascotPoses.dc.html": {
+      "x": 1520,
+      "y": 0,
+      "w": 1440,
+      "h": 1200,
+      "title": "01 · Mascot — poses, chart slot, avatar"
+    },
+    "Logo.dc.html": {
+      "x": 3040,
+      "y": 0,
+      "w": 1440,
+      "h": 1200,
+      "title": "02 · Logomark & wordmark"
+    },
+    "Color.dc.html": {
+      "x": 0,
+      "y": 1580,
+      "w": 1440,
+      "h": 1500,
+      "title": "03 · Color system & chart palette"
+    },
+    "Typography.dc.html": {
+      "x": 1520,
+      "y": 1580,
+      "w": 1440,
+      "h": 1150,
+      "title": "04 · Typography"
+    },
+    "Mascot.dc.html": {
+      "x": 0,
+      "y": 3460,
+      "w": 480,
+      "h": 420,
+      "title": "<Mascot pose>"
+    },
+    "Logomark.dc.html": {
+      "x": 560,
+      "y": 3460,
+      "w": 128,
+      "h": 128,
+      "title": "<Logomark variant>"
+    },
+    "VoiceMotion.dc.html": {
+      "x": 3040,
+      "y": 1580,
+      "w": 1440,
+      "h": 1250,
+      "title": "05–06 · Voice & motion",
+      "is_interactive": true
+    },
+    "Tokens.dc.html": {
+      "x": 4560,
+      "y": 1580,
+      "w": 1440,
+      "h": 1400,
+      "title": "07 · Design tokens → chart theme",
+      "is_interactive": true
+    },
+    "OgCard.dc.html": {
+      "x": 6080,
+      "y": 1580,
+      "w": 1200,
+      "h": 630,
+      "title": "08 · Social / OG card template"
+    },
+    "Chart.dc.html": {
+      "x": 768,
+      "y": 3460,
+      "w": 400,
+      "h": 240,
+      "title": "<Chart kind data options>"
+    },
+    "LiveExample.dc.html": {
+      "x": 1248,
+      "y": 3460,
+      "w": 1240,
+      "h": 420,
+      "title": "<LiveExample> — inline playground",
+      "is_interactive": true
+    },
+    "SiteHeader.dc.html": {
+      "x": 2568,
+      "y": 3460,
+      "w": 1440,
+      "h": 72,
+      "title": "<SiteHeader>",
+      "is_interactive": true
+    },
+    "SiteFooter.dc.html": {
+      "x": 2568,
+      "y": 3612,
+      "w": 1440,
+      "h": 420,
+      "title": "<SiteFooter> with sponsor line"
+    },
+    "Landing.dc.html": {
+      "x": 0,
+      "y": 4420,
+      "w": 1440,
+      "h": 5200,
+      "title": "Landing — light",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "LandingDark.dc.html": {
+      "x": 0,
+      "y": 10000,
+      "w": 1440,
+      "h": 5200,
+      "title": "Landing — dark",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "MobileLanding.dc.html": {
+      "x": 1520,
+      "y": 10000,
+      "w": 390,
+      "h": 7400,
+      "title": "Mobile · Landing — dark",
+      "is_interactive": true
+    },
+    "GettingStarted.dc.html": {
+      "x": 1520,
+      "y": 4420,
+      "w": 1440,
+      "h": 3300,
+      "title": "Getting started — docs page template",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "MobileDocs.dc.html": {
+      "x": 1990,
+      "y": 10000,
+      "w": 390,
+      "h": 5200,
+      "title": "Mobile · Getting started — light",
+      "is_interactive": true
+    },
+    "Examples.dc.html": {
+      "x": 3040,
+      "y": 4420,
+      "w": 1440,
+      "h": 2400,
+      "title": "Examples gallery",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Playground.dc.html": {
+      "x": 4560,
+      "y": 4420,
+      "w": 1440,
+      "h": 900,
+      "title": "Playground — full screen, dark",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "MobilePlayground.dc.html": {
+      "x": 2460,
+      "y": 10000,
+      "w": 390,
+      "h": 1200,
+      "title": "Mobile · Playground — dark",
+      "is_interactive": true
+    },
+    "Api.dc.html": {
+      "x": 6080,
+      "y": 4420,
+      "w": 1440,
+      "h": 3300,
+      "title": "API reference — dark",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Plugins.dc.html": {
+      "x": 7600,
+      "y": 4420,
+      "w": 1440,
+      "h": 2100,
+      "title": "Plugins",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "NotFound.dc.html": {
+      "x": 9120,
+      "y": 4420,
+      "w": 1440,
+      "h": 1240,
+      "title": "404 — dark",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "MobileNotFound.dc.html": {
+      "x": 2930,
+      "y": 10000,
+      "w": 390,
+      "h": 1700,
+      "title": "Mobile · 404 — light",
+      "is_interactive": true
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "MascotPoses.dc.html",
+    "Logo.dc.html",
+    "Color.dc.html",
+    "Typography.dc.html",
+    "VoiceMotion.dc.html",
+    "Tokens.dc.html",
+    "OgCard.dc.html",
+    "Mascot.dc.html",
+    "Logomark.dc.html",
+    "Chart.dc.html",
+    "LiveExample.dc.html",
+    "SiteHeader.dc.html",
+    "SiteFooter.dc.html",
+    "Landing.dc.html",
+    "LandingDark.dc.html",
+    "MobileLanding.dc.html",
+    "GettingStarted.dc.html",
+    "MobileDocs.dc.html",
+    "Examples.dc.html",
+    "Playground.dc.html",
+    "MobilePlayground.dc.html",
+    "Api.dc.html",
+    "Plugins.dc.html",
+    "NotFound.dc.html",
+    "MobileNotFound.dc.html"
+  ],
+  "notes": {
+    "rowBrand": {
+      "x": 0,
+      "y": -280,
+      "text": "Brand — for sign-off",
+      "kind": "title1",
+      "maxW": 4480
+    },
+    "rowSystem": {
+      "x": 0,
+      "y": 1300,
+      "text": "Brand system",
+      "kind": "title1",
+      "maxW": 7280
+    },
+    "rowComponents": {
+      "x": 0,
+      "y": 3180,
+      "text": "Components (Astro islands)",
+      "kind": "title1",
+      "maxW": 4008
+    },
+    "rowPages": {
+      "x": 0,
+      "y": 4140,
+      "text": "Docs website — desktop",
+      "kind": "title1",
+      "maxW": 10560
+    },
+    "rowAlt": {
+      "x": 0,
+      "y": 9720,
+      "text": "Dark mode & mobile",
+      "kind": "title1",
+      "maxW": 3320
+    }
+  },
+  "designSystems": []
+}

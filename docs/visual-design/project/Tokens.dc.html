@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Design tokens</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; height: 1400px; box-sizing: border-box; padding: 64px 80px; display: flex; flex-direction: column; gap: 32px; background: var(--bg)">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">07 · Design tokens</span>
+      <h2 style="font-size: 56px; line-height: 1">One stylesheet for the site, the guy and the charts</h2>
+    </div>
+    <p class="muted" style="max-width: 460px; font-size: 17px">Three layers of CSS custom properties. The docs site, the mascot SVG and the library's default theme all read from the same file, so they can never drift apart.</p>
+  </div>
+
+  <!-- three layers -->
+  <div style="display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr; align-items: stretch; gap: 0">
+    <div class="card flat" style="padding: 20px 22px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+      <span class="eyebrow">1 · Primitives</span>
+      <p style="font-size: 14px">Raw values with names. Never used directly by components.</p>
+      <div class="code" style="font-size: 12.5px"><pre><span class="k">--p-waistcoat-500</span>: <span class="s">#C8102E</span>;
+<span class="k">--p-cream-100</span>: <span class="s">#FBF6EE</span>;
+<span class="k">--p-ink-800</span>: <span class="s">#2B2426</span>;
+<span class="k">--p-mustard-400</span>: <span class="s">#F4C63D</span>;</pre></div>
+    </div>
+    <svg viewBox="0 0 40 40" aria-hidden="true" style="align-self: center"><path d="M6,20 H32 M24,12 L32,20 L24,28" fill="none" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    <div class="card flat" style="padding: 20px 22px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+      <span class="eyebrow">2 · Semantic (themed)</span>
+      <p style="font-size: 14px">Meaning, not color. <code>.cx</code> is light, <code>.cx.dark</code> remaps the same names.</p>
+      <div class="code" style="font-size: 12.5px"><pre><span class="k">--brand</span>: <span class="f">var</span>(--p-waistcoat-500);
+<span class="k">--bg</span>: <span class="f">var</span>(--p-cream-100);
+<span class="k">--ink</span>: <span class="f">var</span>(--p-ink-800);
+<span class="k">--ct-series-a</span>: <span class="s">#d70206</span>;</pre></div>
+    </div>
+    <svg viewBox="0 0 40 40" aria-hidden="true" style="align-self: center"><path d="M6,20 H32 M24,12 L32,20 L24,28" fill="none" stroke="var(--ink-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    <div class="card flat" style="padding: 20px 22px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+      <span class="eyebrow">3 · Components</span>
+      <p style="font-size: 14px">Site components, mascot parts and <code>.ct-*</code> chart classes consume semantic tokens only.</p>
+      <div class="code" style="font-size: 12.5px"><pre>.<span class="f">btn.primary</span> { background: <span class="f">var</span>(--brand) }
+.<span class="f">ct-series-a</span> { --ct-color: <span class="f">var</span>(--ct-series-a) }
+.<span class="f">ct-line</span> { stroke: <span class="f">var</span>(--ct-color) }
+.<span class="f">m-vest</span> { fill: <span class="f">var</span>(--m-vest) }</pre></div>
+    </div>
+  </div>
+
+  <!-- live theming demo -->
+  <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px">
+    <div class="card" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+        <strong style="font-family: var(--font-display); font-size: 24px">Same SVG, different tokens</strong>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap" role="group" aria-label="Chart theme">
+          <sc-for list="{{themes}}" as="t" hint-placeholder-count="4">
+            <button class="chip" type="button" aria-pressed="{{t.pressed}}" onClick="{{t.pick}}">{{t.label}}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div class="{{stageClass}}" style="background: var(--surface); border-radius: var(--r-lg); padding: 18px 18px 10px; border: 1px solid var(--line)">
+        <svg class="ct-svg" viewBox="0 0 520 220" role="img" aria-label="Line and bar chart restyled only through CSS custom properties">
+          <path class="ct-grid" d="M40,30 H510 M40,80 H510 M40,130 H510 M40,180 H510"></path>
+          <g class="ct-label" text-anchor="end"><text x="32" y="34">300</text><text x="32" y="84">200</text><text x="32" y="134">100</text><text x="32" y="184">0</text></g>
+          <rect class="ct-bar ct-series-c" x="64" y="120" width="22" height="60" rx="3"></rect>
+          <rect class="ct-bar ct-series-c" x="142" y="96" width="22" height="84" rx="3"></rect>
+          <rect class="ct-bar ct-series-c" x="220" y="110" width="22" height="70" rx="3"></rect>
+          <rect class="ct-bar ct-series-c" x="298" y="84" width="22" height="96" rx="3"></rect>
+          <rect class="ct-bar ct-series-c" x="376" y="100" width="22" height="80" rx="3"></rect>
+          <rect class="ct-bar ct-series-c" x="454" y="70" width="22" height="110" rx="3"></rect>
+          <g class="ct-series-b"><path class="ct-line" d="M75,140 C110,138 130,110 153,112 C180,114 200,96 231,100 C262,104 280,80 309,78 C340,76 360,90 387,88 C420,86 440,60 465,56"></path><circle class="ct-dot" cx="153" cy="112" r="4.5"></circle><circle class="ct-dot" cx="309" cy="78" r="4.5"></circle><circle class="ct-dot" cx="465" cy="56" r="4.5"></circle></g>
+          <g class="ct-series-a"><path class="ct-line" d="M75,110 C110,104 130,70 153,76 C180,82 200,60 231,58 C262,56 280,40 309,46 C340,52 360,36 387,40 C420,44 440,30 465,26"></path><circle class="ct-dot" cx="153" cy="76" r="4.5"></circle><circle class="ct-dot" cx="309" cy="46" r="4.5"></circle><circle class="ct-dot" cx="465" cy="26" r="4.5"></circle></g>
+          <g class="ct-label" text-anchor="middle"><text x="75" y="206">Mon</text><text x="153" y="206">Tue</text><text x="231" y="206">Wed</text><text x="309" y="206">Thu</text><text x="387" y="206">Fri</text><text x="465" y="206">Sat</text></g>
+        </svg>
+      </div>
+      <p class="muted" style="font-size: 13px">No JavaScript option changes here: only the wrapper's class swaps, and the CSS custom properties do the rest.</p>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 16px">
+      <div class="code" style="flex: 1"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">what changed</span></div><pre style="white-space: pre-wrap">{{snippet}}</pre></div>
+      <div class="card flat" style="padding: 18px 20px; background: var(--surface); display: flex; flex-direction: column; gap: 8px">
+        <strong>Shipped as</strong>
+        <ul style="margin: 0; padding-left: 18px; font-size: 14px; display: flex; flex-direction: column; gap: 4px">
+          <li><code>chartist/tokens.css</code>: everything on this page as custom properties</li>
+          <li><code>chartist/tokens.json</code>: the same values in W3C design-token format, for Figma and Style Dictionary</li>
+          <li><code>chartist/themes/accessible.css</code>: the opt-in palette</li>
+          <li>Docs site: <code>@import 'chartist/tokens.css'</code> in the Astro base layout</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- token tables -->
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; font-size: 13px">
+    <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><strong>Space</strong><code style="width: fit-content">--sp-1 … --sp-10</code><span class="muted">4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 · 96 · 128</span></div>
+    <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><strong>Radius</strong><code style="width: fit-content">--r-sm … --r-pill</code><span class="muted">6 · 10 · 16 · 24 · 999</span></div>
+    <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><strong>Shadow</strong><code style="width: fit-content">--shadow-2 · --shadow-3</code><span class="muted">Hard offset "printed" shadows in Ink, never blurred grays. <code>--shadow-soft</code> for overlays only.</span></div>
+    <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><strong>Chart</strong><code style="width: fit-content">--ct-line-width · --ct-point-size</code><span class="muted">3 px lines, 9 px points, 12 px bars, 28 px donuts, dashed 2/4 grid at 18% Ink.</span></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1400}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: 'classic' }; }
+  renderVals() {
+    const cur = this.state.theme;
+    const list = [
+      { id: 'classic', label: 'Classic', cls: '', snippet: '/* nothing: this is the v2 default,\n   identical to 1.5 */\n<div class="ct-chart">' },
+      { id: 'classic-dark', label: 'Classic · dark', cls: 'cx dark', snippet: '/* site in dark mode: semantic tokens remap */\n.cx.dark {\n  --surface: #262022;\n  --ct-grid-color: color-mix(in oklab, #F3EADB 18%, transparent);\n  --ct-series-g: #4D7EF2; /* lifted */\n}' },
+      { id: 'accessible', label: 'Accessible', cls: 'ct-theme-accessible', snippet: "@import 'chartist/themes/accessible.css';\n\n<div class=\"ct-chart ct-theme-accessible\">\n/* --ct-series-a: #D7263D\n   --ct-series-b: #2B6CD8\n   --ct-series-c: #B07800 … */" },
+      { id: 'custom', label: 'Your brand', cls: 'tok-custom', snippet: '/* two lines of CSS, no JS */\n.my-dashboard {\n  --ct-series-a: #00917F;\n  --ct-series-b: #8445B0;\n  --ct-series-c: #F4C63D;\n  --ct-line-width: 5px;\n  --ct-grid-dasharray: none;\n}' }
+    ];
+    const t = list.find((x) => x.id === cur) || list[0];
+    return {
+      themes: list.map((x) => ({ label: x.label, pressed: x.id === cur ? 'true' : 'false', pick: () => this.setState({ theme: x.id }) })),
+      stageClass: t.cls,
+      snippet: t.snippet
+    };
+  }
+}
+</script>
+</body>
+</html>

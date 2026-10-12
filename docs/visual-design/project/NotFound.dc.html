@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Page not found — Chartist</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh; display: flex; flex-direction: column">
+  <dc-import name="SiteHeader" active="none" theme="{{theme}}" on-toggle-theme="{{toggleTheme}}" hint-size="100%,72px"></dc-import>
+  <main class="wrap" style="flex: 1; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); align-items: center; gap: 24px 56px; padding-block: 48px 72px">
+    <div style="max-width: 560px; justify-self: center; width: 100%"><dc-import name="Mascot" pose="lost" hint-size="100%,490px"></dc-import></div>
+    <div style="display: flex; flex-direction: column; gap: 18px">
+      <span class="eyebrow">Error 404</span>
+      <h1 class="display" style="font-size: clamp(2.5rem, 6vw, 4.5rem)">Well, this chart fell over.</h1>
+      <p class="lead">The page you're after isn't here. Maybe it moved in v2, maybe it never existed. Let's get you back to something that plots.</p>
+      <label class="search" style="max-width: 420px; min-height: 48px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input type="search" placeholder="Search the docs" aria-label="Search the docs" style="font-size: 16px">
+      </label>
+      <div style="display: flex; flex-wrap: wrap; gap: 12px"><a class="btn primary" href="Landing.dc.html">Back to the homepage</a><a class="btn" href="GettingStarted.dc.html">Getting started</a></div>
+      <p class="muted" style="font-size: 14px">Looking for the old docs? <a href="#v1">v1.5</a> and <a href="#v0">v0.11</a> are archived and still online.</p>
+    </div>
+  </main>
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"dark"},"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: null }; }
+  renderVals() {
+    const theme = this.state.theme || this.props.theme || 'dark';
+    return { theme, rootClass: theme === 'dark' ? 'cx dark' : 'cx', toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }) };
+  }
+}
+</script>
+</body>
+</html>

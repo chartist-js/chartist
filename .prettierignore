@@ -6,3 +6,4 @@
 .nx/self-healing/tmp
 pnpm-lock.yaml
 /.claude
+/docs/visual-design/project

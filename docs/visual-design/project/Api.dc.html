@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>LineChart API — Chartist</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh">
+  <dc-import name="SiteHeader" active="api" theme="{{theme}}" on-toggle-theme="{{toggleTheme}}" hint-size="100%,72px"></dc-import>
+  <div class="wrap docs">
+    <aside class="docs-side" aria-label="API">
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--ink-2); padding: 0 12px">Version<select class="version"><option>v2.0 (current)</option><option>v1.5</option><option>v0.11 (archive)</option></select></label>
+      <sc-for list="{{nav}}" as="grp" hint-placeholder-count="4">
+        <div class="side-group">
+          <h4>{{grp.title}}</h4>
+          <sc-for list="{{grp.links}}" as="l" hint-placeholder-count="3"><a class="side-link" href="#{{l.id}}" aria-current="{{l.current}}"><code style="background: transparent; border: 0; padding: 0; font-size: 13.5px">{{l.label}}</code></a></sc-for>
+        </div>
+      </sc-for>
+    </aside>
+
+    <main class="docs-main">
+      <nav aria-label="Breadcrumb" style="font-size: 14px; color: var(--ink-2); display: flex; gap: 8px"><a href="#api" style="color: var(--ink-2)">API</a><span aria-hidden="true">/</span><span>Charts</span></nav>
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap"><h1 style="font-size: var(--fs-4xl)"><code style="background: transparent; border: 0; padding: 0; font-family: var(--font-display); font-size: inherit">LineChart</code></h1><span class="tag">class</span><span class="tag ok">stable</span></div>
+        <p class="lead">Draws line, area and scatter charts. Each series becomes a <code>&lt;g class="ct-series"&gt;</code> with a path, optional area and one element per point.</p>
+      </div>
+
+      <div class="code"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">signature</span></div><pre><span class="k">new</span> <span class="f">LineChart</span>(
+  query: <span class="n">string</span> | <span class="n">Element</span>,
+  data: <span class="n">LineChartData</span>,
+  options?: <span class="n">LineChartOptions</span>,
+  responsiveOptions?: <span class="n">ResponsiveOptions</span>&lt;<span class="n">LineChartOptions</span>&gt;
+)</pre></div>
+
+      <!-- mini demo -->
+      <section class="card" style="padding: 20px 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); gap: 20px; align-items: center" aria-label="Try the options">
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <strong style="font: 700 20px var(--font-display)">Try the options</strong>
+          <sc-for list="{{toggles}}" as="t" hint-placeholder-count="4">
+            <label style="display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; font-size: 15px"><code>{{t.name}}</code><input type="checkbox" checked="{{t.on}}" onChange="{{t.flip}}" style="width: 20px; height: 20px; accent-color: var(--brand)"></label>
+          </sc-for>
+        </div>
+        <div style="background: var(--bg); border-radius: var(--r-md); padding: 12px"><dc-import name="Chart" kind="{{demoKind}}" options="{{demoOpts}}" data="{{demoData}}" animate="{{ false }}" hint-size="100%,220px"></dc-import></div>
+      </section>
+
+      <article class="prose">
+        <h2 id="options">Options</h2>
+        <p>All options are optional. Defaults shown are the v2 defaults, unchanged from 1.5.</p>
+      </article>
+      <div style="overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-lg)">
+        <table class="opt-table" style="min-width: 640px">
+          <thead><tr><th scope="col">Option</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+            <sc-for list="{{options}}" as="o" hint-placeholder-count="10">
+              <tr><td><code>{{o.name}}</code></td><td><span class="type">{{o.type}}</span></td><td><code>{{o.def}}</code></td><td>{{o.desc}}</td></tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+
+      <article class="prose">
+        <h2 id="events">Events</h2>
+        <p>Subscribe with <code>chart.on(name, handler)</code>. The <code>draw</code> event fires for every SVG element and is the hook for custom animations and plugins.</p>
+      </article>
+      <div style="overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r-lg)">
+        <table class="opt-table" style="min-width: 560px">
+          <thead><tr><th scope="col">Event</th><th scope="col">Payload</th><th scope="col">When</th></tr></thead>
+          <tbody>
+            <tr><td><code>draw</code></td><td><span class="type">{ type, element, index, series, … }</span></td><td>For each line, point, area, grid line and label as it's created.</td></tr>
+            <tr><td><code>created</code></td><td><span class="type">{ svg, options, axisX, axisY, … }</span></td><td>After the whole chart has been drawn.</td></tr>
+            <tr><td><code>data</code></td><td><span class="type">{ type, data }</span></td><td>When data is set initially or updated, before drawing.</td></tr>
+            <tr><td><code>optionsChanged</code></td><td><span class="type">{ previousOptions, currentOptions }</span></td><td>When a responsive breakpoint switches the active options.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">example · fade points in one by one</span></div><pre>chart.<span class="f">on</span>(<span class="s">'draw'</span>, (ctx) =&gt; {
+  <span class="k">if</span> (ctx.type === <span class="s">'point'</span>) {
+    ctx.element.<span class="f">attr</span>({ style: <span class="s">`animation-delay: ${ctx.index * 80}ms`</span> });
+  }
+});</pre></div>
+
+      <article class="prose">
+        <h2 id="methods">Methods</h2>
+      </article>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 12px">
+        <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><code style="font-weight: 700; width: fit-content">update(data?, options?, override?)</code><span class="muted" style="font-size: 14px">Redraw with new data or options. Options merge unless <code>override</code> is true.</span></div>
+        <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><code style="font-weight: 700; width: fit-content">on(event, handler) · off(event, handler?)</code><span class="muted" style="font-size: 14px">Add or remove event listeners.</span></div>
+        <div class="card flat" style="padding: 16px 18px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><code style="font-weight: 700; width: fit-content">detach()</code><span class="muted" style="font-size: 14px">Remove listeners and resize handlers, e.g. before unmounting a component.</span></div>
+      </div>
+
+      <nav class="pager" aria-label="Previous and next">
+        <a href="#api"><span class="muted" style="font-size: 13px">← Previous</span><strong style="font: 700 19px var(--font-display)">API overview</strong></a>
+        <a href="#BarChart" style="text-align: right"><span class="muted" style="font-size: 13px">Next →</span><strong style="font: 700 19px var(--font-display)">BarChart</strong></a>
+      </nav>
+    </main>
+
+    <nav class="docs-toc" aria-label="On this page">
+      <span class="eyebrow" style="margin-bottom: 4px">On this page</span>
+      <a class="toc-link" href="#options" aria-current="true">Options</a>
+      <a class="toc-link" href="#events">Events</a>
+      <a class="toc-link" href="#methods">Methods</a>
+    </nav>
+  </div>
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"dark"},"$preview":{"width":1440,"height":3300}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: null, showArea: true, showPoint: true, lineSmooth: true, showLine: true }; }
+  renderVals() {
+    const theme = this.state.theme || this.props.theme || 'dark';
+    const N = [
+      { title: 'Charts', links: [['LineChart', true], ['BarChart'], ['PieChart']] },
+      { title: 'Axes', links: [['AutoScaleAxis'], ['FixedScaleAxis'], ['StepAxis']] },
+      { title: 'Interpolation', links: [['none'], ['simple'], ['cardinal'], ['monotoneCubic'], ['step']] },
+      { title: 'Core', links: [['Svg'], ['EventEmitter'], ['Plugins']] }
+    ];
+    const keys = ['showLine', 'showPoint', 'showArea', 'lineSmooth'];
+    const s = this.state;
+    return {
+      theme, rootClass: theme === 'dark' ? 'cx dark' : 'cx',
+      toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }),
+      nav: N.map((g) => ({ title: g.title, links: g.links.map(([id, cur]) => ({ id, label: id, current: cur ? 'page' : 'false' })) })),
+      toggles: keys.map((k) => ({ name: k + ': ' + s[k], on: s[k], flip: () => this.setState({ [k]: !s[k] }) })),
+      demoKind: s.lineSmooth ? 'smooth' : 'line',
+      demoOpts: { showArea: s.showArea, showPoint: s.showPoint, showLine: s.showLine },
+      demoData: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], series: [[5, 9, 7, 8, 5, 6], [2, 4, 3, 6, 3, 2]] },
+      options: [
+        { name: 'showLine', type: 'boolean', def: 'true', desc: 'Draw the line path for each series.' },
+        { name: 'showPoint', type: 'boolean', def: 'true', desc: 'Draw a point for each value.' },
+        { name: 'showArea', type: 'boolean', def: 'false', desc: 'Fill the area between the line and areaBase.' },
+        { name: 'areaBase', type: 'number', def: '0', desc: 'Value the area closes against.' },
+        { name: 'lineSmooth', type: 'boolean | Interpolation', def: 'true', desc: 'Smooth lines with cardinal interpolation, or pass another interpolation function.' },
+        { name: 'fullWidth', type: 'boolean', def: 'false', desc: 'Stretch the last point to the right edge of the chart area.' },
+        { name: 'low · high', type: 'number', def: 'undefined', desc: 'Override the natural minimum or maximum of the y-axis.' },
+        { name: 'chartPadding', type: 'number | Padding', def: '{ top: 15, right: 15, bottom: 5, left: 10 }', desc: 'Space between the chart area and the container.' },
+        { name: 'axisX · axisY', type: 'AxisOptions', def: 'see Axes', desc: 'Offset, position, labels, grid and axis type per axis.' },
+        { name: 'showGridBackground', type: 'boolean', def: 'false', desc: 'Add a background rect to the grid group.' },
+        { name: 'reverseData', type: 'boolean', def: 'false', desc: 'Reverse labels, series order and series data.' },
+        { name: 'width · height', type: 'string | number', def: 'undefined', desc: 'Fixed size; leave unset for the responsive container size.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

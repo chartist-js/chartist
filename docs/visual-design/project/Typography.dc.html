@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Typography</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; height: 1150px; box-sizing: border-box; padding: 64px 80px; display: flex; flex-direction: column; gap: 32px; background: var(--bg)">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">04 · Typography</span>
+      <h2 style="font-size: 56px; line-height: 1">Cheeky headlines, very legible docs</h2>
+    </div>
+    <p class="muted" style="max-width: 480px; font-size: 17px">Three free Google Fonts. Headlines tip their hat to the Chartist press. Body text stays humanist like the 2014 Oxygen, and Atkinson was designed for readers with low vision.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1.35fr 1fr; gap: 24px">
+    <div class="card" style="padding: 36px 40px; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span class="eyebrow">Display · Zilla Slab 700 · −1.5%</span>
+        <p style="font: 700 86px/0.98 var(--font-display); letter-spacing: -0.015em">Simple charts, <span class="hl">dressed in CSS.</span></p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 22px">
+        <span class="eyebrow">Body · Atkinson Hyperlegible Next 400/700 · 18/29</span>
+        <p style="font-size: 18px; line-height: 1.6; max-width: 640px">Chartist draws plain SVG and leaves the styling to you. Every line, bar and label gets a class, so your stylesheet is in charge. Distinct letterforms (Il1, O0, rn/m) keep option names and numbers unambiguous.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 22px">
+        <span class="eyebrow">Code · Atkinson Hyperlegible Mono 400 · 14/23</span>
+        <div class="code"><pre><span class="k">import</span> { <span class="f">LineChart</span> } <span class="k">from</span> <span class="s">'chartist'</span>;
+<span class="k">new</span> <span class="f">LineChart</span>(<span class="s">'#chart'</span>, { labels: [<span class="s">'1st'</span>, <span class="s">'2nd'</span>, <span class="s">'3rd'</span>], series: [[<span class="n">1.28</span>, <span class="n">1.5</span>, <span class="n">5.7</span>]] });</pre></div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 24px">
+      <div class="card flat" style="padding: 24px 28px; background: var(--surface); display: flex; flex-direction: column; gap: 4px">
+        <strong style="font-family: var(--font-display); font-size: 20px; margin-bottom: 8px">Scale · 1.25, fluid at the top</strong>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding: 6px 0"><code style="width: fit-content">5xl</code><span style="font: 700 40px/1.1 var(--font-display); letter-spacing: -0.015em">Hero</span><span class="muted" style="font-size: 13px">44 → 88</span></div>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding: 6px 0"><code style="width: fit-content">4xl</code><span style="font: 700 32px/1.1 var(--font-display); letter-spacing: -0.01em">Page title</span><span class="muted" style="font-size: 13px">36 → 56</span></div>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding: 6px 0"><code style="width: fit-content">2xl</code><span style="font: 700 28px/1.2 var(--font-display); letter-spacing: -0.01em">Section</span><span class="muted" style="font-size: 13px">28</span></div>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding: 6px 0"><code style="width: fit-content">xl</code><span style="font: 700 22px/1.2 var(--font-display)">Subsection</span><span class="muted" style="font-size: 13px">22</span></div>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding: 6px 0"><code style="width: fit-content">lg</code><span style="font-size: 18px">Docs prose</span><span class="muted" style="font-size: 13px">18</span></div>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; border-bottom: 1px solid var(--line); padding: 6px 0"><code style="width: fit-content">md</code><span style="font-size: 16px">UI, tables</span><span class="muted" style="font-size: 13px">16</span></div>
+        <div style="display: grid; grid-template-columns: 70px 1fr 90px; align-items: baseline; gap: 12px; padding: 6px 0"><code style="width: fit-content">xs</code><span class="eyebrow" style="font-size: 12px">Eyebrow · labels</span><span class="muted" style="font-size: 13px">12 mono</span></div>
+      </div>
+      <div class="card flat" style="padding: 24px 28px; background: var(--surface); display: flex; flex-direction: column; gap: 14px">
+        <strong style="font-family: var(--font-display); font-size: 22px">Why Zilla Slab</strong>
+        <p style="font: 700 46px/1 var(--font-display); letter-spacing: -0.01em">Aa Gg Rr 1848</p>
+        <p style="font-size: 15px">Slab serifs were the headline type of the 1840s press. Clarendon was cut in 1845, in the middle of the Chartist years. Zilla Slab carries that spirit with soft, sturdy shapes that match the 2 px outlines, offset shadows and flat mascot. It belongs to the same family as the UI instead of fighting it.</p>
+        <p class="muted" style="font-size: 13px">Rules: display sizes only (22 px and up), weights 600–700, never for body, UI labels or code. Also tried: Grenze (too calligraphic next to the cartoon shadows), Alfa Slab One (too loud), Young Serif (looser press reference).</p>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1150}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

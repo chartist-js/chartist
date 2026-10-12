@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chartist v2 — brand overview</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; height: 1000px; position: relative; overflow: hidden; display: grid; grid-template-columns: 640px 1fr; background: var(--bg)">
+  <div style="padding: 72px 0 64px 80px; display: flex; flex-direction: column; gap: 28px; position: relative; z-index: 1">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <svg width="44" height="44" viewBox="300 62 128 128" role="img" aria-label="Chartist logomark" style="background: #F4C63D; border-radius: 10px; flex: none"><circle cx="409" cy="150" r="10" fill="#E2A47C"></circle><path d="M343,118 L403,118 Q408,118 408,124 L408,198 Q408,222 386,222 L348,222 Q324,222 322,212 Q322,203 333,197 L337,176 L348,160 L321,158 Q312,157 316,149 L335,121 Q337,118 343,118 Z" fill="#E2A47C"></path><ellipse cx="358" cy="136" rx="4.6" ry="6.2" fill="#2B2426"></ellipse><ellipse cx="384" cy="136" rx="4.6" ry="6.2" fill="#2B2426"></ellipse><path d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="#2B2426"></path><ellipse cx="372" cy="120" rx="54" ry="7" fill="#2B2426"></ellipse><path d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="#2B2426"></path><ellipse cx="372" cy="73" rx="35" ry="5" fill="#453B3E" opacity="1"></ellipse><path d="M338.9,104 Q372,110 405.1,104 L404.3,116 Q372,122 339.7,116 Z" fill="#C8102E"></path></svg>
+      <span class="eyebrow">Brand &amp; docs redesign · proposal · Oct 2026</span>
+    </div>
+    <h1 class="display" style="font-size: 104px; margin: 0">Chartist <span style="color: var(--brand)">v2</span></h1>
+    <p class="lead" style="max-width: 500px; color: var(--ink)">Bring back the soul of 0.x, made for today. The same well-dressed gentleman, the same chart on his easel, retailored for SVG, CSS custom properties and dark mode.</p>
+    <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 8px; max-width: 520px">
+      <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start"><span class="tag accent" style="justify-content: center">01</span><p><strong>Same gentleman, new tailoring.</strong> The 3/4 profile with the angled face, top hat, handlebar moustache, red waistcoat and easel all stay. So does the hay fork in his left hand.</p></div>
+      <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start"><span class="tag accent" style="justify-content: center">02</span><p><strong>The board chart stays.</strong> His board still plots the chart of the 2014 site, labelled just 1st, 2nd, 3rd.</p></div>
+      <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start"><span class="tag accent" style="justify-content: center">03</span><p><strong>Warm palette, grown up.</strong> Cream <code>#EADBC4</code> becomes Paper, red becomes Waistcoat, yellow becomes the Mustard logo tile, warm gray <code>#453D3F</code> becomes Ink. Chart colors stay exactly as in 1.5, plus an opt-in color-blind-safe theme.</p></div>
+      <div style="display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: start"><span class="tag accent" style="justify-content: center">04</span><p><strong>Style with CSS, control with JS — the brand too.</strong> Every color, the mascot included, is a custom property. One token file themes the site, the guy and the default chart.</p></div>
+    </div>
+  </div>
+  <div style="position: relative; display: flex; align-items: flex-end; justify-content: center; padding: 0 64px 40px 0">
+    <svg aria-hidden="true" viewBox="0 0 800 1000" style="position: absolute; inset: 0; width: 100%; height: 100%">
+      <circle cx="470" cy="470" r="360" fill="var(--bg-sunken)"></circle>
+      <path d="M40,860 C220,820 300,700 430,720 C560,740 640,560 790,520" fill="none" stroke="var(--accent)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"></path>
+    </svg>
+    <div style="position: relative; width: 740px">
+      <dc-import name="Mascot" pose="hero" variant="flat" hint-size="740px,648px"></dc-import>
+    </div>
+    <figure style="position: absolute; left: 24px; top: 64px; margin: 0; width: 210px; padding: 12px 12px 10px; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; box-shadow: var(--shadow-3); transform: rotate(-4deg); display: flex; flex-direction: column; gap: 6px">
+      <img src="/_blob/551db7f3e9dd1f385ddf2edb6dcfd8c8" alt="The original 2014 Chartist Guy with top hat, moustache, red waistcoat, pitchfork and an easel" style="width: 100%; height: auto; display: block; background: #fff; border-radius: 6px">
+      <figcaption style="font: 600 12px/1.3 var(--font-code); color: var(--ink-2)">2014 · the original</figcaption>
+    </figure>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

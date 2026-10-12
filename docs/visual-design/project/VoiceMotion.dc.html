@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Voice and motion</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; height: 1250px; box-sizing: border-box; padding: 64px 80px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 48px; background: var(--bg)">
+
+  <!-- VOICE -->
+  <section style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">05 · Voice</span>
+      <h2 style="font-size: 48px; line-height: 1.05">Talks like a friend who knows SVG</h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+      <div class="card flat" style="padding: 16px 18px; background: var(--surface)"><strong>Friendly, a little cheeky</strong><p class="muted" style="font-size: 14px">A wink per page, not per sentence. The gentleman tips his hat; he doesn't do stand-up.</p></div>
+      <div class="card flat" style="padding: 16px 18px; background: var(--surface)"><strong>Confident, never smug</strong><p class="muted" style="font-size: 14px">Say what Chartist does well. Don't compare, don't oversell.</p></div>
+      <div class="card flat" style="padding: 16px 18px; background: var(--surface)"><strong>Plain in the docs</strong><p class="muted" style="font-size: 14px">Jokes live in headlines and empty states. Reference text is short, exact and literal.</p></div>
+      <div class="card flat" style="padding: 16px 18px; background: var(--surface)"><strong>Never corporate</strong><p class="muted" style="font-size: 14px">No "leverage", "solutions", "enterprise-grade" or "seamless". Ever.</p></div>
+    </div>
+    <div class="card" style="padding: 22px 26px; display: flex; flex-direction: column; gap: 18px">
+      <div style="display: flex; flex-direction: column; gap: 4px"><span class="eyebrow">Hero tagline</span><p style="font: 700 34px/1.1 var(--font-display)">Simple charts, <span class="hl">dressed in CSS.</span></p><p class="muted" style="font-size: 14px">Alternates: "Responsive charts with good manners." · "SVG charts. You bring the style."</p></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--line); padding-top: 14px"><span class="eyebrow">Section intro</span><p style="font: 700 24px/1.2 var(--font-display)">Responsive sugar topping</p><p style="font-size: 15px">Charts should fit every screen without a second chart. Give Chartist a few media queries and it rearranges labels, ticks and padding on its own.</p></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--line); padding-top: 14px"><span class="eyebrow">404</span><p style="font: 700 24px/1.2 var(--font-display)">Well, this chart fell over.</p><p style="font-size: 15px">The page you're after isn't here. Maybe it moved in v2, maybe it never existed. Let's get you back to something that plots.</p></div>
+      <div style="display: flex; flex-direction: column; gap: 4px; border-top: 1px solid var(--line); padding-top: 14px"><span class="eyebrow">Playground error</span><p style="font-size: 15px"><span class="status-dot err" style="margin-right: 8px"></span><strong>Line 4:</strong> there's a stray comma after <code>series</code>. Chartist can't draw what it can't parse.</p></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; font-size: 14px">
+      <div style="padding: 12px 14px; border-radius: var(--r-md); background: var(--danger-bg)"><strong style="color: var(--danger)">Don't</strong><p>"Leverage a seamless, enterprise-grade visualization solution."</p></div>
+      <div style="padding: 12px 14px; border-radius: var(--r-md); background: var(--ok-bg)"><strong style="color: var(--ok)">Do</strong><p>"Draw a chart in three lines. Style it like any other SVG."</p></div>
+    </div>
+  </section>
+
+  <!-- MOTION -->
+  <section style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">06 · Motion</span>
+      <h2 style="font-size: 48px; line-height: 1.05">Charts draw, they don't pop</h2>
+    </div>
+    <div class="card" style="padding: 22px 26px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 20px; align-items: center">
+      <svg class="ct-svg ct-loop" viewBox="0 0 300 150" role="img" aria-label="A line chart drawing itself in a loop">
+        <path class="ct-grid" d="M10,30 H290 M10,70 H290 M10,110 H290"></path>
+        <g class="ct-series-a"><path class="ct-line" pathLength="1" d="M10,120 C40,118 60,80 90,86 C120,92 130,50 160,56 C190,62 210,30 290,26"></path></g>
+      </svg>
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 14px"><strong style="font-size: 16px">1 · Draw in</strong><p>Lines stroke in over <code>--dur-draw</code> (1200 ms, <code>--ease-out</code>). Series stagger by 150 ms, points pop in after the line arrives, bars grow from the baseline.</p></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+      <div class="card flat" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; background: var(--surface)">
+        <strong style="font-size: 16px">2 · Springy small things</strong>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap"><button class="btn primary sm" type="button">Hover me</button><button class="btn sm" type="button">Me too</button></div>
+        <p class="muted" style="font-size: 13px">Buttons lift 2 px with their offset shadow; points and the hat tip use <code>--ease-spring</code> with a small overshoot.</p>
+      </div>
+      <div class="card flat" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; background: var(--surface)">
+        <strong style="font-size: 16px">3 · The mascot reacts</strong>
+        <div style="width: 110px; border-radius: 50%; overflow: hidden; align-self: center"><dc-import name="Mascot" pose="avatar" hint-size="110px,110px"></dc-import></div>
+        <p class="muted" style="font-size: 13px">He blinks every few seconds; on hover his hat tips and his moustache wiggles. Never more than one reaction at a time.</p>
+      </div>
+    </div>
+    <div class="card flat" style="padding: 18px 22px; background: var(--surface); display: flex; flex-direction: column; gap: 10px">
+      <strong style="font-size: 16px">4 · One hero moment per page</strong>
+      <p style="font-size: 14px">The landing hero draws the board chart on the easel; docs pages animate only the example in view. Nothing moves while people read.</p>
+    </div>
+    <div style="padding: 16px 20px; border-radius: var(--r-md); background: var(--info-bg); display: flex; flex-direction: column; gap: 6px">
+      <strong>5 · <code>prefers-reduced-motion</code></strong>
+      <p style="font-size: 14px">Every animation jumps to its final frame: charts appear fully drawn, loops stop, confetti is hidden, hover lifts become color changes. Handled once, globally, in the stylesheet.</p>
+    </div>
+    <div class="code" style="font-size: 12.5px; min-width: 0"><pre><span class="k">--dur-1</span>: <span class="n">120ms</span>;  <span class="c">/* hover, press */</span>
+<span class="k">--dur-2</span>: <span class="n">240ms</span>;  <span class="c">/* cards, menus */</span>
+<span class="k">--dur-3</span>: <span class="n">480ms</span>;  <span class="c">/* points, hat tip */</span>
+<span class="k">--dur-draw</span>: <span class="n">1200ms</span>; <span class="c">/* chart lines */</span>
+<span class="k">--ease-out</span>: <span class="f">cubic-bezier</span>(<span class="n">.22, 1, .36, 1</span>);
+<span class="k">--ease-spring</span>: <span class="f">cubic-bezier</span>(<span class="n">.34, 1.56, .64, 1</span>);</pre></div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1250}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

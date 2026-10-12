@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Plugins — Chartist</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh">
+  <dc-import name="SiteHeader" active="plugins" theme="{{theme}}" on-toggle-theme="{{toggleTheme}}" hint-size="100%,72px"></dc-import>
+  <main class="wrap" style="padding-block: 40px 96px; display: flex; flex-direction: column; gap: 32px">
+    <div class="section-head" style="margin: 0">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span class="eyebrow">Plugins</span>
+        <h1 style="font-size: var(--fs-4xl)">Small add-ons, big tricks</h1>
+      </div>
+      <p>Plugins hook into the <code>draw</code> event to add tooltips, labels, legends and more. Pick from the list, or write your own in a dozen lines.</p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 8px" role="group" aria-label="Filter plugins">
+      <sc-for list="{{filters}}" as="f" hint-placeholder-count="3"><button class="chip" type="button" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}}</button></sc-for>
+    </div>
+
+    <div class="grid-auto">
+      <sc-for list="{{items}}" as="p" hint-placeholder-count="8">
+        <article class="card" style="padding: 20px 22px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px">
+            <strong style="font: 700 21px/1.2 var(--font-display)">{{p.name}}</strong>
+            <span class="{{p.tagClass}}">{{p.kind}}</span>
+          </div>
+          <code style="font-size: 12.5px; width: fit-content">{{p.pkg}}</code>
+          <p class="muted" style="font-size: 15px; flex: 1">{{p.desc}}</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px">
+            <span class="muted">v2: {{p.compat}}</span>
+            <a class="pill-link" href="https://github.com/chartist-js">Docs →</a>
+          </div>
+        </article>
+      </sc-for>
+    </div>
+
+    <sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+      <div class="callout"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><p><strong>No official plugins yet.</strong> [DECISION] Candidates to adopt as official for v2: Tooltip and Accessibility.</p></div>
+    </sc-if>
+    <section class="card" style="padding: 28px 32px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr)); gap: 28px; align-items: start">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <h2 style="font-size: var(--fs-2xl)">Write your own</h2>
+        <p>A plugin is a function that receives the chart. Listen to <code>draw</code>, change or add SVG elements, done. Publish it as <code>chartist-plugin-*</code> and open a PR to list it here.</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap"><a class="btn sm" href="GettingStarted.dc.html">Plugin guide</a><a class="btn ghost sm" href="https://github.com/chartist-js/chartist">Submit a plugin</a></div>
+      </div>
+      <div class="code"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">point-labels.js</span></div><pre><span class="k">export function</span> <span class="f">pointLabels</span>({ offset = <span class="n">10</span> } = {}) {
+  <span class="k">return</span> (chart) =&gt; {
+    chart.<span class="f">on</span>(<span class="s">'draw'</span>, (ctx) =&gt; {
+      <span class="k">if</span> (ctx.type !== <span class="s">'point'</span>) <span class="k">return</span>;
+      ctx.group.<span class="f">elem</span>(<span class="s">'text'</span>, { x: ctx.x, y: ctx.y - offset },
+        <span class="s">'ct-label'</span>).<span class="f">text</span>(ctx.value.y);
+    });
+  };
+}
+
+<span class="k">new</span> <span class="f">LineChart</span>(<span class="s">'#chart'</span>, data, { plugins: [<span class="f">pointLabels</span>()] });</pre></div>
+    </section>
+  </main>
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":1440,"height":2100}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: null, f: 'all' }; }
+  renderVals() {
+    const theme = this.state.theme || this.props.theme || 'light';
+    const ALL = [
+      { name: 'Tooltip', pkg: 'chartist-plugin-tooltip', kind: 'Community', desc: 'Show values on hover for points, bars and slices.' },
+      { name: 'Axis title', pkg: 'chartist-plugin-axistitle', kind: 'Community', desc: 'Label the x and y axes with titles and units.' },
+      { name: 'Point labels', pkg: 'chartist-plugin-pointlabels', kind: 'Community', desc: 'Print each value next to its point.' },
+      { name: 'Legend', pkg: 'chartist-plugin-legend', kind: 'Community', desc: 'A clickable legend that toggles series.' },
+      { name: 'Threshold', pkg: 'chartist-plugin-threshold', kind: 'Community', desc: 'Color lines and areas above or below a value.' },
+      { name: 'Accessibility', pkg: 'chartist-plugin-accessibility', kind: 'Community', desc: 'Adds a hidden data table and ARIA labels for screen readers.' },
+      { name: 'Fill donut', pkg: 'chartist-plugin-fill-donut', kind: 'Community', desc: 'Background track and center labels for gauges.' },
+      { name: 'Zoom', pkg: 'chartist-plugin-zoom', kind: 'Community', desc: 'Drag to zoom into a range of a line chart.' }
+    ];
+    const items = ALL.filter((p) => this.state.f === 'all' || p.kind === this.state.f).map((p) => Object.assign({}, p, { compat: '[status]', tagClass: p.kind === 'Official' ? 'tag brand' : 'tag' }));
+    return {
+      theme, rootClass: theme === 'dark' ? 'cx dark' : 'cx',
+      toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }),
+      filters: [['all', 'All'], ['Official', 'Official'], ['Community', 'Community']].map(([id, label]) => ({ label, pressed: this.state.f === id ? 'true' : 'false', pick: () => this.setState({ f: id }) })),
+      items, empty: items.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

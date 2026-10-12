@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Live example</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="live" style="{{rootStyle}}">
+  <div class="editor">
+    <div class="code-head">
+      <div class="tabs" role="tablist" aria-label="Source files">
+        <sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+          <button class="code-tab" type="button" role="tab" aria-selected="{{t.selected}}" onClick="{{t.pick}}">{{t.label}}</button>
+        </sc-for>
+      </div>
+      <div style="display: flex; gap: 2px">
+        <button class="icon-btn sm" type="button" aria-label="Copy code" title="Copy" onClick="{{copy}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg></button>
+        <button class="icon-btn sm" type="button" aria-label="Reset example" title="Reset" onClick="{{reset}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"></path><path d="M3 3v5h5"></path></svg></button>
+      </div>
+    </div>
+    <sc-if value="{{tabJs}}" hint-placeholder-val="{{ true }}">
+      <textarea aria-label="JavaScript" spellcheck="false" value="{{code}}" onChange="{{onCode}}"></textarea>
+    </sc-if>
+    <sc-if value="{{tabCss}}" hint-placeholder-val="{{ false }}">
+      <textarea aria-label="CSS" spellcheck="false" value="{{css}}" onChange="{{onCss}}"></textarea>
+    </sc-if>
+    <sc-if value="{{tabHtml}}" hint-placeholder-val="{{ false }}">
+      <textarea aria-label="HTML" spellcheck="false" value="{{html}}" readonly="readonly"></textarea>
+    </sc-if>
+  </div>
+  <div class="output" style="position: relative">
+    <div class="output-head">
+      <span style="display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2)"><span class="{{statusClass}}"></span>{{status}}</span>
+      <div style="display: flex; gap: 2px">
+        <button class="icon-btn sm" type="button" aria-label="Share link" title="Share" onClick="{{share}}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"></path></svg></button>
+        <a class="icon-btn sm" href="Playground.dc.html" aria-label="Open full screen" title="Full screen"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></a>
+      </div>
+    </div>
+    <div class="stage">
+      <div style="{{stageStyle}}">
+        <dc-import name="Chart" kind="{{kind}}" data="{{data}}" options="{{opts}}" hint-size="100%,240px"></dc-import>
+      </div>
+    </div>
+    <sc-if value="{{toast}}" hint-placeholder-val="{{ false }}"><span class="toast" role="status">{{toast}}</span></sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"preset":{"editor":"enum","options":["line","bar","pie"],"default":"line"},"height":{"editor":"int","default":360,"min":260,"max":900},"$preview":{"width":1240,"height":420}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { tab: 'js', code: null, css: null, toast: '' };
+  }
+  defaults() {
+    const p = this.props.preset || 'line';
+    const JS = {
+      line: "import { LineChart } from 'chartist';\n\nnew LineChart('#chart', {\n  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],\n  series: [\n    [12, 9, 7, 8, 5],\n    [2, 1, 3.5, 7, 3]\n  ]\n}, {\n  showArea: true,\n  lineSmooth: true\n});",
+      bar: "import { BarChart } from 'chartist';\n\nnew BarChart('#chart', {\n  labels: ['Q1', 'Q2', 'Q3', 'Q4'],\n  series: [\n    [5, 4, 3, 7],\n    [3, 2, 9, 5]\n  ]\n}, {\n  stackBars: false\n});",
+      pie: "import { PieChart } from 'chartist';\n\nnew PieChart('#chart', {\n  labels: ['Bananas', 'Apples', 'Grapes'],\n  series: [5, 3, 4]\n}, {\n  donut: true\n});"
+    };
+    const CSS = "/* Style with CSS: try other colors */\n#chart {\n  --ct-series-a: #d70206;\n  --ct-series-b: #0544d3;\n  --ct-line-width: 3px;\n  --ct-area-opacity: 0.14;\n}";
+    return { code: JS[p] || JS.line, css: CSS };
+  }
+  parse(code) {
+    const kindM = code.match(/new\s+(Line|Bar|Pie)Chart\s*\(/);
+    if (!kindM) return { error: 'Create a LineChart, BarChart or PieChart.' };
+    const grab = (key) => {
+      const i = code.search(new RegExp(key + '\\s*:\\s*\\['));
+      if (i < 0) return null;
+      let j = code.indexOf('[', i), depth = 0, k = j;
+      for (; k < code.length; k++) { if (code[k] === '[') depth++; else if (code[k] === ']') { depth--; if (depth === 0) break; } }
+      return { text: code.slice(j, k + 1), line: code.slice(0, j).split('\n').length };
+    };
+    const toJson = (t) => t.replace(/'/g, '"').replace(/,\s*([\]}])/g, '$1');
+    const lab = grab('labels'), ser = grab('series');
+    if (!ser) return { error: 'Add a series array to plot.' };
+    let labels = [], series;
+    try { labels = lab ? JSON.parse(toJson(lab.text)) : []; } catch (e) { return { error: 'Line ' + lab.line + ': the labels array is not valid.' }; }
+    try { series = JSON.parse(toJson(ser.text)); } catch (e) { return { error: 'Line ' + ser.line + ': the series array has a typo, maybe a stray comma or bracket.' }; }
+    const flag = (k) => new RegExp(k + '\\s*:\\s*true').test(code);
+    const t = kindM[1];
+    let kind = t === 'Pie' ? (flag('donut') ? 'donut' : 'pie') : t === 'Bar' ? (flag('stackBars') ? 'stacked' : 'bar') : (flag('lineSmooth') ? 'smooth' : 'line');
+    if (t === 'Bar' && series.some((s) => Array.isArray(s) && s.some((v) => v < 0)) && !flag('stackBars')) kind = 'bar';
+    return { kind, data: { labels, series }, opts: { showArea: flag('showArea'), showPoint: !/showPoint\s*:\s*false/.test(code), showLine: !/showLine\s*:\s*false/.test(code), lineSmooth: flag('lineSmooth') } };
+  }
+  cssVars(css) {
+    const out = [];
+    const re = /(--ct-[a-z0-9-]+)\s*:\s*([^;{}]+);/g; let m;
+    while ((m = re.exec(css))) { const v = m[2].trim(); if (/^[#\w\s.,()%-]+$/.test(v)) out.push(m[1] + ': ' + v); }
+    return out.join('; ');
+  }
+  flash(msg) { this.setState({ toast: msg }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ toast: '' }), 1800); }
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() {
+    const d = this.defaults();
+    const code = this.state.code ?? d.code, css = this.state.css ?? d.css;
+    const r = this.parse(code);
+    const ok = !r.error;
+    if (ok) this._last = r;
+    const shown = ok ? r : (this._last || this.parse(d.code));
+    const tab = this.state.tab;
+    const T = [{ id: 'js', label: 'main.js' }, { id: 'css', label: 'style.css' }, { id: 'html', label: 'index.html' }];
+    const h = this.props.height || 360;
+    return {
+      tabs: T.map((t) => ({ label: t.label, selected: t.id === tab ? 'true' : 'false', pick: () => this.setState({ tab: t.id }) })),
+      tabJs: tab === 'js', tabCss: tab === 'css', tabHtml: tab === 'html',
+      code, css,
+      html: '<!-- one empty container, Chartist does the rest -->\n<div class="ct-chart" id="chart"></div>\n\n<script type="module" src="main.js"><\/script>',
+      onCode: (e) => this.setState({ code: e.target.value }),
+      onCss: (e) => this.setState({ css: e.target.value }),
+      reset: () => { this.setState({ code: null, css: null }); this.flash('Reset to the original example'); },
+      copy: () => { const txt = tab === 'css' ? css : code; try { navigator.clipboard.writeText(txt); } catch (e) {} this.flash('Copied to clipboard'); },
+      share: () => { this.flash('Share link copied'); },
+      status: ok ? 'Rendered live, as you type' : r.error,
+      statusClass: ok ? 'status-dot' : 'status-dot err',
+      kind: shown.kind, data: shown.data, opts: shown.opts,
+      stageStyle: 'width: 100%; max-width: ' + (h >= 600 ? 860 : 560) + 'px; ' + this.cssVars(css),
+      rootStyle: 'min-height: ' + h + 'px',
+      toast: this.state.toast
+    };
+  }
+}
+</script>
+</body>
+</html>

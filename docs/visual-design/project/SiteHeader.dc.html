@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site header</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand-lockup" href="Landing.dc.html" aria-label="Chartist home">
+      <span style="width: 34px; display: block"><dc-import name="Logomark" variant="mustard" hint-size="34px,34px"></dc-import></span>
+      <span>Chartist</span>
+    </a>
+    <nav class="site-nav" aria-label="Main">
+      <sc-for list="{{links}}" as="l" hint-placeholder-count="5">
+        <a href="{{l.href}}" aria-current="{{l.current}}">{{l.label}}</a>
+      </sc-for>
+    </nav>
+    <span class="spacer"></span>
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+      <span class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search the docs</span>
+      <input type="search" placeholder="Search docs">
+      <kbd>/</kbd>
+    </label>
+    <label class="hide-sm" style="display: inline-flex">
+      <span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Version</span>
+      <select class="version"><option>v2.0</option><option>v1.5</option><option>v0.11 (archive)</option></select>
+    </label>
+    <a class="icon-btn sm hide-sm" href="https://github.com/chartist-js/chartist" aria-label="Chartist on GitHub">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"></path></svg>
+    </a>
+    <button class="icon-btn sm" type="button" aria-label="{{themeLabel}}" onClick="{{toggle}}">
+      <sc-if value="{{isDark}}" hint-placeholder-val="{{ false }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </sc-if>
+      <sc-if value="{{isLight}}" hint-placeholder-val="{{ true }}">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg>
+      </sc-if>
+    </button>
+    <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-expanded="{{menuOpen}}" onClick="{{toggleMenu}}">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+    </button>
+  </div>
+  <sc-if value="{{showMenu}}" hint-placeholder-val="{{ false }}">
+    <nav class="wrap" aria-label="Mobile" style="display: flex; flex-direction: column; gap: 4px; padding-block: 8px 16px; border-top: 1px solid var(--line)">
+      <label class="search" style="max-width: none; margin-bottom: 8px"><input type="search" placeholder="Search docs" aria-label="Search the docs"></label>
+      <sc-for list="{{links}}" as="l" hint-placeholder-count="5">
+        <a class="side-link" href="{{l.href}}" aria-current="{{l.current}}" style="font-size: 17px; min-height: 44px">{{l.label}}</a>
+      </sc-for>
+    </nav>
+  </sc-if>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","docs","examples","api","plugins","playground"],"default":"home"},"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"onToggleTheme":{"editor":null},"$preview":{"width":1440,"height":72}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { menu: false }; }
+  renderVals() {
+    const active = this.props.active || 'home';
+    const isDark = (this.props.theme || 'light') === 'dark';
+    const L = [
+      { id: 'docs', label: 'Docs', href: 'GettingStarted.dc.html' },
+      { id: 'examples', label: 'Examples', href: 'Examples.dc.html' },
+      { id: 'playground', label: 'Playground', href: 'Playground.dc.html' },
+      { id: 'api', label: 'API', href: 'Api.dc.html' },
+      { id: 'plugins', label: 'Plugins', href: 'Plugins.dc.html' }
+    ];
+    return {
+      links: L.map((l) => ({ label: l.label, href: l.href, current: l.id === active ? 'page' : 'false' })),
+      isDark, isLight: !isDark,
+      themeLabel: isDark ? 'Switch to light mode' : 'Switch to dark mode',
+      toggle: () => { if (this.props.onToggleTheme) this.props.onToggleTheme(); },
+      menuOpen: this.state.menu ? 'true' : 'false', showMenu: this.state.menu,
+      toggleMenu: () => this.setState({ menu: !this.state.menu })
+    };
+  }
+}
+</script>
+</body>
+</html>

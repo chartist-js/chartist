@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chartist logomark</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>body{margin:0}</style>
+</helmet>
+<svg viewBox="300 62 128 128" role="img" aria-label="Chartist" style="display: block; width: 100%; height: auto; background: {{k.bg}}; border-radius: {{radius}}">
+  <circle cx="409" cy="150" r="10" fill="{{k.skin}}"></circle>
+  <path d="M343,118 L403,118 Q408,118 408,124 L408,198 Q408,222 386,222 L348,222 Q324,222 322,212 Q322,203 333,197 L337,176 L348,160 L321,158 Q312,157 316,149 L335,121 Q337,118 343,118 Z" fill="{{k.skin}}"></path>
+  <ellipse cx="358" cy="136" rx="4.6" ry="6.2" fill="{{k.eye}}"></ellipse>
+  <ellipse cx="384" cy="136" rx="4.6" ry="6.2" fill="{{k.eye}}"></ellipse>
+  <path d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="{{k.ink}}" stroke="{{k.cut}}" stroke-width="{{k.stacheW}}" paint-order="stroke"></path>
+  <ellipse cx="372" cy="120" rx="54" ry="7" fill="{{k.ink}}" stroke="{{k.cut}}" stroke-width="{{k.cutW}}" paint-order="stroke"></ellipse><path d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="{{k.ink}}"></path><ellipse cx="372" cy="73" rx="35" ry="5" fill="{{k.top}}"></ellipse><path d="M338.9,104 Q372,110 405.1,104 L404.3,116 Q372,122 339.7,116 Z" fill="{{k.band}}"></path>
+</svg>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"variant":{"editor":"enum","options":["mustard","paper","red","transparent","mono","mono-inverse"],"default":"mustard"},"rounded":{"editor":"boolean","default":true},"$preview":{"width":128,"height":128}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const v = this.props.variant ?? 'mustard';
+    const skin = '#E2A47C', ink = '#2B2426';
+    const K = {
+      mustard: { bg: '#F4C63D', skin, ink, eye: ink, band: '#C8102E', top: '#453B3E', cut: 'none', cutW: 0, stacheW: 0 },
+      paper: { bg: '#FBF6EE', skin, ink, eye: ink, band: '#C8102E', top: '#453B3E', cut: 'none', cutW: 0, stacheW: 0 },
+      red: { bg: '#C8102E', skin, ink: '#151112', eye: '#151112', band: '#F4C63D', top: '#3A3133', cut: 'none', cutW: 0, stacheW: 0 },
+      transparent: { bg: 'transparent', skin, ink, eye: ink, band: '#C8102E', top: '#453B3E', cut: 'none', cutW: 0, stacheW: 0 },
+      mono: { bg: '#FBF6EE', skin: ink, ink, eye: '#FBF6EE', band: '#FBF6EE', top: ink, cut: '#FBF6EE', cutW: 5, stacheW: 10 },
+      'mono-inverse': { bg: ink, skin: '#FBF6EE', ink: '#FBF6EE', eye: ink, band: ink, top: '#FBF6EE', cut: ink, cutW: 5, stacheW: 10 }
+    };
+    return { k: K[v] || K.mustard, radius: (this.props.rounded ?? true) ? '22%' : '0' };
+  }
+}
+</script>
+</body>
+</html>

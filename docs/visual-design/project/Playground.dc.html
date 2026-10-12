@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Playground — Chartist</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh; display: flex; flex-direction: column">
+  <header class="site-header">
+    <div class="wrap bar" style="max-width: none">
+      <a class="brand-lockup" href="Landing.dc.html" aria-label="Chartist home"><span style="width: 32px; display: block"><dc-import name="Logomark" variant="mustard" hint-size="32px,32px"></dc-import></span><span>Playground</span></a>
+      <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-2)">Start from
+        <select class="version" style="font-family: var(--font-body); font-size: 14px" onChange="{{onPreset}}">
+          <option value="line">Line chart</option><option value="bar">Bar chart</option><option value="pie">Donut chart</option>
+        </select>
+      </label>
+      <span class="spacer"></span>
+      <span class="hide-sm muted" style="font-size: 13px">Runs in your browser. Nothing is uploaded.</span>
+      <a class="btn ghost sm hide-sm" href="Examples.dc.html">All examples</a>
+      <button class="icon-btn sm" type="button" aria-label="{{themeLabel}}" onClick="{{toggleTheme}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg></button>
+      <a class="icon-btn sm" href="GettingStarted.dc.html" aria-label="Exit full screen"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"></path></svg></a>
+    </div>
+  </header>
+  <main style="flex: 1; padding: 20px clamp(12px, 3vw, 28px) 28px; display: flex; flex-direction: column">
+    <sc-if value="{{pLine}}" hint-placeholder-val="{{ true }}"><dc-import name="LiveExample" preset="line" height="{{h}}" hint-size="100%,720px"></dc-import></sc-if>
+    <sc-if value="{{pBar}}" hint-placeholder-val="{{ false }}"><dc-import name="LiveExample" preset="bar" height="{{h}}" hint-size="100%,720px"></dc-import></sc-if>
+    <sc-if value="{{pPie}}" hint-placeholder-val="{{ false }}"><dc-import name="LiveExample" preset="pie" height="{{h}}" hint-size="100%,720px"></dc-import></sc-if>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"dark"},"editorHeight":{"editor":"int","default":720,"min":300,"max":1200},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: null, preset: 'line' }; }
+  renderVals() {
+    const theme = this.state.theme || this.props.theme || 'dark';
+    const p = this.state.preset;
+    return {
+      rootClass: theme === 'dark' ? 'cx dark' : 'cx',
+      themeLabel: theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode',
+      toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }),
+      onPreset: (e) => this.setState({ preset: e.target.value }),
+      pLine: p === 'line', pBar: p === 'bar', pPie: p === 'pie',
+      h: this.props.editorHeight || 720
+    };
+  }
+}
+</script>
+</body>
+</html>

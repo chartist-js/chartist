@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chartist Guy</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<svg class="mascot {{variantClass}}" viewBox="{{vb}}" role="img" aria-label="{{label}}" style="display: block; width: 100%; height: auto; font-family: 'Zilla Slab', Georgia, serif">
+  <defs>
+    <linearGradient id="m-g-skin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0BC95"></stop><stop offset="1" stop-color="#D38E66"></stop></linearGradient>
+    <linearGradient id="m-g-vest" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E02A47"></stop><stop offset="1" stop-color="#A50D26"></stop></linearGradient>
+    <linearGradient id="m-g-ink" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4A3F42"></stop><stop offset="1" stop-color="#1C1718"></stop></linearGradient>
+    <radialGradient id="m-g-shadow"><stop offset="0" stop-color="#2B2426" stop-opacity=".35"></stop><stop offset="1" stop-color="#2B2426" stop-opacity="0"></stop></radialGradient>
+  </defs>
+
+  <sc-if value="{{avatar}}" hint-placeholder-val="{{ false }}">
+    <circle cx="366" cy="154" r="98" fill="var(--accent, #F4C63D)"></circle>
+  </sc-if>
+
+  <!-- EASEL + BOARD -->
+  <sc-if value="{{easel}}" hint-placeholder-val="{{ true }}">
+    <g class="m-easel" transform="{{easelT}}">
+      <path class="m-shadow" d="M30,398 a120,6 0 1,0 240,0 a120,6 0 1,0 -240,0" fill="var(--m-ink)" opacity=".1"></path>
+      <g stroke="var(--m-wood)" stroke-width="9" stroke-linecap="round"><path d="M70,262 L46,394 M218,262 L242,394 M144,262 L144,386"></path></g>
+      <rect class="m-f" x="134" y="80" width="20" height="16" rx="4" fill="var(--m-wood)"></rect>
+      <rect x="24" y="92" width="240" height="172" rx="12" fill="var(--m-board)" stroke="var(--m-ink)" stroke-width="6"></rect>
+
+      <!-- LIVE CHART SLOT: x 44 · y 110 · w 200 · h 136 (data-chart-slot) -->
+      <g id="chart-slot" data-chart-slot="44 110 200 136">
+        <sc-if value="{{boardChart}}" hint-placeholder-val="{{ true }}">
+          <g class="m-chart-loop">
+            <g class="ct-grids"><path class="ct-grid" d="M76,226 H240 M76,190.7 H240 M76,155.3 H240 M76,120 H240" style="stroke: #2B242638"></path></g>
+            <g font-size="9" text-anchor="end" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="70" y="229">0</text><text x="70" y="194">2m.</text><text x="70" y="158">4m.</text><text x="70" y="123">6m.</text></g>
+            <g font-size="9" text-anchor="middle" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="84" y="242">1st</text><text x="156" y="242">2nd</text><text x="228" y="242">3rd</text></g>
+            <g class="ct-series ct-series-b"><title>Nobles</title><path class="ct-line" pathLength="1" d="M84.0,192.7 C96.0,192.2 132.0,195.2 156.0,189.8 C180.0,184.4 216.0,165.4 228.0,160.5"></path><circle class="ct-dot" cx="84" cy="192.7" r="4.5"></circle><circle class="ct-dot" cx="156" cy="189.8" r="4.5"></circle><circle class="ct-dot" cx="228" cy="160.5" r="4.5"></circle></g>
+            <g class="ct-series ct-series-a"><title>Workers</title><path class="ct-line" pathLength="1" d="M84.0,203.3 C96.0,202.7 132.0,212.5 156.0,199.5 C180.0,186.5 216.0,137.6 228.0,125.2"></path><circle class="ct-dot" cx="84" cy="203.3" r="4.5"></circle><circle class="ct-dot" cx="156" cy="199.5" r="4.5"></circle><circle class="ct-dot" cx="228" cy="125.2" r="4.5"></circle></g>
+          </g>
+        </sc-if>
+        <sc-if value="{{boardLoading}}" hint-placeholder-val="{{ false }}">
+          <g class="ct-loop">
+            <path class="ct-grid" d="M56,226 H236 M56,190 H236 M56,154 H236 M56,120 H236" style="stroke: #2B242638"></path>
+            <g class="ct-series-a"><path class="ct-line" pathLength="1" d="M60,214 C80,212 92,180 112,186 C132,192 140,150 162,156 C184,162 196,128 230,126"></path></g>
+          </g>
+        </sc-if>
+        <sc-if value="{{boardEmpty}}" hint-placeholder-val="{{ false }}">
+          <g>
+            <rect x="48" y="114" width="192" height="128" rx="8" fill="none" stroke="#2B242655" stroke-width="2" stroke-dasharray="6 6"></rect>
+            <path d="M120,192 L144,168 L168,192" stroke="#2B242655" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+            <text x="144" y="218" text-anchor="middle" font-size="12" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif">nothing to plot</text>
+          </g>
+        </sc-if>
+        <sc-if value="{{boardV2}}" hint-placeholder-val="{{ false }}">
+          <g>
+            <text x="144" y="208" text-anchor="middle" font-size="84" font-weight="800" letter-spacing="-4" style="fill: var(--ct-series-a)">v2</text>
+            <path d="M84,226 C112,236 176,236 204,226" stroke="var(--accent, #F4C63D)" stroke-width="6" fill="none" stroke-linecap="round"></path>
+          </g>
+        </sc-if>
+        <sc-if value="{{boardBroken}}" hint-placeholder-val="{{ false }}">
+          <g class="ct-series-a"><path class="ct-line" d="M60,220 L100,196 L128,206"></path><path class="ct-line" d="M150,170 L190,180 L232,128" style="stroke-dasharray: 6 8"></path></g>
+        </sc-if>
+      </g>
+    </g>
+  </sc-if>
+
+  <sc-if value="{{debris}}" hint-placeholder-val="{{ false }}">
+    <g>
+      <rect x="150" y="372" width="12" height="24" rx="3" transform="rotate(20 156 384)" style="fill: var(--ct-series-a)"></rect>
+      <rect x="186" y="382" width="24" height="12" rx="3" style="fill: var(--ct-series-b)"></rect>
+      <circle cx="226" cy="390" r="5" style="fill: var(--ct-series-a)"></circle>
+      <path d="M244,392 L312,380" stroke="var(--m-wood)" stroke-width="5" stroke-linecap="round"></path>
+    </g>
+  </sc-if>
+
+  <!-- ARMS (behind the vest, out of the armholes) -->
+  <g>
+    <sc-for list="{{arms}}" as="arm" hint-placeholder-count="2">
+      <g class="{{arm.cls}}">
+        <path d="{{arm.d}}" stroke="var(--m-ink)" stroke-width="15" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        <!-- mitten hand anchored at the wrist: fingers in one piece, thumb separate; "open" = flat presenting hand -->
+        <g transform="{{arm.handT}}">
+          <path class="m-f" d="{{arm.mittD}}" fill="{{c.skin}}"></path>
+          <path class="m-f" d="M-1,-5.5 C-1,-11 3,-13.5 5.5,-11 C7,-9.5 5,-7 2,-5 Z" fill="{{c.skin}}"></path>
+        </g>
+      </g>
+    </sc-for>
+  </g>
+
+  <!-- BODY — black body under a split red vest (buttons on one side), thin legs, tiny pointed shoes -->
+  <g class="m-body">
+    <ellipse class="m-shadow" cx="380" cy="398" rx="56" ry="5" fill="{{c.shadow}}" opacity="{{c.shadowOpacity}}"></ellipse>
+    <path d="M347,320 L342,392" stroke="{{c.ink}}" stroke-width="9" stroke-linecap="round" fill="none"></path>
+    <path d="M397,320 L402,392" stroke="{{c.ink}}" stroke-width="9" stroke-linecap="round" fill="none"></path>
+    <path class="m-f" d="M346.5,388 L346.5,397 L318.5,397 Q324.5,390 337.5,389 Z" fill="{{c.ink}}"></path>
+    <path class="m-f" d="M397.5,388 L397.5,397 L425.5,397 Q419.5,390 406.5,389 Z" fill="{{c.ink}}"></path>
+    <path class="m-f" d="M336,290 L408,290 L407,318 Q406,324 400,324 L344,324 Q338,324 337,318 Z" fill="{{c.ink}}"></path>
+    <path class="m-f" d="M356,222 L388,222 L380,318 L364,318 Z" fill="{{c.ink}}"></path>
+    <path class="m-f m-keep" d="M344,222 L358,222 L370,246 L370,318 L334,309 Q325,307 326,299 L333,232 Q334,222 344,222 Z" fill="{{c.vest}}"></path>
+    <path class="m-f m-keep" d="M386,222 L400,222 Q410,222 411,232 L418,299 Q419,307 410,309 L374,318 L374,246 Z" fill="{{c.vest}}"></path>
+    <circle cx="382" cy="262" r="3.3" fill="var(--m-ink)"></circle><circle cx="382" cy="280" r="3.3" fill="var(--m-ink)"></circle><circle cx="382" cy="298" r="3.3" fill="var(--m-ink)"></circle>
+  </g>
+
+  <!-- HAY FORK — from the 2014 site, held in his left hand, drawn in front of the grip -->
+  <sc-if value="{{fork}}" hint-placeholder-val="{{ true }}">
+    <g class="m-fork" transform="rotate(4 444 282)" stroke-linecap="round" fill="none">
+      <path d="M444,396 L444,132" stroke="var(--m-wood)" stroke-width="6"></path>
+      <path d="M426,84 L426,132 L462,132 L462,84 M438,86 L438,132 M450,86 L450,132" stroke="var(--m-ink)" stroke-width="4" stroke-linejoin="round"></path>
+    </g>
+  </sc-if>
+
+  <!-- HEAD — 3/4 view, the 2014 profile: the face angles down-left into the nose -->
+  <g transform="translate(0 6)"><g class="m-head" transform="{{headT}}">
+    <circle class="m-f" cx="409" cy="150" r="10" fill="{{c.skin}}"></circle>
+    <path d="M409,146 q4,4 0,8" stroke="var(--m-skin-2)" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+    <path class="m-f" d="M335,121 C342,96 402,96 408,124 L408,196 C408,224 388,232 366,232 C344,232 322,224 322,210 Q322,203 333,197 L337,176 L348,160 L321,158 Q312,157 316,149 Z" fill="{{c.skin}}"></path>
+    <sc-if value="{{soft}}" hint-placeholder-val="{{ false }}">
+      <ellipse cx="396" cy="186" rx="7" ry="18" fill="#FFFFFF" opacity=".22"></ellipse>
+    </sc-if>
+    <g transform="{{eyesT}}"><g class="m-eyes">
+      <ellipse cx="358" cy="136" rx="4.4" ry="6" fill="var(--m-ink)"></ellipse>
+      <ellipse cx="384" cy="136" rx="4.4" ry="6" fill="var(--m-ink)"></ellipse>
+    </g></g>
+    <path d="{{mouthD}}" fill="#6E1F2A"></path>
+    <path class="m-stache m-f" d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="{{c.ink}}"></path>
+  </g>
+
+  <!-- HAT (tips on hover) -->
+  <g transform="{{hatT}}"><g class="{{hatClass}}">
+    <g class="m-hat-tip">
+      <ellipse class="m-f" cx="372" cy="120" rx="54" ry="7" fill="{{c.hat}}"></ellipse><path class="m-f" d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="{{c.hat}}"></path><ellipse cx="372" cy="73" rx="35" ry="5" fill="#453B3E" opacity="1"></ellipse><path class="m-f m-keep" d="M338.9,104 Q372,110 405.1,104 L404.3,116 Q372,122 339.7,116 Z" fill="{{c.vest}}"></path>
+    </g>
+  </g></g></g>
+
+  <sc-if value="{{question}}" hint-placeholder-val="{{ false }}">
+    <text class="m-q" x="296" y="96" font-size="58" font-weight="800" style="fill: var(--ct-series-a)">?</text>
+  </sc-if>
+  <sc-if value="{{confetti}}" hint-placeholder-val="{{ false }}">
+    <g class="m-confetti">
+      <rect x="300" y="40" width="8" height="14" rx="2" style="fill: var(--ct-series-a)"></rect>
+      <rect x="440" y="70" width="8" height="14" rx="2" style="fill: var(--ct-series-b)"></rect>
+      <circle cx="290" cy="110" r="5" style="fill: var(--ct-series-c)"></circle>
+      <rect x="452" y="140" width="8" height="14" rx="2" style="fill: var(--ct-series-c)"></rect>
+      <circle cx="420" cy="26" r="5" style="fill: var(--ct-series-e)"></circle>
+      <rect x="270" y="170" width="8" height="14" rx="2" style="fill: var(--ct-series-d)"></rect>
+      <circle cx="252" cy="60" r="4" style="fill: var(--ct-series-f)"></circle>
+      <rect x="466" y="20" width="8" height="14" rx="2" style="fill: var(--ct-series-g)"></rect>
+    </g>
+  </sc-if>
+</svg>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"pose":{"editor":"enum","options":["hero","loading","point","lost","empty","celebrate","avatar"],"default":"hero"},"variant":{"editor":"enum","options":["flat","line","soft"],"default":"flat"},"$preview":{"width":480,"height":420}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const pose = this.props.pose ?? 'hero';
+    const variant = this.props.variant ?? 'flat';
+    const soft = variant === 'soft';
+    // arm: path, hand position, hand angle (deg), flip (-1 = left-side hand), point (index finger out)
+    const arm = (d, hx, hy, a, f, open, cls) => ({
+      d, cls: cls || '',
+      handT: 'translate(' + hx + ' ' + hy + ') rotate(' + a + ') scale(1.05 ' + (1.05 * f) + ')',
+      mittD: 'M-2,-7 C6,-9 16,-8 17,0 C17,8 6,9 -2,7 Z'
+    });
+    const A = {
+      pointL: arm('M336,238 Q306,232 286,208', 286, 208, -130, -1, true, 'm-tap'),
+      forkR: arm('M408,238 Q444,250 444,280', 444, 282, 92, 1),
+      downL: arm('M336,238 Q322,270 326,300', 326, 302, 95, -1),
+      upR: arm('M408,238 Q436,226 452,198', 452, 198, -60, 1, true),
+      scratchR: arm('M408,238 Q446,214 428,156', 428, 156, -105, 1),
+      shrugL: arm('M336,238 Q316,256 304,236', 304, 236, -115, -1),
+      shrugR: arm('M408,238 Q428,256 440,236', 440, 236, -65, 1),
+      cheerL: arm('M336,238 Q322,214 316,188', 316, 188, -100, -1),
+      cheerR: arm('M408,238 Q424,214 428,188', 428, 188, -80, 1)
+    };
+    const browsN = 'M354,141 Q361,137 368,140 M376,140 Q383,137 390,141';
+    const browsUp = 'M353,138 Q360,131 367,135 M377,135 Q384,131 391,138';
+    const base = { vb: '0 0 480 420', easel: true, easelT: '', board: 'chart', arms: [A.pointL, A.forkR], fork: true, hatT: '', headT: '', brows: browsN, mouth: 'smile', eyesDx: 0, label: 'The Chartist Guy presenting a line chart, hay fork in hand' };
+    const P = {
+      hero: {},
+      loading: { board: 'loading', eyesDx: -3, label: 'The Chartist Guy waiting while a chart draws itself' },
+      point: { fork: false, vb: '276 36 204 372', easel: false, arms: [A.downL, A.upR], brows: browsUp, eyesDx: 3, label: 'The Chartist Guy pointing the way' },
+      lost: { fork: false, easelT: 'translate(60 0) rotate(-12 46 394)', board: 'broken', arms: [A.downL, A.scratchR], hatT: 'translate(4 -4) rotate(14 372 124)', brows: browsUp, mouth: 'o', eyesDx: -3, question: true, debris: true, label: 'The Chartist Guy scratching his head next to a toppled chart' },
+      empty: { fork: false, board: 'empty', arms: [A.shrugL, A.shrugR], brows: browsUp, mouth: 'o', eyesDx: -3, label: 'The Chartist Guy shrugging at an empty board' },
+      celebrate: { fork: false, board: 'v2', arms: [A.cheerL, A.cheerR], hatT: 'translate(-14 -44) rotate(-16 372 90)', brows: browsUp, mouth: 'wide', confetti: true, label: 'The Chartist Guy celebrating Chartist v2, hat in the air' },
+      avatar: { fork: false, vb: '268 56 196 196', easel: false, arms: [], avatar: true, label: 'Chartist Guy avatar' }
+    };
+    const p = Object.assign({}, base, P[pose] || {});
+    const c = soft
+      ? { ink: 'url(#m-g-ink)', hat: 'url(#m-g-ink)', vest: 'url(#m-g-vest)', skin: 'url(#m-g-skin)', shadow: 'url(#m-g-shadow)', shadowOpacity: 1 }
+      : { ink: 'var(--m-ink)', hat: 'var(--m-ink)', vest: 'var(--m-vest)', skin: 'var(--m-skin)', shadow: 'var(--m-ink)', shadowOpacity: 0.12 };
+    return {
+      vb: p.vb, label: p.label, c, soft,
+      variantClass: variant === 'line' ? 'm-line' : '',
+      avatar: !!p.avatar,
+      easel: p.easel, easelT: p.easelT,
+      boardChart: p.board === 'chart', boardLoading: p.board === 'loading', boardEmpty: p.board === 'empty', boardV2: p.board === 'v2', boardBroken: p.board === 'broken',
+      debris: !!p.debris, question: !!p.question, confetti: !!p.confetti,
+      arms: p.arms, fork: !!p.fork,
+      hatT: p.hatT, hatClass: pose === 'celebrate' ? 'm-hat m-hat-fly' : 'm-hat',
+      headT: p.headT,
+      eyesT: 'translate(' + p.eyesDx + ' 0)',
+      mouthD: p.mouth === 'wide' ? 'M340,185.5 Q357,191 374,184.5 Q377,184 376,187 Q369,212 357,212 Q345,212 339,188 Q338,185.5 340,185.5 Z' : (p.mouth === 'o' ? 'M348.5,194 a5.5,6.5 0 1,0 11,0 a5.5,6.5 0 1,0 -11,0 Z' : 'M343,187.5 Q357,192 371,186.5 Q374,186 373,189 Q366,204 357,204 Q348,204 342,190 Q341,187.5 343,187.5 Z'),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site footer</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<footer class="site-footer cx dark" style="background: #151112">
+  <div class="wrap" style="padding-block: 56px 32px; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); gap: 32px">
+      <div style="display: flex; flex-direction: column; gap: 14px; grid-column: span 2; max-width: 380px">
+        <a class="brand-lockup" href="Landing.dc.html" style="color: #F3EADB !important"><span style="width: 36px; display: block"><dc-import name="Logomark" variant="mustard" hint-size="36px,36px"></dc-import></span><span>Chartist</span></a>
+        <p style="color: #B3A49C; font-size: 15px">Simple responsive charts, drawn in SVG and dressed in CSS. Since 2014.</p>
+        <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #3A3133; border-radius: var(--r-md); width: fit-content">
+          <span style="font: 600 12px var(--font-code); color: #B3A49C; text-transform: uppercase; letter-spacing: .08em">Supported by</span>
+          <a href="https://cube.dev" style="display: inline-flex; align-items: center; gap: 8px; font: 700 15px var(--font-body)"><span aria-hidden="true" style="display: inline-grid; place-items: center; width: 64px; height: 24px; border: 1px dashed #6B5E5A; border-radius: 4px; font: 600 10px var(--font-code); color: #B3A49C">[Cube logo]</span>Cube</a>
+        </div>
+      </div>
+      <nav aria-label="Docs" style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+        <strong style="font-family: var(--font-display); font-size: 18px; color: #F3EADB">Docs</strong>
+        <a href="GettingStarted.dc.html">Getting started</a><a href="Examples.dc.html">Examples</a><a href="Api.dc.html">API reference</a><a href="Plugins.dc.html">Plugins</a><a href="Playground.dc.html">Playground</a>
+      </nav>
+      <nav aria-label="Community" style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+        <strong style="font-family: var(--font-display); font-size: 18px; color: #F3EADB">Community</strong>
+        <a href="https://github.com/chartist-js/chartist">GitHub</a><a href="https://github.com/chartist-js/chartist/discussions">Discussions</a><a href="https://stackoverflow.com/questions/tagged/chartist.js">Stack Overflow</a><a href="https://github.com/chartist-js/chartist/blob/main/CONTRIBUTING.md">Contributing</a>
+      </nav>
+      <nav aria-label="Versions" style="display: flex; flex-direction: column; gap: 10px; font-size: 15px">
+        <strong style="font-family: var(--font-display); font-size: 18px; color: #F3EADB">Versions</strong>
+        <a href="#v2">v2 (current)</a><a href="#v1">v1.5 docs</a><a href="#v0">v0.11 archive</a><a href="#changelog">Changelog</a>
+      </nav>
+    </div>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; border-top: 1px solid #3A3133; padding-top: 20px; font-size: 13px; color: #B3A49C">
+      <span>MIT licensed · © 2014–2026 Gion Kunz and contributors</span>
+      <span>Drawn in SVG, styled with CSS, no dependencies harmed.</span>
+    </div>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":420}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

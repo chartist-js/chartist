@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Examples — Chartist</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh">
+  <dc-import name="SiteHeader" active="examples" theme="{{theme}}" on-toggle-theme="{{toggleTheme}}" hint-size="100%,72px"></dc-import>
+  <main class="wrap" style="padding-block: 40px 96px; display: flex; flex-direction: column; gap: 28px">
+    <div class="section-head" style="margin: 0">
+      <div style="display: flex; flex-direction: column; gap: 12px">
+        <span class="eyebrow">Examples</span>
+        <h1 style="font-size: var(--fs-4xl)">The chart gallery</h1>
+      </div>
+      <p>Every card is a live chart. Open one in the playground to see the code, change it, and copy it into your project.</p>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between">
+      <div role="group" aria-label="Filter by type" style="display: flex; flex-wrap: wrap; gap: 8px">
+        <sc-for list="{{filters}}" as="f" hint-placeholder-count="6">
+          <button class="chip" type="button" aria-pressed="{{f.pressed}}" onClick="{{f.pick}}">{{f.label}} <span class="muted" style="font-weight: 500">{{f.count}}</span></button>
+        </sc-for>
+      </div>
+      <label class="search" style="max-width: 300px; flex: 1 1 220px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+        <input type="search" placeholder="Search examples" aria-label="Search examples" value="{{q}}" onChange="{{onQ}}">
+      </label>
+    </div>
+
+    <sc-if value="{{hasResults}}" hint-placeholder-val="{{ true }}">
+      <div class="grid-auto">
+        <sc-for list="{{items}}" as="it" hint-placeholder-count="9">
+          <a class="card link chart-card" href="Playground.dc.html">
+            <div class="stage"><dc-import name="Chart" kind="{{it.kind}}" data="{{it.data}}" options="{{it.opts}}" hint-size="100%,200px"></dc-import></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
+              <strong style="font: 700 20px/1.2 var(--font-display)">{{it.title}}</strong>
+              <span class="tag">{{it.cat}}</span>
+            </div>
+            <span class="muted" style="font-size: 14px">{{it.note}}</span>
+            <span class="pill-link">Open in playground →</span>
+          </a>
+        </sc-for>
+      </div>
+    </sc-if>
+    <sc-if value="{{noResults}}" hint-placeholder-val="{{ false }}">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); align-items: center; gap: 24px; padding: 32px; border: 2px dashed var(--line-strong); border-radius: var(--r-xl)">
+        <div style="max-width: 360px"><dc-import name="Mascot" pose="empty" hint-size="100%,300px"></dc-import></div>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <h2 style="font-size: var(--fs-2xl)">Nothing to plot for “{{q}}”</h2>
+          <p class="muted">No example matches that search. Try a chart type like “donut”, or start from a blank chart in the playground.</p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap"><button class="btn sm" type="button" onClick="{{clear}}">Clear search</button><a class="btn primary sm" href="Playground.dc.html">Open a blank chart</a></div>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":1440,"height":2400}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: null, f: 'all', q: '' }; }
+  renderVals() {
+    const theme = this.state.theme || this.props.theme || 'light';
+    const ALL = [
+      { kind: 'line', cat: 'Line', title: 'Simple line chart', note: 'Three series with points.' },
+      { kind: 'smooth', cat: 'Line', title: 'Smooth lines', note: 'Interpolation.cardinal() between points.' },
+      { kind: 'area', cat: 'Line', title: 'Area chart', note: 'showArea with a soft fill.' },
+      { kind: 'line', cat: 'Line', title: 'Area, no points', note: 'Clean lines for dense data.', opts: { showArea: true, showPoint: false }, data: { labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], series: [[1, 2, 3, 1, -2, 0, 1, 0, 2, 3], [-2, -1, -2, -1, -2.5, -1, -2, -1, 0, 1]] } },
+      { kind: 'scatter', cat: 'Line', title: 'Scatter', note: 'showLine: false on numeric axes.' },
+      { kind: 'bar', cat: 'Bar', title: 'Grouped bars', note: 'Three series per label.' },
+      { kind: 'stacked', cat: 'Bar', title: 'Stacked bars', note: 'stackBars: true with totals.' },
+      { kind: 'bipolar', cat: 'Bar', title: 'Bi-polar bars', note: 'Negative values below zero.' },
+      { kind: 'pie', cat: 'Pie', title: 'Pie with labels', note: 'Percentages on each slice.' },
+      { kind: 'donut', cat: 'Pie', title: 'Animated donut', note: 'Drawn with stroke-dashoffset.' },
+      { kind: 'gauge', cat: 'Pie', title: 'Gauge', note: 'Half donut via total and startAngle.' },
+      { kind: 'smooth', cat: 'Animated', title: 'Line draw-in', note: 'CSS keyframes, staggered by series.' }
+    ];
+    const cats = ['all', 'Line', 'Bar', 'Pie', 'Animated'];
+    const q = this.state.q.trim().toLowerCase();
+    const items = ALL.filter((x) => (this.state.f === 'all' || x.cat === this.state.f) && (!q || (x.title + ' ' + x.note + ' ' + x.kind + ' ' + x.cat).toLowerCase().includes(q)))
+      .map((x) => ({ kind: x.kind, cat: x.cat, title: x.title, note: x.note, data: x.data || null, opts: x.opts || null }));
+    return {
+      theme, rootClass: theme === 'dark' ? 'cx dark' : 'cx',
+      toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }),
+      filters: cats.map((c) => ({ label: c === 'all' ? 'All' : c, count: c === 'all' ? ALL.length : ALL.filter((x) => x.cat === c).length, pressed: this.state.f === c ? 'true' : 'false', pick: () => this.setState({ f: c }) })),
+      q: this.state.q, onQ: (e) => this.setState({ q: e.target.value }), clear: () => this.setState({ q: '', f: 'all' }),
+      items, hasResults: items.length > 0, noResults: items.length === 0
+    };
+  }
+}
+</script>
+</body>
+</html>

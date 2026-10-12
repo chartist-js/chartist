@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Chart</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400..800&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<svg class="ct-svg {{animClass}}" viewBox="0 0 {{W}} {{H}}" role="img" aria-label="{{label}}" style="display: block; width: 100%; height: auto; overflow: visible">
+  <g class="ct-grids">
+    <sc-for list="{{grids}}" as="g" hint-placeholder-count="4"><path class="ct-grid" d="{{g.d}}"></path></sc-for>
+    <sc-if value="{{zeroLine}}" hint-placeholder-val="{{ false }}"><path class="ct-axis" d="{{zeroD}}"></path></sc-if>
+  </g>
+  <g class="ct-labels">
+    <sc-for list="{{ylabels}}" as="l" hint-placeholder-count="4"><text class="ct-label" x="{{l.x}}" y="{{l.y}}" text-anchor="end">{{l.t}}</text></sc-for>
+    <sc-for list="{{xlabels}}" as="l" hint-placeholder-count="5"><text class="ct-label" x="{{l.x}}" y="{{l.y}}" text-anchor="middle">{{l.t}}</text></sc-for>
+  </g>
+  <sc-for list="{{areas}}" as="a" hint-placeholder-count="0"><path class="ct-area {{a.cls}}" d="{{a.d}}"></path></sc-for>
+  <sc-for list="{{bars}}" as="b" hint-placeholder-count="0"><rect class="ct-bar {{b.cls}}" x="{{b.x}}" y="{{b.y}}" width="{{b.w}}" height="{{b.h}}" rx="{{b.rx}}"><title>{{b.title}}</title></rect></sc-for>
+  <sc-for list="{{slices}}" as="s" hint-placeholder-count="0"><path class="{{s.kind}} {{s.cls}}" d="{{s.d}}" pathLength="{{s.len}}"><title>{{s.title}}</title></path></sc-for>
+  <sc-for list="{{lines}}" as="ln" hint-placeholder-count="2"><g class="{{ln.cls}}"><path class="ct-line" d="{{ln.d}}" pathLength="1"></path></g></sc-for>
+  <sc-for list="{{points}}" as="p" hint-placeholder-count="0"><circle class="ct-dot {{p.cls}}" cx="{{p.x}}" cy="{{p.y}}" r="{{p.r}}"><title>{{p.title}}</title></circle></sc-for>
+  <sc-for list="{{sliceLabels}}" as="l" hint-placeholder-count="0"><text x="{{l.x}}" y="{{l.y}}" text-anchor="middle" style="fill: #fff; font: 700 13px var(--font-body)">{{l.t}}</text></sc-for>
+</svg>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"enum","options":["line","area","smooth","bar","stacked","bipolar","scatter","pie","donut","gauge"],"default":"line"},"animate":{"editor":"boolean","default":true},"data":{"editor":null},"options":{"editor":null},"$preview":{"width":400,"height":240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const kind = this.props.kind || 'line';
+    const opt = this.props.options || {};
+    const P = {
+      line: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [[12, 9, 7, 8, 5], [2, 1, 3.5, 7, 3], [1, 3, 4, 5, 6]] },
+      area: { labels: ['1', '2', '3', '4', '5', '6', '7', '8'], series: [[5, 9, 7, 8, 5, 3, 5, 4]] },
+      smooth: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'], series: [[1, 5, 2, 5, 4, 3, 6], [2, 3, 4, 8, 1, 2, 3]] },
+      bar: { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7], [3, 2, 9, 5], [1, 5, 8, 4]] },
+      stacked: { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[800000, 1200000, 1400000, 1300000], [200000, 400000, 500000, 300000], [100000, 200000, 400000, 600000]] },
+      bipolar: { labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'], series: [[1, 2, 4, 8, 6, -2, -1, -4, -6, -2]] },
+      scatter: { labels: [], series: [Array.from({ length: 36 }, (_, i) => ({ x: i, y: Math.round((Math.sin(i * 1.7) * 3 + i * 0.25 + 5 + ((i * 37) % 7) / 3) * 10) / 10 }))] },
+      pie: { labels: ['Bananas', 'Apples', 'Grapes'], series: [5, 3, 4] },
+      donut: { labels: ['A', 'B', 'C', 'D'], series: [20, 10, 30, 40] },
+      gauge: { labels: ['A', 'B', 'C', 'D'], series: [20, 10, 30, 40] }
+    };
+    const data = this.props.data || P[kind] || P.line;
+    const letters = 'abcdefghijklmno';
+    const fmt = (v) => { const a = Math.abs(v); if (a >= 1e6) return +(v / 1e6).toFixed(1) + 'm'; if (a >= 1e3) return +(v / 1e3).toFixed(1) + 'k'; return String(+v.toFixed(1)); };
+    const r1 = (n) => Math.round(n * 10) / 10;
+    const out = { grids: [], ylabels: [], xlabels: [], areas: [], bars: [], lines: [], points: [], slices: [], sliceLabels: [], zeroLine: false, zeroD: '' };
+    let W = 400, H = 240;
+
+    if (kind === 'pie' || kind === 'donut' || kind === 'gauge') {
+      const vals = (data.series || []).map((s) => (typeof s === 'object' && s !== null ? +s.value : +s)).filter((v) => !isNaN(v));
+      const total = vals.reduce((a, b) => a + b, 0) || 1;
+      const gauge = kind === 'gauge';
+      const cx = 200, cy = gauge ? 190 : 120, R = gauge ? 150 : 108, dw = 30;
+      const span = gauge ? 180 : 360, start = gauge ? 180 : -90;
+      let a0 = start;
+      const pt = (r, a) => [cx + r * Math.cos(a * Math.PI / 180), cy + r * Math.sin(a * Math.PI / 180)];
+      vals.forEach((v, i) => {
+        const a1 = a0 + (v / total) * span - (vals.length > 1 ? 0.001 : 0);
+        const large = a1 - a0 > 180 ? 1 : 0;
+        const cls = 'ct-series-' + letters[i % 15];
+        const title = (data.labels && data.labels[i] ? data.labels[i] + ': ' : '') + v;
+        if (kind === 'pie') {
+          const [x0, y0] = pt(R, a0), [x1, y1] = pt(R, a1);
+          out.slices.push({ kind: 'ct-slice-pie', cls, title, len: 1, d: `M${r1(cx)},${r1(cy)} L${r1(x0)},${r1(y0)} A${R},${R} 0 ${large} 1 ${r1(x1)},${r1(y1)} Z` });
+          const [lx, ly] = pt(R * 0.62, (a0 + a1) / 2);
+          out.sliceLabels.push({ x: r1(lx), y: r1(ly + 4), t: Math.round(v / total * 100) + '%' });
+        } else {
+          const rr = R - dw / 2; const [x0, y0] = pt(rr, a0), [x1, y1] = pt(rr, a1);
+          out.slices.push({ kind: 'ct-slice-donut', cls, title, len: 1, d: `M${r1(x0)},${r1(y0)} A${rr},${rr} 0 ${large} 1 ${r1(x1)},${r1(y1)}` });
+        }
+        a0 = a1 + (vals.length > 1 ? 0.001 : 0);
+      });
+      H = gauge ? 210 : 240;
+      return Object.assign(out, { W, H, animClass: this.props.animate === false ? '' : 'ct-draw', label: kind + ' chart' });
+    }
+
+    const padL = 40, padR = 14, padT = 12, padB = 26;
+    const pw = W - padL - padR, ph = H - padT - padB;
+    const isBar = kind === 'bar' || kind === 'stacked' || kind === 'bipolar' || opt.bars;
+    const stacked = kind === 'stacked' || opt.stackBars;
+    const series = (data.series || []).map((s) => (Array.isArray(s) ? s : (s && s.data) || []));
+    const isXY = kind === 'scatter';
+    const n = isXY ? 0 : Math.max(1, ...series.map((s) => s.length), (data.labels || []).length);
+    let lo = Infinity, hi = -Infinity, xlo = Infinity, xhi = -Infinity;
+    if (stacked) {
+      for (let i = 0; i < n; i++) { let pos = 0, neg = 0; series.forEach((s) => { const v = +s[i] || 0; if (v >= 0) pos += v; else neg += v; }); hi = Math.max(hi, pos); lo = Math.min(lo, neg); }
+    } else {
+      series.forEach((s) => s.forEach((v) => { const y = isXY ? +v.y : +v; const x = isXY ? +v.x : 0; if (!isNaN(y)) { hi = Math.max(hi, y); lo = Math.min(lo, y); } if (isXY) { xhi = Math.max(xhi, x); xlo = Math.min(xlo, x); } }));
+    }
+    if (!isFinite(hi)) { hi = 10; lo = 0; }
+    if (isBar || kind === 'area' || opt.showArea) lo = Math.min(lo, 0);
+    if (lo > 0 && !isXY) lo = 0;
+    const raw = (hi - lo) / 4 || 1, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= raw);
+    const yl = Math.floor(lo / step) * step, yh = Math.ceil(hi / step) * step;
+    const Y = (v) => padT + ph - ((v - yl) / (yh - yl || 1)) * ph;
+    for (let v = yl; v <= yh + step / 2; v += step) {
+      const y = r1(Y(v));
+      out.grids.push({ d: `M${padL},${y} H${W - padR}` });
+      out.ylabels.push({ x: padL - 8, y: r1(y + 4), t: fmt(v) });
+    }
+    if (yl < 0) { out.zeroLine = true; out.zeroD = `M${padL},${r1(Y(0))} H${W - padR}`; }
+
+    const X = isXY
+      ? (x) => padL + ((x - xlo) / (xhi - xlo || 1)) * pw
+      : isBar ? (i) => padL + (i + 0.5) * (pw / n) : (i) => padL + (n > 1 ? (i * pw) / (n - 1) : pw / 2);
+    const every = Math.ceil(n / 8);
+    (data.labels || []).forEach((t, i) => { if (i % every === 0) out.xlabels.push({ x: r1(X(i)), y: H - 6, t: String(t) }); });
+    if (isXY) { const st = Math.ceil((xhi - xlo) / 6) || 1; for (let x = Math.ceil(xlo); x <= xhi; x += st) out.xlabels.push({ x: r1(X(x)), y: H - 6, t: fmt(x) }); }
+
+    if (isBar) {
+      const gw = pw / n;
+      const base = Y(Math.max(0, yl));
+      if (stacked) {
+        const bw = Math.min(26, gw * 0.5); const pos = new Array(n).fill(0);
+        series.forEach((s, si) => s.forEach((v, i) => { v = +v || 0; const y0 = Y(pos[i]), y1 = Y(pos[i] + v); pos[i] += v;
+          out.bars.push({ cls: 'ct-series-' + letters[si % 15], x: r1(X(i) - bw / 2), y: r1(Math.min(y0, y1)), w: r1(bw), h: r1(Math.max(0.5, Math.abs(y1 - y0) - 1.5)), rx: 0, title: fmt(v) }); }));
+      } else {
+        const sN = series.length || 1, bw = Math.min(16, (gw * 0.72) / sN);
+        series.forEach((s, si) => s.forEach((v, i) => { v = +v || 0; const x = X(i) - (sN * bw) / 2 + si * bw + 1; const y0 = Y(0), y1 = Y(v);
+          out.bars.push({ cls: 'ct-series-' + letters[si % 15], x: r1(x), y: r1(Math.min(y0, y1)), w: r1(bw - 2), h: r1(Math.max(0.5, Math.abs(y1 - y0))), rx: 2, title: (data.labels && data.labels[i] ? data.labels[i] + ': ' : '') + v }); }));
+      }
+      return Object.assign(out, { W, H, animClass: this.props.animate === false ? '' : 'ct-draw', label: kind + ' chart' });
+    }
+
+    const smooth = kind === 'smooth' || opt.lineSmooth === true;
+    const area = kind === 'area' || opt.showArea;
+    const showLine = kind !== 'scatter' && opt.showLine !== false;
+    const showPoint = opt.showPoint !== false;
+    const path = (pts) => {
+      if (!pts.length) return '';
+      let d = `M${r1(pts[0][0])},${r1(pts[0][1])}`;
+      if (!smooth) { for (let i = 1; i < pts.length; i++) d += ` L${r1(pts[i][0])},${r1(pts[i][1])}`; return d; }
+      for (let i = 0; i < pts.length - 1; i++) {
+        const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+        d += ` C${r1(p1[0] + (p2[0] - p0[0]) / 6)},${r1(p1[1] + (p2[1] - p0[1]) / 6)} ${r1(p2[0] - (p3[0] - p1[0]) / 6)},${r1(p2[1] - (p3[1] - p1[1]) / 6)} ${r1(p2[0])},${r1(p2[1])}`;
+      }
+      return d;
+    };
+    series.forEach((s, si) => {
+      const cls = 'ct-series-' + letters[si % 15];
+      const pts = s.map((v, i) => (isXY ? [X(+v.x), Y(+v.y)] : [X(i), Y(+v)])).filter((p) => !isNaN(p[1]));
+      const d = path(pts);
+      if (area && pts.length) out.areas.push({ cls, d: d + ` L${r1(pts[pts.length - 1][0])},${r1(Y(Math.max(0, yl)))} L${r1(pts[0][0])},${r1(Y(Math.max(0, yl)))} Z` });
+      if (showLine) out.lines.push({ cls: 'ct-series ' + cls, d });
+      if (showPoint) pts.forEach((p, i) => out.points.push({ cls, x: r1(p[0]), y: r1(p[1]), r: isXY ? 3.5 : 4.5, title: isXY ? `${s[i].x}, ${s[i].y}` : (data.labels && data.labels[i] ? data.labels[i] + ': ' : '') + s[i] }));
+    });
+    return Object.assign(out, { W, H, animClass: this.props.animate === false ? '' : 'ct-draw', label: kind + ' chart' });
+  }
+}
+</script>
+</body>
+</html>

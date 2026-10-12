@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Getting started — Chartist</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="min-height: 100vh">
+  <dc-import name="SiteHeader" active="docs" theme="{{theme}}" on-toggle-theme="{{toggleTheme}}" hint-size="100%,72px"></dc-import>
+
+  <div class="wrap docs">
+    <!-- mobile docs bar -->
+    <div class="docs-mobile-bar" style="width: 100%; gap: 8px; flex-wrap: wrap">
+      <button class="btn sm" type="button" aria-expanded="{{navOpenStr}}" onClick="{{toggleNav}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h16"></path></svg>Docs menu</button>
+      <label style="flex: 1 1 160px; display: flex"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Jump to section</span><select class="version" style="width: 100%; font-family: var(--font-body); font-size: 14px"><option>On this page</option><option>1. Add the stylesheet</option><option>2. Import Chartist</option><option>3. Draw a chart</option><option>Using npm</option><option>Make it yours</option></select></label>
+    </div>
+    <sc-if value="{{navOpen}}" hint-placeholder-val="{{ false }}">
+      <nav aria-label="Docs (mobile)" class="card flat" style="width: 100%; padding: 12px; display: flex; flex-direction: column; gap: 2px; background: var(--surface)">
+        <sc-for list="{{flatNav}}" as="l" hint-placeholder-count="6"><a class="side-link" href="#{{l.id}}" aria-current="{{l.current}}">{{l.label}}</a></sc-for>
+      </nav>
+    </sc-if>
+
+    <!-- sidebar -->
+    <aside class="docs-side" aria-label="Docs">
+      <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--ink-2); padding: 0 12px">Version<select class="version"><option>v2.0 (current)</option><option>v1.5</option><option>v0.11 (archive)</option></select></label>
+      <sc-for list="{{nav}}" as="grp" hint-placeholder-count="3">
+        <div class="side-group">
+          <h4>{{grp.title}}</h4>
+          <sc-for list="{{grp.links}}" as="l" hint-placeholder-count="4">
+            <a class="side-link" href="#{{l.id}}" aria-current="{{l.current}}">{{l.label}}<span class="tag" style="display: {{l.tagDisplay}}">{{l.tag}}</span></a>
+          </sc-for>
+        </div>
+      </sc-for>
+    </aside>
+
+    <!-- main -->
+    <main class="docs-main">
+      <nav aria-label="Breadcrumb" style="font-size: 14px; color: var(--ink-2); display: flex; gap: 8px"><a href="#docs" style="color: var(--ink-2)">Docs</a><span aria-hidden="true">/</span><span>Getting started</span></nav>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end">
+        <div style="display: flex; flex-direction: column; gap: 14px">
+          <h1 style="font-size: var(--fs-4xl)">Getting started</h1>
+          <p class="lead">Your first chart in about two minutes. No build step, no bundler, no framework. Just an HTML file and a browser.</p>
+        </div>
+        <div class="hide-sm" style="width: 130px; margin-bottom: -8px"><dc-import name="Mascot" pose="point" hint-size="130px,236px"></dc-import></div>
+      </div>
+
+      <div class="callout tip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12l3 3 5-6"></path></svg><p><strong>Works without a bundler.</strong> Chartist v2 ships as a native ES module, so a <code>&lt;script type="module"&gt;</code> is all you need. Using npm instead? Skip to <a href="#npm">Using npm</a>.</p></div>
+
+      <article class="prose">
+        <div class="step" id="stylesheet">
+          <span class="step-n">1</span>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+            <h2 style="margin-top: 4px">Add the stylesheet and a container</h2>
+            <p>The stylesheet holds the default look: series colors, grid, labels. The container is any element; Chartist fills it with an SVG.</p>
+            <div class="code"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">index.html</span><button class="icon-btn sm" type="button" aria-label="Copy"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg></button></div><pre>&lt;<span class="f">link</span> rel=<span class="s">"stylesheet"</span>
+      href=<span class="s">"https://cdn.jsdelivr.net/npm/chartist/dist/index.css"</span>&gt;
+
+&lt;<span class="f">div</span> id=<span class="s">"chart"</span> class=<span class="s">"ct-chart"</span>&gt;&lt;/<span class="f">div</span>&gt;</pre></div>
+          </div>
+        </div>
+
+        <div class="step" id="import">
+          <span class="step-n">2</span>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+            <h2 style="margin-top: 4px">Import Chartist as a module</h2>
+            <p>Import only the chart types you use. Each one is a class you create with a container, data and options.</p>
+            <div class="code"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">index.html</span></div><pre>&lt;<span class="f">script</span> type=<span class="s">"module"</span>&gt;
+  <span class="k">import</span> { <span class="f">LineChart</span> } <span class="k">from</span> <span class="s">'https://cdn.jsdelivr.net/npm/chartist/dist/index.js'</span>;
+&lt;/<span class="f">script</span>&gt;</pre></div>
+          </div>
+        </div>
+
+        <div class="step" id="draw">
+          <span class="step-n">3</span>
+          <div style="display: flex; flex-direction: column; gap: 12px; min-width: 0">
+            <h2 style="margin-top: 4px">Draw your first chart</h2>
+            <p>Labels go along the x-axis, each array in <code>series</code> becomes one line. Try changing a number below.</p>
+          </div>
+        </div>
+        <dc-import name="LiveExample" preset="line" height="340" hint-size="100%,360px"></dc-import>
+
+        <h2 id="npm">Using npm and a bundler</h2>
+        <p>Same API, installed from npm. Works with Vite, webpack, Rollup, esbuild and Astro out of the box.</p>
+        <div class="code"><pre><span class="c">$</span> npm install chartist</pre></div>
+        <div class="code"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">main.ts</span></div><pre><span class="k">import</span> { <span class="f">BarChart</span> } <span class="k">from</span> <span class="s">'chartist'</span>;
+<span class="k">import</span> <span class="s">'chartist/dist/index.css'</span>;
+
+<span class="k">new</span> <span class="f">BarChart</span>(<span class="s">'#chart'</span>, { labels, series }, { stackBars: <span class="n">true</span> });</pre></div>
+
+        <h2 id="style">Make it yours with CSS</h2>
+        <p>There's no theme option. Charts are SVG with predictable classes, so you style them the way you style everything else. Custom properties cover the common cases:</p>
+        <div class="code"><pre>#chart {
+  <span class="k">--ct-series-a</span>: <span class="s">#0544d3</span>;     <span class="c">/* first series */</span>
+  <span class="k">--ct-line-width</span>: <span class="n">4px</span>;
+  <span class="k">--ct-grid-dasharray</span>: <span class="n">none</span>;
+}</pre></div>
+        <div class="callout"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--info)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><p><strong>Upgrading from v1.5?</strong> Your charts keep their exact colors. v2's classic palette is identical; the new accessible palette is opt-in. See <a href="#migrate">Migrating from v1</a>.</p></div>
+      </article>
+
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--ink-2); border-top: 1px solid var(--line); padding-top: 16px">
+        <a href="https://github.com/chartist-js/chartist" style="display: inline-flex; gap: 6px; align-items: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"></path></svg>Edit this page on GitHub</a>
+        <span>Last updated [DATE]</span>
+      </div>
+      <nav class="pager" aria-label="Previous and next">
+        <a href="Landing.dc.html"><span class="muted" style="font-size: 13px">← Previous</span><strong style="font: 700 19px var(--font-display)">Introduction</strong></a>
+        <a href="#responsive" style="text-align: right"><span class="muted" style="font-size: 13px">Next →</span><strong style="font: 700 19px var(--font-display)">Responsive charts</strong></a>
+      </nav>
+    </main>
+
+    <!-- toc -->
+    <nav class="docs-toc" aria-label="On this page">
+      <span class="eyebrow" style="margin-bottom: 4px">On this page</span>
+      <a class="toc-link" href="#stylesheet" aria-current="true">1. Add the stylesheet</a>
+      <a class="toc-link" href="#import">2. Import Chartist</a>
+      <a class="toc-link" href="#draw">3. Draw a chart</a>
+      <a class="toc-link" href="#npm">Using npm</a>
+      <a class="toc-link" href="#style">Make it yours</a>
+    </nav>
+  </div>
+
+  <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":1440,"height":3300}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { theme: null, nav: false }; }
+  renderVals() {
+    const theme = this.state.theme || this.props.theme || 'light';
+    const N = [
+      { title: 'Start here', links: [['intro', 'Introduction'], ['start', 'Getting started', true], ['responsive', 'Responsive charts'], ['styling', 'Styling with CSS'], ['migrate', 'Migrating from v1', false, 'v2']] },
+      { title: 'Chart types', links: [['line', 'Line & area'], ['bar', 'Bar'], ['pie', 'Pie, donut & gauge'], ['scatter', 'Scatter']] },
+      { title: 'Guides', links: [['anim', 'Animations'], ['a11y', 'Accessibility'], ['plugins', 'Writing plugins'], ['frameworks', 'Using with frameworks']] }
+    ];
+    const nav = N.map((g) => ({ title: g.title, links: g.links.map(([id, label, cur, tag]) => ({ id, label, current: cur ? 'page' : 'false', tag: tag || '', tagDisplay: tag ? 'inline-flex' : 'none' })) }));
+    return {
+      theme, rootClass: theme === 'dark' ? 'cx dark' : 'cx',
+      toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }),
+      nav, flatNav: nav.flatMap((g) => g.links),
+      navOpen: this.state.nav, navOpenStr: this.state.nav ? 'true' : 'false',
+      toggleNav: () => this.setState({ nav: !this.state.nav })
+    };
+  }
+}
+</script>
+</body>
+</html>

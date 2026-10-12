@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Color system</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; height: 1500px; box-sizing: border-box; padding: 64px 80px; display: flex; flex-direction: column; gap: 36px; background: var(--bg)">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">03 · Color</span>
+      <h2 style="font-size: 56px; line-height: 1">Warm paper, red waistcoat, mustard tile</h2>
+    </div>
+    <p class="muted" style="max-width: 480px; font-size: 17px">The 2014 palette, grown up. Fewer, calmer brand colors, so the charts can be the loudest thing on the page.</p>
+  </div>
+
+  <!-- heritage → brand -->
+  <div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px">
+    <div class="sw"><div class="sw-chip" style="background: #FBF6EE; height: 112px; display: flex; align-items: flex-end; padding: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #EADBC4; border: 2px solid #FFF"></span></div><strong>Paper</strong><code style="width: fit-content">#FBF6EE</code><span class="muted" style="font-size: 13px">was cream #EADBC4 · page ground</span></div>
+    <div class="sw"><div class="sw-chip" style="background: #2B2426; height: 112px; display: flex; align-items: flex-end; padding: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #453D3F; border: 2px solid #FFF"></span></div><strong>Ink</strong><code style="width: fit-content">#2B2426</code><span class="muted" style="font-size: 13px">was gray #453D3F · text, outlines</span></div>
+    <div class="sw"><div class="sw-chip" style="background: #C8102E; height: 112px; display: flex; align-items: flex-end; padding: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #D70206; border: 2px solid #FFF"></span></div><strong>Waistcoat</strong><code style="width: fit-content">#C8102E</code><span class="muted" style="font-size: 13px">was red #D70206 · brand, primary buttons</span></div>
+    <div class="sw"><div class="sw-chip" style="background: #FF6B5E; height: 112px; display: flex; align-items: flex-end; padding: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #F05B4F; border: 2px solid #FFF"></span></div><strong>Grapefruit</strong><code style="width: fit-content">#FF6B5E</code><span class="muted" style="font-size: 13px">was #F05B4F · brand in dark mode</span></div>
+    <div class="sw"><div class="sw-chip" style="background: #F4C63D; height: 112px; display: flex; align-items: flex-end; padding: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #F4C63D; border: 2px solid #FFF"></span></div><strong>Mustard</strong><code style="width: fit-content">#F4C63D</code><span class="muted" style="font-size: 13px">unchanged · logo tile, highlights</span></div>
+    <div class="sw"><div class="sw-chip" style="background: #9A6A45; height: 112px; display: flex; align-items: flex-end; padding: 10px"><span style="width: 22px; height: 22px; border-radius: 50%; background: #844E29; border: 2px solid #FFF"></span></div><strong>Easel wood</strong><code style="width: fit-content">#9A6A45</code><span class="muted" style="font-size: 13px">was #844E29 · illustration only</span></div>
+  </div>
+
+  <!-- UI tokens light / dark -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+    <div class="card flat" style="padding: 24px; display: flex; flex-direction: column; gap: 16px; background: var(--bg)">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><strong style="font-family: var(--font-display); font-size: 20px">Light</strong><span class="muted" style="font-size: 13px">contrast vs --bg</span></div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; font-size: 13px">
+        <div class="sw"><div class="sw-chip" style="background: var(--bg-sunken); height: 52px"></div><code style="width: fit-content">--bg-sunken</code></div>
+        <div class="sw"><div class="sw-chip" style="background: var(--surface); height: 52px"></div><code style="width: fit-content">--surface</code></div>
+        <div class="sw"><div class="sw-chip" style="background: var(--line); height: 52px"></div><code style="width: fit-content">--line</code></div>
+        <div class="sw"><div class="sw-chip" style="background: var(--line-strong); height: 52px"></div><code style="width: fit-content">--line-strong</code></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 15px">
+        <div style="display: flex; justify-content: space-between"><span style="color: var(--ink); font-weight: 700">--ink · body text</span><span class="tag ok">14.1 : 1</span></div>
+        <div style="display: flex; justify-content: space-between"><span style="color: var(--ink-2); font-weight: 700">--ink-2 · secondary</span><span class="tag ok">5.8 : 1</span></div>
+        <div style="display: flex; justify-content: space-between"><span style="color: var(--link); font-weight: 700">--link · Waistcoat</span><span class="tag ok">5.5 : 1</span></div>
+        <div style="display: flex; justify-content: space-between"><span style="background: var(--brand); color: var(--on-brand); font-weight: 700; padding: 0 8px; border-radius: 4px">white on --brand</span><span class="tag ok">5.9 : 1</span></div>
+      </div>
+    </div>
+    <div class="cx dark card flat" style="padding: 24px; display: flex; flex-direction: column; gap: 16px; background: var(--bg); border-color: var(--line)">
+      <div style="display: flex; justify-content: space-between; align-items: baseline"><strong style="font-family: var(--font-display); font-size: 20px">Dark</strong><span class="muted" style="font-size: 13px">contrast vs --bg</span></div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; font-size: 13px">
+        <div class="sw"><div class="sw-chip" style="background: var(--bg-sunken); height: 52px; border-color: #ffffff14"></div><code style="width: fit-content">--bg-sunken</code></div>
+        <div class="sw"><div class="sw-chip" style="background: var(--surface); height: 52px; border-color: #ffffff14"></div><code style="width: fit-content">--surface</code></div>
+        <div class="sw"><div class="sw-chip" style="background: var(--line); height: 52px; border-color: #ffffff14"></div><code style="width: fit-content">--line</code></div>
+        <div class="sw"><div class="sw-chip" style="background: var(--line-strong); height: 52px; border-color: #ffffff14"></div><code style="width: fit-content">--line-strong</code></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px; font-size: 15px">
+        <div style="display: flex; justify-content: space-between"><span style="color: var(--ink); font-weight: 700">--ink · body text</span><span class="tag ok">14.9 : 1</span></div>
+        <div style="display: flex; justify-content: space-between"><span style="color: var(--ink-2); font-weight: 700">--ink-2 · secondary</span><span class="tag ok">7.4 : 1</span></div>
+        <div style="display: flex; justify-content: space-between"><span style="color: var(--link); font-weight: 700">--link · Grapefruit</span><span class="tag ok">6.3 : 1</span></div>
+        <div style="display: flex; justify-content: space-between"><span style="background: var(--brand); color: var(--on-brand); font-weight: 700; padding: 0 8px; border-radius: 4px">ink on --brand</span><span class="tag ok">6.3 : 1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- semantic -->
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+    <div style="padding: 14px 16px; border-radius: var(--r-md); background: var(--ok-bg); color: var(--ok); font-weight: 700; display: flex; justify-content: space-between">Success <code style="background: transparent; border: 0">--ok</code></div>
+    <div style="padding: 14px 16px; border-radius: var(--r-md); background: var(--warn-bg); color: var(--warn); font-weight: 700; display: flex; justify-content: space-between">Warning <code style="background: transparent; border: 0">--warn</code></div>
+    <div style="padding: 14px 16px; border-radius: var(--r-md); background: var(--danger-bg); color: var(--danger); font-weight: 700; display: flex; justify-content: space-between">Danger <code style="background: transparent; border: 0">--danger</code></div>
+    <div style="padding: 14px 16px; border-radius: var(--r-md); background: var(--info-bg); color: var(--info); font-weight: 700; display: flex; justify-content: space-between">Info <code style="background: transparent; border: 0">--info</code></div>
+  </div>
+
+  <!-- chart palettes -->
+  <div style="display: flex; flex-direction: column; gap: 16px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px">
+      <h3 style="font-size: 32px">Chart palettes <span class="muted" style="font-size: 18px; font-family: var(--font-body); font-weight: 400">· <code>.ct-series-a</code> … <code>-o</code></span></h3>
+      <p class="muted" style="font-size: 14px; max-width: 560px; text-align: right">Existing charts must look exactly the same after upgrading, so the classic palette stays the default. The CVD-validated palette ships as an opt-in theme.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px">
+      <div class="card" style="padding: 24px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 22px">Classic · default</strong><span class="tag accent">unchanged since 0.x · same as 1.5</span></div>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; font: 600 11px/1.3 var(--font-code)"><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-a" style="height: 44px; background: var(--ct-color)"></div><span>a</span><span class="muted">#d70206</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-b" style="height: 44px; background: var(--ct-color)"></div><span>b</span><span class="muted">#f05b4f</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-c" style="height: 44px; background: var(--ct-color)"></div><span>c</span><span class="muted">#f4c63d</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-d" style="height: 44px; background: var(--ct-color)"></div><span>d</span><span class="muted">#d17905</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-e" style="height: 44px; background: var(--ct-color)"></div><span>e</span><span class="muted">#453d3f</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-f" style="height: 44px; background: var(--ct-color)"></div><span>f</span><span class="muted">#59922b</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-g" style="height: 44px; background: var(--ct-color)"></div><span>g</span><span class="muted">#0544d3</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-h" style="height: 44px; background: var(--ct-color)"></div><span>h</span><span class="muted">#6b0392</span></div></div>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; font: 600 11px/1.3 var(--font-code)"><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-i" style="height: 44px; background: var(--ct-color)"></div><span>i</span><span class="muted">#e6805e</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-j" style="height: 44px; background: var(--ct-color)"></div><span>j</span><span class="muted">#dda458</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-k" style="height: 44px; background: var(--ct-color)"></div><span>k</span><span class="muted">#eacf7d</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-l" style="height: 44px; background: var(--ct-color)"></div><span>l</span><span class="muted">#86797d</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-m" style="height: 44px; background: var(--ct-color)"></div><span>m</span><span class="muted">#b2c326</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-n" style="height: 44px; background: var(--ct-color)"></div><span>n</span><span class="muted">#6188e2</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-o" style="height: 44px; background: var(--ct-color)"></div><span>o</span><span class="muted">#a748ca</span></div></div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+          <div style="background: var(--surface); border-radius: var(--r-md); padding: 8px"><svg class="ct-svg ct-draw" viewBox="0 0 400 170" role="img" aria-label="Classic palette line chart, light mode">
+            <path class="ct-grid" d="M20,40 H380 M20,80 H380 M20,120 H380 M20,160 H380"></path>
+            <g class="ct-series-d"><path class="ct-line" pathLength="1" d="M20,160 L80,150 L140,152 L200,140 L260,146 L320,130 L380,136"></path></g>
+            <g class="ct-series-c"><path class="ct-line" pathLength="1" d="M20,120 L80,130 L140,140 L200,124 L260,132 L320,116 L380,120"></path></g>
+            <g class="ct-series-b"><path class="ct-line" pathLength="1" d="M20,150 L80,140 L140,110 L200,118 L260,90 L320,96 L380,80"></path></g>
+            <g class="ct-series-a"><path class="ct-line" pathLength="1" d="M20,140 L80,120 L140,128 L200,96 L260,104 L320,70 L380,60"></path></g>
+          </svg></div>
+          <div class="cx dark" style="background: var(--surface); border-radius: var(--r-md); padding: 8px"><svg class="ct-svg ct-draw" viewBox="0 0 400 170" role="img" aria-label="Classic palette line chart, dark mode">
+            <path class="ct-grid" d="M20,40 H380 M20,80 H380 M20,120 H380 M20,160 H380"></path>
+            <g class="ct-series-d"><path class="ct-line" pathLength="1" d="M20,160 L80,150 L140,152 L200,140 L260,146 L320,130 L380,136"></path></g>
+            <g class="ct-series-c"><path class="ct-line" pathLength="1" d="M20,120 L80,130 L140,140 L200,124 L260,132 L320,116 L380,120"></path></g>
+            <g class="ct-series-b"><path class="ct-line" pathLength="1" d="M20,150 L80,140 L140,110 L200,118 L260,90 L320,96 L380,80"></path></g>
+            <g class="ct-series-a"><path class="ct-line" pathLength="1" d="M20,140 L80,120 L140,128 L200,96 L260,104 L320,70 L380,60"></path></g>
+          </svg></div>
+        </div>
+        <p style="font-size: 14px"><strong>Dark mode (new in v2):</strong> the same hues, except <code>e</code>, <code>g</code> and <code>h</code>, which disappear on Ink. They're lifted to <code>#9C8E88</code>, <code>#4D7EF2</code> and <code>#A748CA</code>, so every series clears 3:1. Light mode is byte-identical to <code>$ct-series-colors</code>.</p>
+        <p class="muted" style="font-size: 13px">Known limits, documented rather than changed: <code>a</code>/<code>b</code> (red vs grapefruit) are close for everyone, and <code>c</code> yellow is faint on light paper. Docs recommend labels or the accessible theme for more than 3 series.</p>
+      </div>
+      <div class="card flat ct-theme-accessible" style="padding: 24px; display: flex; flex-direction: column; gap: 16px; background: var(--surface)">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 22px">Accessible · opt-in</strong><span class="tag ok">CVD-validated</span></div>
+        <div class="code" style="border-radius: var(--r-md)"><pre style="padding: 10px 14px; font-size: 12.5px"><span class="k">import</span> <span class="s">'chartist/themes/accessible.css'</span>;
+<span class="c">&lt;!-- or scope it --&gt;</span> &lt;div <span class="f">class</span>=<span class="s">"ct-theme-accessible"</span>&gt;</pre></div>
+        <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; font: 600 11px/1.3 var(--font-code)"><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-a" style="height: 44px; background: var(--ct-color)"></div><span>a</span><span class="muted">#D7263D</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-b" style="height: 44px; background: var(--ct-color)"></div><span>b</span><span class="muted">#2B6CD8</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-c" style="height: 44px; background: var(--ct-color)"></div><span>c</span><span class="muted">#B07800</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-d" style="height: 44px; background: var(--ct-color)"></div><span>d</span><span class="muted">#8445B0</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-e" style="height: 44px; background: var(--ct-color)"></div><span>e</span><span class="muted">#00917F</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-f" style="height: 44px; background: var(--ct-color)"></div><span>f</span><span class="muted">#D2621C</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-g" style="height: 44px; background: var(--ct-color)"></div><span>g</span><span class="muted">#B8479F</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-h" style="height: 44px; background: var(--ct-color)"></div><span>h</span><span class="muted">#6E8B1F</span></div></div>
+        <div class="cx dark ct-theme-accessible" style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 8px; font: 600 11px/1.3 var(--font-code); background: var(--bg); padding: 10px; border-radius: var(--r-md)"><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-a" style="height: 44px; background: var(--ct-color)"></div><span>a</span><span class="muted">#E5484D</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-b" style="height: 44px; background: var(--ct-color)"></div><span>b</span><span class="muted">#5B8DEF</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-c" style="height: 44px; background: var(--ct-color)"></div><span>c</span><span class="muted">#B98A12</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-d" style="height: 44px; background: var(--ct-color)"></div><span>d</span><span class="muted">#9A63D0</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-e" style="height: 44px; background: var(--ct-color)"></div><span>e</span><span class="muted">#1FA192</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-f" style="height: 44px; background: var(--ct-color)"></div><span>f</span><span class="muted">#D9702F</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-g" style="height: 44px; background: var(--ct-color)"></div><span>g</span><span class="muted">#CB5AB0</span></div><div class="sw" style="gap: 4px"><div class="sw-chip ct-series-h" style="height: 44px; background: var(--ct-color)"></div><span>h</span><span class="muted">#7D9A2E</span></div></div>
+        <div style="background: var(--bg); border-radius: var(--r-md); padding: 8px"><svg class="ct-svg ct-draw" viewBox="0 0 400 170" role="img" aria-label="Accessible palette bar chart with eight series">
+            <path class="ct-grid" d="M10,40 H390 M10,80 H390 M10,120 H390"></path>
+            <rect class="ct-bar ct-series-a" x="18" y="40" width="34" height="120" rx="4"></rect><rect class="ct-bar ct-series-b" x="64" y="64" width="34" height="96" rx="4"></rect>
+            <rect class="ct-bar ct-series-c" x="110" y="20" width="34" height="140" rx="4"></rect><rect class="ct-bar ct-series-d" x="156" y="80" width="34" height="80" rx="4"></rect>
+            <rect class="ct-bar ct-series-e" x="202" y="50" width="34" height="110" rx="4"></rect><rect class="ct-bar ct-series-f" x="248" y="90" width="34" height="70" rx="4"></rect>
+            <rect class="ct-bar ct-series-g" x="294" y="30" width="34" height="130" rx="4"></rect><rect class="ct-bar ct-series-h" x="340" y="70" width="34" height="90" rx="4"></rect>
+            <path class="ct-axis" d="M10,160 H390"></path>
+          </svg></div>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="tag ok">Light: CVD ΔE ≥ 12.1</span><span class="tag ok">Dark: CVD ΔE ≥ 12.7</span><span class="tag ok">All marks ≥ 3:1</span></div>
+      </div>
+    </div>
+    <p class="muted" style="font-size: 14px">Status colors (success, warning, danger, info) are reserved for UI and never reused as a series. The brand red Waistcoat <code>#C8102E</code> is a UI color; charts keep their own <code>#d70206</code>.</p>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

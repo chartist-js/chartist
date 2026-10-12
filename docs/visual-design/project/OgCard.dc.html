@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Social card</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="{{rootClass}}" style="width: 1200px; height: 630px; box-sizing: border-box; position: relative; overflow: hidden; background: var(--bg); display: grid; grid-template-columns: 1fr 520px">
+  <div style="padding: 56px 0 52px 64px; display: flex; flex-direction: column; gap: 22px; position: relative; z-index: 1">
+    <div style="display: flex; align-items: center; gap: 14px; border-bottom: 4px double var(--ink); padding-bottom: 16px; width: fit-content">
+      <div style="width: 60px"><dc-import name="Logomark" variant="mustard" hint-size="60px,60px"></dc-import></div>
+      <span style="font: 700 52px/1 var(--font-display); letter-spacing: -0.01em; color: var(--ink)">Chartist</span>
+      <span class="tag brand" style="font-size: 15px; padding: 4px 10px; align-self: flex-start">v2</span>
+    </div>
+    <p style="font: 700 64px/1.02 var(--font-display); letter-spacing: -0.015em; color: var(--ink); max-width: 600px; white-space: pre-line; text-wrap: balance">{{title}}</p>
+    <p style="font-size: 24px; line-height: 1.35; color: var(--ink-2); max-width: 560px; white-space: pre-line">{{subtitle}}</p>
+    <span style="margin-top: auto; font: 700 20px/1 var(--font-code); color: var(--ink)">chartist.dev</span>
+  </div>
+  <div style="position: relative; display: flex; align-items: flex-end; justify-content: center; padding: 0 24px 24px 0">
+    <svg viewBox="0 0 520 630" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><circle cx="300" cy="340" r="250" fill="var(--bg-sunken)"></circle></svg>
+    <div style="position: relative; width: 520px"><dc-import name="Mascot" pose="{{pose}}" hint-size="520px,455px"></dc-import></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"title":{"editor":"text","default":"Simple charts, dressed in CSS."},"subtitle":{"editor":"text","default":"Responsive SVG charts with zero dependencies. Style with CSS, control with JS."},"pose":{"editor":"enum","options":["hero","point","celebrate","empty"],"default":"hero"},"dark":{"editor":"boolean","default":false},"$preview":{"width":1200,"height":630}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      title: this.props.title ?? 'Simple charts, dressed in CSS.',
+      subtitle: this.props.subtitle ?? 'Responsive SVG charts with zero dependencies. Style with CSS, control with JS.',
+      pose: this.props.pose ?? 'hero',
+      rootClass: (this.props.dark ?? false) ? 'cx dark' : 'cx'
+    };
+  }
+}
+</script>
+</body>
+</html>

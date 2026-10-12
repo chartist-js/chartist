@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mascot poses</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; height: 1200px; box-sizing: border-box; padding: 64px 80px; display: flex; flex-direction: column; gap: 32px; background: var(--bg)">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">01 · Mascot</span>
+      <h2 style="font-size: 56px; line-height: 1">A gentleman for every occasion</h2>
+    </div>
+    <p class="muted" style="max-width: 480px; font-size: 17px"><code>&lt;Mascot pose="…" /&gt;</code> renders each of these from one SVG. Hover any of them: the hat tips and the moustache wiggles.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <figure class="card flat" style="margin: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px">
+      <dc-import name="Mascot" pose="hero" hint-size="100%,330px"></dc-import>
+      <figcaption style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 20px">Hero · presenting</strong><span class="muted" style="font-size: 14px">Landing, OG card</span></figcaption>
+    </figure>
+    <figure class="card flat" style="margin: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px">
+      <dc-import name="Mascot" pose="point" hint-size="100%,330px"></dc-import>
+      <figcaption style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 20px">Pointing the way</strong><span class="muted" style="font-size: 14px">Getting started, next steps</span></figcaption>
+    </figure>
+    <figure class="card flat" style="margin: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px">
+      <dc-import name="Mascot" pose="lost" hint-size="100%,330px"></dc-import>
+      <figcaption style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 20px">Chart fell over</strong><span class="muted" style="font-size: 14px">404, render errors</span></figcaption>
+    </figure>
+    <figure class="card flat" style="margin: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px">
+      <dc-import name="Mascot" pose="empty" hint-size="100%,330px"></dc-import>
+      <figcaption style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 20px">Nothing to plot</strong><span class="muted" style="font-size: 14px">Empty search, no results</span></figcaption>
+    </figure>
+    <figure class="card flat" style="margin: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px">
+      <dc-import name="Mascot" pose="loading" hint-size="100%,330px"></dc-import>
+      <figcaption style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 20px">Drawing…</strong><span class="muted" style="font-size: 14px">Playground boot, loading</span></figcaption>
+    </figure>
+    <figure class="card flat cx dark" style="margin: 0; padding: 16px 16px 18px; display: flex; flex-direction: column; gap: 10px; background: var(--surface)">
+      <dc-import name="Mascot" pose="celebrate" hint-size="100%,330px"></dc-import>
+      <figcaption style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px"><strong style="font-family: var(--font-display); font-size: 20px">Hats off!</strong><span class="muted" style="font-size: 14px">Releases, success · dark mode</span></figcaption>
+    </figure>
+  </div>
+  <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; flex: 1">
+    <div class="card flat" style="padding: 24px 28px; display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: center">
+      <svg viewBox="0 0 300 220" role="img" aria-label="Diagram of the live chart slot inside the easel board" style="width: 100%">
+        <rect x="10" y="10" width="280" height="200" rx="14" fill="var(--m-board)" stroke="var(--ink)" stroke-width="6"></rect>
+        <rect x="34" y="31" width="232" height="158" rx="4" fill="color-mix(in oklab, var(--ct-series-b) 10%, transparent)" stroke="var(--ct-series-b)" stroke-width="2" stroke-dasharray="6 5"></rect>
+        <text x="150" y="104" text-anchor="middle" style="font: 700 15px var(--font-code); fill: var(--ct-series-b)">#chart-slot</text>
+        <text x="150" y="126" text-anchor="middle" style="font: 500 12px var(--font-code); fill: #6B5E5A">x 44 · y 110 · 200 × 136</text>
+      </svg>
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <h3 style="font-size: 22px">The live chart slot</h3>
+        <p style="font-size: 15px">Like 2014, the board is a real nested <code>&lt;svg&gt;</code>. Any Chartist chart can render into <code>#chart-slot</code> (viewBox units, 200 × 136). The board color stays light in dark mode so charts read like paper.</p>
+        <p class="muted" style="font-size: 14px">Animatable parts: <code>.m-hat-tip</code>, <code>.m-eyes</code> (blink), <code>.m-stache</code> (wiggle), <code>.m-tap</code> (pointing arm), <code>.m-confetti</code>. All are disabled by <code>prefers-reduced-motion</code>.</p>
+      </div>
+    </div>
+    <div class="card flat" style="padding: 24px 28px; display: flex; flex-direction: column; gap: 16px">
+      <h3 style="font-size: 22px">Avatar &amp; small sizes</h3>
+      <div style="display: flex; align-items: flex-end; gap: 24px">
+        <div style="width: 144px; height: 144px; border-radius: 50%; overflow: hidden"><dc-import name="Mascot" pose="avatar" hint-size="144px,144px"></dc-import></div>
+        <div style="width: 72px; height: 72px; border-radius: 50%; overflow: hidden"><dc-import name="Mascot" pose="avatar" hint-size="72px,72px"></dc-import></div>
+        <div style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden"><dc-import name="Mascot" pose="avatar" hint-size="40px,40px"></dc-import></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: center">
+          <svg width="32" height="32" viewBox="300 62 128 128" role="img" aria-label="Chartist logomark" style="background: #F4C63D; border-radius: 7px; flex: none"><circle cx="409" cy="150" r="10" fill="#E2A47C"></circle><path d="M343,118 L403,118 Q408,118 408,124 L408,198 Q408,222 386,222 L348,222 Q324,222 322,212 Q322,203 333,197 L337,176 L348,160 L321,158 Q312,157 316,149 L335,121 Q337,118 343,118 Z" fill="#E2A47C"></path><ellipse cx="358" cy="136" rx="4.6" ry="6.2" fill="#2B2426"></ellipse><ellipse cx="384" cy="136" rx="4.6" ry="6.2" fill="#2B2426"></ellipse><path d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="#2B2426"></path><ellipse cx="372" cy="120" rx="54" ry="7" fill="#2B2426"></ellipse><path d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="#2B2426"></path><ellipse cx="372" cy="73" rx="35" ry="5" fill="#453B3E" opacity="1"></ellipse><path d="M338.9,104 Q372,110 405.1,104 L404.3,116 Q372,122 339.7,116 Z" fill="#C8102E"></path></svg>
+          <span class="muted" style="font: 600 11px var(--font-code)">≤ 32 px</span>
+        </div>
+      </div>
+      <p style="font-size: 15px">Above 40 px use the face avatar (GitHub org, Discord, npm). Below that, switch to the logomark: his head cropped tight under the brim, like the 2014 icon.</p>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1200}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
