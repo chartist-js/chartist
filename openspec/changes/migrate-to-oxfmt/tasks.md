@@ -8,5 +8,5 @@
 ## 2. Switch over
 
 - [x] 2.1 Edit commit: remove `.prettierrc`, `.prettierignore` and the root `prettier` dependency, replace `packages/chartist`'s `format` script with a note to use `pnpm nx format`, update `CLAUDE.md`'s formatting rule and the plan's Formatting row; verify `pnpm install` succeeds
-- [ ] 2.2 `style:` commit: run `pnpm nx format --all` and commit only the reformatting; then add that commit's hash to a new `.git-blame-ignore-revs` in a follow-up commit; verify `git blame --ignore-revs-file .git-blame-ignore-revs` on a reformatted file shows the original authors
+- [x] 2.2 `style:` commit: run `pnpm nx format --all` and commit only the reformatting; then add that commit's hash to a new `.git-blame-ignore-revs` in a follow-up commit; verify `git blame --ignore-revs-file .git-blame-ignore-revs` on a reformatted file shows the original authors
 - [ ] 2.3 Verify `pnpm nx format:check --all` passes and the full local gate passes (`pnpm nx run-many -t typecheck check build test test:unit test:smoke test:size test:visual test:visual:v1 test:e2e lint`)
