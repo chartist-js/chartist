@@ -1,5 +1,0 @@
-{
-  "commit-msg": "pnpm commitlint --edit \"$1\"",
-  "pre-commit": "pnpm nano-staged",
-  "pre-push": "pnpm test"
-}
