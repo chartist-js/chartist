@@ -118,6 +118,12 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
    - The 1.x workflows (`ci.yml`, `checks.yml`, `release.yml`, `website.yml`) still call root scripts that no longer exist. They only trigger on `main` or on pull requests, so pushing `next` runs just `commit.yml` (commitlint, root `.commitlintrc.json`). Don't open pull requests against `next` until CI is reworked.
    - `website.yml` deploys chartist.dev from `main`. It must be replaced by the Astro docs deployment before `main` is fast-forwarded to `next`.
    - Visual regression in CI runs on Linux Chromium (the baseline's reference platform).
+   - **Releases with `nx release`** (decided 2026-10-13), replacing the 1.x simple-release setup (`.simple-release.json`, `trigensoftware/simple-release-action`, and probably `clean-publish`). Model: the author's `../exprit` repo (`nx.json` `release` block, `.github/workflows/{ci,release,docs}.yml`):
+     - `nx release` with conventional commits: version bump, workspace `CHANGELOG.md` (continuing the 1.x file), `v{version}` tags (same pattern as the 1.x tags), GitHub release, npm publish. Released project: `chartist` only.
+     - The release workflow runs after green CI and waits for approval in a `release` environment; a manual run can pick the version, do a dry run or only re-publish a tagged version.
+     - npm trusted publishing via OIDC (no stored token, provenance attached). Needs the trusted publisher configured on npmjs.com for `chartist` by an npm owner of the package.
+     - Adaptations for Chartist: pre-releases (`2.0.0-alpha.x`/`-beta.x`) from `next` under the npm `next` dist-tag; CI adds the visual regression and playground e2e tests (Playwright Chromium; WebKit/Firefox for the playground); the docs workflow builds and deploys the Astro site (chartist.dev domain) instead of `website.yml`.
+     - Revisit then whether `CHANGELOG.md` stays excluded from oxfmt (Nx writes it).
 
 ## Change roadmap (OpenSpec)
 
