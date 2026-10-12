@@ -9,13 +9,9 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     /* Modules */
-    "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "paths": {
-      "chartist-dev": ["src"]
-    },
     /* Emit */
     "declaration": true,
     "declarationMap": true,

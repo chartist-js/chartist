@@ -1,9 +1,8 @@
 {
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
-  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",
-    "requireConfigFile": false
+    "sourceType": "module"
   },
   "env": {
     "es6": true,
@@ -48,7 +47,7 @@
       "extends": ["plugin:@typescript-eslint/recommended"]
     },
     {
-      "files": ["test/**/*.{js,ts}", "*.spec.{js,ts}", "*.stories.{js,ts}"],
+      "files": ["test/**/*.{js,ts}", "*.spec.{js,ts}"],
       "plugins": [
         "jest",
         "testing-library",
