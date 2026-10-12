@@ -19,7 +19,7 @@
 
 ## 4. Visual regression harness
 
-- [ ] 4.1 Add exact-pinned `@playwright/test` 1.63.0, `vite` (same version as in examples), `chartist-v1` (`npm:chartist@1.5.0`) and `@chartist/examples` dev dependencies to `packages/chartist`; verify `pnpm install` succeeds and `node_modules/chartist-v1/dist/index.js` exists
+- [x] 4.1 Add exact-pinned `@playwright/test` 1.63.0, `vite` (same version as in examples), `chartist-v1` (`npm:chartist@1.5.0`) and `@chartist/examples` dev dependencies to `packages/chartist`; verify `pnpm install` succeeds and `node_modules/chartist-v1/dist/index.js` exists
 - [ ] 4.2 Add `test/visual/vite.config.ts` (root = `packages/examples`, per-example `/src/main.ts` rewrite, `chartist` and `chartist/styles.css` aliased to the lib chosen by `CHARTIST_LIB`, harness plugin injecting the test font and container size from design D6) and the OFL font with its license in `test/visual/fixture/`. Verify that `line/area` opens from the harness dev server with network disabled, in both lib modes, and that `git diff packages/examples` is empty
 - [ ] 4.3 Add `test/visual/playwright.config.ts` (Chromium only, DPR 1, light, reduced motion, platform-free `snapshotPathTemplate`, tolerance from design D8, Vite as `webServer`) and `visual.spec.ts`. The spec generates one test per manifest entry and viewport, installs the clock, waits for the chart and fonts, settles SMIL (design D7) and screenshots `#chart`. Verify `pnpm exec playwright test --list` lists one test per example and viewport
 - [ ] 4.4 Wire Nx targets `test:visual` (depends on `build`), `test:visual:v1` and `test:visual:update` (records against 1.5.0); verify `pnpm nx run chartist:test:visual` fails because baselines are missing and names the examples

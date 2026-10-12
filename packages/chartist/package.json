@@ -94,9 +94,11 @@
   "devDependencies": {
     "@babel/core": "^7.17.9",
     "@babel/eslint-parser": "^7.17.0",
+    "@chartist/examples": "workspace:*",
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@commitlint/cz-commitlint": "^17.0.0",
+    "@playwright/test": "1.63.0",
     "@size-limit/esbuild": "14.1.0",
     "@size-limit/file": "14.1.0",
     "@storybook/addon-actions": "^6.4.22",
@@ -117,6 +119,7 @@
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
     "browserslist": "^4.20.2",
+    "chartist-v1": "npm:chartist@1.5.0",
     "clean-publish": "^4.0.1",
     "commitizen": "^4.2.4",
     "cssnano": "^4.1.11",
@@ -145,9 +148,13 @@
     "size-limit": "14.1.0",
     "swc-loader": "^0.2.3",
     "tsdown": "0.23.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "8.3.1"
   },
   "nx": {
+    "implicitDependencies": [
+      "!examples"
+    ],
     "namedInputs": {
       "build": [
         "{projectRoot}/src/**/*",
