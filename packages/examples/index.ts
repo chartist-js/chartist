@@ -59,7 +59,7 @@ function example(input: ExampleInput): Example {
     type: input.id.split('/')[0] as ChartType,
     docs: true,
     compat: false,
-    viewports: ['default', 'mobile'],
+    viewports: ['default'],
     size: 'fixed',
     settle: { at: 0 },
     ...input
