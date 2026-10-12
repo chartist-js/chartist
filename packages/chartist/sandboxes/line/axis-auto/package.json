@@ -1,8 +1,0 @@
-{
-  "name": "line-axis-auto",
-  "description": "Auto scale axis",
-  "main": "index.ts",
-  "dependencies": {
-    "chartist": "^1.0.0"
-  }
-}

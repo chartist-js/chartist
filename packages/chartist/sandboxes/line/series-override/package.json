@@ -1,8 +1,0 @@
-{
-  "name": "line-series-override",
-  "description": "Series Overrides",
-  "main": "index.ts",
-  "dependencies": {
-    "chartist": "^1.0.0"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "name": "bar-overlapping-bars",
-  "description": "Overlapping bars on mobile",
-  "main": "index.ts",
-  "dependencies": {
-    "chartist": "^1.0.0"
-  }
-}
