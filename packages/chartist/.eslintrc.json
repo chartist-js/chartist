@@ -49,11 +49,7 @@
     },
     {
       "files": ["test/**/*.{js,ts}", "*.spec.{js,ts}"],
-      "plugins": [
-        "jest",
-        "testing-library",
-        "jest-dom"
-      ],
+      "plugins": ["jest", "testing-library", "jest-dom"],
       "extends": ["plugin:jest-dom/recommended"],
       "env": {
         "jest/globals": true

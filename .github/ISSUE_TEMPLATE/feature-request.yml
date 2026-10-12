@@ -1,6 +1,6 @@
-name: "🚀 Feature Request"
-description: "I have a specific suggestion!"
-labels: ["enhancement"]
+name: '🚀 Feature Request'
+description: 'I have a specific suggestion!'
+labels: ['enhancement']
 body:
   - type: markdown
     attributes:

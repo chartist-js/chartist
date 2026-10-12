@@ -21,15 +21,10 @@
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     /* Language and Environment */
-    "lib": [
-      "dom",
-      "esnext"
-    ],
+    "lib": ["dom", "esnext"],
     "target": "esnext",
     /* Completeness */
     "skipLibCheck": true
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }
