@@ -34,6 +34,8 @@
   /* surfaces */
   --bg: var(--p-cream-100);
   --bg-sunken: var(--p-cream-200);
+  /* paper texture: "Cream Paper" from Subtle Patterns (CC BY-SA 3.0), recoloured as an overlay; set to none to switch it off */
+  --paper: url("./paper.png");
   --surface: var(--p-cream-50);
   --surface-raised: #FFFFFF;
   --line: var(--p-cream-300);
@@ -139,6 +141,7 @@
 /* ---------- 2b. Semantic tokens — dark ---------- */
 .cx.dark {
   --bg: var(--p-ink-900);
+  --paper: url("./paper-dark.png");
   --bg-sunken: var(--p-ink-950);
   --surface: var(--p-ink-850);
   --surface-raised: #2E2729;
@@ -208,13 +211,13 @@
 .ct-slice-pie { fill: var(--ct-color); stroke: var(--surface); stroke-width: 2px; }
 
 /* draw-in: give every animated path pathLength="1" */
-.ct-draw .ct-line, .ct-draw .ct-slice-donut { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ct-draw var(--dur-draw) var(--ease-out) forwards; }
+.ct-draw .ct-line, .ct-draw .ct-slice-donut, .ct-draw-view .ct-line, .ct-draw-view .ct-slice-donut { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ct-draw var(--dur-draw) var(--ease-out) forwards; }
 .ct-draw .ct-series-b .ct-line, .ct-draw .ct-series-b.ct-slice-donut { animation-delay: 150ms; }
 .ct-draw .ct-series-c .ct-line, .ct-draw .ct-series-c.ct-slice-donut { animation-delay: 300ms; }
 .ct-draw .ct-series-d.ct-slice-donut { animation-delay: 450ms; }
-.ct-draw .ct-point, .ct-draw .ct-dot { opacity: 0; animation: ct-pop var(--dur-3) var(--ease-spring) forwards; animation-delay: 700ms; transform-box: fill-box; transform-origin: center; }
-.ct-draw .ct-area { opacity: 0; animation: ct-fade 800ms var(--ease-out) 500ms forwards; }
-.ct-draw .ct-bar { transform-box: fill-box; transform-origin: 50% 100%; transform: scaleY(0); animation: ct-grow 700ms var(--ease-out) forwards; }
+.ct-draw .ct-point, .ct-draw .ct-dot, .ct-draw-view .ct-dot { opacity: 0; animation: ct-pop var(--dur-3) var(--ease-spring) forwards; animation-delay: 700ms; transform-box: fill-box; transform-origin: center; }
+.ct-draw .ct-area, .ct-draw-view .ct-area { opacity: 0; animation: ct-fade 800ms var(--ease-out) 500ms forwards; }
+.ct-draw .ct-bar, .ct-draw-view .ct-bar { transform-box: fill-box; transform-origin: 50% 100%; transform: scaleY(0); animation: ct-grow 700ms var(--ease-out) forwards; }
 .ct-draw .ct-bar.h { transform-origin: 0 50%; transform: scaleX(0); animation-name: ct-grow-x; }
 .ct-loop .ct-line { animation: ct-loop 3.6s var(--ease-out) infinite; stroke-dasharray: 1; }
 .ct-bars-live .ct-bar { transform-box: fill-box; transform-origin: 50% 100%; transition: transform 700ms var(--ease-spring); }
@@ -427,3 +430,94 @@ a.btn, a.btn:hover { color: var(--ink); }
   .prose { font-size: var(--fs-md); }
   .live textarea { min-height: 220px; }
 }
+
+
+/* ==========================================================================
+   Landing — scroll story (CSS scroll & view timelines, calm fallbacks)
+   ========================================================================== */
+.chapter-nav { position: sticky; top: 0; z-index: 5; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.chapter-nav .bar { display: flex; align-items: center; gap: 4px; overflow-x: auto; min-height: 52px; scrollbar-width: none; }
+.chapter-nav a { flex: none; font: 600 var(--fs-sm)/1 var(--font-body); color: var(--ink-2) !important; text-decoration: none; padding: 10px 12px; border-radius: var(--r-pill); min-height: 40px; display: inline-flex; align-items: center; gap: 6px; }
+.chapter-nav a[aria-current="true"] { color: var(--ink) !important; background: var(--bg-sunken); }
+.chapter-nav a .num { font: 700 11px/1 var(--font-code); color: var(--brand); }
+.scroll-progress { height: 3px; background: var(--brand); transform-origin: 0 50%; transform: scaleX(var(--progress, 0)); }
+
+.story { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 64px; align-items: start; }
+.story-sticky { position: sticky; top: 72px; align-self: start; }
+.story-stage { display: flex; flex-direction: column; gap: 12px; }
+.story-chapter { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding-block: 40px; }
+.story-chapter h3 { font-size: var(--fs-3xl); }
+.dots { display: flex; justify-content: center; gap: 6px; }
+.dots button { width: 44px; height: 44px; border: 0; background: transparent; display: grid; place-items: center; cursor: pointer; border-radius: 50%; }
+.dots button span { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); transition: transform var(--dur-2) var(--ease-spring), background var(--dur-2); }
+.dots button[aria-current="true"] span { background: var(--brand); transform: scale(1.4); }
+
+.feature { padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
+.feature h3 { font-size: var(--fs-xl); }
+.feature .demo { background: var(--bg); border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px; min-height: 120px; display: grid; place-items: center; }
+.feature .demo .code { width: 100%; font-size: 12px; }
+.feature .demo .code pre { padding: 10px 12px; }
+.swatch-btn { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--ink); cursor: pointer; }
+.swatch-btn[aria-pressed="true"] { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.resizable { resize: horizontal; overflow: hidden; min-width: 260px; max-width: 100%; position: relative; border: 2px solid var(--ink); border-radius: var(--r-lg); background: var(--surface); padding: 14px 14px 22px; box-shadow: var(--shadow-3); }
+.resizable::after { content: "drag ↘"; position: absolute; right: 18px; bottom: 4px; font: 600 11px var(--font-code); color: var(--ink-2); pointer-events: none; }
+.cq { container-type: inline-size; }
+.cq .rule-wide { display: none; }
+@container (width >= 400px) { .cq .rule-wide { display: inline-flex; } .cq .rule-narrow { display: none; } }
+
+.compare-wrap { overflow-x: auto; border: 2px solid var(--ink); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--shadow-3); }
+.dark .compare-wrap { border-color: var(--line-strong); }
+.compare { width: 100%; min-width: 760px; border-collapse: separate; border-spacing: 0; font-size: var(--fs-sm); }
+.compare th, .compare td { padding: 14px 16px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.compare thead th { font: 700 var(--fs-lg)/1.2 var(--font-display); border-bottom: 2px solid var(--ink); }
+.compare tbody th { font-weight: 700; position: sticky; left: 0; background: var(--surface); }
+.compare .us { background: color-mix(in oklab, var(--accent) 16%, var(--surface)); }
+.compare thead .us { box-shadow: inset 0 4px 0 var(--brand); }
+.compare tr:last-child td, .compare tr:last-child th { border-bottom: 0; }
+.ph { font: 600 12px var(--font-code); color: var(--ink-2); background: var(--bg-sunken); border: 1px dashed var(--line-strong); border-radius: 5px; padding: 2px 6px; white-space: nowrap; }
+
+.static-only { display: none; }
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { animation: reveal-up linear both; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+    .ct-draw-view .ct-line, .ct-draw-view .ct-slice-donut { animation: ct-draw linear both; animation-timeline: view(); animation-range: entry 20% cover 45%; }
+    .ct-draw-view .ct-bar { animation: ct-grow linear both; animation-timeline: view(); animation-range: entry 20% cover 40%; }
+    .ct-draw-view .ct-dot, .ct-draw-view .ct-area { animation: ct-fade linear both; animation-timeline: view(); animation-range: cover 30% cover 45%; }
+    .scroll-progress { animation: grow-x linear both; animation-timeline: scroll(root block); }
+  }
+}
+@keyframes reveal-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+@keyframes grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (max-width: 860px) {
+  .story { grid-template-columns: minmax(0, 1fr); }
+  .story-sticky { top: 52px; z-index: 2; background: var(--bg); padding-block: 8px; border-bottom: 1px solid var(--line); }
+  .story-stage .stage-art { max-width: 280px; margin-inline: auto; }
+  .story-chapter { min-height: auto; padding-block: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .ct-draw-view .ct-line, .ct-draw-view .ct-slice-donut, .ct-draw-view .ct-bar, .ct-draw-view .ct-dot, .ct-draw-view .ct-area { animation: none !important; opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important; }
+  .motion-only { display: none !important; }
+  .static-only { display: block !important; }
+}
+
+/* landing numbers band */
+.stat { display: flex; flex-direction: column; gap: 6px; border-top: 3px solid var(--ink); padding-top: 14px; }
+.stat strong { font: 700 clamp(2.25rem, 4.5vw, 3.5rem)/1 var(--font-display); letter-spacing: -0.02em; color: var(--ink); }
+.stat span { color: var(--ink-2); font-size: var(--fs-md); }
+
+/* landing pipeline */
+.pipeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr)); gap: 12px; counter-reset: none; }
+.pipe-step { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 14px; background: var(--surface); border: 2px solid var(--ink); border-radius: var(--r-md); box-shadow: var(--shadow-2); }
+.dark .pipe-step { border-color: var(--line-strong); }
+.pipe-step strong { font: 700 var(--fs-xl)/1.15 var(--font-display); }
+.pipe-step:not(:last-child)::after { content: "→"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%); font: 700 18px var(--font-body); color: var(--ink-2); z-index: 1; }
+@media (max-width: 860px) { .pipe-step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -16px; transform: translateX(-50%); } }
+
+/* paper texture: page grounds only — cards, code and charts stay clean */
+.cx, .sunken { background-image: var(--paper); background-size: 158px 144px; }
+.sunken { background-color: var(--bg-sunken); }
+@media print { .cx, .sunken { background-image: none; } }

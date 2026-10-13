@@ -61,16 +61,16 @@ class Component extends DCLogic {
   defaults() {
     const p = this.props.preset || 'line';
     const JS = {
-      line: "import { LineChart } from 'chartist';\n\nnew LineChart('#chart', {\n  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],\n  series: [\n    [12, 9, 7, 8, 5],\n    [2, 1, 3.5, 7, 3]\n  ]\n}, {\n  showArea: true,\n  lineSmooth: true\n});",
-      bar: "import { BarChart } from 'chartist';\n\nnew BarChart('#chart', {\n  labels: ['Q1', 'Q2', 'Q3', 'Q4'],\n  series: [\n    [5, 4, 3, 7],\n    [3, 2, 9, 5]\n  ]\n}, {\n  stackBars: false\n});",
-      pie: "import { PieChart } from 'chartist';\n\nnew PieChart('#chart', {\n  labels: ['Bananas', 'Apples', 'Grapes'],\n  series: [5, 3, 4]\n}, {\n  donut: true\n});"
+      line: "import { lineChart } from 'chartist';\n\nlineChart('#chart', {\n  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],\n  series: [\n    [12, 9, 7, 8, 5],\n    [2, 1, 3.5, 7, 3]\n  ]\n}, {\n  showArea: true,\n  lineSmooth: true\n});",
+      bar: "import { barChart } from 'chartist';\n\nbarChart('#chart', {\n  labels: ['Q1', 'Q2', 'Q3', 'Q4'],\n  series: [\n    [5, 4, 3, 7],\n    [3, 2, 9, 5]\n  ]\n}, {\n  stackBars: false\n});",
+      pie: "import { pieChart } from 'chartist';\n\npieChart('#chart', {\n  labels: ['Bananas', 'Apples', 'Grapes'],\n  series: [5, 3, 4]\n}, {\n  donut: true\n});"
     };
     const CSS = "/* Style with CSS: try other colors */\n#chart {\n  --ct-series-a: #d70206;\n  --ct-series-b: #0544d3;\n  --ct-line-width: 3px;\n  --ct-area-opacity: 0.14;\n}";
     return { code: JS[p] || JS.line, css: CSS };
   }
   parse(code) {
-    const kindM = code.match(/new\s+(Line|Bar|Pie)Chart\s*\(/);
-    if (!kindM) return { error: 'Create a LineChart, BarChart or PieChart.' };
+    const kindM = code.match(/(?:new\s+(Line|Bar|Pie)Chart|\b(line|bar|pie)Chart)\s*\(/);
+    if (!kindM) return { error: 'Call lineChart, barChart or pieChart (1.x style new LineChart works too).' };
     const grab = (key) => {
       const i = code.search(new RegExp(key + '\\s*:\\s*\\['));
       if (i < 0) return null;
@@ -85,7 +85,7 @@ class Component extends DCLogic {
     try { labels = lab ? JSON.parse(toJson(lab.text)) : []; } catch (e) { return { error: 'Line ' + lab.line + ': the labels array is not valid.' }; }
     try { series = JSON.parse(toJson(ser.text)); } catch (e) { return { error: 'Line ' + ser.line + ': the series array has a typo, maybe a stray comma or bracket.' }; }
     const flag = (k) => new RegExp(k + '\\s*:\\s*true').test(code);
-    const t = kindM[1];
+    const t = kindM[1] || (kindM[2].charAt(0).toUpperCase() + kindM[2].slice(1));
     let kind = t === 'Pie' ? (flag('donut') ? 'donut' : 'pie') : t === 'Bar' ? (flag('stackBars') ? 'stacked' : 'bar') : (flag('lineSmooth') ? 'smooth' : 'line');
     if (t === 'Bar' && series.some((s) => Array.isArray(s) && s.some((v) => v < 0)) && !flag('stackBars')) kind = 'bar';
     return { kind, data: { labels, series }, opts: { showArea: flag('showArea'), showPoint: !/showPoint\s*:\s*false/.test(code), showLine: !/showLine\s*:\s*false/.test(code), lineSmooth: flag('lineSmooth') } };

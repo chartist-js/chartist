@@ -26,10 +26,11 @@
   <sc-for list="{{slices}}" as="s" hint-placeholder-count="0"><path class="{{s.kind}} {{s.cls}}" d="{{s.d}}" pathLength="{{s.len}}"><title>{{s.title}}</title></path></sc-for>
   <sc-for list="{{lines}}" as="ln" hint-placeholder-count="2"><g class="{{ln.cls}}"><path class="ct-line" d="{{ln.d}}" pathLength="1"></path></g></sc-for>
   <sc-for list="{{points}}" as="p" hint-placeholder-count="0"><circle class="ct-dot {{p.cls}}" cx="{{p.x}}" cy="{{p.y}}" r="{{p.r}}"><title>{{p.title}}</title></circle></sc-for>
+  <sc-for list="{{valueLabels}}" as="l" hint-placeholder-count="0"><text class="ct-label" x="{{l.x}}" y="{{l.y}}" text-anchor="middle" style="font-weight: 700; fill: var(--ink)">{{l.t}}</text></sc-for>
   <sc-for list="{{sliceLabels}}" as="l" hint-placeholder-count="0"><text x="{{l.x}}" y="{{l.y}}" text-anchor="middle" style="fill: #fff; font: 700 13px var(--font-body)">{{l.t}}</text></sc-for>
 </svg>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"enum","options":["line","area","smooth","bar","stacked","bipolar","scatter","pie","donut","gauge"],"default":"line"},"animate":{"editor":"boolean","default":true},"data":{"editor":null},"options":{"editor":null},"$preview":{"width":400,"height":240}}'>
+<script type="text/x-dc" data-dc-script data-props='{"kind":{"editor":"enum","options":["line","area","smooth","bar","stacked","bipolar","scatter","pie","donut","gauge","composed"],"default":"line"},"animate":{"editor":"boolean","default":true},"data":{"editor":null},"options":{"editor":null},"$preview":{"width":400,"height":240}}'>
 class Component extends DCLogic {
   renderVals() {
     const kind = this.props.kind || 'line';
@@ -50,8 +51,9 @@ class Component extends DCLogic {
     const letters = 'abcdefghijklmno';
     const fmt = (v) => { const a = Math.abs(v); if (a >= 1e6) return +(v / 1e6).toFixed(1) + 'm'; if (a >= 1e3) return +(v / 1e3).toFixed(1) + 'k'; return String(+v.toFixed(1)); };
     const r1 = (n) => Math.round(n * 10) / 10;
-    const out = { grids: [], ylabels: [], xlabels: [], areas: [], bars: [], lines: [], points: [], slices: [], sliceLabels: [], zeroLine: false, zeroD: '' };
+    const out = { grids: [], ylabels: [], xlabels: [], areas: [], bars: [], lines: [], points: [], slices: [], sliceLabels: [], valueLabels: [], zeroLine: false, zeroD: '' };
     let W = 400, H = 240;
+    const anim = this.props.animate === false ? '' : (this.props.animate === 'view' ? 'ct-draw-view' : 'ct-draw');
 
     if (kind === 'pie' || kind === 'donut' || kind === 'gauge') {
       const vals = (data.series || []).map((s) => (typeof s === 'object' && s !== null ? +s.value : +s)).filter((v) => !isNaN(v));
@@ -78,9 +80,32 @@ class Component extends DCLogic {
         a0 = a1 + (vals.length > 1 ? 0.001 : 0);
       });
       H = gauge ? 210 : 240;
-      return Object.assign(out, { W, H, animClass: this.props.animate === false ? '' : 'ct-draw', label: kind + ' chart' });
+      return Object.assign(out, { W, H, animClass: anim, label: kind + ' chart' });
     }
 
+
+    if (kind === 'composed') {
+      // bars on the left axis, line on the right axis — each scaled to its own series
+      const cd = (this.props.data && this.props.data.series && this.props.data.series.length > 1) ? this.props.data : { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], series: [[4, 6, 5, 8, 7, 9], [20, 45, 38, 60, 72, 90]] };
+      const pL = 40, pR = 44, pT = 12, pB = 26, pw2 = W - pL - pR, ph2 = H - pT - pB;
+      const bars = cd.series[0], line = cd.series[1], n2 = Math.max(bars.length, line.length);
+      const nice = (mx) => { const raw = mx / 4 || 1, mag = Math.pow(10, Math.floor(Math.log10(raw))); const st = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((x) => x >= raw); return [st, Math.ceil(mx / st) * st]; };
+      const [s1, h1] = nice(Math.max(...bars)), [s2, h2] = nice(Math.max(...line));
+      const Y1 = (v) => pT + ph2 - (v / h1) * ph2, Y2 = (v) => pT + ph2 - (v / h2) * ph2;
+      for (let k = 0; k <= 4; k++) {
+        const y = r1(pT + ph2 - (k / 4) * ph2);
+        out.grids.push({ d: `M${pL},${y} H${W - pR}` });
+        out.ylabels.push({ x: pL - 8, y: r1(y + 4), t: fmt((h1 / 4) * k) });
+        out.ylabels.push({ x: W - pR + 34, y: r1(y + 4), t: fmt((h2 / 4) * k) });
+      }
+      const gw = pw2 / n2, X2 = (i) => pL + (i + 0.5) * gw, bw = Math.min(22, gw * 0.5);
+      (cd.labels || []).forEach((t, i) => out.xlabels.push({ x: r1(X2(i)), y: H - 6, t: String(t) }));
+      bars.forEach((v, i) => out.bars.push({ cls: 'ct-series-a', x: r1(X2(i) - bw / 2), y: r1(Y1(v)), w: r1(bw), h: r1(Y1(0) - Y1(v)), rx: 2, title: 'Bars: ' + v }));
+      const pts = line.map((v, i) => [X2(i), Y2(v)]);
+      out.lines.push({ cls: 'ct-series ct-series-g', d: 'M' + pts.map((p) => r1(p[0]) + ',' + r1(p[1])).join(' L') });
+      pts.forEach((p, i) => out.points.push({ cls: 'ct-series-g', x: r1(p[0]), y: r1(p[1]), r: 4.5, title: 'Line: ' + line[i] }));
+      return Object.assign(out, { W, H, animClass: anim, label: 'Composed chart: bars on the left axis, a line on the right axis' });
+    }
     const padL = 40, padR = 14, padT = 12, padB = 26;
     const pw = W - padL - padR, ph = H - padT - padB;
     const isBar = kind === 'bar' || kind === 'stacked' || kind === 'bipolar' || opt.bars;
@@ -124,10 +149,18 @@ class Component extends DCLogic {
           out.bars.push({ cls: 'ct-series-' + letters[si % 15], x: r1(X(i) - bw / 2), y: r1(Math.min(y0, y1)), w: r1(bw), h: r1(Math.max(0.5, Math.abs(y1 - y0) - 1.5)), rx: 0, title: fmt(v) }); }));
       } else {
         const sN = series.length || 1, bw = Math.min(16, (gw * 0.72) / sN);
-        series.forEach((s, si) => s.forEach((v, i) => { v = +v || 0; const x = X(i) - (sN * bw) / 2 + si * bw + 1; const y0 = Y(0), y1 = Y(v);
-          out.bars.push({ cls: 'ct-series-' + letters[si % 15], x: r1(x), y: r1(Math.min(y0, y1)), w: r1(bw - 2), h: r1(Math.max(0.5, Math.abs(y1 - y0))), rx: 2, title: (data.labels && data.labels[i] ? data.labels[i] + ': ' : '') + v }); }));
+        // plugin demos — each one is a transform on the drawn elements, like a 'draw' event handler
+        const lolli = !!opt.lollipop, labels = !!opt.valueLabels, thr = (typeof opt.threshold === 'number') ? opt.threshold : null;
+        series.forEach((s, si) => s.forEach((v, i) => { v = +v || 0; const cx = X(i) - (sN * bw) / 2 + si * bw + bw / 2; const y0 = Y(0), y1 = Y(v);
+          const cls = (thr !== null && v >= thr) ? 'ct-series-g' : 'ct-series-' + letters[si % 15];
+          const w = lolli ? 3 : bw - 2;
+          out.bars.push({ cls, x: r1(cx - w / 2), y: r1(Math.min(y0, y1)), w: r1(w), h: r1(Math.max(0.5, Math.abs(y1 - y0))), rx: lolli ? 1.5 : 2, title: (data.labels && data.labels[i] ? data.labels[i] + ': ' : '') + v });
+          if (lolli) out.points.push({ cls, x: r1(cx), y: r1(y1), r: 6.5, title: String(v) });
+          if (labels) out.valueLabels.push({ x: r1(cx), y: r1(y1 - (lolli ? 12 : 6)), t: fmt(v) });
+        }));
+        if (thr !== null) { out.zeroLine = true; out.zeroD = `M${padL},${r1(Y(thr))} H${W - padR}`; }
       }
-      return Object.assign(out, { W, H, animClass: this.props.animate === false ? '' : 'ct-draw', label: kind + ' chart' });
+      return Object.assign(out, { W, H, animClass: anim, label: kind + ' chart' });
     }
 
     const smooth = kind === 'smooth' || opt.lineSmooth === true;
@@ -152,7 +185,7 @@ class Component extends DCLogic {
       if (showLine) out.lines.push({ cls: 'ct-series ' + cls, d });
       if (showPoint) pts.forEach((p, i) => out.points.push({ cls, x: r1(p[0]), y: r1(p[1]), r: isXY ? 3.5 : 4.5, title: isXY ? `${s[i].x}, ${s[i].y}` : (data.labels && data.labels[i] ? data.labels[i] + ': ' : '') + s[i] }));
     });
-    return Object.assign(out, { W, H, animClass: this.props.animate === false ? '' : 'ct-draw', label: kind + ' chart' });
+    return Object.assign(out, { W, H, animClass: anim, label: kind + ' chart' });
   }
 }
 </script>

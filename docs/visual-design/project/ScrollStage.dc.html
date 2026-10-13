@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Scroll stage</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="story-stage">
+  <div class="stage-art" style="position: relative; width: 100%">
+    <svg viewBox="0 0 480 420" aria-hidden="true" style="position: absolute; inset: 0; width: 100%; height: 100%"><circle cx="260" cy="230" r="190" fill="var(--bg-sunken)"></circle></svg>
+    <div style="position: relative"><dc-import name="Mascot" pose="{{pose}}" scene="{{scene}}" reaction="{{reaction}}" hint-size="100%,420px"></dc-import></div>
+  </div>
+  <p class="muted" aria-live="polite" style="text-align: center; font-size: 14px; min-height: 22px"><span class="eyebrow" style="margin-right: 8px">{{step}}</span>{{caption}}</p>
+  <div class="dots" role="group" aria-label="Story chapters">
+    <sc-for list="{{dots}}" as="d" hint-placeholder-count="5">
+      <button type="button" aria-label="{{d.label}}" aria-current="{{d.current}}" onClick="{{d.pick}}"><span></span></button>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"int","default":0,"min":0,"max":4},"chapters":{"editor":null},"onPick":{"editor":null},"$preview":{"width":560,"height":560}}'>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { local: null }; }
+  renderVals() {
+    const chapters = this.props.chapters || [
+      { label: 'Draw a line in one line', scene: 'petitions', reaction: 'none', pose: 'hero' },
+      { label: 'Bars, side by side or stacked', scene: 'bars', reaction: 'curious', pose: 'hero' },
+      { label: 'Donuts, pies and gauges', scene: 'donut', reaction: 'none', pose: 'hero' },
+      { label: 'Compose bars and lines', scene: 'composed', reaction: 'proud', pose: 'hero' },
+      { label: "That's the tour", scene: 'composed', reaction: 'none', pose: 'celebrate' }
+    ];
+    const ext = this.props.active;
+    const active = Math.max(0, Math.min(chapters.length - 1, this.state.local ?? (ext ?? 0)));
+    const ch = chapters[active];
+    return {
+      pose: ch.pose || 'hero', scene: ch.scene, reaction: ch.reaction || 'none',
+      caption: ch.label, step: (active + 1) + ' / ' + chapters.length,
+      dots: chapters.map((c, i) => ({
+        label: 'Chapter ' + (i + 1) + ': ' + c.label,
+        current: i === active ? 'true' : 'false',
+        pick: () => { if (this.props.onPick) this.props.onPick(i); else this.setState({ local: i }); }
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

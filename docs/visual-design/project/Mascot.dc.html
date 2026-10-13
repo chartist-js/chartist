@@ -44,6 +44,30 @@
             <g class="ct-series ct-series-a"><title>Workers</title><path class="ct-line" pathLength="1" d="M84.0,203.3 C96.0,202.7 132.0,212.5 156.0,199.5 C180.0,186.5 216.0,137.6 228.0,125.2"></path><circle class="ct-dot" cx="84" cy="203.3" r="4.5"></circle><circle class="ct-dot" cx="156" cy="199.5" r="4.5"></circle><circle class="ct-dot" cx="228" cy="125.2" r="4.5"></circle></g>
           </g>
         </sc-if>
+        <!-- STORY SCENES: the easel morphs as the landing page scrolls (prop "scene"); each draws in when it mounts -->
+        <sc-if value="{{boardBars}}" hint-placeholder-val="{{ false }}">
+          <g class="ct-draw">
+            <path class="ct-grid" d="M70,226 H240 M70,173 H240 M70,120 H240" style="stroke: #2B242638"></path>
+            <g font-size="9" text-anchor="end" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="64" y="229">0</text><text x="64" y="176">5</text><text x="64" y="123">10</text></g>
+            <g font-size="9" text-anchor="middle" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="90.8" y="240">Q1</text><text x="132.2" y="240">Q2</text><text x="173.8" y="240">Q3</text><text x="215.2" y="240">Q4</text></g>
+            <rect class="ct-bar ct-series-a" x="77.8" y="173.0" width="12" height="53.0" rx="2"></rect><rect class="ct-bar ct-series-b" x="91.8" y="194.2" width="12" height="31.8" rx="2"></rect><rect class="ct-bar ct-series-a" x="119.2" y="183.6" width="12" height="42.4" rx="2"></rect><rect class="ct-bar ct-series-b" x="133.2" y="204.8" width="12" height="21.2" rx="2"></rect><rect class="ct-bar ct-series-a" x="160.8" y="194.2" width="12" height="31.8" rx="2"></rect><rect class="ct-bar ct-series-b" x="174.8" y="130.6" width="12" height="95.4" rx="2"></rect><rect class="ct-bar ct-series-a" x="202.2" y="151.8" width="12" height="74.2" rx="2"></rect><rect class="ct-bar ct-series-b" x="216.2" y="173.0" width="12" height="53.0" rx="2"></rect>
+          </g>
+        </sc-if>
+        <sc-if value="{{boardDonut}}" hint-placeholder-val="{{ false }}">
+          <g class="ct-draw" style="--ct-donut-width: 20px">
+            <path class="ct-slice-donut ct-series-a" pathLength="1" d="M140.0,132.0 A46,46 0 0 1 183.6,163.4"></path><path class="ct-slice-donut ct-series-b" pathLength="1" d="M183.7,163.8 A46,46 0 0 1 183.9,191.8"></path><path class="ct-slice-donut ct-series-c" pathLength="1" d="M183.7,192.2 A46,46 0 0 1 113.3,215.4"></path><path class="ct-slice-donut ct-series-d" pathLength="1" d="M113.0,215.2 A46,46 0 0 1 139.6,132.0"></path>
+            <g font-size="9" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="200" y="150">● 40%</text><text x="200" y="166">● 30%</text><text x="200" y="182">● 20%</text><text x="200" y="198">● 10%</text></g>
+          </g>
+        </sc-if>
+        <sc-if value="{{boardComposed}}" hint-placeholder-val="{{ false }}">
+          <g class="ct-draw">
+            <path class="ct-grid" d="M70,226 H216 M70,173 H216 M70,120 H216" style="stroke: #2B242638"></path>
+            <g font-size="9" text-anchor="end" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="64" y="229">0</text><text x="64" y="176">5</text><text x="64" y="123">10</text></g>
+            <g font-size="9" text-anchor="start" style="fill: #6B5E5A; font-family: 'Atkinson Hyperlegible Next', sans-serif"><text x="222" y="229">0</text><text x="222" y="176">50</text><text x="222" y="123">100</text></g>
+            <rect class="ct-bar ct-series-a" x="80.2" y="183.6" width="16" height="42.4" rx="2"></rect><rect class="ct-bar ct-series-a" x="116.8" y="162.4" width="16" height="63.6" rx="2"></rect><rect class="ct-bar ct-series-a" x="153.2" y="173.0" width="16" height="53.0" rx="2"></rect><rect class="ct-bar ct-series-a" x="189.8" y="141.2" width="16" height="84.8" rx="2"></rect>
+            <g class="ct-series-g"><path class="ct-line" pathLength="1" d="M88.2,204.8 L124.8,178.3 L161.2,162.4 L197.8,130.6"></path><circle class="ct-dot" cx="88.2" cy="204.8" r="4.5"></circle><circle class="ct-dot" cx="124.8" cy="178.3" r="4.5"></circle><circle class="ct-dot" cx="161.2" cy="162.4" r="4.5"></circle><circle class="ct-dot" cx="197.8" cy="130.6" r="4.5"></circle></g>
+          </g>
+        </sc-if>
         <sc-if value="{{boardLoading}}" hint-placeholder-val="{{ false }}">
           <g class="ct-loop">
             <path class="ct-grid" d="M56,226 H236 M56,190 H236 M56,154 H236 M56,120 H236" style="stroke: #2B242638"></path>
@@ -127,6 +151,7 @@
       <ellipse cx="358" cy="136" rx="4.4" ry="6" fill="var(--m-ink)"></ellipse>
       <ellipse cx="384" cy="136" rx="4.4" ry="6" fill="var(--m-ink)"></ellipse>
     </g></g>
+    <sc-if value="{{brow}}" hint-placeholder-val="{{ false }}"><path class="m-brow" d="M377,126 Q384,119 391,125" stroke="var(--m-ink)" stroke-width="3.2" fill="none" stroke-linecap="round"></path></sc-if>
     <path d="{{mouthD}}" fill="#6E1F2A"></path>
     <path class="m-stache m-f" d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="{{c.ink}}"></path>
   </g>
@@ -155,7 +180,7 @@
   </sc-if>
 </svg>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"pose":{"editor":"enum","options":["hero","loading","point","lost","empty","celebrate","avatar"],"default":"hero"},"variant":{"editor":"enum","options":["flat","line","soft"],"default":"flat"},"$preview":{"width":480,"height":420}}'>
+<script type="text/x-dc" data-dc-script data-props='{"pose":{"editor":"enum","options":["hero","loading","point","lost","empty","celebrate","avatar"],"default":"hero"},"variant":{"editor":"enum","options":["flat","line","soft"],"default":"flat"},"scene":{"editor":"enum","options":["petitions","bars","donut","composed","v2"],"default":"petitions"},"reaction":{"editor":"enum","options":["none","curious","proud"],"default":"none"},"$preview":{"width":480,"height":420}}'>
 class Component extends DCLogic {
   renderVals() {
     const pose = this.props.pose ?? 'hero';
@@ -191,6 +216,12 @@ class Component extends DCLogic {
       avatar: { fork: false, vb: '268 56 196 196', easel: false, arms: [], avatar: true, label: 'Chartist Guy avatar' }
     };
     const p = Object.assign({}, base, P[pose] || {});
+    const scene = this.props.scene || 'petitions';
+    const reaction = this.props.reaction || 'none';
+    if (reaction === 'curious' && pose === 'hero') { p.hatT = 'translate(2 -9) rotate(-3 372 120)'; p.eyesDx = -3; }
+    if (reaction === 'proud') p.mouth = 'wide';
+    if (this.props.scene && pose === 'celebrate') p.board = 'chart'; // a celebrate pose can hold any chart, not just the 'v2' sign
+    const onBoard = p.board === 'chart';
     const c = soft
       ? { ink: 'url(#m-g-ink)', hat: 'url(#m-g-ink)', vest: 'url(#m-g-vest)', skin: 'url(#m-g-skin)', shadow: 'url(#m-g-shadow)', shadowOpacity: 1 }
       : { ink: 'var(--m-ink)', hat: 'var(--m-ink)', vest: 'var(--m-vest)', skin: 'var(--m-skin)', shadow: 'var(--m-ink)', shadowOpacity: 0.12 };
@@ -199,7 +230,9 @@ class Component extends DCLogic {
       variantClass: variant === 'line' ? 'm-line' : '',
       avatar: !!p.avatar,
       easel: p.easel, easelT: p.easelT,
-      boardChart: p.board === 'chart', boardLoading: p.board === 'loading', boardEmpty: p.board === 'empty', boardV2: p.board === 'v2', boardBroken: p.board === 'broken',
+      boardChart: onBoard && scene === 'petitions', boardBars: onBoard && scene === 'bars', boardDonut: onBoard && scene === 'donut', boardComposed: onBoard && scene === 'composed',
+      boardLoading: p.board === 'loading', boardEmpty: p.board === 'empty', boardV2: p.board === 'v2' || (onBoard && scene === 'v2'), boardBroken: p.board === 'broken',
+      brow: reaction === 'curious',
       debris: !!p.debris, question: !!p.question, confetti: !!p.confetti,
       arms: p.arms, fork: !!p.fork,
       hatT: p.hatT, hatClass: pose === 'celebrate' ? 'm-hat m-hat-fly' : 'm-hat',

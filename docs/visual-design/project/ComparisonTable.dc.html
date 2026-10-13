@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Comparison table</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="display: flex; flex-direction: column; gap: 20px">
+  <div class="compare-wrap" role="region" aria-label="Library comparison" tabindex="0">
+    <table class="compare">
+      <caption style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Chartist compared with Chart.js, ApexCharts and Highcharts</caption>
+      <thead>
+        <tr>
+          <th scope="col" style="font: 600 12px var(--font-code); text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2)">Measured on [DATE]</th>
+          <th scope="col" class="us"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 24px; display: block"><dc-import name="Logomark" variant="mustard" hint-size="24px,24px"></dc-import></span>Chartist</span></th>
+          <th scope="col">Chart.js</th>
+          <th scope="col">ApexCharts</th>
+          <th scope="col">Highcharts</th>
+        </tr>
+      </thead>
+      <tbody>
+        <sc-for list="{{rows}}" as="r" hint-placeholder-count="9">
+          <tr>
+            <th scope="row">{{r.label}}<span class="muted" style="display: block; font-weight: 400; font-size: 12.5px; margin-top: 2px">{{r.hint}}</span></th>
+            <td class="us"><span class="ph">{{r.ph}}</span></td>
+            <td><span class="ph">{{r.ph}}</span></td>
+            <td><span class="ph">{{r.ph}}</span></td>
+            <td><span class="ph">{{r.ph}}</span></td>
+          </tr>
+        </sc-for>
+      </tbody>
+    </table>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); gap: 16px">
+    <div class="card flat" style="padding: 18px 20px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><strong style="display: flex; align-items: center; gap: 8px; font: 700 18px var(--font-display)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l4 4 10-10"></path></svg>Where Chartist shines</strong><p style="font-size: 15px">Small bundles, plain SVG, styling with the CSS you already write, ESM straight from a CDN with no build step, and a permissive license.</p></div>
+    <div class="card flat" style="padding: 18px 20px; background: var(--surface); display: flex; flex-direction: column; gap: 6px"><strong style="display: flex; align-items: center; gap: 8px; font: 700 18px var(--font-display)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink-2)" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Where others offer more</strong><p style="font-size: 15px">More chart types out of the box, and built-in interactivity like tooltips, zoom and panning. If you need a full dashboard toolkit, they're great choices.</p></div>
+  </div>
+  <details style="font-size: 14px; color: var(--ink-2)">
+    <summary style="cursor: pointer; font-weight: 700; color: var(--ink); min-height: 32px">How we measured</summary>
+    <p style="margin-top: 8px">Bundle size: a single line chart built with each library's recommended import, minified and gzipped with the same bundler settings. Feature rows come from each library's own documentation. Numbers are regenerated at build time; last run [DATE]. Spotted something out of date? <a href="https://github.com/chartist-js/chartist">Open an issue</a>.</p>
+  </details>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1100,"height":820}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      rows: [
+        { label: 'Bundle size', hint: 'line chart, min + gzip', ph: '[MEASURED]' },
+        { label: 'Rendering', hint: 'SVG, Canvas or both', ph: '[RENDERING]' },
+        { label: 'Styling with plain CSS', hint: 'classes and custom properties', ph: '[YES / PARTIAL / NO]' },
+        { label: 'No build step', hint: 'ESM from a CDN', ph: '[YES / NO]' },
+        { label: 'Server-side rendering to SVG', hint: 'string output, no browser', ph: '[YES / NO]' },
+        { label: 'TypeScript types', hint: 'built in or separate', ph: '[TYPES]' },
+        { label: 'License', hint: 'for commercial use', ph: '[LICENSE]' },
+        { label: 'Chart types included', hint: 'out of the box', ph: '[COUNT]' },
+        { label: 'Tooltips, zoom, interactions', hint: 'built in or via plugins', ph: '[BUILT-IN / PLUGIN / NO]' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Landing scroll story — storyboard</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="./chartist.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,500;0,600;0,700;1,500&amp;family=Atkinson+Hyperlegible+Next:ital,wght@0,400..800;1,400..800&amp;family=Atkinson+Hyperlegible+Mono:wght@400..700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div class="cx" style="width: 1440px; box-sizing: border-box; padding: 64px 80px 80px; display: flex; flex-direction: column; gap: 36px; background: var(--bg)">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px">
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span class="eyebrow">Landing · storyboard</span>
+      <h2 style="font-size: 56px; line-height: 1">He shows you around</h2>
+    </div>
+    <p class="muted" style="max-width: 540px; font-size: 17px">The page is one evergreen scroll story; only the release banner under the hero changes per version. The Chartist Guy stays pinned beside the chapters and his easel morphs as each one reaches the middle of the screen. Everything else reveals and draws with CSS scroll and view timelines.</p>
+  </div>
+
+  <!-- ribbon -->
+  <div class="card" style="padding: 22px 26px; display: flex; flex-direction: column; gap: 14px">
+    <strong style="font: 700 20px var(--font-display)">The scroll ribbon</strong>
+    <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px">
+      <sc-for list="{{ribbon}}" as="r" hint-placeholder-count="8">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="height: 8px; border-radius: 4px; background: {{r.color}}"></div>
+          <span style="font: 700 11px var(--font-code); color: var(--brand)">{{r.num}}</span>
+          <strong style="font-size: 14px">{{r.label}}</strong>
+          <span class="muted" style="font-size: 12.5px; line-height: 1.4">{{r.what}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <p class="muted" style="font-size: 13px">Sticky chapter bar on top with anchors 01–08 and a 3 px progress line (<code>animation-timeline: scroll(root)</code>). The active anchor follows the section in the middle of the viewport.</p>
+  </div>
+
+  <!-- frames -->
+  <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px">
+    <sc-for list="{{frames}}" as="f" hint-placeholder-count="6">
+      <article class="card flat" style="background: var(--surface); padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 12px">
+        <div style="display: flex; justify-content: space-between; align-items: baseline"><span class="eyebrow">Frame {{f.n}}</span><span class="tag">{{f.where}}</span></div>
+        <div style="background: var(--bg-sunken); border-radius: var(--r-md); padding: 10px 6px 0"><dc-import name="Mascot" pose="{{f.pose}}" scene="{{f.scene}}" reaction="{{f.reaction}}" hint-size="100%,300px"></dc-import></div>
+        <strong style="font: 700 21px/1.2 var(--font-display)">{{f.title}}</strong>
+        <dl style="margin: 0; display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 6px 10px; font-size: 13.5px">
+          <dt style="font-weight: 700">Trigger</dt><dd style="margin: 0">{{f.trigger}}</dd>
+          <dt style="font-weight: 700">Motion</dt><dd style="margin: 0">{{f.motion}}</dd>
+          <dt style="font-weight: 700">Reduced</dt><dd style="margin: 0" class="muted">{{f.reduced}}</dd>
+        </dl>
+      </article>
+    </sc-for>
+  </div>
+
+  <!-- implementation -->
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px">
+    <div class="card" style="padding: 22px 26px; display: flex; flex-direction: column; gap: 12px">
+      <strong style="font: 700 22px var(--font-display)">How the easel knows where you are</strong>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14.5px">
+        <p><span class="tag brand">A · recommended</span> <strong>A tiny observer island.</strong> One <code>IntersectionObserver</code> with <code>rootMargin: '-45% 0px'</code> sets <code>data-scene</code> on the stage. Works in every current browser, about 30 lines, and does nothing if JavaScript is off: the hero chart simply stays.</p>
+        <p><span class="tag">B</span> <strong>Pure CSS.</strong> Each chapter gets a <code>view-timeline</code>; <code>timeline-scope</code> on the story lets the stage layers fade by those timelines. Zero JS, but browser support for scroll-driven animations is still uneven, so it would need A as a fallback anyway.</p>
+        <p><span class="tag">C</span> <strong>Chapter dots only.</strong> No scroll linking; readers tap the dots. Simplest, but loses the "he follows along" feeling.</p>
+      </div>
+    </div>
+    <div class="code" style="min-width: 0"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">reveal.css · draw-on-view.css</span></div><pre><span class="c">/* sections and cards rise in as they enter */</span>
+.<span class="f">reveal</span> {
+  animation: reveal-up linear both;
+  animation-timeline: <span class="f">view</span>();
+  animation-range: entry <span class="n">0%</span> entry <span class="n">70%</span>;
+}
+<span class="c">/* charts draw as they scroll into view */</span>
+.<span class="f">ct-draw-view</span> .<span class="f">ct-line</span> {
+  animation: ct-draw linear both;
+  animation-timeline: <span class="f">view</span>();
+  animation-range: entry <span class="n">20%</span> cover <span class="n">45%</span>;
+}
+<span class="c">/* everything resolves to its final frame */</span>
+@media (prefers-reduced-motion: reduce) {
+  .<span class="f">reveal</span>, .<span class="f">ct-draw-view</span> * { animation: none; }
+}</pre></div>
+  </div>
+
+  <div class="card flat" style="padding: 20px 24px; background: var(--surface); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; font-size: 14px">
+    <div><strong>Timing</strong><p class="muted">Board swap 240 ms crossfade · lines 1200 ms · bars 700 ms · slices staggered 150 ms · hat 480 ms spring.</p></div>
+    <div><strong>One thing at a time</strong><p class="muted">Only the stage animates while a chapter is in focus. Code blocks and text never move once revealed.</p></div>
+    <div><strong>No scroll-jacking</strong><p class="muted">Native scrolling, no snapping, no pinned full-screen scenes. The stage is plain <code>position: sticky</code>.</p></div>
+    <div><strong>Keyboard &amp; mobile</strong><p class="muted">Chapter dots are buttons (44 px). On phones the stage pins at the top in a compact strip above the chapters.</p></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2150}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const C = ['var(--ct-series-a)', 'var(--ct-series-b)', 'var(--ct-series-c)', 'var(--ct-series-d)', 'var(--ct-series-f)', 'var(--ct-series-g)', 'var(--ct-series-h)', 'var(--ct-series-o)'];
+    const R = [
+      ['Meet', 'Hero: he presents the line chart; it draws in and loops.'],
+      ['Tour', 'Pinned stage. Easel morphs per chapter: line → bars → donut → composed, then he celebrates.'],
+      ['Features', 'Six cards rise in; mini charts draw on view.'],
+      ['Extend', 'Pipeline steps rise in left to right; plugin chips restyle a live chart.'],
+      ['Try it', 'Live editor. No scroll motion, it’s for typing.'],
+      ['Responsive', 'Resize handle nudges once on entry; container cards.'],
+      ['Compare', 'Table rises in. No motion inside the table.'],
+      ['Get started', 'He celebrates, hat in the air, next to the npm command.']
+    ];
+    return {
+      ribbon: R.map(([label, what], i) => ({ num: '0' + (i + 1), label, what, color: C[i] })),
+      frames: [
+        { n: 1, where: '01 · hero', pose: 'hero', scene: 'petitions', reaction: 'none', title: 'Presenting', trigger: 'Page load.', motion: 'Line draws in (1.2 s), points pop, then loops every 6 s. He blinks; pointing arm taps the board.', reduced: 'Chart fully drawn, no loop, no tap.' },
+        { n: 2, where: '02 · chapter 2', pose: 'hero', scene: 'bars', reaction: 'curious', title: 'Raises an eyebrow', trigger: 'Chapter 2 crosses the middle 10% of the viewport.', motion: 'Board crossfades to bars that grow from the baseline; hat lifts 9 px and one eyebrow rises.', reduced: 'Board swaps instantly; hat and eyebrow shown without motion.' },
+        { n: 3, where: '02 · chapter 3', pose: 'hero', scene: 'donut', reaction: 'none', title: 'Donut sweep', trigger: 'Chapter 3 in the middle band.', motion: 'Each slice strokes in, staggered 150 ms; legend fades in after.', reduced: 'Complete donut, no sweep.' },
+        { n: 4, where: '02 · chapter 4', pose: 'hero', scene: 'composed', reaction: 'proud', title: 'Composed, and proud of it', trigger: 'Chapter 4 in the middle band.', motion: 'Bars grow, then the line draws over them on its right axis; he grins.', reduced: 'Final composed chart, grin without motion.' },
+        { n: 5, where: '02 · chapter 5', pose: 'celebrate', scene: 'composed', reaction: 'none', title: 'Hats off', trigger: 'Last chapter in the middle band.', motion: 'Pose switches to celebrate; hat flies up; confetti falls while the chapter is in view.', reduced: 'Celebrate pose, hat in hand, no confetti.' },
+        { n: 6, where: '08 · finale', pose: 'celebrate', scene: 'composed', reaction: 'none', title: 'Ready when you are', trigger: 'Finale card enters the viewport.', motion: 'Card rises in; he repeats the celebration once next to the npm command.', reduced: 'Static card and pose.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

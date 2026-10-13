@@ -15,14 +15,23 @@
 <div class="{{rootClass}}" style="min-height: 100vh">
   <dc-import name="SiteHeader" active="home" theme="{{theme}}" on-toggle-theme="{{toggleTheme}}" hint-size="100%,72px"></dc-import>
 
+  <!-- CHAPTER NAV: sticky anchors + scroll progress (CSS scroll timeline) -->
+  <nav class="chapter-nav" aria-label="On this page">
+    <div class="wrap bar">
+      <sc-for list="{{sections}}" as="s" hint-placeholder-count="8">
+        <a href="#{{s.id}}" aria-current="{{s.current}}"><span class="num">{{s.num}}</span>{{s.label}}</a>
+      </sc-for>
+    </div>
+    <div class="scroll-progress" aria-hidden="true"></div>
+  </nav>
+
   <main>
-    <!-- HERO -->
-    <section class="wrap hero">
+    <!-- 01 HERO -->
+    <section id="top" data-section="0" class="wrap hero">
       <div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
-        <span class="tag accent" style="width: fit-content; font-size: 12px; padding: 4px 12px">v2 · TypeScript, ESM, CSS-first</span>
+        <span class="tag accent" style="width: fit-content; font-size: 12px; padding: 4px 12px">Open source · MIT · since 2014</span>
         <h1 class="display" style="margin: 0">Simple charts, <span class="hl">dressed in CSS.</span></h1>
         <p class="lead" style="max-width: 560px">Chartist draws clean, responsive SVG charts and leaves the styling to you. No canvas, no dependencies, no theme engine. Just classes and custom properties.</p>
-
         <div class="install">
           <div class="code-head">
             <div class="tabs" role="tablist" aria-label="Install method">
@@ -35,51 +44,215 @@
             <sc-if value="{{isNpm}}" hint-placeholder-val="{{ true }}">
 <pre><span class="c">$</span> npm install chartist
 
-<span class="k">import</span> { <span class="f">LineChart</span> } <span class="k">from</span> <span class="s">'chartist'</span>;
-<span class="k">import</span> <span class="s">'chartist/dist/index.css'</span>;</pre>
+<span class="k">import</span> { <span class="f">lineChart</span> } <span class="k">from</span> <span class="s">'chartist'</span>;
+<span class="k">import</span> <span class="s">'chartist/styles.css'</span>;
+
+<span class="f">lineChart</span>(<span class="s">'#chart'</span>, { series: [[<span class="n">1</span>, <span class="n">3</span>, <span class="n">2</span>, <span class="n">5</span>]] });</pre>
             </sc-if>
             <sc-if value="{{isCdn}}" hint-placeholder-val="{{ false }}">
-<pre>&lt;<span class="f">link</span> rel=<span class="s">"stylesheet"</span> href=<span class="s">"https://cdn.jsdelivr.net/npm/chartist/dist/index.css"</span>&gt;
+<pre>&lt;<span class="f">link</span> rel=<span class="s">"stylesheet"</span>
+      href=<span class="s">"https://cdn.jsdelivr.net/npm/chartist/dist/index.min.css"</span>&gt;
 &lt;<span class="f">script</span> type=<span class="s">"module"</span>&gt;
-  <span class="k">import</span> { <span class="f">LineChart</span> } <span class="k">from</span> <span class="s">'https://cdn.jsdelivr.net/npm/chartist/dist/index.js'</span>;
-  <span class="k">new</span> <span class="f">LineChart</span>(<span class="s">'#chart'</span>, { series: [[<span class="n">1</span>, <span class="n">3</span>, <span class="n">2</span>, <span class="n">5</span>]] });
+  <span class="k">import</span> { <span class="f">lineChart</span> } <span class="k">from</span>
+    <span class="s">'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js'</span>;
+  <span class="f">lineChart</span>(<span class="s">'#chart'</span>, { series: [[<span class="n">1</span>, <span class="n">3</span>, <span class="n">2</span>, <span class="n">5</span>]] });
 &lt;/<span class="f">script</span>&gt;</pre>
             </sc-if>
           </div>
         </div>
-
         <div style="display: flex; flex-wrap: wrap; gap: 12px">
           <a class="btn primary" href="GettingStarted.dc.html">Get started</a>
           <a class="btn" href="Examples.dc.html">Browse examples</a>
           <a class="btn ghost" href="https://github.com/chartist-js/chartist">GitHub</a>
         </div>
+        <p style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 15px; color: var(--ink-2)">
+          <span><strong style="color: var(--ink)">[N]M</strong> npm downloads a month</span><span aria-hidden="true">·</span>
+          <span><strong style="color: var(--ink)">[N]k</strong> GitHub stars</span><span aria-hidden="true">·</span>
+          <span>used by <strong style="color: var(--ink)">[N]k</strong> projects</span>
+        </p>
       </div>
       <div style="position: relative; min-width: 0">
         <svg viewBox="0 0 600 560" aria-hidden="true" style="position: absolute; inset: -20px 0 0 0; width: 100%; height: 100%"><circle cx="330" cy="300" r="250" fill="var(--bg-sunken)"></circle></svg>
         <div style="position: relative"><dc-import name="Mascot" pose="hero" hint-size="100%,500px"></dc-import></div>
+        <a href="#story" class="pill-link" style="position: absolute; left: 50%; bottom: -28px; transform: translateX(-50%); white-space: nowrap">Scroll, he'll show you around ↓</a>
       </div>
     </section>
 
-    <!-- FACTS -->
-    <section class="wrap" aria-label="Why Chartist" style="padding-bottom: 24px">
-      <div class="grid-auto-sm">
-        <div class="fact"><strong>Zero dependencies</strong><span class="muted">One ES module. Works with any bundler, or with none at all.</span></div>
-        <div class="fact"><strong>Real SVG</strong><span class="muted">Crisp at any size, accessible, printable, and inspectable in DevTools.</span></div>
-        <div class="fact"><strong>Styled with CSS</strong><span class="muted">Every line, bar and label has a class. Theme with custom properties.</span></div>
-        <div class="fact"><strong>[SIZE] KB gzipped</strong><span class="muted">Small enough to load on every page that needs a chart.</span></div>
+    <!-- RELEASE BANNER: the only version-specific line on the page; swap it per release -->
+    <aside class="wrap" aria-label="Latest release" style="padding-top: 40px">
+      <a href="#release-notes" class="card flat" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 14px 18px; text-decoration: none; color: var(--ink); background: var(--surface); width: fit-content; max-width: 100%">
+        <span class="tag brand">New</span>
+        <span style="font-weight: 700">Chartist 2.0 is out.</span>
+        <span class="muted">Functional API, composed charts, server rendering, and your 1.x charts look exactly the same.</span>
+        <span class="pill-link">Release notes →</span>
+      </a>
+    </aside>
+
+    <!-- NUMBERS: filled from the npm and GitHub APIs at build time -->
+    <section class="wrap reveal" aria-labelledby="numbers-title" style="padding-block: 56px 24px">
+      <div class="card" style="padding: 32px 36px; display: flex; flex-direction: column; gap: 28px">
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 24px">
+          <h2 id="numbers-title" style="font-size: var(--fs-2xl)">Quietly running a lot of the web's charts</h2>
+          <span class="muted" style="font-size: 13px">Live from npm and GitHub · updated [DATE]</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 24px">
+          <div class="stat"><strong>[N]M</strong><span>npm downloads every month</span></div>
+          <div class="stat"><strong>[N]k</strong><span>public projects depend on it</span></div>
+          <div class="stat"><strong>[N]k</strong><span>stars on GitHub</span></div>
+          <div class="stat"><strong>12 years</strong><span>of charts in production, since 2014</span></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; border-top: 1px solid var(--line); padding-top: 22px">
+          <span class="eyebrow" style="margin-right: 8px">Trusted by teams at</span>
+          <sc-for list="{{logos}}" as="l" hint-placeholder-count="6">
+            <span aria-label="{{l}}" style="display: grid; place-items: center; width: 120px; height: 40px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-md); font: 600 11px var(--font-code); color: var(--ink-2)">{{l}}</span>
+          </sc-for>
+        </div>
       </div>
     </section>
 
-    <!-- GALLERY -->
+    <!-- 02 STORY: sticky stage, chapters scroll past -->
+    <section id="story" data-section="1" class="wrap section">
+      <div class="story">
+        <div class="story-sticky">
+          <dc-import name="ScrollStage" active="{{chapter}}" chapters="{{chapters}}" on-pick="{{pickChapter}}" hint-size="100%,560px"></dc-import>
+        </div>
+        <div>
+          <sc-for list="{{chapterList}}" as="c" hint-placeholder-count="5">
+            <article class="story-chapter reveal" id="{{c.anchor}}" data-chapter="{{c.i}}">
+              <span class="eyebrow">Chapter {{c.n}}</span>
+              <h3>{{c.title}}</h3>
+              <p class="lead" style="font-size: var(--fs-lg)">{{c.text}}</p>
+              <div class="code"><pre style="white-space: pre">{{c.code}}</pre></div>
+              <button class="pill-link" type="button" onClick="{{c.show}}" style="background: transparent; border: 0; padding: 8px 0; cursor: pointer; width: fit-content; min-height: 44px">Show it on the easel →</button>
+            </article>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 FEATURES: the most valuable ones only -->
+    <section id="features" data-section="2" class="section sunken">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>What makes it worth it</h2>
+          <p>The things people pick Chartist for, each with a tiny live demo.</p>
+        </div>
+        <div class="grid-auto">
+          <article class="card feature reveal">
+            <h3>Style it with CSS</h3>
+            <p class="muted" style="font-size: 15px">Plain SVG with predictable classes. Colors, lines, grid and labels are custom properties, scoped to a page, a container or one chart.</p>
+            <div class="demo" style="gap: 10px">
+              <div style="width: 100%; {{swatchStyle}}"><dc-import name="Chart" kind="smooth" animate="{{ false }}" hint-size="100%,150px"></dc-import></div>
+              <div style="display: flex; gap: 10px; align-items: center" role="group" aria-label="Pick --ct-series-a">
+                <sc-for list="{{swatches}}" as="w" hint-placeholder-count="4"><button class="swatch-btn" type="button" aria-label="{{w.name}}" aria-pressed="{{w.pressed}}" onClick="{{w.pick}}" style="background: {{w.hex}}"></button></sc-for>
+                <code style="font-size: 12px">--ct-series-a</code>
+              </div>
+            </div>
+          </article>
+          <article class="card feature reveal">
+            <h3>Responsive, two ways</h3>
+            <p class="muted" style="font-size: 15px">Breakpoints by the window, or by the chart's own container. Same conditions you already write in CSS.</p>
+            <div class="demo" style="gap: 8px"><div class="code"><pre>responsive: [
+  [<span class="s">'(width &lt; 600px)'</span>, { … }],
+  [<span class="f">container</span>(<span class="s">'(width &lt; 400px)'</span>), { … }]
+]</pre></div><span class="tag">container() is experimental · needs a polyfill today</span></div>
+          </article>
+          <article class="card feature reveal">
+            <h3>Composed charts</h3>
+            <p class="muted" style="font-size: 15px">Bars and lines in one chart, with left and right y-axes, each scaled to its own series.</p>
+            <div class="demo"><div style="width: 100%"><dc-import name="Chart" kind="composed" animate="view" hint-size="100%,170px"></dc-import></div></div>
+          </article>
+          <article class="card feature reveal">
+            <h3>Renders anywhere SVG does</h3>
+            <p class="muted" style="font-size: 15px">Labels are real SVG text, wrapped to fit. Render on the server, and charts survive PDFs, email and image converters.</p>
+            <div class="demo" style="gap: 10px"><div class="code"><pre><span class="k">const</span> svg = <span class="f">renderToString</span>(
+  <span class="f">toScene</span>(<span class="s">'line'</span>, data, options)
+);</pre></div><div style="display: flex; gap: 6px; flex-wrap: wrap"><span class="tag">Server</span><span class="tag">PDF</span><span class="tag">Email</span><span class="tag">PNG</span></div></div>
+          </article>
+          <article class="card feature reveal">
+            <h3>Tiny, and no build step</h3>
+            <p class="muted" style="font-size: 15px">Tree-shakable, so you ship only what you import. Load it from a CDN as a native module, or use npm with any bundler.</p>
+            <div class="demo" style="justify-items: stretch">
+              <ul style="list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 6px; font: 600 13px var(--font-code)">
+                <li style="display: flex; justify-content: space-between"><span>✓ core</span><span class="ph">[MEASURED]</span></li>
+                <li style="display: flex; justify-content: space-between"><span>✓ lineChart</span><span class="ph">[MEASURED]</span></li>
+                <li style="display: flex; justify-content: space-between; opacity: .5"><span>✗ barChart</span><span>not imported</span></li>
+                <li style="display: flex; justify-content: space-between; opacity: .5"><span>✗ pieChart</span><span>not imported</span></li>
+              </ul>
+            </div>
+          </article>
+          <article class="card feature reveal">
+            <h3>Colors for everyone</h3>
+            <p class="muted" style="font-size: 15px">An opt-in color-blind-safe palette that follows light and dark mode. The classic colors stay the default.</p>
+            <div class="demo ct-theme-accessible" style="gap: 10px">
+              <div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 6px; width: 100%">
+                <span class="ct-series-a" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-b" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-c" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-d" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-e" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-f" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-g" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span><span class="ct-series-h" style="height: 28px; border-radius: 6px; background: var(--ct-color)"></span>
+              </div>
+              <code style="font-size: 12px">class="ct-theme-accessible"</code>
+            </div>
+          </article>
+        </div>
+        <div class="reveal" style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 28px">
+          <span style="font-weight: 700; margin-right: 4px">And also:</span>
+          <span class="tag" style="font-size: 13px; padding: 5px 12px">Typed functional API</span>
+          <span class="tag" style="font-size: 13px; padding: 5px 12px">Zero dependencies</span>
+          <span class="tag" style="font-size: 13px; padding: 5px 12px">Older code keeps working</span>
+          <a class="pill-link" href="Api.dc.html" style="margin-left: 8px">API reference →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 EXTEND: the pipeline -->
+    <section id="extend" data-section="3" class="wrap section">
+      <div class="section-head reveal">
+        <h2>Bend it to your will</h2>
+        <p>Every chart flows through an open pipeline. Each step has a hook, and every single element passes through events you can change, replace or decorate. Plugins are just functions that use the same hooks.</p>
+      </div>
+      <ol class="pipeline reveal" aria-label="The rendering pipeline">
+        <sc-for list="{{pipeline}}" as="p" hint-placeholder-count="6">
+          <li class="pipe-step">
+            <span class="eyebrow">{{p.n}}</span>
+            <strong>{{p.title}}</strong>
+            <span class="muted" style="font-size: 13.5px">{{p.text}}</span>
+            <code style="font-size: 12px; width: fit-content">{{p.hook}}</code>
+          </li>
+        </sc-for>
+      </ol>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 28px; align-items: start; margin-top: 36px">
+        <div class="card reveal" style="padding: 20px 22px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px">
+            <strong style="font: 700 22px var(--font-display)">Same data, three tiny plugins</strong>
+            <div role="group" aria-label="Toggle plugins" style="display: flex; flex-wrap: wrap; gap: 8px">
+              <sc-for list="{{plugins}}" as="pl" hint-placeholder-count="3"><button class="chip" type="button" aria-pressed="{{pl.on}}" onClick="{{pl.flip}}">{{pl.label}}</button></sc-for>
+            </div>
+          </div>
+          <div style="background: var(--bg); border-radius: var(--r-md); padding: 12px"><dc-import name="Chart" kind="bar" data="{{pluginData}}" options="{{pluginOpts}}" animate="{{ false }}" hint-size="100%,240px"></dc-import></div>
+        </div>
+        <div class="code reveal" style="min-width: 0"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">lollipop.js</span></div><pre><span class="c">// a plugin is a function that receives the chart</span>
+<span class="k">export const</span> <span class="f">lollipop</span> = () =&gt; (chart) =&gt;
+  chart.<span class="f">on</span>(<span class="s">'draw'</span>, (el) =&gt; {
+    <span class="k">if</span> (el.type !== <span class="s">'bar'</span>) <span class="k">return</span>;
+    el.<span class="f">attr</span>({ style: <span class="s">'stroke-width: 3px'</span> });
+    el.parent.<span class="f">elem</span>(<span class="s">'circle'</span>, { cx: el.x2, cy: el.y2, r: <span class="n">6</span> });
+  });
+
+<span class="f">barChart</span>(<span class="s">'#chart'</span>, data, {
+  plugins: [{{pluginList}}]
+});</pre></div>
+      </div>
+      <p class="muted reveal" style="margin-top: 20px">Tooltips, legends, axis titles, accessibility tables and zoom are all built this way. <a href="Plugins.dc.html">Browse the plugins</a> or <a href="GettingStarted.dc.html">write your own</a>.</p>
+    </section>
+
+    <!-- GALLERY (draws in on scroll) -->
     <section class="wrap section" id="gallery">
-      <div class="section-head">
+      <div class="section-head reveal">
         <h2>A few of our favourite charts</h2>
-        <p>Every one of these is a plain SVG element. Click a card to open it in the playground and make it yours.</p>
+        <p>Every one is a plain SVG element that draws itself as it scrolls into view. Click a card to open it in the playground.</p>
       </div>
       <div class="grid-auto">
         <sc-for list="{{gallery}}" as="g" hint-placeholder-count="6">
-          <a class="card link chart-card" href="Playground.dc.html">
-            <div class="stage"><dc-import name="Chart" kind="{{g.kind}}" hint-size="100%,200px"></dc-import></div>
+          <a class="card link chart-card reveal" href="Playground.dc.html">
+            <div class="stage"><dc-import name="Chart" kind="{{g.kind}}" animate="view" hint-size="100%,200px"></dc-import></div>
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px">
               <strong style="font: 700 20px/1.2 var(--font-display)">{{g.title}}</strong>
               <code style="font-size: 12px">{{g.api}}</code>
@@ -88,82 +261,119 @@
           </a>
         </sc-for>
       </div>
-      <div style="margin-top: 28px"><a class="btn" href="Examples.dc.html">See all examples</a></div>
     </section>
 
-    <!-- LIVE EXAMPLE -->
-    <section class="section" style="background: var(--bg-sunken)">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Edit it. Watch it redraw.</h2>
-          <p>Every example in these docs is live. Change the data or the CSS and the chart updates as you type, right here in the page. No sandbox site, no bundler.</p>
+    <!-- 05 TRY IT -->
+    <section id="try" data-section="4" class="wrap section">
+      <div class="section-head reveal">
+        <h2>Edit it. Watch it redraw.</h2>
+        <p>Every example in the docs is live. Change the data or the CSS and the chart updates as you type, right in the page. No sandbox site, no bundler.</p>
+      </div>
+      <dc-import name="LiveExample" preset="line" hint-size="100%,400px"></dc-import>
+    </section>
+
+    <!-- 06 RESPONSIVE -->
+    <section id="responsive" data-section="5" class="section sunken">
+      <div class="wrap" style="display: flex; flex-direction: column; gap: 40px">
+        <div class="section-head reveal" style="margin: 0">
+          <h2>Responsive sugar topping</h2>
+          <p>Grab the corner and squeeze the chart. Labels, ticks and spacing rearrange themselves, driven by the same conditions you'd write in CSS.</p>
         </div>
-        <dc-import name="LiveExample" preset="line" hint-size="100%,400px"></dc-import>
-      </div>
-    </section>
-
-    <!-- RESPONSIVE -->
-    <section class="wrap section">
-      <div class="section-head">
-        <h2>Responsive sugar topping</h2>
-        <p>Pass a few media queries with option overrides, and Chartist rearranges labels, ticks and spacing as the container changes. Drag the slider to try it.</p>
-      </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 32px; align-items: start">
-        <div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
-          <label style="display: flex; flex-direction: column; gap: 8px; font-weight: 700">
-            <span style="display: flex; justify-content: space-between">Container width <code>{{rw}} px</code></span>
-            <input class="range" type="range" min="300" max="760" step="10" value="{{rw}}" onChange="{{onWidth}}">
-          </label>
-          <div style="border: 2px dashed var(--line-strong); border-radius: var(--r-lg); padding: 12px; overflow: hidden">
-            <div style="{{respBox}}"><dc-import name="Chart" kind="bar" data="{{respData}}" animate="{{ false }}" hint-size="100%,220px"></dc-import></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr)); gap: 32px; align-items: start">
+          <div style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+            <div class="resizable" data-resize="true" style="{{resizeStyle}}">
+              <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 13px; margin-bottom: 6px"><strong>Resize me</strong><code>{{rw}} px</code></div>
+              <dc-import name="Chart" kind="bar" data="{{respData}}" animate="{{ false }}" hint-size="100%,220px"></dc-import>
+            </div>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 700">Or use the keyboard: container width
+              <input class="range" type="range" min="260" max="640" step="10" value="{{rw}}" onChange="{{onWidth}}">
+            </label>
           </div>
-        </div>
-        <div class="code" style="min-width: 0"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">responsiveOptions</span><span class="tag" style="background: transparent; color: #F4C63D; border-color: #F4C63D55">active: {{respRule}}</span></div><pre>[
-  [<span class="s">'screen and (min-width: 640px)'</span>, {
-    axisX: { labelInterpolationFnc: <span class="f">month</span> }  <span class="c">// "Jan"</span>
+          <div class="code" style="min-width: 0"><div class="code-head"><span style="font: 600 12px var(--font-code); color: var(--code-muted)">responsive</span><span class="tag" style="background: transparent; color: #F4C63D; border-color: #F4C63D55">active: {{respRule}}</span></div><pre><span class="f">barChart</span>(<span class="s">'#chart'</span>, data, options, [
+  [<span class="f">container</span>(<span class="s">'(width &gt;= 520px)'</span>), {
+    axisX: { labelInterpolationFnc: <span class="f">month</span> }   <span class="c">// "Jan"</span>
   }],
-  [<span class="s">'screen and (min-width: 420px)'</span>, {
+  [<span class="f">container</span>(<span class="s">'(width &gt;= 360px)'</span>), {
     axisX: { labelInterpolationFnc: <span class="f">initial</span> } <span class="c">// "J"</span>
   }],
-  [<span class="s">'screen'</span>, {
-    axisX: { labelInterpolationFnc: <span class="f">quarters</span> } <span class="c">// "Q1"</span>
+  [<span class="f">container</span>(<span class="s">'(width &lt; 360px)'</span>), {
+    axisX: { labelInterpolationFnc: <span class="f">quarter</span> } <span class="c">// "Q1"</span>
   }]
-]</pre></div>
+]);</pre></div>
+        </div>
+
+        <div class="reveal" style="display: flex; flex-direction: column; gap: 14px">
+          <h3 style="font-size: var(--fs-2xl)">One chart, two cards</h3>
+          <p class="muted" style="max-width: 720px">The same component in a narrow sidebar card and a wide content card. Container queries pick the right options for each, no matter how wide the window is.</p>
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr); gap: 20px; align-items: start">
+            <div class="card cq" style="padding: 14px; display: flex; flex-direction: column; gap: 8px">
+              <span class="tag rule-narrow" style="width: fit-content">container (width &lt; 400px)</span><span class="tag ok rule-wide" style="width: fit-content">container (width ≥ 400px)</span>
+              <dc-import name="Chart" kind="line" data="{{narrowData}}" animate="view" hint-size="100%,180px"></dc-import>
+            </div>
+            <div class="card cq" style="padding: 14px; display: flex; flex-direction: column; gap: 8px">
+              <span class="tag rule-narrow" style="width: fit-content">container (width &lt; 400px)</span><span class="tag ok rule-wide" style="width: fit-content">container (width ≥ 400px)</span>
+              <dc-import name="Chart" kind="line" data="{{wideData}}" animate="view" hint-size="100%,220px"></dc-import>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- ANIMATION -->
-    <section class="section" style="background: var(--bg-sunken)">
-      <div class="wrap">
-        <div class="section-head">
-          <h2>Animations, in plain CSS</h2>
-          <p>Lines draw, bars grow, donuts fill. It's all CSS on SVG, and it switches itself off for people who prefer reduced motion.</p>
-        </div>
-        <div class="grid-auto">
-          <sc-for list="{{anims}}" as="a" hint-placeholder-count="3">
-            <div class="card" style="padding: 18px; display: flex; flex-direction: column; gap: 12px">
-              <div class="stage" style="background: var(--bg); border-radius: var(--r-md); padding: 12px">
-                <sc-if value="{{even}}" hint-placeholder-val="{{ true }}"><dc-import name="Chart" kind="{{a.kind}}" hint-size="100%,200px"></dc-import></sc-if>
-                <sc-if value="{{odd}}" hint-placeholder-val="{{ false }}"><dc-import name="Chart" kind="{{a.kind}}" hint-size="100%,200px"></dc-import></sc-if>
-              </div>
-              <strong style="font: 700 20px/1.2 var(--font-display)">{{a.title}}</strong>
-              <code style="font-size: 12.5px; width: fit-content">{{a.css}}</code>
+    <!-- ANIMATIONS: CSS + SMIL -->
+    <section class="wrap section">
+      <div class="section-head reveal">
+        <h2>Animations, in plain CSS (and a little SMIL)</h2>
+        <p>Lines draw, bars grow, donuts sweep, and a SMIL line morphs for fun. All of it calms down for people who prefer reduced motion.</p>
+      </div>
+      <div class="grid-auto-sm">
+        <sc-for list="{{anims}}" as="a" hint-placeholder-count="3">
+          <div class="card reveal" style="padding: 16px; display: flex; flex-direction: column; gap: 10px">
+            <div style="background: var(--bg); border-radius: var(--r-md); padding: 10px">
+              <sc-if value="{{even}}" hint-placeholder-val="{{ true }}"><dc-import name="Chart" kind="{{a.kind}}" hint-size="100%,170px"></dc-import></sc-if>
+              <sc-if value="{{odd}}" hint-placeholder-val="{{ false }}"><dc-import name="Chart" kind="{{a.kind}}" hint-size="100%,170px"></dc-import></sc-if>
             </div>
-          </sc-for>
+            <strong style="font: 700 19px/1.2 var(--font-display)">{{a.title}}</strong>
+            <code style="font-size: 12px; width: fit-content">{{a.css}}</code>
+          </div>
+        </sc-for>
+        <div class="card reveal" style="padding: 16px; display: flex; flex-direction: column; gap: 10px">
+          <div style="background: var(--bg); border-radius: var(--r-md); padding: 10px">
+            <svg class="ct-svg motion-only" viewBox="0 0 400 240" role="img" aria-label="A line morphing between two shapes with SMIL">
+              <path class="ct-grid" d="M40,30 H390 M40,80 H390 M40,130 H390 M40,180 H390"></path>
+              <g class="ct-series-a"><path class="ct-line" d="M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30"><animate attributeName="d" dur="3.2s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .2 1; .4 0 .2 1" values="M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30; M40,90 C100,40 140,170 200,150 C260,130 300,190 390,120; M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30"></animate></path></g>
+            </svg>
+            <svg class="ct-svg static-only" viewBox="0 0 400 240" role="img" aria-label="A static line chart (motion reduced)">
+              <path class="ct-grid" d="M40,30 H390 M40,80 H390 M40,130 H390 M40,180 H390"></path>
+              <g class="ct-series-a"><path class="ct-line" d="M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30"></path></g>
+            </svg>
+          </div>
+          <strong style="font: 700 19px/1.2 var(--font-display)">SMIL morph</strong>
+          <code style="font-size: 12px; width: fit-content">&lt;animate attributeName="d"&gt;</code>
         </div>
-        <div style="margin-top: 24px"><button class="btn" type="button" onClick="{{replay}}">Replay animations</button></div>
+      </div>
+      <div style="margin-top: 20px"><button class="btn" type="button" onClick="{{replay}}">Replay animations</button></div>
+    </section>
+
+    <!-- 07 COMPARE -->
+    <section id="compare" data-section="6" class="section sunken">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <h2>How Chartist compares</h2>
+          <p>An honest look next to Chart.js, ApexCharts and Highcharts. They're excellent libraries; pick the one that fits the job.</p>
+        </div>
+        <dc-import name="ComparisonTable" hint-size="100%,820px"></dc-import>
       </div>
     </section>
 
     <!-- ECOSYSTEM -->
     <section class="wrap section">
-      <div class="section-head">
+      <div class="section-head reveal">
         <h2>Fits whatever you build with</h2>
-        <p>Chartist is framework-free, so it works everywhere. Community wrappers make it feel native in your stack.</p>
+        <p>Framework-free, so it works everywhere. Community wrappers make it feel native in your stack.</p>
       </div>
       <div class="grid-auto-sm">
         <sc-for list="{{eco}}" as="e" hint-placeholder-count="6">
-          <a class="card flat" href="Plugins.dc.html" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: var(--ink); background: var(--surface)">
+          <a class="card flat reveal" href="Plugins.dc.html" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: var(--ink); background: var(--surface)">
             <strong style="font: 700 20px/1.2 var(--font-display)">{{e.name}}</strong>
             <code style="font-size: 12.5px; width: fit-content">{{e.pkg}}</code>
             <span class="muted" style="font-size: 14px">{{e.note}}</span>
@@ -175,34 +385,35 @@
     <!-- COMMUNITY + SPONSOR -->
     <section class="wrap section" style="padding-top: 0">
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 24px">
-        <div class="card" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 14px">
+        <div class="card reveal" style="padding: 28px 32px; display: flex; flex-direction: column; gap: 14px">
           <h2 style="font-size: var(--fs-2xl)">Made by a community since 2014</h2>
-          <p class="muted">[STARS] stars, [CONTRIBUTORS] contributors and a decade of charts in production. Questions, ideas and pull requests are all welcome.</p>
+          <p class="muted">[N] contributors have shaped Chartist since 2014. Questions, ideas and pull requests are all welcome.</p>
           <div style="display: flex; flex-wrap: wrap; gap: 10px">
             <a class="btn sm" href="https://github.com/chartist-js/chartist">Star on GitHub</a>
             <a class="btn sm" href="https://github.com/chartist-js/chartist/discussions">Join the discussion</a>
             <a class="btn ghost sm" href="https://github.com/chartist-js/chartist/blob/main/CONTRIBUTING.md">Contribute</a>
           </div>
         </div>
-        <div class="sponsor">
+        <div class="sponsor reveal">
           <div style="display: flex; flex-direction: column; gap: 10px">
             <span class="eyebrow">Supported by</span>
             <span aria-label="Cube" style="display: grid; place-items: center; width: 160px; height: 52px; border: 1.5px dashed var(--line-strong); border-radius: var(--r-md); font: 600 12px var(--font-code); color: var(--ink-2)">[Cube logo]</span>
           </div>
-          <p style="font-size: 15px">Cube helped bring Chartist to TypeScript in v1, which made v2 possible. Thank you! <a href="https://cube.dev">Visit cube.dev</a></p>
+          <p style="font-size: 15px">Cube helped move Chartist to TypeScript and keeps supporting its development. Thank you! <a href="https://cube.dev">Visit cube.dev</a></p>
         </div>
       </div>
     </section>
 
-    <!-- FINAL CTA -->
-    <section class="wrap" style="padding-bottom: 80px">
-      <div class="card" style="padding: 32px 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); align-items: center; gap: 24px; overflow: hidden">
-        <div style="display: flex; flex-direction: column; gap: 16px">
+    <!-- 08 FINALE -->
+    <section id="start" data-section="7" class="wrap" style="padding-bottom: 96px">
+      <div class="card reveal" style="padding: 36px 40px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); align-items: end; gap: 24px; overflow: hidden">
+        <div style="display: flex; flex-direction: column; gap: 16px; padding-bottom: 36px">
           <h2 style="font-size: var(--fs-4xl)">Ready when you are.</h2>
-          <p class="lead">Three lines of code to your first chart. The gentleman will show you the way.</p>
-          <div style="display: flex; flex-wrap: wrap; gap: 12px"><a class="btn primary" href="GettingStarted.dc.html">Get started</a><a class="btn" href="Playground.dc.html">Open the playground</a></div>
+          <p class="lead">One import, one function call, one chart. He's already celebrating.</p>
+          <div class="code"><pre><span class="c">$</span> npm install chartist</pre></div>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px"><a class="btn primary" href="GettingStarted.dc.html">Get started</a><a class="btn" href="Examples.dc.html">Examples</a><a class="btn ghost" href="https://github.com/chartist-js/chartist">GitHub</a></div>
         </div>
-        <div style="justify-self: center; width: min(240px, 60%); margin-bottom: -40px"><dc-import name="Mascot" pose="point" hint-size="100%,420px"></dc-import></div>
+        <div style="justify-self: center; width: min(420px, 100%)"><dc-import name="Mascot" pose="celebrate" scene="composed" hint-size="100%,370px"></dc-import></div>
       </div>
     </section>
   </main>
@@ -210,39 +421,101 @@
   <dc-import name="SiteFooter" hint-size="100%,420px"></dc-import>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":1440,"height":5200}}'>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"chapter":{"editor":"int","default":0,"min":0,"max":4},"$preview":{"width":1440,"height":10400}}'>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { theme: null, install: 'npm', rw: 700, n: 0 }; }
+  constructor(props) { super(props); this.state = { theme: null, install: 'npm', rw: 520, n: 0, chapter: null, section: 0, swatch: 0, pl: { lollipop: true, labels: true, threshold: false } }; }
+  componentDidMount() {
+    // Scroll story island: only when the page really scrolls (not on the canvas, where the frame is as tall as the page)
+    try {
+      if (typeof IntersectionObserver === 'undefined' || window.innerHeight > 2200) return;
+      this._io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const ch = e.target.getAttribute('data-chapter'), sec = e.target.getAttribute('data-section');
+          if (ch !== null) this.setState({ chapter: +ch });
+          if (sec !== null) this.setState({ section: +sec });
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      document.querySelectorAll('[data-chapter],[data-section]').forEach((el) => this._io.observe(el));
+    } catch (e) {}
+    try {
+      const box = document.querySelector('[data-resize]');
+      if (box && typeof ResizeObserver !== 'undefined') {
+        this._ro = new ResizeObserver(([en]) => { const w = Math.round(en.contentRect.width / 10) * 10; if (w && w !== this.state.rw) this.setState({ rw: w, dragged: true }); });
+        this._ro.observe(box);
+      }
+    } catch (e) {}
+  }
+  componentWillUnmount() { try { this._io && this._io.disconnect(); this._ro && this._ro.disconnect(); } catch (e) {} }
   renderVals() {
     const theme = this.state.theme || this.props.theme || 'light';
+    const chapter = this.state.chapter ?? (this.props.chapter ?? 0);
     const rw = this.state.rw;
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    const rule = rw >= 640 ? 'min-width: 640px' : rw >= 420 ? 'min-width: 420px' : 'screen';
-    const labels = months.map((m, i) => (rw >= 640 ? m.slice(0, 3) : rw >= 420 ? m[0] : (i % 3 === 0 ? 'Q' + (i / 3 + 1) : '')));
+    const rule = rw >= 520 ? 'container(width ≥ 520px)' : rw >= 360 ? 'container(width ≥ 360px)' : 'container(width < 360px)';
+    const lab = (w) => months.map((m, i) => (w >= 520 ? m.slice(0, 3) : w >= 360 ? m[0] : (i % 3 === 0 ? 'Q' + (i / 3 + 1) : '')));
     const even = this.state.n % 2 === 0;
+    const S = ['Meet', 'Tour', 'Features', 'Extend', 'Try it', 'Responsive', 'Compare', 'Get started'];
+    const ids = ['top', 'story', 'features', 'extend', 'try', 'responsive', 'compare', 'start'];
+    const chapters = [
+      { label: 'Draw a line in one line', scene: 'petitions', reaction: 'none', pose: 'hero' },
+      { label: 'Bars, side by side or stacked', scene: 'bars', reaction: 'curious', pose: 'hero' },
+      { label: 'Donuts, pies and gauges', scene: 'donut', reaction: 'none', pose: 'hero' },
+      { label: 'Compose bars and lines', scene: 'composed', reaction: 'proud', pose: 'hero' },
+      { label: "That's the tour", scene: 'composed', reaction: 'none', pose: 'celebrate' }
+    ];
+    const CH = [
+      { title: 'Draw a line in one line', text: 'Give it a container and some numbers. Labels, grid, scaling and responsiveness are handled; the styling is yours.', code: "import { lineChart } from 'chartist';\n\nlineChart('#chart', {\n  labels: ['Mon', 'Tue', 'Wed'],\n  series: [[5, 9, 7], [3, 4, 6]]\n});" },
+      { title: 'Bars, side by side or stacked', text: 'Same data shape, different function. Group series per label, or stack them to show totals.', code: "import { barChart } from 'chartist';\n\nbarChart('#chart', data, {\n  stackBars: false\n});" },
+      { title: 'Donuts, pies and gauges', text: 'Slices are SVG paths with classes, so a donut sweep is just a stroke animation in CSS.', code: "import { pieChart } from 'chartist';\n\npieChart('#chart', { series: [40, 30, 20, 10] }, {\n  donut: true,\n  donutWidth: 20\n});" },
+      { title: 'Compose bars and lines', text: 'Layer bars and lines in one chart, each with its own y-axis on the left or right.', code: "import { chart, bars, line } from 'chartist';\n\nchart('#chart', {\n  labels,\n  layers: [\n    bars({ series: [orders] }),\n    line({ series: [growth], axisY: 'right' })\n  ]\n});" },
+      { title: "That's the tour", text: 'Four chart shapes, one way of styling them: CSS. Keep scrolling for what makes it worth it.', code: "// that's the tour.\n// keep scrolling for the details ↓" }
+    ];
+    const SW = [{ name: 'Classic red', hex: '#d70206' }, { name: 'Ledger blue', hex: '#2B6CD8' }, { name: 'Teal', hex: '#00917F' }, { name: 'Plum', hex: '#8445B0' }];
     return {
       theme, rootClass: theme === 'dark' ? 'cx dark' : 'cx',
       toggleTheme: () => this.setState({ theme: theme === 'dark' ? 'light' : 'dark' }),
+      sections: S.map((label, i) => ({ id: ids[i], label, num: '0' + (i + 1), current: this.state.section === i ? 'true' : 'false' })),
       isNpm: this.state.install === 'npm', isCdn: this.state.install === 'cdn',
       npmSel: this.state.install === 'npm' ? 'true' : 'false', cdnSel: this.state.install === 'cdn' ? 'true' : 'false',
       pickNpm: () => this.setState({ install: 'npm' }), pickCdn: () => this.setState({ install: 'cdn' }),
-      copyInstall: () => { try { navigator.clipboard.writeText(this.state.install === 'npm' ? 'npm install chartist' : 'https://cdn.jsdelivr.net/npm/chartist/dist/index.js'); } catch (e) {} },
+      copyInstall: () => { try { navigator.clipboard.writeText(this.state.install === 'npm' ? 'npm install chartist' : 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js'); } catch (e) {} },
+      chapter, chapters,
+      pickChapter: (i) => this.setState({ chapter: i }),
+      chapterList: CH.map((c, i) => ({ i, n: i + 1, anchor: 'chapter-' + (i + 1), title: c.title, text: c.text, code: c.code, show: () => this.setState({ chapter: i }) })),
+      swatches: SW.map((w, i) => ({ name: 'Set --ct-series-a to ' + w.name, hex: w.hex, pressed: this.state.swatch === i ? 'true' : 'false', pick: () => this.setState({ swatch: i }) })),
+      swatchStyle: '--ct-series-a: ' + SW[this.state.swatch].hex,
+      pipeline: [
+        { n: '01', title: 'Data', text: 'Normalize series, fill gaps, map objects to values.', hook: "on('data')" },
+        { n: '02', title: 'Options', text: 'Defaults, your options, then responsive and container overrides.', hook: "on('optionsChanged')" },
+        { n: '03', title: 'Scales & axes', text: 'Auto, fixed or step axes, or plug in your own scale.', hook: 'axisY: { type }' },
+        { n: '04', title: 'Scene', text: 'Every grid line, label, line, bar and point becomes an element.', hook: 'toScene()' },
+        { n: '05', title: 'Draw', text: 'Each element passes through draw events: change, replace, decorate.', hook: "on('draw')" },
+        { n: '06', title: 'Output', text: 'Live SVG in the page, or a string on the server.', hook: 'renderToString()' }
+      ],
+      plugins: [['lollipop', 'Lollipop bars'], ['labels', 'Value labels'], ['threshold', 'Threshold at 6']].map(([k, label]) => ({ label, on: this.state.pl[k] ? 'true' : 'false', flip: () => this.setState({ pl: Object.assign({}, this.state.pl, { [k]: !this.state.pl[k] }) }) })),
+      pluginData: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], series: [[5, 4, 7, 3, 8, 6, 9]] },
+      pluginOpts: { lollipop: this.state.pl.lollipop, valueLabels: this.state.pl.labels, threshold: this.state.pl.threshold ? 6 : null },
+      pluginList: [this.state.pl.lollipop && 'lollipop()', this.state.pl.labels && 'valueLabels()', this.state.pl.threshold && 'threshold(6)'].filter(Boolean).join(', '),
+      logos: ['[LOGO 1]', '[LOGO 2]', '[LOGO 3]', '[LOGO 4]', '[LOGO 5]', '[LOGO 6]'],
       gallery: [
-        { kind: 'line', title: 'Simple line', api: 'LineChart', note: 'Three series, default options.' },
+        { kind: 'line', title: 'Simple line', api: 'lineChart', note: 'Three series, default options.' },
         { kind: 'area', title: 'Area', api: 'showArea: true', note: 'Fill below the line, styled via --ct-area-opacity.' },
         { kind: 'stacked', title: 'Stacked bars', api: 'stackBars: true', note: 'Totals per quarter, segments per series.' },
-        { kind: 'bipolar', title: 'Bi-polar bars', api: 'BarChart', note: 'Negative values hang from the zero line.' },
-        { kind: 'gauge', title: 'Gauge', api: 'donut + total', note: 'A half donut with startAngle 270.' },
+        { kind: 'composed', title: 'Bars + line', api: 'chart() + layers', note: 'Two y-axes, each scaled to its own series.' },
+        { kind: 'gauge', title: 'Gauge', api: 'donut + total', note: 'A half donut with a start angle.' },
         { kind: 'scatter', title: 'Scatter', api: 'showLine: false', note: 'Points only, on an auto-scaled axis.' }
       ],
       rw, respRule: rule,
-      respBox: 'width: ' + rw + 'px; max-width: 100%; transition: width 120ms',
-      respData: { labels, series: [[5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8], [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]] },
+      resizeStyle: 'width: ' + rw + 'px',
+      respData: { labels: lab(rw), series: [[5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8], [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]] },
       onWidth: (e) => this.setState({ rw: +e.target.value }),
+      narrowData: { labels: ['J', 'F', 'M', 'A', 'M', 'J'], series: [[3, 5, 4, 7, 6, 8]] },
+      wideData: { labels: ['January', 'February', 'March', 'April', 'May', 'June'], series: [[3, 5, 4, 7, 6, 8], [2, 3, 3, 4, 5, 4]] },
       anims: [
-        { kind: 'smooth', title: 'Lines draw in', css: '.ct-line { animation: ct-draw 1.2s }' },
-        { kind: 'bar', title: 'Bars grow', css: '.ct-bar { animation: ct-grow .7s }' },
-        { kind: 'donut', title: 'Donuts fill', css: '.ct-slice-donut { animation: ct-draw 1.2s }' }
+        { kind: 'smooth', title: 'Lines draw in', css: '.ct-line { animation: ct-draw }' },
+        { kind: 'bar', title: 'Bars grow', css: '.ct-bar { animation: ct-grow }' },
+        { kind: 'donut', title: 'Donuts sweep', css: '.ct-slice-donut { animation: ct-draw }' }
       ],
       even, odd: !even,
       replay: () => this.setState({ n: this.state.n + 1 }),

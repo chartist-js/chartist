@@ -114,33 +114,33 @@
     },
     "Landing.dc.html": {
       "x": 0,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
-      "h": 5200,
-      "title": "Landing — light",
+      "h": 10400,
+      "title": "Landing — light · scroll story",
       "expand": "fill",
       "is_interactive": true
     },
     "LandingDark.dc.html": {
       "x": 0,
-      "y": 10000,
+      "y": 15860,
       "w": 1440,
-      "h": 5200,
+      "h": 10400,
       "title": "Landing — dark",
       "expand": "fill",
       "is_interactive": true
     },
     "MobileLanding.dc.html": {
       "x": 1520,
-      "y": 10000,
+      "y": 15860,
       "w": 390,
-      "h": 7400,
+      "h": 15000,
       "title": "Mobile · Landing — dark",
       "is_interactive": true
     },
     "GettingStarted.dc.html": {
       "x": 1520,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
       "h": 3300,
       "title": "Getting started — docs page template",
@@ -149,7 +149,7 @@
     },
     "MobileDocs.dc.html": {
       "x": 1990,
-      "y": 10000,
+      "y": 15860,
       "w": 390,
       "h": 5200,
       "title": "Mobile · Getting started — light",
@@ -157,7 +157,7 @@
     },
     "Examples.dc.html": {
       "x": 3040,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
       "h": 2400,
       "title": "Examples gallery",
@@ -166,7 +166,7 @@
     },
     "Playground.dc.html": {
       "x": 4560,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
       "h": 900,
       "title": "Playground — full screen, dark",
@@ -175,7 +175,7 @@
     },
     "MobilePlayground.dc.html": {
       "x": 2460,
-      "y": 10000,
+      "y": 15860,
       "w": 390,
       "h": 1200,
       "title": "Mobile · Playground — dark",
@@ -183,7 +183,7 @@
     },
     "Api.dc.html": {
       "x": 6080,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
       "h": 3300,
       "title": "API reference — dark",
@@ -192,7 +192,7 @@
     },
     "Plugins.dc.html": {
       "x": 7600,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
       "h": 2100,
       "title": "Plugins",
@@ -201,7 +201,7 @@
     },
     "NotFound.dc.html": {
       "x": 9120,
-      "y": 4420,
+      "y": 4880,
       "w": 1440,
       "h": 1240,
       "title": "404 — dark",
@@ -210,11 +210,33 @@
     },
     "MobileNotFound.dc.html": {
       "x": 2930,
-      "y": 10000,
+      "y": 15860,
       "w": 390,
       "h": 1700,
       "title": "Mobile · 404 — light",
       "is_interactive": true
+    },
+    "ComparisonTable.dc.html": {
+      "x": 4088,
+      "y": 3460,
+      "w": 1100,
+      "h": 860,
+      "title": "<ComparisonTable>"
+    },
+    "ScrollStage.dc.html": {
+      "x": 5268,
+      "y": 3460,
+      "w": 560,
+      "h": 560,
+      "title": "<ScrollStage active chapters>",
+      "is_interactive": true
+    },
+    "LandingStory.dc.html": {
+      "x": 10640,
+      "y": 4880,
+      "w": 1440,
+      "h": 2150,
+      "title": "LandingStory — scroll storyboard"
     }
   },
   "order": [
@@ -233,6 +255,7 @@
     "SiteHeader.dc.html",
     "SiteFooter.dc.html",
     "Landing.dc.html",
+    "LandingStory.dc.html",
     "LandingDark.dc.html",
     "MobileLanding.dc.html",
     "GettingStarted.dc.html",
@@ -243,7 +266,9 @@
     "Api.dc.html",
     "Plugins.dc.html",
     "NotFound.dc.html",
-    "MobileNotFound.dc.html"
+    "MobileNotFound.dc.html",
+    "ComparisonTable.dc.html",
+    "ScrollStage.dc.html"
   ],
   "notes": {
     "rowBrand": {
@@ -265,18 +290,18 @@
       "y": 3180,
       "text": "Components (Astro islands)",
       "kind": "title1",
-      "maxW": 4008
+      "maxW": 5828
     },
     "rowPages": {
       "x": 0,
-      "y": 4140,
+      "y": 4600,
       "text": "Docs website — desktop",
       "kind": "title1",
-      "maxW": 10560
+      "maxW": 12080
     },
     "rowAlt": {
       "x": 0,
-      "y": 9720,
+      "y": 15580,
       "text": "Dark mode & mobile",
       "kind": "title1",
       "maxW": 3320
