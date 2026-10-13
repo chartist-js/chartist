@@ -87,8 +87,8 @@
     'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next',
     'Segoe UI', 'Helvetica Neue', sans-serif;
   --font-code:
-    'Atkinson Hyperlegible Mono Variable', 'Atkinson Hyperlegible Mono',
-    ui-monospace, 'SF Mono', Menlo, monospace;
+    'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo,
+    monospace;
   --fs-xs: 0.75rem; /* 12 */
   --fs-sm: 0.875rem; /* 14 */
   --fs-md: 1rem; /* 16 */
