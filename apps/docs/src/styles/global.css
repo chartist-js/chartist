@@ -14,6 +14,7 @@
 @import './chart-theme.css' layer(components);
 @import './base.css' layer(components);
 @import './ui.css' layer(components);
+@import './code.css' layer(components);
 @import './components.css' layer(components);
 @import './prose.css' layer(components);
 @import './mascot.css' layer(components);

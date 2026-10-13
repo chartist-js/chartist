@@ -1,0 +1,48 @@
+/*
+ * Code blocks: Shiki output (css-variables theme, colored by the code
+ * tokens) and its copy button. Stays CSS: generated markup. After ui.css,
+ * so it overrides the shared icon-btn on the copy button.
+ */
+code,
+pre,
+kbd {
+  font-family: var(--font-code);
+}
+
+/* Code blocks (Shiki with the css-variables theme, colored by the code tokens) */
+:root {
+  --astro-code-foreground: var(--code-ink);
+  --astro-code-background: var(--code-bg);
+  --astro-code-token-keyword: var(--code-key);
+  --astro-code-token-string: var(--code-str);
+  --astro-code-token-string-expression: var(--code-str);
+  --astro-code-token-constant: var(--code-num);
+  --astro-code-token-function: var(--code-fn);
+  --astro-code-token-parameter: var(--code-ink);
+  --astro-code-token-punctuation: var(--code-muted);
+  --astro-code-token-comment: var(--code-muted);
+  --astro-code-token-link: var(--code-str);
+}
+
+pre.astro-code {
+  position: relative;
+  margin: 0;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border-radius: var(--r-lg);
+  font: 400 14px / 1.65 var(--font-code);
+  overflow: auto;
+}
+
+.copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--code-muted);
+}
+
+.copy-btn:hover,
+.copy-btn:focus-visible {
+  background: #ffffff14;
+  color: var(--code-ink);
+}
