@@ -11,3 +11,6 @@ export * from './scene';
 export * from './pipeline';
 export * from './render';
 export * from './chart';
+export * from './scales';
+export * from './layers';
+export * from './presets';

@@ -64,10 +64,11 @@ interface ScaleAxis {
 }
 ```
 
+- **Axes are opt-in** (_changed during implementation_): `cartesianAxes({ x, y, reverseData })` returns an object with `area(width, height, padding)` and `create(data, area)`. The pipeline calls these only when `config.axes` is set. The first draft imported the axis code into the pipeline itself, which grew `import { chart }` from 3.03 to 4.2 kB for charts without axes; with the factory it is 3.19 kB.
 - **Pipeline extension:**
   - `ResolvedConfig` gains optional `axes: { x?: AxisSetup; y?: AxisSetup }`, where an `AxisSetup` is a factory plus 1.x axis options (`offset`, `position`, `labelOffset`, `showGrid`, `showLabel`, `labelInterpolationFnc`, …).
   - When axes are set, `layout` computes the area with the `createChartRect` rules: offsets per side, the minimum size, and a 1 px minimum area.
-  - `layout` then creates the axes from the prepared data. The payload becomes `{ width, height, padding, area, axes }`, and layers receive `axes` in their context.
+  - After the `layout` listeners have run, the pipeline creates the axes for the final area, so a listener that reserves space (e.g. for a legend) shrinks the axes too. The `layout` payload stays `{ width, height, padding, area }`; layers receive `axes` and the axis-normalized data (`normalized`) in their context. _Changed during implementation: the first draft created the axes inside the payload, which made them ignore listener changes._
   - Charts without axes behave as before.
 - **Same math as 1.x:** `getHighLow`, `getBounds`, `projectLength` and `getMultiValue` are the existing pure helpers. The step, auto-scale and fixed-scale rules are ported line by line from the 1.x classes, so both produce the same numbers.
 - **1.x axis classes** (and custom 1.x subclasses), detected by `prototype.projectValue`, are wrapped by `legacyAxis(type)`:

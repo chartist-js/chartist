@@ -127,3 +127,36 @@ describe('render/dom', () => {
     }
   });
 });
+
+describe('render/dom HTML in foreignObject', () => {
+  const scene = node('svg').append(
+    node('foreignObject', { width: 10 }).append(
+      node('span', { xmlns: 'http://www.w3.org/2000/xmlns/' }, 'label').text(
+        'Hi'
+      )
+    )
+  );
+
+  it('creates foreignObject content in the XHTML namespace', () => {
+    const { svg } = domRenderer().render(scene, document.createElement('div'));
+    const span = svg.querySelector('span')!;
+    expect(svg.querySelector('foreignObject')!.namespaceURI).toBe(
+      'http://www.w3.org/2000/svg'
+    );
+    expect(span.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+    expect(span.getAttribute('xmlns')).toBe('http://www.w3.org/2000/xmlns/');
+    expect(span.textContent).toBe('Hi');
+  });
+
+  it('string output declares XHTML on the HTML root and parses', () => {
+    const markup = renderToString(scene);
+    expect(markup).toContain(
+      '<span xmlns="http://www.w3.org/1999/xhtml" class="label">Hi</span>'
+    );
+    const parsed = new DOMParser().parseFromString(markup, 'image/svg+xml');
+    expect(parsed.querySelector('parsererror')).toBeNull();
+    expect(parsed.getElementsByTagName('span')[0].namespaceURI).toBe(
+      'http://www.w3.org/1999/xhtml'
+    );
+  });
+});

@@ -51,7 +51,7 @@ None.
 
 ## Impact
 
-- `packages/chartist/src/`: new `axes-v2/` (factories), `layers/line.ts`, `presets/lineChart.ts`, `render/` (XHTML in `foreignObject`), and new exports (`lineChart`, `line`, `stepAxis`, `autoScaleAxis`, `fixedScaleAxis`, all `@experimental`). Nothing in `charts/`, `axes/` or `core/` changes.
+- `packages/chartist/src/`: new `axes-v2/` (factories), `layers/line.ts`, `presets/lineChart.ts`, `render/` (XHTML in `foreignObject`), and new exports (`lineChart`, `line`, `cartesianAxes`, `stepAxis`, `autoScaleAxis`, `fixedScaleAxis`, all `@experimental`). Nothing in `charts/`, `axes/` or `core/` changes.
 - `packages/chartist/test/`: jsdom parity tests, and the visual shim plus the `test:visual:v2` target.
 - `test/api`: export list and `*.v2.*` tests for the new exports.
 - `.size-limit.json`: an `import { lineChart }` budget from the measured size. It is compared with the 1.x `import { LineChart }` (8.56 kB) and recorded in the plan; the goal is to stay at or below it once the 1.x code is gone.

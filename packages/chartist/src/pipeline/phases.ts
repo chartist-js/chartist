@@ -1,5 +1,6 @@
 import type { ChartPadding } from '../core/types';
 import type { MeasureText } from '../render/measure';
+import type { CartesianAxes, ChartAxes } from '../scales/axis';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { assignKeys, mapNodes } from '../scene/tree';
 import type { PhaseEmitter } from './emitter';
@@ -9,6 +10,7 @@ import type {
   Coordinates,
   Layer,
   Layout,
+  NormalizedChartData,
   PreparedData,
   PreparedSeries,
   ResolvedConfig
@@ -28,8 +30,12 @@ export interface PipelineOptions {
   readonly layers: readonly Layer[];
   readonly coordinates?: Coordinates;
   readonly padding?: number | Partial<ChartPadding>;
+  /** Axes (see `cartesianAxes`); their offsets are reserved around the area. */
+  readonly axes?: CartesianAxes;
   readonly width?: number | string;
   readonly height?: number | string;
+  /** Fixed drawing coordinates; sets the layout size and the root `viewBox`. */
+  readonly viewBox?: { readonly width: number; readonly height: number };
   readonly className?: string;
 }
 
@@ -47,6 +53,8 @@ export interface PipelineState {
   readonly config: ResolvedConfig;
   readonly data: PreparedData;
   readonly layout: Layout;
+  readonly axes: ChartAxes;
+  readonly normalized?: NormalizedChartData;
   readonly scene: SceneNode;
 }
 
@@ -75,8 +83,10 @@ export function resolve(
     layers: options.layers,
     coordinates: options.coordinates ?? 'cartesian',
     padding: normalizePadding(options.padding),
+    axes: options.axes,
     width: options.width,
     height: options.height,
+    viewBox: options.viewBox,
     className: options.className
   };
   const resolved = check(
@@ -157,15 +167,18 @@ export function layout(
   height: number
 ): Layout {
   const { padding } = config;
-  const x1 = padding.left;
-  const y2 = padding.top;
-  const x2 = Math.max(x1, width - padding.right);
-  const y1 = Math.max(y2, height - padding.bottom);
-  const area: Area = { x1, y1, x2, y2, width: x2 - x1, height: y1 - y2 };
-  const result = check(
-    emitter.transform('layout', { width, height, padding, area }),
-    'layout'
-  );
+  let initial: Layout;
+  if (config.axes) {
+    initial = { ...config.axes.area(width, height, padding), padding };
+  } else {
+    const x1 = padding.left;
+    const y2 = padding.top;
+    const x2 = Math.max(x1, width - padding.right);
+    const y1 = Math.max(y2, height - padding.bottom);
+    const area: Area = { x1, y1, x2, y2, width: x2 - x1, height: y1 - y2 };
+    initial = { width, height, padding, area };
+  }
+  const result = check(emitter.transform('layout', initial), 'layout');
   validate(result);
   return result;
 }
@@ -176,16 +189,22 @@ export function compose(
   config: ResolvedConfig,
   data: PreparedData,
   area: Area,
-  measureText: MeasureText
+  measureText: MeasureText,
+  axes: ChartAxes = {},
+  normalized?: NormalizedChartData,
+  padding: ChartPadding = config.padding
 ): SceneNode[] {
   const composed: SceneNode[] = [];
   config.layers.forEach((layer, layerIndex) => {
     const nodes = layer.compose({
       data,
       area,
+      padding,
       layerIndex,
       coordinates: config.coordinates,
-      measureText
+      measureText,
+      axes,
+      normalized
     });
     for (const top of nodes) {
       const result = mapNodes(assignKeys(top, layerIndex), current =>
@@ -209,7 +228,13 @@ export function scene(
 ): SceneNode {
   const root = node(
     'svg',
-    { width: size.width, height: size.height },
+    {
+      width: size.width,
+      height: size.height,
+      viewBox: config.viewBox
+        ? `0 0 ${config.viewBox.width} ${config.viewBox.height}`
+        : undefined
+    },
     config.className
   );
   const built = children.length ? withFields(root, { children }) : root;
@@ -236,12 +261,17 @@ export function runPipeline(
     environment.width,
     environment.height
   );
+  const { axes = {}, normalized = undefined } =
+    config.axes?.create(data, laidOut.area) ?? {};
   const children = compose(
     emitter,
     config,
     data,
     laidOut.area,
-    environment.measureText
+    environment.measureText,
+    axes,
+    normalized,
+    laidOut.padding
   );
   const built = scene(
     emitter,
@@ -252,5 +282,5 @@ export function runPipeline(
       height: config.height ?? laidOut.height
     }
   );
-  return { config, data, layout: laidOut, scene: built };
+  return { config, data, layout: laidOut, axes, normalized, scene: built };
 }

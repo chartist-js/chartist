@@ -5,6 +5,7 @@ export type {
   Coordinates,
   Layer,
   LayerContext,
+  NormalizedChartData,
   Layout,
   PhaseEvents,
   PhaseListener,

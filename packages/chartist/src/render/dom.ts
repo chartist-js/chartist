@@ -19,23 +19,33 @@ function setAttribute(element: Element, name: string, value: string | number) {
   }
 }
 
+/**
+ * Creates the element tree. Content of a `foreignObject` is HTML and is
+ * created in the XHTML namespace.
+ */
 function build(
   document: Document,
   current: SceneNode,
-  elements: WeakMap<SceneNode, Element>
+  elements: WeakMap<SceneNode, Element>,
+  html = false
 ): Element {
-  const element = document.createElementNS(namespaces.svg, current.name);
+  const element = document.createElementNS(
+    html ? namespaces.xhtml : namespaces.svg,
+    current.name
+  );
   if (current.classes.length) {
     element.setAttribute('class', current.classes.join(' '));
   }
   for (const [name, value] of Object.entries(current.attrs)) {
     setAttribute(element, name, value);
   }
-  if (current.content !== undefined) {
+  // Like textContent = '': empty text creates no text node.
+  if (current.content) {
     element.appendChild(document.createTextNode(current.content));
   }
+  const childrenAreHtml = html || current.name === 'foreignObject';
   for (const child of current.children) {
-    element.appendChild(build(document, child, elements));
+    element.appendChild(build(document, child, elements, childrenAreHtml));
   }
   elements.set(current, element);
   return element;

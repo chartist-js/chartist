@@ -4,7 +4,9 @@ import { estimateText } from '../render/measure';
 import { findAll } from '../scene/tree';
 import { createPhaseEmitter } from './emitter';
 import { DEFAULT_PADDING, runPipeline, type PipelineOptions } from './phases';
-import type { PhaseEvents } from './types';
+import { cartesianAxes } from '../scales/cartesian';
+import { autoScaleAxis, stepAxis } from '../scales/factories';
+import type { LayerContext, PhaseEvents } from './types';
 
 const ENV = { width: 400, height: 200, measureText: estimateText };
 
@@ -200,5 +202,86 @@ describe('pipeline/phases', () => {
     expect(names).not.toContain('prepare');
     expect(second.config).toBe(first.config);
     expect(second.layout.width).toBe(200);
+  });
+
+  describe('with axes', () => {
+    const axes = cartesianAxes({
+      x: {
+        type: stepAxis(),
+        offset: 30,
+        position: 'end' as const,
+        ticks: ['a', 'b', 'c']
+      },
+      y: { type: autoScaleAxis(), offset: 40, position: 'start' as const }
+    });
+
+    function capture(setup?: Parameters<typeof run>[1]) {
+      let context: LayerContext | undefined;
+      const state = run(
+        {
+          axes,
+          layers: [
+            {
+              type: 'probe',
+              coordinates: ['cartesian'],
+              compose: ctx => {
+                context = ctx;
+                return [];
+              }
+            }
+          ]
+        },
+        setup
+      );
+      return { state, context: context! };
+    }
+
+    it('reserves the axis offsets around the area', () => {
+      const { state } = capture();
+      expect(state.layout.area).toEqual({
+        x1: 50,
+        x2: 385,
+        y1: 165,
+        y2: 15,
+        width: 335,
+        height: 150
+      });
+    });
+
+    it('creates the axes for the final area and passes them to layers', () => {
+      const { context } = capture(emitter =>
+        emitter.on('layout', (layout: PhaseEvents['layout']) => ({
+          ...layout,
+          area: { ...layout.area, y1: 125, height: 110 }
+        }))
+      );
+      expect(context.axes.x?.ticks).toEqual(['a', 'b', 'c']);
+      expect(context.axes.y?.length).toBe(110);
+      expect(context.normalized?.series).toEqual([
+        [
+          { x: undefined, y: 1 },
+          { x: undefined, y: 2 },
+          { x: undefined, y: 3 }
+        ]
+      ]);
+    });
+
+    it('charts without axes get no axes and no normalized data', () => {
+      let context: LayerContext | undefined;
+      run({
+        layers: [
+          {
+            type: 'probe',
+            coordinates: ['cartesian'],
+            compose: ctx => {
+              context = ctx;
+              return [];
+            }
+          }
+        ]
+      });
+      expect(context!.axes).toEqual({});
+      expect(context!.normalized).toBeUndefined();
+    });
   });
 });

@@ -1,5 +1,6 @@
-import type { ChartPadding } from '../core/types';
+import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
 import type { MeasureText } from '../render/measure';
+import type { CartesianAxes, ChartAxes } from '../scales/axis';
 import type { SceneNode } from '../scene/node';
 
 export type Coordinates = 'cartesian' | 'polar';
@@ -40,12 +41,23 @@ export interface Layout {
   readonly area: Area;
 }
 
+/** Data normalized for axes: multi values (`{ x, y }`), padded labels. */
+export interface NormalizedChartData {
+  readonly labels: readonly Label[];
+  readonly series: readonly NormalizedSeries[];
+}
+
 export interface LayerContext {
   readonly data: PreparedData;
   readonly area: Area;
+  readonly padding: ChartPadding;
   readonly layerIndex: number;
   readonly coordinates: Coordinates;
   readonly measureText: MeasureText;
+  /** Axes created after `layout`, when the chart has axes. */
+  readonly axes: ChartAxes;
+  /** The data as the axes see it, when the chart has axes. */
+  readonly normalized?: NormalizedChartData;
 }
 
 /**
@@ -67,8 +79,10 @@ export interface ResolvedConfig {
   readonly layers: readonly Layer[];
   readonly coordinates: Coordinates;
   readonly padding: ChartPadding;
+  readonly axes?: CartesianAxes;
   readonly width?: number | string;
   readonly height?: number | string;
+  readonly viewBox?: { readonly width: number; readonly height: number };
   readonly className?: string;
 }
 

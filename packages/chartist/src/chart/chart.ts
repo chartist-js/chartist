@@ -46,9 +46,14 @@ export function chart(
   let destroyed = false;
 
   function size() {
+    // As 1.x: a viewBox defines the drawing size.
     return {
-      width: fixedSize(current.width) ?? container.clientWidth,
-      height: fixedSize(current.height) ?? container.clientHeight
+      width:
+        current.viewBox?.width ||
+        (fixedSize(current.width) ?? container.clientWidth),
+      height:
+        current.viewBox?.height ||
+        (fixedSize(current.height) ?? container.clientHeight)
     };
   }
 
