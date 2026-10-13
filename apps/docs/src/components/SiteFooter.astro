@@ -3,34 +3,50 @@ import Logomark from './Logomark.astro';
 import { REPO, VERSIONS, href } from '../lib/site';
 
 const year = new Date().getFullYear();
+// The footer is dark in both themes: it uses the palette, not the theme tokens.
+const link = 'text-(color:--p-cream-200) no-underline hover:text-(color:--p-cream-200) hover:underline';
+const nav = 'flex flex-col gap-2 text-sm';
+const heading = 'mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] text-(color:--p-ink-300) uppercase';
 ---
 
-<footer class="site-footer" data-visual="footer">
+<footer class="bg-(--p-ink-900) pt-14 pb-8 text-(color:--p-cream-200)" data-visual="footer">
   <div class="wrap">
-    <div class="cols">
-      <div class="intro">
-        <a class="brand-lockup" href={href('/')}><Logomark /><span>Chartist</span></a>
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(200px,100%),1fr))] gap-8">
+      <div class="col-span-2 flex max-w-[420px] flex-col gap-3.5 max-md:col-auto">
+        <a class={`inline-flex items-center gap-2.5 font-slab text-[24px] leading-none font-bold tracking-[-0.01em] ${link}`} href={href('/')}
+          ><Logomark class="w-[34px]" /><span>Chartist</span></a
+        >
         <p>Simple responsive charts, drawn in SVG and dressed in CSS. Since 2014.</p>
-        <p class="sponsor-line">Supported by <a href="https://cube.dev">Cube</a></p>
+        <p class="flex items-center gap-2.5 text-sm text-(color:--p-ink-300)">Supported by <a class={`font-bold ${link}`} href="https://cube.dev">Cube</a></p>
       </div>
-      <nav aria-label="Docs">
-        <strong>Docs</strong>
-        <a href={href('docs/getting-started/')}>Getting started</a>
+      <nav class={nav} aria-label="Docs">
+        <strong class={heading}>Docs</strong>
+        <a class={link} href={href('docs/getting-started/')}>Getting started</a>
       </nav>
-      <nav aria-label="Community">
-        <strong>Community</strong>
-        <a href={REPO}>GitHub</a>
-        <a href={`${REPO}/discussions`}>Discussions</a>
-        <a href="https://stackoverflow.com/questions/tagged/chartist.js">Stack Overflow</a>
-        <a href={`${REPO}/blob/main/CONTRIBUTING.md`}>Contributing</a>
+      <nav class={nav} aria-label="Community">
+        <strong class={heading}>Community</strong>
+        <a class={link} href={REPO}>GitHub</a>
+        <a class={link} href={`${REPO}/discussions`}>Discussions</a>
+        <a class={link} href="https://stackoverflow.com/questions/tagged/chartist.js">Stack Overflow</a>
+        <a class={link} href={`${REPO}/blob/main/CONTRIBUTING.md`}>Contributing</a>
       </nav>
-      <nav aria-label="Versions">
-        <strong>Versions</strong>
-        {VERSIONS.map(v => (v.href ? <a href={v.href}>{v.label}</a> : <span>{v.label}</span>))}
-        <a href={`${REPO}/blob/main/CHANGELOG.md`}>Changelog</a>
+      <nav class={nav} aria-label="Versions">
+        <strong class={heading}>Versions</strong>
+        {
+          VERSIONS.map(v =>
+            v.href ? (
+              <a class={link} href={v.href}>
+                {v.label}
+              </a>
+            ) : (
+              <span>{v.label}</span>
+            )
+          )
+        }
+        <a class={link} href={`${REPO}/blob/main/CHANGELOG.md`}>Changelog</a>
       </nav>
     </div>
-    <div class="legal">
+    <div class="mt-12 flex flex-wrap justify-between gap-x-6 gap-y-2 border-t border-(color:--p-ink-700) pt-5 text-sm text-(color:--p-ink-300)">
       <span>MIT or WTFPL licensed · © 2014–{year} Gion Kunz and contributors</span>
       <span>Drawn in SVG, styled with CSS, no dependencies harmed.</span>
     </div>

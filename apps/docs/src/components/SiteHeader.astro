@@ -8,25 +8,31 @@ interface Props {
 }
 
 const { active } = Astro.props;
+const sideLink =
+  'flex min-h-9 items-center justify-between rounded-md px-3 py-1.5 text-ink no-underline hover:bg-bg-sunken hover:text-ink aria-[current=page]:bg-surface aria-[current=page]:font-bold aria-[current=page]:shadow-[inset_3px_0_0_var(--brand),0_0_0_1px_var(--line)]';
 ---
 
-<header class="site-header" data-visual="header">
-  <div class="wrap bar">
-    <a class="brand-lockup" href={href('/')}>
-      <Logomark />
+<header class="sticky top-0 z-5 border-b border-line bg-[color-mix(in_oklab,var(--bg)_92%,transparent)] backdrop-blur-[8px]" data-visual="header">
+  <div class="wrap flex min-h-17 flex-wrap items-center gap-x-5 gap-y-2 py-2">
+    <a class="inline-flex items-center gap-2.5 font-slab text-[24px] leading-none font-bold tracking-[-0.01em] text-ink no-underline hover:text-ink" href={href('/')}>
+      <Logomark class="w-[34px]" />
       <span>Chartist</span>
     </a>
-    <nav class="site-nav" aria-label="Main">
+    <nav class="flex flex-wrap gap-0.5 max-md:hidden" aria-label="Main">
       {
         NAV.map(link => (
-          <a href={href(link.path)} aria-current={link.id === active ? 'page' : undefined}>
+          <a
+            class="inline-flex min-h-11 items-center rounded-md px-3 py-2.5 text-sm font-semibold text-ink no-underline hover:bg-bg-sunken hover:text-ink aria-[current=page]:bg-ink aria-[current=page]:text-bg"
+            href={href(link.path)}
+            aria-current={link.id === active ? 'page' : undefined}
+          >
             {link.label}
           </a>
         ))
       }
     </nav>
-    <span class="spacer"></span>
-    <a class="icon-btn sm hide-sm" href={REPO} aria-label="Chartist on GitHub">
+    <span class="flex-1"></span>
+    <a class="icon-btn sm max-md:hidden" href={REPO} aria-label="Chartist on GitHub">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
         ><path
           d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"
@@ -34,26 +40,26 @@ const { active } = Astro.props;
       >
     </a>
     <button class="icon-btn sm theme-toggle" type="button" aria-label="Dark mode" aria-pressed="false">
-      <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+      <svg class="dark:hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
         ><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"></path></svg
       >
-      <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"
+      <svg class="hidden dark:block" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"
         ><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg
       >
     </button>
-    <button class="icon-btn menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav">
+    <button class="icon-btn menu-btn hidden max-md:inline-grid" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
     </button>
   </div>
-  <nav class="wrap mobile-nav" id="mobile-nav" aria-label="Mobile" hidden>
+  <nav class="wrap flex flex-col gap-1 border-t border-line pt-2 pb-4 [&[hidden]]:hidden" id="mobile-nav" aria-label="Mobile" hidden>
     {
       NAV.map(link => (
-        <a class="side-link" href={href(link.path)} aria-current={link.id === active ? 'page' : undefined}>
+        <a class={sideLink} href={href(link.path)} aria-current={link.id === active ? 'page' : undefined}>
           {link.label}
         </a>
       ))
     }
-    <a class="side-link" href={REPO}>GitHub</a>
+    <a class={sideLink} href={REPO}>GitHub</a>
   </nav>
 </header>
 
