@@ -130,6 +130,9 @@ importers:
         specifier: workspace:*
         version: link:../chartist
     devDependencies:
+      match-container:
+        specifier: 0.1.4
+        version: 0.1.4
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -3831,6 +3834,9 @@ packages:
   map-obj@4.3.0:
     resolution: {integrity: sha512-hdN1wVrZbb29eBGiGjJbeP8JbKjq1urkHJ/LIP/NY48MZ1QVXUsQBV1G1zvYFHn1XE06cwjBsOI2K3Ulnj1YXQ==}
     engines: {node: '>=8'}
+
+  match-container@0.1.4:
+    resolution: {integrity: sha512-XSkuBPKIrglycOr3dPxVgxQI/QLfHWwIOm3u83p2Y/mMxM7OzV66uGGIG5Bdbh+6+gpgIoQQhN3jGSuyQKvfZg==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -8991,6 +8997,8 @@ snapshots:
   map-obj@1.0.1: {}
 
   map-obj@4.3.0: {}
+
+  match-container@0.1.4: {}
 
   math-intrinsics@1.1.0: {}
 

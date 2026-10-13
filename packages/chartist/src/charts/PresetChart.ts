@@ -150,7 +150,10 @@ export abstract class PresetChart<
       this.container,
       this.data,
       this.chartOptions,
-      this.chartResponsiveOptions,
+      // The 1.x classes keep media queries only (no container()).
+      this.chartResponsiveOptions?.filter(
+        ([condition]) => typeof condition === 'string'
+      ),
       [
         listeners,
         syncFields,

@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "20.5 kB",
+    "limit": "21.15 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "20.6 kB",
+    "limit": "21.25 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -31,28 +31,28 @@
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
-    "limit": "12.85 kB",
+    "limit": "13.45 kB",
     "gzip": true
   },
   {
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "11.7 kB",
+    "limit": "12.3 kB",
     "gzip": true
   },
   {
     "name": "import { PieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ PieChart }",
-    "limit": "9.15 kB",
+    "limit": "9.7 kB",
     "gzip": true
   },
   {
     "name": "import { chart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ chart }",
-    "limit": "4.05 kB",
+    "limit": "4.2 kB",
     "gzip": true
   },
   {
@@ -66,35 +66,35 @@
     "name": "import { lineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ lineChart }",
-    "limit": "11.35 kB",
+    "limit": "11.95 kB",
     "gzip": true
   },
   {
     "name": "import { barChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ barChart }",
-    "limit": "10.2 kB",
+    "limit": "10.8 kB",
     "gzip": true
   },
   {
     "name": "import { pieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ pieChart }",
-    "limit": "7.65 kB",
+    "limit": "8.25 kB",
     "gzip": true
   },
   {
     "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, \u2026 } (composed chart)",
     "path": "dist/index.js",
     "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
-    "limit": "11.65 kB",
+    "limit": "11.85 kB",
     "gzip": true
   },
   {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "20.95 kB",
+    "limit": "21.6 kB",
     "gzip": true
   },
   {

@@ -8,7 +8,7 @@ Charts often sit in sidebars, cards and grid cells whose width has little to do 
 
 ```ts
 import 'match-container'; // polyfill, until browsers ship matchContainer()
-import { chart, container, lineChart } from 'chartist';
+import { chart, container, lineChart, responsive } from 'chartist';
 
 // Presets: container and media conditions mixed per entry, merged in order.
 lineChart('#chart', data, { showArea: true }, [
@@ -22,7 +22,9 @@ lineChart('#chart', data, { showArea: true }, [
 // chart(): the same entries with partial configs (composed charts).
 chart('#chart', {
   ...config,
-  responsive: [[container('(width < 400px)'), { labels: 'svg', padding: 5 }]]
+  responsive: responsive([
+    [container('(width < 400px)'), { labels: 'svg', padding: 5 }]
+  ])
 });
 ```
 
@@ -39,7 +41,7 @@ chart('#chart', {
 - **Evaluation with `Element.matchContainer()`**, native or polyfilled, from a stable element inside the chart container. The chart container or an ancestor must be a CSS container (`container-type`), exactly as for `@container` rules; Chartist doesn't set it.
 - **Re-evaluation:** on container resizes (`ResizeObserver`) and on `change` events where the query list provides them. The chart re-renders only when the set of matching entries changes, and emits `responsive` as it does for media queries.
 - **Without `matchContainer()`:** a one-time console warning names the polyfill, and container entries don't match (base and media options apply). `toScene()` and other DOM-less paths treat container entries as not matching, without a warning.
-- **`chart()` gets responsive overrides:** `responsive: [condition, Partial<ChartConfig>][]`, with media and container conditions. Matching overrides are shallow-merged over the config in order. Composed charts can now respond to size.
+- **`chart()` gets responsive overrides:** `responsive: responsive([[condition, Partial<ChartConfig>], …])`, with media and container conditions. Matching overrides are shallow-merged over the config in order. Composed charts can now respond to size.
 - **The 1.x classes are unchanged:** they keep media queries only (no new features) and ignore `container()` entries.
 - **Recorded in the plan:** the standard and its implementations become a monitored dependency, and the docs must mark container conditions as experimental and polyfill-dependent.
 

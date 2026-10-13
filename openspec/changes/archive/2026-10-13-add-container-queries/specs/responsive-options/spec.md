@@ -53,9 +53,9 @@ When `Element.matchContainer()` is not available, container entries SHALL NOT ma
 
 ### Requirement: Responsive overrides for chart()
 
-`chart()` SHALL accept `responsive`, a list of `[condition, overrides]` entries with media or container conditions, where `overrides` is a partial chart config. Matching overrides SHALL be shallow-merged over the config in order, and the chart SHALL re-render when the set of matching entries changes.
+`chart()` SHALL accept `responsive`, created with `responsive(entries)` from a list of `[condition, overrides]` entries with media or container conditions, where `overrides` is a partial chart config. Charts without it SHALL NOT bundle the condition watcher. Matching overrides SHALL be shallow-merged over the config in order, and the chart SHALL re-render when the set of matching entries changes.
 
 #### Scenario: Composed chart in a narrow container
 
-- **WHEN** a composed chart has `responsive: [[container('(width < 400px)'), { labels: 'svg', padding: 5 }]]` and its container is 300 px wide
+- **WHEN** a composed chart has `responsive: responsive([[container('(width < 400px)'), { labels: 'svg', padding: 5 }]])` and its container is 300 px wide
 - **THEN** it renders with SVG text labels and 5 px padding, and with the base config once the container is 600 px wide

@@ -6,7 +6,7 @@ import type {
   LineChartData,
   LineChartOptions
 } from '../charts/LineChart/LineChart.types';
-import type { Label, ResponsiveOptions } from '../core/types';
+import type { Label } from '../core/types';
 import type { ChartConfig, ChartHandle } from '../chart/types';
 import { line } from '../layers/line';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
@@ -24,7 +24,8 @@ import {
   type PresetAxisOptions,
   type PresetController,
   type PresetSpec,
-  type PresetState
+  type PresetState,
+  type PresetResponsiveOptions
 } from './preset';
 
 /**
@@ -133,7 +134,7 @@ export function createLineChart(
   target: string | Element,
   data: LineChartData,
   options: LineChartPresetOptions = {},
-  responsiveOptions?: ResponsiveOptions<LineChartPresetOptions>,
+  responsiveOptions?: PresetResponsiveOptions<LineChartPresetOptions>,
   plugins?: ChartConfig['plugins']
 ): LineChartController {
   return createPreset(
@@ -156,7 +157,7 @@ export function lineChart(
   target: string | Element,
   data: LineChartData,
   options: LineChartPresetOptions = {},
-  responsiveOptions?: ResponsiveOptions<LineChartPresetOptions>
+  responsiveOptions?: PresetResponsiveOptions<LineChartPresetOptions>
 ): ChartHandle {
   return createLineChart(target, data, options, responsiveOptions).handle;
 }

@@ -3,6 +3,7 @@ import { runPipeline, type PipelineState } from '../pipeline/phases';
 import { domRenderer } from '../render/dom';
 import { estimateText, type MeasureText } from '../render/measure';
 import type { RenderOutput } from '../render/types';
+import type { ResponsiveWatcher } from '../responsive/responsive';
 import { eventMethods, installPlugins, registerListeners } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
@@ -48,7 +49,10 @@ export function chart(
       ? rendererMeasure(text, { container, ...options })
       : estimateText(text, options);
   };
+  // The config as given, and with the matching responsive overrides.
   let current = config;
+  let effective = config;
+  let watcher: ResponsiveWatcher | undefined;
   let state: PipelineState | undefined;
   let output: RenderOutput | undefined;
   let observer: ResizeObserver | undefined;
@@ -68,8 +72,8 @@ export function chart(
    * placed in the container and its size read, so percentages and CSS apply.
    */
   function measureSvg() {
-    const width = String(current.width ?? '100%');
-    const height = String(current.height ?? '100%');
+    const width = String(effective.width ?? '100%');
+    const height = String(effective.height ?? '100%');
     const probe = container.ownerDocument.createElementNS(
       'http://www.w3.org/2000/svg',
       'svg'
@@ -88,13 +92,13 @@ export function chart(
     const svg = measureSvg();
     return {
       width:
-        current.viewBox?.width ||
+        effective.viewBox?.width ||
         svg.width ||
-        (fixedSize(current.width) ?? container.clientWidth),
+        (fixedSize(effective.width) ?? container.clientWidth),
       height:
-        current.viewBox?.height ||
+        effective.viewBox?.height ||
         svg.height ||
-        (fixedSize(current.height) ?? container.clientHeight)
+        (fixedSize(effective.height) ?? container.clientHeight)
     };
   }
 
@@ -103,15 +107,15 @@ export function chart(
     measuredText = false;
     state = runPipeline(
       emitter,
-      current,
+      effective,
       {
         width,
         height,
         measureText,
         labels: renderer.labels ?? 'html',
         rootSize: {
-          width: current.width ?? '100%',
-          height: current.height ?? '100%'
+          width: effective.width ?? '100%',
+          height: effective.height ?? '100%'
         }
       },
       state,
@@ -124,10 +128,43 @@ export function chart(
     emitter.notify('mount', { scene, output, elementOf });
   }
 
+  function resolveResponsive() {
+    const entries = current.responsive?.entries;
+    effective = watcher
+      ? watcher.matching.reduce(
+          (result, index) => ({ ...result, ...entries![index][1] }),
+          current
+        )
+      : current;
+  }
+
+  function onResponsiveChange() {
+    const previousConfig = effective;
+    resolveResponsive();
+    handle.emit('responsive', { previousConfig, currentConfig: effective });
+    render('resolve');
+  }
+
+  /** (Re)creates the watcher of the responsive entries. */
+  function watch() {
+    watcher?.stop();
+    watcher = current.responsive?.watch(container, () => {
+      if (!destroyed) {
+        onResponsiveChange();
+      }
+    });
+    resolveResponsive();
+  }
+
   const handle: ChartHandle = {
     container,
     update(changes) {
       current = { ...current, ...changes };
+      if ('responsive' in changes) {
+        watch();
+      } else {
+        resolveResponsive();
+      }
       render('resolve');
       return handle;
     },
@@ -135,6 +172,8 @@ export function chart(
       observer?.disconnect();
       observer = undefined;
       fonts?.removeEventListener('loadingdone', onFontsLoaded);
+      watcher?.stop();
+      watcher = undefined;
       return handle;
     },
     destroy() {
@@ -151,18 +190,23 @@ export function chart(
 
   installPlugins(handle, config.plugins, provided);
   registerListeners(handle, config.on);
+  watch();
   render('resolve');
 
   fonts?.addEventListener('loadingdone', onFontsLoaded);
 
   if (typeof ResizeObserver !== 'undefined') {
     observer = new ResizeObserver(() => {
+      if (destroyed || !state) {
+        return;
+      }
+      // A crossed container breakpoint renders the new size too.
+      if (watcher?.check()) {
+        onResponsiveChange();
+        return;
+      }
       const { width, height } = size();
-      if (
-        !destroyed &&
-        state &&
-        (width !== state.layout.width || height !== state.layout.height)
-      ) {
+      if (width !== state.layout.width || height !== state.layout.height) {
         render('layout');
       }
     });

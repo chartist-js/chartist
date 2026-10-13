@@ -8,14 +8,14 @@ import type {
   PieChartOptions
 } from '../charts/PieChart/PieChart.types';
 import type { ChartConfig, ChartHandle } from '../chart/types';
-import type { ResponsiveOptions } from '../core/types';
 import { pie } from '../layers/pie';
 import { pieDefaults } from './pieDefaults';
 import {
   createPreset,
   type PresetController,
   type PresetSpec,
-  type PresetState
+  type PresetState,
+  type PresetResponsiveOptions
 } from './preset';
 
 /** @experimental */
@@ -74,7 +74,7 @@ export function createPieChart(
   target: string | Element,
   data: PieChartData,
   options: PieChartOptions = {},
-  responsiveOptions?: ResponsiveOptions<PieChartOptions>,
+  responsiveOptions?: PresetResponsiveOptions<PieChartOptions>,
   plugins?: ChartConfig['plugins']
 ): PieChartController {
   return createPreset(
@@ -97,7 +97,7 @@ export function pieChart(
   target: string | Element,
   data: PieChartData,
   options: PieChartOptions = {},
-  responsiveOptions?: ResponsiveOptions<PieChartOptions>
+  responsiveOptions?: PresetResponsiveOptions<PieChartOptions>
 ): ChartHandle {
   return createPieChart(target, data, options, responsiveOptions).handle;
 }

@@ -5,7 +5,6 @@
  */
 import { chart } from '../chart/chart';
 import type { ChartConfig, ChartHandle, ChartPlugin } from '../chart/types';
-import type { ResponsiveOptions } from '../core/types';
 import type { Layer, LayerContext } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
 import type { AxisOptions } from '../core/types';
@@ -22,6 +21,11 @@ import {
   type LabelChartKind,
   type SvgLabelBuilder
 } from '../scales/svgLabels';
+import {
+  applyResponsive,
+  watchResponsive,
+  type ResponsiveEntry
+} from '../responsive/responsive';
 import { extend } from '../utils/extend';
 
 /**
@@ -174,21 +178,12 @@ function rootStyle(
   };
 }
 
-/** 1.x responsive options: extend with every matching media query, in order. */
-function withResponsive<T>(
-  base: T,
-  responsiveOptions: ResponsiveOptions<T> | undefined
-): T {
-  let current = extend({}, base) as T;
-  if (responsiveOptions && typeof window !== 'undefined' && window.matchMedia) {
-    for (const [query, options] of responsiveOptions) {
-      if (window.matchMedia(query).matches) {
-        current = extend({}, current, options) as T;
-      }
-    }
-  }
-  return current;
-}
+/**
+ * Responsive options of presets: the 1.x media query pairs, plus container
+ * conditions (`container()`). Matching entries extend the options in order.
+ * @experimental
+ */
+export type PresetResponsiveOptions<T> = readonly ResponsiveEntry<T>[];
 
 /** Internal: creates a preset chart; used by the preset functions and classes. */
 export function createPreset<
@@ -199,18 +194,29 @@ export function createPreset<
   target: string | Element,
   initialData: TData,
   options: TOptions = {} as TOptions,
-  responsiveOptions?: ResponsiveOptions<TOptions>,
+  responsiveOptions?: PresetResponsiveOptions<TOptions>,
   plugins: ChartConfig['plugins'] = (options as { plugins?: unknown })
     .plugins as ChartConfig['plugins']
 ): PresetController<TData, TOptions> {
   let data = initialData;
   let base = extend({}, spec.defaults, options) as TOptions;
-  let current = withResponsive(base, responsiveOptions);
-
-  const queries =
-    responsiveOptions && typeof window !== 'undefined' && window.matchMedia
-      ? responsiveOptions.map(([query]) => window.matchMedia(query))
-      : [];
+  // Created before the chart: on a resize that crosses a container
+  // breakpoint, its callback runs first and renders the new size once.
+  const watcher = watchResponsive(
+    responsiveOptions ?? [],
+    (typeof target === 'string' ? document.querySelector(target) : target) ??
+      undefined,
+    () => onResponsiveChange(),
+    true
+  );
+  const withResponsive = (baseOptions: TOptions) =>
+    applyResponsive(
+      extend({}, baseOptions) as TOptions,
+      responsiveOptions as PresetResponsiveOptions<Partial<TOptions>>,
+      watcher.matching,
+      (result, overrides) => extend({}, result, overrides) as TOptions
+    );
+  let current = withResponsive(base);
 
   const withState = (config: ChartConfig): ChartConfig => ({
     ...config,
@@ -229,7 +235,7 @@ export function createPreset<
     },
     setOptions(next, override = false) {
       base = extend({}, override ? base : spec.defaults, next) as TOptions;
-      current = withResponsive(base, responsiveOptions);
+      current = withResponsive(base);
     },
     render() {
       inner.update(withState(spec.config(data, current)));
@@ -263,13 +269,12 @@ export function createPreset<
     plugins: [rootStyle(() => current), ...(plugins ?? [])]
   });
 
-  const onMediaChange = () => {
+  function onResponsiveChange() {
     const previousOptions = current;
-    current = withResponsive(base, responsiveOptions);
+    current = withResponsive(base);
     inner.emit('responsive', { previousOptions, currentOptions: current });
     controller.render();
-  };
-  queries.forEach(query => query.addEventListener('change', onMediaChange));
+  }
 
   const handle: ChartHandle = {
     container: inner.container,
@@ -278,9 +283,7 @@ export function createPreset<
       return handle;
     },
     detach() {
-      queries.forEach(query =>
-        query.removeEventListener('change', onMediaChange)
-      );
+      watcher.stop();
       inner.detach();
       return handle;
     },

@@ -6,6 +6,7 @@ import type {
   PhaseName
 } from '../pipeline/types';
 import type { Renderer } from '../render/types';
+import type { ResponsiveSet } from '../responsive/responsive';
 
 /**
  * A v2 plugin. `install` runs once before the first render and can
@@ -31,7 +32,20 @@ export interface ChartConfig extends PipelineOptions {
   readonly on?: PhaseListeners;
   /** Renders the scene; the DOM renderer by default. */
   readonly renderer?: Renderer;
+  /**
+   * Responsive overrides, created with `responsive([...])`: entries with a
+   * media query string or a `container()` condition and a partial config.
+   */
+  readonly responsive?: ResponsiveSet<ChartOverrides>;
 }
+
+/**
+ * The part of a chart config that responsive entries can override.
+ * @experimental
+ */
+export type ChartOverrides = Partial<
+  Omit<ChartConfig, 'responsive' | 'plugins' | 'on' | 'renderer'>
+>;
 
 /** @experimental */
 export interface ChartHandle {

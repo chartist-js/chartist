@@ -8,7 +8,7 @@ import type {
 } from '../charts/BarChart/BarChart.types';
 import type { ChartConfig, ChartHandle } from '../chart/types';
 import { getHighLow } from '../core/data/highLow';
-import type { Label, Options, ResponsiveOptions } from '../core/types';
+import type { Label, Options } from '../core/types';
 import { bar, getSerialSums } from '../layers/bar';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
 import type { LabelMode } from '../render/measure';
@@ -25,7 +25,8 @@ import {
   type PresetAxisOptions,
   type PresetController,
   type PresetSpec,
-  type PresetState
+  type PresetState,
+  type PresetResponsiveOptions
 } from './preset';
 
 /**
@@ -178,7 +179,7 @@ export function createBarChart(
   target: string | Element,
   data: BarChartData,
   options: BarChartPresetOptions = {},
-  responsiveOptions?: ResponsiveOptions<BarChartPresetOptions>,
+  responsiveOptions?: PresetResponsiveOptions<BarChartPresetOptions>,
   plugins?: ChartConfig['plugins']
 ): BarChartController {
   return createPreset(
@@ -201,7 +202,7 @@ export function barChart(
   target: string | Element,
   data: BarChartData,
   options: BarChartPresetOptions = {},
-  responsiveOptions?: ResponsiveOptions<BarChartPresetOptions>
+  responsiveOptions?: PresetResponsiveOptions<BarChartPresetOptions>
 ): ChartHandle {
   return createBarChart(target, data, options, responsiveOptions).handle;
 }

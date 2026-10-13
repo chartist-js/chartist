@@ -264,6 +264,13 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'composed/container-queries',
+    title: 'Container queries (experimental)',
+    v2: true,
+    // The page sizes its two containers itself.
+    size: 'viewport'
+  }),
+  example({
     id: 'composed/svg-labels',
     title: 'SVG text labels',
     v2: true

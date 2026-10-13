@@ -70,3 +70,10 @@ A re-read compares the matching set with the previous one, so a resize that does
 - **Polyfill timing:** with the polyfill, `matches` may lag the resize. The `change` listener catches the late update, at the cost of one extra render in that case.
 - **`container-type` is required** and easy to forget; without it nothing matches. The docs show it in every container example. Chartist doesn't detect it, because a container may be any ancestor.
 - **Size:** the shared module adds weight to `chart()` only if responsive code is reachable from it. If measured `chart()` growth exceeds ~0.3 kB, `chart()`'s support moves into an opt-in helper.
+
+## Implementation notes
+
+- **`chart()`'s support is opt-in** (the D2/size rule triggered): with the watcher reachable from `chart()`, `import { chart }` grew 0.68 kB. `responsive([...])` now creates a `ResponsiveSet` that carries `watch()`, like `cartesianAxes()` carries the axes, and `chart()` only merges the matching overrides (+0.17 kB). Presets always bundle the watcher (+0.58 kB over their former `matchMedia` loop): the probe, the warning and the condition errors.
+- **One resize render:** presets create their watcher (with its own `ResizeObserver`) before `chart()`, so on a crossing resize it renders the new size first and the chart's observer finds the layout current. `chart()` checks its watcher inside its own resize callback.
+- **Verified with the real polyfill** (`match-container@0.1.4`, dev dependency of `@chartist/examples`): the visual example renders one config in a 300 px and a 660 px container; an ad hoc Chromium run swapped the widths and back, and each chart followed both crossings with a single svg.
+- **The 1.x classes** drop `container()` entries before passing the responsive options to the preset (no probe, no warning).

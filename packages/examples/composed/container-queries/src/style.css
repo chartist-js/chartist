@@ -1,0 +1,19 @@
+#chart {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* The queried container: container() conditions need a container-type. */
+.cell {
+  container-type: inline-size;
+  height: 260px;
+}
+
+.narrow {
+  width: 300px;
+}
+
+.wide {
+  width: 660px;
+}
