@@ -172,7 +172,7 @@ export const GALLERY = [
         [100, 200, 400, 600]
       ]
     },
-    options: { stackBars: true }
+    options: { stackBars: true, axisY: { offset: 38 } }
   },
   {
     title: 'Bars + line',

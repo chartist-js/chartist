@@ -21,10 +21,10 @@ export function mountBoardChart(element: HTMLElement): ChartHandle {
       low: 0,
       high: 6000000,
       fullWidth: true,
-      chartPadding: { top: 8, right: 18, bottom: 0, left: 0 },
+      chartPadding: { top: 12, right: 14, bottom: 0, left: 0 },
       axisX: { offset: 18 },
       axisY: {
-        offset: 30,
+        offset: 26,
         scaleMinSpace: 16,
         onlyInteger: true,
         labelInterpolationFnc: millions

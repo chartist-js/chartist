@@ -341,8 +341,7 @@
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  padding: 12px;
-  min-height: 120px;
+  padding: 8px;
   display: grid;
   place-items: center;
 }

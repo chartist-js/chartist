@@ -39,6 +39,9 @@ interface ComposedData {
   series: [number[], number[]];
 }
 
+/** Small cards: tighter than the library's 15px padding. */
+const COMPACT_PADDING = { top: 10, right: 16, bottom: 0, left: 0 };
+
 /** Bars on a left Y axis and a line on a right Y axis, each to its own scale. */
 function composedChart(
   target: Element,
@@ -54,10 +57,17 @@ function composedChart(
       ]
     },
     axes: cartesianAxes([
-      { id: 'x', side: 'bottom', type: stepAxis(), ticks: data.labels },
-      { id: 'left', side: 'left', type: autoScaleAxis(), low: 0 },
-      { id: 'right', side: 'right', type: autoScaleAxis(), low: 0 }
+      {
+        id: 'x',
+        side: 'bottom',
+        type: stepAxis(),
+        ticks: data.labels,
+        offset: 24
+      },
+      { id: 'left', side: 'left', type: autoScaleAxis(), low: 0, offset: 30 },
+      { id: 'right', side: 'right', type: autoScaleAxis(), low: 0, offset: 30 }
     ]),
+    padding: { ...COMPACT_PADDING, right: 0 },
     layers: [
       axisGrid({ axes: ['x', 'left'] }),
       bar({ series: ['bars'], x: 'x', y: 'left' }),
@@ -91,10 +101,24 @@ export function renderChart(
     data: unknown,
     options: Record<string, unknown>
   ) => ChartHandle;
-  return preset(element, spec.data, {
-    ...spec.options,
-    plugins: [drawIn]
-  });
+  const options = spec.options ?? {};
+  return preset(
+    element,
+    spec.data,
+    spec.type === 'pie' || spec.type === 'composed'
+      ? { ...options, plugins: [drawIn] }
+      : {
+          ...options,
+          // Narrower Y labels than the library's 40px; the padding leaves
+          // room on the right for the last X label.
+          chartPadding: {
+            ...COMPACT_PADDING,
+            ...(options.chartPadding as object)
+          },
+          axisY: { offset: 30, ...(options.axisY as object) },
+          plugins: [drawIn]
+        }
+  );
 }
 
 function mount(element: HTMLElement) {

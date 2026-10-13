@@ -94,12 +94,13 @@ const POSES = {
 
 const p = POSES[pose];
 const [vx, vy, vw, vh] = p.viewBox.split(' ').map(Number);
-// The board's chart area in the 480 x 420 drawing: x 44, y 110, w 200, h 136.
+// The board's chart area in the 480 x 420 drawing: the board's inside
+// (x 27-261, y 95-261) less a 7-unit inset: x 34, y 102, w 220, h 152.
 const board = {
-  left: `${((44 - vx) / vw) * 100}%`,
-  top: `${((110 - vy) / vh) * 100}%`,
-  width: `${(200 / vw) * 100}%`,
-  height: `${(136 / vh) * 100}%`
+  left: `${((34 - vx) / vw) * 100}%`,
+  top: `${((102 - vy) / vh) * 100}%`,
+  width: `${(220 / vw) * 100}%`,
+  height: `${(152 / vh) * 100}%`
 };
 const hasBoardChart = (pose === 'hero' || pose === 'celebrate') && Astro.slots.has('default');
 const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile';
