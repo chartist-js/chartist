@@ -8,7 +8,7 @@ interface Props {
 const { n, id } = Astro.props;
 ---
 
-<div class="step" id={id}>
-  <span class="step-n" aria-hidden="true">{n}</span>
-  <div class="step-body"><slot /></div>
+<div class="grid grid-cols-[44px_minmax(0,1fr)] gap-4" id={id}>
+  <span class="grid size-11 place-items-center rounded-full border-2 border-ink bg-accent font-slab text-xl leading-none font-bold text-on-accent" aria-hidden="true">{n}</span>
+  <div class="flex min-w-0 flex-col gap-3 [&_h2]:mt-1"><slot /></div>
 </div>

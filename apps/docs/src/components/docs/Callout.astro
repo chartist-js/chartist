@@ -10,9 +10,10 @@ const icon = {
   info: { stroke: 'var(--info)', d: 'M12 11v6M12 7.5v.5' },
   warn: { stroke: 'var(--warn)', d: 'M12 7v6M12 16.5v.5' }
 }[kind];
+const background = { tip: 'bg-ok-bg', info: 'bg-info-bg', warn: 'bg-warn-bg' }[kind];
 ---
 
-<aside class:list={['callout', kind]}>
+<aside class:list={['grid grid-cols-[28px_minmax(0,1fr)] gap-3 rounded-md px-4 py-3.5 text-md text-ink', background]}>
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={icon.stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
     ><circle cx="12" cy="12" r="9"></circle><path d={icon.d}></path></svg
   >

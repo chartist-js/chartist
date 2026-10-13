@@ -8,35 +8,35 @@ import Chart from '../Chart.astro';
     <p>Lines draw, bars grow, donuts sweep, and a SMIL line morphs for fun. All of it calms down for people who prefer reduced motion.</p>
   </div>
   <div class="grid-auto-sm" data-animations>
-    <div class="card anim reveal">
+    <div class="card reveal flex flex-col gap-2 p-4">
       <Chart type="line" label="A line chart drawing in" aspect="16 / 10" data={{ labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'], series: [[1, 5, 2, 5, 4, 3, 6], [2, 3, 4, 8, 1, 2, 3]] }} options={{ fullWidth: true, showPoint: false }} />
       <strong>Lines draw in</strong>
-      <code>.ct-line {'{'} animation: ct-draw {'}'}</code>
+      <code class="w-fit text-xs">.ct-line {'{'} animation: ct-draw {'}'}</code>
     </div>
-    <div class="card anim reveal">
+    <div class="card reveal flex flex-col gap-2 p-4">
       <Chart type="bar" label="A bar chart growing in" aspect="16 / 10" data={{ labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7], [3, 2, 9, 5]] }} />
       <strong>Bars grow</strong>
-      <code>.ct-bar {'{'} animation: ct-draw {'}'}</code>
+      <code class="w-fit text-xs">.ct-bar {'{'} animation: ct-draw {'}'}</code>
     </div>
-    <div class="card anim reveal">
+    <div class="card reveal flex flex-col gap-2 p-4">
       <Chart type="pie" label="A donut chart sweeping in" aspect="16 / 10" data={{ series: [20, 10, 30, 40] }} options={{ donut: true, donutWidth: 24, showLabel: false }} />
       <strong>Donuts sweep</strong>
-      <code>.ct-slice-donut {'{'} animation: ct-draw {'}'}</code>
+      <code class="w-fit text-xs">.ct-slice-donut {'{'} animation: ct-draw {'}'}</code>
     </div>
-    <div class="card anim reveal">
-      <svg class="smil motion-only" viewBox="0 0 400 250" role="img" aria-label="A line morphing between two shapes with SMIL">
-        <path class="ct-grid" d="M40,30 H390 M40,80 H390 M40,130 H390 M40,180 H390"></path>
+    <div class="card reveal flex flex-col gap-2 p-4">
+      <svg class="smil motion-only aspect-[16/10] h-auto w-full" viewBox="0 0 400 250" role="img" aria-label="A line morphing between two shapes with SMIL">
+        <path class="ct-grid [stroke-dasharray:var(--ct-grid-dasharray)]" d="M40,30 H390 M40,80 H390 M40,130 H390 M40,180 H390"></path>
         <g class="ct-series-a"><path class="ct-line" d="M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30"><animate attributeName="d" dur="3.2s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .2 1; .4 0 .2 1" values="M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30; M40,90 C100,40 140,170 200,150 C260,130 300,190 390,120; M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30"></animate></path></g>
       </svg>
-      <svg class="smil static-only" viewBox="0 0 400 250" role="img" aria-label="A static line chart (motion reduced)">
-        <path class="ct-grid" d="M40,30 H390 M40,80 H390 M40,130 H390 M40,180 H390"></path>
+      <svg class="smil static-only aspect-[16/10] h-auto w-full" viewBox="0 0 400 250" role="img" aria-label="A static line chart (motion reduced)">
+        <path class="ct-grid [stroke-dasharray:var(--ct-grid-dasharray)]" d="M40,30 H390 M40,80 H390 M40,130 H390 M40,180 H390"></path>
         <g class="ct-series-a"><path class="ct-line" d="M40,170 C100,160 140,60 200,80 C260,100 300,40 390,30"></path></g>
       </svg>
       <strong>SMIL morph</strong>
-      <code>&lt;animate attributeName="d"&gt;</code>
+      <code class="w-fit text-xs">&lt;animate attributeName="d"&gt;</code>
     </div>
   </div>
-  <div class="replay"><button class="btn" type="button" data-replay>Replay animations</button></div>
+  <div class="mt-6"><button class="btn" type="button" data-replay>Replay animations</button></div>
 </section>
 
 <script>
@@ -49,26 +49,3 @@ import Chart from '../Chart.astro';
   });
 </script>
 
-<style>
-  .anim {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .anim code {
-    width: fit-content;
-    font-size: 12px;
-  }
-  .smil {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 10;
-  }
-  .smil .ct-grid {
-    stroke-dasharray: var(--ct-grid-dasharray);
-  }
-  .replay {
-    margin-top: 24px;
-  }
-</style>
