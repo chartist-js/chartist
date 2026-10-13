@@ -1,0 +1,79 @@
+/**
+ * Reads the export names of a Chartist build: runtime names from the ESM,
+ * CJS and UMD files, and every exported name (values and types) from the
+ * declaration files. Shared by exports.api.ts and update.ts.
+ */
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import vm from 'node:vm';
+import ts from 'typescript';
+
+// path.resolve, not new URL(): under jsdom, URL is jsdom's and node:url rejects it.
+const exportsDir = path.dirname(fileURLToPath(import.meta.url));
+const pkgDir = path.resolve(exportsDir, '../../..');
+
+export const BUILDS = {
+  local: path.join(pkgDir, 'dist'),
+  v1: path.join(pkgDir, 'node_modules/chartist-v1/dist')
+} as const;
+
+export type BuildName = keyof typeof BUILDS;
+
+export interface ExportList {
+  runtime: string[];
+  types: string[];
+}
+
+export const LIST_FILE = path.join(exportsDir, 'chartist.json');
+
+const sorted = (names: Iterable<string>) =>
+  [...names].filter(name => name !== 'default').sort();
+
+export async function esmNames(build: BuildName) {
+  const file = pathToFileURL(path.join(BUILDS[build], 'index.js')).href;
+  return sorted(Object.keys(await import(/* @vite-ignore */ file)));
+}
+
+export function cjsNames(build: BuildName) {
+  const require = createRequire(import.meta.url);
+  return sorted(Object.keys(require(path.join(BUILDS[build], 'index.cjs'))));
+}
+
+/** Runs the UMD file like a classic <script>: no module system, a global. */
+export function umdNames(build: BuildName) {
+  const context: { Chartist?: object } = {};
+  vm.createContext(context);
+  vm.runInContext(
+    readFileSync(path.join(BUILDS[build], 'index.umd.js'), 'utf8'),
+    context
+  );
+  if (!context.Chartist) {
+    throw new Error(`${build}: the UMD build defines no global Chartist`);
+  }
+  return sorted(Object.keys(context.Chartist));
+}
+
+export function typeNames(build: BuildName) {
+  const file = path.join(BUILDS[build], 'index.d.ts');
+  const program = ts.createProgram([file], { skipLibCheck: true });
+  const checker = program.getTypeChecker();
+  const module = checker.getSymbolAtLocation(program.getSourceFile(file)!);
+  if (!module) {
+    throw new Error(`${build}: ${file} is not a module`);
+  }
+  return sorted(checker.getExportsOfModule(module).map(symbol => symbol.name));
+}
+
+export function readList(): ExportList {
+  return JSON.parse(readFileSync(LIST_FILE, 'utf8'));
+}
+
+/** Names listed but not exported, and exported but not listed. */
+export function diffNames(listed: string[], exported: string[]) {
+  return {
+    listedButNotExported: listed.filter(name => !exported.includes(name)),
+    exportedButNotListed: exported.filter(name => !listed.includes(name))
+  };
+}

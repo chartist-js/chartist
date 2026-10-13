@@ -118,7 +118,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 3. **Library core:** modernize the moved 1.x source in `packages/chartist`, set up the build pipeline (ESM/CJS/UMD), tests and visual regression.
 4. **Docs site:** Astro app, implement the Claude Design output, playground and example gallery.
 5. **Release:** v2 beta, migration guide, launch. Before the first push that can trigger the old workflows on `main`, rework GitHub Actions for the monorepo (deferred to this phase, decided 2026-10-13):
-   - Until then, the gate is local: `pnpm nx run-many -t typecheck check build test test:smoke test:size test:visual test:visual:v1 test:e2e lint` and `pnpm nx format:check --all` must pass before merging into `next`.
+   - Until then, the gate is local: `pnpm nx run-many -t typecheck check build test test:smoke test:size test:visual test:visual:v1 test:api test:api:v1 test:e2e lint` and `pnpm nx format:check --all` must pass before merging into `next`.
    - The 1.x workflows (`ci.yml`, `checks.yml`, `release.yml`, `website.yml`) still call root scripts that no longer exist. They only trigger on `main` or on pull requests, so pushing `next` runs just `commit.yml` (commitlint, root `.commitlintrc.json`). Don't open pull requests against `next` until CI is reworked.
    - `website.yml` deploys chartist.dev from `main`. It must be replaced by the Astro docs deployment before `main` is fast-forwarded to `next`.
    - Visual regression in CI runs on Linux Chromium (the baseline's reference platform).
@@ -138,7 +138,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
    - The harness serves each example's own page with Vite, adding only a test font and a fixed container size, so a docs redesign doesn't break the screenshots.
    - The baseline (67 images) is recorded from published 1.5.0, and the local build matches it. Storybook and storyshots are removed.
    - chartist.dev's CodeSandbox embeds point at the sandboxes on `main`, which keeps them until the v2 release.
-4. Core implementation steps (see `define-core-architecture` design, "Migration Plan"). First: `add-public-api-tests`, a suite that tests the built package only through its entry points (export lists, type tests, behavior), passing against the 1.5 code before the core is touched.
+4. Core implementation steps (see `define-core-architecture` design, "Migration Plan"). First: `add-public-api-tests`, a suite that tests the built package only through its entry points (export lists, type tests, behavior). Done (archived 2026-10-13, spec `public-api`): `test:api` runs it against the local build, `test:api:v1` against published 1.5.0. Next: the scene graph, renderers and pipeline skeleton.
 5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
    - Spike done 2026-10-12 (`add-playground-repl`, archived, spec `example-playground`; `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
    - Decided with the author (2026-10-12):

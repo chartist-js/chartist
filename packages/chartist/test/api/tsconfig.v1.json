@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "chartist": ["../../node_modules/chartist-v1/dist/index.d.ts"]
+    }
+  }
+}
