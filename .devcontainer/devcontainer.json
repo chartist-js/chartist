@@ -1,0 +1,44 @@
+// Dev container for Chartist v2: Node 22, pnpm, Playwright browsers, and
+// Claude Code with the host's ~/.claude, so sessions and memory carry over.
+// Open it from the folder where you normally work (on Windows: the WSL
+// folder), so the host paths below are the ones Claude Code already knows.
+{
+  "name": "Chartist v2",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1": {}
+  },
+  // Claude Code files sessions under the absolute project path, so the
+  // repository keeps its host path instead of /workspaces/<name>.
+  "workspaceMount": "source=${localWorkspaceFolder},target=${localWorkspaceFolder},type=bind",
+  "workspaceFolder": "${localWorkspaceFolder}",
+  "mounts": [
+    // Claude Code: settings, sessions, memory. The container user (node,
+    // uid 1000) matches the usual first Linux user.
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind",
+    "source=${localEnv:HOME}/.claude.json,target=/home/node/.claude.json,type=bind",
+    // pnpm's store, at the host path node_modules was linked against
+    // (pnpm's default on Linux; adjust if yours lives elsewhere).
+    "source=${localEnv:HOME}/.local/share/pnpm,target=${localEnv:HOME}/.local/share/pnpm,type=bind"
+  ],
+  "remoteUser": "node",
+  "containerEnv": {
+    "npm_config_store_dir": "${localEnv:HOME}/.local/share/pnpm/store"
+  },
+  // The image ships pnpm, which follows packageManager in package.json, so
+  // corepack isn't needed (enabling it fails: /usr/local/bin isn't writable).
+  "postCreateCommand": "pnpm install --frozen-lockfile && pnpm --filter chartist exec playwright install --with-deps chromium firefox webkit",
+  // 4322: docs dev server, 4321: playground e2e, 4329: docs e2e server.
+  "forwardPorts": [4322, 4321, 4329],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "astro-build.astro-vscode",
+        "oxc.oxc-vscode",
+        "nrwl.angular-console"
+      ]
+    }
+  }
+}
