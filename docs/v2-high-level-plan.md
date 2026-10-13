@@ -159,7 +159,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
    - Step 6, composed charts and new features (functional API only):
      - `add-composed-charts` (archived 2026-10-13, spec `chart-composition`: multiple axes with ids and sides, series selection, grid and label layers, centered lines): `cartesianAxes([...])` takes a list of axes, several per side stacking outward; `line()` and `bar()` select series and bind to axes by id, and each axis covers only its bound series; `axisGrid()` and `axisLabels()` draw composed charts' axes with the 1.x classes. Presets use an internal axes core without the binding. New examples `composed/bar-and-line` and `composed/two-y-axes` (baselines from v2; the 1.5 run skips them).
      - `add-svg-text-labels` (archived 2026-10-13, spec `chart-rendering`: label mode per renderer, wrapped and aligned SVG text labels). Decided with the author: the label mode comes from the rendering path, not an abstract scene node. The DOM renderer draws HTML labels (1.x markup), `toScene()` SVG text; a `labels: 'html' | 'svg'` option on the chart config, `toScene()`, `lineChart`/`barChart` and `axisLabels()` overrides it. SVG labels wrap into `tspan`s and get their alignment from the layout; charts that measured text lay out again when web fonts load. The 1.x classes always draw HTML labels. Also fixed: the HTML labels of composed charts lacked the flexbox alignment.
-   - Next: `add-container-queries`.
+   - Next: `add-container-queries` (proposed). Decided with the author (2026-10-13): container conditions are marked per responsive entry (`[container('(width < 400px)'), options]`), mixed with 1.x media query strings and merged in order, so users can reuse the conditions from their CSS. They are evaluated with `Element.matchContainer()` (native or the `match-container` polyfill) instead of a Chartist query parser; without the API, Chartist warns once and container entries don't match. `chart()` gets `responsive` overrides too. See "Standards to monitor".
 5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
    - Spike done 2026-10-12 (`add-playground-repl`, archived, spec `example-playground`; `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
    - Decided with the author (2026-10-12):
@@ -169,6 +169,16 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
      - The editor (CodeMirror, 155 kB gzipped) is lazy-loaded on the first interaction with the code.
    - Open: real iOS Safari, a manual check of the StackBlitz export.
 6. Docs site (Astro), implementing `docs/visual-design`. It runs in parallel once examples exist.
+   - Must (decided 2026-10-13): container conditions (`container()` in responsive entries) are documented as **experimental** and as working **only with the `match-container` polyfill** (until browsers ship `Element.matchContainer()`). Every container example shows the polyfill import and the `container-type` CSS on the chart container.
+
+## Standards to monitor
+
+Platform work Chartist builds on. Check these before each release and update the docs and the polyfill advice when they move.
+
+- **`Element.matchContainer()`** ([csswg-drafts#6205](https://github.com/w3c/csswg-drafts/issues/6205)), the `@container` counterpart of `matchMedia()`. Used by container conditions in responsive options (`add-container-queries`).
+  - Status 2026-10-13: the CSSWG resolved to add it (2021); a spec PR (#13551, September 2026) adds the method without a `change` event; a Chromium prototype is behind a flag. Open: how changes are observed (event, new observer, or `ResizeObserver`), and whether the element itself counts as a container.
+  - Until it ships, users load the [`match-container`](https://github.com/teetotum/match-container) polyfill (MIT, young: no tagged releases yet). Chartist depends only on `matchContainer(query).matches` and an optional `change` event, so it works with both.
+  - Watch for: the final name and element semantics, a `change` event or observer, browser releases (then the docs drop "polyfill required" for those browsers and the feature may lose its experimental label).
 
 ## Open questions
 
