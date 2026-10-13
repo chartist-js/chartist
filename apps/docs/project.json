@@ -76,6 +76,17 @@
       },
       "dependsOn": ["^build"],
       "cache": false
+    },
+    "visual": {
+      "command": "node e2e/visual.mjs",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["build"],
+      "cache": false,
+      "metadata": {
+        "description": "Screenshot comparison with a baseline: --update takes it, --only filters shots, --baseline points elsewhere"
+      }
     }
   }
 }

@@ -1,9 +1,22 @@
-@import 'chartist/styles.css';
-@import 'chartist/themes/accessible.css';
+/*
+ * Cascade: Tailwind's theme, then the site's own CSS in one layer (in its
+ * original order), then Tailwind utilities, which win over all of it. No
+ * preflight: base.css sets the element defaults. See apps/docs/STYLING.md.
+ */
+@layer theme, components, utilities;
+
+@import 'tailwindcss/theme.css' layer(theme);
+@import './theme.css';
 @import './tokens.css';
-@import './chart-theme.css';
-@import './components.css';
-@import './prose.css';
-@import './mascot.css';
-@import './landing.css';
-@import './live.css';
+@import 'chartist/styles.css' layer(components);
+@import 'chartist/themes/accessible.css' layer(components);
+@import './chart-theme.css' layer(components);
+@import './base.css' layer(components);
+@import './ui.css' layer(components);
+@import './components.css' layer(components);
+@import './prose.css' layer(components);
+@import './mascot.css' layer(components);
+@import './motion.css' layer(components);
+@import './landing.css' layer(components);
+@import './live.css' layer(components);
+@import 'tailwindcss/utilities.css' layer(utilities);

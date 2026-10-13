@@ -1,0 +1,270 @@
+/*
+ * Shared component classes used across the site: layout (wrap, section,
+ * section-head, grid-auto), type (eyebrow, display, lead, muted, hl),
+ * controls (btn, icon-btn, chip, pill-link), tag, card and dot-grid. Modifiers chain:
+ * `card flat`, `tag brand`, `btn primary sm`. Utilities override these.
+ */
+.wrap {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+.eyebrow {
+  font-family: var(--font-code);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: var(--fs-5xl);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+.lead {
+  font-size: var(--fs-xl);
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
+.muted {
+  color: var(--ink-2);
+}
+
+.hl {
+  background: linear-gradient(
+    transparent 58%,
+    var(--accent) 58%,
+    var(--accent) 92%,
+    transparent 92%
+  );
+  padding-inline: 2px;
+}
+
+:root[data-theme='dark'] .hl {
+  color: var(--ink);
+  background: linear-gradient(
+    transparent 58%,
+    color-mix(in oklab, var(--accent) 45%, transparent) 58%,
+    color-mix(in oklab, var(--accent) 45%, transparent) 92%,
+    transparent 92%
+  );
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 20px;
+  border-radius: var(--r-pill);
+  font: 700 var(--fs-md) / 1 var(--font-body);
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid var(--ink);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-2);
+  transition:
+    transform var(--dur-1) var(--ease-out),
+    box-shadow var(--dur-1) var(--ease-out),
+    background var(--dur-1);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 0 var(--ink);
+}
+
+.btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+
+.btn.primary,
+a.btn.primary,
+a.btn.primary:hover {
+  background: var(--brand);
+  color: var(--on-brand);
+  border-color: var(--ink);
+}
+
+:root[data-theme='dark'] .btn {
+  border-color: #000;
+}
+
+.btn.sm {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: var(--fs-sm);
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-md);
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: var(--bg-sunken);
+  color: var(--ink);
+}
+
+.icon-btn.sm {
+  width: 36px;
+  height: 36px;
+}
+
+/* The live preview's dot grid, for the big showcase cards. */
+.card.dot-grid,
+.dot-grid {
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+:root[data-theme='dark'] .card {
+  border-color: var(--line-strong);
+}
+
+/* Landing (minimal hero until add-landing-page) */
+.section {
+  padding-block: clamp(56px, 8vw, 104px);
+}
+
+/* chips / tags */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 14px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink);
+  font: 600 var(--fs-sm)/1 var(--font-body);
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--r-pill);
+  font: 700 12.5px/1.5 var(--font-code);
+  letter-spacing: 0.02em;
+  background: var(--bg-sunken);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+}
+
+.tag.brand {
+  background: var(--brand);
+  color: var(--on-brand);
+  border-color: transparent;
+}
+
+.tag.accent {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: transparent;
+}
+
+.tag.ok {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border-color: transparent;
+}
+
+/* cards */
+.card {
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+}
+
+[data-theme='dark'] .card {
+  border-color: var(--line-strong);
+}
+
+.card.flat {
+  box-shadow: none;
+  border: 1px solid var(--line);
+}
+
+.card.link {
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--dur-2) var(--ease-out),
+    box-shadow var(--dur-2) var(--ease-out);
+  display: block;
+}
+
+.card.link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink);
+}
+
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 24px;
+}
+
+.grid-auto-sm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 16px;
+}
+
+/* Section heads (design: site shell) */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px 40px;
+  margin-bottom: 32px;
+}
+
+.section-head h2 {
+  font-size: var(--fs-4xl);
+}
+
+.section-head p {
+  max-width: 520px;
+  color: var(--ink-2);
+  font-size: var(--fs-lg);
+}
+
+.pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 700 var(--fs-sm)/1 var(--font-body);
+  color: var(--link);
+  text-decoration: none;
+}

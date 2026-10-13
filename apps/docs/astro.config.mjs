@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
+import tailwindcss from '@tailwindcss/vite';
 import { playgroundLib } from './integrations/playground-lib.mjs';
 
 // Hosting is decided in the release phase: the site URL and base path come
@@ -16,6 +17,7 @@ export default defineConfig({
   // port forwarding (IPv4) can't reach. Still private to the machine.
   server: { port: 4322, host: '127.0.0.1' },
   vite: {
+    plugins: [tailwindcss()],
     // The live example's sandboxed preview (origin null) loads the
     // Chartist module from the dev server.
     server: { cors: { origin: '*' } },

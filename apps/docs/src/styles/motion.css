@@ -1,0 +1,85 @@
+/*
+ * Scroll-driven reveals, keyframes and their reduced-motion alternatives.
+ * Stays CSS: timelines and keyframes don't map to utilities.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+    .ct-draw-view .ct-line,
+    .ct-draw-view .ct-slice-donut {
+      animation: ct-draw linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+    .ct-draw-view .ct-bar {
+      animation: ct-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 40%;
+    }
+    .ct-draw-view .ct-dot,
+    .ct-draw-view .ct-area {
+      animation: ct-fade linear both;
+      animation-timeline: view();
+      animation-range: cover 30% cover 45%;
+    }
+    .scroll-progress {
+      animation: grow-x linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .ct-draw-view .ct-line,
+  .ct-draw-view .ct-slice-donut,
+  .ct-draw-view .ct-bar,
+  .ct-draw-view .ct-dot,
+  .ct-draw-view .ct-area {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .motion-only {
+    display: none !important;
+  }
+  .static-only {
+    display: block !important;
+  }
+}

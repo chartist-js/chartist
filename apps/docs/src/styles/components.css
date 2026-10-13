@@ -2,286 +2,11 @@
  * Site components, ported from the design (docs/visual-design/project/chartist.css).
  * Class names follow the design.
  */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  color: var(--ink);
-  background: var(--bg);
-  font-family: var(--font-body);
-  font-size: var(--fs-md);
-  line-height: var(--lh-body);
-  -webkit-font-smoothing: antialiased;
-  scroll-padding-top: 88px;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: var(--bg);
-  color: var(--ink);
-}
-
-/* Paper texture on page grounds only: cards, code and charts stay clean. */
-body,
-.sunken {
-  background-image: var(--paper);
-  background-size: 158px 144px;
-}
-
-.sunken {
-  background-color: var(--bg-sunken);
-}
-
-@media print {
-  body,
-  .sunken {
-    background-image: none;
-  }
-}
-
-main {
-  flex: 1 0 auto;
-}
-
-a {
-  color: var(--link);
-  text-underline-offset: 3px;
-  text-decoration-thickness: 1.5px;
-}
-
-a:hover {
-  color: var(--brand-hover);
-}
-
-:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-h1,
-h2,
-h3,
-h4 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  line-height: var(--lh-snug);
-  margin: 0;
-  text-wrap: balance;
-}
-
-p {
-  margin: 0;
-  text-wrap: pretty;
-}
-
+/* Legacy rules: migrated components stop using them; deleted in integration. */
 code,
 pre,
 kbd {
   font-family: var(--font-code);
-}
-
-:not(pre) > code {
-  font-size: 0.88em;
-  background: var(--bg-sunken);
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  padding: 1px 5px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.skip-link {
-  position: absolute;
-  left: 16px;
-  top: -100px;
-  z-index: 10;
-  padding: 10px 16px;
-  border-radius: var(--r-md);
-  background: var(--ink);
-  color: var(--bg) !important;
-  font-weight: 700;
-}
-
-.skip-link:focus {
-  top: 12px;
-}
-
-.wrap {
-  width: 100%;
-  max-width: 1240px;
-  margin-inline: auto;
-  padding-inline: clamp(16px, 4vw, 40px);
-}
-
-.eyebrow {
-  font-family: var(--font-code);
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-2);
-}
-
-.display {
-  font-family: var(--font-display);
-  font-size: var(--fs-5xl);
-  line-height: var(--lh-tight);
-  letter-spacing: -0.015em;
-  font-weight: 700;
-}
-
-.lead {
-  font-size: var(--fs-xl);
-  line-height: 1.45;
-  color: var(--ink-2);
-}
-
-.muted {
-  color: var(--ink-2);
-}
-
-.hl {
-  background: linear-gradient(
-    transparent 58%,
-    var(--accent) 58%,
-    var(--accent) 92%,
-    transparent 92%
-  );
-  padding-inline: 2px;
-}
-
-:root[data-theme='dark'] .hl {
-  color: var(--ink);
-  background: linear-gradient(
-    transparent 58%,
-    color-mix(in oklab, var(--accent) 45%, transparent) 58%,
-    color-mix(in oklab, var(--accent) 45%, transparent) 92%,
-    transparent 92%
-  );
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 44px;
-  padding: 10px 20px;
-  border-radius: var(--r-pill);
-  font: 700 var(--fs-md) / 1 var(--font-body);
-  text-decoration: none;
-  cursor: pointer;
-  border: 2px solid var(--ink);
-  background: var(--surface);
-  color: var(--ink);
-  box-shadow: var(--shadow-2);
-  transition:
-    transform var(--dur-1) var(--ease-out),
-    box-shadow var(--dur-1) var(--ease-out),
-    background var(--dur-1);
-}
-
-a.btn,
-a.btn:hover {
-  color: var(--ink);
-}
-
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 0 var(--ink);
-}
-
-.btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 1px 0 var(--ink);
-}
-
-.btn.primary,
-a.btn.primary,
-a.btn.primary:hover {
-  background: var(--brand);
-  color: var(--on-brand);
-  border-color: var(--ink);
-}
-
-:root[data-theme='dark'] .btn {
-  border-color: #000;
-}
-
-.btn.sm {
-  min-height: 36px;
-  padding: 6px 14px;
-  font-size: var(--fs-sm);
-}
-
-.icon-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--r-md);
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-}
-
-.icon-btn:hover {
-  background: var(--bg-sunken);
-  color: var(--ink);
-}
-
-.icon-btn.sm {
-  width: 36px;
-  height: 36px;
-}
-
-/* Tags */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: var(--r-pill);
-  font: 700 12.5px / 1.5 var(--font-code);
-  letter-spacing: 0.02em;
-  background: var(--bg-sunken);
-  color: var(--ink-2);
-  border: 1px solid var(--line);
-}
-
-/* Cards */
-.card {
-  background: var(--surface);
-  border: 2px solid var(--ink);
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-3);
-}
-
-/* The live preview's dot grid, for the big showcase cards. */
-.card.dot-grid,
-.dot-grid {
-  background-image: radial-gradient(var(--line) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-:root[data-theme='dark'] .card {
-  border-color: var(--line-strong);
 }
 
 /* Header */
@@ -417,10 +142,6 @@ pre.astro-code {
   overflow: auto;
 }
 
-pre.astro-code {
-  padding: 16px 52px 16px 20px;
-}
-
 /* Fragments in narrow cards wrap instead of scrolling sideways. */
 .feature pre.astro-code,
 .plugin-code pre.astro-code {
@@ -434,10 +155,6 @@ pre.astro-code {
 
 .feature .copy-btn {
   display: none;
-}
-
-pre.astro-code code {
-  font: inherit;
 }
 
 .code-head {
@@ -734,11 +451,6 @@ pre.astro-code code {
   color: var(--p-ink-300);
 }
 
-/* Landing (minimal hero until add-landing-page) */
-.section {
-  padding-block: clamp(56px, 8vw, 104px);
-}
-
 .hero {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(460px, 100%), 1fr));
@@ -828,16 +540,5 @@ pre.astro-code code {
 
   .site-footer .intro {
     grid-column: auto;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 1ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 1ms !important;
-    scroll-behavior: auto !important;
   }
 }

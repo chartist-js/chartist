@@ -1,0 +1,86 @@
+/*
+ * The Tailwind theme, pointing at the design tokens in tokens.css. Tokens
+ * stay the single source: `inline` makes utilities use var(--token)
+ * directly, so light and dark switch at runtime. Tailwind's defaults are
+ * cleared, so only brand values exist. Names differ from the token names
+ * where Tailwind's namespaces would otherwise shadow a token.
+ */
+@theme inline {
+  --color-*: initial;
+  --color-bg: var(--bg);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-inverse: var(--ink-inverse);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-on-brand: var(--on-brand);
+  --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-link: var(--link);
+  --color-focus: var(--focus);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-warn: var(--warn);
+  --color-warn-bg: var(--warn-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-code-bg: var(--code-bg);
+  --color-code-ink: var(--code-ink);
+  --color-code-muted: var(--code-muted);
+  --color-black: #000;
+  --color-white: #fff;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-*: initial;
+  --font-slab: var(--font-display);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-code);
+
+  --text-*: initial;
+  --text-xs: var(--fs-xs);
+  --text-sm: var(--fs-sm);
+  --text-md: var(--fs-md);
+  --text-lg: var(--fs-lg);
+  --text-xl: var(--fs-xl);
+  --text-2xl: var(--fs-2xl);
+  --text-3xl: var(--fs-3xl);
+  --text-4xl: var(--fs-4xl);
+  --text-5xl: var(--fs-5xl);
+  --leading-tight: var(--lh-tight);
+  --leading-snug: var(--lh-snug);
+  --leading-body: var(--lh-body);
+
+  --radius-*: initial;
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-pill: var(--r-pill);
+
+  --shadow-*: initial;
+  --shadow-line: var(--shadow-1);
+  --shadow-print-sm: var(--shadow-2);
+  --shadow-print: var(--shadow-3);
+  --shadow-float: var(--shadow-soft);
+
+  --ease-*: initial;
+  --ease-gentle: var(--ease-out);
+  --ease-bounce: var(--ease-spring);
+
+  /* The breakpoints the design uses (720, 860, 1100 px). */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 45rem;
+  --breakpoint-md: 53.75rem;
+  --breakpoint-lg: 68.75rem;
+}
+
+/* Dark mode follows data-theme on <html>, not the OS preference. */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));

@@ -18,9 +18,11 @@ Alternative: the `@astrojs/tailwind` integration. It targets Tailwind 3 and is d
 
 `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));`. Most components need no `dark:` classes at all, because the semantic tokens already switch; `dark:` is for the few places that change more than a color (the card border, for example).
 
-### D3: Component classes only for repeated patterns
+### D3: Shared classes in the components layer
 
-Utilities in the markup by default. A pattern used in three or more places becomes an `@utility` (single-class, composable with variants): `card` (and `card-flat`), `tag`, `eyebrow`, `btn`, `dot-grid`. They are written with theme values, never raw colors. Astro components remain the main unit of reuse; a long class list inside one component is fine.
+Utilities in the markup by default. Patterns used across the site stay plain classes in `ui.css`, in the `components` layer below utilities: `wrap`, `section`, `section-head`, `grid-auto`, `eyebrow`, `display`, `lead`, `muted`, `hl`, `btn`, `icon-btn`, `chip`, `pill-link`, `tag`, `card`, `dot-grid`, with their chained modifiers (`card flat`, `tag brand`, `btn primary sm`).
+
+Changed during the foundation (2026-10-13): the proposal said `@utility`. Utilities sort among themselves by Tailwind's own order, so a modifier like `tag-brand` can't reliably override `tag`; classes in a lower layer keep today's names and modifiers, need no markup changes, and every utility still overrides them. All existing site CSS moved into that layer in its original order, so the switch changed no pixel.
 
 ### D4: What stays CSS
 

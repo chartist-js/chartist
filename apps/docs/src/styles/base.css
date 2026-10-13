@@ -1,0 +1,129 @@
+/*
+ * Element defaults and generated markup (Shiki code blocks). Stays CSS:
+ * see apps/docs/STYLING.md.
+ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color: var(--ink);
+  background: var(--bg);
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  scroll-padding-top: 88px;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Paper texture on page grounds only: cards, code and charts stay clean. */
+body,
+.sunken {
+  background-image: var(--paper);
+  background-size: 158px 144px;
+}
+
+.sunken {
+  background-color: var(--bg-sunken);
+}
+
+@media print {
+  body,
+  .sunken {
+    background-image: none;
+  }
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+a:hover {
+  color: var(--brand-hover);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: var(--lh-snug);
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+:not(pre) > code {
+  font-size: 0.88em;
+  background: var(--bg-sunken);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -100px;
+  z-index: 10;
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: var(--bg) !important;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  top: 12px;
+}
+
+a.btn,
+a.btn:hover {
+  color: var(--ink);
+}
+
+pre.astro-code {
+  padding: 16px 52px 16px 20px;
+}
+
+pre.astro-code code {
+  font: inherit;
+}

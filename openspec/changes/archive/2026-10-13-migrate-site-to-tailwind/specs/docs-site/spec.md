@@ -18,7 +18,7 @@ The site SHALL implement the design tokens and components of `docs/visual-design
 
 ### Requirement: Site screenshot comparison
 
-The site SHALL have a target that captures the landing sections, Getting started and the 404 page at a desktop and a phone width, in light and dark mode, with motion settled, and compares them with a baseline taken on demand, reporting each differing screenshot with before, after and diff images.
+The site SHALL have a target that captures the landing sections, the first live example in edit mode, Getting started and the 404 page at a desktop and a phone width, in light and dark mode, with motion settled, and compares them with a baseline taken on demand, reporting each differing screenshot with before, after and diff images.
 
 #### Scenario: A style change shows up
 

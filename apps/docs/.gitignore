@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # type-check output
 *.tsbuildinfo
+
+# screenshot comparison (docs:visual)
+.visual/

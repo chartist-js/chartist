@@ -16,11 +16,15 @@
     "@axe-core/playwright": "4.11.0",
     "@chartist/playground": "workspace:*",
     "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
     "apexcharts": "7.6.1",
     "chart.js": "4.5.1",
     "esbuild": "0.28.2",
     "highcharts": "13.1.1",
     "match-container": "0.1.4",
+    "pixelmatch": "7.2.0",
+    "pngjs": "7.0.0",
+    "tailwindcss": "4.3.3",
     "typescript": "6.0.3"
   }
 }

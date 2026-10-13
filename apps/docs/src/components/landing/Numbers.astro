@@ -3,95 +3,52 @@ import { facts, formatCount, formatDate, yearsSince2014 } from '../../data/facts
 
 const avatars = import.meta.glob<{ default: ImageMetadata }>('../../assets/used-by/*.png', { eager: true });
 const avatarOf = (file: string) => avatars[`../../assets/used-by/${file}`]?.default;
+const stats = [
+  { value: formatCount(facts.npm.monthlyDownloads), label: 'npm downloads in the last month' },
+  { value: formatCount(facts.github.dependents), label: 'public repositories depend on it' },
+  { value: formatCount(facts.github.stars), label: 'stars on GitHub' },
+  { value: `${yearsSince2014()} years`, label: 'of charts in production, since 2014' }
+];
 ---
 
-<section class="wrap reveal numbers" aria-labelledby="numbers-title">
-  <div class="card dot-grid">
-    <div class="numbers-head">
-      <h2 id="numbers-title">Quietly running a lot of the web's charts</h2>
+<section class="wrap reveal" aria-labelledby="numbers-title" data-visual="numbers">
+  <div class="card dot-grid flex flex-col gap-7 p-[clamp(24px,4vw,40px)]">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+      <h2 id="numbers-title" class="text-2xl">Quietly running a lot of the web's charts</h2>
       <span class="muted">From npm and GitHub · {formatDate(facts.generatedAt)}</span>
     </div>
-    <div class="numbers-grid">
-      <div class="stat"><strong>{formatCount(facts.npm.monthlyDownloads)}</strong><span>npm downloads in the last month</span></div>
-      <div class="stat"><strong>{formatCount(facts.github.dependents)}</strong><span>public repositories depend on it</span></div>
-      <div class="stat"><strong>{formatCount(facts.github.stars)}</strong><span>stars on GitHub</span></div>
-      <div class="stat"><strong>{yearsSince2014()} years</strong><span>of charts in production, since 2014</span></div>
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(200px,100%),1fr))] gap-6">
+      {
+        stats.map(stat => (
+          <div class="flex flex-col gap-1.5 border-t-3 border-ink pt-3.5">
+            <strong class="font-slab text-[clamp(2.25rem,4.5vw,3.5rem)] leading-none font-bold tracking-[-0.02em] text-ink">{stat.value}</strong>
+            <span class="text-md text-ink-2">{stat.label}</span>
+          </div>
+        ))
+      }
     </div>
     {
       facts.usedBy.length > 0 && (
-        <div class="used-by">
+        <div class="used-by flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-line pt-5">
           <span class="eyebrow">Used by</span>
-          <ul>
+          <ul class="m-0 flex list-none flex-wrap gap-x-5 gap-y-2 p-0">
             {facts.usedBy.map(entry => {
               const avatar = avatarOf(entry.avatar);
               return (
                 <li>
-                  <a href={entry.evidence} title={`${entry.repo} depends on Chartist`}>
-                    {avatar && <img src={avatar.src} alt="" width="28" height="28" loading="lazy" />}
-                    <span>{entry.owner}</span>
+                  <a href={entry.evidence} title={`${entry.repo} depends on Chartist`} class="group inline-flex min-h-11 items-center gap-2 font-bold text-ink no-underline">
+                    {avatar && <img src={avatar.src} alt="" width="28" height="28" loading="lazy" class="rounded-[6px]" />}
+                    <span class="group-hover:underline">{entry.owner}</span>
                   </a>
                 </li>
               );
             })}
           </ul>
-          <a class="pill-link" href="https://github.com/chartist-js/chartist/network/dependents">All dependents on GitHub →</a>
+          <a class="pill-link" href="https://github.com/chartist-js/chartist/network/dependents">
+            All dependents on GitHub →
+          </a>
         </div>
       )
     }
   </div>
 </section>
-
-<style>
-  .numbers .card {
-    padding: clamp(24px, 4vw, 40px);
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-  }
-  .numbers-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px 24px;
-  }
-  .numbers-head h2 {
-    font-size: var(--fs-2xl);
-  }
-  .numbers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
-    gap: 24px;
-  }
-  .used-by {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 12px 20px;
-    border-top: 1px solid var(--line);
-    padding-top: 20px;
-  }
-  .used-by ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 20px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .used-by li a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    min-height: 44px;
-    color: var(--ink);
-    font-weight: 700;
-    text-decoration: none;
-  }
-  .used-by li a:hover span {
-    text-decoration: underline;
-  }
-  .used-by img {
-    border-radius: 6px;
-  }
-</style>
