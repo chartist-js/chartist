@@ -273,6 +273,13 @@ a.btn.primary:hover {
   box-shadow: var(--shadow-3);
 }
 
+/* The live preview's dot grid, for the big showcase cards. */
+.card.dot-grid,
+.dot-grid {
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
 :root[data-theme='dark'] .card {
   border-color: var(--line-strong);
 }
