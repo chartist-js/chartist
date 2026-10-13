@@ -29,6 +29,11 @@ export interface CompileOptions {
   imports?: Record<string, string>;
   /** Identifies this render in messages from the preview. */
   runId?: string;
+  /**
+   * CSS for the preview document, before the example's own styles (which
+   * can override it). The docs site passes its theme here.
+   */
+  previewStyles?: string;
 }
 
 export interface CompileResult {

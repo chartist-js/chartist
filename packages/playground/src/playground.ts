@@ -37,6 +37,8 @@ export interface Playground {
   /** Changes one file and schedules a render, as an edit would. */
   updateFile(file: string, content: string): void;
   render(): Promise<void>;
+  /** Replaces the preview's extra CSS (e.g. on a theme change) and renders. */
+  setPreviewStyles(css: string): Promise<void>;
   destroy(): void;
 }
 
@@ -141,10 +143,12 @@ export async function createPlayground(
     renderTabs();
   };
 
+  let previewStyles = options.previewStyles;
+
   const render = async () => {
     clearTimeout(timer);
     const runId = `run-${++run}`;
-    const result = await compile(files, { ...options, runId });
+    const result = await compile(files, { ...options, previewStyles, runId });
     // A newer render started while this one compiled.
     if (runId !== `run-${run}`) {
       return;
@@ -217,6 +221,10 @@ export async function createPlayground(
       schedule();
     },
     render,
+    setPreviewStyles(css) {
+      previewStyles = css;
+      return render();
+    },
     destroy() {
       clearTimeout(timer);
       editor?.destroy();

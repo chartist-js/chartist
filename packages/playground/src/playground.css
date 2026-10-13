@@ -93,3 +93,35 @@
 .playground-log-warn {
   background: #fffbe6;
 }
+
+/* Syntax colors (CodeMirror classHighlighter); pages can override them. */
+.playground .tok-keyword,
+.playground .tok-operator {
+  color: #7a3e9d;
+}
+
+.playground .tok-string,
+.playground .tok-string2 {
+  color: #1a7f37;
+}
+
+.playground .tok-number,
+.playground .tok-bool,
+.playground .tok-atom {
+  color: #0550ae;
+}
+
+.playground .tok-variableName.tok-definition,
+.playground .tok-propertyName.tok-definition {
+  color: #953800;
+}
+
+.playground .tok-comment {
+  color: #6e7781;
+  font-style: italic;
+}
+
+.playground .tok-typeName,
+.playground .tok-className {
+  color: #0a3069;
+}

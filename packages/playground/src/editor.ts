@@ -6,10 +6,8 @@ import {
   historyKeymap,
   indentWithTab
 } from '@codemirror/commands';
-import {
-  defaultHighlightStyle,
-  syntaxHighlighting
-} from '@codemirror/language';
+import { syntaxHighlighting } from '@codemirror/language';
+import { classHighlighter } from '@lezer/highlight';
 import { javascript } from '@codemirror/lang-javascript';
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
@@ -43,7 +41,9 @@ export function createEditor(
           lineNumbers(),
           history(),
           keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
-          syntaxHighlighting(defaultHighlightStyle),
+          // Token classes (tok-keyword, tok-string, …), colored by CSS,
+          // so a page can theme the editor (see playground.css).
+          syntaxHighlighting(classHighlighter),
           language(file),
           EditorView.updateListener.of(update => {
             if (update.docChanged) {

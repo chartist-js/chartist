@@ -122,12 +122,16 @@ export async function compile(
           )}\n</style>`
     )
     .join('\n');
+  const preview = options.previewStyles
+    ? `<style data-preview>\n${options.previewStyles.replace(/<\/style/gi, '<\\/style')}\n</style>`
+    : '';
   const head = [
     bootstrapScript(options.runId ?? ''),
     `<script type="importmap">${JSON.stringify(importMap).replace(
       /</g,
       '\\u003c'
     )}</script>`,
+    preview,
     styles
   ].join('\n');
 
