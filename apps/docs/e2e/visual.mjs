@@ -8,6 +8,7 @@
 //   --baseline <dir>  baseline elsewhere (worktrees use the lead's)
 //   --only <a,b>      only shots whose name contains one of these
 //   --port <n>        server port (default 4339)
+//   --dist <dir>      serve another build instead of dist/apps/docs
 /* eslint-disable no-console -- a CLI script that reports on stdout */
 import { spawn } from 'node:child_process';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
@@ -25,7 +26,8 @@ const { values: args } = parseArgs({
     update: { type: 'boolean', default: false },
     baseline: { type: 'string' },
     only: { type: 'string' },
-    port: { type: 'string', default: '4339' }
+    port: { type: 'string', default: '4339' },
+    dist: { type: 'string' }
   }
 });
 const out = resolve(here, '../.visual');
@@ -46,7 +48,11 @@ const PAGES = [
 ];
 
 const server = spawn(process.execPath, [join(here, 'serve.mjs')], {
-  env: { ...process.env, PORT: args.port },
+  env: {
+    ...process.env,
+    PORT: args.port,
+    ...(args.dist && { DOCS_DIST: resolve(args.dist) })
+  },
   stdio: ['ignore', 'pipe', 'inherit']
 });
 await new Promise(ready => server.stdout.once('data', ready));
@@ -103,12 +109,29 @@ try {
           for (const block of await page.locator('[data-visual]').all()) {
             const name = `${prefix}-${await block.getAttribute('data-visual')}-${suffix}`;
             if (wanted(name)) {
-              // Scroll-driven parts (the story's easel) settle first.
-              await block.scrollIntoViewIfNeeded();
+              // Scroll-driven parts (the story's easel) settle first, at
+              // the same scroll position whichever shots came before.
+              await block.evaluate(element =>
+                element.scrollIntoView({ block: 'start' })
+              );
               await page.waitForTimeout(500);
               await block.screenshot({ path: join(currentDir, `${name}.png`) });
               shots.push(name);
             }
+          }
+          // The first live example in edit mode: the playground's toolbar,
+          // editor and preview as the site dresses them.
+          const editing = `${prefix}-try-editing-${suffix}`;
+          const live = page.locator('#try [data-live-example]');
+          if (wanted(editing) && (await live.count())) {
+            await live.evaluate(element =>
+              element.scrollIntoView({ block: 'start' })
+            );
+            await live.locator('[data-live-edit]').click();
+            await live.locator('.cm-content').waitFor();
+            await page.waitForTimeout(1500);
+            await live.screenshot({ path: join(currentDir, `${editing}.png`) });
+            shots.push(editing);
           }
         } else {
           const name = `${prefix}-${suffix}`;

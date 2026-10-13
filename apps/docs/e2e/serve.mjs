@@ -6,9 +6,10 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const root = fileURLToPath(
-  new URL('../../../dist/apps/docs/', import.meta.url)
-);
+// DOCS_DIST serves another build (docs:visual --dist).
+const root = process.env.DOCS_DIST
+  ? join(process.env.DOCS_DIST, '/')
+  : fileURLToPath(new URL('../../../dist/apps/docs/', import.meta.url));
 const port = Number(process.env.PORT ?? 4329);
 const types = {
   '.html': 'text/html; charset=utf-8',
