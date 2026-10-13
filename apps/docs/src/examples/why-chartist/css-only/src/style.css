@@ -1,0 +1,8 @@
+/* The whole look of this chart */
+#chart {
+  --ct-series-a: #d17905;
+  --ct-line-width: 3px;
+  --ct-point-size: 0;
+  --ct-area-opacity: 0.3;
+  --ct-grid-dasharray: none;
+}

@@ -1,0 +1,80 @@
+---
+title: Why Chartist?
+description: Chartist draws simple, responsive charts as SVG and leaves styling, interaction and the rest to the web platform. Here's what that means for you.
+group: Start here
+order: 2
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const coffee = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  series: [[3, 4, 2, 5, 6, 2, 1]]
+};
+
+Chartist has one job: turn your data into a clean, responsive SVG chart. Everything the browser already does well, styling, events, animation, layout, it leaves to the browser. That's a choice, and it shapes everything else on this site.
+
+## SVG in the DOM
+
+A Chartist chart is an inline `<svg>` in your page, with groups and paths and class names you can read in the dev tools. Not a canvas, not a black box. Anything that works on the DOM works on a chart: CSS, `querySelector`, event listeners, screen reader attributes, your browser's inspector.
+
+## Your stylesheet decides the look
+
+There's no theme engine and no color option. Colors, line widths, grid dashes and fonts live in CSS, next to the rest of your styles, where a designer can change them without touching JavaScript.
+
+Here's the proof. The script below only says what to draw. Everything you see comes from five custom properties; press **Edit** and change them:
+
+<LiveExample
+  title='Styled by CSS'
+  label='An orange area chart of cups of coffee per day, Monday to Sunday'
+  show='src/style.css'
+  previewStyle='--ct-series-a: #d17905; --ct-line-width: 3px; --ct-point-size: 0; --ct-area-opacity: 0.3; --ct-grid-dasharray: none;'
+  preview={{ type: 'line', data: coffee, options: { showArea: true } }}
+  example='why-chartist/css-only'
+/>
+
+When the brand color changes, you change one line. [Styling with CSS](../styling-with-css/) has the full list of properties and classes.
+
+## No built-in tooltips
+
+Chartist doesn't ship tooltips, zoom, legends or click handlers. The DOM already has events, and a tooltip is a positioned element with some text in it. You can add one with a few lines of your own code, or with a plugin, and it works the way the rest of your site does.
+
+If you need zoom, panning and crosshairs out of the box, or tens of thousands of points, Chartist isn't the right tool. A canvas library will serve you better.
+
+## Small, and only what you use
+
+Chartist has no dependencies, and it's tree-shakable: your bundle gets the parts you import. A line chart with `lineChart()` comes to about 12 kB minified and gzipped, and the default stylesheet to under 1.5 kB.
+
+## No build step required
+
+Chartist ships as a native ES module, so a `<script type="module">` and a CDN link are all you need. If you do use a bundler, the same code works there, with TypeScript types included. [Getting started](../getting-started/) shows both.
+
+## Extend it through the pipeline
+
+Every chart goes through the same steps: resolve the config, prepare the data, lay out the chart, compose the scene, render it. Plugins hook into any of them, and a listener changes a step by returning a new value instead of mutating the old one.
+
+```ts
+import { lineChart, type ChartPlugin } from 'chartist';
+
+// Gives every point a class, so CSS can style it.
+const markPoints: ChartPlugin = {
+  name: 'mark-points',
+  install(chart) {
+    chart.on('compose', node =>
+      node.role === 'point' ? node.addClass('my-point') : undefined
+    );
+  }
+};
+
+lineChart('#chart', { series: [[1, 3, 2, 4]] }, { plugins: [markPoints] });
+```
+
+Because the steps are plain functions from config to scene, the same chart can also be [rendered to an SVG string on the server](../server-rendering/). The phases and plugins have their own page: [Events and plugins](../events-and-plugins/).
+
+<Callout>
+  **Using Chartist 1.x?** Everything above holds for your existing charts too.
+  [Coming from 1.x](../coming-from-1x/) shows what stays and what's new.
+</Callout>
+
+Next: [draw your first chart](../getting-started/), or [learn how charts take their styles](../styling-with-css/).

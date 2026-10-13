@@ -1,0 +1,248 @@
+---
+title: Coming from 1.x
+description: Your Chartist 1.x charts keep running on v2. Here's what stays the same, what's new, and how to move to the functions one chart at a time.
+group: Start here
+order: 3
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    [12, 9, 7, 8, 5],
+    [2, 1, 3.5, 7, 3]
+  ]
+};
+
+Good news first: your 1.x code keeps working. v2 adds a functional API next to the classes you know, and both run on the same engine. Upgrade, check your events (one line, see below), and move to the functions whenever a chart needs something new.
+
+## What keeps working
+
+The classes are still there, imported the same way, with the same constructor arguments: the container, the data, the options and the responsive options.
+
+<LiveExample
+  title='1.x code on v2'
+  label='Line chart with two series from Monday to Friday, drawn by the 1.x LineChart class'
+  preview={{
+    type: 'line',
+    data,
+    options: { fullWidth: true, chartPadding: { right: 40 } }
+  }}
+  example='coming-from-1x/class-api'
+/>
+
+- **`LineChart`, `BarChart` and `PieChart`** from `chartist`, with `update(data, options, override)`, `detach()`, `on()` and `off()`. The first render still happens on the next tick, and charts still redraw when the window resizes.
+- **Every other 1.x export**, from `chartist` and from the UMD global: `Svg`, `SvgList`, `SvgPath`, `easings`, `Interpolation`, the axis classes, `EventEmitter`, the helpers and the types (`LineChartData`, `BarChartOptions` and the rest). None of them was removed.
+- **The look.** Same class names, same default styles. v2 is tested against screenshots of 1.5.0, and the default stylesheet matches them.
+- **Your stylesheet imports.** `chartist/dist/index.css` and the Sass entry `chartist/dist/index.scss` are still in the package. The new short path is `chartist/styles.css`:
+
+```ts
+import 'chartist/styles.css';
+import { BarChart, LineChart, PieChart } from 'chartist';
+```
+
+## Events need the compat plugin
+
+This is the one change you may need to make. In 1.x, every chart emitted `data`, `optionsChanged`, `draw`, `created`, `animationBegin` and `animationEnd`. In v2 these 1.x events live in an opt-in plugin, so charts that don't use them don't carry the code.
+
+Add `compat` from `chartist/compat` to `plugins`, and your listeners run as before:
+
+```ts
+import 'chartist/styles.css';
+import { LineChart } from 'chartist';
+import { compat } from 'chartist/compat';
+
+const chart = new LineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, 7, 8, 5]]
+  },
+  { plugins: [compat] }
+);
+
+chart.on('draw', data => {
+  if (data.type === 'point' && data.index === 4) {
+    data.element.addClass('is-friday');
+  }
+});
+```
+
+Without `compat`, a listener for a 1.x event isn't called, and the console tells you once per event name what to add.
+
+With `compat`, `draw` events come in the 1.x order and with the 1.x payloads. They fire right after the chart is in the DOM, so `data.element` is a live element you can measure, animate or replace. One small difference: an element you append to `data.group` lands after the group's other elements.
+
+## Your 1.x plugins
+
+A 1.x plugin is a function that gets the chart (and its options). On the classes, those plugins run when `compat` is in the list too:
+
+```ts
+import 'chartist/styles.css';
+import { LineChart, type Plugin } from 'chartist';
+import { compat } from 'chartist/compat';
+
+// A 1.x plugin: a function that gets the chart and its options.
+const caption: Plugin = (chart, options) => {
+  chart.on('created', () => {
+    chart.container.setAttribute('aria-label', options.text);
+  });
+};
+
+new LineChart(
+  '#chart',
+  { series: [[1, 3, 2, 4]] },
+  { plugins: [compat, [caption, { text: 'Visitors per week' }]] }
+);
+```
+
+Without `compat`, Chartist skips the plugin and logs a warning that explains how to turn it on.
+
+## Moving to the functions
+
+Each class has a function with the same arguments and the same options: `lineChart()`, `barChart()` and `pieChart()`. The functions are where the new features are, and they're the smaller bundle too. You can move one chart at a time; classes and functions work side by side on one page.
+
+### 1. Swap the constructor
+
+```ts nocheck
+// 1.x
+const chart = new LineChart('#chart', data, options, responsiveOptions);
+
+// v2
+const chart = lineChart('#chart', data, options, responsiveOptions);
+```
+
+The data, the options and the media query pairs in `responsiveOptions` stay as they are.
+
+### 2. Know what's different about the handle
+
+`lineChart()` returns a small handle instead of a class instance:
+
+| 1.x class                                  | v2 function                                                                      |
+| ------------------------------------------ | -------------------------------------------------------------------------------- |
+| First render on the next tick              | Renders right away, before the call returns                                      |
+| Redraws when the window resizes            | Redraws when the container resizes (`ResizeObserver`)                            |
+| `chart.update(newData)`                    | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
+| `chart.detach()`                           | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
+| `chart.on('draw', …)` and other 1.x events | Pipeline events like `compose`, see [Events and plugins](../events-and-plugins/) |
+
+### 3. Rewrite draw handlers as plugins
+
+A 1.x `draw` handler changes elements after they're drawn. In v2, a plugin changes the chart's scene before it's rendered: a `compose` listener gets each node and returns a changed copy, or nothing to keep it.
+
+```ts nocheck
+// 1.x
+chart.on('draw', data => {
+  if (data.type === 'point' && data.index === 4) {
+    data.element.addClass('is-friday');
+  }
+});
+```
+
+```ts
+import 'chartist/styles.css';
+import { lineChart, type ChartPlugin } from 'chartist';
+
+// v2
+const markFriday: ChartPlugin = {
+  name: 'mark-friday',
+  install(chart) {
+    chart.on('compose', node =>
+      node.role === 'point' && node.ctx?.valueIndex === 4
+        ? node.addClass('is-friday')
+        : undefined
+    );
+  }
+};
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, 7, 8, 5]]
+  },
+  { plugins: [markFriday] }
+);
+```
+
+Because it works on the scene, this version also runs when you [render on the server](../server-rendering/).
+
+### 4. Bring 1.x plugins along with `fromLegacyPlugin`
+
+The functions accept only v2 plugins, and throw if you pass a plain function. Wrap a 1.x plugin with `fromLegacyPlugin()` from `chartist/compat`. It turns on the 1.x events for that chart and calls your plugin with a 1.x-style chart object (`container`, `data`, `options`, `svg`, `on`, `off`, `update`, `detach`):
+
+```ts
+import 'chartist/styles.css';
+import { lineChart, type Plugin } from 'chartist';
+import { fromLegacyPlugin } from 'chartist/compat';
+
+const caption: Plugin = (chart, options) => {
+  chart.on('created', () => {
+    chart.container.setAttribute('aria-label', options.text);
+  });
+};
+
+lineChart(
+  '#chart',
+  { series: [[1, 3, 2, 4]] },
+  { plugins: [fromLegacyPlugin(caption, { text: 'Visitors per week' })] }
+);
+```
+
+You don't need `compat` in the list as well.
+
+<Callout kind='warn'>
+  **Register 1.x listeners in a plugin.** The functions render before they
+  return, so a `draw` listener added with `chart.on()` afterwards misses the
+  first render. Put it in a plugin instead:
+  `fromLegacyPlugin(chart => chart.on('draw', …))`.
+</Callout>
+
+## What's new
+
+These come with the functions. The classes stay as they were in 1.x, so they don't get them:
+
+- **Composed charts:** bars and lines in one chart, several axes, with `chart()`. See [Composed charts](../composed-charts/).
+- **Container queries** for responsive options, next to media queries (experimental). See [Responsive sugar topping](../responsive/).
+- **Server rendering** with `toScene()` and `renderToString()`, and SVG text labels. See [Server rendering](../server-rendering/).
+- **v2 plugins** that hook into every step of the pipeline. See [Events and plugins](../events-and-plugins/).
+
+And for every chart, classes included:
+
+- **Custom properties** like `--ct-series-a` and `--ct-line-width` in the default stylesheet, and an opt-in accessible palette. See [Styling with CSS](../styling-with-css/).
+
+## Classic script tags
+
+The UMD build is still published for pages that load Chartist with a classic `<script>` tag. It's there for backwards compatibility only: for new pages, use a [`<script type="module">`](../getting-started/) instead. The compat plugin has a UMD build that adds itself to the global `Chartist`:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartist@2/dist/compat.umd.js"></script>
+
+<div id="chart" class="ct-golden-section"></div>
+<script>
+  new Chartist.LineChart(
+    '#chart',
+    { series: [[1, 3, 2, 4]] },
+    { plugins: [Chartist.compat] }
+  );
+</script>
+```
+
+The 0.x file names, `dist/chartist.min.js` and `dist/chartist.min.css`, are copies of the same files, so old links keep loading. The 0.x API (`Chartist.Line`) went away in 1.0 and doesn't come back.
+
+## What changed
+
+Nothing was removed. The changes, all covered above:
+
+- **1.x events** need `compat` in `plugins`. Without it, listeners aren't called and the console warns.
+- **1.x plugins** need `compat` on the classes, or `fromLegacyPlugin()` on the functions. The functions throw for a plain plugin function.
+- **`draw` events** fire after the DOM render. Elements appended to `data.group` land after the group's other elements.
+- **The compat plugin** covers line, bar and pie charts, not composed charts made with `chart()`. It needs the DOM renderer, so it doesn't work with server rendering.
+
+Next: [draw a chart with the functions](../getting-started/), or [see what Chartist leaves to CSS](../why-chartist/).
