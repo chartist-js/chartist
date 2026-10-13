@@ -36,7 +36,7 @@ The landing page SHALL show a "Used by" list mirroring GitHub's public dependent
 
 ### Requirement: Fair comparison
 
-The comparison with Chart.js, ApexCharts and Highcharts SHALL show measured bundle sizes with the method and date, and feature and license rows with a source link per value. It SHALL include rows where the other libraries offer more.
+The comparison with Chart.js, ApexCharts and Highcharts SHALL show measured bundle sizes with the method and date, and feature and license rows whose sources are listed once per library, linked. It SHALL include rows where the other libraries offer more.
 
 #### Scenario: Reproducible sizes
 

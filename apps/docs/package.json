@@ -4,17 +4,23 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@astrojs/check": "0.9.10",
+    "@astrojs/mdx": "8.0.2",
     "@fontsource-variable/atkinson-hyperlegible-mono": "5.3.0",
     "@fontsource-variable/atkinson-hyperlegible-next": "5.3.0",
     "@fontsource/zilla-slab": "5.3.0",
-    "chartist": "workspace:*",
-    "@astrojs/check": "0.9.10",
-    "@astrojs/mdx": "8.0.2",
-    "astro": "7.3.6"
+    "astro": "7.3.6",
+    "chartist": "workspace:*"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.11.0",
+    "@chartist/playground": "workspace:*",
     "@playwright/test": "1.63.0",
+    "apexcharts": "7.6.1",
+    "chart.js": "4.5.1",
+    "esbuild": "0.28.2",
+    "highcharts": "13.1.1",
+    "match-container": "0.1.4",
     "typescript": "6.0.3"
   }
 }

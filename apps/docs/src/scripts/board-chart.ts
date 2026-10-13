@@ -1,5 +1,5 @@
 /** The line chart on the mascot's board (hero). */
-import { lineChart } from 'chartist';
+import { lineChart, type ChartHandle } from 'chartist';
 import { drawIn } from './charts';
 
 const millions = (value: number | string) => {
@@ -7,8 +7,8 @@ const millions = (value: number | string) => {
   return m === 0 ? '0' : `${Number.isInteger(m) ? m : m.toFixed(1)}m.`;
 };
 
-export function mountBoardChart(element: HTMLElement) {
-  lineChart(
+export function mountBoardChart(element: HTMLElement): ChartHandle {
+  return lineChart(
     element,
     {
       labels: ['1st', '2nd', '3rd'],
@@ -34,8 +34,11 @@ export function mountBoardChart(element: HTMLElement) {
   );
 }
 
-for (const element of document.querySelectorAll<HTMLElement>(
-  '[data-board-chart]'
-)) {
-  mountBoardChart(element);
+/** The hero's board chart(s): elements with data-board-chart. */
+export function mountBoardCharts() {
+  for (const element of document.querySelectorAll<HTMLElement>(
+    '[data-board-chart]'
+  )) {
+    mountBoardChart(element);
+  }
 }

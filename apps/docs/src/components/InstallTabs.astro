@@ -1,13 +1,31 @@
 ---
-/** Install snippets for npm and a CDN module, as accessible tabs. */
+/** Install snippets for npm and a native module from a CDN, as accessible tabs. */
+import { Code } from 'astro:components';
+
 const TABS = [
-  { id: 'npm', label: 'npm', code: 'npm install chartist' },
+  {
+    id: 'npm',
+    label: 'npm',
+    lang: 'ts',
+    code: `// npm install chartist
+import { lineChart } from 'chartist';
+import 'chartist/styles.css';
+
+lineChart('#chart', { series: [[1, 3, 2, 5]] });`
+  },
   {
     id: 'cdn',
-    label: 'CDN module',
-    code: "import { lineChart } from\n  'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';"
+    label: '<script type="module">',
+    lang: 'html',
+    code: `<link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.css">
+<script type="module">
+  import { lineChart } from
+    'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+  lineChart('#chart', { series: [[1, 3, 2, 5]] });
+</script>`
   }
-];
+] as const;
 ---
 
 <div class="install" data-tabs>
@@ -25,7 +43,7 @@ const TABS = [
   {
     TABS.map((tab, i) => (
       <div role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} hidden={i !== 0} tabindex="0">
-        <pre><code>{tab.code}</code></pre>
+        <Code code={tab.code} lang={tab.lang} theme="css-variables" />
       </div>
     ))
   }
@@ -55,3 +73,10 @@ const TABS = [
     });
   }
 </script>
+
+<style>
+  .install :global(pre.astro-code) {
+    border-radius: 0;
+    font-size: 13px;
+  }
+</style>

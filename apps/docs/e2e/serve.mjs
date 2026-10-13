@@ -35,6 +35,9 @@ async function resolve(pathname) {
 
 createServer(async (request, response) => {
   const { pathname } = new URL(request.url, 'http://localhost');
+  // The live example's sandboxed preview (origin null) loads the Chartist
+  // module from the site; static hosts like GitHub Pages send this too.
+  response.setHeader('Access-Control-Allow-Origin', '*');
   const file = await resolve(pathname);
   try {
     const body = await readFile(file ?? '');

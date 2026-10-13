@@ -1,0 +1,39 @@
+---
+import Chart from '../Chart.astro';
+import { GALLERY } from '../../data/landing';
+---
+
+<section class="wrap section" id="gallery">
+  <div class="section-head reveal">
+    <h2>A few of our favourite charts</h2>
+    <p>Every one is a plain SVG element that draws itself as it scrolls into view.</p>
+  </div>
+  <div class="grid-auto">
+    {
+      GALLERY.map(item => (
+        <article class="card chart-card reveal">
+          <div class="stage">
+            <Chart type={item.type} label={`${item.title} chart`} aspect="16 / 10" data={item.data} options={item.options} />
+          </div>
+          <div class="chart-card-head">
+            <strong>{item.title}</strong>
+            <code>{item.api}</code>
+          </div>
+          <span class="muted">{item.note}</span>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .chart-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .chart-card-head strong {
+    font: 700 20px / 1.2 var(--font-display);
+  }
+</style>

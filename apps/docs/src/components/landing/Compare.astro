@@ -1,0 +1,145 @@
+---
+import Logomark from '../Logomark.astro';
+import { LIBRARIES, NAMES, ROWS, SIZE_KEYS } from '../../data/comparison';
+import { facts, formatDate, formatKb } from '../../data/facts';
+
+const bytes = facts.sizes.bytes as Record<string, { gzip: number }>;
+const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
+---
+
+<section id="compare" class="section sunken" data-section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>How Chartist compares</h2>
+      <p>An honest look next to Chart.js, ApexCharts and Highcharts. They're excellent libraries; pick the one that fits the job.</p>
+    </div>
+    <div class="compare-stack">
+      <div class="compare-wrap" role="region" aria-label="Library comparison" tabindex="0">
+        <table class="compare">
+          <caption class="sr-only">Chartist compared with Chart.js, ApexCharts and Highcharts</caption>
+          <thead>
+            <tr>
+              <th scope="col" class="measured">Measured on {formatDate(facts.generatedAt)}</th>
+              {
+                LIBRARIES.map(lib => (
+                  <th scope="col" class:list={{ us: lib === 'chartist' }}>
+                    {lib === 'chartist' ? (
+                      <span class="lib-name">
+                        <Logomark class="lib-mark" />
+                        Chartist
+                      </span>
+                    ) : (
+                      NAMES[lib]
+                    )}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Bundle size<span class="row-hint">a line chart, minified and gzipped</span></th>
+              {
+                LIBRARIES.map(lib => (
+                  <td class:list={{ us: lib === 'chartist' }}>
+                    <span class:list={['value', { good: bytes[SIZE_KEYS[lib]].gzip === smallest }]}>{formatKb(bytes[SIZE_KEYS[lib]].gzip)}</span>
+                    <span class="lib-version">{lib === 'chartist' ? 'this build' : `v${facts.sizes.versions[lib === 'chartjs' ? 'chart.js' : lib]}`}</span>
+                  </td>
+                ))
+              }
+            </tr>
+            {
+              ROWS.map(row => (
+                <tr>
+                  <th scope="row">
+                    {row.label}
+                    {row.hint && <span class="row-hint">{row.hint}</span>}
+                  </th>
+                  {LIBRARIES.map(lib => {
+                    const cell = row.cells[lib];
+                    return (
+                      <td class:list={{ us: lib === 'chartist' }}>
+                        <span class:list={['value', { good: cell.good }]}>{cell.value}</span>
+                        <a class="source" href={cell.source} aria-label={`Source: ${NAMES[lib]}, ${row.label}`}>source</a>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+      <div class="grid-auto compare-notes">
+        <div class="card flat"><strong>Where Chartist shines</strong><p>Small bundles, plain SVG, styling with the CSS you already write, ES modules straight from a CDN with no build step, and a permissive license.</p></div>
+        <div class="card flat"><strong>Where others offer more</strong><p>More chart types out of the box, and built-in interactivity like tooltips, zoom and panning. If you need a full dashboard toolkit, they're great choices.</p></div>
+      </div>
+      <details class="method">
+        <summary>How we measured</summary>
+        <p>{facts.sizes.method} Versions: Chart.js {facts.sizes.versions['chart.js']}, ApexCharts {facts.sizes.versions.apexcharts}, Highcharts {facts.sizes.versions.highcharts}. Feature and license rows come from each library's own documentation, linked in every cell. Last run {formatDate(facts.generatedAt)}. Spotted something out of date? <a href="https://github.com/chartist-js/chartist/issues">Open an issue</a>.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<style>
+  .compare-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .measured {
+    font: 600 12px var(--font-code) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ink-2);
+  }
+  .lib-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lib-name :global(.lib-mark) {
+    width: 24px;
+  }
+  .row-hint {
+    display: block;
+    font-weight: 400;
+    font-size: 12.5px;
+    margin-top: 2px;
+    color: var(--ink-2);
+  }
+  .value {
+    display: block;
+  }
+  .value.good::before {
+    content: '✓ ';
+    color: var(--ok);
+    font-weight: 700;
+  }
+  .source,
+  .lib-version {
+    font-size: 12px;
+    color: var(--ink-2);
+  }
+  .compare-notes .card {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+  }
+  .compare-notes strong {
+    font: 700 18px var(--font-display);
+  }
+  .method {
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .method summary {
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--ink);
+    min-height: 32px;
+  }
+</style>

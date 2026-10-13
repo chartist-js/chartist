@@ -3,9 +3,17 @@
  * Chartist chart (functional API) when it comes near the viewport.
  */
 import {
+  autoScaleAxis,
+  axisGrid,
+  axisLabels,
+  bar,
   barChart,
+  cartesianAxes,
+  chart,
+  line,
   lineChart,
   pieChart,
+  stepAxis,
   type ChartHandle,
   type ChartPlugin
 } from 'chartist';
@@ -16,8 +24,8 @@ import {
  */
 export const drawIn: ChartPlugin = {
   name: 'draw-in',
-  install(chart) {
-    chart.on('compose', node =>
+  install(handle) {
+    handle.on('compose', node =>
       node.role === 'line' || node.role === 'bar' || node.role === 'slice'
         ? node.attr({ pathLength: 1 })
         : undefined
@@ -25,7 +33,48 @@ export const drawIn: ChartPlugin = {
   }
 };
 
-const PRESETS = { line: lineChart, bar: barChart, pie: pieChart } as const;
+interface ComposedData {
+  labels: string[];
+  /** Bars on the left axis, a line on the right axis. */
+  series: [number[], number[]];
+}
+
+/** Bars on a left Y axis and a line on a right Y axis, each to its own scale. */
+function composedChart(
+  target: Element,
+  data: ComposedData,
+  options: Record<string, unknown> = {}
+) {
+  return chart(target, {
+    data: {
+      labels: data.labels,
+      series: [
+        { name: 'bars', data: data.series[0] },
+        { name: 'line', className: 'ct-series-g', data: data.series[1] }
+      ]
+    },
+    axes: cartesianAxes([
+      { id: 'x', side: 'bottom', type: stepAxis(), ticks: data.labels },
+      { id: 'left', side: 'left', type: autoScaleAxis(), low: 0 },
+      { id: 'right', side: 'right', type: autoScaleAxis(), low: 0 }
+    ]),
+    layers: [
+      axisGrid({ axes: ['x', 'left'] }),
+      bar({ series: ['bars'], x: 'x', y: 'left' }),
+      line({ series: ['line'], x: 'x', y: 'right', align: 'center' }),
+      axisLabels()
+    ],
+    plugins: [drawIn],
+    ...options
+  });
+}
+
+const PRESETS = {
+  line: lineChart,
+  bar: barChart,
+  pie: pieChart,
+  composed: composedChart
+} as const;
 
 export interface ChartSpec {
   type: keyof typeof PRESETS;

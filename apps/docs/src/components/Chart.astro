@@ -18,13 +18,19 @@ const { type, data, options, label, aspect = '16 / 9', draw = true, class: class
 const spec: ChartSpec = { type, data, options };
 ---
 
-<div
-  class:list={['chart-box', { 'ct-draw': draw }, className]}
-  style={{ aspectRatio: aspect }}
-  role="img"
-  aria-label={label}
-  data-chart={JSON.stringify(spec)}
->
+<!--
+  The block wrapper keeps the box's aspect-ratio height definite even when
+  the chart sits in a flex column, so the chart's 100% height resolves.
+-->
+<div class:list={['chart-wrap', className]}>
+  <div
+    class:list={['chart-box', { 'ct-draw': draw }]}
+    style={{ aspectRatio: aspect }}
+    role="img"
+    aria-label={label}
+    data-chart={JSON.stringify(spec)}
+  >
+  </div>
 </div>
 
 <script>
@@ -33,6 +39,11 @@ const spec: ChartSpec = { type, data, options };
 </script>
 
 <style>
+  .chart-wrap {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
   .chart-box {
     width: 100%;
   }

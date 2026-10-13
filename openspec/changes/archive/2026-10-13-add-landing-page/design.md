@@ -130,3 +130,14 @@ Unit tests:
 - **Avatars are marks:** shown as GitHub shows them, linked to evidence, removable via the exclude list (author decision).
 - **Comparison accuracy decays:** dated, with sources and an issue link; refreshed per release.
 - **Page weight:** many charts on one page. They render lazily, Chartist is shared, CodeMirror loads on demand only, and the polyfill only loads with the responsive section's script.
+
+## Implementation notes
+
+- **"Used by" candidates:** GitHub lists 72,834 dependents ordered by recency, 30 per page, so notable users can't be found by scanning. The script reads the first pages (rows from the dependency graph) plus `src/data/used-by-candidates.json` (researched repos, verified by reading their `package.json` from the default branch), then keeps organizations with 50+ stars. The first snapshot found three. Discovery stays a research task; the script verifies.
+- **Comparison sizes:** the smallest setup each library documents: Chart.js with tree-shaken registration; ApexCharts' `apexcharts/core` plus `apexcharts/line` (its README; 154.9 kB, in line with ApexCharts' own 157 kB for the core); Highcharts' recommended import. Versions are the newest older than two weeks: Chart.js 4.5.1, ApexCharts 7.6.1, Highcharts 13.1.1.
+- **ApexCharts license:** MIT up to 4.x; since 5.x a dual license, free only for organizations under $2M revenue (`LICENSE.md` in the package). The comparison row cites it.
+- **Ecosystem:** react-chartist (`^1.5.0`) and ng-chartist (`^1.0.0`) are maintained but built for 1.x; listed as such, no v2 claim. vue-chartist and ember-cli-chartist pin 0.11 and are left out.
+- **Plugins that decorate compose at the series level:** each `compose` listener gets the previous listener's result, so a plugin that wraps a bar in a group hides the bar from the next plugin. The demo plugins add their decorations to the series node instead (composed after its bars) and combine in any order.
+- **Live example previews need CORS:** the playground's preview is a sandboxed iframe (origin `null`) that imports the Chartist module from the site, so the host must send `Access-Control-Allow-Origin` for it (GitHub Pages sends `*`; the e2e server and the Astro dev server are configured for it). Hosting requirement for the release phase.
+- **Charts in flex columns:** a percentage height doesn't resolve against an aspect-ratio box that is a flex item in a column, so `Chart` wraps its box in a block element (a chart was laid out for 270 px in a 150 px box).
+- **Contrast:** the design's `--ok` (`#2e7d32`) on `--ok-bg` is 4.38:1 for the 11 px tags; the site uses `#276c2b` (5.49:1).

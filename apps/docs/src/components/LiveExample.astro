@@ -1,0 +1,79 @@
+---
+/**
+ * A live example: the code and the chart it draws. "Edit" swaps in the
+ * playground (editor and sandboxed preview) for the same files, so the
+ * editor only loads when someone wants it.
+ */
+import { Code } from 'astro:components';
+import Chart from './Chart.astro';
+import type { ChartSpec } from '../scripts/charts';
+
+interface Props {
+  /** Example project files, as in packages/examples. */
+  files: Record<string, string>;
+  /** The chart `src/main.ts` draws, for the preview before editing. */
+  preview: ChartSpec;
+  label: string;
+  title?: string;
+}
+
+const { files, preview, label, title = 'Chartist example' } = Astro.props;
+const main = files['src/main.ts'];
+---
+
+<div class="live" data-live-example={JSON.stringify({ files, title })}>
+  <div class="editor">
+    <div class="code-head">
+      <span class="code-tab is-active">src/main.ts</span>
+      <div class="live-actions">
+        <button class="icon-btn sm" type="button" data-live-copy aria-label="Copy code">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
+        </button>
+        <button class="btn sm" type="button" data-live-edit>Edit</button>
+      </div>
+    </div>
+    <Code code={main} lang="ts" theme="css-variables" />
+  </div>
+  <div class="output">
+    <div class="output-head">
+      <span class="eyebrow"><span class="status-dot"></span> Live</span>
+    </div>
+    <div class="stage">
+      <Chart type={preview.type} data={preview.data} options={preview.options} label={label} aspect="16 / 10" />
+    </div>
+  </div>
+</div>
+
+<script>
+  import { mountLiveExamples } from '../scripts/live-example';
+  mountLiveExamples();
+</script>
+
+<style>
+  .live :global(pre.astro-code) {
+    border-radius: 0;
+    flex: 1;
+  }
+  .live-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .live .btn.sm {
+    min-height: 32px;
+    box-shadow: none;
+  }
+  .live .stage :global(.chart-box) {
+    width: 100%;
+  }
+  .live.editing {
+    display: flex;
+    flex-direction: column;
+  }
+  .live :global(.live-toolbar) {
+    background: var(--code-bg);
+  }
+  .live :global(.live-playground) {
+    min-height: 420px;
+  }
+</style>

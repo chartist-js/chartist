@@ -1,0 +1,144 @@
+---
+import { Code } from 'astro:components';
+
+const CODE = `barChart('#chart', data, options, [
+  [container('(width >= 520px)'), {
+    axisX: { labelInterpolationFnc: month }    // "Jan"
+  }],
+  [container('(360px <= width < 520px)'), {
+    axisX: { labelInterpolationFnc: initial }  // "J"
+  }],
+  [container('(width < 360px)'), {
+    axisX: { labelInterpolationFnc: quarter }  // "Q1"
+  }]
+]);`;
+---
+
+<section id="responsive" class="section sunken" data-section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Responsive sugar topping</h2>
+      <p>Grab the corner and squeeze the chart. The labels rearrange themselves, driven by the same conditions you'd write in CSS.</p>
+    </div>
+    <div class="responsive-demo">
+      <div class="resize-col">
+        <div class="resizable" data-resizable>
+          <div class="resize-head"><strong>Resize me</strong><code data-width>520 px</code></div>
+          <div class="resize-chart" data-responsive-chart role="img" aria-label="A bar chart of twelve months whose labels adapt to its width"></div>
+        </div>
+        <label class="range-label">
+          Or use the keyboard: container width
+          <input class="range" type="range" min="260" max="640" step="10" value="520" data-width-range />
+        </label>
+      </div>
+      <div class="rule-col">
+        <div class="code-head rule-head"><span class="code-tab is-active">responsive</span><span class="tag">active: <span data-rule>container(width ≥ 520px)</span></span></div>
+        <Code code={CODE} lang="ts" theme="css-variables" />
+        <span class="tag">Experimental: container() needs the match-container polyfill today</span>
+      </div>
+    </div>
+    <div class="two-cards reveal">
+      <h3>One chart, two cards</h3>
+      <p class="muted">The same chart in a narrow and a wide card. Container queries pick the right options for each, no matter how wide the window is.</p>
+      <div class="cards">
+        <div class="card cq narrow-card"><span class="tag rule-narrow">container (width &lt; 400px)</span><span class="tag ok rule-wide">container (width ≥ 400px)</span><div class="cq-chart" data-cq-chart role="img" aria-label="A line chart that adapts to its card"></div></div>
+        <div class="card cq"><span class="tag rule-narrow">container (width &lt; 400px)</span><span class="tag ok rule-wide">container (width ≥ 400px)</span><div class="cq-chart" data-cq-chart role="img" aria-label="A line chart that adapts to its card"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { mountResponsiveDemo } from '../../scripts/landing/responsive';
+  const section = document.getElementById('responsive');
+  if (section) {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          observer.disconnect();
+          void mountResponsiveDemo();
+        }
+      },
+      { rootMargin: '100% 0px' }
+    );
+    observer.observe(section);
+  }
+</script>
+
+<style>
+  .responsive-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+    gap: 24px;
+    align-items: start;
+  }
+  .resize-col,
+  .rule-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+  .resizable {
+    container-type: inline-size;
+  }
+  .resize-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .resize-chart {
+    height: 220px;
+  }
+  .resizable {
+    /* box-sizing: border-box with 14 px padding and 2 px border: 520 px of
+       content, so the widest rule applies first. */
+    width: 552px;
+  }
+  .range-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: var(--fs-sm);
+    color: var(--ink-2);
+  }
+  .rule-head {
+    background: var(--code-bg);
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    margin-bottom: -12px;
+  }
+  .rule-col :global(pre.astro-code) {
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+  }
+  .two-cards {
+    margin-top: 56px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 20px;
+    margin-top: 8px;
+  }
+  .cards .card {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .cq-chart {
+    width: 100%;
+    height: 200px;
+  }
+  @media (max-width: 860px) {
+    .cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .resizable {
+      width: 100%;
+    }
+  }
+</style>

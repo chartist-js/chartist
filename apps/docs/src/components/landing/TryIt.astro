@@ -1,0 +1,47 @@
+---
+import LiveExample from '../LiveExample.astro';
+
+const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    [12, 9, 7, 8, 5],
+    [2, 1, 3.5, 7, 3]
+  ]
+};
+const options = { fullWidth: true, chartPadding: { right: 30 } };
+const files = {
+  'index.html': `<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <div id="chart" class="ct-golden-section"></div>
+  </body>
+</html>
+`,
+  'src/main.ts': `import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: [${data.labels.map(label => `'${label}'`).join(', ')}],
+    series: [
+${data.series.map(values => `      [${values.join(', ')}]`).join(',\n')}
+    ]
+  },
+  { fullWidth: true, chartPadding: { right: 30 } }
+);
+`
+};
+---
+
+<section id="try" class="wrap section" data-section>
+  <div class="section-head reveal">
+    <h2>Edit it. Watch it redraw.</h2>
+    <p>Every example in the docs is live. Change the data or the CSS and the chart updates as you type, right in the page. No sandbox site, no bundler.</p>
+  </div>
+  <LiveExample files={files} preview={{ type: 'line', data, options }} label="Line chart from the example code" title="Edit it" />
+</section>

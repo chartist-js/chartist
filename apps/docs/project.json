@@ -68,6 +68,14 @@
       "dependsOn": ["build"],
       "inputs": ["default", "^production"],
       "cache": true
+    },
+    "facts": {
+      "command": "node scripts/facts.ts",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["^build"],
+      "cache": false
     }
   }
 }

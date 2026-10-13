@@ -1,0 +1,95 @@
+---
+import { Code } from 'astro:components';
+import { PIPELINE } from '../../data/landing';
+import pluginSource from '../../demos/plugins.ts?raw';
+
+const lollipopSource = pluginSource.slice(pluginSource.indexOf('/**\n * Decorates'), pluginSource.indexOf('/** The value above'));
+---
+
+<section id="extend" class="wrap section" data-section>
+  <div class="section-head reveal">
+    <h2>Bend it to your will</h2>
+    <p>Every chart flows through an open pipeline. Each phase has an event, and every single element passes through <code>compose</code>, where you can change, replace or decorate it. Plugins use the same events.</p>
+  </div>
+  <ol class="pipeline reveal" aria-label="The rendering pipeline">
+    {
+      PIPELINE.map((step, i) => (
+        <li class="pipe-step">
+          <span class="eyebrow">{String(i + 1).padStart(2, '0')}</span>
+          <strong>{step.title}</strong>
+          <span class="muted">{step.text}</span>
+          <code>on('{step.phase}')</code>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="plugin-demo">
+    <div class="card reveal">
+      <div class="plugin-head">
+        <strong>Same data, three tiny plugins</strong>
+        <div class="chips" role="group" aria-label="Toggle plugins">
+          <button class="chip" type="button" aria-pressed="true" data-plugin="lollipop">lollipop()</button>
+          <button class="chip" type="button" aria-pressed="true" data-plugin="valueLabels">valueLabels()</button>
+          <button class="chip" type="button" aria-pressed="false" data-plugin="threshold">threshold(7)</button>
+        </div>
+      </div>
+      <div class="plugin-chart" data-plugin-chart role="img" aria-label="A bar chart changed by the selected plugins"></div>
+      <pre class="usage" data-plugin-usage></pre>
+    </div>
+    <div class="reveal">
+      <Code code={lollipopSource.trim()} lang="ts" theme="css-variables" />
+    </div>
+  </div>
+  <p class="muted reveal">Community plugins add tooltips, legends, axis titles and zoom; plugins written for 1.x run in v2 through <code>fromLegacyPlugin</code>.</p>
+</section>
+
+<script>
+  import { mountPluginDemo } from '../../scripts/landing/plugins';
+  mountPluginDemo();
+</script>
+
+<style>
+  .plugin-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
+    gap: 24px;
+    margin-block: 32px 20px;
+    align-items: start;
+  }
+  .plugin-demo .card {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .plugin-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .plugin-chart {
+    aspect-ratio: 16 / 9;
+  }
+  .plugin-chart :global(svg) {
+    display: block;
+  }
+  .plugin-chart :global(.ct-lollipop) {
+    fill: var(--ct-color);
+  }
+  .plugin-chart :global(.ct-value-label) {
+    fill: var(--ink);
+    font: 700 12px var(--font-body);
+  }
+  .usage {
+    margin: 0;
+    font: 13px/1.5 var(--font-code);
+    color: var(--ink-2);
+    white-space: pre-wrap;
+  }
+</style>

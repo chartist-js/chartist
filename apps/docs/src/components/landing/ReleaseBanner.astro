@@ -1,0 +1,28 @@
+---
+import { RELEASE } from '../../data/release';
+---
+
+<aside class="wrap release" aria-label="Latest release">
+  <a href={RELEASE.href} class="card flat">
+    <span class="tag brand">{RELEASE.tag}</span>
+    <strong>{RELEASE.title}</strong>
+    <span class="muted">{RELEASE.text}</span>
+    <span class="pill-link">{RELEASE.linkLabel} →</span>
+  </a>
+</aside>
+
+<style>
+  .release a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 14px 20px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+  }
+  .release .pill-link {
+    margin-left: auto;
+  }
+</style>

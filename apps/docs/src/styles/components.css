@@ -438,7 +438,8 @@ pre.astro-code code {
   min-height: 36px;
 }
 
-.code-tab[aria-selected='true'] {
+.code-tab[aria-selected='true'],
+.code-tab.is-active {
   color: var(--code-ink);
   background: #ffffff14;
   box-shadow: inset 0 -2px 0 var(--p-grapefruit-400);

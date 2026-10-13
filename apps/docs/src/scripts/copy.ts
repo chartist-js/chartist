@@ -3,8 +3,9 @@ const ICON =
   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>';
 
 export function addCopyButtons() {
+  // Live examples have their own copy button.
   for (const pre of document.querySelectorAll<HTMLPreElement>(
-    'pre.astro-code'
+    'pre.astro-code:not(.live pre)'
   )) {
     const button = document.createElement('button');
     button.type = 'button';

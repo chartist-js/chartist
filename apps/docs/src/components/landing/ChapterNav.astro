@@ -1,0 +1,47 @@
+---
+import { SECTIONS } from '../../data/landing';
+---
+
+<nav class="chapter-nav" aria-label="On this page">
+  <div class="wrap bar">
+    {
+      SECTIONS.map((section, i) => (
+        <a href={`#${section.id}`} data-chapter-link={section.id}>
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          {section.label}
+        </a>
+      ))
+    }
+  </div>
+  <div class="scroll-progress" aria-hidden="true"></div>
+</nav>
+
+<script>
+  // Marks the section in the middle of the viewport.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('[data-chapter-link]')].map(link => [
+      link.dataset.chapterLink!,
+      link
+    ])
+  );
+  const observer = new IntersectionObserver(
+    entries => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          for (const [id, link] of links) {
+            if (id === entry.target.id) {
+              link.setAttribute('aria-current', 'true');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          }
+        }
+      }
+    },
+    { rootMargin: '-45% 0px -45% 0px' }
+  );
+  for (const id of links.keys()) {
+    const section = document.getElementById(id);
+    if (section) {observer.observe(section);}
+  }
+</script>

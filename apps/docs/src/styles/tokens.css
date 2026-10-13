@@ -55,7 +55,7 @@
   --link: var(--p-waistcoat-500);
   --focus: #2b6cd8;
   /* semantic / status (reserved — never a chart series) */
-  --ok: #2e7d32;
+  --ok: #276c2b; /* design: #2e7d32, darkened to 4.5:1+ on --ok-bg for small tag text */
   --ok-bg: #e4f1df;
   --warn: #8a5a00;
   --warn-bg: #fbefc8;

@@ -1,0 +1,252 @@
+/**
+ * Writes src/data/facts.json: the numbers the site shows, from their
+ * sources. Run with `pnpm nx run docs:facts` and commit the result; builds
+ * never fetch. A GITHUB_TOKEN raises the GitHub API limits (optional).
+ *
+ * - npm: monthly downloads of `chartist`
+ * - GitHub: stars, contributors, dependents count, and "Used by"
+ *   (organizations among the dependents and the verified candidates in
+ *   src/data/used-by-candidates.json, minus used-by-exclude.json)
+ * - sizes: a line chart bundled with each library's recommended import
+ *   (esbuild, minified, gzipped), at the versions pinned in package.json
+ */
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { gzipSync } from 'node:zlib';
+import { build } from 'esbuild';
+import {
+  countFromLinkHeader,
+  dependsOnChartist,
+  parseDependentRows,
+  parseDependentsCount,
+  parseNextDependentsPage,
+  selectUsedBy,
+  type UsedByCandidate
+} from '../src/lib/facts/parse.ts';
+
+const REPO = 'chartist-js/chartist';
+const root = new URL('../', import.meta.url);
+const DEPENDENT_PAGES = Number(process.env.FACTS_DEPENDENT_PAGES ?? 10);
+const headers: Record<string, string> = {
+  'user-agent': 'chartist-docs-facts',
+  ...(process.env.GITHUB_TOKEN && {
+    authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+  })
+};
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function get(url: string, init: RequestInit = {}): Promise<Response> {
+  const response = await fetch(url, {
+    ...init,
+    headers: { ...headers, ...init.headers }
+  });
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}: ${url}`);
+  }
+  return response;
+}
+
+const json = async <T>(url: string) => (await get(url)).json() as Promise<T>;
+
+async function npmDownloads() {
+  const { downloads, start, end } = await json<{
+    downloads: number;
+    start: string;
+    end: string;
+  }>('https://api.npmjs.org/downloads/point/last-month/chartist');
+  return { monthlyDownloads: downloads, period: { start, end } };
+}
+
+async function github() {
+  const repo = await json<{ stargazers_count: number }>(
+    `https://api.github.com/repos/${REPO}`
+  );
+  const contributors = await get(
+    `https://api.github.com/repos/${REPO}/contributors?per_page=1&anon=1`
+  );
+  return {
+    stars: repo.stargazers_count,
+    contributors: countFromLinkHeader(contributors.headers.get('link'))
+  };
+}
+
+/** The dependents count and the candidates from the first pages. */
+async function dependents() {
+  let url: string | undefined = `https://github.com/${REPO}/network/dependents`;
+  let count = 0;
+  const candidates: UsedByCandidate[] = [];
+  for (let page = 0; url && page < DEPENDENT_PAGES; page++) {
+    const html = await (
+      await get(url, { headers: { 'user-agent': 'Mozilla/5.0' } })
+    ).text();
+    if (page === 0) {
+      count = parseDependentsCount(html);
+    }
+    for (const row of parseDependentRows(html)) {
+      candidates.push({ ...row, evidence: `https://github.com/${row.repo}` });
+    }
+    url = parseNextDependentsPage(html);
+    await sleep(1500);
+  }
+  return { count, candidates };
+}
+
+/** Researched candidates, kept only if their package.json lists chartist. */
+async function verifiedCandidates(): Promise<UsedByCandidate[]> {
+  const repos = JSON.parse(
+    await readFile(new URL('src/data/used-by-candidates.json', root), 'utf8')
+  ) as string[];
+  const verified: UsedByCandidate[] = [];
+  for (const repo of repos) {
+    try {
+      const info = await json<{
+        stargazers_count: number;
+        default_branch: string;
+        owner: { login: string; type: string };
+      }>(`https://api.github.com/repos/${repo}`);
+      const path = `https://raw.githubusercontent.com/${repo}/${info.default_branch}/package.json`;
+      const packageJson = await (await get(path)).json();
+      if (dependsOnChartist(packageJson)) {
+        verified.push({
+          owner: info.owner.login,
+          repo,
+          ownerType:
+            info.owner.type === 'Organization' ? 'organization' : 'user',
+          stars: info.stargazers_count,
+          evidence: `https://github.com/${repo}/blob/${info.default_branch}/package.json`
+        });
+      } else {
+        console.warn(`skipped ${repo}: package.json doesn't list chartist`);
+      }
+    } catch (error) {
+      console.warn(`skipped ${repo}: ${(error as Error).message}`);
+    }
+  }
+  return verified;
+}
+
+/** Downloads each organization's GitHub avatar, so the site serves it. */
+async function avatars(entries: UsedByCandidate[]) {
+  const dir = new URL('src/assets/used-by/', root);
+  await mkdir(dir, { recursive: true });
+  for (const { owner } of entries) {
+    const image = await get(`https://github.com/${owner}.png?size=96`);
+    await writeFile(
+      new URL(`${owner.toLowerCase()}.png`, dir),
+      Buffer.from(await image.arrayBuffer())
+    );
+  }
+}
+
+/**
+ * One line chart per library, with the smallest setup its docs describe:
+ * Chart.js with tree-shaken registration, ApexCharts' lean core plus the
+ * line type, Highcharts' recommended import (it documents nothing smaller).
+ */
+const ENTRIES = {
+  'chartist (lineChart)': `
+    import { lineChart } from 'chartist';
+    lineChart('#chart', { labels: ['a', 'b'], series: [[1, 2]] });`,
+  'chartist (core: chart)': `
+    import { chart } from 'chartist';
+    chart('#chart', { data: { series: [] }, layers: [] });`,
+  'chart.js': `
+    import { Chart, LineController, LineElement, PointElement, LinearScale, CategoryScale } from 'chart.js';
+    Chart.register(LineController, LineElement, PointElement, LinearScale, CategoryScale);
+    new Chart(document.querySelector('canvas'), { type: 'line', data: { labels: ['a', 'b'], datasets: [{ data: [1, 2] }] } });`,
+  apexcharts: `
+    import ApexCharts from 'apexcharts/core';
+    import 'apexcharts/line';
+    new ApexCharts(document.querySelector('#chart'), { chart: { type: 'line' }, series: [{ data: [1, 2] }] }).render();`,
+  highcharts: `
+    import Highcharts from 'highcharts';
+    Highcharts.chart('chart', { series: [{ type: 'line', data: [1, 2] }] });`
+} as const;
+
+async function sizes() {
+  const result: Record<string, { minified: number; gzip: number }> = {};
+  for (const [name, contents] of Object.entries(ENTRIES)) {
+    const output = await build({
+      stdin: {
+        contents,
+        resolveDir: new URL('.', root).pathname,
+        loader: 'js'
+      },
+      bundle: true,
+      minify: true,
+      format: 'esm',
+      platform: 'browser',
+      write: false,
+      logLevel: 'silent'
+    });
+    const code = output.outputFiles[0].contents;
+    result[name] = {
+      minified: code.byteLength,
+      gzip: gzipSync(code, { level: 9 }).byteLength
+    };
+  }
+  const pkg = JSON.parse(
+    await readFile(new URL('package.json', root), 'utf8')
+  ) as {
+    devDependencies: Record<string, string>;
+  };
+  const chartistVersion = (
+    JSON.parse(
+      await readFile(
+        new URL('../../packages/chartist/package.json', root),
+        'utf8'
+      )
+    ) as {
+      version: string;
+    }
+  ).version;
+  return {
+    method:
+      'One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts’ recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).',
+    versions: {
+      chartist: `workspace (${chartistVersion} package version)`,
+      'chart.js': pkg.devDependencies['chart.js'],
+      apexcharts: pkg.devDependencies.apexcharts,
+      highcharts: pkg.devDependencies.highcharts,
+      esbuild: pkg.devDependencies.esbuild
+    },
+    bytes: result
+  };
+}
+
+async function main() {
+  const [downloads, gh, deps, candidates, measured] = await Promise.all([
+    npmDownloads(),
+    github(),
+    dependents(),
+    verifiedCandidates(),
+    sizes()
+  ]);
+  const exclude = JSON.parse(
+    await readFile(new URL('src/data/used-by-exclude.json', root), 'utf8')
+  ) as string[];
+  const usedBy = selectUsedBy([...deps.candidates, ...candidates], { exclude });
+  await avatars(usedBy);
+  const facts = {
+    generatedAt: new Date().toISOString().slice(0, 10),
+    npm: downloads,
+    github: { ...gh, dependents: deps.count },
+    usedBy: usedBy.map(({ owner, repo, stars, evidence }) => ({
+      owner,
+      repo,
+      stars,
+      evidence,
+      avatar: `${owner.toLowerCase()}.png`
+    })),
+    sizes: measured
+  };
+  await writeFile(
+    new URL('src/data/facts.json', root),
+    `${JSON.stringify(facts, null, 2)}\n`
+  );
+  console.log(
+    JSON.stringify({ ...facts, usedBy: facts.usedBy.map(e => e.repo) }, null, 2)
+  );
+}
+
+await main();

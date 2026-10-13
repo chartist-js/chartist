@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-10-13",
+  "npm": {
+    "monthlyDownloads": 500197,
+    "period": {
+      "start": "2026-09-12",
+      "end": "2026-10-11"
+    }
+  },
+  "github": {
+    "stars": 13389,
+    "contributors": 92,
+    "dependents": 72834
+  },
+  "usedBy": [
+    {
+      "owner": "leek-wars",
+      "repo": "leek-wars/leek-wars",
+      "stars": 205,
+      "evidence": "https://github.com/leek-wars/leek-wars",
+      "avatar": "leek-wars.png"
+    },
+    {
+      "owner": "Pinelab-studio",
+      "repo": "Pinelab-studio/pinelab-vendure-plugins",
+      "stars": 138,
+      "evidence": "https://github.com/Pinelab-studio/pinelab-vendure-plugins",
+      "avatar": "pinelab-studio.png"
+    },
+    {
+      "owner": "pluginkollektiv",
+      "repo": "pluginkollektiv/statify",
+      "stars": 87,
+      "evidence": "https://github.com/pluginkollektiv/statify",
+      "avatar": "pluginkollektiv.png"
+    }
+  ],
+  "sizes": {
+    "method": "One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts’ recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).",
+    "versions": {
+      "chartist": "workspace (1.5.0 package version)",
+      "chart.js": "4.5.1",
+      "apexcharts": "7.6.1",
+      "highcharts": "13.1.1",
+      "esbuild": "0.28.2"
+    },
+    "bytes": {
+      "chartist (lineChart)": {
+        "minified": 30491,
+        "gzip": 11868
+      },
+      "chartist (core: chart)": {
+        "minified": 9860,
+        "gzip": 4168
+      },
+      "chart.js": {
+        "minified": 139095,
+        "gzip": 49350
+      },
+      "apexcharts": {
+        "minified": 537814,
+        "gzip": 154909
+      },
+      "highcharts": {
+        "minified": 281246,
+        "gzip": 104650
+      }
+    }
+  }
+}

@@ -1,0 +1,119 @@
+---
+import Mascot from '../Mascot.astro';
+import { ECOSYSTEM } from '../../data/ecosystem';
+import { facts } from '../../data/facts';
+import { REPO, href } from '../../lib/site';
+---
+
+<section class="wrap section">
+  <div class="section-head reveal">
+    <h2>Fits whatever you build with</h2>
+    <p>Framework-free, so it works everywhere. Community wrappers make it feel native in your stack.</p>
+  </div>
+  <div class="grid-auto-sm">
+    {
+      ECOSYSTEM.map(entry => (
+        <a class="card flat eco reveal" href={entry.href}>
+          <strong>{entry.name}</strong>
+          <code>{entry.pkg}</code>
+          <span class="muted">{entry.note}</span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<section class="wrap section community">
+  <div class="card reveal">
+    <h2>Made by a community since 2014</h2>
+    <p class="muted">{facts.github.contributors} contributors have shaped Chartist since 2014. Questions, ideas and pull requests are all welcome.</p>
+    <div class="actions">
+      <a class="btn sm" href={REPO}>Star on GitHub</a>
+      <a class="btn sm" href={`${REPO}/discussions`}>Join the discussion</a>
+      <a class="btn sm" href={`${REPO}/blob/main/CONTRIBUTING.md`}>Contribute</a>
+    </div>
+  </div>
+  <div class="sponsor reveal">
+    <div>
+      <span class="eyebrow">Supported by</span>
+      <strong class="sponsor-name">Cube</strong>
+    </div>
+    <p>Cube helped move Chartist to TypeScript and keeps supporting its development. Thank you! <a href="https://cube.dev">Visit cube.dev</a></p>
+  </div>
+</section>
+
+<section id="start" class="wrap section" data-section>
+  <div class="card finale reveal">
+    <div class="finale-copy">
+      <h2>Ready when you are.</h2>
+      <p class="lead">One import, one function call, one chart. He's already celebrating.</p>
+      <pre class="install-line"><code>npm install chartist</code></pre>
+      <div class="actions">
+        <a class="btn primary" href={href('docs/getting-started/')}>Get started</a>
+        <a class="btn" href={REPO}>GitHub</a>
+      </div>
+    </div>
+    <Mascot pose="celebrate" />
+  </div>
+</section>
+
+<style>
+  .eco {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--ink);
+    text-decoration: none;
+    background: var(--surface);
+  }
+  .eco code {
+    width: fit-content;
+  }
+  .community {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+    gap: 24px;
+  }
+  .community .card {
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .community h2 {
+    font-size: var(--fs-2xl);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .sponsor-name {
+    display: block;
+    font: 700 28px var(--font-display);
+  }
+  .finale {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(380px, 100%), 1fr));
+    align-items: center;
+    gap: 24px 48px;
+    padding: clamp(24px, 4vw, 48px);
+  }
+  .finale-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .finale-copy h2 {
+    font-size: var(--fs-4xl);
+  }
+  .install-line {
+    margin: 0;
+    padding: 14px 20px;
+    border-radius: var(--r-lg);
+    background: var(--code-bg);
+    color: var(--code-ink);
+    font: 14px var(--font-code);
+  }
+</style>

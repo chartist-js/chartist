@@ -124,3 +124,85 @@
   --ct-series-g: #0544d3;
   --ct-series-h: #6b0392;
 }
+
+/* Mouths and reactions: the default mouth unless a reaction asks for another. */
+.mascot .m-mouth,
+.mascot .m-brow {
+  display: none;
+}
+
+.mascot .m-mouth-default {
+  display: inline;
+}
+
+[data-reaction='proud'] .mascot .m-mouth {
+  display: none;
+}
+
+[data-reaction='proud'] .mascot .m-mouth-wide {
+  display: inline;
+}
+
+[data-reaction='curious'] .mascot .m-brow {
+  display: inline;
+}
+
+.mascot .m-hat {
+  transform-box: view-box;
+  transform-origin: 372px 120px;
+  transition: transform var(--dur-3) var(--ease-spring);
+}
+
+[data-reaction='curious'] .mascot .m-hat {
+  transform: translate(2px, -9px) rotate(-3deg);
+}
+
+.mascot .m-hat-fly {
+  animation: m-hat-fly 2.4s var(--ease-out) infinite;
+}
+
+.mascot .m-confetti > * {
+  animation: m-fall 2.4s linear infinite;
+  transform-box: fill-box;
+}
+
+.mascot .m-confetti > :nth-child(2n) {
+  animation-duration: 3.1s;
+  animation-delay: -1s;
+}
+
+.mascot .m-confetti > :nth-child(3n) {
+  animation-duration: 2.7s;
+  animation-delay: -2s;
+}
+
+@keyframes m-hat-fly {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+  50% {
+    transform: translateY(-12px) rotate(-4deg);
+  }
+}
+
+@keyframes m-fall {
+  from {
+    transform: translateY(-30px) rotate(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  to {
+    transform: translateY(120px) rotate(220deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot .m-hat-fly,
+  .mascot .m-confetti > * {
+    animation: none;
+  }
+}

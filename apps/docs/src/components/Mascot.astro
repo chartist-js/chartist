@@ -1,16 +1,20 @@
 ---
 /**
  * The Chartist Guy (docs/visual-design Mascot artboard), flat variant.
- * Poses: hero (presenting the board), point, lost (404). In the hero pose
- * the board holds a live chart: pass it as the default slot; it's placed
- * over the board's chart area.
+ * Poses: hero (presenting the board), point, lost (404), celebrate. In the
+ * hero and celebrate poses the board holds a live chart: pass it as the
+ * default slot; it's placed over the board's chart area.
+ *
+ * Reactions switch without re-rendering: set data-reaction="curious" or
+ * "proud" on the mascot or an ancestor (see mascot.css).
  */
 interface Props {
-  pose?: 'hero' | 'point' | 'lost';
+  pose?: 'hero' | 'point' | 'lost' | 'celebrate';
+  reaction?: 'none' | 'curious' | 'proud';
   class?: string;
 }
 
-const { pose = 'hero', class: className } = Astro.props;
+const { pose = 'hero', reaction = 'none', class: className } = Astro.props;
 
 interface Arm {
   d: string;
@@ -29,13 +33,16 @@ const ARMS = {
   forkR: arm('M408,238 Q444,250 444,280', 444, 282, 92, 1),
   downL: arm('M336,238 Q322,270 326,300', 326, 302, 95, -1),
   upR: arm('M408,238 Q436,226 452,198', 452, 198, -60, 1),
-  scratchR: arm('M408,238 Q446,214 428,156', 428, 156, -105, 1)
+  scratchR: arm('M408,238 Q446,214 428,156', 428, 156, -105, 1),
+  cheerL: arm('M336,238 Q322,214 316,188', 316, 188, -100, -1),
+  cheerR: arm('M408,238 Q424,214 428,188', 428, 188, -80, 1)
 };
 
 const MOUTH = {
   smile:
     'M343,187.5 Q357,192 371,186.5 Q374,186 373,189 Q366,204 357,204 Q348,204 342,190 Q341,187.5 343,187.5 Z',
-  o: 'M348.5,194 a5.5,6.5 0 1,0 11,0 a5.5,6.5 0 1,0 -11,0 Z'
+  o: 'M348.5,194 a5.5,6.5 0 1,0 11,0 a5.5,6.5 0 1,0 -11,0 Z',
+  wide: 'M340,185.5 Q357,191 374,184.5 Q377,184 376,187 Q369,212 357,212 Q345,212 339,188 Q338,185.5 340,185.5 Z'
 };
 
 const POSES = {
@@ -71,6 +78,17 @@ const POSES = {
     mouth: MOUTH.o,
     eyesDx: -3,
     label: 'The Chartist Guy scratching his head next to a toppled chart'
+  },
+  celebrate: {
+    viewBox: '0 0 480 420',
+    easel: true,
+    easelTransform: undefined,
+    arms: [ARMS.cheerL, ARMS.cheerR],
+    fork: false,
+    hatTransform: 'translate(-14 -44) rotate(-16 372 90)',
+    mouth: MOUTH.wide,
+    eyesDx: 0,
+    label: 'The Chartist Guy celebrating, hat in the air'
   }
 } as const;
 
@@ -83,10 +101,11 @@ const board = {
   width: `${(200 / vw) * 100}%`,
   height: `${(136 / vh) * 100}%`
 };
-const hasBoardChart = pose === 'hero' && Astro.slots.has('default');
+const hasBoardChart = (pose === 'hero' || pose === 'celebrate') && Astro.slots.has('default');
+const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile';
 ---
 
-<div class:list={['mascot-stage', className]}>
+<div class:list={['mascot-stage', className]} data-reaction={reaction === 'none' ? undefined : reaction}>
   <svg class="mascot" viewBox={p.viewBox} role="img" aria-label={p.label}>
     {
       p.easel && (
@@ -162,11 +181,16 @@ const hasBoardChart = pose === 'hero' && Astro.slots.has('default');
             <ellipse cx="384" cy="136" rx="4.4" ry="6" fill="var(--m-ink)" />
           </g>
         </g>
-        <path d={p.mouth} fill="#6E1F2A" />
+        {
+          (['smile', 'wide', 'o'] as const).map(name => (
+            <path class:list={[`m-mouth m-mouth-${name}`, { 'm-mouth-default': name === mouthName }]} d={MOUTH[name]} fill="#6E1F2A" />
+          ))
+        }
+        <path class="m-brow" d="M377,126 Q384,119 391,125" stroke="var(--m-ink)" stroke-width="3.2" fill="none" stroke-linecap="round" />
         <path class="m-stache" d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="var(--m-ink)" />
       </g>
       <g transform={p.hatTransform}>
-        <g class="m-hat">
+        <g class:list={['m-hat', { 'm-hat-fly': pose === 'celebrate' }]}>
           <g class="m-hat-tip">
             <ellipse cx="372" cy="120" rx="54" ry="7" fill="var(--m-ink)" />
             <path d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="var(--m-ink)" />
@@ -176,6 +200,30 @@ const hasBoardChart = pose === 'hero' && Astro.slots.has('default');
         </g>
       </g>
     </g>
+    {
+      pose === 'celebrate' && !hasBoardChart && (
+        <g aria-hidden="true">
+          <text x="144" y="208" text-anchor="middle" font-size="84" font-weight="800" letter-spacing="-4" fill="var(--ct-series-a)">
+            v2
+          </text>
+          <path d="M84,226 C112,236 176,236 204,226" stroke="var(--accent)" stroke-width="6" fill="none" stroke-linecap="round" />
+        </g>
+      )
+    }
+    {
+      pose === 'celebrate' && (
+        <g class="m-confetti" aria-hidden="true">
+          <rect x="300" y="40" width="8" height="14" rx="2" fill="var(--ct-series-a)" />
+          <rect x="440" y="70" width="8" height="14" rx="2" fill="var(--ct-series-b)" />
+          <circle cx="290" cy="110" r="5" fill="var(--ct-series-c)" />
+          <rect x="452" y="140" width="8" height="14" rx="2" fill="var(--ct-series-c)" />
+          <circle cx="420" cy="26" r="5" fill="var(--ct-series-e)" />
+          <rect x="270" y="170" width="8" height="14" rx="2" fill="var(--ct-series-d)" />
+          <circle cx="252" cy="60" r="4" fill="var(--ct-series-f)" />
+          <rect x="466" y="20" width="8" height="14" rx="2" fill="var(--ct-series-g)" />
+        </g>
+      )
+    }
     {
       pose === 'lost' && (
         <text class="m-q" x="296" y="96" font-size="58" font-weight="800" fill="var(--ct-series-a)" aria-hidden="true">
