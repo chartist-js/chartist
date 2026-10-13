@@ -5,18 +5,11 @@ import { SWATCHES } from '../../data/landing';
 import { facts, formatKb } from '../../data/facts';
 
 const sizes = facts.sizes.bytes;
-const RESPONSIVE = `chart('#chart', {
-  ...config,
-  responsive: responsive([
-    ['(width < 600px)', { padding: 4 }],
-    [container('(width < 400px)'), { labels: 'svg' }]
-  ])
-});`;
-const SSR = `import { toScene, renderToString } from 'chartist';
-
-const svg = renderToString(
-  toScene(config, { width: 600, height: 300 })
-);`;
+const RESPONSIVE = `responsive([
+  ['(width < 600px)', small],
+  [container('(width < 400px)'), tiny]
+])`;
+const SSR = `renderToString(toScene(config, size))`;
 ---
 
 <section id="features" class="section sunken" data-section>
@@ -28,7 +21,7 @@ const svg = renderToString(
     <div class="grid-auto">
       <article class="card feature reveal">
         <h3>Style it with CSS</h3>
-        <p class="muted">Plain SVG with predictable classes. Colors, lines, grid and labels are custom properties, scoped to a page, a container or one chart.</p>
+        <p class="muted">Plain SVG with predictable classes. Pick a color:</p>
         <div class="demo swatch-demo" data-swatch-demo>
           <Chart
             type="line"
@@ -49,30 +42,28 @@ const svg = renderToString(
       </article>
       <article class="card feature reveal">
         <h3>Responsive, two ways</h3>
-        <p class="muted">Breakpoints by the window, or by the chart's own container. Same conditions you already write in CSS.</p>
+        <p class="muted">By the window, or by the chart's own container (experimental), with the conditions you write in CSS.</p>
         <div class="demo stack">
           <Code code={RESPONSIVE} lang="ts" theme="css-variables" />
-          <span class="tag">container() is experimental, needs a polyfill today</span>
         </div>
       </article>
       <article class="card feature reveal">
         <h3>Composed charts</h3>
-        <p class="muted">Bars and lines in one chart, with left and right Y axes, each scaled to its own series.</p>
+        <p class="muted">Bars and lines in one chart, each on its own Y axis.</p>
         <div class="demo">
           <Chart type="composed" label="Bars on a left axis and a line on a right axis" aspect="16 / 8" data={{ labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], series: [[4, 6, 5, 8, 7, 9], [20, 45, 38, 60, 72, 90]] }} />
         </div>
       </article>
       <article class="card feature reveal">
         <h3>Renders anywhere SVG does</h3>
-        <p class="muted">Labels are real SVG text, wrapped to fit. Render on the server, and charts survive PDFs, email and image converters.</p>
+        <p class="muted">Real SVG text labels. Render on the server for PDFs, email and images.</p>
         <div class="demo stack">
           <Code code={SSR} lang="ts" theme="css-variables" />
-          <div class="tags"><span class="tag">Server</span><span class="tag">PDF</span><span class="tag">Email</span><span class="tag">PNG</span></div>
         </div>
       </article>
       <article class="card feature reveal">
         <h3>Tiny, and no build step</h3>
-        <p class="muted">Tree-shakable, so you ship only what you import. Load it from a CDN as a native module, or use npm with any bundler.</p>
+        <p class="muted">You ship only what you import. A CDN module or npm, your pick.</p>
         <div class="demo">
           <ul class="sizes">
             <li><span>✓ core (<code>chart</code>)</span><span>{formatKb(sizes['chartist (core: chart)'].gzip)}</span></li>
@@ -84,7 +75,7 @@ const svg = renderToString(
       </article>
       <article class="card feature reveal">
         <h3>Colors for everyone</h3>
-        <p class="muted">An opt-in color-blind-safe palette that follows light and dark mode. The classic colors stay the default.</p>
+        <p class="muted">An opt-in color-blind-safe palette for light and dark mode.</p>
         <div class="demo ct-theme-accessible stack">
           <div class="palette" aria-hidden="true">
             {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(letter => <span class={`ct-series-${letter}`} />)}
@@ -123,8 +114,8 @@ const svg = renderToString(
     place-items: stretch;
   }
   .demo :global(pre.astro-code) {
-    font-size: 12px;
-    padding: 10px 12px;
+    font-size: 12.5px;
+    padding: 12px 14px;
   }
   .swatch-demo {
     display: flex;

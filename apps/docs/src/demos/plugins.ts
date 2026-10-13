@@ -18,7 +18,7 @@ function decorateBars(
     }, series);
 }
 
-/** Lollipop bars: a thin stick with a dot on top. */
+/** Lollipop bars: a dot on each bar; CSS makes the stick thin. */
 export const lollipop = (): ChartPlugin => ({
   name: 'lollipop',
   install(chart) {
@@ -26,19 +26,8 @@ export const lollipop = (): ChartPlugin => ({
       if (series.role !== 'series') {
         return;
       }
-      const thin = series.children.reduce(
-        (result, bar) =>
-          bar.role === 'bar'
-            ? result.replace(
-                bar,
-                bar.attr({ style: `${bar.attrs.style ?? ''};stroke-width:3px` })
-              )
-            : result,
-        series
-      );
-      return decorateBars(thin, bar => {
+      return decorateBars(series.addClass('ct-lollipops'), bar => {
         const { x2, y2, style } = bar.attrs;
-        // The dot takes the bar's style, so a recolored bar keeps its dot.
         return node('circle', { cx: x2, cy: y2, r: 6, style }, 'ct-lollipop');
       });
     });

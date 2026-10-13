@@ -4,6 +4,24 @@ import { LIBRARIES, NAMES, ROWS, SIZE_KEYS } from '../../data/comparison';
 import { facts, formatDate, formatKb } from '../../data/facts';
 
 const bytes = facts.sizes.bytes as Record<string, { gzip: number }>;
+/** The distinct sources of a library's cells, in row order. */
+const sourcesOf = (lib: (typeof LIBRARIES)[number]) => [...new Set(ROWS.map(row => row.cells[lib].source))];
+/** What a source is, from its address: License, npm package, README, … */
+const sourceLabel = (url: string) => {
+  const { hostname, pathname, hash } = new URL(url);
+  // The last path segment that isn't a version ("latest", "v4").
+  const last =
+    pathname
+      .split('/')
+      .filter(segment => segment && !/^(latest|v?\d[\d.]*)$/.test(segment))
+      .pop() ?? '';
+  if (/license/i.test(pathname)) {return 'License';}
+  if (hostname.includes('npmjs.com')) {return 'npm package';}
+  if (hash === '#readme') {return 'README';}
+  if (hostname.startsWith('shop.')) {return 'Pricing';}
+  if (hostname === 'github.com' && pathname.split('/').filter(Boolean).length <= 2) {return 'Repository';}
+  return `Docs: ${last.replace(/\.html$/, '').replace(/[-_]/g, ' ')}`;
+};
 const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
 ---
 
@@ -60,13 +78,28 @@ const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
                     return (
                       <td class:list={{ us: lib === 'chartist' }}>
                         <span class:list={['value', { good: cell.good }]}>{cell.value}</span>
-                        <a class="source" href={cell.source} aria-label={`Source: ${NAMES[lib]}, ${row.label}`}>source</a>
                       </td>
                     );
                   })}
                 </tr>
               ))
             }
+            <tr class="sources">
+              <th scope="row">Sources</th>
+              {
+                LIBRARIES.map(lib => (
+                  <td class:list={{ us: lib === 'chartist' }}>
+                    <ul>
+                      {sourcesOf(lib).map(url => (
+                        <li>
+                          <a href={url} title={url}>{sourceLabel(url)}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                ))
+              }
+            </tr>
           </tbody>
         </table>
       </div>
@@ -76,7 +109,7 @@ const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
       </div>
       <details class="method">
         <summary>How we measured</summary>
-        <p>{facts.sizes.method} Versions: Chart.js {facts.sizes.versions['chart.js']}, ApexCharts {facts.sizes.versions.apexcharts}, Highcharts {facts.sizes.versions.highcharts}. Feature and license rows come from each library's own documentation, linked in every cell. Last run {formatDate(facts.generatedAt)}. Spotted something out of date? <a href="https://github.com/chartist-js/chartist/issues">Open an issue</a>.</p>
+        <p>{facts.sizes.method} Versions: Chart.js {facts.sizes.versions['chart.js']}, ApexCharts {facts.sizes.versions.apexcharts}, Highcharts {facts.sizes.versions.highcharts}. Feature and license rows come from each library's own documentation, listed under Sources. Last run {formatDate(facts.generatedAt)}. Spotted something out of date? <a href="https://github.com/chartist-js/chartist/issues">Open an issue</a>.</p>
       </details>
     </div>
   </div>
@@ -117,7 +150,6 @@ const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
     color: var(--ok);
     font-weight: 700;
   }
-  .source,
   .lib-version {
     font-size: 12px;
     color: var(--ink-2);
@@ -131,6 +163,19 @@ const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
   }
   .compare-notes strong {
     font: 700 18px var(--font-display);
+  }
+  .sources ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sources a {
+    font-size: 12.5px;
+    color: var(--ink-2);
+    overflow-wrap: anywhere;
   }
   .method {
     font-size: 14px;

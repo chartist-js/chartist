@@ -59,7 +59,7 @@
 .live .cm-editor {
   background: var(--code-bg);
   color: var(--code-ink);
-  font-size: 13.5px;
+  font-size: 14px;
 }
 
 .live .cm-editor .cm-scroller {

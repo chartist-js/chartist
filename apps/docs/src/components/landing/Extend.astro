@@ -3,7 +3,12 @@ import { Code } from 'astro:components';
 import { PIPELINE } from '../../data/landing';
 import pluginSource from '../../demos/plugins.ts?raw';
 
-const lollipopSource = pluginSource.slice(pluginSource.indexOf('/**\n * Decorates'), pluginSource.indexOf('/** The value above'));
+// Only the lollipop plugin: the short helper it calls is self-explanatory.
+const lollipopSource = pluginSource
+  .slice(pluginSource.indexOf('/** Lollipop'), pluginSource.indexOf('/** The value above'))
+  .trim();
+const LOLLIPOP_CSS = `/* style.css */
+.ct-lollipops .ct-bar { stroke-width: 3px; }`;
 ---
 
 <section id="extend" class="wrap section" data-section>
@@ -17,7 +22,6 @@ const lollipopSource = pluginSource.slice(pluginSource.indexOf('/**\n * Decorate
         <li class="pipe-step">
           <span class="eyebrow">{String(i + 1).padStart(2, '0')}</span>
           <strong>{step.title}</strong>
-          <span class="muted">{step.text}</span>
           <code>on('{step.phase}')</code>
         </li>
       ))
@@ -36,8 +40,9 @@ const lollipopSource = pluginSource.slice(pluginSource.indexOf('/**\n * Decorate
       <div class="plugin-chart" data-plugin-chart role="img" aria-label="A bar chart changed by the selected plugins"></div>
       <pre class="usage" data-plugin-usage></pre>
     </div>
-    <div class="reveal">
-      <Code code={lollipopSource.trim()} lang="ts" theme="css-variables" />
+    <div class="plugin-code reveal">
+      <Code code={lollipopSource} lang="ts" theme="css-variables" />
+      <Code code={LOLLIPOP_CSS} lang="css" theme="css-variables" />
     </div>
   </div>
   <p class="muted reveal">Community plugins add tooltips, legends, axis titles and zoom; plugins written for 1.x run in v2 through <code>fromLegacyPlugin</code>.</p>
@@ -55,6 +60,12 @@ const lollipopSource = pluginSource.slice(pluginSource.indexOf('/**\n * Decorate
     gap: 24px;
     margin-block: 32px 20px;
     align-items: start;
+  }
+  .plugin-code {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
   }
   .plugin-demo .card {
     padding: 20px;
@@ -78,6 +89,9 @@ const lollipopSource = pluginSource.slice(pluginSource.indexOf('/**\n * Decorate
   }
   .plugin-chart :global(svg) {
     display: block;
+  }
+  .plugin-chart :global(.ct-lollipops .ct-bar) {
+    stroke-width: 3px;
   }
   .plugin-chart :global(.ct-lollipop) {
     fill: var(--ct-color);

@@ -130,7 +130,7 @@ kbd {
 
 .eyebrow {
   font-family: var(--font-code);
-  font-size: var(--fs-xs);
+  font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-2);
@@ -258,7 +258,7 @@ a.btn.primary:hover {
   gap: 4px;
   padding: 2px 8px;
   border-radius: var(--r-pill);
-  font: 700 11px / 1.5 var(--font-code);
+  font: 700 12.5px / 1.5 var(--font-code);
   letter-spacing: 0.02em;
   background: var(--bg-sunken);
   color: var(--ink-2);
@@ -406,12 +406,27 @@ pre.astro-code {
   background: var(--code-bg);
   color: var(--code-ink);
   border-radius: var(--r-lg);
-  font: 400 13.5px / 1.65 var(--font-code);
+  font: 400 14px / 1.65 var(--font-code);
   overflow: auto;
 }
 
 pre.astro-code {
-  padding: 16px 20px;
+  padding: 16px 52px 16px 20px;
+}
+
+/* Fragments in narrow cards wrap instead of scrolling sideways. */
+.feature pre.astro-code,
+.plugin-code pre.astro-code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.feature pre.astro-code {
+  padding-right: 14px;
+}
+
+.feature .copy-btn {
+  display: none;
 }
 
 pre.astro-code code {
@@ -698,16 +713,6 @@ pre.astro-code code {
 
 .site-footer .sponsor-line a {
   font-weight: 700;
-}
-
-.site-footer .credit {
-  flex-basis: 100%;
-  font-size: var(--fs-xs);
-}
-
-/* Links inside a sentence stay underlined. */
-.site-footer .credit a {
-  text-decoration: underline;
 }
 
 .site-footer .legal {

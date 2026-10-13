@@ -24,7 +24,7 @@
   gap: 4px;
   padding: 2px 8px;
   border-radius: var(--r-pill);
-  font: 700 11px/1.5 var(--font-code);
+  font: 700 12.5px/1.5 var(--font-code);
   letter-spacing: 0.02em;
   background: var(--bg-sunken);
   color: var(--ink-2);
@@ -262,7 +262,7 @@
   background: var(--bg-sunken);
 }
 .chapter-nav a .num {
-  font: 700 11px/1 var(--font-code);
+  font: 700 12.5px/1 var(--font-code);
   color: var(--brand);
 }
 .scroll-progress {
@@ -650,4 +650,31 @@
 .hero-art .mascot-stage {
   width: 100%;
   max-width: 560px;
+}
+
+/* Feature demos sit at the bottom, so the cards line up. */
+.feature .demo {
+  margin-top: auto;
+}
+
+/* Pipeline: room between the phases and arrows you can see. */
+.pipeline {
+  gap: 32px;
+}
+
+.pipe-step {
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 14px 12px;
+}
+
+.pipe-step code {
+  width: fit-content;
+  font-size: 12.5px;
+}
+
+.pipe-step:not(:last-child)::after {
+  right: -26px;
+  font: 700 22px var(--font-body);
+  color: var(--brand);
 }

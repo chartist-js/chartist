@@ -104,38 +104,31 @@ chart('#chart', {
 export const PIPELINE = [
   {
     phase: 'resolve',
-    title: 'Resolve',
-    text: 'Your config and plugins come together.'
+    title: 'Resolve'
   },
   {
     phase: 'prepare',
-    title: 'Prepare',
-    text: 'Series are normalized: gaps, objects, names.'
+    title: 'Prepare'
   },
   {
     phase: 'layout',
-    title: 'Layout',
-    text: 'The chart area, axes and their ticks.'
+    title: 'Layout'
   },
   {
     phase: 'compose',
-    title: 'Compose',
-    text: 'Every grid line, label, line, bar and point becomes a node.'
+    title: 'Compose'
   },
   {
     phase: 'scene',
-    title: 'Scene',
-    text: 'The whole tree, before anything is drawn.'
+    title: 'Scene'
   },
   {
     phase: 'render',
-    title: 'Render',
-    text: 'Live SVG in the page, or a string on the server.'
+    title: 'Render'
   },
   {
     phase: 'mount',
-    title: 'Mount',
-    text: 'The live elements, ready for interaction.'
+    title: 'Mount'
   }
 ] as const;
 
