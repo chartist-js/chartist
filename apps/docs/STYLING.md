@@ -48,6 +48,8 @@ Use them as they are; add a new shared class only for a pattern repeated in thre
 - `tokens.css`, `theme.css`, `chart-theme.css` (the `--ct-*` chart theme: Chartist's own CSS API, which the site demonstrates), `mascot.css`.
 - `motion.css`: scroll and view timelines (`.reveal`, the chapter progress), keyframes and their reduced-motion alternatives. Keep using the `reveal` class.
 - Generated HTML: `code.css` (Shiki code blocks and their copy button), `prose.css` (MDX content), `live.css` (the editor).
+  Chart containers sized by `aspect-ratio` need `min-h-0`: otherwise the box grows with its content, including the probe svg Chartist measures it with, and the chart is drawn too tall. `Chart.astro` does this; any other chart box (like the plugin demo's) must too.
+
 - Selectors into Chartist's SVG (`.ct-*`) or complex states (`:has()`, sibling chains): a scoped `<style>` in the component.
 
 Scroll-driven animations use longhands (`animation-name`, `animation-timeline`, …), never the `animation` shorthand: the minifier folds the timeline into the shorthand, which browsers reject. An e2e test checks them with motion on.

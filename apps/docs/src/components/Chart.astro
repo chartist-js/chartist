@@ -21,10 +21,12 @@ const spec: ChartSpec = { type, data, options };
 <!--
   The block wrapper keeps the box's aspect-ratio height definite even when
   the chart sits in a flex column, so the chart's 100% height resolves.
+  min-h-0: an aspect-ratio box otherwise grows with its content, including
+  the probe svg Chartist measures it with, and the chart comes out too tall.
 -->
 <div class:list={['block w-full min-w-0', className]}>
   <div
-    class:list={['chart-box w-full', { 'ct-draw': draw }]}
+    class:list={['chart-box min-h-0 w-full', { 'ct-draw': draw }]}
     style={{ aspectRatio: aspect }}
     role="img"
     aria-label={label}
