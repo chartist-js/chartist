@@ -1,0 +1,155 @@
+---
+title: Sizing charts
+description: Give a chart a responsive aspect ratio with a class, a fixed size with options, or any size CSS can describe. Chartist fills the box and redraws when it changes.
+group: Guides
+order: 2
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    [5, 4, 3, 7],
+    [3, 2, 9, 5]
+  ]
+};
+
+A chart fills its container. It measures the box, draws an SVG of that size, and draws again when the box changes. So sizing a chart means sizing its container, and you have three ways to do it: an aspect ratio class, fixed options, or your own CSS.
+
+## Aspect ratios
+
+Images and videos on a responsive page keep their proportions as they scale: they're 4:3 or 16:9, not 320 by 240 pixels. Charts should too. Add a ratio class to the container, and the chart is as wide as its parent and as tall as the ratio says:
+
+```html
+<div id="chart" class="ct-perfect-fourth"></div>
+```
+
+No `width` or `height` in the options. Press **Edit**, then try another class in `index.html`:
+
+<LiveExample
+  title='Aspect ratio classes'
+  label='A bar chart of two series over four quarters in a golden section box'
+  show='index.html'
+  preview={{ type: 'bar', data }}
+  example='sizing-charts/ratio-classes'
+/>
+
+The classes come with `chartist/styles.css` and are named after musical intervals, from a square to four times as wide as tall:
+
+| Class               | Width : height |
+| ------------------- | -------------- |
+| `ct-square`         | 1 : 1          |
+| `ct-minor-second`   | 16 : 15        |
+| `ct-major-second`   | 9 : 8          |
+| `ct-minor-third`    | 6 : 5          |
+| `ct-major-third`    | 5 : 4          |
+| `ct-perfect-fourth` | 4 : 3          |
+| `ct-perfect-fifth`  | 3 : 2          |
+| `ct-minor-sixth`    | 8 : 5          |
+| `ct-golden-section` | 1.618 : 1      |
+| `ct-major-sixth`    | 5 : 3          |
+| `ct-minor-seventh`  | 16 : 9         |
+| `ct-major-seventh`  | 15 : 8         |
+| `ct-octave`         | 2 : 1          |
+| `ct-major-tenth`    | 5 : 2          |
+| `ct-major-eleventh` | 8 : 3          |
+| `ct-major-twelfth`  | 3 : 1          |
+| `ct-double-octave`  | 4 : 1          |
+
+Need another ratio? With Sass, the `$ct-scales` and `$ct-scales-names` settings define the list (keep them the same length); see [Sass](../styling-with-css/#sass).
+
+## Fixed stuff can be sweet too
+
+Sometimes a chart has a fixed spot: a 300 by 200 pixel card, a print layout. Set `width` and `height` in the options:
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, 7, 8, 5]]
+  },
+  { width: 300, height: 200 }
+);
+```
+
+A number is pixels. A string can be any CSS length, `'20rem'` or `'50%'`: Chartist sets it on the SVG and measures what the browser makes of it. You can fix one side and leave the other to the container.
+
+## Your own CSS
+
+The ratio classes are one way to give the container a size; anything that does is fine. A height in CSS works:
+
+```css
+#chart {
+  height: 240px;
+}
+```
+
+So does CSS `aspect-ratio`, with one line you must not forget:
+
+```css
+#chart {
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+}
+```
+
+<Callout kind='warn'>
+  **`aspect-ratio` needs `min-height: 0`.** To measure the container, Chartist
+  places a probe SVG of 100% width and height in it. An `aspect-ratio` box can
+  grow with its content, probe included, and then the chart comes out too tall.
+  `min-height: 0` stops that. The `ct-*` classes don't use `aspect-ratio` and
+  aren't affected.
+</Callout>
+
+A container with no height of its own, like an empty `div`, gets a chart 150 pixels tall: the browser's default height for an SVG. If a chart comes out that height whatever you do, the container's height is the place to look.
+
+## More than one chart on a page
+
+Every chart needs its own container. A selector string draws into the first element that matches it, so give each container an id:
+
+```html
+<div id="visits" class="ct-perfect-fourth"></div>
+<div id="revenue" class="ct-octave"></div>
+```
+
+```ts
+import 'chartist/styles.css';
+import { barChart, lineChart } from 'chartist';
+
+lineChart('#visits', {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [[12, 9, 7, 8, 5]]
+});
+
+barChart('#revenue', {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [[5, 4, 3, 7]]
+});
+```
+
+Or pass the elements themselves, for example to draw one chart per card:
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+for (const element of document.querySelectorAll('.sparkline')) {
+  lineChart(element, {
+    series: [[3, 5, 2, 6, 4]]
+  });
+}
+```
+
+## What happens on resize
+
+Nothing you need to wire up. Chartist watches its container with a `ResizeObserver` and redraws when the size changes, whether the window was resized, a sidebar collapsed or the layout moved the chart. A chart with a fixed `width` and `height` keeps its size.
+
+To change what the chart draws at a new size, not only how big it is, use [responsive options](../responsive/). To stop watching, call `detach()` on the chart; see [Updating charts](../updating-charts/).
+
+Next: [style your charts with CSS](../styling-with-css/).

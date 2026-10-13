@@ -1,0 +1,159 @@
+---
+title: Responsive sugar topping
+description: Change what a chart draws, not only its size, with media queries per chart, and experimentally with container queries.
+group: Guides
+order: 4
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  series: [
+    { name: 'visits', data: [12, 9, 7, 8, 5] },
+    { name: 'signups', data: [2, 1, 3.5, 7, 3] }
+  ]
+};
+
+A chart that scales is a good start, and Chartist [does that by itself](../sizing-charts/). But a chart that looks right at 900 pixels is often a mess at 320: labels collide, points crowd each other, the area hides the line behind it. Shrinking it isn't enough; on a small screen it should draw less.
+
+Media queries already do this for your styles. Responsive options do it for a chart's options: pairs of a condition and the options that apply while it matches.
+
+## Media queries
+
+The chart functions take responsive options as a fourth argument, after the options. Each entry is `[mediaQuery, overrides]`:
+
+<LiveExample
+  title='Responsive options'
+  label='Two lines over the work week with full day names; narrower screens show short names and no points'
+  preview={{ type: 'line', data, options: { low: 0, showArea: true } }}
+  example='responsive/media-queries'
+/>
+
+The live preview is a page of its own, so its width is the "screen" these queries see. On a wide page it shows full day names. On a phone, or in a narrow preview, it drops the points and shortens the labels.
+
+Chartist checks the queries with `matchMedia()` and redraws when one starts or stops matching. The options that don't depend on the screen stay in the third argument; the fourth only holds what changes.
+
+## Order and merging
+
+Every matching entry applies, not only the first one. They're merged over your options in the order you list them, so a later entry wins where two set the same option. Write them from the general to the specific: `(max-width: 640px)` first, `(max-width: 400px)` after it. Below 400 pixels both match, and the second only needs what's different.
+
+The merge is deep, like the merge of [options over defaults](../data-and-options/#the-options-argument): `axisX: { labelInterpolationFnc }` changes the labels and keeps the other X axis options. That includes [options per series](../data-and-options/#options-per-series), which is how the example above drops the area of one series on small screens only.
+
+## Responsive `chart()`
+
+`chart()` takes responsive overrides too, in its config as `responsive: responsive([...])`. The entries look the same, and the overrides are part of the config: padding, axes, layers, size.
+
+```ts
+import 'chartist/styles.css';
+import {
+  autoScaleAxis,
+  axisGrid,
+  axisLabels,
+  cartesianAxes,
+  chart,
+  line,
+  responsive,
+  stepAxis
+} from 'chartist';
+
+const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+
+chart('#chart', {
+  data: { labels, series: [[12, 9, 7, 8, 5]] },
+  axes: cartesianAxes([
+    { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+    { id: 'y', side: 'left', type: autoScaleAxis(), low: 0 }
+  ]),
+  layers: [axisGrid(), line({ showArea: true }), axisLabels()],
+  responsive: responsive([
+    [
+      '(max-width: 640px)',
+      {
+        padding: 5,
+        layers: [axisGrid(), line({ showPoint: false }), axisLabels()]
+      }
+    ]
+  ])
+});
+```
+
+Here the merge is shallow: an override replaces a top-level key as a whole. That's why the entry above lists all three layers, not only the line. Responsive support is opt-in through `responsive()`, so a `chart()` without it doesn't bundle the code that watches the queries.
+
+## Container queries
+
+<Callout kind='warn'>
+  **`container()` is experimental.** It needs `Element.matchContainer()`, which
+  no browser ships yet ([csswg-drafts#6205](https://github.com/w3c/csswg-drafts/issues/6205)).
+  Until then, load the [`match-container`](https://github.com/teetotum/match-container)
+  polyfill before your charts: `import 'match-container'` from npm, or a
+  `<script>` tag from a CDN. Without it, Chartist warns once in the console and
+  ignores the container entries; media query entries keep working.
+</Callout>
+
+A media query asks about the screen. A chart in a sidebar, a card or a grid cell cares about its own box: the same chart can be wide on one page and narrow on another at the same window width. Container queries ask about the box.
+
+Wrap the query in `container()`. It takes the condition you'd write after `@container` in CSS, so you can reuse the breakpoints from your stylesheet:
+
+```ts
+import 'match-container';
+import 'chartist/styles.css';
+import { container, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, 7, 8, 5]]
+  },
+  { low: 0 },
+  [
+    [
+      container('(width < 400px)'),
+      {
+        showPoint: false,
+        axisX: { labelInterpolationFnc: value => String(value)[0] }
+      }
+    ]
+  ]
+);
+```
+
+As in CSS, a container query needs a container: an element with `container-type`. That can be the chart's container itself or any element around it:
+
+```css
+.card {
+  container-type: inline-size;
+}
+```
+
+```html
+<div class="card">
+  <div id="chart" class="ct-golden-section"></div>
+</div>
+```
+
+Without a bundler, load the polyfill with a classic script before your module:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/match-container@0.1.4/matchContainer.js"></script>
+<script type="module">
+  import {
+    container,
+    lineChart
+  } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+  // …
+</script>
+```
+
+Container entries mix with media query strings in one list, and they merge the same way: in order, every matching entry. Chartist watches the container's size and redraws when an entry starts or stops matching. They work with the chart functions and with `chart()`; the 1.x classes ignore them.
+
+<Callout>
+  **Why no live example?** The live examples run in a sandbox without the
+  polyfill, and this site loads nothing from other servers. The [responsive demo
+  on the home page](../../#responsive) uses container queries, polyfill
+  included: drag its corner to see them work.
+</Callout>
+
+Next: [style what you've drawn](../styling-with-css/), or [animate it](../animations/).

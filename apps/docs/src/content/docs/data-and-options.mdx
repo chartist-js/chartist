@@ -1,0 +1,196 @@
+---
+title: Data and options
+description: What a chart's data looks like, from plain arrays to named series with metadata, and how options set defaults for every series or just one.
+group: Guides
+order: 1
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+  series: [
+    { name: 'visits', data: [12, 9, 7, null, 5, 8, 11] },
+    { name: 'signups', data: [2, 1, 3.5, 7, 3, 4, 6] }
+  ]
+};
+
+Every chart function takes the same three things: where to draw, what to draw and how. The container comes first, the data second, the options third. This page is about the last two.
+
+Data is plain JavaScript: arrays of numbers, and objects when a series or a value needs a name or extra information. Options are plain objects too, merged over sensible defaults, so you only write down what you want to change.
+
+## Labels and series
+
+The simplest data is a list of labels and a list of series, where each series is an array of numbers. On a line chart, every series is a line and the labels go along the X axis, one per value.
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart('#chart', {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    [12, 9, 7, 8, 5],
+    [2, 1, 3.5, 7, 3]
+  ]
+});
+```
+
+Series don't need the same length. Chartist pads the shorter ones with gaps up to the longest series, and the labels with empty strings, so nothing shifts out of place.
+
+Pie and donut charts take one flat series instead, a single array of numbers, one per slice. See [Pie and donut charts](../pie-and-donut-charts/).
+
+## Series objects
+
+When a series needs more than its numbers, write it as an object and put the values in `data`:
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart('#chart', {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    { name: 'revenue', className: 'revenue', data: [5, 7, 6, 9] },
+    { name: 'costs', meta: { unit: 'kCHF' }, data: [3, 4, 4, 5] }
+  ]
+});
+```
+
+| Property    | What it does                                                                                                                            |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `data`      | The values, as in a plain array series                                                                                                  |
+| `name`      | Identifies the series for [per-series options](#options-per-series); also written to the series group as `ct:series-name`               |
+| `className` | Replaces the letter class (`ct-series-a`, …) on the series group, see [one color per series](../styling-with-css/#one-color-per-series) |
+| `meta`      | Anything you want to keep with the series; written as `ct:meta` and passed to event listeners and plugins                               |
+
+Plain arrays and objects mix freely in one `series` list.
+
+## Value objects
+
+The same goes for a single value: `{ value, meta }` instead of a number. The metadata ends up on that value's point or bar as `ct:meta`, which is where a tooltip plugin finds it. More in [Events and plugins](../events-and-plugins/).
+
+```ts
+import 'chartist/styles.css';
+import { barChart } from 'chartist';
+
+barChart('#chart', {
+  labels: ['Jan', 'Feb', 'Mar'],
+  series: [
+    [{ value: 4, meta: 'A slow start' }, 7, { value: 12, meta: 'Launch' }]
+  ]
+});
+```
+
+## Gaps in the data
+
+Missing a value? Use `null`. Chartist treats `null`, `undefined` and `NaN` as a hole: a line breaks there and draws no point, a bar chart leaves the slot empty. The value keeps its place, so the labels still line up.
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart('#chart', {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [[12, 9, null, 8, 5]]
+});
+```
+
+To bridge the gap with a line instead, give the line chart an interpolation with `fillHoles`:
+
+```ts
+import { Interpolation, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, null, 8, 5]]
+  },
+  { lineSmooth: Interpolation.monotoneCubic({ fillHoles: true }) }
+);
+```
+
+## Two-dimensional values
+
+Labels put values on evenly spaced steps. When the X position is data too (timestamps, measurements), give each value an `x` and a `y`, and make the X axis a scale instead of steps:
+
+```ts
+import 'chartist/styles.css';
+import { autoScaleAxis, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    series: [
+      [
+        { x: 1, y: 100 },
+        { x: 2, y: 50 },
+        { x: 4, y: 75 },
+        { x: 9, y: 20 }
+      ]
+    ]
+  },
+  { axisX: { type: autoScaleAxis() } }
+);
+```
+
+The points now sit at their X value, not at their position in the array. Axis types and their options have their own page: [Axes and scales](../axes-and-scales/).
+
+## The options argument
+
+Options are the third argument. Every chart type has defaults, and your options are merged over them, deeply: `axisX: { showGrid: false }` turns off the X grid and keeps every other X axis default.
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, 7, 8, 5]]
+  },
+  {
+    low: 0,
+    showArea: true,
+    axisX: { showGrid: false }
+  }
+);
+```
+
+What you won't find in options: colors, line widths and fonts. Those belong in your stylesheet, see [Styling with CSS](../styling-with-css/). Sizes are options and CSS both, see [Sizing charts](../sizing-charts/).
+
+## Options per series
+
+Sometimes one series should look different from the rest: a smooth line next to a jagged one, one area filled and one not. On a line chart, the `series` option holds overrides by series name. Each key is the `name` of a series, each value the options that series gets instead of the chart's.
+
+<LiveExample
+  title='Options per series'
+  label='Two lines over a week: visits as a smooth area with a gap on Thursday, signups as a straight line without an area'
+  preview={{
+    type: 'line',
+    data,
+    options: {
+      low: 0,
+      showArea: true,
+      series: { signups: { lineSmooth: false, showArea: false } }
+    }
+  }}
+  example='data-and-options/series-options'
+/>
+
+A series can override `lineSmooth`, `showLine`, `showPoint`, `showArea` and `areaBase`. Everything else (axes, padding, `low` and `high`) is chart-wide. Series without a `name`, or without an entry in `series`, use the chart's options.
+
+<Callout kind='tip'>
+  **Responsive, per series.** Overrides work in responsive options too: a
+  `series` entry in a media query override changes one series on small screens.
+  See [Responsive sugar topping](../responsive/).
+</Callout>
+
+## Where the full lists live
+
+Each chart type page lists its options with their defaults: [Line charts](../line-charts/), [Bar charts](../bar-charts/) and [Pie and donut charts](../pie-and-donut-charts/). A generated API reference follows later.
+
+Next: [give your charts the right size](../sizing-charts/).
