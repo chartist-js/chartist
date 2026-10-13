@@ -65,11 +65,12 @@ const LOLLIPOP_CSS = `/* style.css */
     font: 700 22px var(--font-body);
     color: var(--brand);
   }
-  /* right: -26px still applies here, as in the legacy cascade. */
+  /* Stacked phases: the arrow points down, centered below each one. */
   @media (max-width: 860px) {
     .steps > li:not(:last-child)::after {
       content: '↓';
       top: auto;
+      right: auto;
       bottom: -16px;
       left: 50%;
       transform: translateX(-50%);

@@ -4,12 +4,12 @@ import { REPO, VERSIONS, href } from '../lib/site';
 
 const year = new Date().getFullYear();
 // The footer is dark in both themes: it uses the palette, not the theme tokens.
-const link = 'text-(color:--p-cream-200) no-underline hover:text-(color:--p-cream-200) hover:underline';
+const link = 'text-footer-ink no-underline hover:text-footer-ink hover:underline';
 const nav = 'flex flex-col gap-2 text-sm';
-const heading = 'mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] text-(color:--p-ink-300) uppercase';
+const heading = 'mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] text-footer-muted uppercase';
 ---
 
-<footer class="bg-(--p-ink-900) pt-14 pb-8 text-(color:--p-cream-200)" data-visual="footer">
+<footer class="bg-footer-bg pt-14 pb-8 text-footer-ink" data-visual="footer">
   <div class="wrap">
     <div class="grid grid-cols-[repeat(auto-fit,minmax(min(200px,100%),1fr))] gap-8">
       <div class="col-span-2 flex max-w-[420px] flex-col gap-3.5 max-md:col-auto">
@@ -17,7 +17,7 @@ const heading = 'mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em]
           ><Logomark class="w-[34px]" /><span>Chartist</span></a
         >
         <p>Simple responsive charts, drawn in SVG and dressed in CSS. Since 2014.</p>
-        <p class="flex items-center gap-2.5 text-sm text-(color:--p-ink-300)">Supported by <a class={`font-bold ${link}`} href="https://cube.dev">Cube</a></p>
+        <p class="flex items-center gap-2.5 text-sm text-footer-muted">Supported by <a class={`font-bold ${link}`} href="https://cube.dev">Cube</a></p>
       </div>
       <nav class={nav} aria-label="Docs">
         <strong class={heading}>Docs</strong>
@@ -46,7 +46,7 @@ const heading = 'mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em]
         <a class={link} href={`${REPO}/blob/main/CHANGELOG.md`}>Changelog</a>
       </nav>
     </div>
-    <div class="mt-12 flex flex-wrap justify-between gap-x-6 gap-y-2 border-t border-(color:--p-ink-700) pt-5 text-sm text-(color:--p-ink-300)">
+    <div class="mt-12 flex flex-wrap justify-between gap-x-6 gap-y-2 border-t border-footer-line pt-5 text-sm text-footer-muted">
       <span>MIT or WTFPL licensed · © 2014–{year} Gion Kunz and contributors</span>
       <span>Drawn in SVG, styled with CSS, no dependencies harmed.</span>
     </div>

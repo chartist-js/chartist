@@ -32,12 +32,12 @@ lineChart('#chart', { series: [[1, 3, 2, 5]] });`
   class="overflow-hidden rounded-lg border-2 border-ink bg-code-bg text-code-ink shadow-print dark:border-black [&_pre]:rounded-none [&_pre]:px-5 [&_pre]:py-3.5 [&_pre]:text-[13px] [&_pre]:leading-[1.6]"
   data-tabs
 >
-  <div class="flex items-center justify-between gap-2 border-b border-white/10 py-1.5 pr-2 pl-4">
+  <div class="flex items-center justify-between gap-2 border-b border-code-line py-1.5 pr-2 pl-4">
     <div role="tablist" aria-label="Install method">
       {
         TABS.map((tab, i) => (
           <button
-            class="min-h-9 cursor-pointer rounded-[8px] border-0 bg-transparent px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-muted aria-selected:bg-white/8 aria-selected:text-code-ink aria-selected:shadow-[inset_0_-2px_0_var(--p-grapefruit-400)]"
+            class="min-h-9 cursor-pointer rounded-[8px] border-0 bg-transparent px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-muted aria-selected:bg-code-hover aria-selected:text-code-ink aria-selected:shadow-[inset_0_-2px_0_var(--code-accent)]"
             type="button" role="tab" id={`tab-${tab.id}`} aria-controls={`panel-${tab.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
             {tab.label}
           </button>

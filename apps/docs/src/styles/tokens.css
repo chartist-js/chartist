@@ -71,6 +71,14 @@
   --code-str: #f4c63d;
   --code-num: #8fb8ff;
   --code-fn: #7fd1c2;
+  --code-line: #ffffff1a; /* borders over code */
+  --code-hover: #ffffff14; /* hovered and selected tabs over code */
+  --code-accent: var(--p-grapefruit-400); /* the selected tab's underline */
+  /* footer: dark in both themes */
+  --footer-bg: var(--p-ink-900);
+  --footer-ink: var(--p-cream-200);
+  --footer-muted: var(--p-ink-300);
+  --footer-line: var(--p-ink-700);
   /* mascot */
   --m-ink: var(--p-ink-800);
   --m-skin: var(--p-skin-400);

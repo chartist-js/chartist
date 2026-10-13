@@ -34,6 +34,13 @@
   --color-code-bg: var(--code-bg);
   --color-code-ink: var(--code-ink);
   --color-code-muted: var(--code-muted);
+  --color-code-line: var(--code-line);
+  --color-code-hover: var(--code-hover);
+  --color-code-accent: var(--code-accent);
+  --color-footer-bg: var(--footer-bg);
+  --color-footer-ink: var(--footer-ink);
+  --color-footer-muted: var(--footer-muted);
+  --color-footer-line: var(--footer-line);
   --color-black: #000;
   --color-white: #fff;
   --color-transparent: transparent;

@@ -36,8 +36,8 @@ const CODE = `barChart('#chart', data, options, [
         </label>
       </div>
       <div class="flex min-w-0 flex-col gap-3">
-        <div class="-mb-3 flex items-center justify-between gap-2 rounded-t-lg border-b border-white/10 bg-code-bg py-1.5 pr-2 pl-4">
-          <span class="min-h-9 rounded-[8px] bg-white/8 px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--p-grapefruit-400)]">responsive</span><span class="tag">active: <span data-rule>container(width ≥ 520px)</span></span>
+        <div class="-mb-3 flex items-center justify-between gap-2 rounded-t-lg border-b border-code-line bg-code-bg py-1.5 pr-2 pl-4">
+          <span class="min-h-9 rounded-[8px] bg-code-hover px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--code-accent)]">responsive</span><span class="tag">active: <span data-rule>container(width ≥ 520px)</span></span>
         </div>
         <Code code={CODE} lang="ts" theme="css-variables" class="rounded-t-none rounded-b-lg" />
         <span class="tag">Experimental: container() needs the match-container polyfill today</span>

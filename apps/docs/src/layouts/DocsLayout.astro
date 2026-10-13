@@ -153,10 +153,14 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 </script>
 
 <style>
-  /* The select's chevron: a data URI, in the light theme's ink-2. */
+  /* The select's chevron: a data URI in --ink-2, which a data URI can't
+     read, so dark mode has its own. */
   .version {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236B5E5A' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
+  }
+  :global([data-theme='dark']) .version {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23B3A49C' stroke-width='1.6' fill='none'/%3E%3C/svg%3E");
   }
 </style>

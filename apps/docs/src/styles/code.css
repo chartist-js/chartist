@@ -43,6 +43,6 @@ pre.astro-code {
 
 .copy-btn:hover,
 .copy-btn:focus-visible {
-  background: #ffffff14;
+  background: var(--code-hover);
   color: var(--code-ink);
 }
