@@ -1,0 +1,7 @@
+#chart {
+  --ct-series-a: #0544d3;
+  --ct-series-b: #59922b;
+  --ct-line-width: 2px;
+  --ct-point-size: 8px;
+  --ct-grid-dasharray: none;
+}

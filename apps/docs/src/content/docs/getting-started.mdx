@@ -17,31 +17,6 @@ export const data = {
   ]
 };
 
-export const files = {
-  'index.html': `<!doctype html>
-<html>
-  <head>
-    <meta charset="UTF-8" />
-    <script type="module" src="/src/main.ts"></script>
-  </head>
-  <body>
-    <div id="chart" class="ct-golden-section"></div>
-  </body>
-</html>
-`,
-  'src/main.ts': `import 'chartist/styles.css';
-import { lineChart } from 'chartist';
-
-lineChart('#chart', {
-labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-series: [
-[12, 9, 7, 8, 5],
-[2, 1, 3.5, 7, 3]
-]
-});
-`
-};
-
 <Callout kind="tip">
   **Works without a bundler.** Chartist ships as a native ES module, so a `<script type="module">` is all you need. Using npm instead? Skip to [Using npm](#using-npm).
 </Callout>
@@ -125,7 +100,7 @@ And this is what it draws, live. Press **Edit** and change a number:
   title='My first chart'
   label='Line chart with two series from Monday to Friday'
   preview={{ type: 'line', data }}
-  files={files}
+  example='getting-started/first-chart'
 />
 
 </Step>

@@ -30,6 +30,14 @@ The Guides follow the 0.x order: configure, size, style, respond, then the advan
 
 This catches samples that drift from the API, which matters more with several writers.
 
+### D3b: Live example projects are real files
+
+Added during the foundation (2026-10-13): oxfmt formats MDX as Markdown and strips the indentation inside template literals, so example projects can't live as strings in MDX. They live in `src/examples/<page>/<example>/` (`index.html`, `src/main.ts`, optionally `src/style.css`), loaded with `?raw` by `src/lib/examples.ts`; `LiveExample` takes `example="<page>/<example>"`. Being real files, they're formatted, linted and type-checked by `astro check` too. `LiveExample` also gained `show` (the file shown before editing, and the editor's first tab) and `previewStyle` (custom properties for the static preview).
+
+### D3c: Live examples run their own code (review, 2026-10-14)
+
+The author noticed the dynamic coloring example showed default colors until Edit: the static preview was drawn from JSON options and couldn't run a plugin. Each live example now compiles its files and runs them in a sandboxed preview when it nears the viewport (`compile()` and `Preview` only, through the playground's `./compile` and `./preview` entries; no editor). The JSON chart stays as placeholder and fallback, drawn exactly as the library draws it (`plain`: library padding, no draw-in), with `{ $call }` markers for functions.
+
 ### D4: Experimental features
 
 `container()` and anything polyfill-only get a `Callout kind="warn"` at the top of their section saying what's experimental, what it needs (the `match-container` polyfill, `Element.matchContainer()`), and linking the standards issue (csswg-drafts#6205).

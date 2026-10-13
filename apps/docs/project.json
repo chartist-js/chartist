@@ -42,7 +42,7 @@
         }
       ],
       "cache": true,
-      "dependsOn": ["sync"]
+      "dependsOn": ["sync", "samples"]
     },
     "sync": {
       "executor": "@geekvetica/nx-astro:sync",
@@ -86,6 +86,22 @@
       "cache": false,
       "metadata": {
         "description": "Screenshot comparison with a baseline: --update takes it, --only filters shots, --baseline points elsewhere"
+      }
+    },
+    "samples": {
+      "command": "node scripts/check-samples.ts",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["^build"],
+      "inputs": [
+        "{projectRoot}/src/content/docs/**/*",
+        "{projectRoot}/scripts/check-samples.ts",
+        "^production"
+      ],
+      "cache": true,
+      "metadata": {
+        "description": "Type-checks the TypeScript code blocks of the docs pages against Chartist's types"
       }
     }
   }

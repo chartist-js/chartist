@@ -25,7 +25,7 @@ Docs pages in `apps/docs/src/content/docs/`, all on the functional API, each wit
 
 **Guides** (the 0.x path: configure, size, style, respond, go further)
 
-- _Data and options_: data shapes (one- and two-dimensional values, series objects and names), defaults, options per series (`overrides`).
+- _Data and options_: data shapes (one- and two-dimensional values, series objects and names), defaults, options per series (the line chart's `series` option).
 - _Sizing charts_: the `ct-*` ratio classes, fixed sizes, CSS `aspect-ratio` (and why it needs `min-height: 0`), several charts on one page.
 - _Styling with CSS_: the classes per chart type, the `--ct-*` custom properties (page, container or one chart), `--ct-color` per series, the accessible theme and dark mode, Sass.
 - _Responsive sugar topping_: responsive overrides by media query, and container queries with `container()`, marked experimental and polyfill-only, with the setup.

@@ -45,6 +45,8 @@ body {
 interface LiveConfig {
   files: Record<string, string>;
   title: string;
+  /** The file shown before editing; the editor opens on it. */
+  show: string;
 }
 
 export function mountLiveExamples() {
@@ -54,7 +56,7 @@ export function mountLiveExamples() {
     const config = JSON.parse(root.dataset.liveExample!) as LiveConfig;
     root.querySelector('[data-live-copy]')?.addEventListener('click', event => {
       const button = event.currentTarget as HTMLElement;
-      navigator.clipboard.writeText(config.files['src/main.ts']).then(
+      navigator.clipboard.writeText(config.files[config.show]).then(
         () => button.setAttribute('aria-label', 'Copied'),
         () => button.setAttribute('aria-label', 'Copy failed')
       );
@@ -70,7 +72,7 @@ export function mountLiveExamples() {
         const playground = await createPlayground(host, {
           files: config.files,
           title: config.title,
-          tabs: ['src/main.ts', 'index.html'],
+          tabs: [...new Set([config.show, 'src/main.ts', 'index.html'])],
           chartistUrl: new URL(chartistUrl, location.href).href,
           stylesUrl: new URL(stylesUrl, location.href).href,
           previewStyles: previewStyles()
@@ -97,7 +99,7 @@ export function mountLiveExamples() {
         actions
           .querySelector('[data-live-copy-current]')!
           .addEventListener('click', () => {
-            void navigator.clipboard.writeText(playground.files['src/main.ts']);
+            void navigator.clipboard.writeText(playground.files[config.show]);
           });
         root.dataset.ready = '';
       });

@@ -1,0 +1,196 @@
+---
+title: Styling with CSS
+description: Chartist draws plain SVG with predictable classes, so you style charts with the CSS you already write, from one custom property to a full theme.
+group: Guides
+order: 3
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    [12, 9, 7, 8, 5],
+    [2, 1, 3.5, 7, 3]
+  ]
+};
+
+Chartist has no theme option, and no color settings in JavaScript. Charts are SVG elements with predictable class names, and their look lives in CSS, next to the rest of your styles. When the brand color changes, you change one line in a stylesheet, not every chart's options.
+
+There are three ways in, from quick to complete: custom properties for the common things, plain selectors for everything else, and Sass if you want to build your own stylesheet.
+
+## Custom properties
+
+The default stylesheet, `chartist/styles.css`, reads its values from custom properties and falls back to the classic Chartist look. Set one, and every chart in its scope follows. Press **Edit** and try other values:
+
+<LiveExample
+  title='Custom properties'
+  label='A line chart in blue and green with thin lines and no grid dashes'
+  show='src/style.css'
+  previewStyle='--ct-series-a: #0544d3; --ct-series-b: #59922b; --ct-line-width: 2px; --ct-point-size: 8px; --ct-grid-dasharray: none;'
+  preview={{ type: 'line', data }}
+  example='styling-with-css/custom-properties'
+/>
+
+| Property                          | Default               | What it sets                         |
+| --------------------------------- | --------------------- | ------------------------------------ |
+| `--ct-series-a` … `--ct-series-o` | the 15 classic colors | The color of each series, in order   |
+| `--ct-line-width`                 | `4px`                 | Line thickness                       |
+| `--ct-line-dasharray`             | `none`                | Dashed lines                         |
+| `--ct-point-size`                 | `10px`                | Point size                           |
+| `--ct-point-shape`                | `round`               | `round` or `square` points           |
+| `--ct-area-opacity`               | `0.1`                 | Opacity of the area below a line     |
+| `--ct-bar-width`                  | `10px`                | Bar thickness                        |
+| `--ct-donut-width`                | `60px`                | Ring thickness of donuts             |
+| `--ct-grid-color`                 | `rgba(0, 0, 0, 0.2)`  | Grid lines                           |
+| `--ct-grid-width`                 | `1px`                 | Grid line thickness                  |
+| `--ct-grid-dasharray`             | `2px`                 | Grid dashes (`none` for solid lines) |
+| `--ct-grid-background-fill`       | `none`                | Fill behind the grid                 |
+| `--ct-label-color`                | `rgba(0, 0, 0, 0.4)`  | Axis and slice labels                |
+| `--ct-label-size`                 | `0.75rem`             | Label font size                      |
+
+They're regular custom properties, so they cascade. Set them where they should apply:
+
+```css
+/* The whole site */
+:root {
+  --ct-series-a: #c8102e;
+}
+
+/* Every chart in the sidebar */
+.sidebar {
+  --ct-line-width: 2px;
+}
+
+/* One chart */
+#revenue {
+  --ct-grid-dasharray: none;
+}
+```
+
+## One color per series
+
+Each series is a group with a letter class: the first is `ct-series-a`, the second `ct-series-b`, up to `ct-series-o`. The letter class sets `--ct-color`, and the series' lines, points, bars, areas and slices use it as their stroke or fill. That gives you two levels to work at:
+
+```css
+/* Recolor the second series everywhere */
+:root {
+  --ct-series-b: #f4c63d;
+}
+
+/* Or recolor one series in one chart */
+#sales .ct-series-a {
+  --ct-color: #0544d3;
+}
+```
+
+Want a meaningful name instead of a letter? Give the series a `className`. It replaces the letter class, so the series has no default color and takes the one you give it:
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart('#chart', {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    { className: 'revenue', data: [5, 7, 6, 9] },
+    { className: 'costs', data: [3, 4, 4, 5] }
+  ]
+});
+```
+
+```css
+.revenue {
+  --ct-color: #59922b;
+}
+.costs {
+  --ct-color: #d70206;
+}
+```
+
+<Callout kind='tip'>
+  **Stroke or fill?** SVG colors lines with `stroke` and shapes with `fill`.
+  Setting `--ct-color` covers both, which is why it's the easiest way to recolor
+  a series.
+</Callout>
+
+## Plain selectors for the rest
+
+Custom properties cover the common cases. For anything else, write CSS against the classes Chartist draws:
+
+| Element              | Classes                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| The chart's SVG      | `ct-chart-line`, `ct-chart-bar` (plus `ct-horizontal-bars`), `ct-chart-pie`, `ct-chart-donut`         |
+| A series             | `ct-series` and `ct-series-a` … (or its `className`)                                                  |
+| Lines, points, areas | `ct-line`, `ct-point`, `ct-area`                                                                      |
+| Bars                 | `ct-bar`                                                                                              |
+| Slices               | `ct-slice-pie`, `ct-slice-donut`                                                                      |
+| Grid                 | `ct-grids` (the group), `ct-grid`, with `ct-horizontal` or `ct-vertical`                              |
+| Labels               | `ct-labels` (the group), `ct-label`, with `ct-horizontal` or `ct-vertical` and `ct-start` or `ct-end` |
+
+Anything SVG and CSS can do works here: transitions, hover states, filters.
+
+```css
+/* Square bar ends and a hover highlight */
+.ct-bar {
+  stroke-linecap: square;
+  transition: opacity 0.2s;
+}
+.ct-series:hover .ct-bar {
+  opacity: 0.6;
+}
+
+/* Only horizontal grid lines */
+.ct-grid.ct-horizontal {
+  display: none;
+}
+```
+
+## Colors for everyone
+
+The classic colors are kept for compatibility, and some of their pairs are hard to tell apart for people with color vision deficiencies. Chartist ships an opt-in palette checked for that, with light and dark variants:
+
+```ts
+import 'chartist/styles.css';
+import 'chartist/themes/accessible.css';
+```
+
+```html
+<body class="ct-theme-accessible">
+  …
+</body>
+```
+
+Add the class to the page or to one chart's container. The palette follows the element's `color-scheme`, so it switches with your dark mode as long as your dark theme declares `color-scheme: dark`.
+
+<Callout>
+  **Dark mode for labels and grid.** The default label and grid colors are
+  translucent black. In a dark theme, set `--ct-label-color` and
+  `--ct-grid-color` to light values alongside your other dark colors.
+</Callout>
+
+## Sass
+
+If your build already uses Sass, configure the stylesheet at its source instead of overriding it. Every setting is a `!default` variable:
+
+```scss
+@use 'chartist/scss/index' with (
+  $ct-series-names: (
+    a,
+    b,
+    c
+  ),
+  $ct-series-colors: (
+    #0544d3,
+    #59922b,
+    #f4c63d
+  ),
+  $ct-line-width: 2px,
+  $ct-grid-dasharray: false
+);
+```
+
+Keep `$ct-series-names` and `$ct-series-colors` the same length. The custom properties still work on top of the compiled CSS. Set `$ct-include-classes: false` to emit nothing and use the `ct-chart-*` mixins in your own selectors.
+
+Next: [make charts respond to the screen and their container](../responsive/), or [animate them with CSS](../animations/).

@@ -1,11 +1,16 @@
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
+/** Every docs page, from the content folder, so new pages are tested too. */
+const DOCS = (await readdir(new URL('../src/content/docs/', import.meta.url)))
+  .filter(file => file.endsWith('.mdx'))
+  .map(file => file.slice(0, -'.mdx'.length))
+  .sort();
 const PAGES = [
   { name: 'home', path: '/' },
-  { name: 'getting started', path: '/docs/getting-started/' },
+  ...DOCS.map(slug => ({ name: `docs/${slug}`, path: `/docs/${slug}/` })),
   { name: '404', path: '/no-such-page/' }
 ];
 
@@ -184,3 +189,21 @@ test('keyboard: skip link and mobile menu', async ({ page }) => {
   await expect(menu).toHaveAttribute('aria-expanded', 'true');
   await expect(page.getByRole('navigation', { name: 'Mobile' })).toBeVisible();
 });
+
+for (const slug of DOCS) {
+  test(`docs/${slug}: every live example runs without errors`, async ({
+    page
+  }) => {
+    await page.goto(`/docs/${slug}/`);
+    for (const live of await page.locator('[data-live-example]').all()) {
+      await live.scrollIntoViewIfNeeded();
+      await live.getByRole('button', { name: 'Edit' }).click();
+      await expect(live).toHaveAttribute('data-ready', '');
+      const frame = live.frameLocator('iframe');
+      await expect(frame.locator('svg[class*="ct-chart"]').first()).toBeVisible(
+        { timeout: 10_000 }
+      );
+      await expect(live.locator('.playground-errors li')).toHaveCount(0);
+    }
+  });
+}
