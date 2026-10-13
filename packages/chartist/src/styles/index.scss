@@ -137,7 +137,9 @@
   }
 
   .#{$ct-class-chart-line} .#{$ct-class-label},
-  .#{$ct-class-chart-bar} .#{$ct-class-label} {
+  .#{$ct-class-chart-bar} .#{$ct-class-label},
+  // HTML labels of composed charts, whose svg has no chart-type class.
+  foreignObject > .#{$ct-class-label} {
     display: flex;
   }
 

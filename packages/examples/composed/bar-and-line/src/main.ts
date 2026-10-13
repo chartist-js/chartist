@@ -33,8 +33,6 @@ chart('#chart', {
       labelInterpolationFnc: value => `${value}%`
     }
   ]),
-  // Room above the chart for the top labels of both Y axes.
-  padding: { top: 25 },
   layers: [
     axisGrid({ axes: ['quarters', 'revenue'] }),
     bar({ series: ['revenue'], x: 'quarters', y: 'revenue' }),
