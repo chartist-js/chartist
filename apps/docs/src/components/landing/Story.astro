@@ -13,14 +13,14 @@ const LABELS = {
 ---
 
 <section id="story" class="wrap section" data-section data-visual="story">
-  <div class="story" data-story>
-    <div class="story-sticky">
-      <div class="story-stage" data-scene="line" data-active="0">
-        <div class="stage-art">
+  <div class="grid grid-cols-2 items-start gap-x-16 gap-y-6 max-md:grid-cols-1" data-story>
+    <div class="sticky top-18 self-start max-md:top-13 max-md:z-2 max-md:border-b max-md:border-line max-md:bg-bg max-md:py-2">
+      <div class="story-stage flex flex-col gap-3" data-scene="line" data-active="0">
+        <div class="max-md:mx-auto max-md:max-w-[280px]">
           <div class="stage-hero">
             <Mascot pose="hero">
-              <div class="stage-scenes">
-                {SCENES.map(scene => <div class="board-chart stage-scene ct-draw" data-stage-scene={scene} role="img" aria-label={LABELS[scene]} />)}
+              <div class="relative size-full">
+                {SCENES.map(scene => <div class="board-chart ct-draw absolute inset-0 opacity-0 transition-opacity duration-240 ease-gentle data-active:opacity-100" data-stage-scene={scene} role="img" aria-label={LABELS[scene]} />)}
               </div>
             </Mascot>
           </div>
@@ -30,15 +30,15 @@ const LABELS = {
             </Mascot>
           </div>
         </div>
-        <p class="muted stage-caption" aria-live="polite">
-          <span class="eyebrow" data-step>1 / {CHAPTERS.length}</span>
+        <p class="muted min-h-[22px] text-center text-sm" aria-live="polite">
+          <span class="eyebrow mr-2" data-step>1 / {CHAPTERS.length}</span>
           <span data-caption>{CHAPTERS[0].title}</span>
         </p>
-        <div class="dots" role="group" aria-label="Story chapters">
+        <div class="dots flex justify-center gap-1.5" role="group" aria-label="Story chapters">
           {
             CHAPTERS.map((chapter, i) => (
-              <button type="button" aria-label={chapter.title} aria-current={i === 0 ? 'true' : undefined} data-pick={i}>
-                <span />
+              <button type="button" class="group grid size-11 cursor-pointer place-items-center rounded-full border-0 bg-transparent" aria-label={chapter.title} aria-current={i === 0 ? 'true' : undefined} data-pick={i}>
+                <span class="size-2.5 rounded-full bg-line-strong [transition:transform_var(--dur-2)_var(--ease-spring),background_var(--dur-2)] group-aria-[current=true]:bg-brand group-aria-[current=true]:[transform:scale(1.4)]" />
               </button>
             ))
           }
@@ -48,14 +48,14 @@ const LABELS = {
     <div>
       {
         CHAPTERS.map((chapter, i) => (
-          <article class="story-chapter reveal" id={`chapter-${i + 1}`} data-chapter={i} data-scene={chapter.scene} data-reaction={chapter.reaction} data-celebrate={chapter.celebrate ? '' : undefined}>
+          <article class="reveal flex min-h-[78vh] flex-col justify-center gap-4 py-10 max-md:min-h-auto max-md:py-7" id={`chapter-${i + 1}`} data-chapter={i} data-scene={chapter.scene} data-reaction={chapter.reaction} data-celebrate={chapter.celebrate ? '' : undefined}>
             <span class="eyebrow">Chapter {i + 1}</span>
-            <h3>{chapter.title}</h3>
+            <h3 class="text-3xl">{chapter.title}</h3>
             <p class="lead">{chapter.text}</p>
             <div data-sample={chapter.celebrate ? undefined : ''}>
               <Code code={chapter.code} lang="ts" theme="css-variables" />
             </div>
-            <button class="pill-link" type="button" data-pick={i}>
+            <button class="pill-link min-h-11 w-fit cursor-pointer border-0 bg-transparent px-0 py-2.5" type="button" data-pick={i}>
               Show it on the easel →
             </button>
           </article>
@@ -70,35 +70,3 @@ const LABELS = {
   mountStory();
 </script>
 
-<style>
-  .stage-scenes {
-    position: relative;
-    width: 100%;
-    height: 100%;
-  }
-  .stage-scene {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 240ms var(--ease-out);
-  }
-  .stage-scene[data-active] {
-    opacity: 1;
-  }
-  .stage-caption {
-    text-align: center;
-    font-size: 14px;
-    min-height: 22px;
-  }
-  .stage-caption .eyebrow {
-    margin-right: 8px;
-  }
-  .story-chapter .pill-link {
-    border: 0;
-    background: none;
-    padding: 10px 0;
-    min-height: 44px;
-    cursor: pointer;
-    width: fit-content;
-  }
-</style>

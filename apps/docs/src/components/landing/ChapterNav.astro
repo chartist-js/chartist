@@ -2,18 +2,22 @@
 import { SECTIONS } from '../../data/landing';
 ---
 
-<nav class="chapter-nav" aria-label="On this page">
-  <div class="wrap bar">
+<nav class="sticky top-0 z-5 border-b border-line bg-bg/90 backdrop-blur-[8px]" aria-label="On this page">
+  <div class="wrap flex min-h-13 items-center gap-1 overflow-x-auto [scrollbar-width:none]">
     {
       SECTIONS.map((section, i) => (
-        <a href={`#${section.id}`} data-chapter-link={section.id}>
-          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+        <a
+          href={`#${section.id}`}
+          class="inline-flex min-h-10 flex-none items-center gap-1.5 rounded-pill px-3 py-2.5 font-sans text-sm leading-none font-semibold text-ink-2 no-underline aria-[current=true]:bg-bg-sunken aria-[current=true]:text-ink"
+          data-chapter-link={section.id}
+        >
+          <span class="font-mono text-[12.5px] leading-none font-bold text-brand">{String(i + 1).padStart(2, '0')}</span>
           {section.label}
         </a>
       ))
     }
   </div>
-  <div class="scroll-progress" aria-hidden="true"></div>
+  <div class="scroll-progress h-0.75 origin-left bg-brand [transform:scaleX(var(--progress,0))]" aria-hidden="true"></div>
 </nav>
 
 <script>

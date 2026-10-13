@@ -20,26 +20,31 @@ import { REPO, href } from '../lib/site';
 
 <BaseLayout title="Chartist" description="Simple, responsive charts drawn in SVG and styled with CSS. Tiny, typed, and happy without a build step.">
   <ChapterNav />
-  <section id="top" class="wrap hero" data-section data-visual="hero">
-    <div class="hero-copy">
-      <span class="tag accent">Open source · MIT or WTFPL · since 2014</span>
+  <section
+    id="top"
+    class="wrap grid grid-cols-[repeat(auto-fit,minmax(min(460px,100%),1fr))] items-center gap-x-12 gap-y-6 pt-[clamp(32px,6vw,72px)] pb-[clamp(40px,6vw,80px)]"
+    data-section
+    data-visual="hero"
+  >
+    <div class="flex flex-col gap-6">
+      <span class="tag accent self-start">Open source · MIT or WTFPL · since 2014</span>
       <h1 class="display">Simple charts, <span class="hl">dressed in CSS.</span></h1>
       <p class="lead">Chartist draws clean, responsive SVG charts and leaves the styling to you. No canvas, no dependencies, no theme engine. Just classes and custom properties.</p>
       <InstallTabs />
-      <div class="hero-actions">
+      <div class="flex flex-wrap gap-3">
         <a class="btn primary" href={href('docs/getting-started/')}>Get started</a>
         <a class="btn" href="#gallery">See the charts</a>
         <a class="btn" href={REPO}>GitHub</a>
       </div>
-      <p class="hero-stats muted">
-        <span><strong>{formatCount(facts.npm.monthlyDownloads)}</strong> npm downloads a month</span><span aria-hidden="true">·</span>
-        <span><strong>{formatCount(facts.github.stars)}</strong> GitHub stars</span><span aria-hidden="true">·</span>
-        <span>used by <strong>{formatCount(facts.github.dependents)}</strong> repositories</span>
+      <p class="muted flex flex-wrap gap-x-2.5 gap-y-1.5 text-sm">
+        <span><strong class="text-ink">{formatCount(facts.npm.monthlyDownloads)}</strong> npm downloads a month</span><span aria-hidden="true">·</span>
+        <span><strong class="text-ink">{formatCount(facts.github.stars)}</strong> GitHub stars</span><span aria-hidden="true">·</span>
+        <span>used by <strong class="text-ink">{formatCount(facts.github.dependents)}</strong> repositories</span>
       </p>
     </div>
-    <div class="hero-art">
+    <div class="flex flex-col items-center gap-3 [&_.mascot-stage]:w-full [&_.mascot-stage]:max-w-[560px]">
       <Mascot pose="hero">
-        <div class="board-chart ct-draw" data-board-chart role="img" aria-label="A line chart with two series"></div>
+        <div class="board-chart ct-draw size-full" data-board-chart role="img" aria-label="A line chart with two series"></div>
       </Mascot>
       <a href="#story" class="pill-link">Scroll, he'll show you around ↓</a>
     </div>
@@ -62,24 +67,3 @@ import { REPO, href } from '../lib/site';
   mountBoardCharts();
 </script>
 
-<style>
-  .hero-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 10px;
-    font-size: var(--fs-sm);
-  }
-  .hero-stats strong {
-    color: var(--ink);
-  }
-  .hero-art {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  .board-chart {
-    width: 100%;
-    height: 100%;
-  }
-</style>
