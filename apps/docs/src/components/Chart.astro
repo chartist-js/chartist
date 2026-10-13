@@ -22,9 +22,9 @@ const spec: ChartSpec = { type, data, options };
   The block wrapper keeps the box's aspect-ratio height definite even when
   the chart sits in a flex column, so the chart's 100% height resolves.
 -->
-<div class:list={['chart-wrap', className]}>
+<div class:list={['block w-full min-w-0', className]}>
   <div
-    class:list={['chart-box', { 'ct-draw': draw }]}
+    class:list={['chart-box w-full', { 'ct-draw': draw }]}
     style={{ aspectRatio: aspect }}
     role="img"
     aria-label={label}
@@ -38,13 +38,3 @@ const spec: ChartSpec = { type, data, options };
   mountCharts();
 </script>
 
-<style>
-  .chart-wrap {
-    display: block;
-    width: 100%;
-    min-width: 0;
-  }
-  .chart-box {
-    width: 100%;
-  }
-</style>

@@ -21,24 +21,31 @@ const { files, preview, label, title = 'Chartist example' } = Astro.props;
 const main = files['src/main.ts'];
 ---
 
-<div class="live" data-live-example={JSON.stringify({ files, title })}>
-  <div class="editor">
-    <div class="code-head">
-      <span class="code-tab is-active">src/main.ts</span>
-      <div class="live-actions">
+<!--
+  `live` scopes live.css, which dresses the playground the script mounts
+  into `.live-playground` on Edit; it also adds `editing`, for a column.
+-->
+<div
+  class="live grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] overflow-hidden rounded-lg border-2 border-ink bg-surface shadow-print dark:border-line-strong [&.editing]:flex [&.editing]:flex-col"
+  data-live-example={JSON.stringify({ files, title })}
+>
+  <div class="flex min-w-0 flex-col bg-code-bg text-code-ink">
+    <div class="flex items-center justify-between gap-2 border-b border-white/10 py-1.5 pr-2 pl-4">
+      <span class="min-h-9 rounded-[8px] bg-white/8 px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--p-grapefruit-400)]">src/main.ts</span>
+      <div class="flex items-center gap-1.5">
         <button class="icon-btn sm" type="button" data-live-copy aria-label="Copy code">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
         </button>
-        <button class="btn sm" type="button" data-live-edit>Edit</button>
+        <button class="btn sm min-h-8 shadow-none" type="button" data-live-edit>Edit</button>
       </div>
     </div>
-    <Code code={main} lang="ts" theme="css-variables" />
+    <Code code={main} lang="ts" theme="css-variables" class="flex-1 rounded-none" />
   </div>
-  <div class="output">
-    <div class="output-head">
-      <span class="eyebrow"><span class="status-dot"></span> Live</span>
+  <div class="flex min-w-0 flex-col bg-surface">
+    <div class="flex items-center justify-between gap-2 border-b border-line py-2 pr-2 pl-4">
+      <span class="eyebrow"><span class="inline-block size-2 rounded-pill bg-ok shadow-[0_0_0_3px_var(--ok-bg)]"></span> Live</span>
     </div>
-    <div class="stage">
+    <div class="dot-grid grid min-h-[260px] flex-1 place-items-center px-5 pt-4 pb-5">
       <Chart type={preview.type} data={preview.data} options={preview.options} label={label} aspect="16 / 10" />
     </div>
   </div>
@@ -49,30 +56,10 @@ const main = files['src/main.ts'];
   mountLiveExamples();
 </script>
 
+
 <style>
-  .live :global(pre.astro-code) {
-    border-radius: 0;
-    flex: 1;
-  }
-  .live-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .live .btn.sm {
-    min-height: 32px;
-    box-shadow: none;
-  }
-  .live .stage :global(.chart-box) {
-    width: 100%;
-  }
-  .live.editing {
-    display: flex;
-    flex-direction: column;
-  }
-  .live :global(.live-toolbar) {
-    background: var(--code-bg);
-  }
+  /* The playground's own stylesheet loads unlayered (min-height: 480px), so
+     only an unlayered rule can size it: utilities and live.css are layered. */
   .live :global(.live-playground) {
     min-height: 420px;
   }

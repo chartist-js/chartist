@@ -11,12 +11,12 @@ import { GALLERY } from '../../data/landing';
   <div class="grid-auto">
     {
       GALLERY.map(item => (
-        <article class="card chart-card reveal">
-          <div class="stage">
+        <article class="card reveal flex flex-col gap-3 px-4.5 pt-4.5 pb-4">
+          <div class="rounded-md bg-bg px-2.5 pt-3 pb-1.5">
             <Chart type={item.type} label={`${item.title} chart`} aspect="16 / 10" data={item.data} options={item.options} />
           </div>
-          <div class="chart-card-head">
-            <strong>{item.title}</strong>
+          <div class="flex items-baseline justify-between gap-2">
+            <strong class="font-slab text-[20px] leading-[1.2] font-bold">{item.title}</strong>
             <code>{item.api}</code>
           </div>
           <span class="muted">{item.note}</span>
@@ -26,14 +26,3 @@ import { GALLERY } from '../../data/landing';
   </div>
 </section>
 
-<style>
-  .chart-card-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-  }
-  .chart-card-head strong {
-    font: 700 20px / 1.2 var(--font-display);
-  }
-</style>
