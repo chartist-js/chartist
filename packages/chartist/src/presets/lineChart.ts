@@ -10,7 +10,7 @@ import type { Label, ResponsiveOptions } from '../core/types';
 import type { ChartConfig, ChartHandle } from '../chart/types';
 import { line } from '../layers/line';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
-import { cartesianAxes } from '../scales/cartesian';
+import { presetAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { isNumeric } from '../utils/utils';
 import { lineDefaults } from './lineDefaults';
@@ -98,7 +98,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
     const axisOptions = options as unknown as AxisPresetOptions;
     return {
       data,
-      axes: cartesianAxes(axesConfig(options)),
+      axes: presetAxes(axesConfig(options)),
       padding: options.chartPadding,
       width: options.width,
       height: options.height,
@@ -113,7 +113,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
             showLine: options.showLine,
             showArea: options.showArea,
             areaBase: options.areaBase,
-            series: options.series,
+            overrides: options.series,
             reverseData: options.reverseData,
             classNames: options.classNames
           })

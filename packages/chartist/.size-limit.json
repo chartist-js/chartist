@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "19.3 kB",
+    "limit": "19.85 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "19.4 kB",
+    "limit": "19.95 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -31,14 +31,14 @@
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
-    "limit": "12 kB",
+    "limit": "12.15 kB",
     "gzip": true
   },
   {
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "10.9 kB",
+    "limit": "11 kB",
     "gzip": true
   },
   {
@@ -52,28 +52,28 @@
     "name": "import { chart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ chart }",
-    "limit": "3.75 kB",
+    "limit": "3.85 kB",
     "gzip": true
   },
   {
     "name": "import { toScene, renderToString } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ toScene, renderToString }",
-    "limit": "2.95 kB",
+    "limit": "3.1 kB",
     "gzip": true
   },
   {
     "name": "import { lineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ lineChart }",
-    "limit": "10.55 kB",
+    "limit": "10.7 kB",
     "gzip": true
   },
   {
     "name": "import { barChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ barChart }",
-    "limit": "9.35 kB",
+    "limit": "9.55 kB",
     "gzip": true
   },
   {
@@ -84,10 +84,17 @@
     "gzip": true
   },
   {
+    "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, \u2026 } (composed chart)",
+    "path": "dist/index.js",
+    "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
+    "limit": "11 kB",
+    "gzip": true
+  },
+  {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "19.7 kB",
+    "limit": "20.3 kB",
     "gzip": true
   },
   {

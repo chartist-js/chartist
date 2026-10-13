@@ -13,6 +13,11 @@ import { isNumeric, safeHasProperty } from '../utils/utils';
 
 /** @experimental */
 export interface BarLayerOptions {
+  /** Series to draw, by index or name; default: all series. */
+  readonly series?: readonly (number | string)[];
+  /** Axis ids to draw on; default: the first X and the first Y axis. */
+  readonly x?: string;
+  readonly y?: string;
   /** Values on the X axis, labels on the Y axis. */
   readonly horizontalBars?: boolean;
   readonly stackBars?: boolean;
@@ -69,7 +74,9 @@ export function bar(options: BarLayerOptions = {}): Layer {
   return {
     type: 'bar',
     coordinates: ['cartesian'],
-    compose({ data, area, axes, normalized }) {
+    axes: { x: options.x, y: options.y },
+    series: options.series,
+    compose({ data, area, axes, normalized, seriesIndexes }) {
       const valueAxis = horizontal ? axes.x : axes.y;
       const labelAxis = horizontal ? axes.y : axes.x;
       if (!valueAxis || !labelAxis || !normalized) {
@@ -96,16 +103,25 @@ export function bar(options: BarLayerOptions = {}): Layer {
       const negStack: number[] = [];
       let stack = posStack;
 
-      return order.map((dataIndex, seriesIndex) => {
+      if (seriesIndexes && options.reverseData) {
+        throw new Error(
+          'Layer "bar": a series selection can\'t be combined with reverseData'
+        );
+      }
+
+      return order.map((dataIndex, localIndex) => {
+        // The chart-wide index, for classes, keys and contexts.
+        const seriesIndex = seriesIndexes?.[dataIndex] ?? localIndex;
         const current = raw[dataIndex] as Series | SeriesObject;
-        const biPol = seriesIndex - (raw.length - 1) / 2;
+        // Bar offsets count within the layer, as 1.x counts within a chart.
+        const biPol = localIndex - (raw.length - 1) / 2;
         let periodHalfLength: number;
         if (options.distributeSeries && !options.stackBars) {
           periodHalfLength = labelAxis.length / series.length / 2;
         } else if (options.distributeSeries && options.stackBars) {
           periodHalfLength = labelAxis.length / 2;
         } else {
-          periodHalfLength = labelAxis.length / series[seriesIndex].length / 2;
+          periodHalfLength = labelAxis.length / series[localIndex].length / 2;
         }
 
         const seriesName = safeHasProperty(current, 'name') && current.name;
@@ -116,16 +132,16 @@ export function bar(options: BarLayerOptions = {}): Layer {
           : undefined;
         const bars: SceneNode[] = [];
 
-        series[seriesIndex].forEach((value, valueIndex) => {
+        series[localIndex].forEach((value, valueIndex) => {
           const valueX = safeHasProperty(value, 'x') && value.x;
           const valueY = safeHasProperty(value, 'y') && value.y;
           const labelIndex =
             options.distributeSeries && !options.stackBars
-              ? seriesIndex
+              ? localIndex
               : options.distributeSeries && options.stackBars
                 ? 0
                 : valueIndex;
-          const values = series[seriesIndex];
+          const values = series[localIndex];
           const projected = horizontal
             ? {
                 x: area.x1 + valueAxis.project(valueX || 0, valueIndex, values),

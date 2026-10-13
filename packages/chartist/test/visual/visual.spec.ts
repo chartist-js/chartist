@@ -67,6 +67,11 @@ function seekSvg(page: Page, seconds: number) {
 for (const example of examples) {
   for (const viewport of example.viewports) {
     test(`${example.id} @ ${viewport}`, async ({ page }) => {
+      // v2 examples have no 1.5 counterpart; their baseline comes from v2.
+      test.skip(
+        process.env.CHARTIST_LIB === 'v1' && example.v2,
+        'uses the v2 API'
+      );
       const problems: string[] = [];
       page.on('pageerror', error => problems.push(`page error: ${error}`));
       page.on('console', message => {

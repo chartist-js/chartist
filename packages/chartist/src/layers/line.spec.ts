@@ -102,7 +102,7 @@ describe('layers/line', () => {
         { name: 'hidden', data: [1, 2] },
         { name: 'shown', data: [1, 2] }
       ],
-      { series: { hidden: { showPoint: false, showLine: false } } }
+      { overrides: { hidden: { showPoint: false, showLine: false } } }
     );
     expect(findAll(result, { role: 'point', seriesIndex: 0 })).toHaveLength(0);
     expect(findAll(result, { role: 'line', seriesIndex: 0 })).toHaveLength(0);

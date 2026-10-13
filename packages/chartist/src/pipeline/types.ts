@@ -60,6 +60,11 @@ export interface LayerContext {
   readonly axes: ChartAxes;
   /** The data as the axes see it, when the chart has axes. */
   readonly normalized?: NormalizedChartData;
+  /**
+   * Chart-wide index of each series in `data` (a layer may select a subset
+   * of the series). Absent when the layer draws all series.
+   */
+  readonly seriesIndexes?: readonly number[];
 }
 
 /**
@@ -72,6 +77,10 @@ export interface Layer {
   readonly type: string;
   /** Coordinate systems the layer can draw in. */
   readonly coordinates: readonly Coordinates[];
+  /** Axis ids to draw on; default: the first X and the first Y axis. */
+  readonly axes?: { readonly x?: string; readonly y?: string };
+  /** Series to draw, by index or name; default: all series. */
+  readonly series?: readonly (number | string)[];
   compose(context: LayerContext): readonly SceneNode[];
 }
 

@@ -5,7 +5,7 @@
  * read the example files from `<folder>/index.html` and `<folder>/src/`.
  */
 
-export type ChartType = 'line' | 'bar' | 'pie';
+export type ChartType = 'line' | 'bar' | 'pie' | 'composed';
 
 /** Named viewport presets the visual regression tests render an example at. */
 export type ViewportName = 'default' | 'tablet' | 'mobile' | 'mobile-landscape';
@@ -34,6 +34,11 @@ export interface Example {
    * the compat plugin in v2.
    */
   compat: boolean;
+  /**
+   * Uses the v2 API (`chart()`, layers, …), so chartist@1.5.0 can't render
+   * it; the 1.5.0 visual run skips it.
+   */
+  v2: boolean;
   /** Viewports the visual regression tests render the example at. */
   viewports: ViewportName[];
   /**
@@ -59,6 +64,7 @@ function example(input: ExampleInput): Example {
     type: input.id.split('/')[0] as ChartType,
     docs: true,
     compat: false,
+    v2: false,
     viewports: ['default'],
     size: 'fixed',
     settle: { at: 0 },
@@ -234,5 +240,17 @@ export const examples: Example[] = [
     title: 'Donut with a relative width',
     size: 'viewport'
   }),
-  testOnly({ id: 'pie/view-box', title: 'Pie chart with a view box' })
+  testOnly({ id: 'pie/view-box', title: 'Pie chart with a view box' }),
+
+  // Composed charts (v2)
+  example({
+    id: 'composed/bar-and-line',
+    title: 'Bars and a line with two Y axes',
+    v2: true
+  }),
+  example({
+    id: 'composed/two-y-axes',
+    title: 'Two Y axes with different units',
+    v2: true
+  })
 ];

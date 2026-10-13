@@ -25,6 +25,7 @@ export function stepAxis(): AxisFactory {
         dimension,
         kind: 'step',
         stretch: Boolean(options.stretch),
+        step: stepLength,
         ticks,
         length,
         project: (_value, index = 0) => stepLength * index

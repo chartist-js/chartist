@@ -11,7 +11,7 @@ import { getHighLow } from '../core/data/highLow';
 import type { Label, Options, ResponsiveOptions } from '../core/types';
 import { bar, getSerialSums } from '../layers/bar';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
-import { cartesianAxes } from '../scales/cartesian';
+import { presetAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { isLegacyAxisClass, legacyAxis } from '../scales/legacy';
 import { barDefaults } from './barDefaults';
@@ -136,7 +136,7 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
       : (['x', 'y'] as const);
     return {
       data,
-      axes: cartesianAxes(axesConfig(options)),
+      axes: presetAxes(axesConfig(options)),
       padding: options.chartPadding,
       width: options.width,
       height: options.height,

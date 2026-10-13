@@ -33,11 +33,32 @@ export interface DrawnAxisOptions extends AxisOptions {
 export interface AxisFrame {
   readonly area: Area;
   readonly padding: ChartPadding;
-  /** Options of both axes; label offsets depend on both. */
-  readonly axisX: DrawnAxisOptions;
-  readonly axisY: DrawnAxisOptions;
+  /** The 1.x options of both axes (presets). */
+  readonly axisX?: DrawnAxisOptions;
+  readonly axisY?: DrawnAxisOptions;
   readonly classNames: AxisClassNames;
+  /**
+   * Composed charts: this axis's options and place. Labels go to `side`,
+   * `inset` px further out than the area edge (stacked axes).
+   */
+  readonly options?: DrawnAxisOptions;
+  /**
+   * Composed charts: positions a label on any side. Kept out of this module
+   * (see `layers/axes.ts`), so the presets don't bundle it.
+   */
+  readonly place?: LabelPlacer;
+  /** Whether labels get the start class (top, left) or the end class. */
+  readonly atStart?: boolean;
 }
+
+/** Position of a tick and the offset of its label, per axis side. */
+export type LabelPlacer = (
+  axis: ScaleAxis,
+  relative: number,
+  labelLength: number,
+  options: DrawnAxisOptions,
+  area: Area
+) => { position: number; labelOffset: { x: number; y: number } };
 
 const UNITS = {
   x: {
@@ -63,7 +84,9 @@ export function axisNodes(
 ): { grids: SceneNode[]; labels: SceneNode[] } {
   const { area, padding, classNames } = frame;
   const units = UNITS[axis.dimension];
-  const options = axis.dimension === 'x' ? frame.axisX : frame.axisY;
+  const options = (frame.options ??
+    (axis.dimension === 'x' ? frame.axisX : frame.axisY))!;
+  const place = frame.place;
   const projected = axis.ticks.map((tick, i) => axis.project(tick, i));
   const labelValues = axis.ticks.map(options.labelInterpolationFnc);
   const gridOffset = axis.dimension === 'x' ? area.y2 : area.x1;
@@ -83,21 +106,31 @@ export function axisNodes(
     }
 
     let position: number;
-    const labelOffset = { x: 0, y: 0 };
-    if (axis.dimension === 'x') {
+    let labelOffset = { x: 0, y: 0 };
+    if (place) {
+      ({ position, labelOffset } = place(
+        axis,
+        relative,
+        labelLength,
+        options,
+        area
+      ));
+    } else if (axis.dimension === 'x') {
+      const axisX = frame.axisX!;
       position = area.x1 + relative;
-      labelOffset.x = frame.axisX.labelOffset.x;
+      labelOffset.x = axisX.labelOffset.x;
       labelOffset.y =
-        frame.axisX.position === 'start'
-          ? padding.top + frame.axisX.labelOffset.y + 5
-          : area.y1 + frame.axisX.labelOffset.y + 5;
+        axisX.position === 'start'
+          ? padding.top + axisX.labelOffset.y + 5
+          : area.y1 + axisX.labelOffset.y + 5;
     } else {
+      const axisY = frame.axisY!;
       position = area.y1 - relative;
-      labelOffset.y = frame.axisY.labelOffset.y - labelLength;
+      labelOffset.y = axisY.labelOffset.y - labelLength;
       labelOffset.x =
-        frame.axisY.position === 'start'
-          ? padding.left + frame.axisY.labelOffset.x
-          : area.x2 + frame.axisY.labelOffset.x + 10;
+        axisY.position === 'start'
+          ? padding.left + axisY.labelOffset.x
+          : area.x2 + axisY.labelOffset.x + 10;
     }
 
     if (options.showGrid) {
@@ -125,7 +158,9 @@ export function axisNodes(
       const classes = [
         classNames.label,
         classNames[units.dir],
-        options.position === 'start' ? classNames.start : classNames.end
+        (frame.atStart ?? options.position === 'start')
+          ? classNames.start
+          : classNames.end
       ].join(' ');
       // 1.x sizes the span in px, the axis direction first.
       const style =

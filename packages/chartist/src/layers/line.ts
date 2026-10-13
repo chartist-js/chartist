@@ -29,8 +29,18 @@ export interface LineSeriesOptions {
 
 /** @experimental */
 export interface LineLayerOptions extends LineSeriesOptions {
-  /** Overrides per series name, as in 1.x. */
-  readonly series?: Readonly<Record<string, LineSeriesOptions>>;
+  /** Series to draw, by index or name; default: all series. */
+  readonly series?: readonly (number | string)[];
+  /** Axis ids to draw on; default: the first X and the first Y axis. */
+  readonly x?: string;
+  readonly y?: string;
+  /**
+   * Point position on a step axis: `start` of each step (1.x) or its
+   * `center`, where bars are centered.
+   */
+  readonly align?: 'start' | 'center';
+  /** Option overrides per series name (the 1.x `series` option). */
+  readonly overrides?: Readonly<Record<string, LineSeriesOptions>>;
   /** Iterate the series in reverse (1.x `reverseData`). */
   readonly reverseData?: boolean;
   readonly classNames?: {
@@ -77,9 +87,9 @@ function seriesOption<K extends keyof LineSeriesOptions>(
   if (
     safeHasProperty(series, 'name') &&
     series.name &&
-    options.series?.[series.name]
+    options.overrides?.[series.name]
   ) {
-    const value = options.series[series.name][key];
+    const value = options.overrides[series.name][key];
     return (value === undefined ? fallback : value) as NonNullable<
       LineSeriesOptions[K]
     >;
@@ -97,19 +107,33 @@ export function line(options: LineLayerOptions = {}): Layer {
   return {
     type: 'line',
     coordinates: ['cartesian'],
-    compose({ data, area, axes, normalized }) {
+    axes: { x: options.x, y: options.y },
+    series: options.series,
+    compose({ data, area, axes, normalized, seriesIndexes }) {
       const { x: axisX, y: axisY } = axes;
       if (!axisX || !axisY || !normalized) {
         throw new Error('Layer "line" needs an x and a y axis');
       }
+      if (seriesIndexes && options.reverseData) {
+        throw new Error(
+          'Layer "line": a series selection can\'t be combined with reverseData'
+        );
+      }
+      // Centered points sit where bars are centered on a step axis.
+      const shift =
+        options.align === 'center' && axisX.kind === 'step' && !axisX.stretch
+          ? (axisX.step ?? 0) / 2
+          : 0;
       const order = data.series.map((_, i) => i);
       if (options.reverseData) {
         order.reverse();
       }
 
-      return order.map((dataIndex, seriesIndex) => {
+      return order.map((dataIndex, localIndex) => {
+        // The chart-wide index, for classes, keys and contexts.
+        const seriesIndex = seriesIndexes?.[dataIndex] ?? localIndex;
         const series = rawSeries(data.series[dataIndex]);
-        const values = normalized.series[seriesIndex] as NormalizedSeries;
+        const values = normalized.series[localIndex] as NormalizedSeries;
         const seriesName = safeHasProperty(series, 'name') && series.name;
         const seriesClassName =
           safeHasProperty(series, 'className') && series.className;
@@ -121,7 +145,7 @@ export function line(options: LineLayerOptions = {}): Layer {
         const pathData: SegmentData[] = [];
         values.forEach((value, valueIndex) => {
           pathCoordinates.push(
-            area.x1 + axisX.project(value, valueIndex, values),
+            area.x1 + shift + axisX.project(value, valueIndex, values),
             area.y1 - axisY.project(value, valueIndex, values)
           );
           pathData.push({

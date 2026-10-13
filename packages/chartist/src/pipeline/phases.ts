@@ -1,6 +1,6 @@
 import type { ChartPadding } from '../core/types';
 import type { MeasureText } from '../render/measure';
-import type { CartesianAxes, ChartAxes } from '../scales/axis';
+import type { CartesianAxes, ChartAxes, LayerBinding } from '../scales/axis';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { assignKeys, mapNodes } from '../scene/tree';
 import type { PhaseEmitter } from './emitter';
@@ -188,7 +188,6 @@ export function layout(
   return result;
 }
 
-/** Composes each layer, emitting `compose` per node with a role (post-order). */
 export function compose(
   emitter: PhaseEmitter,
   config: ResolvedConfig,
@@ -197,19 +196,38 @@ export function compose(
   measureText: MeasureText,
   axes: ChartAxes = {},
   normalized?: NormalizedChartData,
-  padding: ChartPadding = config.padding
+  padding: ChartPadding = config.padding,
+  bindings: readonly LayerBinding[] = []
 ): SceneNode[] {
   const composed: SceneNode[] = [];
+  const byId = new Map((axes.all ?? []).map(axis => [axis.id, axis]));
   config.layers.forEach((layer, layerIndex) => {
+    const binding = bindings[layerIndex] ?? {};
+    const selection = data.flat ? undefined : binding.series;
+    const layerData = selection
+      ? { ...data, series: selection.map(i => data.series[i]) }
+      : data;
+    const layerNormalized =
+      selection && normalized
+        ? {
+            ...normalized,
+            series: selection.map(i => normalized.series[i])
+          }
+        : normalized;
     const nodes = layer.compose({
-      data,
+      data: layerData,
       area,
       padding,
       layerIndex,
       coordinates: config.coordinates,
       measureText,
-      axes,
-      normalized
+      axes: {
+        x: (binding.x && byId.get(binding.x)) || axes.x,
+        y: (binding.y && byId.get(binding.y)) || axes.y,
+        all: axes.all
+      },
+      normalized: layerNormalized,
+      seriesIndexes: selection
     });
     for (const top of nodes) {
       const result = mapNodes(assignKeys(top, layerIndex), current =>
@@ -266,8 +284,10 @@ export function runPipeline(
     environment.width,
     environment.height
   );
+  // Axis ids and series selections; only cartesian axes bind layers.
+  const bindings = config.axes?.bind?.(config.layers, data) ?? [];
   const { axes = {}, normalized = undefined } =
-    config.axes?.create(data, laidOut.area) ?? {};
+    config.axes?.create(data, laidOut.area, bindings) ?? {};
   const children = compose(
     emitter,
     config,
@@ -276,7 +296,8 @@ export function runPipeline(
     environment.measureText,
     axes,
     normalized,
-    laidOut.padding
+    laidOut.padding,
+    bindings
   );
   const built = scene(
     emitter,

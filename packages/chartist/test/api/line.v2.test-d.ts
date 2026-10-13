@@ -35,7 +35,7 @@ describe('line preset types', () => {
 
   test('line returns a layer', () => {
     expectTypeOf(
-      line({ showArea: true, series: { a: { showPoint: false } } })
+      line({ showArea: true, overrides: { a: { showPoint: false } } })
     ).toEqualTypeOf<Layer>();
   });
 });

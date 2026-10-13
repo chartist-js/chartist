@@ -91,3 +91,10 @@ Step axes expose `step`, the step length. `line({ align: 'center' })` adds `step
 ## Migration Plan
 
 Additive. Rollback means reverting.
+
+## Implementation notes
+
+- **Binding lives in `cartesianAxes()`.** `CartesianAxes.bind(layers, data)` resolves each layer's axis ids and series, and `create(data, area, bindings)` gives each axis only its bound series. The presets use the internal `presetAxes()` core without `bind`, so they don't bundle the binding, the list form or the id checks. Without `bind`, every layer draws all series on the first X and Y axis.
+- **Layers without series don't shape ranges.** `axisGrid()` and `axisLabels()` declare `series: []`; an axis no series layer is bound to covers all series. Found while reviewing the `two-y-axes` baseline: the grid's default binding to the first Y axis had widened its range to every series.
+- **Side placement lives in `layers/axes.ts`.** `axisNodes()` takes an optional `place` function, so the per-side label formulas aren't bundled by the presets. At inset 0 they match the preset geometry (unit test).
+- **1.x `series` on the line layer is now `overrides`.** `series` selects series in every layer; the line preset maps the 1.x `series` option to `overrides`.

@@ -35,7 +35,10 @@ for (const { id, type } of examples) {
     fail(`${id}: duplicate id`);
   }
   ids.add(id);
-  if (!/^(line|bar|pie)\/[a-z0-9-]+$/.test(id) || !id.startsWith(type + '/')) {
+  if (
+    !/^(line|bar|pie|composed)\/[a-z0-9-]+$/.test(id) ||
+    !id.startsWith(type + '/')
+  ) {
     fail(
       `${id}: id must be "<type>/<kebab-case-name>" matching type "${type}"`
     );
@@ -43,7 +46,7 @@ for (const { id, type } of examples) {
 }
 
 // Every example folder on disk is in the manifest.
-for (const type of ['line', 'bar', 'pie']) {
+for (const type of ['line', 'bar', 'pie', 'composed']) {
   for (const name of readdirSync(path.join(root, type))) {
     if (!ids.has(`${type}/${name}`)) {
       fail(`${type}/${name}: folder is not in the manifest`);
@@ -95,6 +98,16 @@ for (const example of examples) {
     fail(`${id}: compat: true, but uses neither .on(...) nor Svg`);
   }
 
+  // v2 marking: examples using the v2 API can't run on chartist@1.5.0.
+  const usesV2 = /\bchart\(|\bcartesianAxes\(|\b(line|bar|pie)Chart\(/.test(
+    code
+  );
+  if (usesV2 && !example.v2) {
+    fail(`${id}: uses the v2 API, so it needs v2: true`);
+  }
+  if (!usesV2 && example.v2) {
+    fail(`${id}: v2: true, but uses no v2 API`);
+  }
   if (example.viewports.length === 0) {
     fail(`${id}: needs at least one viewport`);
   }
