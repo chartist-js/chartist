@@ -1,6 +1,10 @@
-# Spec Delta
+# docs-site Specification
 
-## ADDED Requirements
+## Purpose
+
+Defines the Chartist documentation website: how it is built, its design system and themes, live charts, the docs layout and content pipeline, and its accessibility.
+
+## Requirements
 
 ### Requirement: Static site built with Nx
 
@@ -22,7 +26,12 @@ The site SHALL implement the design tokens and components of `docs/visual-design
 
 ### Requirement: Light and dark mode
 
-The site SHALL follow the OS color scheme by default and offer a toggle whose choice persists across pages and visits. The saved theme SHALL apply before the first paint, and the page SHALL declare the matching `color-scheme`.
+The site SHALL use the light theme by default, regardless of the OS color scheme, and offer a toggle whose choice persists across pages and visits. The saved theme SHALL apply before the first paint, and the page SHALL declare the matching `color-scheme`.
+
+#### Scenario: Light by default
+
+- **WHEN** a first-time visitor whose OS uses dark mode opens the site
+- **THEN** the site renders in the light theme
 
 #### Scenario: Toggle persists
 

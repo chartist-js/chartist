@@ -1,0 +1,155 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import Mascot from '../components/Mascot.astro';
+import { sortedDocs, sidebar, docPath, type DocEntry } from '../lib/docs';
+import { EDIT_BASE, VERSIONS, href } from '../lib/site';
+
+interface Props {
+  entry: DocEntry;
+  headings: MarkdownHeading[];
+}
+
+const { entry, headings } = Astro.props;
+const docs = await sortedDocs();
+const groups = sidebar(docs);
+const index = docs.findIndex(doc => doc.id === entry.id);
+const previous = docs[index - 1];
+const next = docs[index + 1];
+const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
+const label = (doc: DocEntry) => doc.data.label ?? doc.data.title;
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description} section="docs">
+  <div class="wrap docs">
+    <details class="docs-mobile-bar">
+      <summary class="btn sm">Docs menu</summary>
+      <nav aria-label="Docs (mobile)">
+        {
+          docs.map(doc => (
+            <a class="side-link" href={href(docPath(doc))} aria-current={doc.id === entry.id ? 'page' : undefined}>
+              {label(doc)}
+            </a>
+          ))
+        }
+      </nav>
+    </details>
+
+    <aside class="docs-side" aria-label="Docs">
+      <label class="version-label">
+        <span class="eyebrow">Version</span>
+        <select class="version" data-version-switch>
+          {VERSIONS.map(v => <option value={v.href ?? ''}>{v.label}</option>)}
+        </select>
+      </label>
+      {
+        groups.map(({ group, pages }) => (
+          <nav class="side-group" aria-label={group}>
+            <h2>{group}</h2>
+            {pages.map(doc => (
+              <a class="side-link" href={href(docPath(doc))} aria-current={doc.id === entry.id ? 'page' : undefined}>
+                {label(doc)}
+              </a>
+            ))}
+          </nav>
+        ))
+      }
+    </aside>
+
+    <div class="docs-main">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href={href(docPath(docs[0]))}>Docs</a><span aria-hidden="true">/</span><span>{entry.data.group}</span>
+      </nav>
+      <header class="page-head">
+        <div>
+          <h1>{entry.data.title}</h1>
+          <p class="lead">{entry.data.description}</p>
+        </div>
+        <div class="mascot-wrap hide-sm"><Mascot pose="point" /></div>
+      </header>
+
+      <article class="prose">
+        <slot />
+      </article>
+
+      <div class="page-meta">
+        <a href={`${EDIT_BASE}${entry.filePath?.split('/content/docs/')[1] ?? ''}`}>Edit this page on GitHub</a>
+      </div>
+      <nav class="pager" aria-label="Previous and next">
+        {
+          previous && (
+            <a href={href(docPath(previous))}>
+              <span class="muted">← Previous</span>
+              <strong>{label(previous)}</strong>
+            </a>
+          )
+        }
+        {
+          next && (
+            <a class="next" href={href(docPath(next))}>
+              <span class="muted">Next →</span>
+              <strong>{label(next)}</strong>
+            </a>
+          )
+        }
+      </nav>
+    </div>
+
+    {
+      toc.length > 0 && (
+        <nav class="docs-toc" aria-label="On this page">
+          <span class="eyebrow">On this page</span>
+          {toc.map(h => (
+            <a class:list={['toc-link', `depth-${h.depth}`]} href={`#${h.slug}`}>
+              {h.text}
+            </a>
+          ))}
+        </nav>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  // Version switcher: navigate to the chosen version's docs.
+  for (const select of document.querySelectorAll<HTMLSelectElement>('[data-version-switch]')) {
+    select.addEventListener('change', () => {
+      if (select.value) {
+        location.href = select.value;
+      }
+    });
+  }
+
+  // On-page TOC: mark the section in view.
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-link')];
+  const targets = links
+    .map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))))
+    .filter((el): el is HTMLElement => el !== null);
+  if (targets.length && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      entries => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            for (const link of links) {
+              link.toggleAttribute('aria-current', link.hash === `#${entry.target.id}`);
+              if (link.hash === `#${entry.target.id}`) {
+                link.setAttribute('aria-current', 'true');
+              }
+            }
+          }
+        }
+      },
+      { rootMargin: '-90px 0px -70% 0px' }
+    );
+    targets.forEach(target => observer.observe(target));
+  }
+</script>
+
+<style>
+  .version-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 0 12px;
+  }
+</style>

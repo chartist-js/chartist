@@ -9,7 +9,7 @@ The library is feature-complete for v2, and the brand and docs design (`docs/vis
 - **The Astro app** `apps/docs` (project `docs`), static output, wired into Nx with `@geekvetica/nx-astro` (author decision 2026-10-13). It depends on the workspace `chartist` build, so the site always shows the current library.
 - **The design system as site CSS:** the tokens and component styles of the design's `chartist.css` (palette, semantic tokens for light and dark, type scale, spacing, radii, shadows, motion), split into token and component layers. Charts are themed only through the library's `--ct-*` properties.
 - **Self-hosted fonts** (Fontsource): Zilla Slab, Atkinson Hyperlegible Next and Mono, with the display font preloaded. The site makes no third-party requests.
-- **Light and dark mode:** the OS preference by default, a toggle that persists, no flash of the wrong theme, and `color-scheme` set, so charts and the accessible theme follow.
+- **Light and dark mode:** light by default (author decision), a toggle that persists, no flash of the wrong theme, and `color-scheme` set, so charts and the accessible theme follow.
 - **Brand components:** `Logomark`, `Mascot` (poses `hero`, `point`, `lost`; all colors from tokens), `SiteHeader` (nav, GitHub, theme toggle, mobile menu) and `SiteFooter` (with the Cube sponsor line).
 - **`Chart` component:** renders a real Chartist chart with the functional API (`lineChart`, `barChart`, `pieChart` or a `chart()` config) as a small client island in a box of reserved size, so nothing jumps. The mascot's easel shows one.
 - **Docs layout:** sidebar from the content collection, an on-page TOC, prev/next, "Edit this page on GitHub", a mobile docs menu, and a version switcher (v2 current, links to the v1 and v0 sites).

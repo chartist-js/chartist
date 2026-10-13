@@ -1,0 +1,41 @@
+---
+import Logomark from './Logomark.astro';
+import { REPO, VERSIONS, href } from '../lib/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div class="intro">
+        <a class="brand-lockup" href={href('/')}><Logomark /><span>Chartist</span></a>
+        <p>Simple responsive charts, drawn in SVG and dressed in CSS. Since 2014.</p>
+        <p class="sponsor-line">Supported by <a href="https://cube.dev">Cube</a></p>
+      </div>
+      <nav aria-label="Docs">
+        <strong>Docs</strong>
+        <a href={href('docs/getting-started/')}>Getting started</a>
+      </nav>
+      <nav aria-label="Community">
+        <strong>Community</strong>
+        <a href={REPO}>GitHub</a>
+        <a href={`${REPO}/discussions`}>Discussions</a>
+        <a href="https://stackoverflow.com/questions/tagged/chartist.js">Stack Overflow</a>
+        <a href={`${REPO}/blob/main/CONTRIBUTING.md`}>Contributing</a>
+      </nav>
+      <nav aria-label="Versions">
+        <strong>Versions</strong>
+        {VERSIONS.map(v => (v.href ? <a href={v.href}>{v.label}</a> : <span>{v.label}</span>))}
+        <a href={`${REPO}/blob/main/CHANGELOG.md`}>Changelog</a>
+      </nav>
+    </div>
+    <div class="legal">
+      <span>MIT or WTFPL licensed · © 2014–{year} Gion Kunz and contributors</span>
+      <span>Drawn in SVG, styled with CSS, no dependencies harmed.</span>
+      <span class="credit"
+        >Paper texture: “Cream Paper” by <a href="https://www.toptal.com/designers/subtlepatterns/">Subtle Patterns</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>, recolored.</span
+      >
+    </div>
+  </div>
+</footer>

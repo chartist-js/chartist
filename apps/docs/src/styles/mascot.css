@@ -1,0 +1,126 @@
+/* The Chartist Guy: small, restrained motion (blink, hat tip, moustache). */
+.mascot {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mascot-stage {
+  position: relative;
+}
+
+/* The live chart sits over the board, in viewBox percentages. */
+.mascot-board {
+  position: absolute;
+}
+
+.mascot .m-hat-tip {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform var(--dur-3) var(--ease-spring);
+}
+
+.mascot-stage:hover .m-hat-tip {
+  transform: translate(-6px, -14px) rotate(-14deg);
+}
+
+.mascot .m-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: m-blink 5.2s infinite;
+}
+
+.mascot .m-stache {
+  transform-box: fill-box;
+  transform-origin: 50% 60%;
+}
+
+.mascot-stage:hover .m-stache {
+  animation: m-wiggle 600ms var(--ease-out);
+}
+
+.mascot .m-q {
+  animation: m-bob 1.8s ease-in-out infinite;
+  transform-box: fill-box;
+}
+
+.mascot .m-tap {
+  transform-box: view-box;
+  transform-origin: 336px 238px;
+  animation: m-tap 6s var(--ease-out) infinite;
+}
+
+@keyframes m-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  95% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes m-wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  25% {
+    transform: rotate(-6deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+}
+
+@keyframes m-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes m-tap {
+  0%,
+  30%,
+  100% {
+    transform: rotate(0);
+  }
+  34% {
+    transform: rotate(-3deg);
+  }
+  38% {
+    transform: rotate(0);
+  }
+  42% {
+    transform: rotate(-3deg);
+  }
+  46% {
+    transform: rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot .m-eyes,
+  .mascot .m-q,
+  .mascot .m-tap {
+    animation: none;
+  }
+}
+
+/* The board is paper-white in both themes, so its chart keeps light colors. */
+.mascot-board {
+  --ct-label-color: #6b5e5a;
+  --ct-grid-color: rgb(43 36 38 / 0.22);
+  --ct-label-size: 9px;
+  --ct-line-width: 3px;
+  --ct-point-size: 8px;
+  --ct-series-e: #453d3f;
+  --ct-series-g: #0544d3;
+  --ct-series-h: #6b0392;
+}

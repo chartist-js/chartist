@@ -1,0 +1,57 @@
+---
+/** Install snippets for npm and a CDN module, as accessible tabs. */
+const TABS = [
+  { id: 'npm', label: 'npm', code: 'npm install chartist' },
+  {
+    id: 'cdn',
+    label: 'CDN module',
+    code: "import { lineChart } from\n  'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';"
+  }
+];
+---
+
+<div class="install" data-tabs>
+  <div class="code-head">
+    <div role="tablist" aria-label="Install method">
+      {
+        TABS.map((tab, i) => (
+          <button class="code-tab" type="button" role="tab" id={`tab-${tab.id}`} aria-controls={`panel-${tab.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+            {tab.label}
+          </button>
+        ))
+      }
+    </div>
+  </div>
+  {
+    TABS.map((tab, i) => (
+      <div role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} hidden={i !== 0} tabindex="0">
+        <pre><code>{tab.code}</code></pre>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-tabs]')) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (tab: HTMLButtonElement) => {
+      for (const other of tabs) {
+        const selected = other === tab;
+        other.setAttribute('aria-selected', String(selected));
+        other.tabIndex = selected ? 0 : -1;
+        root.querySelector(`#${other.getAttribute('aria-controls')}`)?.toggleAttribute('hidden', !selected);
+      }
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', event => {
+        const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+        if (step) {
+          const next = tabs[(i + step + tabs.length) % tabs.length];
+          select(next);
+          next.focus();
+        }
+      });
+    });
+  }
+</script>

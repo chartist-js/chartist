@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import InstallTabs from '../components/InstallTabs.astro';
+import Mascot from '../components/Mascot.astro';
+import { REPO, href } from '../lib/site';
+---
+
+<BaseLayout title="Chartist" description="Simple, responsive charts drawn in SVG and styled with CSS.">
+  <section class="wrap hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Chartist v2</span>
+      <h1 class="display">Simple charts, <span class="hl">dressed in CSS.</span></h1>
+      <p class="lead">Responsive SVG charts you style with the CSS you already write. Tiny, typed, and happy without a build step.</p>
+      <InstallTabs />
+      <div class="hero-actions">
+        <a class="btn primary" href={href('docs/getting-started/')}>Get started</a>
+        <a class="btn" href={REPO}>GitHub</a>
+      </div>
+    </div>
+    <Mascot pose="hero">
+      <div class="board-chart ct-draw" data-board-chart role="img" aria-label="A line chart with two series"></div>
+    </Mascot>
+  </section>
+</BaseLayout>
+
+<script>
+  import '../scripts/board-chart';
+</script>
+
+<style>
+  .board-chart {
+    width: 100%;
+    height: 100%;
+  }
+</style>

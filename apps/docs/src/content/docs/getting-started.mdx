@@ -1,0 +1,150 @@
+---
+title: Getting started
+description: Your first chart in about two minutes. No build step, no bundler, no framework. Just an HTML file and a browser.
+group: Start here
+order: 1
+---
+
+import Step from '../../components/docs/Step.astro';
+import Callout from '../../components/docs/Callout.astro';
+import Chart from '../../components/Chart.astro';
+
+<Callout kind="tip">
+  **Works without a bundler.** Chartist ships as a native ES module, so a `<script type="module">` is all you need. Using npm instead? Skip to [Using npm](#using-npm).
+</Callout>
+
+<Step n={1}>
+
+## Add the stylesheet and a container
+
+The stylesheet holds the default look: series colors, grid and labels. The container is any element; Chartist fills it with an SVG. The `ct-golden-section` class gives it a responsive aspect ratio.
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.css"
+/>
+
+<div id="chart" class="ct-golden-section"></div>
+```
+
+</Step>
+
+<Step n={2}>
+
+## Import Chartist and draw a chart
+
+Import the chart type you need as a function and call it with the container, the data and, optionally, options. Labels go along the X axis; each array in `series` becomes one line.
+
+```html
+<script type="module">
+  import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+
+  lineChart('#chart', {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [
+      [12, 9, 7, 8, 5],
+      [2, 1, 3.5, 7, 3]
+    ]
+  });
+</script>
+```
+
+</Step>
+
+<Step n={3}>
+
+## Open it in a browser
+
+That's it. Here's the whole file, ready to save as `index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>My first chart</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.css"
+    />
+  </head>
+  <body>
+    <div id="chart" class="ct-golden-section"></div>
+    <script type="module">
+      import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+
+      lineChart('#chart', {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        series: [
+          [12, 9, 7, 8, 5],
+          [2, 1, 3.5, 7, 3]
+        ]
+      });
+    </script>
+  </body>
+</html>
+```
+
+And this is what it draws, live:
+
+<div class='chart-frame'>
+  <Chart
+    type='line'
+    label='Line chart with two series from Monday to Friday'
+    aspect='1.618 / 1'
+    data={{
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      series: [
+        [12, 9, 7, 8, 5],
+        [2, 1, 3.5, 7, 3]
+      ]
+    }}
+  />
+</div>
+
+</Step>
+
+## Using npm
+
+Same API, installed from npm. It works with Vite, webpack, Rollup, esbuild and Astro, and it's written in TypeScript, so the types come with it.
+
+```sh
+npm install chartist
+```
+
+```ts
+import 'chartist/styles.css';
+import { barChart } from 'chartist';
+
+barChart(
+  '#chart',
+  {
+    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+    series: [
+      [5, 4, 3, 7],
+      [3, 2, 9, 5]
+    ]
+  },
+  { stackBars: true }
+);
+```
+
+Chartist only adds what you import to your bundle, so a single line chart stays small.
+
+## Make it yours with CSS
+
+There's no theme option. Charts are SVG with predictable classes, so you style them the way you style everything else. Custom properties cover the common cases, for the whole page, one container or one chart:
+
+```css
+#chart {
+  --ct-series-a: #0544d3; /* first series */
+  --ct-line-width: 2px;
+  --ct-grid-dasharray: none;
+}
+```
+
+<Callout>
+  **Coming from Chartist 1.x?** Your code keeps working: `new LineChart(...)`
+  and the other classes are still there, and your charts look exactly the same.
+</Callout>

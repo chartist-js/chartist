@@ -1,0 +1,122 @@
+/*
+ * The site's chart theme: brand tokens feed the library's --ct-* custom
+ * properties (chartist/styles.css reads them). The lifted dark values for
+ * series e, g and h are a site choice; the library default stays 1.x.
+ */
+:root {
+  /* Classic palette: identical to 0.x and 1.5, never change these. */
+  --ct-series-a: #d70206;
+  --ct-series-b: #f05b4f;
+  --ct-series-c: #f4c63d;
+  --ct-series-d: #d17905;
+  --ct-series-e: #453d3f;
+  --ct-series-f: #59922b;
+  --ct-series-g: #0544d3;
+  --ct-series-h: #6b0392;
+  --ct-series-i: #e6805e;
+  --ct-series-j: #dda458;
+  --ct-series-k: #eacf7d;
+  --ct-series-l: #86797d;
+  --ct-series-m: #b2c326;
+  --ct-series-n: #6188e2;
+  --ct-series-o: #a748ca;
+  --ct-grid-color: color-mix(in oklab, var(--ink) 18%, transparent);
+  --ct-grid-dasharray: 2 4;
+  --ct-label-color: var(--ink-2);
+  --ct-label-size: 0.75rem;
+  --ct-line-width: 3px;
+  --ct-point-size: 9px;
+  --ct-bar-width: 12px;
+  --ct-area-opacity: 0.14;
+  --ct-donut-width: 28px;
+}
+
+:root[data-theme='dark'] {
+  /* Only the three classic colors that vanish on Ink are lifted. */
+  --ct-series-e: #9c8e88;
+  --ct-series-g: #4d7ef2;
+  --ct-series-h: #a748ca;
+}
+
+/* Block, so no baseline gap grows the chart's reserved box. */
+.chart-box > svg,
+.board-chart > svg {
+  display: block;
+}
+
+/* Labels use the body font, like the rest of the page. */
+.ct-label {
+  font-family: var(--font-body);
+}
+
+/*
+ * Draw-in: the site's draw-in plugin gives lines and donut slices
+ * pathLength="1"; .ct-draw starts the animation when the chart renders.
+ */
+.ct-draw .ct-line,
+.ct-draw .ct-slice-donut {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ct-draw var(--dur-draw) var(--ease-out) forwards;
+}
+
+.ct-draw .ct-series-b .ct-line {
+  animation-delay: 150ms;
+}
+
+.ct-draw .ct-series-c .ct-line {
+  animation-delay: 300ms;
+}
+
+.ct-draw .ct-point {
+  opacity: 0;
+  animation: ct-pop var(--dur-3) var(--ease-spring) 700ms forwards;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ct-draw .ct-area {
+  opacity: 0;
+  animation: ct-fade 800ms var(--ease-out) 500ms forwards;
+}
+
+.ct-draw .ct-bar {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: ct-draw 700ms var(--ease-out) forwards;
+}
+
+@keyframes ct-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ct-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ct-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-draw .ct-line,
+  .ct-draw .ct-slice-donut,
+  .ct-draw .ct-bar,
+  .ct-draw .ct-point,
+  .ct-draw .ct-area {
+    animation: none;
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}

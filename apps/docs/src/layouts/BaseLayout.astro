@@ -1,0 +1,60 @@
+---
+import '@fontsource/zilla-slab/500.css';
+import '@fontsource/zilla-slab/600.css';
+import '@fontsource/zilla-slab/700.css';
+import '@fontsource/zilla-slab/500-italic.css';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght.css';
+import '@fontsource-variable/atkinson-hyperlegible-next/wght-italic.css';
+import '@fontsource-variable/atkinson-hyperlegible-mono/wght.css';
+import zilla700 from '@fontsource/zilla-slab/files/zilla-slab-latin-700-normal.woff2?url';
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { href } from '../lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Header section to mark as current. */
+  section?: string;
+}
+
+const { title, description, section } = Astro.props;
+const fullTitle = title === 'Chartist' ? title : `${title} · Chartist`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
+    <link rel="preload" href={zilla700} as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      // Before the first paint: the saved theme, else light (the default).
+      (() => {
+        let theme;
+        try {
+          theme = localStorage.getItem('chartist-theme');
+        } catch {
+          // No storage (private mode): use the default.
+        }
+        document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader active={section} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      import { addCopyButtons } from '../scripts/copy';
+      addCopyButtons();
+    </script>
+  </body>
+</html>

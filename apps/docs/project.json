@@ -1,0 +1,73 @@
+{
+  "name": "docs",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/docs/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "dev": {
+      "executor": "@geekvetica/nx-astro:dev",
+      "options": {},
+      "cache": false
+    },
+    "build": {
+      "executor": "@geekvetica/nx-astro:build",
+      "options": {},
+      "inputs": [
+        "production",
+        "^production",
+        "{projectRoot}/package.json",
+        {
+          "externalDependencies": ["astro"]
+        }
+      ],
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+    "preview": {
+      "executor": "@geekvetica/nx-astro:preview",
+      "options": {},
+      "cache": false,
+      "dependsOn": ["build"]
+    },
+    "check": {
+      "executor": "@geekvetica/nx-astro:check",
+      "options": {},
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "externalDependencies": ["astro", "typescript"]
+        }
+      ],
+      "cache": true,
+      "dependsOn": ["sync"]
+    },
+    "sync": {
+      "executor": "@geekvetica/nx-astro:sync",
+      "options": {},
+      "inputs": [
+        "{projectRoot}/src/content/**/*",
+        {
+          "externalDependencies": ["astro"]
+        }
+      ],
+      "outputs": [],
+      "cache": true,
+      "metadata": {
+        "technologies": ["astro"],
+        "description": "Generate TypeScript types for Astro Content Collections and modules (via astro sync)"
+      }
+    },
+    "e2e": {
+      "command": "playwright test",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["build"],
+      "inputs": ["default", "^production"],
+      "cache": true
+    }
+  }
+}

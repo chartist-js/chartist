@@ -1,0 +1,39 @@
+---
+/**
+ * A live Chartist chart, rendered on the client into a box of reserved
+ * size (no layout shift). `label` names the chart for assistive technology.
+ */
+import type { ChartSpec } from '../scripts/charts';
+
+interface Props extends ChartSpec {
+  label: string;
+  /** CSS aspect ratio of the box, e.g. "16 / 9". */
+  aspect?: string;
+  /** Draw the chart in with CSS animation (off with reduced motion). */
+  draw?: boolean;
+  class?: string;
+}
+
+const { type, data, options, label, aspect = '16 / 9', draw = true, class: className } = Astro.props;
+const spec: ChartSpec = { type, data, options };
+---
+
+<div
+  class:list={['chart-box', { 'ct-draw': draw }, className]}
+  style={{ aspectRatio: aspect }}
+  role="img"
+  aria-label={label}
+  data-chart={JSON.stringify(spec)}
+>
+</div>
+
+<script>
+  import { mountCharts } from '../scripts/charts';
+  mountCharts();
+</script>
+
+<style>
+  .chart-box {
+    width: 100%;
+  }
+</style>

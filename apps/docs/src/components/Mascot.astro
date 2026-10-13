@@ -1,0 +1,194 @@
+---
+/**
+ * The Chartist Guy (docs/visual-design Mascot artboard), flat variant.
+ * Poses: hero (presenting the board), point, lost (404). In the hero pose
+ * the board holds a live chart: pass it as the default slot; it's placed
+ * over the board's chart area.
+ */
+interface Props {
+  pose?: 'hero' | 'point' | 'lost';
+  class?: string;
+}
+
+const { pose = 'hero', class: className } = Astro.props;
+
+interface Arm {
+  d: string;
+  hand: string;
+  cls?: string;
+}
+
+const arm = (d: string, hx: number, hy: number, angle: number, flip: number, cls?: string): Arm => ({
+  d,
+  cls,
+  hand: `translate(${hx} ${hy}) rotate(${angle}) scale(1.05 ${1.05 * flip})`
+});
+
+const ARMS = {
+  pointL: arm('M336,238 Q306,232 286,208', 286, 208, -130, -1, 'm-tap'),
+  forkR: arm('M408,238 Q444,250 444,280', 444, 282, 92, 1),
+  downL: arm('M336,238 Q322,270 326,300', 326, 302, 95, -1),
+  upR: arm('M408,238 Q436,226 452,198', 452, 198, -60, 1),
+  scratchR: arm('M408,238 Q446,214 428,156', 428, 156, -105, 1)
+};
+
+const MOUTH = {
+  smile:
+    'M343,187.5 Q357,192 371,186.5 Q374,186 373,189 Q366,204 357,204 Q348,204 342,190 Q341,187.5 343,187.5 Z',
+  o: 'M348.5,194 a5.5,6.5 0 1,0 11,0 a5.5,6.5 0 1,0 -11,0 Z'
+};
+
+const POSES = {
+  hero: {
+    viewBox: '0 0 480 420',
+    easel: true,
+    easelTransform: undefined,
+    arms: [ARMS.pointL, ARMS.forkR],
+    fork: true,
+    hatTransform: undefined,
+    mouth: MOUTH.smile,
+    eyesDx: 0,
+    label: 'The Chartist Guy presenting a line chart, hay fork in hand'
+  },
+  point: {
+    viewBox: '276 36 204 372',
+    easel: false,
+    easelTransform: undefined,
+    arms: [ARMS.downL, ARMS.upR],
+    fork: false,
+    hatTransform: undefined,
+    mouth: MOUTH.smile,
+    eyesDx: 3,
+    label: 'The Chartist Guy pointing the way'
+  },
+  lost: {
+    viewBox: '0 0 480 420',
+    easel: true,
+    easelTransform: 'translate(60 0) rotate(-12 46 394)',
+    arms: [ARMS.downL, ARMS.scratchR],
+    fork: false,
+    hatTransform: 'translate(4 -4) rotate(14 372 124)',
+    mouth: MOUTH.o,
+    eyesDx: -3,
+    label: 'The Chartist Guy scratching his head next to a toppled chart'
+  }
+} as const;
+
+const p = POSES[pose];
+const [vx, vy, vw, vh] = p.viewBox.split(' ').map(Number);
+// The board's chart area in the 480 x 420 drawing: x 44, y 110, w 200, h 136.
+const board = {
+  left: `${((44 - vx) / vw) * 100}%`,
+  top: `${((110 - vy) / vh) * 100}%`,
+  width: `${(200 / vw) * 100}%`,
+  height: `${(136 / vh) * 100}%`
+};
+const hasBoardChart = pose === 'hero' && Astro.slots.has('default');
+---
+
+<div class:list={['mascot-stage', className]}>
+  <svg class="mascot" viewBox={p.viewBox} role="img" aria-label={p.label}>
+    {
+      p.easel && (
+        <g class="m-easel" transform={p.easelTransform}>
+          <path d="M30,398 a120,6 0 1,0 240,0 a120,6 0 1,0 -240,0" fill="var(--m-ink)" opacity=".1" />
+          <g stroke="var(--m-wood)" stroke-width="9" stroke-linecap="round">
+            <path d="M70,262 L46,394 M218,262 L242,394 M144,262 L144,386" />
+          </g>
+          <rect x="134" y="80" width="20" height="16" rx="4" fill="var(--m-wood)" />
+          <rect x="24" y="92" width="240" height="172" rx="12" fill="var(--m-board)" stroke="var(--m-ink)" stroke-width="6" />
+          {pose === 'lost' && (
+            <g stroke="var(--ct-series-a)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <path d="M60,220 L100,196 L128,206" />
+              <path d="M150,170 L190,180 L232,128" stroke-dasharray="6 8" />
+            </g>
+          )}
+        </g>
+      )
+    }
+    {
+      pose === 'lost' && (
+        <g>
+          <rect x="150" y="372" width="12" height="24" rx="3" transform="rotate(20 156 384)" fill="var(--ct-series-a)" />
+          <rect x="186" y="382" width="24" height="12" rx="3" fill="var(--ct-series-b)" />
+          <circle cx="226" cy="390" r="5" fill="var(--ct-series-a)" />
+          <path d="M244,392 L312,380" stroke="var(--m-wood)" stroke-width="5" stroke-linecap="round" />
+        </g>
+      )
+    }
+    <g>
+      {
+        p.arms.map(a => (
+          <g class={a.cls}>
+            <path d={a.d} stroke="var(--m-ink)" stroke-width="15" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+            <g transform={a.hand}>
+              <path d="M-2,-7 C6,-9 16,-8 17,0 C17,8 6,9 -2,7 Z" fill="var(--m-skin)" />
+              <path d="M-1,-5.5 C-1,-11 3,-13.5 5.5,-11 C7,-9.5 5,-7 2,-5 Z" fill="var(--m-skin)" />
+            </g>
+          </g>
+        ))
+      }
+    </g>
+    <g class="m-body">
+      <ellipse cx="380" cy="398" rx="56" ry="5" fill="var(--m-ink)" opacity="0.12" />
+      <path d="M347,320 L342,392" stroke="var(--m-ink)" stroke-width="9" stroke-linecap="round" fill="none" />
+      <path d="M397,320 L402,392" stroke="var(--m-ink)" stroke-width="9" stroke-linecap="round" fill="none" />
+      <path d="M346.5,388 L346.5,397 L318.5,397 Q324.5,390 337.5,389 Z" fill="var(--m-ink)" />
+      <path d="M397.5,388 L397.5,397 L425.5,397 Q419.5,390 406.5,389 Z" fill="var(--m-ink)" />
+      <path d="M336,290 L408,290 L407,318 Q406,324 400,324 L344,324 Q338,324 337,318 Z" fill="var(--m-ink)" />
+      <path d="M356,222 L388,222 L380,318 L364,318 Z" fill="var(--m-ink)" />
+      <path d="M344,222 L358,222 L370,246 L370,318 L334,309 Q325,307 326,299 L333,232 Q334,222 344,222 Z" fill="var(--m-vest)" />
+      <path d="M386,222 L400,222 Q410,222 411,232 L418,299 Q419,307 410,309 L374,318 L374,246 Z" fill="var(--m-vest)" />
+      <circle cx="382" cy="262" r="3.3" fill="var(--m-ink)" />
+      <circle cx="382" cy="280" r="3.3" fill="var(--m-ink)" />
+      <circle cx="382" cy="298" r="3.3" fill="var(--m-ink)" />
+    </g>
+    {
+      p.fork && (
+        <g transform="rotate(4 444 282)" stroke-linecap="round" fill="none">
+          <path d="M444,396 L444,132" stroke="var(--m-wood)" stroke-width="6" />
+          <path d="M426,84 L426,132 L462,132 L462,84 M438,86 L438,132 M450,86 L450,132" stroke="var(--m-ink)" stroke-width="4" stroke-linejoin="round" />
+        </g>
+      )
+    }
+    <g transform="translate(0 6)">
+      <g class="m-head">
+        <circle cx="409" cy="150" r="10" fill="var(--m-skin)" />
+        <path d="M409,146 q4,4 0,8" stroke="var(--m-skin-2)" stroke-width="2.5" fill="none" stroke-linecap="round" />
+        <path d="M335,121 C342,96 402,96 408,124 L408,196 C408,224 388,232 366,232 C344,232 322,224 322,210 Q322,203 333,197 L337,176 L348,160 L321,158 Q312,157 316,149 Z" fill="var(--m-skin)" />
+        <g transform={`translate(${p.eyesDx} 0)`}>
+          <g class="m-eyes">
+            <ellipse cx="358" cy="136" rx="4.4" ry="6" fill="var(--m-ink)" />
+            <ellipse cx="384" cy="136" rx="4.4" ry="6" fill="var(--m-ink)" />
+          </g>
+        </g>
+        <path d={p.mouth} fill="#6E1F2A" />
+        <path class="m-stache" d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="var(--m-ink)" />
+      </g>
+      <g transform={p.hatTransform}>
+        <g class="m-hat">
+          <g class="m-hat-tip">
+            <ellipse cx="372" cy="120" rx="54" ry="7" fill="var(--m-ink)" />
+            <path d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="var(--m-ink)" />
+            <ellipse cx="372" cy="73" rx="35" ry="5" fill="#453B3E" />
+            <path d="M338.9,104 Q372,110 405.1,104 L404.3,116 Q372,122 339.7,116 Z" fill="var(--m-vest)" />
+          </g>
+        </g>
+      </g>
+    </g>
+    {
+      pose === 'lost' && (
+        <text class="m-q" x="296" y="96" font-size="58" font-weight="800" fill="var(--ct-series-a)" aria-hidden="true">
+          ?
+        </text>
+      )
+    }
+  </svg>
+  {
+    hasBoardChart && (
+      <div class="mascot-board" style={board}>
+        <slot />
+      </div>
+    )
+  }
+</div>

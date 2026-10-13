@@ -1,0 +1,14 @@
+---
+/** A numbered step in a guide. */
+interface Props {
+  n: number;
+  id?: string;
+}
+
+const { n, id } = Astro.props;
+---
+
+<div class="step" id={id}>
+  <span class="step-n" aria-hidden="true">{n}</span>
+  <div class="step-body"><slot /></div>
+</div>

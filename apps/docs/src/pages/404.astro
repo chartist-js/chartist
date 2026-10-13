@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Mascot from '../components/Mascot.astro';
+import { href } from '../lib/site';
+---
+
+<BaseLayout title="Page not found" description="This page doesn't exist.">
+  <section class="wrap not-found">
+    <Mascot pose="lost" />
+    <div class="copy">
+      <span class="eyebrow">404</span>
+      <h1 class="display">This chart fell off the easel.</h1>
+      <p class="lead">The page you're looking for doesn't exist, or it moved. Let's get you back to something that plots.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href={href('docs/getting-started/')}>Read the docs</a>
+        <a class="btn" href={href('/')}>Home</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -5,7 +5,10 @@
   "scripts": {},
   "private": true,
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@astrojs/mdx": "8.0.2",
     "@fission-ai/openspec": "1.14.1",
+    "@geekvetica/nx-astro": "3.0.1",
     "@nx/js": "23.3.0",
     "@nx/oxlint": "23.3.0",
     "@nx/vitest": "23.3.0",
@@ -14,6 +17,7 @@
     "@swc/helpers": "0.5.18",
     "@types/node": "^24.0.0",
     "@vitest/coverage-v8": "5.0.2",
+    "astro": "7.3.6",
     "jsdom": "30.1.1",
     "nx": "23.3.0",
     "oxfmt": "0.71.0",

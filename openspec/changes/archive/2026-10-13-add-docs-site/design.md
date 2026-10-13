@@ -33,10 +33,10 @@
 
 ### D3: Theme switching
 
-- **Before first paint:** an inline script in `<head>` sets `data-theme` on `<html>` from `localStorage` (try/catch) or `matchMedia('(prefers-color-scheme: dark)')`.
+- **Before first paint:** an inline script in `<head>` sets `data-theme` on `<html>` from `localStorage` (try/catch), else `light`. Light is the default regardless of the OS preference (author decision 2026-10-13).
 - **`color-scheme`:** CSS sets it per theme, so the accessible chart theme and form controls follow.
 - **Toggle:** a button in `SiteHeader` flips the attribute and saves the choice. Charts don't re-render; their colors are custom properties.
-- **Without JavaScript:** the OS preference applies through a `prefers-color-scheme` media rule.
+- **Without JavaScript:** the light theme.
 
 ### D4: Fonts
 
@@ -89,3 +89,15 @@ They run in Chromium; Firefox and WebKit join in the release phase CI.
 - **Charts need JavaScript:** a chart is an island, so without JavaScript the reserved box stays empty with its accessible label. Server-rendered charts (`toScene` + `renderToString`) are a later option.
 - **Design CSS size:** the ported CSS is about 36 kB unminified; Astro bundles and minifies it. Unused design classes (mock charts) are left out.
 - **Plugin maturity:** `@geekvetica/nx-astro` is a third-party plugin; if it gets in the way, plain inferred targets from `package.json` scripts are the fallback.
+
+## Implementation notes
+
+- **Plugin model for dependencies:** `@geekvetica/nx-astro` keeps `astro` and every `@astrojs/*` package at the workspace root (pinned) and copies them into `apps/docs/package.json` before each build; its `check` executor looks for `@astrojs/check` at the root. The app's own `package.json` holds the rest (Fontsource, `chartist`, Playwright, axe). `init` also added `@astrojs/node` (a server adapter), which was removed: the site is static.
+- **Type checking:** `astro check` (target `check`) type-checks the app including `.astro` files; the `@nx/js` typecheck plugin excludes `apps/docs`. The app uses Astro's strict tsconfig instead of the generated React one.
+- **E2E server:** `astro preview` detaches into the background when there is no terminal (agents, CI), which Playwright's `webServer` can't manage. `e2e/serve.mjs` serves the build like a static host instead, with `404.html` and status 404 for unknown paths. Vitest only looks at `src/**/*.test.ts`, so it doesn't pick up the Playwright specs.
+- **Fonts:** Fontsource registers the variable fonts as "Atkinson Hyperlegible Next Variable" and "… Mono Variable"; the font stacks list those names first.
+- **Paper texture:** the design's `paper.png` and `paper-dark.png` ("Cream Paper" from Subtle Patterns, CC BY-SA 3.0, recolored) are site assets in `src/assets/`, loaded through Vite so they work under any base path, on page grounds only. CC BY-SA requires attribution: the footer credits them and `src/assets/README.md` notes the license. (They were missed in the first snapshot download, which fetched an explicit list of files.)
+- **Mascot board in dark mode:** the board stays paper-white, so its chart keeps light label and grid colors (scoped custom properties on `.mascot-board`).
+- **Draw-in:** a v2 plugin (`compose` listener) gives lines, bars and slices `pathLength="1"`; CSS animates them, off with reduced motion.
+- **Charts' svg is `display: block`:** an inline svg added a baseline gap, which grew the reserved box by 9 px after rendering (caught by the e2e layout-shift test).
+- **Footer license:** "MIT or WTFPL", as in the repository (the design said MIT).

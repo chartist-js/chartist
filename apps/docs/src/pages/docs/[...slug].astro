@@ -1,0 +1,17 @@
+---
+import { render } from 'astro:content';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { sortedDocs } from '../../lib/docs';
+
+export async function getStaticPaths() {
+  const docs = await sortedDocs();
+  return docs.map(entry => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content, headings } = await render(entry);
+---
+
+<DocsLayout entry={entry} headings={headings}>
+  <Content />
+</DocsLayout>

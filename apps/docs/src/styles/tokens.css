@@ -1,0 +1,172 @@
+/*
+ * Design tokens of the Chartist v2 brand (docs/visual-design/project/chartist.css):
+ * primitives, semantic tokens for light and dark, type, space, radius,
+ * shadow and motion. Light is the default; dark mode is data-theme="dark"
+ * on <html>, set before the first paint when the visitor chose it.
+ */
+
+/* Primitive palette (never used directly in components) */
+:root {
+  --p-cream-50: #fffdf9;
+  --p-cream-100: #fbf6ee;
+  --p-cream-200: #f3eadb;
+  --p-cream-300: #e6d9c6;
+  --p-cream-400: #cdbda6;
+  --p-ink-300: #b3a49c;
+  --p-ink-500: #6b5e5a;
+  --p-ink-700: #3a3133;
+  --p-ink-800: #2b2426;
+  --p-ink-850: #262022;
+  --p-ink-900: #1c1718;
+  --p-ink-950: #151112;
+  --p-waistcoat-500: #c8102e;
+  --p-waistcoat-600: #a50d26;
+  --p-grapefruit-400: #ff6b5e;
+  --p-grapefruit-500: #f05b4f;
+  --p-mustard-400: #f4c63d;
+  --p-mustard-600: #b07800;
+  --p-wood-500: #9a6a45;
+  --p-skin-400: #e2a47c;
+  --p-skin-600: #c98560;
+}
+
+/* Semantic tokens: light */
+:root {
+  /* surfaces */
+  --bg: var(--p-cream-100);
+  --bg-sunken: var(--p-cream-200);
+  /* Paper texture: "Cream Paper" from Subtle Patterns (CC BY-SA 3.0),
+     recolored as an overlay; set to none to switch it off. */
+  --paper: url('../assets/paper.png');
+  --surface: var(--p-cream-50);
+  --surface-raised: #ffffff;
+  --line: var(--p-cream-300);
+  --line-strong: var(--p-cream-400);
+  /* text */
+  --ink: var(--p-ink-800);
+  --ink-2: var(--p-ink-500);
+  --ink-inverse: var(--p-cream-100);
+  /* brand */
+  --brand: var(--p-waistcoat-500);
+  --brand-hover: var(--p-waistcoat-600);
+  --on-brand: #ffffff;
+  --accent: var(--p-mustard-400);
+  --on-accent: var(--p-ink-800);
+  --link: var(--p-waistcoat-500);
+  --focus: #2b6cd8;
+  /* semantic / status (reserved — never a chart series) */
+  --ok: #2e7d32;
+  --ok-bg: #e4f1df;
+  --warn: #8a5a00;
+  --warn-bg: #fbefc8;
+  --danger: #b3122b;
+  --danger-bg: #f9e0df;
+  --info: #1f58b8;
+  --info-bg: #e2ebfa;
+  /* code */
+  --code-bg: #2b2426;
+  --code-ink: #f3eadb;
+  --code-muted: #a99a92;
+  --code-key: #ff8a7f;
+  --code-str: #f4c63d;
+  --code-num: #8fb8ff;
+  --code-fn: #7fd1c2;
+  /* mascot */
+  --m-ink: var(--p-ink-800);
+  --m-skin: var(--p-skin-400);
+  --m-skin-2: var(--p-skin-600);
+  --m-vest: var(--p-waistcoat-500);
+  --m-wood: var(--p-wood-500);
+  --m-board: var(--p-cream-50);
+  --m-tie: var(--p-mustard-400);
+
+  /* ---------- 4. Type ---------- */
+  --font-display:
+    'Zilla Slab', 'Rockwell', 'Roboto Slab', Georgia, serif; /* Clarendon-spirit slab — the headline type of the 1840s press */
+  --font-body:
+    'Atkinson Hyperlegible Next Variable', 'Atkinson Hyperlegible Next',
+    'Segoe UI', 'Helvetica Neue', sans-serif;
+  --font-code:
+    'Atkinson Hyperlegible Mono Variable', 'Atkinson Hyperlegible Mono',
+    ui-monospace, 'SF Mono', Menlo, monospace;
+  --fs-xs: 0.75rem; /* 12 */
+  --fs-sm: 0.875rem; /* 14 */
+  --fs-md: 1rem; /* 16 */
+  --fs-lg: 1.125rem; /* 18 */
+  --fs-xl: 1.375rem; /* 22 */
+  --fs-2xl: 1.75rem; /* 28 */
+  --fs-3xl: 2.25rem; /* 36 */
+  --fs-4xl: clamp(2.25rem, 5vw, 3.5rem); /* 36 → 56 */
+  --fs-5xl: clamp(2.75rem, 7.5vw, 5.5rem); /* 44 → 88 */
+  --lh-tight: 1.02;
+  --lh-snug: 1.2;
+  --lh-body: 1.6;
+
+  /* ---------- 5. Space, radius, shadow, motion ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 128px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+  --shadow-1: 0 1px 0 var(--line-strong);
+  --shadow-2: 0 2px 0 var(--ink); /* "printed" offset shadow */
+  --shadow-3: 4px 4px 0 var(--ink); /* cards that pop */
+  --shadow-soft: 0 12px 32px -12px
+    color-mix(in oklab, var(--p-ink-900) 28%, transparent);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dur-1: 120ms;
+  --dur-2: 240ms;
+  --dur-3: 480ms;
+  --dur-draw: 1200ms;
+}
+
+/* Semantic tokens: dark */
+:root[data-theme='dark'] {
+  --bg: var(--p-ink-900);
+  --paper: url('../assets/paper-dark.png');
+  --bg-sunken: var(--p-ink-950);
+  --surface: var(--p-ink-850);
+  --surface-raised: #2e2729;
+  --line: var(--p-ink-700);
+  --line-strong: #4d4245;
+  --ink: var(--p-cream-200);
+  --ink-2: var(--p-ink-300);
+  --ink-inverse: var(--p-ink-900);
+  --brand: var(--p-grapefruit-400);
+  --brand-hover: #ff8a7f;
+  --on-brand: var(--p-ink-900);
+  --link: var(--p-grapefruit-400);
+  --focus: #8fb8ff;
+  --ok: #7bcb7f;
+  --ok-bg: #1f2e20;
+  --warn: #f4c63d;
+  --warn-bg: #33290f;
+  --danger: #ff8a7f;
+  --danger-bg: #3a1d1f;
+  --info: #8fb8ff;
+  --info-bg: #1b2638;
+  --code-bg: #151112;
+  --m-ink: #151112;
+  --m-board: #fffdf9;
+  --shadow-2: 0 2px 0 #000;
+  --shadow-3: 4px 4px 0 #000;
+}
+
+:root {
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+}

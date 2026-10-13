@@ -1,0 +1,20 @@
+---
+/** A highlighted note: `tip` (green), `info` (blue, default) or `warn`. */
+interface Props {
+  kind?: 'tip' | 'info' | 'warn';
+}
+
+const { kind = 'info' } = Astro.props;
+const icon = {
+  tip: { stroke: 'var(--ok)', d: 'M8 12l3 3 5-6' },
+  info: { stroke: 'var(--info)', d: 'M12 11v6M12 7.5v.5' },
+  warn: { stroke: 'var(--warn)', d: 'M12 7v6M12 16.5v.5' }
+}[kind];
+---
+
+<aside class:list={['callout', kind]}>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={icon.stroke} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+    ><circle cx="12" cy="12" r="9"></circle><path d={icon.d}></path></svg
+  >
+  <div><slot /></div>
+</aside>

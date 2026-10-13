@@ -22,7 +22,8 @@
           "buildDepsName": "build-deps",
           "watchDepsName": "watch-deps"
         }
-      }
+      },
+      "exclude": ["apps/docs/**/*"]
     },
     {
       "plugin": "@nx/oxlint",
@@ -35,6 +36,17 @@
       "options": {
         "testTargetName": "test",
         "testMode": "run"
+      }
+    },
+    {
+      "plugin": "@geekvetica/nx-astro",
+      "options": {
+        "devTargetName": "dev",
+        "buildTargetName": "build",
+        "previewTargetName": "preview",
+        "checkTargetName": "check",
+        "testTargetName": "test",
+        "syncTargetName": "sync"
       }
     }
   ],
