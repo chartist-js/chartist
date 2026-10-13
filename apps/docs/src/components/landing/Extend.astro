@@ -16,31 +16,31 @@ const LOLLIPOP_CSS = `/* style.css */
     <h2>Bend it to your will</h2>
     <p>Every chart flows through an open pipeline. Each phase has an event, and every single element passes through <code>compose</code>, where you can change, replace or decorate it. Plugins use the same events.</p>
   </div>
-  <ol class="pipeline reveal" aria-label="The rendering pipeline">
+  <ol class="steps reveal m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(170px,100%),1fr))] gap-8 p-0 lg:grid-cols-7" aria-label="The rendering pipeline">
     {
       PIPELINE.map((step, i) => (
-        <li class="pipe-step">
+        <li class="relative flex flex-col justify-between gap-2.5 rounded-md border-2 border-ink bg-surface px-3.5 pt-3.5 pb-3 shadow-print-sm dark:border-line-strong">
           <span class="eyebrow">{String(i + 1).padStart(2, '0')}</span>
-          <strong>{step.title}</strong>
-          <code>on('{step.phase}')</code>
+          <strong class="font-slab text-xl leading-[1.15] font-bold">{step.title}</strong>
+          <code class="w-fit text-[12.5px]">on('{step.phase}')</code>
         </li>
       ))
     }
   </ol>
-  <div class="plugin-demo">
-    <div class="card reveal">
-      <div class="plugin-head">
+  <div class="mt-8 mb-5 grid grid-cols-[repeat(auto-fit,minmax(min(420px,100%),1fr))] items-start gap-6">
+    <div class="card reveal flex flex-col gap-4 p-5">
+      <div class="flex flex-wrap justify-between gap-3">
         <strong>Same data, three tiny plugins</strong>
-        <div class="chips" role="group" aria-label="Toggle plugins">
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Toggle plugins">
           <button class="chip" type="button" aria-pressed="true" data-plugin="lollipop">lollipop()</button>
           <button class="chip" type="button" aria-pressed="true" data-plugin="valueLabels">valueLabels()</button>
           <button class="chip" type="button" aria-pressed="false" data-plugin="threshold">threshold(7)</button>
         </div>
       </div>
-      <div class="plugin-chart" data-plugin-chart role="img" aria-label="A bar chart changed by the selected plugins"></div>
-      <pre class="usage" data-plugin-usage></pre>
+      <div class="plugin-chart aspect-[16/9]" data-plugin-chart role="img" aria-label="A bar chart changed by the selected plugins"></div>
+      <pre class="m-0 font-mono text-[13px] leading-[1.5] whitespace-pre-wrap text-ink-2" data-plugin-usage></pre>
     </div>
-    <div class="plugin-code reveal">
+    <div class="snippet reveal flex min-w-0 flex-col gap-3">
       <Code code={lollipopSource} lang="ts" theme="css-variables" />
       <Code code={LOLLIPOP_CSS} lang="css" theme="css-variables" />
     </div>
@@ -54,39 +54,33 @@ const LOLLIPOP_CSS = `/* style.css */
 </script>
 
 <style>
-  .plugin-demo {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
-    gap: 24px;
-    margin-block: 32px 20px;
-    align-items: start;
+  /* The arrows between the phases: a pseudo-element on all but the last. */
+  .steps > li:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    top: 50%;
+    right: -26px;
+    z-index: 1;
+    transform: translateY(-50%);
+    font: 700 22px var(--font-body);
+    color: var(--brand);
   }
-  .plugin-code {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    min-width: 0;
+  /* right: -26px still applies here, as in the legacy cascade. */
+  @media (max-width: 860px) {
+    .steps > li:not(:last-child)::after {
+      content: '↓';
+      top: auto;
+      bottom: -16px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
-  .plugin-demo .card {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  /* Shiki output stays CSS: code wraps instead of scrolling sideways. */
+  .snippet :global(pre.astro-code) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
-  .plugin-head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-  .plugin-chart {
-    aspect-ratio: 16 / 9;
-  }
+  /* Chartist's SVG and the lollipop plugin's elements. */
   .plugin-chart :global(svg) {
     display: block;
   }
@@ -99,11 +93,5 @@ const LOLLIPOP_CSS = `/* style.css */
   .plugin-chart :global(.ct-value-label) {
     fill: var(--ink);
     font: 700 12px var(--font-body);
-  }
-  .usage {
-    margin: 0;
-    font: 13px/1.5 var(--font-code);
-    color: var(--ink-2);
-    white-space: pre-wrap;
   }
 </style>

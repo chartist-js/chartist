@@ -19,10 +19,10 @@ const SSR = `renderToString(toScene(config, size))`;
       <p>The things people pick Chartist for, each with a tiny live demo.</p>
     </div>
     <div class="grid-auto">
-      <article class="card feature reveal">
-        <h3>Style it with CSS</h3>
+      <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
+        <h3 class="text-xl">Style it with CSS</h3>
         <p class="muted">Plain SVG with predictable classes. Pick a color:</p>
-        <div class="demo swatch-demo" data-swatch-demo>
+        <div class="mt-auto rounded-md border border-line bg-bg p-2 flex flex-col gap-3" data-swatch-demo>
           <Chart
             type="line"
             label="A smooth line chart in the chosen color"
@@ -30,61 +30,61 @@ const SSR = `renderToString(toScene(config, size))`;
             data={{ labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'], series: [[1, 5, 2, 5, 4, 3, 6]] }}
             options={{ low: 0, showArea: true, fullWidth: true, axisY: { offset: 24 } }}
           />
-          <div class="swatches" role="group" aria-label="Pick --ct-series-a">
+          <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Pick --ct-series-a">
             {
               SWATCHES.map((swatch, i) => (
-                <button class="swatch-btn" type="button" aria-label={`Set --ct-series-a to ${swatch.name}`} aria-pressed={i === 0 ? 'true' : 'false'} data-color={swatch.hex} style={{ background: swatch.hex }} />
+                <button class="size-8 cursor-pointer rounded-[50%] border-2 border-ink aria-pressed:outline-3 aria-pressed:outline-offset-2 aria-pressed:outline-focus" type="button" aria-label={`Set --ct-series-a to ${swatch.name}`} aria-pressed={i === 0 ? 'true' : 'false'} data-color={swatch.hex} style={{ background: swatch.hex }} />
               ))
             }
             <code>--ct-series-a</code>
           </div>
         </div>
       </article>
-      <article class="card feature reveal">
-        <h3>Responsive, two ways</h3>
+      <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
+        <h3 class="text-xl">Responsive, two ways</h3>
         <p class="muted">By the window, or by the chart's own container (experimental), with the conditions you write in CSS.</p>
-        <div class="demo stack">
+        <div class="snippet mt-auto rounded-md border border-line bg-bg p-2 flex flex-col gap-3">
           <Code code={RESPONSIVE} lang="ts" theme="css-variables" />
         </div>
       </article>
-      <article class="card feature reveal">
-        <h3>Composed charts</h3>
+      <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
+        <h3 class="text-xl">Composed charts</h3>
         <p class="muted">Bars and lines in one chart, each on its own Y axis.</p>
-        <div class="demo">
+        <div class="mt-auto rounded-md border border-line bg-bg p-2 grid place-items-center">
           <Chart type="composed" label="Bars on a left axis and a line on a right axis" aspect="16 / 8" data={{ labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], series: [[4, 6, 5, 8, 7, 9], [20, 45, 38, 60, 72, 90]] }} />
         </div>
       </article>
-      <article class="card feature reveal">
-        <h3>Renders anywhere SVG does</h3>
+      <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
+        <h3 class="text-xl">Renders anywhere SVG does</h3>
         <p class="muted">Real SVG text labels. Render on the server for PDFs, email and images.</p>
-        <div class="demo stack">
+        <div class="snippet mt-auto rounded-md border border-line bg-bg p-2 flex flex-col gap-3">
           <Code code={SSR} lang="ts" theme="css-variables" />
         </div>
       </article>
-      <article class="card feature reveal">
-        <h3>Tiny, and no build step</h3>
+      <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
+        <h3 class="text-xl">Tiny, and no build step</h3>
         <p class="muted">You ship only what you import. A CDN module or npm, your pick.</p>
-        <div class="demo">
-          <ul class="sizes">
-            <li><span>✓ core (<code>chart</code>)</span><span>{formatKb(sizes['chartist (core: chart)'].gzip)}</span></li>
-            <li><span>✓ core + <code>lineChart</code></span><span>{formatKb(sizes['chartist (lineChart)'].gzip)}</span></li>
-            <li class="muted"><span>✗ <code>barChart</code></span><span>not imported</span></li>
-            <li class="muted"><span>✗ <code>pieChart</code></span><span>not imported</span></li>
+        <div class="mt-auto rounded-md border border-line bg-bg p-2 grid place-items-center">
+          <ul class="m-0 flex w-full list-none flex-col gap-1.5 p-0 text-sm">
+            <li class="flex justify-between gap-3"><span>✓ core (<code>chart</code>)</span><span>{formatKb(sizes['chartist (core: chart)'].gzip)}</span></li>
+            <li class="flex justify-between gap-3"><span>✓ core + <code>lineChart</code></span><span>{formatKb(sizes['chartist (lineChart)'].gzip)}</span></li>
+            <li class="muted flex justify-between gap-3"><span>✗ <code>barChart</code></span><span>not imported</span></li>
+            <li class="muted flex justify-between gap-3"><span>✗ <code>pieChart</code></span><span>not imported</span></li>
           </ul>
         </div>
       </article>
-      <article class="card feature reveal">
-        <h3>Colors for everyone</h3>
+      <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
+        <h3 class="text-xl">Colors for everyone</h3>
         <p class="muted">An opt-in color-blind-safe palette for light and dark mode.</p>
-        <div class="demo ct-theme-accessible stack">
-          <div class="palette" aria-hidden="true">
-            {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(letter => <span class={`ct-series-${letter}`} />)}
+        <div class="ct-theme-accessible mt-auto rounded-md border border-line bg-bg p-2 flex flex-col gap-3">
+          <div class="grid grid-cols-8 gap-1.5" aria-hidden="true">
+            {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(letter => <span class={`ct-series-${letter} h-9 rounded-sm bg-(--ct-color)`} />)}
           </div>
           <code>class="ct-theme-accessible"</code>
         </div>
       </article>
     </div>
-    <div class="also reveal">
+    <div class="reveal mt-7 flex flex-wrap items-center gap-2">
       <span>And also:</span>
       <span class="tag">Typed functional API</span>
       <span class="tag">Zero dependencies</span>
@@ -106,57 +106,14 @@ const SSR = `renderToString(toScene(config, size))`;
 </script>
 
 <style>
-  .demo.stack {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: stretch;
-    place-items: stretch;
-  }
-  .demo :global(pre.astro-code) {
-    font-size: 12.5px;
+  /* Shiki output stays CSS: smaller code that wraps, without a copy button. */
+  .snippet :global(pre.astro-code) {
     padding: 12px 14px;
+    font-size: 12.5px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
-  .swatch-demo {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    place-items: stretch;
-  }
-  .swatches,
-  .tags,
-  .also {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-  }
-  .also {
-    margin-top: 28px;
-  }
-  .sizes {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-size: var(--fs-sm);
-  }
-  .sizes li {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .palette {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 6px;
-  }
-  .palette span {
-    height: 36px;
-    border-radius: var(--r-sm);
-    background: var(--ct-color);
+  .snippet :global(.copy-btn) {
+    display: none;
   }
 </style>
