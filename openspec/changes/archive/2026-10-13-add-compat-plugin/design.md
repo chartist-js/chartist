@@ -133,6 +133,19 @@ Running 1.x plugins:
   - the harness aliases it per mode (the local build, or a no-op for v1);
   - `test:visual:v2` and its shim are removed.
 
+## Implementation notes
+
+Differences from the decisions above, found while implementing (2026-10-13):
+
+- **`LineChart` still extends `BaseChart`.** The public API suite checks this, and `BaseChart` is a 1.x export that bar and pie still use. The wrapper overrides `initialize`, `update`, `detach`, `on` and `off`. As a consequence, the 1.5 bug stays: `BaseChart` schedules the first render in a class field, before its constructor can throw for a missing target. The design's "throw before scheduling" fix needs the class to stop extending `BaseChart`, which can happen with step 5.
+- **The class doesn't import `Svg`.** Compat keeps the `svg` field of a 1.x chart instance current when it runs 1.x plugins with it. Without that, `import { LineChart }` would include the whole `Svg` class (12.69 instead of 11.15 kB).
+- **The DOM host measures like 1.x.** A probe `<svg>` with the chart's `width`/`height` attributes and style is added to the container, measured and removed. The fallback order is `viewBox`, the measured svg, the fixed size option, then the container. Measuring the container directly differed from 1.x in jsdom tests that mock SVG sizes (one 1.x LineChart test failed), and `width: '50%'` now works as in 1.x.
+- **`'*'` on the class:** 1.x wildcard listeners receive only chart events, so the class filters out the v2 phase events. The v2 handle's `'*'` still observes everything.
+- **`ChartHandle.container`:** 1.x plugins such as tooltips use `chart.container` while they install, so the handle exposes its container. The facade for the functional API uses it.
+- **1.x plugin calls:** plugins without options are called with the chart only (`plugin(chart)`), as in 1.x.
+- **The 1.x `plugins` option type** also accepts v2 plugin objects (such as `compat`). The 1.x `BaseChart` skips them, because the bar and pie implementations emit their events natively.
+- **UMD:** `dist/compat.umd.js` adds `compat` and `fromLegacyPlugin` to the global `Chartist` (rolldown `extend`). Its CommonJS and AMD branches load `./index.umd.js`.
+
 ## Risks / Trade-offs
 
 - [The `draw` timing differs from 1.x (all elements exist)] → Accepted by the author. Documented in the migration guide and the spec. Parity tests check order and payloads; only handlers that depend on missing later elements or on stacking order can notice.

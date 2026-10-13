@@ -1,5 +1,5 @@
 import { BarChart, LineChart, type PointDrawEvent } from 'chartist';
-import { container, created } from './fixture.ts';
+import { container, created, withCompat } from './fixture.ts';
 
 describe('1.x plugins', () => {
   test('a plugin function receives the chart before the first render', async () => {
@@ -10,7 +10,7 @@ describe('1.x plugins', () => {
     const chart = new LineChart(
       container(),
       { series: [[1]] },
-      { plugins: [plugin] }
+      withCompat({ plugins: [plugin] })
     );
     await created(chart);
     expect(plugin).toHaveBeenCalledTimes(1);
@@ -39,7 +39,11 @@ describe('1.x plugins', () => {
       });
     };
     await created(
-      new LineChart(el, { series: [[1, 2]] }, { plugins: [addClass('marked')] })
+      new LineChart(
+        el,
+        { series: [[1, 2]] },
+        withCompat({ plugins: [addClass('marked')] })
+      )
     );
     expect(el.querySelectorAll('.ct-point.marked')).toHaveLength(2);
   });
@@ -49,7 +53,7 @@ describe('1.x plugins', () => {
     const chart = new LineChart(
       container(),
       { series: [[1]] },
-      { plugins: [plugin] }
+      withCompat({ plugins: [plugin] })
     );
     await created(chart);
     const next = created(chart);

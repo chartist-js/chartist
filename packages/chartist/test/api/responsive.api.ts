@@ -4,7 +4,7 @@ import {
   type OptionsChangedEvent,
   type ResponsiveOptions
 } from 'chartist';
-import { container, created, mockMedia } from './fixture.ts';
+import { container, created, mockMedia, withCompat } from './fixture.ts';
 
 const SMALL = 'screen and (max-width: 640px)';
 const PRINT = 'print';
@@ -20,7 +20,9 @@ describe('responsive options', () => {
   test('matching queries apply their options on the first render', async () => {
     media = mockMedia([SMALL]);
     const el = container();
-    await created(new LineChart(el, { series: [[1, 2]] }, {}, responsive));
+    await created(
+      new LineChart(el, { series: [[1, 2]] }, withCompat({}), responsive)
+    );
     expect(el.querySelectorAll('.ct-point')).toHaveLength(0);
     expect(el.querySelectorAll('.ct-line')).toHaveLength(1);
   });
@@ -29,7 +31,7 @@ describe('responsive options', () => {
     media = mockMedia([SMALL, PRINT]);
     const el = container();
     await created(
-      new LineChart(el, { series: [[1, 2]] }, {}, [
+      new LineChart(el, { series: [[1, 2]] }, withCompat({}), [
         [SMALL, { showArea: true, showPoint: false }],
         [PRINT, { showPoint: true }]
       ])
@@ -41,7 +43,12 @@ describe('responsive options', () => {
   test('a media change emits optionsChanged and re-renders', async () => {
     media = mockMedia();
     const el = container();
-    const chart = new LineChart(el, { series: [[1, 2]] }, {}, responsive);
+    const chart = new LineChart(
+      el,
+      { series: [[1, 2]] },
+      withCompat({}),
+      responsive
+    );
     await created(chart);
     expect(el.querySelectorAll('.ct-point')).toHaveLength(2);
 
@@ -60,7 +67,12 @@ describe('responsive options', () => {
 
   test('detach stops listening to media changes', async () => {
     media = mockMedia();
-    const chart = new LineChart(container(), { series: [[1]] }, {}, responsive);
+    const chart = new LineChart(
+      container(),
+      { series: [[1]] },
+      withCompat({}),
+      responsive
+    );
     await created(chart);
     expect(media.listenerCount(SMALL)).toBe(1);
     chart.detach();

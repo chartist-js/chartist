@@ -4,10 +4,19 @@
  * as in the 1.x unit tests.
  */
 import type { BaseChart } from 'chartist';
+import { compat } from 'chartist/compat';
 
 const SIZE = 500;
 // Read lazily, so this module also loads in the Node environment.
 let originalRect: typeof SVGElement.prototype.getBoundingClientRect;
+
+/** Like a browser: an svg with a px (or unitless) size attribute has that size. */
+function sized(attribute: 'width' | 'height') {
+  return function (this: Element) {
+    const match = this.getAttribute(attribute)?.match(/^(\d+(?:\.\d+)?)(px)?$/);
+    return match ? Number(match[1]) : SIZE;
+  };
+}
 
 export function mockLayout() {
   originalRect ??= SVGElement.prototype.getBoundingClientRect;
@@ -23,8 +32,8 @@ export function mockLayout() {
       left: 0
     }) as DOMRect;
   Object.defineProperties(SVGElement.prototype, {
-    clientWidth: { configurable: true, get: () => SIZE },
-    clientHeight: { configurable: true, get: () => SIZE }
+    clientWidth: { configurable: true, get: sized('width') },
+    clientHeight: { configurable: true, get: sized('height') }
   });
 }
 
@@ -131,4 +140,15 @@ export function mockMedia(initiallyMatching: string[] = []) {
       window.matchMedia = original;
     }
   };
+}
+
+/**
+ * Adds the compat plugin: v2 `LineChart` emits 1.x events only with it.
+ * For chartist@1.5.0 (test:api:v1), `chartist/compat` is a no-op 1.x plugin.
+ */
+export function withCompat<T extends object = Record<string, never>>(
+  options?: T
+): T {
+  const plugins = (options as { plugins?: unknown[] } | undefined)?.plugins;
+  return { ...(options as T), plugins: [compat, ...(plugins ?? [])] };
 }

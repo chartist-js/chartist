@@ -15,7 +15,10 @@ describe('chart() (v2 functional API)', () => {
     });
     expect(el.querySelectorAll('circle.dot')).toHaveLength(3);
     expect(Object.keys(handle).sort()).toEqual([
+      'container',
       'destroy',
+      'detach',
+      'emit',
       'off',
       'on',
       'update'

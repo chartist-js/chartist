@@ -6,6 +6,8 @@ const chartistDir = fileURLToPath(new URL('../chartist/', import.meta.url));
 const LIB = 'lib/chartist/';
 const LIB_FILES: Record<string, string> = {
   'index.js': 'text/javascript',
+  // chartist/compat; it imports ./index.js, so it shares the core.
+  'compat.js': 'text/javascript',
   'index.css': 'text/css'
 };
 

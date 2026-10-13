@@ -12,10 +12,12 @@ import { defineConfig } from 'vitest/config';
 const TARGETS = {
   local: {
     entry: '../../dist/index.js',
+    compat: '../../dist/compat.js',
     tsconfig: 'tsconfig.json'
   },
   v1: {
     entry: '../../node_modules/chartist-v1/dist/index.js',
+    compat: './compat-v1.ts',
     tsconfig: 'tsconfig.v1.json'
   }
 } as const;
@@ -32,7 +34,10 @@ const resolve = (file: string) => fileURLToPath(new URL(file, import.meta.url));
 export default defineConfig({
   root: resolve('.'),
   resolve: {
-    alias: [{ find: /^chartist$/, replacement: resolve(target.entry) }]
+    alias: [
+      { find: /^chartist$/, replacement: resolve(target.entry) },
+      { find: /^chartist\/compat$/, replacement: resolve(target.compat) }
+    ]
   },
   test: {
     environment: 'jsdom',

@@ -6,8 +6,6 @@
  *
  * - CHARTIST_LIB unset or "local": packages/chartist/dist (the local build)
  * - CHARTIST_LIB=v1: published chartist@1.5.0 (the chartist-v1 alias)
- * - CHARTIST_LIB=v2: the local build with `LineChart` replaced by a shim over
- *   the v2 `lineChart` preset (fixture/v2-line.ts), to prove output parity
  *
  * The example files are served unchanged. A harness plugin only adds the
  * screenshot environment to each page: the bundled test font, a fixed chart
@@ -26,9 +24,7 @@ const examplesDir = path.dirname(
   require.resolve('@chartist/examples/package.json')
 );
 
-export const lib =
-  (['v1', 'v2'] as const).find(name => name === process.env.CHARTIST_LIB) ??
-  'local';
+export const lib = process.env.CHARTIST_LIB === 'v1' ? 'v1' : 'local';
 const fixtureDir = fileURLToPath(new URL('fixture', import.meta.url));
 const libDir =
   lib === 'v1'
@@ -111,12 +107,13 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: /^chartist\/styles\.css$/, replacement: `${libDir}/index.css` },
+      { find: /^chartist$/, replacement: `${libDir}/index.js` },
       {
-        find: /^chartist$/,
+        // 1.5.0 has no compat plugin; it emits the 1.x events natively.
+        find: /^chartist\/compat$/,
         replacement:
-          lib === 'v2' ? `${fixtureDir}/v2-line.ts` : `${libDir}/index.js`
-      },
-      { find: /^@chartist-visual\/dist$/, replacement: `${libDir}/index.js` }
+          lib === 'v1' ? `${fixtureDir}/compat-v1.ts` : `${libDir}/compat.js`
+      }
     ]
   },
   // Serve the build under test as is: no dependency pre-bundling.

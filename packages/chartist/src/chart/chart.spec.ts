@@ -149,16 +149,79 @@ describe('chart/chart', () => {
     expect(seen).toEqual(['mount']);
   });
 
-  it('skips 1.x plugin functions with a single warning', () => {
+  it('rejects 1.x plugin functions, pointing to fromLegacyPlugin', () => {
     const { element } = sizedContainer();
+    function legacyTooltip() {
+      return undefined;
+    }
+    expect(() =>
+      chart(element, {
+        data,
+        layers: [dots()],
+        plugins: [legacyTooltip as never]
+      })
+    ).toThrow(
+      /"legacyTooltip" is a 1.x plugin.*fromLegacyPlugin\(\) from chartist\/compat/
+    );
+    expect(element.querySelector('svg')).toBeNull();
+  });
+
+  it('plugins emit the custom events they provide', () => {
+    const { element } = sizedContainer();
+    const received = vi.fn();
+    const plugin: ChartPlugin = {
+      name: 'legend',
+      provides: ['legend:click'],
+      install(handle) {
+        handle.on('mount', () => handle.emit('legend:click', { series: 1 }));
+      }
+    };
+    const handle = chart(element, {
+      data,
+      layers: [dots()],
+      plugins: [plugin]
+    });
+    handle.on('legend:click', received);
+    handle.update({});
+    expect(received).toHaveBeenCalledWith({ series: 1 });
+  });
+
+  it('emitting a phase name throws', () => {
+    const handle = chart(sizedContainer().element, { data, layers: [dots()] });
+    expect(() => handle.emit('scene', {})).toThrow(
+      `"scene" is a phase event; plugins can't emit phase events`
+    );
+  });
+
+  it('warns once per 1.x event name nobody provides', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
-    const legacy = vi.fn();
-    const config = { data, layers: [dots()], plugins: [legacy as never] };
-    chart(element, config);
-    chart(element, config);
-    expect(legacy).not.toHaveBeenCalled();
+    const handle = chart(sizedContainer().element, { data, layers: [dots()] });
+    handle
+      .on('optionsChanged', () => undefined)
+      .on('optionsChanged', () => undefined);
     expect(warn).toHaveBeenCalledTimes(1);
-    expect(warn.mock.calls[0][0]).toContain('compat plugin');
+    expect(warn.mock.calls[0][0]).toContain('"optionsChanged" is a 1.x event');
+    expect(warn.mock.calls[0][0]).toContain('compat');
+    warn.mockRestore();
+  });
+
+  it('no warning when a plugin provides the 1.x event, even if installed later', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const listener: ChartPlugin = {
+      name: 'listener',
+      install: handle => void handle.on('animationEnd', () => undefined)
+    };
+    const provider: ChartPlugin = {
+      name: 'provider',
+      provides: ['animationEnd'],
+      install: () => undefined
+    };
+    chart(sizedContainer().element, {
+      data,
+      layers: [dots()],
+      plugins: [listener, provider]
+    });
+    expect(warn).not.toHaveBeenCalled();
     warn.mockRestore();
   });
 
@@ -223,6 +286,25 @@ describe('chart/chart', () => {
     resize.trigger();
     expect(listener).toHaveBeenCalledTimes(1);
     expect(() => handle.destroy()).not.toThrow();
+  });
+
+  it('detach stops resizing but keeps output and listeners', () => {
+    const resize = stubResizeObserver();
+    const { element, size } = sizedContainer();
+    const listener = vi.fn();
+    const handle = chart(element, {
+      data,
+      layers: [dots()],
+      on: { mount: listener }
+    });
+    expect(handle.detach()).toBe(handle);
+    expect(resize.active()).toBe(0);
+    size.width = 120;
+    resize.trigger();
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(element.querySelector('svg')).not.toBeNull();
+    handle.update({});
+    expect(listener).toHaveBeenCalledTimes(2);
   });
 
   it('works without ResizeObserver', () => {

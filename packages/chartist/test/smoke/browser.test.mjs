@@ -59,6 +59,28 @@ const inlinePages = {
   esm: `<!doctype html>
     <script type="module">
       window.esm = await import('https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js');
+    </script>`,
+  // The compat plugin from its browser module, next to the core module.
+  'compat-esm': `<!doctype html>
+    <div id="chart" style="width: 400px; height: 200px"></div>
+    <script type="module">
+      import { LineChart } from 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js';
+      import { compat } from 'https://cdn.jsdelivr.net/npm/chartist/dist/compat.min.js';
+      const draws = [];
+      new LineChart('#chart', { series: [[1, 2, 3]] }, { plugins: [compat] })
+        .on('draw', data => draws.push(data.type))
+        .on('created', () => { window.draws = draws; });
+    </script>`,
+  // Classic scripts: compat.umd.js adds compat to the global Chartist.
+  'compat-umd': `<!doctype html>
+    <div id="chart" style="width: 400px; height: 200px"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/compat.umd.js"></script>
+    <script>
+      const draws = [];
+      new Chartist.LineChart('#chart', { series: [[1, 2, 3]] }, { plugins: [Chartist.compat] })
+        .on('draw', data => draws.push(data.type))
+        .on('created', () => { window.draws = draws; });
     </script>`
 };
 
@@ -172,6 +194,19 @@ test('browser ESM build exposes every export', async () => {
   assert.deepEqual(errors, []);
   await page.close();
 });
+
+for (const name of ['compat-esm', 'compat-umd']) {
+  test(`compat plugin emits 1.x draw events (${name})`, async () => {
+    const { page, errors } = await openPage(`${ORIGIN}/inline/${name}`);
+    await page.waitForFunction(() => window.draws);
+    const draws = await page.evaluate(() => window.draws);
+    assert.equal(draws.filter(type => type === 'point').length, 3);
+    assert.ok(draws.includes('line'));
+    assert.ok(draws.includes('grid') && draws.includes('label'));
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+}
 
 for (const name of ['chartist-min-js', 'bare-jsdelivr', 'bare-unpkg']) {
   test(`UMD global via ${name}`, async () => {

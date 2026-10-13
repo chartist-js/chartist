@@ -10,7 +10,8 @@
     "skipLibCheck": false,
     "verbatimModuleSyntax": true,
     "paths": {
-      "chartist": ["../../dist/index.d.ts"]
+      "chartist": ["../../dist/index.d.ts"],
+      "chartist/compat": ["../../dist/compat.d.ts"]
     },
     "allowImportingTsExtensions": true
   },

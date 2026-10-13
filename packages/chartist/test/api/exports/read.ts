@@ -27,12 +27,13 @@ export interface ExportList {
 }
 
 export const LIST_FILE = path.join(exportsDir, 'chartist.json');
+export const COMPAT_LIST_FILE = path.join(exportsDir, 'compat.json');
 
 const sorted = (names: Iterable<string>) =>
   [...names].filter(name => name !== 'default').sort();
 
-export async function esmNames(build: BuildName) {
-  const file = pathToFileURL(path.join(BUILDS[build], 'index.js')).href;
+export async function esmNames(build: BuildName, entry = 'index') {
+  const file = pathToFileURL(path.join(BUILDS[build], `${entry}.js`)).href;
   return sorted(Object.keys(await import(/* @vite-ignore */ file)));
 }
 
@@ -55,8 +56,8 @@ export function umdNames(build: BuildName) {
   return sorted(Object.keys(context.Chartist));
 }
 
-export function typeNames(build: BuildName) {
-  const file = path.join(BUILDS[build], 'index.d.ts');
+export function typeNames(build: BuildName, entry = 'index') {
+  const file = path.join(BUILDS[build], `${entry}.d.ts`);
   const program = ts.createProgram([file], { skipLibCheck: true });
   const checker = program.getTypeChecker();
   const module = checker.getSymbolAtLocation(program.getSourceFile(file)!);
@@ -66,8 +67,8 @@ export function typeNames(build: BuildName) {
   return sorted(checker.getExportsOfModule(module).map(symbol => symbol.name));
 }
 
-export function readList(): ExportList {
-  return JSON.parse(readFileSync(LIST_FILE, 'utf8'));
+export function readList(file = LIST_FILE): ExportList {
+  return JSON.parse(readFileSync(file, 'utf8'));
 }
 
 /** Names listed but not exported, and exported but not listed. */

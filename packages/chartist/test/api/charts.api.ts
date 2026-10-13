@@ -5,18 +5,20 @@ import {
   PieChart,
   type LineChartOptions
 } from 'chartist';
-import { classesOf, container, created } from './fixture.ts';
+import { classesOf, container, created, withCompat } from './fixture.ts';
 
 const CT_NS = 'http://gionkunz.github.com/chartist-js/ct';
 
 describe('chart creation', () => {
   test('accepts a selector or an element as target', async () => {
     const byElement = container();
-    await created(new LineChart(byElement, { series: [[1]] }));
+    await created(new LineChart(byElement, { series: [[1]] }, withCompat()));
     expect(byElement.querySelector('svg')).not.toBeNull();
 
     container('by-selector');
-    await created(new LineChart('.by-selector', { series: [[1]] }));
+    await created(
+      new LineChart('.by-selector', { series: [[1]] }, withCompat())
+    );
     expect(document.querySelector('.by-selector svg')).not.toBeNull();
   });
 
@@ -31,9 +33,9 @@ describe('chart creation', () => {
     // render then fails without a container. Fake timers keep it from firing.
     vi.useFakeTimers();
     try {
-      expect(() => new LineChart('#nope', { series: [] })).toThrow(
-        'Target element "#nope" is not found'
-      );
+      expect(
+        () => new LineChart('#nope', { series: [] }, withCompat())
+      ).toThrow('Target element "#nope" is not found');
     } finally {
       vi.clearAllTimers();
       vi.useRealTimers();
@@ -42,7 +44,7 @@ describe('chart creation', () => {
 
   test('renders asynchronously, so listeners can be added after construction', async () => {
     const el = container();
-    const chart = new LineChart(el, { series: [[1]] });
+    const chart = new LineChart(el, { series: [[1]] }, withCompat());
     expect(el.querySelector('svg')).toBeNull();
     await created(chart);
     expect(el.querySelector('svg')).not.toBeNull();
@@ -50,7 +52,7 @@ describe('chart creation', () => {
 
   test('replaces an earlier chart in the same container', async () => {
     const el = container();
-    await created(new LineChart(el, { series: [[1]] }));
+    await created(new LineChart(el, { series: [[1]] }, withCompat()));
     await created(new BarChart(el, { series: [[1]] }));
     expect(classesOf(el, 'svg')).toEqual(['ct-chart-bar']);
   });
@@ -58,7 +60,11 @@ describe('chart creation', () => {
   test('sets the svg size from the width and height options', async () => {
     const el = container();
     await created(
-      new LineChart(el, { series: [[1]] }, { width: '400px', height: '20rem' })
+      new LineChart(
+        el,
+        { series: [[1]] },
+        withCompat({ width: '400px', height: '20rem' })
+      )
     );
     const svg = el.querySelector('svg')!;
     expect(svg.getAttribute('width')).toBe('400px');
@@ -71,10 +77,14 @@ describe('LineChart output', () => {
   async function render() {
     const el = container();
     await created(
-      new LineChart(el, {
-        labels: ['A', 'B'],
-        series: [{ name: 'one', data: [1, { value: 2, meta: 'm' }] }, [3, 4]]
-      })
+      new LineChart(
+        el,
+        {
+          labels: ['A', 'B'],
+          series: [{ name: 'one', data: [1, { value: 2, meta: 'm' }] }, [3, 4]]
+        },
+        withCompat()
+      )
     );
     return el;
   }
@@ -133,7 +143,7 @@ describe('LineChart output', () => {
       new LineChart(
         el,
         { series: [[1, 2]] },
-        { showArea: true, showLine: false, showPoint: false }
+        withCompat({ showArea: true, showLine: false, showPoint: false })
       )
     );
     expect(el.querySelectorAll('.ct-area')).toHaveLength(1);
@@ -147,7 +157,7 @@ describe('LineChart output', () => {
       new LineChart(
         el,
         { series: [[1, 2]] },
-        { classNames: { chart: 'my-chart', point: 'my-point' } }
+        withCompat({ classNames: { chart: 'my-chart', point: 'my-point' } })
       )
     );
     expect(el.querySelector('svg')!.getAttribute('class')).toBe('my-chart');
@@ -223,7 +233,7 @@ describe('PieChart output', () => {
 describe('update and detach', () => {
   test('update with new data re-renders', async () => {
     const el = container();
-    const chart = new LineChart(el, { series: [[1, 2]] });
+    const chart = new LineChart(el, { series: [[1, 2]] }, withCompat());
     await created(chart);
     const next = created(chart);
     chart.update({ series: [[1, 2, 3]] });
@@ -235,7 +245,11 @@ describe('update and detach', () => {
   // defaults, unless override is true, then they extend the current options.
   test('update options extend the defaults, or the current options with override', async () => {
     const el = container();
-    const chart = new LineChart(el, { series: [[1, 2]] }, { showPoint: false });
+    const chart = new LineChart(
+      el,
+      { series: [[1, 2]] },
+      withCompat({ showPoint: false })
+    );
     await created(chart);
 
     // update() types its options as the base Options in 1.5 (see
@@ -259,7 +273,7 @@ describe('update and detach', () => {
 
   test('re-renders on window resize until detached', async () => {
     const el = container();
-    const chart = new LineChart(el, { series: [[1]] });
+    const chart = new LineChart(el, { series: [[1]] }, withCompat());
     await created(chart);
     const listener = vi.fn();
     chart.on('created', listener);

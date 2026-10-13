@@ -3,7 +3,7 @@ import { runPipeline, type PipelineState } from '../pipeline/phases';
 import { domRenderer } from '../render/dom';
 import { estimateText } from '../render/measure';
 import type { RenderOutput } from '../render/types';
-import { installPlugins, listenerMethods, registerListeners } from './plugins';
+import { eventMethods, installPlugins, registerListeners } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
 /** A fixed size in px: a number or a px string. Other units are measured. */
@@ -44,15 +44,39 @@ export function chart(
   let output: RenderOutput | undefined;
   let observer: ResizeObserver | undefined;
   let destroyed = false;
+  const provided = new Set<string>();
+
+  /**
+   * Measures like 1.x: a probe svg with the chart's size attributes is
+   * placed in the container and its size read, so percentages and CSS apply.
+   */
+  function measureSvg() {
+    const width = String(current.width ?? '100%');
+    const height = String(current.height ?? '100%');
+    const probe = container.ownerDocument.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'svg'
+    );
+    probe.setAttribute('width', width);
+    probe.setAttribute('height', height);
+    probe.setAttribute('style', `width: ${width}; height: ${height};`);
+    container.appendChild(probe);
+    const measured = { width: probe.clientWidth, height: probe.clientHeight };
+    probe.remove();
+    return measured;
+  }
 
   function size() {
-    // As 1.x: a viewBox defines the drawing size.
+    // The 1.x order: viewBox, the rendered svg, the fixed size option.
+    const svg = measureSvg();
     return {
       width:
         current.viewBox?.width ||
+        svg.width ||
         (fixedSize(current.width) ?? container.clientWidth),
       height:
         current.viewBox?.height ||
+        svg.height ||
         (fixedSize(current.height) ?? container.clientHeight)
     };
   }
@@ -82,9 +106,15 @@ export function chart(
   }
 
   const handle: ChartHandle = {
+    container,
     update(changes) {
       current = { ...current, ...changes };
       render('resolve');
+      return handle;
+    },
+    detach() {
+      observer?.disconnect();
+      observer = undefined;
       return handle;
     },
     destroy() {
@@ -92,15 +122,15 @@ export function chart(
         return;
       }
       destroyed = true;
-      observer?.disconnect();
+      handle.detach();
       output?.remove?.();
       emitter.clear();
     },
-    ...listenerMethods(emitter, () => handle)
+    ...eventMethods(emitter, () => handle, provided)
   };
 
-  installPlugins(handle, config.plugins);
-  registerListeners(emitter, config.on);
+  installPlugins(handle, config.plugins, provided);
+  registerListeners(handle, config.on);
   render('resolve');
 
   if (typeof ResizeObserver !== 'undefined') {

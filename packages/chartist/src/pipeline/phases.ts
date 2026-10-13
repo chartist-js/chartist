@@ -37,6 +37,8 @@ export interface PipelineOptions {
   /** Fixed drawing coordinates; sets the layout size and the root `viewBox`. */
   readonly viewBox?: { readonly width: number; readonly height: number };
   readonly className?: string;
+  /** Opaque data of the preset that created the chart (read by plugins). */
+  readonly preset?: unknown;
 }
 
 export interface PipelineEnvironment {
@@ -87,7 +89,8 @@ export function resolve(
     width: options.width,
     height: options.height,
     viewBox: options.viewBox,
-    className: options.className
+    className: options.className,
+    preset: options.preset
   };
   const resolved = check(
     emitter.transform('resolve', { config }),

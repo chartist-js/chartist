@@ -4,7 +4,12 @@
 
 ### Requirement: Live elements in 1.x draw events
 
-With the compat plugin, 1.x `draw` events SHALL be emitted after the chart is rendered, in the 1.x order (per axis: grid line and label per tick, X axis before Y axis, then the grid background; then per series: points, line, areas), followed by `created`. The `element` and `group` of a `draw` event SHALL be 1.x `Svg` wrappers around elements attached to the document. Every 1.x `Svg` method SHALL work, including `getNode()`, `width()`, `height()`, `querySelector()` and `animate()`. Because all elements exist when the handlers run, an element a handler appends to `data.group` is placed after the group's other elements.
+With the compat plugin, 1.x `draw` events SHALL be emitted after the chart is rendered, in the 1.x order, followed by `created`. Their `element` and `group` SHALL be 1.x `Svg` wrappers around elements attached to the document, and every 1.x `Svg` method SHALL work. An element a handler appends to `data.group` is placed after the group's other elements.
+
+#### Scenario: 1.x order
+
+- **WHEN** a line chart with the compat plugin renders
+- **THEN** `draw` events come per axis (X, then Y) as grid line and label per tick, then the grid background, then per series the points, the line and the areas, followed by `created`
 
 #### Scenario: SMIL animation in a draw handler
 
@@ -23,12 +28,12 @@ With the compat plugin, 1.x `draw` events SHALL be emitted after the chart is re
 
 ### Requirement: 1.x plugins run with compat
 
-1.x plugin functions SHALL run unchanged and produce the same output as on 1.5:
+1.x plugin functions SHALL run unchanged and produce the same output as on 1.5: on the 1.x class API with the compat plugin in `plugins`, receiving the chart instance; on the functional API when converted with `fromLegacyPlugin` from `chartist/compat`, receiving an object with the 1.x chart fields. v2 plugins on the same chart SHALL keep working.
 
-- on the 1.x class API (e.g. `new LineChart(...)`), when the compat plugin is in `plugins`; they receive the chart instance;
-- on the functional API, when converted with `fromLegacyPlugin(plugin, options)` from `chartist/compat`; the converted plugin turns on the 1.x events for its chart, and the function receives an object with the 1.x chart fields (`container`, `data`, `options`, `svg`, `eventEmitter`, `on`, `off`, `update`, `detach`).
+#### Scenario: Chart object of converted plugins
 
-v2 plugins on the same chart SHALL keep working.
+- **WHEN** a plugin converted with `fromLegacyPlugin` runs on `lineChart()`
+- **THEN** its `chart` argument has `container`, `data`, `options`, `svg`, `eventEmitter`, `on`, `off`, `update` and `detach`, and turning on the 1.x events needs no separate `compat` entry
 
 #### Scenario: Mixed plugins
 

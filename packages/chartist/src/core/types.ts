@@ -71,7 +71,15 @@ export interface Options<
    */
   classNames?: Record<string, string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  plugins?: (Plugin | [Plugin, any])[];
+  /**
+   * 1.x plugin functions (they run with the compat plugin) and v2 plugins
+   * such as `compat`.
+   */
+  plugins?: (
+    | Plugin
+    | [Plugin, any]
+    | { readonly name: string; install(chart: any, options?: any): void }
+  )[];
   /**
    * Define the ViewBox for an SVG, this is optional and only required if you need a scalable chart. This should be used together with responsive options to ensure a proper text size.
    */

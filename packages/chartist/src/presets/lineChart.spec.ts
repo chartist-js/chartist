@@ -114,3 +114,80 @@ describe('presets/lineChart', () => {
     }
   });
 });
+
+describe('presets/createLineChart (controller)', () => {
+  it('setOptions extends the defaults, or the current options with override', async () => {
+    const { createLineChart } = await import('./lineChart');
+    const element = sized();
+    const controller = createLineChart(
+      element,
+      { series: [[1, 2]] },
+      { showPoint: false }
+    );
+
+    controller.setOptions({ showLine: false }, true);
+    controller.render();
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(0);
+    expect(element.querySelectorAll('.ct-line')).toHaveLength(0);
+
+    controller.setOptions({ showArea: true });
+    controller.render();
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(2);
+    expect(element.querySelectorAll('.ct-line')).toHaveLength(1);
+    expect(controller.options().showArea).toBe(true);
+  });
+
+  it('setData replaces the data and defaults missing labels and series', async () => {
+    const { createLineChart } = await import('./lineChart');
+    const element = sized();
+    const controller = createLineChart(element, { series: [[1]] });
+    const next = { series: [[1, 2, 3]] } as {
+      series: number[][];
+      labels?: string[];
+    };
+    controller.setData(next);
+    controller.render();
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(3);
+    expect(next.labels).toEqual([]);
+    expect(controller.data()).toBe(next);
+  });
+
+  it('passes its state to plugins and emits responsive on media changes', async () => {
+    const { createLineChart } = await import('./lineChart');
+    const media = mockMedia();
+    const element = sized();
+    const events: unknown[] = [];
+    let preset: { options: { showPoint?: boolean } } | undefined;
+    const controller = createLineChart(
+      element,
+      { series: [[1, 2]] },
+      {},
+      [['(max-width: 600px)', { showPoint: false }]],
+      [
+        {
+          name: 'probe',
+          provides: ['responsive'],
+          install(handle) {
+            handle.on('resolve', ({ config }) => {
+              preset = config.preset as typeof preset;
+            });
+            handle.on('responsive', payload => void events.push(payload));
+          }
+        }
+      ]
+    );
+    expect(preset?.options.showPoint).toBe(true);
+    media.set('(max-width: 600px)', true);
+    expect(events).toEqual([
+      {
+        previousOptions: expect.objectContaining({ showPoint: true }),
+        currentOptions: expect.objectContaining({ showPoint: false })
+      }
+    ]);
+    expect(preset?.options.showPoint).toBe(false);
+
+    controller.handle.detach();
+    expect(media.count('(max-width: 600px)')).toBe(0);
+    expect(element.querySelector('svg')).not.toBeNull();
+  });
+});

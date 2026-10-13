@@ -14,6 +14,8 @@ import type { Renderer } from '../render/types';
  */
 export interface ChartPlugin<TOptions = unknown> {
   readonly name: string;
+  /** Names of custom events this plugin emits through `chart.emit`. */
+  readonly provides?: readonly string[];
   install(chart: ChartHandle, options?: TOptions): void;
 }
 
@@ -33,12 +35,26 @@ export interface ChartConfig extends PipelineOptions {
 
 /** @experimental */
 export interface ChartHandle {
+  /** The element the chart renders into (undefined in `toScene`). */
+  readonly container?: Element;
   /** Shallow-merges the config and renders again. */
   update(config: Partial<Omit<ChartConfig, 'plugins' | 'on'>>): ChartHandle;
-  /** Removes the output and stops observing size and listeners. */
+  /**
+   * Stops reacting to container size changes (and media queries in
+   * presets). The output and the listeners stay.
+   */
+  detach(): ChartHandle;
+  /** Detaches, removes the output and clears all listeners. */
   destroy(): void;
+  /** Emits a custom (non-phase) event, e.g. from a plugin. */
+  emit(name: string, payload?: unknown): void;
   on<K extends PhaseName>(name: K, listener: PhaseListener<K>): ChartHandle;
   on(name: '*', listener: AllPhasesListener): ChartHandle;
+  /** Custom events, see `ChartPlugin.provides`. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  on(name: string, listener: (payload: any) => void): ChartHandle;
   off<K extends PhaseName>(name: K, listener?: PhaseListener<K>): ChartHandle;
   off(name: '*', listener?: AllPhasesListener): ChartHandle;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  off(name: string, listener?: (payload: any) => void): ChartHandle;
 }

@@ -1,10 +1,16 @@
 import 'chartist/styles.css';
 import { LineChart, Svg } from 'chartist';
+import { compat } from 'chartist/compat';
 
-const chart = new LineChart('#chart', {
-  labels: [1, 2, 3, 4, 5],
-  series: [[12, 9, 7, 8, 5]]
-});
+const chart = new LineChart(
+  '#chart',
+  {
+    labels: [1, 2, 3, 4, 5],
+    series: [[12, 9, 7, 8, 5]]
+  },
+  // 1.x draw events come from the compat plugin in v2.
+  { plugins: [compat] }
+);
 
 // Listening for draw events that get emitted by the Chartist chart
 chart.on('draw', data => {

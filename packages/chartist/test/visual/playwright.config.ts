@@ -9,19 +9,14 @@
  * Run (see the Nx targets in package.json):
  * - pnpm nx run chartist:test:visual          local build (packages/chartist/dist)
  * - pnpm nx run chartist:test:visual:v1       published chartist@1.5.0
- * - pnpm nx run chartist:test:visual:v2       LineChart replaced by the v2 lineChart preset
  * - pnpm nx run chartist:test:visual:update   re-record the baseline from 1.5.0
  */
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@playwright/test';
 
-const lib =
-  (['v1', 'v2'] as const).find(name => name === process.env.CHARTIST_LIB) ??
-  'local';
-// Separate ports, so all modes can be tested at the same time.
-const port = Number(
-  process.env.VISUAL_PORT ?? { local: 4173, v1: 4174, v2: 4175 }[lib]
-);
+const lib = process.env.CHARTIST_LIB === 'v1' ? 'v1' : 'local';
+// Separate ports, so both builds can be tested at the same time.
+const port = Number(process.env.VISUAL_PORT ?? (lib === 'v1' ? 4174 : 4173));
 
 export default defineConfig({
   testDir: '.',

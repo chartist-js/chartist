@@ -155,9 +155,14 @@ function seriesLayer(options: Resolved): Layer {
   };
 }
 
-function config(data: LineChartData, options: Resolved): ChartConfig {
+function config(
+  data: LineChartData,
+  options: Resolved,
+  preset?: LinePresetState
+): ChartConfig {
   return {
     data,
+    preset,
     axes: cartesianAxes(axesConfig(options)),
     padding: options.chartPadding,
     width: options.width,
@@ -200,49 +205,122 @@ function withResponsive(
 }
 
 /**
- * Creates a line chart with the 1.x options and output, rendered
- * synchronously.
- * @experimental
+ * What the line preset passes to plugins as `ResolvedConfig.preset`: the
+ * current 1.x options and 1.x-style updates.
  */
-export function lineChart(
-  target: string | Element,
-  data: LineChartData,
-  options: LineChartPresetOptions = {},
-  responsiveOptions?: ResponsiveOptions<LineChartPresetOptions>
-): ChartHandle {
-  const base = extend({}, lineDefaults, options) as Resolved;
-  let current = withResponsive(base, responsiveOptions);
+export interface LinePresetState {
+  readonly kind: 'line';
+  readonly options: LineChartPresetOptions;
+  readonly data: LineChartData;
+  update(
+    data?: LineChartData,
+    options?: LineChartPresetOptions,
+    override?: boolean
+  ): void;
+  detach(): void;
+}
 
-  const inner = chart(target, {
-    ...config(data, current),
-    plugins: [
-      rootStyle(() => current),
-      ...((options.plugins ?? []) as ChartConfig['plugins'] & unknown[])
-    ]
-  });
+/** Internal: the preset with 1.x-style data and option updates. */
+export interface LineChartController {
+  readonly handle: ChartHandle;
+  /** Replaces the data (1.x `update(data)`); call `render()` after. */
+  setData(data: LineChartData): void;
+  /** 1.x option update: extends the defaults, or the current options. */
+  setOptions(options: LineChartPresetOptions, override?: boolean): void;
+  render(): void;
+  options(): LineChartPresetOptions;
+  data(): LineChartData;
+}
+
+/** Internal: creates the line preset; used by `lineChart` and `LineChart`. */
+export function createLineChart(
+  target: string | Element,
+  initialData: LineChartData,
+  options: LineChartPresetOptions = {},
+  responsiveOptions?: ResponsiveOptions<LineChartPresetOptions>,
+  plugins: ChartConfig['plugins'] = options.plugins as ChartConfig['plugins']
+): LineChartController {
+  let data = initialData;
+  let base = extend({}, lineDefaults, options) as Resolved;
+  let current = withResponsive(base, responsiveOptions);
 
   const queries =
     responsiveOptions && typeof window !== 'undefined' && window.matchMedia
       ? responsiveOptions.map(([query]) => window.matchMedia(query))
       : [];
+
+  const controller: LineChartController = {
+    get handle() {
+      return handle;
+    },
+    setData(next) {
+      // As 1.x: missing labels and series default to empty arrays.
+      next.labels = next.labels || [];
+      next.series = next.series || [];
+      data = next;
+    },
+    setOptions(next, override = false) {
+      base = extend({}, override ? base : lineDefaults, next) as Resolved;
+      current = withResponsive(base, responsiveOptions);
+    },
+    render() {
+      inner.update(config(data, current, state));
+    },
+    options: () => current,
+    data: () => data
+  };
+
+  const state: LinePresetState = {
+    kind: 'line',
+    get options() {
+      return current;
+    },
+    get data() {
+      return data;
+    },
+    update(nextData, nextOptions, override) {
+      if (nextData) {
+        controller.setData(nextData);
+      }
+      if (nextOptions) {
+        controller.setOptions(nextOptions, override);
+      }
+      controller.render();
+    },
+    detach: () => handle.detach()
+  };
+
+  const inner = chart(target, {
+    ...config(data, current, state),
+    plugins: [rootStyle(() => current), ...(plugins ?? [])]
+  });
+
   const onMediaChange = () => {
+    const previousOptions = current;
     current = withResponsive(base, responsiveOptions);
-    const { data: _data, ...changes } = config(data, current);
-    inner.update(changes);
+    inner.emit('responsive', { previousOptions, currentOptions: current });
+    controller.render();
   };
   queries.forEach(query => query.addEventListener('change', onMediaChange));
 
   const handle: ChartHandle = {
+    container: inner.container,
     update(changes) {
       inner.update(changes);
       return handle;
     },
-    destroy() {
+    detach() {
       queries.forEach(query =>
         query.removeEventListener('change', onMediaChange)
       );
+      inner.detach();
+      return handle;
+    },
+    destroy() {
+      handle.detach();
       inner.destroy();
     },
+    emit: (name, payload) => inner.emit(name, payload),
     on: ((name: never, listener: never) => {
       inner.on(name, listener);
       return handle;
@@ -252,5 +330,20 @@ export function lineChart(
       return handle;
     }) as ChartHandle['off']
   };
-  return handle;
+  return controller;
+}
+
+/**
+ * Creates a line chart with the 1.x options and output, rendered
+ * synchronously. Plugins must be v2 plugins; convert 1.x plugins with
+ * `fromLegacyPlugin` from `chartist/compat`.
+ * @experimental
+ */
+export function lineChart(
+  target: string | Element,
+  data: LineChartData,
+  options: LineChartPresetOptions = {},
+  responsiveOptions?: ResponsiveOptions<LineChartPresetOptions>
+): ChartHandle {
+  return createLineChart(target, data, options, responsiveOptions).handle;
 }

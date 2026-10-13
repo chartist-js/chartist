@@ -60,11 +60,18 @@ const IMPORTS = {
   'chartist/dist/index.min.css': 'dist/index.min.css',
   'chartist/dist/index.d.cts': 'dist/index.d.cts',
   'chartist/dist/chartist.min.js': 'dist/chartist.min.js',
-  'chartist/dist/chartist.min.css': 'dist/chartist.min.css'
+  'chartist/dist/chartist.min.css': 'dist/chartist.min.css',
+  'chartist/compat': 'dist/compat.js',
+  'chartist/dist/compat.min.js': 'dist/compat.min.js',
+  'chartist/dist/compat.umd.js': 'dist/compat.umd.js'
 };
 
 /** Same for `require`; only the root entry differs. */
-const REQUIRES = { ...IMPORTS, chartist: 'dist/index.cjs' };
+const REQUIRES = {
+  ...IMPORTS,
+  chartist: 'dist/index.cjs',
+  'chartist/compat': 'dist/compat.cjs'
+};
 
 let tmp;
 let resolveImport;
@@ -274,4 +281,27 @@ test('npm package contains the built files', async () => {
     [],
     'only dist/ and package metadata are packed'
   );
+});
+
+test('compat uses the same core instance as chartist', async () => {
+  const esm = await import(resolveImport('chartist/compat'));
+  const cjs = require('chartist/compat');
+  assert.equal(esm.compat.name, 'compat');
+  assert.equal(cjs.compat.name, 'compat');
+  // The compat builds import the core build next to them, never a copy.
+  const sources = {
+    'dist/compat.js': './index.js',
+    'dist/compat.cjs': './index.cjs',
+    'dist/compat.min.js': './index.min.js',
+    'dist/compat.umd.js': './index.umd.js'
+  };
+  for (const [file, core] of Object.entries(sources)) {
+    const code = await readFile(path.join(pkgDir, file), 'utf8');
+    assert.ok(code.includes(`"${core}"`), `${file} imports ${core}`);
+    // The core build is ~140 kB unminified; compat alone is a few kB.
+    assert.ok(
+      code.length < 20_000,
+      `${file} has no core copy (${code.length} bytes)`
+    );
+  }
 });

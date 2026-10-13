@@ -1,5 +1,5 @@
 import { Interpolation, LineChart, type SegmentData } from 'chartist';
-import { container, created } from './fixture.ts';
+import { container, created, withCompat } from './fixture.ts';
 
 const COORDINATES = [0, 10, 10, 0, 20, 10, 30, 5];
 const VALUES = [1, 2, 1, 3].map(y => ({ value: { y } })) as SegmentData[];
@@ -42,7 +42,7 @@ describe('Interpolation', () => {
       new LineChart(
         el,
         { series: [[1, 2, 1]] },
-        { lineSmooth: Interpolation.step(), showPoint: false }
+        withCompat({ lineSmooth: Interpolation.step(), showPoint: false })
       )
     );
     const d = el.querySelector('.ct-line')!.getAttribute('d')!;

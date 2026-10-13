@@ -10,6 +10,8 @@ import { defineConfig, type UserConfig } from 'tsdown';
  * dist/index.min.js   minified, self-contained ESM for browsers and CDNs
  * dist/index.umd.js   minified UMD, global `Chartist` (1.x path)
  * dist/chartist.min.js  copy of the UMD build under the 0.x file name
+ * dist/compat.*        the compat plugin (chartist/compat) in the same
+ *                      formats; it imports the core instead of bundling it
  *
  * Styles are built by scripts/styles.cjs.
  */
@@ -34,6 +36,25 @@ const min = (ext: string) => ({
   minify: true,
   outExtensions: () => ({ js: ext })
 });
+
+/**
+ * The compat entry imports only `../index` (the package root). That import
+ * stays external and points to the matching core build per format.
+ */
+const CORE = '../index';
+const isCore = (id: string) =>
+  id === CORE || /[\\/]src[\\/]index(\.ts)?$/.test(id);
+const compatBase: UserConfig = {
+  ...base,
+  entry: { compat: 'src/compat/index.ts' },
+  deps: { neverBundle: [CORE] }
+};
+const toCore =
+  (file: string): UserConfig['outputOptions'] =>
+  options => ({
+    ...options,
+    paths: (id: string) => (isCore(id) ? file : id)
+  });
 
 export default defineConfig([
   { ...base, format: 'esm' },
@@ -60,5 +81,40 @@ export default defineConfig([
         await copyFile('dist/index.umd.js', 'dist/chartist.min.js');
       }
     }
+  },
+  { ...compatBase, format: 'esm', outputOptions: toCore('./index.js') },
+  {
+    ...compatBase,
+    format: 'cjs',
+    dts,
+    outputOptions: toCore('./index.cjs')
+  },
+  {
+    ...compatBase,
+    format: 'esm',
+    sourcemap: false,
+    dts: { ...dts, emitDtsOnly: true },
+    outputOptions: toCore('./index.js')
+  },
+  {
+    ...compatBase,
+    minify: true,
+    format: 'esm',
+    outExtensions: () => ({ js: '.min.js' }),
+    outputOptions: toCore('./index.min.js')
+  },
+  {
+    // Adds compat's exports to the global `Chartist` of index.umd.js.
+    ...compatBase,
+    minify: true,
+    format: 'umd',
+    globalName: 'Chartist',
+    outputOptions: options => ({
+      ...options,
+      // Classic scripts: the global; CommonJS/AMD loaders: the core UMD file.
+      globals: (id: string) => (isCore(id) ? 'Chartist' : id),
+      paths: (id: string) => (isCore(id) ? './index.umd.js' : id),
+      extend: true
+    })
   }
 ]);

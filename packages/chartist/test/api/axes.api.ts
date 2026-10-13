@@ -6,7 +6,7 @@ import {
   LineChart,
   StepAxis
 } from 'chartist';
-import { container, created } from './fixture.ts';
+import { container, created, withCompat } from './fixture.ts';
 
 function labels(el: Element, direction: 'horizontal' | 'vertical') {
   return Array.from(
@@ -25,7 +25,7 @@ describe('axis classes as options', () => {
       new LineChart(
         el,
         { labels: ['Mon', 'Tue', 'Wed'], series: [[0, 5, 10]] },
-        { axisY: { onlyInteger: true } }
+        withCompat({ axisY: { onlyInteger: true } })
       )
     );
     expect(labels(el, 'horizontal')).toEqual(['Mon', 'Tue', 'Wed']);
@@ -49,10 +49,10 @@ describe('axis classes as options', () => {
             ]
           ]
         },
-        {
+        withCompat({
           axisX: { type: FixedScaleAxis, ticks: [0, 5, 10], low: 0, high: 10 },
           axisY: { type: AutoScaleAxis, onlyInteger: true }
-        }
+        })
       )
     );
     expect(labels(el, 'horizontal')).toEqual(['0', '5', '10']);
@@ -72,7 +72,7 @@ describe('axis classes as options', () => {
             ]
           ]
         },
-        { axisX: { type: FixedScaleAxis, divisor: 4 } }
+        withCompat({ axisX: { type: FixedScaleAxis, divisor: 4 } })
       )
     );
     expect(labels(el, 'horizontal')).toEqual(['0', '25', '50', '75']);
@@ -84,7 +84,7 @@ describe('axis classes as options', () => {
       new LineChart(
         el,
         { series: [[2, 3]] },
-        { low: 0, high: 4, axisY: { onlyInteger: true } }
+        withCompat({ low: 0, high: 4, axisY: { onlyInteger: true } })
       )
     );
     expect(labels(el, 'vertical')).toEqual(['0', '1', '2', '3', '4']);
@@ -96,11 +96,11 @@ describe('axis classes as options', () => {
       new LineChart(
         el,
         { series: [[2, 3]] },
-        {
+        withCompat({
           low: 0,
           high: 4,
           axisY: { type: AutoScaleAxis, onlyInteger: true, low: 1, high: 5 }
-        }
+        })
       )
     );
     expect(labels(el, 'vertical')).toEqual(['1', '2', '3', '4', '5']);
@@ -112,7 +112,9 @@ describe('axis classes as options', () => {
       new LineChart(
         el,
         { series: [[1, 2, 3]] },
-        { axisX: { type: StepAxis, ticks: ['a', 'b', 'c'], stretch: true } }
+        withCompat({
+          axisX: { type: StepAxis, ticks: ['a', 'b', 'c'], stretch: true }
+        })
       )
     );
     expect(labels(el, 'horizontal')).toEqual(['a', 'b', 'c']);
@@ -136,7 +138,7 @@ describe('axis classes as options', () => {
   });
 
   test('axis classes extend Axis, and created events carry the axes', async () => {
-    const chart = new LineChart(container(), { series: [[1]] });
+    const chart = new LineChart(container(), { series: [[1]] }, withCompat());
     const event = await created<{ axisX: Axis; axisY: Axis }>(chart);
     expect(event.axisX).toBeInstanceOf(StepAxis);
     expect(event.axisY).toBeInstanceOf(AutoScaleAxis);

@@ -152,6 +152,7 @@
     "LineInterpolation",
     "LineLayerOptions",
     "LineParams",
+    "LinePresetState",
     "LineSeriesOptions",
     "MeasureText",
     "MeasureTextOptions",

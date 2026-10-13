@@ -64,23 +64,9 @@ function seekSvg(page: Page, seconds: number) {
   }, seconds);
 }
 
-/**
- * CHARTIST_LIB=v2 replaces LineChart with the v2 preset, which has no 1.x
- * events yet (they come with the compat plugin). These examples use them.
- */
-const NEEDS_1X_EVENTS = new Set([
-  'line/modify-drawing',
-  'line/path-animation',
-  'line/simple-svg-animation',
-  'line/svg-animation'
-]);
-const skipped = (id: string) =>
-  process.env.CHARTIST_LIB === 'v2' && NEEDS_1X_EVENTS.has(id);
-
 for (const example of examples) {
   for (const viewport of example.viewports) {
     test(`${example.id} @ ${viewport}`, async ({ page }) => {
-      test.skip(skipped(example.id), 'needs 1.x events (compat plugin)');
       const problems: string[] = [];
       page.on('pageerror', error => problems.push(`page error: ${error}`));
       page.on('console', message => {

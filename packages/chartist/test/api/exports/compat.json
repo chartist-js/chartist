@@ -1,0 +1,4 @@
+{
+  "runtime": ["compat", "fromLegacyPlugin"],
+  "types": ["compat", "fromLegacyPlugin"]
+}

@@ -1,5 +1,6 @@
 import { AutoScaleAxis, FixedScaleAxis } from '../../axes';
 import { LineChartOptions, LineChartData, LineChart } from '.';
+import { compat } from '../../compat';
 import * as Interpolation from '../../interpolation';
 import { namespaces, deserialize } from '../../core';
 import {
@@ -24,11 +25,11 @@ describe('Charts', () => {
           '<div class="ct-chart ct-golden-section"></div>'
         );
         const { wrapper } = fixture;
-        chart = new LineChart(
-          wrapper.querySelector('.ct-chart'),
-          data,
-          options
-        ).on('created', () => {
+        // 1.x events (created, draw) come from the compat plugin in v2.
+        chart = new LineChart(wrapper.querySelector('.ct-chart'), data, {
+          ...options,
+          plugins: [compat]
+        }).on('created', () => {
           resolve();
           chart.off('created');
         });

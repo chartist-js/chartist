@@ -174,9 +174,11 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
       this.options.plugins.forEach(plugin => {
         if (Array.isArray(plugin)) {
           plugin[0](this, plugin[1]);
-        } else {
+        } else if (typeof plugin === 'function') {
           plugin(this);
         }
+        // v2 plugin objects (e.g. compat) are for the v2-based charts; the
+        // 1.x implementations emit 1.x events natively.
       });
     }
 

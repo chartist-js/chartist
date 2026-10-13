@@ -7,7 +7,7 @@ import {
   type DataEvent,
   type PointDrawEvent
 } from 'chartist';
-import { container, created, recordEvents } from './fixture.ts';
+import { container, created, recordEvents, withCompat } from './fixture.ts';
 
 /** Event names, with draw events as `draw:<type>`, consecutive repeats collapsed. */
 function sequence(events: { name: string; data: any }[]) {
@@ -23,7 +23,7 @@ describe('event order', () => {
     const chart = new LineChart(
       container(),
       { labels: ['A', 'B'], series: [[1, 2]] },
-      { showArea: true, axisY: { onlyInteger: true } }
+      withCompat({ showArea: true, axisY: { onlyInteger: true } })
     );
     const events = recordEvents(chart);
     await created(chart);
@@ -73,10 +73,14 @@ describe('event order', () => {
 
 describe('event payloads', () => {
   async function lineEvents() {
-    const chart = new LineChart(container(), {
-      labels: ['A', 'B'],
-      series: [{ name: 's', data: [1, { value: 2, meta: 'm' }] }]
-    });
+    const chart = new LineChart(
+      container(),
+      {
+        labels: ['A', 'B'],
+        series: [{ name: 's', data: [1, { value: 2, meta: 'm' }] }]
+      },
+      withCompat()
+    );
     const events = recordEvents(chart);
     await created(chart);
     return events;
@@ -84,7 +88,7 @@ describe('event payloads', () => {
 
   test('data event carries the chart data', async () => {
     const data = { labels: ['A'], series: [[1]] };
-    const chart = new LineChart(container(), data);
+    const chart = new LineChart(container(), data, withCompat());
     const events = recordEvents(chart);
     await created(chart);
     expect(events[0]).toEqual({
@@ -191,7 +195,7 @@ describe('event payloads', () => {
 describe('listeners can change the chart', () => {
   test('mutating data in a data listener changes the output', async () => {
     const el = container();
-    const chart = new LineChart(el, { series: [[1, 2]] }).on(
+    const chart = new LineChart(el, { series: [[1, 2]] }, withCompat()).on(
       'data',
       (event: DataEvent) => {
         (event.data.series[0] as number[]).push(3);
@@ -203,7 +207,7 @@ describe('listeners can change the chart', () => {
 
   test('a draw listener can replace an element', async () => {
     const el = container();
-    const chart = new LineChart(el, { series: [[1, 2]] }).on(
+    const chart = new LineChart(el, { series: [[1, 2]] }, withCompat()).on(
       'draw',
       (event: PointDrawEvent) => {
         if (event.type === 'point') {
@@ -221,7 +225,7 @@ describe('listeners can change the chart', () => {
 
 describe('on and off', () => {
   test('off removes one listener, or all listeners of an event', async () => {
-    const chart = new LineChart(container(), { series: [[1]] });
+    const chart = new LineChart(container(), { series: [[1]] }, withCompat());
     const first = vi.fn();
     const second = vi.fn();
     chart.on('data', first).on('data', second).off('data', first);
@@ -237,7 +241,7 @@ describe('on and off', () => {
   });
 
   test('"*" listeners receive every event with its name', async () => {
-    const chart = new LineChart(container(), { series: [[1]] });
+    const chart = new LineChart(container(), { series: [[1]] }, withCompat());
     const all = vi.fn();
     chart.on('*', all);
     await created(chart);
@@ -246,7 +250,7 @@ describe('on and off', () => {
   });
 
   test('update emits a data event of type update', async () => {
-    const chart = new LineChart(container(), { series: [[1]] });
+    const chart = new LineChart(container(), { series: [[1]] }, withCompat());
     await created(chart);
     const listener = vi.fn();
     chart.on('data', listener);

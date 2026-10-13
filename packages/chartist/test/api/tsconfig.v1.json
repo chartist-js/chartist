@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "paths": {
-      "chartist": ["../../node_modules/chartist-v1/dist/index.d.ts"]
+      "chartist": ["../../node_modules/chartist-v1/dist/index.d.ts"],
+      "chartist/compat": ["./compat-v1.ts"]
     }
   },
   "exclude": ["**/*.v2.ts", "**/*.v2.api.ts", "**/*.v2.test-d.ts"]

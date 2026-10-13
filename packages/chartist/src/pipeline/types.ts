@@ -84,6 +84,8 @@ export interface ResolvedConfig {
   readonly height?: number | string;
   readonly viewBox?: { readonly width: number; readonly height: number };
   readonly className?: string;
+  /** Opaque data of the preset that created the chart (read by plugins). */
+  readonly preset?: unknown;
 }
 
 /** Payloads of the phase events. */

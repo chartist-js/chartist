@@ -10,7 +10,7 @@ import {
   stepAxis,
   type PhaseEvents
 } from 'chartist';
-import { container, created, mockMedia } from './fixture.ts';
+import { container, created, mockMedia, withCompat } from './fixture.ts';
 
 // jsdom has no layout: v2 measures the container, so sizes are explicit.
 const SIZE = { width: 500, height: 500 };
@@ -63,7 +63,7 @@ describe('lineChart (v2 preset)', () => {
     const options = { ...SIZE, axisY: { onlyInteger: true } };
 
     const legacyEl = container();
-    await created(new LineChart(legacyEl, data, options));
+    await created(new LineChart(legacyEl, data, withCompat(options)));
     const v2El = container();
     lineChart(v2El, data, options);
 

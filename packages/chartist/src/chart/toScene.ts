@@ -2,7 +2,7 @@ import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline } from '../pipeline/phases';
 import { estimateText, type MeasureText } from '../render/measure';
 import type { SceneNode } from '../scene/node';
-import { installPlugins, listenerMethods, registerListeners } from './plugins';
+import { eventMethods, installPlugins, registerListeners } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
 export interface SceneSize {
@@ -24,13 +24,15 @@ function unavailable(method: string): never {
  */
 export function toScene(config: ChartConfig, size: SceneSize): SceneNode {
   const emitter = createPhaseEmitter();
+  const provided = new Set<string>();
   const handle: ChartHandle = {
     update: () => unavailable('update'),
+    detach: () => unavailable('detach'),
     destroy: () => unavailable('destroy'),
-    ...listenerMethods(emitter, () => handle)
+    ...eventMethods(emitter, () => handle, provided)
   };
-  installPlugins(handle, config.plugins);
-  registerListeners(emitter, config.on);
+  installPlugins(handle, config.plugins, provided);
+  registerListeners(handle, config.on);
   return runPipeline(emitter, config, {
     width: size.width,
     height: size.height,

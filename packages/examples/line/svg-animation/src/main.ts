@@ -1,5 +1,6 @@
 import 'chartist/styles.css';
 import { LineChart } from 'chartist';
+import { compat } from 'chartist/compat';
 
 const chart = new LineChart(
   '#chart',
@@ -13,6 +14,8 @@ const chart = new LineChart(
     ]
   },
   {
+    // 1.x draw events come from the compat plugin in v2.
+    plugins: [compat],
     low: 0
   }
 );
