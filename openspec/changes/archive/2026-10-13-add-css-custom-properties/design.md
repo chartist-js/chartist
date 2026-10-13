@@ -92,3 +92,11 @@ There are two ways to recolor:
 - **Custom-property support:** browsers without it ignore the declarations entirely; the fallback inside `var()` doesn't help them. All browsers Chartist supports have custom properties, so this only matters for a browser list we don't support. Documented.
 - **Specificity of `--ct-color`:** a 1.x user who styled `.ct-series-a .ct-line` with `stroke` sees no change. One who styled `.ct-line { stroke: … }` globally (lower specificity than the series rule) was already overridden in 1.x and still is.
 - **CSS size:** about +0.3 kB minified and gzipped for the `var()` wrappers, estimated; measured in the change.
+
+## Implementation notes
+
+- **Pixel-identical:** with the new CSS, all 74 screenshots of the v2 run (67 1.5 baselines plus 7 v2 examples) and the 1.5 run are unchanged.
+- **Sass:** `ct-or-none()` turns unset optional settings (`false`) into `none` with an `@if` block; the Sass `if()` function is deprecated. The theme uses `sass:list` (new file, so the 1.x `@import` constraint doesn't apply). `ct-chart-series-color($color)` now sets `--ct-color: $color` on its selector, so Sass users calling it on their own selectors keep working.
+- **Build:** `postcss-preset-env` runs with `features: { 'custom-properties': false }`; `cssnano` keeps the `var()` fallbacks and `light-dark()`. Themes compile to `dist/themes/<name>.css` and `.min.css` (no source maps), and their Sass sources are published in `dist/scss/themes/`.
+- **Smoke tests:** the Sass override tests now expect the override as the fallback (`var(--ct-line-width, 7.5px)`); new tests check every property with its 1.x fallback, the 1.x series selectors with `--ct-color`, and `light-dark()` in both theme files.
+- **Size:** `dist/index.min.css` 1.28 → 1.42 kB gzipped (+0.14 kB); the accessible theme is 0.18 kB.

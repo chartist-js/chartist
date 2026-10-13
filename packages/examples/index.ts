@@ -5,7 +5,7 @@
  * read the example files from `<folder>/index.html` and `<folder>/src/`.
  */
 
-export type ChartType = 'line' | 'bar' | 'pie' | 'composed';
+export type ChartType = 'line' | 'bar' | 'pie' | 'composed' | 'styling';
 
 /** Named viewport presets the visual regression tests render an example at. */
 export type ViewportName = 'default' | 'tablet' | 'mobile' | 'mobile-landscape';
@@ -279,5 +279,19 @@ export const examples: Example[] = [
     id: 'composed/two-y-axes',
     title: 'Two Y axes with different units',
     v2: true
+  }),
+
+  // Styling (v2)
+  example({
+    id: 'styling/custom-properties',
+    title: 'Styling with custom properties',
+    v2: true,
+    size: 'viewport'
+  }),
+  example({
+    id: 'styling/accessible-theme',
+    title: 'Accessible theme, light and dark',
+    v2: true,
+    size: 'viewport'
   })
 ];

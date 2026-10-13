@@ -1,0 +1,19 @@
+#chart {
+  display: flex;
+  gap: 24px;
+}
+
+.cell {
+  width: 480px;
+  height: 300px;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+/* A dark area: color-scheme picks the theme's dark values. */
+.dark {
+  color-scheme: dark;
+  background: #1c1718;
+  --ct-label-color: rgb(255 255 255 / 0.6);
+  --ct-grid-color: rgb(255 255 255 / 0.2);
+}

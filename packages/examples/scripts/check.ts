@@ -36,7 +36,7 @@ for (const { id, type } of examples) {
   }
   ids.add(id);
   if (
-    !/^(line|bar|pie|composed)\/[a-z0-9-]+$/.test(id) ||
+    !/^(line|bar|pie|composed|styling)\/[a-z0-9-]+$/.test(id) ||
     !id.startsWith(type + '/')
   ) {
     fail(
@@ -46,7 +46,7 @@ for (const { id, type } of examples) {
 }
 
 // Every example folder on disk is in the manifest.
-for (const type of ['line', 'bar', 'pie', 'composed']) {
+for (const type of ['line', 'bar', 'pie', 'composed', 'styling']) {
   for (const name of readdirSync(path.join(root, type))) {
     if (!ids.has(`${type}/${name}`)) {
       fail(`${type}/${name}: folder is not in the manifest`);

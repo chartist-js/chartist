@@ -53,6 +53,8 @@ const IMPORTS = {
   'chartist/dist/index.d.ts': 'dist/index.d.ts',
   // new
   'chartist/styles.css': 'dist/index.css',
+  'chartist/themes/accessible.css': 'dist/themes/accessible.css',
+  'chartist/themes/accessible.min.css': 'dist/themes/accessible.min.css',
   'chartist/scss/index.scss': 'dist/scss/index.scss',
   'chartist/scss/_settings.scss': 'dist/scss/_settings.scss',
   'chartist/package.json': 'package.json',
@@ -185,7 +187,8 @@ test('Sass: pkg:chartist with the Node package importer', () => {
     '@use "pkg:chartist" with ($ct-line-width: 7.5px);',
     { ...SASS, importers }
   ).css;
-  assert.match(custom, /stroke-width: 7\.5px/);
+  // The Sass value is the fallback of the custom property.
+  assert.match(custom, /stroke-width: var\(--ct-line-width, 7\.5px\)/);
 
   const settings = sass.compileString(
     '@use "pkg:chartist/scss/settings" as ct; .x { width: ct.$ct-line-width; }',
@@ -194,13 +197,59 @@ test('Sass: pkg:chartist with the Node package importer', () => {
   assert.match(settings, /width: 4px/);
 });
 
+test('CSS: themable values read --ct-* properties with 1.x fallbacks', async () => {
+  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
+  for (const [property, fallback] of [
+    ['--ct-label-color', 'rgba(0, 0, 0, 0.4)'],
+    ['--ct-label-size', '0.75rem'],
+    ['--ct-grid-color', 'rgba(0, 0, 0, 0.2)'],
+    ['--ct-grid-width', '1px'],
+    ['--ct-grid-dasharray', '2px'],
+    ['--ct-grid-background-fill', 'none'],
+    ['--ct-line-width', '4px'],
+    ['--ct-line-dasharray', 'none'],
+    ['--ct-point-size', '10px'],
+    ['--ct-point-shape', 'round'],
+    ['--ct-area-opacity', '0.1'],
+    ['--ct-bar-width', '10px'],
+    ['--ct-donut-width', '60px'],
+    ['--ct-series-a', '#d70206'],
+    ['--ct-series-o', '#a748ca']
+  ]) {
+    assert.ok(
+      css.includes(`var(${property}, ${fallback})`),
+      `${property} with fallback ${fallback}`
+    );
+  }
+  // Series elements take their color from --ct-color, 1.x selectors.
+  assert.match(
+    css,
+    /\.ct-series-a \.ct-line,[\s\S]*?stroke: var\(--ct-color\)/
+  );
+});
+
+test('CSS: the accessible theme keeps light-dark()', async () => {
+  for (const file of [
+    'dist/themes/accessible.css',
+    'dist/themes/accessible.min.css'
+  ]) {
+    const css = String(await readFile(path.join(pkgDir, file)));
+    assert.match(css, /\.ct-theme-accessible/);
+    assert.equal(
+      css.match(/--ct-series-[a-h]:\s*light-dark\(/g)?.length,
+      8,
+      file
+    );
+  }
+});
+
 test('Sass: 1.x path chartist/dist/index with overrides', () => {
   const options = { ...SASS, loadPaths: [path.join(tmp, 'node_modules')] };
   const css = sass.compileString(
     '$ct-line-width: 7.5px; @import "chartist/dist/index";',
     options
   ).css;
-  assert.match(css, /stroke-width: 7\.5px/);
+  assert.match(css, /stroke-width: var\(--ct-line-width, 7\.5px\)/);
 
   const viaDist = sass.compileString('@import "chartist/dist/index";', options);
   const viaScss = sass.compileString('@import "pkg:chartist/scss/index";', {

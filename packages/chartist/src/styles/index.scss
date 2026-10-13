@@ -1,5 +1,13 @@
 @import 'settings';
 
+// The value of an optional setting (false: not set) as a CSS value.
+@function ct-or-none($value) {
+  @if $value {
+    @return $value;
+  }
+  @return none;
+}
+
 @mixin ct-responsive-svg-container($width: 100%, $ratio: $ct-container-ratio) {
   display: block;
   position: relative;
@@ -49,9 +57,9 @@
   $ct-text-size: $ct-text-size,
   $ct-text-line-height: $ct-text-line-height
 ) {
-  fill: $ct-text-color;
-  color: $ct-text-color;
-  font-size: $ct-text-size;
+  fill: var(--ct-label-color, #{$ct-text-color});
+  color: var(--ct-label-color, #{$ct-text-color});
+  font-size: var(--ct-label-size, #{$ct-text-size});
   line-height: $ct-text-line-height;
 }
 
@@ -60,20 +68,18 @@
   $ct-grid-width: $ct-grid-width,
   $ct-grid-dasharray: $ct-grid-dasharray
 ) {
-  stroke: $ct-grid-color;
-  stroke-width: $ct-grid-width;
-
-  @if ($ct-grid-dasharray) {
-    stroke-dasharray: $ct-grid-dasharray;
-  }
+  stroke: var(--ct-grid-color, #{$ct-grid-color});
+  stroke-width: var(--ct-grid-width, #{$ct-grid-width});
+  // Always emitted, so the property works; `none` is the initial value.
+  stroke-dasharray: var(--ct-grid-dasharray, #{ct-or-none($ct-grid-dasharray)});
 }
 
 @mixin ct-chart-point(
   $ct-point-size: $ct-point-size,
   $ct-point-shape: $ct-point-shape
 ) {
-  stroke-width: $ct-point-size;
-  stroke-linecap: $ct-point-shape;
+  stroke-width: var(--ct-point-size, #{$ct-point-size});
+  stroke-linecap: var(--ct-point-shape, #{$ct-point-shape});
 }
 
 @mixin ct-chart-line(
@@ -81,39 +87,39 @@
   $ct-line-dasharray: $ct-line-dasharray
 ) {
   fill: none;
-  stroke-width: $ct-line-width;
-
-  @if ($ct-line-dasharray) {
-    stroke-dasharray: $ct-line-dasharray;
-  }
+  stroke-width: var(--ct-line-width, #{$ct-line-width});
+  stroke-dasharray: var(--ct-line-dasharray, #{ct-or-none($ct-line-dasharray)});
 }
 
 @mixin ct-chart-area($ct-area-opacity: $ct-area-opacity) {
   stroke: none;
-  fill-opacity: $ct-area-opacity;
+  fill-opacity: var(--ct-area-opacity, #{$ct-area-opacity});
 }
 
 @mixin ct-chart-bar($ct-bar-width: $ct-bar-width) {
   fill: none;
-  stroke-width: $ct-bar-width;
+  stroke-width: var(--ct-bar-width, #{$ct-bar-width});
 }
 
 @mixin ct-chart-donut($ct-donut-width: $ct-donut-width) {
   fill: none;
-  stroke-width: $ct-donut-width;
+  stroke-width: var(--ct-donut-width, #{$ct-donut-width});
 }
 
+// Sets the series color as `--ct-color`, which the series' elements use.
 @mixin ct-chart-series-color($color) {
+  --ct-color: #{$color};
+
   .#{$ct-class-point},
   .#{$ct-class-line},
   .#{$ct-class-bar},
   .#{$ct-class-slice-donut} {
-    stroke: $color;
+    stroke: var(--ct-color);
   }
 
   .#{$ct-class-slice-pie},
   .#{$ct-class-area} {
-    fill: $color;
+    fill: var(--ct-color);
   }
 }
 
@@ -199,7 +205,7 @@
   }
 
   .#{$ct-class-grid-background} {
-    fill: $ct-grid-background-fill;
+    fill: var(--ct-grid-background-fill, #{$ct-grid-background-fill});
   }
 
   .#{$ct-class-point} {
@@ -224,10 +230,12 @@
 
   @if $ct-include-colored-series {
     @for $i from 0 to length($ct-series-names) {
-      .#{$ct-class-series}-#{nth($ct-series-names, $i + 1)} {
+      $name: nth($ct-series-names, $i + 1);
+
+      .#{$ct-class-series}-#{$name} {
         $color: nth($ct-series-colors, $i + 1);
 
-        @include ct-chart-series-color($color);
+        @include ct-chart-series-color(var(--ct-series-#{$name}, #{$color}));
       }
     }
   }

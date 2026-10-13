@@ -1,0 +1,21 @@
+#chart {
+  display: flex;
+  gap: 24px;
+}
+
+.cell {
+  width: 480px;
+  height: 300px;
+}
+
+/* Custom properties restyle one chart; the other keeps the defaults. */
+.themed {
+  --ct-series-a: #0544d3;
+  --ct-series-b: #59922b;
+  --ct-line-width: 2px;
+  --ct-point-size: 6px;
+  --ct-grid-dasharray: none;
+  --ct-grid-color: rgb(5 68 211 / 0.15);
+  --ct-label-color: #0544d3;
+  --ct-area-opacity: 0.25;
+}

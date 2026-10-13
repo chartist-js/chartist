@@ -100,8 +100,14 @@
   {
     "name": "CSS (dist/index.min.css)",
     "path": "dist/index.min.css",
-    "limit": "1.3 kB",
+    "limit": "1.5 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "Accessible theme (dist/themes/accessible.min.css)",
+    "path": "dist/themes/accessible.min.css",
+    "limit": "0.25 kB",
+    "gzip": true
   }
 ]

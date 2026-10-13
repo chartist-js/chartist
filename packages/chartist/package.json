@@ -69,6 +69,7 @@
       "default": "./dist/compat.js"
     },
     "./styles.css": "./dist/index.css",
+    "./themes/*": "./dist/themes/*",
     "./scss/*": "./dist/scss/*",
     "./package.json": "./package.json",
     "./dist/*": "./dist/*"

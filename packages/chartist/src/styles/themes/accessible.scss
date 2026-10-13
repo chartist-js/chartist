@@ -1,0 +1,53 @@
+@use 'sass:list';
+
+// Opt-in color-blind-safe palette (CVD-validated, from the v2 brand design).
+// Light and dark values follow the element's `color-scheme` through
+// light-dark(), so the theme works with any dark-mode setup that declares
+// `color-scheme: dark`.
+//
+// Usage: import 'chartist/themes/accessible.css' and add the class
+// `ct-theme-accessible` to the page or to a chart's container.
+
+$ct-accessible-colors: (
+  a: (
+    #d7263d,
+    #e5484d
+  ),
+  b: (
+    #2b6cd8,
+    #5b8def
+  ),
+  c: (
+    #b07800,
+    #b98a12
+  ),
+  d: (
+    #8445b0,
+    #9a63d0
+  ),
+  e: (
+    #00917f,
+    #1fa192
+  ),
+  f: (
+    #d2621c,
+    #d9702f
+  ),
+  g: (
+    #b8479f,
+    #cb5ab0
+  ),
+  h: (
+    #6e8b1f,
+    #7d9a2e
+  )
+) !default;
+
+.ct-theme-accessible {
+  @each $name, $pair in $ct-accessible-colors {
+    --ct-series-#{$name}: light-dark(
+      #{list.nth($pair, 1)},
+      #{list.nth($pair, 2)}
+    );
+  }
+}
