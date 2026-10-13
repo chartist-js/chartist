@@ -6,10 +6,11 @@
 import type { BaseChart } from 'chartist';
 
 const SIZE = 500;
-const ElementPrototype = Object.getPrototypeOf(SVGElement.prototype);
-const originalRect = SVGElement.prototype.getBoundingClientRect;
+// Read lazily, so this module also loads in the Node environment.
+let originalRect: typeof SVGElement.prototype.getBoundingClientRect;
 
 export function mockLayout() {
+  originalRect ??= SVGElement.prototype.getBoundingClientRect;
   SVGElement.prototype.getBoundingClientRect = () =>
     ({
       x: 0,
@@ -28,6 +29,7 @@ export function mockLayout() {
 }
 
 export function restoreLayout() {
+  const ElementPrototype = Object.getPrototypeOf(SVGElement.prototype);
   SVGElement.prototype.getBoundingClientRect = originalRect;
   Object.defineProperties(SVGElement.prototype, {
     clientWidth: Object.getOwnPropertyDescriptor(

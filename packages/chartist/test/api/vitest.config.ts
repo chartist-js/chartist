@@ -38,10 +38,13 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['**/*.api.ts'],
+    // The v2 API doesn't exist in chartist@1.5.0.
+    exclude: targetName === 'v1' ? ['**/*.v2.api.ts'] : [],
     setupFiles: ['setup.ts'],
     typecheck: {
       enabled: true,
       include: ['**/*.test-d.ts'],
+      exclude: targetName === 'v1' ? ['**/*.v2.test-d.ts'] : [],
       tsconfig: resolve(target.tsconfig)
     }
   }

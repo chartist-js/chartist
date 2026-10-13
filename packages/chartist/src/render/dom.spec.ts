@@ -1,0 +1,129 @@
+import { node } from '../scene/node';
+import { domRenderer } from './dom';
+import { estimateText } from './measure';
+import { renderToString } from './string';
+
+const CT = 'http://gionkunz.github.com/chartist-js/ct';
+
+function sample() {
+  const point = node('line', { x1: 1, 'ct:value': 5 }, 'ct-point', {
+    role: 'point'
+  });
+  return {
+    point,
+    scene: node('svg', { width: 600, height: 300 }, 'chart').append(
+      node('g', {}, 'series')
+        .append(point)
+        .append(node('text', { x: 2 }).text('A & B'))
+    )
+  };
+}
+
+/**
+ * Serializes DOM with attributes sorted, to compare with string output.
+ * `xmlns` is left out: DOM elements carry their namespace, not the attribute.
+ */
+function normalized(element: Element): string {
+  const attrs = Array.from(element.attributes)
+    .filter(a => a.name !== 'xmlns')
+    .map(a => `${a.name}="${a.value}"`)
+    .sort()
+    .join(' ');
+  const children = Array.from(element.childNodes)
+    .map(child =>
+      child.nodeType === 3 ? child.textContent : normalized(child as Element)
+    )
+    .join('');
+  return `<${element.tagName} ${attrs}>${children}</${element.tagName}>`;
+}
+
+describe('render/dom', () => {
+  it('renders namespaced SVG elements with ct: attributes', () => {
+    const container = document.createElement('div');
+    const { scene } = sample();
+    const { svg } = domRenderer().render(scene, container);
+    expect(container.firstElementChild).toBe(svg);
+    expect(svg.namespaceURI).toBe('http://www.w3.org/2000/svg');
+    expect(svg.getAttribute('xmlns:ct')).toBe(CT);
+    const line = svg.querySelector('line')!;
+    expect(line.getAttributeNS(CT, 'value')).toBe('5');
+    expect(line.getAttribute('class')).toBe('ct-point');
+    expect(svg.querySelector('text')!.textContent).toBe('A & B');
+  });
+
+  it('matches the string renderer', () => {
+    const container = document.createElement('div');
+    const { scene } = sample();
+    const { svg } = domRenderer().render(scene, container);
+    const parsed = new DOMParser().parseFromString(
+      renderToString(scene),
+      'image/svg+xml'
+    ).documentElement;
+    expect(normalized(svg)).toBe(normalized(parsed));
+  });
+
+  it('string output is well-formed XML that round-trips attributes and text', () => {
+    const markup = renderToString(
+      node('svg', { width: 10 }).append(
+        node('g', { 'ct:series-name': 'a & b' }).append(
+          node('text').text('<x>')
+        )
+      )
+    );
+    const parsed = new DOMParser().parseFromString(markup, 'image/svg+xml');
+    expect(parsed.querySelector('parsererror')).toBeNull();
+    expect(parsed.querySelector('g')!.getAttributeNS(CT, 'series-name')).toBe(
+      'a & b'
+    );
+    expect(parsed.querySelector('text')!.textContent).toBe('<x>');
+  });
+
+  it('replaces an earlier Chartist svg but keeps other content', () => {
+    const container = document.createElement('div');
+    const other = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    container.appendChild(other);
+    const renderer = domRenderer();
+    renderer.render(sample().scene, container);
+    const second = renderer.render(sample().scene, container);
+    expect(Array.from(container.children)).toEqual([other, second.svg]);
+  });
+
+  it('elementOf maps scene nodes to rendered elements', () => {
+    const container = document.createElement('div');
+    const { scene } = sample();
+    const output = domRenderer().render(scene, container);
+    const point = scene.children[0].children[0];
+    expect(output.elementOf(point)).toBe(output.svg.querySelector('line'));
+    expect(output.elementOf(scene)).toBe(output.svg);
+    expect(output.elementOf(node('g'))).toBeUndefined();
+  });
+
+  it('remove takes the output out of the container', () => {
+    const container = document.createElement('div');
+    const output = domRenderer().render(sample().scene, container);
+    output.remove();
+    expect(container.children).toHaveLength(0);
+  });
+
+  it('measureText falls back to the estimate without SVG metrics (jsdom)', () => {
+    const { measureText } = domRenderer();
+    expect(measureText!('Hello', { fontSize: 10 })).toEqual(
+      estimateText('Hello', { fontSize: 10 })
+    );
+    expect(document.body.querySelector('svg')).toBeNull();
+  });
+
+  it('measureText uses getBBox where available', () => {
+    const original = (SVGElement.prototype as { getBBox?: unknown }).getBBox;
+    (SVGElement.prototype as unknown as { getBBox: () => DOMRect }).getBBox =
+      () => ({ width: 42, height: 7 }) as DOMRect;
+    try {
+      expect(domRenderer().measureText!('Hello')).toEqual({
+        width: 42,
+        height: 7
+      });
+    } finally {
+      (SVGElement.prototype as { getBBox?: unknown }).getBBox = original;
+    }
+  });
+});

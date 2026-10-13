@@ -161,7 +161,7 @@ interface ChartConfig {
 
 - [The builder on immutable nodes allocates on every call] → It copies only the changed field and shares children. The line layer change benchmarks against 1.5.
 - [No `ref` on nodes diverges from the architecture text] → Recorded here (D2). `elementOf` gives the same access, and compat adopts elements through the same map.
-- [`ResizeObserver` loops (resize → render → resize)] → Re-render only when the observed size differs from the last layout size, and from the next animation frame when available.
+- [`ResizeObserver` loops (resize → render → resize)] → Re-render only when the observed size differs from the last layout size. Re-renders run synchronously in the observer callback; a responsive svg is `100%` sized, so rendering doesn't change the observed container. If a loop shows up in practice, defer to the next animation frame.
 - [Experimental exports get used and then change] → `@experimental` in JSDoc. Nothing is released from `next` until the v2 pre-releases.
 - [jsdom lacks metrics, so the DOM `measureText` path stays untested there] → Unit tests cover the fallback. A Playwright check (`test:e2e` of the playground or a small browser test in `test:smoke`) covers real measurement.
 

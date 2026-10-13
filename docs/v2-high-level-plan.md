@@ -58,6 +58,7 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 **Size**
 
 - **Remain the smallest charting library.** Make everything tree-shakable: renderers, layers, axis types and plugins are separate entry points. Enforce per-entry size budgets in CI. The 1.x core is the baseline (36 kB gzipped, unminified).
+  - Measured 2026-10-13 after `add-core-pipeline` (minified + gzipped): `import { chart }` 3.03 kB, `import { toScene, renderToString }` 2.39 kB; the 1.x `import { LineChart }` stays at 8.56 kB (the v2 code tree-shakes away); the whole package (browser ESM) grew from about 12 kB to 14.64 kB while v1 and v2 code ship side by side.
 
 ## Tech decisions (so far)
 
@@ -138,7 +139,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
    - The harness serves each example's own page with Vite, adding only a test font and a fixed container size, so a docs redesign doesn't break the screenshots.
    - The baseline (67 images) is recorded from published 1.5.0, and the local build matches it. Storybook and storyshots are removed.
    - chartist.dev's CodeSandbox embeds point at the sandboxes on `main`, which keeps them until the v2 release.
-4. Core implementation steps (see `define-core-architecture` design, "Migration Plan"). First: `add-public-api-tests`, a suite that tests the built package only through its entry points (export lists, type tests, behavior). Done (archived 2026-10-13, spec `public-api`): `test:api` runs it against the local build, `test:api:v1` against published 1.5.0. Next: the scene graph, renderers and pipeline skeleton.
+4. Core implementation steps (see `define-core-architecture` design, "Migration Plan"). First: `add-public-api-tests`, a suite that tests the built package only through its entry points (export lists, type tests, behavior). Done (archived 2026-10-13, spec `public-api`): `test:api` runs it against the local build, `test:api:v1` against published 1.5.0. Then `add-core-pipeline` (archived 2026-10-13, spec `chart-composition` gains custom layers): scene graph, pipeline with return-value events, `toScene`, `renderToString`, DOM renderer, `chart()` with custom layers, exported as `@experimental`. Scene nodes have no `ref` field; `mount` listeners get `elementOf(node)`, and the compat plugin will adopt live elements through the same map (deviation from the architecture's D2). Next: step 4, axes, line layer, `lineChart` preset, `LineChart` wrapper, legacy surface and compat plugin.
 5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
    - Spike done 2026-10-12 (`add-playground-repl`, archived, spec `example-playground`; `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
    - Decided with the author (2026-10-12):

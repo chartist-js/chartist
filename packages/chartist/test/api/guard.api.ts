@@ -38,17 +38,20 @@ test('tests import Chartist only through the package name', () => {
   ).toEqual([]);
 });
 
-test('type test configs map chartist to existing declaration files', () => {
+test('the type test config maps chartist to existing declaration files', () => {
   // A missing `paths` target silently falls back to node_modules resolution.
-  for (const config of ['tsconfig.json', 'tsconfig.v1.json']) {
-    const { compilerOptions } = JSON.parse(
-      readFileSync(path.join(apiDir, config), 'utf8')
+  // Only the active target's config: the other target's files may be
+  // rebuilt in parallel.
+  const config =
+    process.env.CHARTIST_API_TARGET === 'v1'
+      ? 'tsconfig.v1.json'
+      : 'tsconfig.json';
+  const { compilerOptions } = JSON.parse(
+    readFileSync(path.join(apiDir, config), 'utf8')
+  );
+  for (const target of compilerOptions?.paths?.chartist ?? []) {
+    expect(existsSync(path.join(apiDir, target)), `${config}: ${target}`).toBe(
+      true
     );
-    for (const target of compilerOptions?.paths?.chartist ?? []) {
-      expect(
-        existsSync(path.join(apiDir, target)),
-        `${config}: ${target}`
-      ).toBe(true);
-    }
   }
 });

@@ -2,13 +2,16 @@
 
 import { detachAll, mockLayout, mockMedia, restoreLayout } from './fixture.ts';
 
-// jsdom has no matchMedia; responsive options call it. By default no query
-// matches; tests that need matching queries call mockMedia() themselves.
-mockMedia();
+// Tests in the Node environment (`@vitest-environment node`) have no DOM.
+if (typeof window !== 'undefined') {
+  // jsdom has no matchMedia; responsive options call it. By default no query
+  // matches; tests that need matching queries call mockMedia() themselves.
+  mockMedia();
 
-beforeEach(() => mockLayout());
-afterEach(() => {
-  detachAll();
-  restoreLayout();
-  document.body.innerHTML = '';
-});
+  beforeEach(() => mockLayout());
+  afterEach(() => {
+    detachAll();
+    restoreLayout();
+    document.body.innerHTML = '';
+  });
+}

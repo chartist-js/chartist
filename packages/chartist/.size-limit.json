@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "12.1 kB",
+    "limit": "15.4 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "12.2 kB",
+    "limit": "15.5 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -35,10 +35,24 @@
     "gzip": true
   },
   {
+    "name": "import { chart } (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ chart }",
+    "limit": "3.2 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { toScene, renderToString } (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ toScene, renderToString }",
+    "limit": "2.5 kB",
+    "gzip": true
+  },
+  {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "12.3 kB",
+    "limit": "15.7 kB",
     "gzip": true
   },
   {
