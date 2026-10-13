@@ -19,6 +19,9 @@ const BOARD_OPTIONS = {
   chartPadding: { top: 8, right: 8, bottom: 0, left: 0 }
 };
 
+// On the board the right axis labels need room from the frame.
+const BOARD_COMPOSED = { padding: { top: 10, right: 6, bottom: 0, left: 0 } };
+
 const RENDER: Record<string, (element: HTMLElement) => ChartHandle> = {
   line: element => mountBoardChart(element),
   bars: element =>
@@ -46,9 +49,17 @@ const RENDER: Record<string, (element: HTMLElement) => ChartHandle> = {
       { donut: true, donutWidth: 20, showLabel: false, plugins: [drawIn] }
     ),
   composed: element =>
-    renderChart(element, { type: 'composed', data: COMPOSED, options: {} }),
+    renderChart(element, {
+      type: 'composed',
+      data: COMPOSED,
+      options: BOARD_COMPOSED
+    }),
   final: element =>
-    renderChart(element, { type: 'composed', data: COMPOSED, options: {} })
+    renderChart(element, {
+      type: 'composed',
+      data: COMPOSED,
+      options: BOARD_COMPOSED
+    })
 };
 
 export function mountStory() {

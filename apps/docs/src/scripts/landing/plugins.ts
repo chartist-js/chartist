@@ -48,5 +48,15 @@ export function mountPluginDemo() {
       render();
     });
   }
-  render();
+  // Draw once the box has its size, and again when it changes: drawn
+  // before layout, the chart took a default height and overflowed.
+  let drawn = '';
+  new ResizeObserver(([entry]) => {
+    const { width, height } = entry.contentRect;
+    const size = `${Math.round(width)}x${Math.round(height)}`;
+    if (width > 0 && height > 0 && size !== drawn) {
+      drawn = size;
+      render();
+    }
+  }).observe(target);
 }

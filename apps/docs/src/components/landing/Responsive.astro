@@ -46,12 +46,13 @@ const CODE = `barChart('#chart', data, options, [
     <div class="reveal mt-14 flex flex-col gap-3">
       <h3>One chart, two cards</h3>
       <p class="muted">The same chart in a narrow and a wide card. Container queries pick the right options for each, no matter how wide the window is.</p>
-      <div class="mt-2 grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-5 max-md:grid-cols-[minmax(0,1fr)]">
+      <!-- A fixed narrow card and a growing one, so they differ at every window width (down to 360px phones). -->
+      <div class="mt-2 flex flex-wrap gap-5">
         {
-          [1, 2].map(() => (
-            <div class="card @container flex flex-col items-start gap-2.5 p-4">
-              <span class="tag @min-[400px]:hidden">container (width &lt; 400px)</span>
-              <span class="tag ok hidden @min-[400px]:inline-flex">container (width ≥ 400px)</span>
+          ['w-[240px] max-w-full', 'min-w-[min(100%,320px)] flex-1'].map(size => (
+            <div class:list={['card @container flex flex-col items-start gap-2.5 p-4', size]}>
+              <span class="tag @min-[260px]:hidden">width &lt; 260px</span>
+              <span class="tag ok hidden @min-[260px]:inline-flex">width ≥ 260px</span>
               <div class="h-[200px] w-full" data-cq-chart role="img" aria-label="A line chart that adapts to its card"></div>
             </div>
           ))

@@ -16,7 +16,8 @@ const LABELS = {
   <div class="grid grid-cols-2 items-start gap-x-16 gap-y-6 max-md:grid-cols-1" data-story>
     <div class="sticky top-18 self-start max-md:top-13 max-md:z-2 max-md:border-b max-md:border-line max-md:bg-bg max-md:py-2">
       <div class="story-stage flex flex-col gap-3" data-scene="line" data-active="0">
-        <div class="max-md:mx-auto max-md:max-w-[280px]">
+        <!-- Phones: cropped just below the board (y 300 of the 420-unit drawing), so the sticky stage stays short. -->
+        <div class="max-md:mx-auto max-md:aspect-[480/300] max-md:w-full max-md:max-w-[300px] max-md:overflow-hidden">
           <div class="stage-hero">
             <Mascot pose="hero">
               <div class="relative size-full">
@@ -26,7 +27,9 @@ const LABELS = {
           </div>
           <div class="stage-celebrate" hidden>
             <Mascot pose="celebrate">
-              <div class="board-chart ct-draw" data-stage-scene="final" role="img" aria-label={LABELS.composed}></div>
+              <div class="relative size-full">
+                <div class="board-chart ct-draw absolute inset-0" data-stage-scene="final" role="img" aria-label={LABELS.composed} />
+              </div>
             </Mascot>
           </div>
         </div>

@@ -96,7 +96,7 @@ export async function mountResponsiveDemo() {
       { fullWidth: true, chartPadding: { right: 20 }, axisY: { offset: 24 } },
       [
         [
-          container('(width < 400px)'),
+          container('(width < 260px)'),
           { showPoint: false, axisX: { labelInterpolationFnc: initial } }
         ]
       ]

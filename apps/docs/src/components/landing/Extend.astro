@@ -16,13 +16,14 @@ const LOLLIPOP_CSS = `/* style.css */
     <h2>Bend it to your will</h2>
     <p>Every chart flows through an open pipeline. Each phase has an event, and every single element passes through <code>compose</code>, where you can change, replace or decorate it. Plugins use the same events.</p>
   </div>
-  <ol class="steps reveal m-0 grid list-none grid-cols-[repeat(auto-fit,minmax(min(170px,100%),1fr))] gap-8 p-0 lg:grid-cols-7" aria-label="The rendering pipeline">
+  <!-- One row of seven on wide screens, else one column: arrows always follow the flow. -->
+  <ol class="steps reveal m-0 grid list-none gap-7 p-0 lg:grid-cols-7 lg:gap-8" aria-label="The rendering pipeline">
     {
       PIPELINE.map((step, i) => (
-        <li class="relative flex flex-col justify-between gap-2.5 rounded-md border-2 border-ink bg-surface px-3.5 pt-3.5 pb-3 shadow-print-sm dark:border-line-strong">
+        <li class="relative flex items-center gap-3 rounded-md border-2 border-ink bg-surface px-3.5 py-2.5 shadow-print-sm lg:flex-col lg:items-start lg:justify-between lg:gap-2.5 lg:pt-3.5 lg:pb-3 dark:border-line-strong">
           <span class="eyebrow">{String(i + 1).padStart(2, '0')}</span>
           <strong class="font-slab text-xl leading-[1.15] font-bold">{step.title}</strong>
-          <code class="w-fit text-[12.5px]">on('{step.phase}')</code>
+          <code class="ml-auto w-fit text-[12.5px] lg:ml-0">on('{step.phase}')</code>
         </li>
       ))
     }
@@ -37,7 +38,7 @@ const LOLLIPOP_CSS = `/* style.css */
           <button class="chip" type="button" aria-pressed="false" data-plugin="threshold">threshold(7)</button>
         </div>
       </div>
-      <div class="plugin-chart aspect-[16/9]" data-plugin-chart role="img" aria-label="A bar chart changed by the selected plugins"></div>
+      <div class="plugin-chart aspect-[16/9] min-h-0" data-plugin-chart role="img" aria-label="A bar chart changed by the selected plugins"></div>
       <pre class="m-0 font-mono text-[13px] leading-[1.5] whitespace-pre-wrap text-ink-2" data-plugin-usage></pre>
     </div>
     <div class="snippet reveal flex min-w-0 flex-col gap-3">
@@ -54,26 +55,27 @@ const LOLLIPOP_CSS = `/* style.css */
 </script>
 
 <style>
-  /* The arrows between the phases: a pseudo-element on all but the last. */
+  /* The arrows between the phases, centered in the gap: down in the
+     column, right in the row (lg, 1100px). */
   .steps > li:not(:last-child)::after {
-    content: '→';
+    content: '↓';
     position: absolute;
-    top: 50%;
-    right: -26px;
+    left: 50%;
+    bottom: -26px;
     z-index: 1;
-    transform: translateY(-50%);
-    font: 700 22px var(--font-body);
+    transform: translateX(-50%);
+    font: 700 20px / 1 var(--font-body);
     color: var(--brand);
   }
-  /* Stacked phases: the arrow points down, centered below each one. */
-  @media (max-width: 860px) {
+  @media (min-width: 68.75rem) {
     .steps > li:not(:last-child)::after {
-      content: '↓';
-      top: auto;
-      right: auto;
-      bottom: -16px;
-      left: 50%;
-      transform: translateX(-50%);
+      content: '→';
+      top: 50%;
+      right: -26px;
+      bottom: auto;
+      left: auto;
+      transform: translateY(-50%);
+      font-size: 22px;
     }
   }
   /* Shiki output stays CSS: code wraps instead of scrolling sideways. */
