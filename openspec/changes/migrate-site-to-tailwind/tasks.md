@@ -1,0 +1,24 @@
+# Tasks
+
+## 1. Foundation (lead)
+
+- [ ] 1.1 `tailwindcss` and `@tailwindcss/vite` pinned; Vite plugin in `astro.config.mjs`; theme from the tokens (D1); `dark` variant (D2); build passes with no visual change.
+- [ ] 1.2 `e2e/visual.mjs` and target `docs:visual` (D6); `.visual/` git-ignored; baseline taken from the current site before any markup changes.
+- [ ] 1.3 Component utilities `card`, `card-flat`, `tag`, `eyebrow`, `btn`, `dot-grid` (D3); `motion.css` (D4).
+- [ ] 1.4 `apps/docs/STYLING.md`: conventions, utilities, what stays CSS, the agent rules from D5.
+- [ ] 1.5 Reference section: `ReleaseBanner` and `Numbers` migrated; screenshots match; committed as the foundation.
+
+## 2. Groups (subagents in parallel, one worktree each)
+
+- [ ] 2.1 Group A: layouts, header, footer, 404, docs pages.
+- [ ] 2.2 Group B: hero, `InstallTabs`, `ChapterNav`, `Story`.
+- [ ] 2.3 Group C: `Features`, `Extend`.
+- [ ] 2.4 Group D: `Gallery`, `TryIt`, `LiveExample`, `Responsive`.
+- [ ] 2.5 Group E: `Animations`, `Compare`, `Outro`, `Step`, `Callout`.
+
+## 3. Integration (lead)
+
+- [ ] 3.1 Review and merge the group branches; add the shared needs the groups reported.
+- [ ] 3.2 Delete unused rules from `components.css` and `landing.css` (delete the files if empty); full screenshot comparison, `lint`, `check`, `build`, e2e and axe.
+- [ ] 3.3 Review with the author in Chrome: desktop and phone widths, light and dark; fix findings.
+- [ ] 3.4 Plan updated; full gate.
