@@ -54,10 +54,14 @@ describe('event order', () => {
   });
 
   test('PieChart: data, a slice and its label per value, created', async () => {
-    const chart = new PieChart(container(), {
-      labels: ['A', 'B'],
-      series: [1, 3]
-    });
+    const chart = new PieChart(
+      container(),
+      {
+        labels: ['A', 'B'],
+        series: [1, 3]
+      },
+      withCompat()
+    );
     const events = recordEvents(chart);
     await created(chart);
     expect(sequence(events)).toEqual([
@@ -152,7 +156,7 @@ describe('event payloads', () => {
 
   test('bar and slice payload fields', async () => {
     const bar = new BarChart(container(), { series: [[1]] }, withCompat());
-    const pie = new PieChart(container(), { series: [1] });
+    const pie = new PieChart(container(), { series: [1] }, withCompat());
     const barEvents = recordEvents(bar);
     const pieEvents = recordEvents(pie);
     await Promise.all([created(bar), created(pie)]);

@@ -1,5 +1,6 @@
 import 'chartist/styles.css';
 import { PieChart, easings, type AnimationDefinition } from 'chartist';
+import { compat } from 'chartist/compat';
 
 const chart = new PieChart(
   '#chart',
@@ -8,6 +9,8 @@ const chart = new PieChart(
     labels: [1, 2, 3, 4, 5, 6, 7]
   },
   {
+    // 1.x draw events come from the compat plugin in v2.
+    plugins: [compat],
     donut: true,
     showLabel: false
   }

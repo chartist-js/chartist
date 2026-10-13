@@ -116,3 +116,12 @@ A v2 plugin SHALL be able to declare event names it provides and emit them throu
 
 - **WHEN** `lineChart('#chart', data, { plugins: [legacyPluginFn] })` is called
 - **THEN** it throws an error that names `fromLegacyPlugin` and `chartist/compat`, and nothing is rendered
+
+### Requirement: Chart area minimum
+
+For charts without axes, the layout SHALL use the 1.x minimums: the chart is at least as wide and high as its padding, and the chart area is at least 1 px wide and high.
+
+#### Scenario: Padding larger than the chart
+
+- **WHEN** a chart without axes is 20 × 20 px with a padding of 15 px on each side
+- **THEN** the chart area starts at the left and top padding and is 1 × 1 px, as 1.5's `createChartRect` computes it

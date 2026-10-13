@@ -1,5 +1,6 @@
 import { namespaces, deserialize } from '../../core';
 import { PieChartOptions, PieChartData, PieChart } from '.';
+import { compat } from '../../compat';
 import {
   Fixture,
   addMockWrapper,
@@ -20,11 +21,11 @@ describe('Charts', () => {
           '<div class="ct-chart ct-golden-section"></div>'
         );
         const { wrapper } = fixture;
-        chart = new PieChart(
-          wrapper.querySelector('.ct-chart'),
-          data,
-          options
-        ).on('created', () => {
+        // 1.x events (created, draw) come from the compat plugin in v2.
+        chart = new PieChart(wrapper.querySelector('.ct-chart'), data, {
+          ...options,
+          plugins: [compat]
+        }).on('created', () => {
           resolve();
           chart.off('created');
         });
@@ -62,7 +63,7 @@ describe('Charts', () => {
         };
 
         const chartContainer = fixture.wrapper.querySelector('.ct-chart');
-        const chart = new PieChart(chartContainer, data);
+        const chart = new PieChart(chartContainer, data, { plugins: [compat] });
 
         chart.on('created', () => {
           const metaAttribute = chartContainer

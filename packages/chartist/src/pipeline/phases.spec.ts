@@ -85,10 +85,23 @@ describe('pipeline/phases', () => {
     });
   });
 
-  it('layout clamps to a zero-size area when the padding is larger than the chart', () => {
+  it('layout keeps the 1.x minimums when the padding is larger than the chart', async () => {
+    const { createChartRect } = await import('../core/creation');
+    const { Svg } = await import('../svg/Svg');
     const { layout } = run({ padding: 300 });
-    expect(layout.area.width).toBe(0);
-    expect(layout.area.height).toBe(0);
+    const svg = new Svg('svg');
+    vi.spyOn(svg, 'width').mockReturnValue(ENV.width);
+    vi.spyOn(svg, 'height').mockReturnValue(ENV.height);
+    const rect = createChartRect(svg, { chartPadding: 300 });
+    expect(layout.area).toEqual({
+      x1: rect.x1,
+      x2: rect.x2,
+      y1: rect.y1,
+      y2: rect.y2,
+      width: rect.width(),
+      height: rect.height()
+    });
+    expect(layout.area.width).toBe(1);
   });
 
   it('a layout listener that returns an invalid area fails with a clear error', () => {

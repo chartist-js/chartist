@@ -3,3 +3,5 @@ export type { LineChartPresetOptions, LinePresetState } from './lineChart';
 export type { PresetAxisOptions, PresetState } from './preset';
 export { barChart } from './barChart';
 export type { BarChartPresetOptions, BarPresetState } from './barChart';
+export { pieChart } from './pieChart';
+export type { PieChartPresetOptions, PiePresetState } from './pieChart';

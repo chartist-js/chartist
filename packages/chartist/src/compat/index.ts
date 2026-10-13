@@ -193,7 +193,12 @@ const AXES: Record<
     data: Data,
     chartRect: ChartRect
   ) => { axisX: unknown; axisY: unknown }
-> = { line: lineAxes, bar: barAxes };
+> = {
+  line: lineAxes,
+  bar: barAxes,
+  // Pie charts have no axes.
+  pie: () => ({ axisX: undefined, axisY: undefined })
+};
 
 /** 1.x `draw` payloads in 1.x order, then `created`. */
 function emitDrawEvents(
@@ -219,7 +224,11 @@ function emitDrawEvents(
   // Axes: per tick its grid line, then its label, in the order the axes
   // appear in the chart (X first for lines, the label axis first for bars).
   const grids = findAll(scene, { role: 'grid' });
-  const labels = findAll(scene, { role: 'label' });
+  // Only axis labels; pie labels belong to their slice.
+  const labels = findAll(scene, { role: 'label' }).filter(n => n.ctx?.axis);
+  const sliceLabels = findAll(scene, { role: 'label' }).filter(
+    n => !n.ctx?.axis
+  );
   const dimensionOf = (node: SceneNode) =>
     (node.ctx?.axis as { dimension?: string } | undefined)?.dimension;
   const order = [...new Set([...grids, ...labels].map(dimensionOf))];
@@ -278,6 +287,41 @@ function emitDrawEvents(
       ];
     const common = { series: original, seriesIndex, axisX, axisY };
     const children = series.children;
+    const slice = children.find(n => n.role === 'slice');
+    if (slice) {
+      const ctx = slice.ctx!;
+      draw({
+        type: 'slice',
+        value: ctx.value,
+        totalDataSum: ctx.totalDataSum,
+        index: ctx.index,
+        meta: ctx.meta,
+        series: ctx.series,
+        ...parts(slice),
+        path: (ctx.path as { clone(): unknown }).clone(),
+        center: ctx.center,
+        radius: ctx.radius,
+        startAngle: ctx.startAngle,
+        endAngle: ctx.endAngle,
+        chartRect
+      });
+      const label = sliceLabels.find(n => n.ctx?.index === ctx.index);
+      if (label) {
+        const labelCtx = label.ctx!;
+        draw({
+          type: 'label',
+          index: labelCtx.index,
+          ...parts(label),
+          text: labelCtx.text,
+          chartRect,
+          series: labelCtx.series,
+          meta: labelCtx.meta,
+          x: labelCtx.x,
+          y: labelCtx.y
+        });
+      }
+      continue;
+    }
     for (const barNode of children.filter(n => n.role === 'bar')) {
       const ctx = barNode.ctx!;
       draw({
@@ -331,13 +375,12 @@ function emitDrawEvents(
     }
   }
 
-  handle.emit('created', {
-    chartRect,
-    axisX,
-    axisY,
-    svg: wrap(svgElement),
-    options
-  });
+  handle.emit(
+    'created',
+    state.preset!.kind === 'pie'
+      ? { chartRect, svg: wrap(svgElement), options }
+      : { chartRect, axisX, axisY, svg: wrap(svgElement), options }
+  );
 }
 
 /** Turns the 1.x events on for a chart, once. */

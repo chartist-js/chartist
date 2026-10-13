@@ -173,12 +173,15 @@ export function layout(
   if (config.axes) {
     initial = { ...config.axes.area(width, height, padding), padding };
   } else {
+    // The 1.x `createChartRect` minimums: at least the padding, 1 px area.
+    const w = Math.max(width, padding.left + padding.right);
+    const h = Math.max(height, padding.top + padding.bottom);
     const x1 = padding.left;
     const y2 = padding.top;
-    const x2 = Math.max(x1, width - padding.right);
-    const y1 = Math.max(y2, height - padding.bottom);
+    const x2 = Math.max(w - padding.right, x1 + 1);
+    const y1 = Math.max(h - padding.bottom, y2 + 1);
     const area: Area = { x1, y1, x2, y2, width: x2 - x1, height: y1 - y2 };
-    initial = { width, height, padding, area };
+    initial = { width: w, height: h, padding, area };
   }
   const result = check(emitter.transform('layout', initial), 'layout');
   validate(result);

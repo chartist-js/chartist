@@ -2,28 +2,28 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "19.1 kB",
+    "limit": "19.3 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "19.2 kB",
+    "limit": "19.4 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat browser ESM (dist/compat.min.js, without the core)",
     "path": "dist/compat.min.js",
-    "limit": "2.25 kB",
+    "limit": "2.45 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat UMD (dist/compat.umd.js, without the core)",
     "path": "dist/compat.umd.js",
-    "limit": "2.4 kB",
+    "limit": "2.6 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -45,7 +45,7 @@
     "name": "import { PieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ PieChart }",
-    "limit": "6.25 kB",
+    "limit": "9.05 kB",
     "gzip": true
   },
   {
@@ -77,10 +77,17 @@
     "gzip": true
   },
   {
+    "name": "import { pieChart } (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ pieChart }",
+    "limit": "7.55 kB",
+    "gzip": true
+  },
+  {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "19.5 kB",
+    "limit": "19.7 kB",
     "gzip": true
   },
   {

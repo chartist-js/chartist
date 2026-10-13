@@ -214,7 +214,9 @@ describe('BarChart output', () => {
 describe('PieChart output', () => {
   test('one slice path per value and SVG text labels', async () => {
     const el = container();
-    await created(new PieChart(el, { labels: ['A', 'B'], series: [1, 3] }));
+    await created(
+      new PieChart(el, { labels: ['A', 'B'], series: [1, 3] }, withCompat())
+    );
     expect(el.querySelector('svg')!.getAttribute('class')).toBe('ct-chart-pie');
     expect(classesOf(el, 'path')).toEqual(['ct-slice-pie', 'ct-slice-pie']);
     expect(
@@ -227,7 +229,9 @@ describe('PieChart output', () => {
 
   test('donut slices', async () => {
     const el = container();
-    await created(new PieChart(el, { series: [1, 3] }, { donut: true }));
+    await created(
+      new PieChart(el, { series: [1, 3] }, withCompat({ donut: true }))
+    );
     expect(el.querySelector('svg')!.getAttribute('class')).toBe(
       'ct-chart-donut'
     );

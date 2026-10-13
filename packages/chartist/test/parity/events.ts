@@ -33,18 +33,28 @@ export function summarize(
             payload.width,
             payload.height
           ])
-        : payload.type === 'bar'
+        : payload.type === 'slice'
           ? JSON.stringify([
               payload.value,
+              payload.totalDataSum,
               payload.meta,
-              payload.x1,
-              payload.y1,
-              payload.x2,
-              payload.y2
+              payload.startAngle,
+              payload.endAngle,
+              payload.radius,
+              payload.center
             ])
-          : event === 'data'
-            ? JSON.stringify(payload)
-            : undefined;
+          : payload.type === 'bar'
+            ? JSON.stringify([
+                payload.value,
+                payload.meta,
+                payload.x1,
+                payload.y1,
+                payload.x2,
+                payload.y2
+              ])
+            : event === 'data'
+              ? JSON.stringify(payload)
+              : undefined;
   return {
     event,
     type: payload.type,
