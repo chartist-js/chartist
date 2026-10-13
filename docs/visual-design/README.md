@@ -10,6 +10,7 @@ Snapshot of the brand and docs redesign canvas, downloaded on 2026-10-12 and ref
 - `project/canvas.json`: canvas index (artboard titles, positions, grouping)
 - `project/chartist.css`: **the design system**. It holds the palette (`--p-*`), the semantic tokens for light (`.cx`) and dark (`.cx.dark`), the mascot colors (`--m-*`), the chart series palette (`--ct-series-*`, including an accessible theme), plus component styles
 - `project/*.dc.html`: one file per artboard
+- `project/paper.png`, `project/paper-dark.png`: the page ground texture (`--paper`), "Cream Paper" from Subtle Patterns, CC BY-SA 3.0, recolored. Attribution required wherever it's used.
 - `assets/reference-*-0x.svg`: the original 2014 mascot and icon, uploaded as a reference for the redesign (not new artwork)
 
 The `.dc.html` files are Claude Design component pages. They need the Design runtime (`support.js`, not included) to render, so treat them as **source reference** (markup, tokens, copy, data), not as runnable pages. Open the source link above to see them rendered.
