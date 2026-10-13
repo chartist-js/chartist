@@ -26,6 +26,8 @@ const smallest = Math.min(...LIBRARIES.map(lib => bytes[SIZE_KEYS[lib]].gzip));
 // Table cells. The Chartist column is tinted, its head marked with a brand bar.
 const pad = 'px-4 py-3.5 text-left align-top';
 const cell = `${pad} border-b border-line`;
+// The header row ends in a 2px rule, so the libraries stand apart from the rows.
+const head = `${pad} border-b-2 border-ink dark:border-line-strong`;
 const rowHead = 'sticky left-0 bg-surface font-bold';
 const us = (lib: string) => lib === 'chartist' && 'bg-[color-mix(in_oklab,var(--accent)_16%,var(--surface))]';
 const value = (good?: boolean) => ['block', good && "before:font-bold before:text-ok before:content-['✓_']"];
@@ -44,10 +46,10 @@ const rowHint = 'block mt-0.5 text-[12.5px] font-normal text-ink-2';
           <caption class="sr-only">Chartist compared with Chart.js, ApexCharts and Highcharts</caption>
           <thead>
             <tr>
-              <th scope="col" class={`${pad} font-mono text-xs leading-[normal] font-semibold tracking-[0.06em] text-ink-2 uppercase`}>Measured on {formatDate(facts.generatedAt)}</th>
+              <th scope="col" class={`${head} font-mono text-xs leading-[normal] font-semibold tracking-[0.06em] text-ink-2 uppercase`}>Measured on {formatDate(facts.generatedAt)}</th>
               {
                 LIBRARIES.map(lib => (
-                  <th scope="col" class:list={[pad, 'font-slab text-lg leading-[1.2] font-bold', us(lib), lib === 'chartist' && 'shadow-[inset_0_4px_0_var(--brand)]']}>
+                  <th scope="col" class:list={[head, 'font-slab text-lg leading-[1.2] font-bold', us(lib), lib === 'chartist' && 'shadow-[inset_0_4px_0_var(--brand)]']}>
                     {lib === 'chartist' ? (
                       <span class="inline-flex items-center gap-2">
                         <Logomark class="w-6" />
