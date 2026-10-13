@@ -1,0 +1,178 @@
+---
+title: Bar charts
+description: Grouped, stacked, horizontal and distributed bars with barChart(), and how to space them.
+group: Chart types
+order: 2
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const grouped = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+  series: [
+    [5, 4, 3, 7],
+    [3, 2, 9, 5],
+    [1, 5, 8, 4]
+  ]
+};
+
+export const spacing = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+  series: [
+    [5, 4, 3, 7],
+    [3, 2, 9, 5]
+  ]
+};
+
+export const stacked = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    [800, 1200, 1400, 1300],
+    [200, 400, 500, 300],
+    [100, 200, 400, 600]
+  ]
+};
+
+export const horizontal = {
+  labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  series: [
+    [5, 4, 3, 7, 5],
+    [3, 2, 9, 5, 4]
+  ]
+};
+
+export const distributed = {
+  labels: ['XS', 'S', 'M', 'L', 'XL'],
+  series: [20, 60, 120, 200, 180]
+};
+
+A bar chart takes the same data as a line chart: labels along one axis, a series per array. Each value becomes a bar that grows from zero, so the axis always includes zero and negative values hang below it.
+
+`barChart()` takes a container, your data and options. The data shapes are shared by all chart types and explained in [Data and options](../data-and-options/).
+
+## Grouped bars
+
+Several series put their bars side by side, one group per label:
+
+<LiveExample
+  title='Grouped bars'
+  label='Bar chart with three series grouped by month from January to April'
+  preview={{ type: 'bar', data: grouped }}
+  example='bar-charts/grouped'
+/>
+
+A `null` value leaves its bar out and keeps its place in the group.
+
+## Bar spacing
+
+Two settings shape a group, and they live in different places. The distance between the bars of a group is layout, so it's an option: `seriesBarDistance`, in pixels, `15` by default. The thickness of a bar is looks, so it's CSS: bars are SVG lines, and `--ct-bar-width` (`10px` by default) sets their stroke width.
+
+<LiveExample
+  title='Wider bars, further apart'
+  label='Bar chart with two series by month, with thick bars spaced wide apart'
+  show='src/style.css'
+  previewStyle='--ct-bar-width: 20px;'
+  preview={{ type: 'bar', data: spacing, options: { seriesBarDistance: 24 } }}
+  example='bar-charts/spacing'
+/>
+
+Keep `seriesBarDistance` at least as large as the bar width, or the bars of a group overlap. More about the custom properties in [Styling with CSS](../styling-with-css/#custom-properties).
+
+## Stacked bars
+
+With `stackBars: true`, the series of a label stack into one bar, and the value axis grows to fit the totals. `seriesBarDistance` has no effect here.
+
+<LiveExample
+  title='Stacked bars'
+  label='Stacked bar chart with three series over four quarters'
+  preview={{ type: 'bar', data: stacked, options: { stackBars: true } }}
+  example='bar-charts/stacked'
+/>
+
+### Stack modes
+
+`stackMode` decides what happens when values have different signs:
+
+| `stackMode`              | The stack                                                                                          |
+| ------------------------ | -------------------------------------------------------------------------------------------------- |
+| `'accumulate'` (default) | A running total: each bar starts where the previous one ended, so a negative value goes back down. |
+| `'accumulate-relative'`  | Positive values stack up from zero, negative values stack down from zero.                          |
+| `true`                   | No stacking: every bar starts at zero and they overlap, the first series at the back.              |
+
+`'accumulate-relative'` is the one for gains and losses:
+
+```ts
+import 'chartist/styles.css';
+import { barChart } from 'chartist';
+
+barChart(
+  '#chart',
+  {
+    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+    series: [
+      [5, 4, 6, 8],
+      [-3, -1, -4, -2]
+    ]
+  },
+  { stackBars: true, stackMode: 'accumulate-relative', low: -5 }
+);
+```
+
+<Callout kind='warn'>
+  **Set `low` for relative stacks.** The value axis is fitted to the sum of each
+  stack, positive and negative values together, so the parts below zero can be
+  cut off. Set `low` (and `high`, if needed) to the range your stacks reach.
+</Callout>
+
+## Horizontal bars
+
+`horizontalBars: true` turns the chart on its side: the labels move to the Y axis and the values to the X axis. The axis options move with them, so the label settings now go in `axisY`. Long labels need a wider `offset`:
+
+<LiveExample
+  title='Horizontal bars'
+  label='Horizontal bar chart with two series for the days Monday to Friday'
+  preview={{
+    type: 'bar',
+    data: horizontal,
+    options: { horizontalBars: true, axisY: { offset: 70 } }
+  }}
+  example='bar-charts/horizontal'
+/>
+
+The chart gets the `ct-horizontal-bars` class next to `ct-chart-bar`, for styles that only apply to horizontal bars.
+
+## Distributed series
+
+Sometimes every bar is its own thing: sizes, categories, a profile rather than values over time. Pass a flat array of values and set `distributeSeries: true`. Each value becomes its own series, `ct-series-a`, `ct-series-b` and so on, so every bar gets its own color:
+
+<LiveExample
+  title='Distributed series'
+  label='Bar chart with one differently colored bar per size from XS to XL'
+  preview={{
+    type: 'bar',
+    data: distributed,
+    options: { distributeSeries: true }
+  }}
+  example='bar-charts/distributed'
+/>
+
+## Low and high
+
+`low` and `high` fix the ends of the value axis, as on line charts. Bars still start at zero: with a `low` above zero, the bars start at the bottom edge of the chart. The axis settings are in [Axes and scales](../axes-and-scales/).
+
+```ts
+import 'chartist/styles.css';
+import { barChart } from 'chartist';
+
+barChart(
+  '#chart',
+  {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+    series: [[5, 4, 3, 7]]
+  },
+  { high: 10 }
+);
+```
+
+Next: [line charts](../line-charts/), or [make bars respond to the screen](../responsive/).

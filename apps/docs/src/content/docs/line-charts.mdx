@@ -1,0 +1,207 @@
+---
+title: Line charts
+description: Lines, areas and points with lineChart(), from smoothing and gaps in your data to scatter plots and edge-to-edge lines.
+group: Chart types
+order: 1
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+export const area = {
+  labels: week,
+  series: [[5, 9, 7, 8, 5, 3, 5]]
+};
+
+export const smoothing = {
+  labels: ['6am', '9am', '12pm', '3pm', '6pm', '9pm'],
+  series: [
+    { name: 'smooth', data: [11, 15, 21, 23, 18, 14] },
+    { name: 'straight', data: [6, 9, 14, 15, 11, 8] }
+  ]
+};
+
+export const gaps = {
+  labels: week,
+  series: [[4, 6, null, null, 5, 7, 6]]
+};
+
+export const quarters = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    [5, 9, 7, 12],
+    [3, 4, 6, 5]
+  ]
+};
+
+A line chart draws each series as a line through its points, one point per label. That's the whole idea, and most of this page is about the switches around it: fill the area below, smooth the line or keep it straight, leave gaps where data is missing, or drop the line and keep the dots.
+
+`lineChart()` takes a container, your data and options. The data shapes (plain arrays, series objects, `{ x, y }` values) are the same for every chart type and live in [Data and options](../data-and-options/).
+
+## Lines, points and areas
+
+By default you get a smooth line with a point on every value. Three options switch the parts on and off:
+
+| Option      | Default | What it draws                |
+| ----------- | ------- | ---------------------------- |
+| `showLine`  | `true`  | The line, a `ct-line` path   |
+| `showPoint` | `true`  | A `ct-point` for every value |
+| `showArea`  | `false` | The `ct-area` below the line |
+
+Turn on `showArea` and you have an area chart:
+
+<LiveExample
+  title='An area chart'
+  label='Line chart of one series from Monday to Sunday with the area below the line filled'
+  preview={{ type: 'line', data: area, options: { showArea: true } }}
+  example='line-charts/area'
+/>
+
+The area closes at `areaBase`, which is `0` by default. If `0` is outside the axis range, as in this example, the area closes at the edge of the chart instead. Its opacity, like every other color and size, is set in CSS: see [Styling with CSS](../styling-with-css/).
+
+## Smooth or straight
+
+Lines are smooth by default. The default curve is a monotone cubic spline: it passes through every point and never swings above or below your data between two points, so a smooth line doesn't invent peaks. Set `lineSmooth: false` for straight segments.
+
+Options also work per series. Give a series a `name`, and the `series` option takes overrides by that name for `lineSmooth`, `showLine`, `showPoint`, `showArea` and `areaBase`:
+
+<LiveExample
+  title='Smooth and straight lines'
+  label='Line chart with a smooth line and a straight line over six times of day'
+  preview={{
+    type: 'line',
+    data: smoothing,
+    options: { series: { straight: { lineSmooth: false } } }
+  }}
+  example='line-charts/smoothing'
+/>
+
+### Pick your curve
+
+`lineSmooth` also takes an interpolation function, for a different curve or to tune one. They're all in the `Interpolation` namespace, and each is a factory that takes options:
+
+| Function                        | Options                          | The line                                                                                                            |
+| ------------------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `Interpolation.monotoneCubic()` | `fillHoles`                      | Smooth and never past the data. The default for `lineSmooth: true`.                                                 |
+| `Interpolation.cardinal()`      | `tension` (`1`), `fillHoles`     | A Catmull-Rom spline: rounder, but it can overshoot when values change quickly.                                     |
+| `Interpolation.simple()`        | `divisor` (`2`), `fillHoles`     | Curves with horizontal handles: hits every point, never overshoots, less flowing.                                   |
+| `Interpolation.step()`          | `postpone` (`true`), `fillHoles` | Steps. With `postpone`, the line holds each value until the next point; `false` jumps to the next value right away. |
+| `Interpolation.none()`          | `fillHoles`                      | Straight segments. The same as `lineSmooth: false`.                                                                 |
+
+```ts
+import 'chartist/styles.css';
+import { Interpolation, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[1, 3, 3, 2, 4]]
+  },
+  { lineSmooth: Interpolation.step() }
+);
+```
+
+The step line draws its corners as extra points, so with `showPoint` on you'll see a dot at every corner. The two splines need at least three values in a row; with fewer they draw straight segments.
+
+## Gaps in your data
+
+Missing a value? Put `null` where it would be. The line stops before the gap and starts again after it, with no point in between. A series shorter than the labels simply ends early.
+
+<LiveExample
+  title='A gap in the data'
+  label='Line chart from Monday to Sunday with a gap on Wednesday and Thursday'
+  preview={{ type: 'line', data: gaps }}
+  example='line-charts/gaps'
+/>
+
+That's honest: the chart doesn't pretend to know what happened on Wednesday. With `showArea`, each piece of the line gets its own area. If you'd rather bridge the gap, every interpolation function takes `fillHoles: true` and connects the values on either side:
+
+```ts
+import 'chartist/styles.css';
+import { Interpolation, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    series: [[4, 6, null, null, 5, 7, 6]]
+  },
+  { lineSmooth: Interpolation.monotoneCubic({ fillHoles: true }) }
+);
+```
+
+## Scatter plots
+
+A scatter plot is a line chart without the line. Give each value an `x` and a `y`, use a scale for the X axis instead of the labels, and set `showLine: false`:
+
+```ts
+import 'chartist/styles.css';
+import { autoScaleAxis, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    series: [
+      [
+        { x: 1, y: 2 },
+        { x: 2.5, y: 7 },
+        { x: 4, y: 3 },
+        { x: 7, y: 8 },
+        { x: 10, y: 4 }
+      ]
+    ]
+  },
+  {
+    showLine: false,
+    axisX: { type: autoScaleAxis() }
+  }
+);
+```
+
+Without `axisX.type`, the X axis has one step per label and the points sit in label order, whatever their `x`. The axis types and their options are explained in [Axes and scales](../axes-and-scales/).
+
+## From edge to edge
+
+The X axis divides the width into one step per label and puts each point at the start of its step, so the last point stops short of the right edge. `fullWidth: true` stretches the line across the whole width. The last label then sits on the edge, so give it room with `chartPadding`:
+
+<LiveExample
+  title='A full-width line chart'
+  label='Line chart with two series over four quarters, stretched to the full width'
+  preview={{
+    type: 'line',
+    data: quarters,
+    options: { fullWidth: true, chartPadding: { right: 40 } }
+  }}
+  example='line-charts/full-width'
+/>
+
+## Low and high
+
+The Y axis fits your data. Set `low` and `high` to fix either end, for example to start at zero or to keep several charts on the same scale:
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[61, 64, 62, 67, 66]]
+  },
+  { low: 0, high: 100 }
+);
+```
+
+<Callout kind='tip'>
+  **Zero or not?** A line chart that doesn't start at zero shows the change
+  better; one that does shows the size. Both are fine, as long as the axis
+  labels say which one you picked.
+</Callout>
+
+Ticks, label formats and the other axis settings are in [Axes and scales](../axes-and-scales/).
+
+Next: [bar charts](../bar-charts/), or [make your lines respond to the screen](../responsive/).
