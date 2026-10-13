@@ -153,6 +153,27 @@ test('reduced motion: nothing runs, the SMIL morph is static', async ({
   expect(running).toBe(0);
 });
 
+test('with motion: scroll timelines run, the SMIL morph animates', async ({
+  page
+}) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.goto('/');
+  // The minifier must not fold animation-timeline into the shorthand.
+  const progress = page.locator('.scroll-progress');
+  await expect
+    .poll(() => progress.evaluate(element => element.getAnimations().length))
+    .toBe(1);
+  const reveals = await page
+    .locator('.reveal')
+    .evaluateAll(elements =>
+      elements.every(element => element.getAnimations().length > 0)
+    );
+  expect(reveals).toBe(true);
+  await page.locator('.smil.motion-only').scrollIntoViewIfNeeded();
+  await expect(page.locator('.smil.motion-only')).toBeVisible();
+  await expect(page.locator('.smil.static-only')).toBeHidden();
+});
+
 test('the story code samples run against the current build', async ({
   page
 }) => {

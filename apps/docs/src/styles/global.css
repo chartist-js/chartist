@@ -1,7 +1,8 @@
 /*
  * Cascade: Tailwind's theme, then the site's own CSS in one layer (in its
  * original order), then Tailwind utilities, which win over all of it. No
- * preflight: base.css sets the element defaults. See apps/docs/STYLING.md.
+ * preflight: base.css sets the element defaults. live.css stays unlayered:
+ * it overrides the playground's unlayered CSS. See apps/docs/STYLING.md.
  */
 @layer theme, components, utilities;
 
@@ -18,5 +19,6 @@
 @import './mascot.css' layer(components);
 @import './motion.css' layer(components);
 @import './landing.css' layer(components);
-@import './live.css' layer(components);
 @import 'tailwindcss/utilities.css' layer(utilities);
+/* Unlayered, like the playground's own stylesheet it overrides. */
+@import './live.css';

@@ -13,32 +13,51 @@
   }
 }
 
+/* The static stand-ins show only when motion is reduced (below). */
+.static-only {
+  display: none;
+}
+
+/*
+ * Longhands on purpose: given the \`animation\` shorthand, the minifier folds
+ * animation-timeline into it, which browsers reject, and nothing animates.
+ */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .reveal {
-      animation: reveal-up linear both;
+      animation-name: reveal-up;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 0% entry 70%;
     }
     .ct-draw-view .ct-line,
     .ct-draw-view .ct-slice-donut {
-      animation: ct-draw linear both;
+      animation-name: ct-draw;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 20% cover 45%;
     }
     .ct-draw-view .ct-bar {
-      animation: ct-grow linear both;
+      animation-name: ct-grow;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 20% cover 40%;
     }
     .ct-draw-view .ct-dot,
     .ct-draw-view .ct-area {
-      animation: ct-fade linear both;
+      animation-name: ct-fade;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: cover 30% cover 45%;
     }
     .scroll-progress {
-      animation: grow-x linear both;
+      animation-name: grow-x;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: scroll(root block);
     }
   }
