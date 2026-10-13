@@ -17,7 +17,8 @@ import { isLegacyAxisClass, legacyAxis } from './legacy';
 /** The data as axes see it: multi values, padded labels, optional reverse. */
 function normalizeForAxes(
   data: PreparedData,
-  reverse = false
+  reverse = false,
+  normalize: AxesConfig['normalize'] = {}
 ): NormalizedChartData {
   const raw = {
     labels: data.labels,
@@ -28,7 +29,19 @@ function normalizeForAxes(
       data: series.values
     }))
   } as unknown as Data;
-  const normalized = normalizeData(raw, reverse, true);
+  // A flat series (e.g. distributed bars) stays flat for normalizeData.
+  const input = data.flat
+    ? ({
+        labels: data.labels,
+        series: data.series[0].values
+      } as unknown as Data)
+    : raw;
+  const normalized = normalizeData(
+    input,
+    reverse,
+    normalize.multi ?? true,
+    normalize.distributed as true
+  );
   return {
     labels: normalized.labels,
     series: normalized.series as NormalizedSeries[]
@@ -63,7 +76,11 @@ export function cartesianAxes(config: AxesConfig): CartesianAxes {
     area: (width: number, height: number, padding: ChartPadding) =>
       axisArea(width, height, padding, config),
     create(data, area) {
-      const normalized = normalizeForAxes(data, config.reverseData);
+      const normalized = normalizeForAxes(
+        data,
+        config.reverseData,
+        config.normalize
+      );
       return {
         normalized,
         axes: {

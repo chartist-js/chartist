@@ -23,6 +23,8 @@ export function stepAxis(): AxisFactory {
         length / Math.max(1, ticks.length - (options.stretch ? 1 : 0));
       return {
         dimension,
+        kind: 'step',
+        stretch: Boolean(options.stretch),
         ticks,
         length,
         project: (_value, index = 0) => stepLength * index
@@ -51,6 +53,7 @@ export function autoScaleAxis(): AxisFactory {
       );
       return {
         dimension,
+        kind: 'autoScale',
         ticks: bounds.values,
         range: { min: bounds.min, max: bounds.max },
         length,
@@ -85,6 +88,7 @@ export function fixedScaleAxis(): AxisFactory {
       const range = { min: highLow.low, max: highLow.high };
       return {
         dimension,
+        kind: 'fixedScale',
         ticks,
         range,
         length,

@@ -136,11 +136,10 @@ export function prepare(
       !Array.isArray(entry) &&
       !(entry && typeof entry === 'object' && 'data' in entry)
   );
-  const data: PreparedData = {
-    labels,
-    series:
-      flat && series.length ? [{ values: series }] : series.map(prepareSeries)
-  };
+  const data: PreparedData =
+    flat && series.length
+      ? { labels, series: [{ values: series }], flat: true }
+      : { labels, series: series.map(prepareSeries) };
   return check(emitter.transform('prepare', { data }), 'prepare').data;
 }
 

@@ -22,6 +22,8 @@ export interface PreparedSeries {
 export interface PreparedData {
   readonly labels: readonly (string | number | Date)[];
   readonly series: readonly PreparedSeries[];
+  /** The input was a flat series (e.g. pie or distributed bar data). */
+  readonly flat?: boolean;
 }
 
 /** Drawing area inside the padding; y1 is the bottom edge (as in 1.x). */

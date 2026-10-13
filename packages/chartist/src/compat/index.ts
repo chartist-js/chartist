@@ -12,14 +12,17 @@ import {
   StepAxis,
   axisUnits,
   findAll,
+  getHighLow,
   isNumeric,
   normalizeData,
+  safeHasProperty,
+  serialMap,
   type ChartHandle,
   type ChartPlugin,
   type ChartRect,
   type Data,
   type Layout,
-  type LinePresetState,
+  type PresetState,
   type NormalizedSeries,
   type SceneNode
 } from '../index';
@@ -40,7 +43,7 @@ type LegacyPlugin = (chart: any, options?: any) => void;
 type AnyOptions = any;
 
 interface CompatState {
-  preset?: LinePresetState;
+  preset?: PresetState<Data, AnyOptions>;
   /** The data object of the last `data` event, and its mutable copy. */
   source?: unknown;
   copy?: Data;
@@ -91,7 +94,7 @@ function chartRectOf(layout: Layout): ChartRect {
 }
 
 /** The 1.x axes, constructed as 1.x `LineChart.createChart` does. */
-function legacyAxes(options: AnyOptions, data: Data, chartRect: ChartRect) {
+function lineAxes(options: AnyOptions, data: Data, chartRect: ChartRect) {
   const normalized = normalizeData(
     data as Data<NormalizedSeries[]>,
     options.reverseData,
@@ -115,6 +118,83 @@ function legacyAxes(options: AnyOptions, data: Data, chartRect: ChartRect) {
   return { axisX, axisY };
 }
 
+/** Sums per index across series, as 1.x `BarChart` stacks them. */
+function serialSums(series: NormalizedSeries[]) {
+  return serialMap(series, (...values) =>
+    values.reduce<{ x: number; y: number }>(
+      (sum, value) => ({
+        x: sum.x + (safeHasProperty(value, 'x') ? (value.x as number) : 0),
+        y: sum.y + (safeHasProperty(value, 'y') ? (value.y as number) : 0)
+      }),
+      { x: 0, y: 0 }
+    )
+  );
+}
+
+/** The 1.x axes, constructed as 1.x `BarChart.createChart` does. */
+function barAxes(options: AnyOptions, data: Data, chartRect: ChartRect) {
+  const horizontal = Boolean(options.horizontalBars);
+  const valueDimension = horizontal ? 'x' : 'y';
+  const labelDimension = horizontal ? 'y' : 'x';
+  const normalized = normalizeData(
+    data as Data<NormalizedSeries[]>,
+    options.reverseData,
+    valueDimension,
+    true
+  );
+  const series = normalized.series as NormalizedSeries[];
+  const highLow =
+    options.stackBars && options.stackMode !== true && series.length
+      ? getHighLow([serialSums(series)], options, valueDimension)
+      : getHighLow(series, options, valueDimension);
+  if (typeof options.high === 'number') {
+    highLow.high = options.high;
+  }
+  if (typeof options.low === 'number') {
+    highLow.low = options.low;
+  }
+  const valueOptions = horizontal ? options.axisX : options.axisY;
+  const labelOptions = horizontal ? options.axisY : options.axisX;
+  const ValueAxis = isLegacyAxisClass(valueOptions.type)
+    ? valueOptions.type
+    : AutoScaleAxis;
+  const valueAxis = new ValueAxis(
+    axisUnits[valueDimension],
+    series,
+    chartRect,
+    {
+      ...valueOptions,
+      highLow,
+      referenceValue: 0
+    }
+  );
+  const labelAxis = isLegacyAxisClass(labelOptions.type)
+    ? new labelOptions.type(
+        axisUnits[labelDimension],
+        series,
+        chartRect,
+        labelOptions
+      )
+    : new StepAxis(axisUnits[labelDimension], series, chartRect, {
+        ticks:
+          options.distributeSeries && options.stackBars
+            ? normalized.labels.slice(0, 1)
+            : normalized.labels
+      });
+  return horizontal
+    ? { axisX: valueAxis, axisY: labelAxis }
+    : { axisX: labelAxis, axisY: valueAxis };
+}
+
+const AXES: Record<
+  string,
+  (
+    options: AnyOptions,
+    data: Data,
+    chartRect: ChartRect
+  ) => { axisX: unknown; axisY: unknown }
+> = { line: lineAxes, bar: barAxes };
+
 /** 1.x `draw` payloads in 1.x order, then `created`. */
 function emitDrawEvents(
   handle: ChartHandle,
@@ -126,8 +206,8 @@ function emitDrawEvents(
   const options = state.preset?.options as AnyOptions;
   const data = (state.copy ?? state.preset?.data) as Data;
   const chartRect = chartRectOf(state.layout!);
-  const { axisX, axisY } = legacyAxes(options, data, chartRect);
-  const axisOf = (dimension: string) => (dimension === 'x' ? axisX : axisY);
+  const { axisX, axisY } = AXES[state.preset!.kind](options, data, chartRect);
+  const axisOf = (dimension?: string) => (dimension === 'x' ? axisX : axisY);
   const wrap = (element: Element) => new Svg(element);
   const draw = (payload: Record<string, unknown>) =>
     handle.emit('draw', payload);
@@ -136,10 +216,14 @@ function emitDrawEvents(
     return { element: wrap(element), group: wrap(element.parentElement!) };
   };
 
-  // Axes: per tick its grid line, then its label; X before Y.
+  // Axes: per tick its grid line, then its label, in the order the axes
+  // appear in the chart (X first for lines, the label axis first for bars).
   const grids = findAll(scene, { role: 'grid' });
   const labels = findAll(scene, { role: 'label' });
-  for (const dimension of ['x', 'y']) {
+  const dimensionOf = (node: SceneNode) =>
+    (node.ctx?.axis as { dimension?: string } | undefined)?.dimension;
+  const order = [...new Set([...grids, ...labels].map(dimensionOf))];
+  for (const dimension of order) {
     const onAxis = (node: SceneNode) =>
       (node.ctx?.axis as { dimension?: string } | undefined)?.dimension ===
       dimension;
@@ -194,6 +278,25 @@ function emitDrawEvents(
       ];
     const common = { series: original, seriesIndex, axisX, axisY };
     const children = series.children;
+    for (const barNode of children.filter(n => n.role === 'bar')) {
+      const ctx = barNode.ctx!;
+      draw({
+        type: 'bar',
+        value: ctx.value,
+        index: ctx.valueIndex,
+        meta: ctx.meta,
+        series: ctx.series,
+        seriesIndex,
+        axisX,
+        axisY,
+        chartRect,
+        ...parts(barNode),
+        x1: ctx.x1,
+        y1: ctx.y1,
+        x2: ctx.x2,
+        y2: ctx.y2
+      });
+    }
     for (const point of children.filter(n => n.role === 'point')) {
       const ctx = point.ctx!;
       draw({
@@ -247,7 +350,7 @@ function enable(handle: ChartHandle): CompatState {
   states.set(handle, state);
 
   handle.on('resolve', ({ config }) => {
-    state.preset = config.preset as LinePresetState | undefined;
+    state.preset = config.preset as CompatState['preset'];
     if (config.data !== state.source) {
       // 1.x data handlers mutate the data; they get a copy, and the copy
       // is used from now on (as 1.x keeps its mutated data).

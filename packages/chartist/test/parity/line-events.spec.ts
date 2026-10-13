@@ -10,63 +10,11 @@ import type {
   LineChartOptions
 } from '../../src/charts/LineChart/LineChart.types';
 import { compat } from '../../src/compat';
-import { markup } from '../markup';
+import { record } from './events';
 import { container, useBrowserSizes, withV1Axes } from './helpers';
 import { FIXTURES } from './line-fixtures';
 
 useBrowserSizes();
-
-const LEGACY = new Set(['data', 'optionsChanged', 'draw', 'created']);
-
-interface Recorded {
-  event: string;
-  type?: unknown;
-  index?: unknown;
-  seriesIndex?: unknown;
-  fields: string[];
-  element?: string;
-  details?: string;
-}
-
-/** A comparable summary of one event, taken when the event is emitted. */
-function summarize(event: string, payload: Record<string, unknown>): Recorded {
-  const element = payload.element as { getNode(): Element } | undefined;
-  const details =
-    payload.type === 'point'
-      ? JSON.stringify([payload.value, payload.meta, payload.x, payload.y])
-      : payload.type === 'label'
-        ? JSON.stringify([
-            payload.text,
-            payload.x,
-            payload.y,
-            payload.width,
-            payload.height
-          ])
-        : event === 'data'
-          ? JSON.stringify(payload)
-          : undefined;
-  return {
-    event,
-    type: payload.type,
-    index: payload.index,
-    seriesIndex: payload.seriesIndex,
-    fields: Object.keys(payload).sort(),
-    element: element && markup(element.getNode()),
-    details
-  };
-}
-
-function record(chart: {
-  on(event: '*', listener: (event: string, data: never) => void): unknown;
-}) {
-  const events: Recorded[] = [];
-  chart.on('*', (event: string, payload: Record<string, unknown>) => {
-    if (LEGACY.has(event)) {
-      events.push(summarize(event, payload));
-    }
-  });
-  return events;
-}
 
 async function events1x(data: LineChartData, options?: LineChartOptions) {
   const chart = new LineChartV1(

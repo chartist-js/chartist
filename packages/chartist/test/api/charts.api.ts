@@ -24,7 +24,8 @@ describe('chart creation', () => {
 
   test('all chart types extend BaseChart', () => {
     for (const Chart of [LineChart, BarChart, PieChart]) {
-      expect(Object.getPrototypeOf(Chart.prototype)).toBe(BaseChart.prototype);
+      // v2 wrappers may have a shared base in between (PresetChart).
+      expect(Chart.prototype).toBeInstanceOf(BaseChart);
     }
   });
 
@@ -53,7 +54,7 @@ describe('chart creation', () => {
   test('replaces an earlier chart in the same container', async () => {
     const el = container();
     await created(new LineChart(el, { series: [[1]] }, withCompat()));
-    await created(new BarChart(el, { series: [[1]] }));
+    await created(new BarChart(el, { series: [[1]] }, withCompat()));
     expect(classesOf(el, 'svg')).toEqual(['ct-chart-bar']);
   });
 
@@ -169,13 +170,17 @@ describe('BarChart output', () => {
   test('one bar line per value with ct:value', async () => {
     const el = container();
     await created(
-      new BarChart(el, {
-        labels: ['A', 'B'],
-        series: [
-          [1, 2],
-          [3, 4]
-        ]
-      })
+      new BarChart(
+        el,
+        {
+          labels: ['A', 'B'],
+          series: [
+            [1, 2],
+            [3, 4]
+          ]
+        },
+        withCompat()
+      )
     );
     expect(el.querySelector('svg')!.getAttribute('class')).toBe('ct-chart-bar');
     expect(
@@ -196,7 +201,7 @@ describe('BarChart output', () => {
             [3, 4]
           ]
         },
-        { stackBars: true, horizontalBars: true }
+        withCompat({ stackBars: true, horizontalBars: true })
       )
     );
     expect(el.querySelector('svg')!.getAttribute('class')).toBe(

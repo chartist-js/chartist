@@ -41,7 +41,7 @@ describe('event order', () => {
     const chart = new BarChart(
       container(),
       { labels: ['A', 'B'], series: [[1, 2]] },
-      { axisY: { onlyInteger: true } }
+      withCompat({ axisY: { onlyInteger: true } })
     );
     const events = recordEvents(chart);
     await created(chart);
@@ -151,7 +151,7 @@ describe('event payloads', () => {
   });
 
   test('bar and slice payload fields', async () => {
-    const bar = new BarChart(container(), { series: [[1]] });
+    const bar = new BarChart(container(), { series: [[1]] }, withCompat());
     const pie = new PieChart(container(), { series: [1] });
     const barEvents = recordEvents(bar);
     const pieEvents = recordEvents(pie);

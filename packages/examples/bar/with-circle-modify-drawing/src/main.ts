@@ -1,5 +1,6 @@
 import 'chartist/styles.css';
 import { BarChart, Svg, getMultiValue } from 'chartist';
+import { compat } from 'chartist/compat';
 
 // Create a simple bi-polar bar chart
 const chart = new BarChart(
@@ -9,6 +10,8 @@ const chart = new BarChart(
     series: [[1, 2, 4, 8, 6, -2, -1, -4, -6, -2]]
   },
   {
+    // 1.x draw events come from the compat plugin in v2.
+    plugins: [compat],
     high: 10,
     low: -10,
     axisX: {

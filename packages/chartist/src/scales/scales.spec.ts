@@ -189,3 +189,72 @@ describe('scales/factories match the 1.x axis classes', () => {
     expect(isLegacyAxisClass(() => 1)).toBe(false);
   });
 });
+
+describe('scales: kind, stretch and normalization', () => {
+  const area = { x1: 0, x2: 100, y1: 100, y2: 0, width: 100, height: 100 };
+  const context = { series: [], labels: [], area };
+
+  it('factories report their kind; step axes their stretch', () => {
+    const step = stepAxis().create({
+      ...context,
+      dimension: 'x',
+      options: { ticks: ['a'], stretch: true }
+    });
+    expect([step.kind, step.stretch]).toEqual(['step', true]);
+    expect(
+      autoScaleAxis().create({ ...context, dimension: 'y', options: {} }).kind
+    ).toBe('autoScale');
+    expect(
+      fixedScaleAxis().create({
+        ...context,
+        dimension: 'y',
+        options: { ticks: [0, 1] }
+      }).kind
+    ).toBe('fixedScale');
+  });
+
+  it('a 1.x StepAxis class reports step, other classes legacy', () => {
+    const step = legacyAxis(StepAxis).create({
+      ...context,
+      dimension: 'x',
+      options: { ticks: ['a'] }
+    });
+    expect([step.kind, step.stretch]).toEqual(['step', false]);
+    const auto = legacyAxis(AutoScaleAxis).create({
+      ...context,
+      dimension: 'y',
+      options: {}
+    });
+    expect(auto.kind).toBe('legacy');
+  });
+
+  it('cartesianAxes normalizes like 1.x with the value dimension and distributed series', async () => {
+    const { cartesianAxes } = await import('./cartesian');
+    const { normalizeData: normalize1x } =
+      await import('../core/data/normalize');
+    const data = {
+      labels: ['a', 'b'],
+      series: [{ values: [3, 4] }],
+      flat: true
+    };
+    const axes = cartesianAxes({
+      x: { type: autoScaleAxis() },
+      y: { type: stepAxis() },
+      normalize: { multi: 'x', distributed: true }
+    });
+    const { normalized } = axes.create(data, area);
+    expect(normalized).toEqual(
+      normalize1x({ labels: ['a', 'b'], series: [3, 4] }, false, 'x', true)
+    );
+    const nested = axes.create(
+      { labels: ['a'], series: [{ values: [3, 4] }] },
+      area
+    );
+    expect(nested.normalized.series).toEqual([
+      [
+        { x: 3, y: undefined },
+        { x: 4, y: undefined }
+      ]
+    ]);
+  });
+});

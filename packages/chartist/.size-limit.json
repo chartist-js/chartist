@@ -2,28 +2,28 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "18.6 kB",
+    "limit": "19.1 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "18.7 kB",
+    "limit": "19.2 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat browser ESM (dist/compat.min.js, without the core)",
     "path": "dist/compat.min.js",
-    "limit": "1.8 kB",
+    "limit": "2.25 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat UMD (dist/compat.umd.js, without the core)",
     "path": "dist/compat.umd.js",
-    "limit": "1.95 kB",
+    "limit": "2.4 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -31,14 +31,14 @@
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
-    "limit": "11.7 kB",
+    "limit": "12 kB",
     "gzip": true
   },
   {
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "7.5 kB",
+    "limit": "10.9 kB",
     "gzip": true
   },
   {
@@ -66,14 +66,21 @@
     "name": "import { lineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ lineChart }",
-    "limit": "10.35 kB",
+    "limit": "10.55 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { barChart } (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ barChart }",
+    "limit": "9.35 kB",
     "gzip": true
   },
   {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "19 kB",
+    "limit": "19.5 kB",
     "gzip": true
   },
   {

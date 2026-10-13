@@ -33,6 +33,10 @@ export interface AxisContext {
  */
 export interface ScaleAxis {
   readonly dimension: AxisDimension;
+  /** The axis type, e.g. `step`, `autoScale`, `fixedScale`. */
+  readonly kind: string;
+  /** Step axes: whether the last tick sits at the axis end. */
+  readonly stretch?: boolean;
   readonly ticks: readonly Label[];
   readonly range?: { readonly min: number; readonly max: number };
   /** Axis length in px. */
@@ -69,6 +73,15 @@ export interface AxesConfig {
   readonly y?: AxisSetup;
   /** Reverse labels and series before projecting (1.x `reverseData`). */
   readonly reverseData?: boolean;
+  /**
+   * How values are normalized (1.x `normalizeData`): `multi` is `true` for
+   * `{ x, y }` values, or the dimension single values go to; `distributed`
+   * turns a flat series into one series per value.
+   */
+  readonly normalize?: {
+    readonly multi?: true | AxisDimension;
+    readonly distributed?: boolean;
+  };
 }
 
 /** The axes of a laid-out chart. */

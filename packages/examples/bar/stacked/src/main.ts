@@ -1,5 +1,6 @@
 import 'chartist/styles.css';
 import { BarChart } from 'chartist';
+import { compat } from 'chartist/compat';
 
 new BarChart(
   '#chart',
@@ -12,6 +13,8 @@ new BarChart(
     ]
   },
   {
+    // 1.x draw events come from the compat plugin in v2.
+    plugins: [compat],
     stackBars: true,
     axisY: {
       labelInterpolationFnc: value => +value / 1000 + 'k'

@@ -1,5 +1,6 @@
 import { AutoScaleAxis } from '../../axes';
 import { BarChartOptions, BarChartData, BarChart } from '.';
+import { compat } from '../../compat';
 import { namespaces, deserialize } from '../../core';
 import {
   Fixture,
@@ -23,11 +24,11 @@ describe('Charts', () => {
           '<div class="ct-chart ct-golden-section"></div>'
         );
         const { wrapper } = fixture;
-        chart = new BarChart(
-          wrapper.querySelector('.ct-chart'),
-          data,
-          options
-        ).on('created', () => {
+        // 1.x events (created, draw) come from the compat plugin in v2.
+        chart = new BarChart(wrapper.querySelector('.ct-chart'), data, {
+          ...options,
+          plugins: [compat]
+        }).on('created', () => {
           resolve();
           chart.off('created');
         });

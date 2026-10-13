@@ -23,7 +23,9 @@ describe('1.x plugins', () => {
     const chart = new BarChart(
       container(),
       { series: [[1]] },
-      { plugins: [[plugin, { position: 'top' }]] }
+      withCompat({
+        plugins: [[plugin, { position: 'top' }] as [typeof plugin, unknown]]
+      })
     );
     await created(chart);
     expect(plugin).toHaveBeenCalledWith(chart, { position: 'top' });

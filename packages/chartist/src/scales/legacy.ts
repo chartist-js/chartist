@@ -4,6 +4,7 @@ import { axisLength, type AxisFactory, type LegacyAxisClass } from './axis';
 
 interface LegacyAxisInstance {
   ticks: Label[];
+  stretch?: boolean;
   range?: { min: number; max: number };
   projectValue(value: unknown, index?: number, series?: unknown): number;
 }
@@ -44,6 +45,9 @@ export function legacyAxis(type: LegacyAxisClass): AxisFactory {
       );
       return {
         dimension,
+        // 1.x positions bars by `instanceof StepAxis`; step axes have `stretch`.
+        kind: typeof instance.stretch === 'boolean' ? 'step' : 'legacy',
+        stretch: instance.stretch,
         ticks: instance.ticks,
         range: instance.range,
         length: axisLength(dimension, area),

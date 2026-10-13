@@ -126,10 +126,10 @@ describe('axis classes as options', () => {
       new BarChart(
         el,
         { labels: ['a', 'b'], series: [[1, 2]] },
-        {
+        withCompat({
           axisX: { labelInterpolationFnc: (value: unknown) => `#${value}` },
           axisY: { showLabel: false, showGrid: false }
-        }
+        })
       )
     );
     expect(labels(el, 'horizontal')).toEqual(['#a', '#b']);
