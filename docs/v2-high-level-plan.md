@@ -36,15 +36,19 @@ Decided with the author on 2026-10-12, based on the scoping research (`docs/v2-s
 
 - **Rendering pipeline.** Data → normalization → layout (axes, scales, chart rect) → **Chartist SVG virtual DOM** (scene graph) → **renderer**. Chart code never touches the DOM. Rendering is the last step.
 - **Interchangeable renderers.** The default renders to the DOM as SVG. Alternatives include an SVG string/image renderer (SSR, export, Node) and later canvas or others. This also fixes `window is not defined` and the SSR issues.
+- **Functional API first** (decided 2026-10-13). The v2 API is functions, not classes: `chart('#el', { data, axes, layers, plugins, on })` returns a small handle (`update`, `destroy`, `on`, `off`), presets are `lineChart`, `barChart` and `pieChart`, and the core is pure from config to scene (`toScene`, `renderToString`). Side effects stay at the edges (host, renderer, compat). The 1.x classes (`new LineChart(...)`) remain as thin wrappers over the functions for backwards compatibility.
+  - Docs promote the functional API: all examples and guides use it. The class wrappers get minimal API docs (a short description and an `@see` link to the function), and guides mention the classic usage only briefly.
 - **Event-based extension system** stays the core extension mechanism (it proved valuable in 0.x/1.x). It gets typed hooks at every pipeline stage: data, layout, scene/draw, render.
+  - **Immutable event payloads** (decided 2026-10-13). Handlers receive read-only payloads and transform by **returning** a new value (`undefined` means unchanged). Results chain through the handlers in registration order. Observe-only handlers cost nothing; copies happen only where something changes. 1.x mutation semantics live in the compat plugin.
 - **Composable charts.** One chart can combine several series layers (e.g. bar + line) on shared axes. This answers #37, the most-wanted issue of all time.
 - **Composable multi-axis.** An XY chart can have several axes, e.g. a left and a right Y axis (#1058, #1405).
 - **Responsive configuration** supports both window media queries (1.x behavior) and **container queries**. It is switchable by config and builds on modern browser APIs (`ResizeObserver`, container query conditions).
 
 **Compatibility**
 
-- **Aim for zero breaking changes.** `LineChart`, `BarChart` and `PieChart` remain, as presets on top of the composable core.
-- **Opt-in compat plugin** (`chartist/compat`, decided 2026-10-12). It restores the 1.x events, the `Svg` wrapper and 1.x plugins. The core ships no compat code; using 1.x events or plugins without it logs a one-time warning with migration instructions. The same mechanism can later let 0.x community plugins run on v2. Details: `openspec/changes/define-core-architecture` (design D6).
+- **Aim for zero breaking changes.** `LineChart`, `BarChart` and `PieChart` remain as class wrappers around the `lineChart`, `barChart` and `pieChart` presets on top of the composable core.
+- **Opt-in compat plugin** (`chartist/compat`, decided 2026-10-12). It restores the 1.x events, the `Svg` wrapper and 1.x plugins. The chart runtime ships no compat code; using 1.x events or plugins without it logs a one-time warning with migration instructions. The same mechanism can later let 0.x community plugins run on v2. Details: `openspec/changes/define-core-architecture` (design D6).
+- **No 1.x export is removed** (decided 2026-10-13). `Svg`, `SvgList`, `SvgPath`, the helpers and all other 1.x root exports stay available from `chartist` and the UMD global, working without the compat plugin, because legacy plugins and users build their own SVG with them. They're tree-shaken when unused and get minimal docs pointing to the v2 equivalents. Details: design D11.
 
 **Ecosystem**
 
@@ -128,13 +132,13 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 ## Change roadmap (OpenSpec)
 
 1. `add-library-distribution`: ESM/browser ESM/UMD/CJS builds, exports map, Sass sources, size budgets. Done (archived, spec `library-distribution`).
-2. `define-core-architecture`: pipeline phases, scene graph, renderers, composition, responsive modes, v1 compat. Proposal, specs and design are written.
+2. `define-core-architecture`: pipeline phases, scene graph, renderers, composition, responsive modes, v1 compat, functional API with immutable events, the kept 1.x export surface and public API tests. Done (archived 2026-10-13).
 3. `add-visual-regression-harness`: Playwright screenshot tests that **reuse the example definitions shared with the docs site**. Done (archived, specs `chart-examples` and `visual-regression`):
    - The examples live in `packages/examples` (private `@chartist/examples`) as small HTML + TypeScript + CSS projects (Vite app shape) with a typed manifest: the 32 1.x sandboxes plus test-only ports of the 1.x story cases. The docs site, the playground and the test harness all consume them.
    - The harness serves each example's own page with Vite, adding only a test font and a fixed container size, so a docs redesign doesn't break the screenshots.
    - The baseline (67 images) is recorded from published 1.5.0, and the local build matches it. Storybook and storyshots are removed.
    - chartist.dev's CodeSandbox embeds point at the sandboxes on `main`, which keeps them until the v2 release.
-4. Core implementation steps (see `define-core-architecture` design, "Migration Plan").
+4. Core implementation steps (see `define-core-architecture` design, "Migration Plan"). First: `add-public-api-tests`, a suite that tests the built package only through its entry points (export lists, type tests, behavior), passing against the 1.5 code before the core is touched.
 5. Playground spike (see goal 5), before the docs change. It validates: an import map loading the workspace build in a static Astro build under a base path; sucrase vs ts-blank-space (size, speed, error experience); CSS imports from TypeScript; edit-and-rerender on Chrome, Safari/iOS and Firefox; example files staying identical to a working `npm create vite` project; optionally LiveCodes with a same-site import URL.
    - Spike done 2026-10-12 (`add-playground-repl`, archived, spec `example-playground`; `packages/playground`). The DIY pipeline works in Chromium, Firefox and WebKit from a static build under `/chartist/` (51 Playwright tests). LiveCodes and `@rolldown/browser` aren't needed.
    - Decided with the author (2026-10-12):

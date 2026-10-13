@@ -12,7 +12,7 @@ When no renderer is configured and a container element is given, a chart SHALL r
 
 #### Scenario: Default rendering
 
-- **WHEN** `new LineChart('#chart', data)` is created in a browser
+- **WHEN** `lineChart('#chart', data)` is called in a browser
 - **THEN** an `svg` element with the Chartist namespace attribute is rendered inside `#chart`
 
 ### Requirement: SVG string rendering

@@ -20,18 +20,28 @@ Every chart render SHALL run the phases `resolve`, `prepare`, `layout`, `compose
 - **WHEN** listeners of `resolve`, `prepare`, `layout`, `compose` or `scene` run
 - **THEN** the chart has not created or modified any element in the output target
 
-### Requirement: Phase events can transform the chart
+### Requirement: Phase events transform by returning values
 
-Listeners of a phase event SHALL be able to modify that phase's payload: options in `resolve`, normalized data in `prepare`, axes, scales and chart area in `layout`, individual scene nodes in `compose` and the whole scene in `scene`. Later phases SHALL use the modified values.
+Phase event payloads SHALL be read-only. A listener SHALL transform a phase by returning a new payload value, and SHALL leave it unchanged by returning `undefined`. Transformable payloads are options in `resolve`, normalized data in `prepare`, axes, scales and chart area in `layout`, individual scene nodes in `compose` and the whole scene in `scene`. Later phases SHALL use the transformed values. Return values of `render` and `mount` listeners SHALL be ignored.
 
 #### Scenario: Data transformation
 
-- **WHEN** a `prepare` listener appends a derived series to the normalized data
+- **WHEN** a `prepare` listener returns the normalized data with an appended derived series
 - **THEN** the derived series is laid out and rendered like any other series
+
+#### Scenario: Observing without changes
+
+- **WHEN** a `prepare` listener reads the data and returns nothing
+- **THEN** the next phase receives the identical payload object, not a copy
+
+#### Scenario: Payload is not mutated
+
+- **WHEN** a listener returns a transformed payload
+- **THEN** the payload object it received is unchanged
 
 #### Scenario: Reserving layout space
 
-- **WHEN** a `layout` listener reserves 40 px at the bottom of the chart for a legend
+- **WHEN** a `layout` listener returns a layout that reserves 40 px at the bottom of the chart for a legend
 - **THEN** the chart area, axes and series are laid out within the reduced area and the reserved space stays empty for the listener to fill
 
 ### Requirement: Per-node compose events
@@ -50,7 +60,16 @@ Phase listeners SHALL run synchronously in registration order. Given the same da
 #### Scenario: Registration order
 
 - **WHEN** two listeners are registered for the same phase
-- **THEN** the first registered listener runs first and the second sees its modifications
+- **THEN** the first registered listener runs first and the second receives the value the first returned
+
+### Requirement: Pure scene construction
+
+The phases `resolve` through `scene` SHALL be side-effect free: given a config, a size and a text measurement function, `toScene` SHALL return the scene without touching the DOM, timers or globals. Charts with a host and renderer SHALL produce the same scene for the same inputs.
+
+#### Scenario: Scene without a host
+
+- **WHEN** `toScene(config, { width: 400, height: 300 })` is called in Node.js
+- **THEN** it returns the scene synchronously, and calling it again with the same inputs returns an equal scene
 
 ### Requirement: Re-running the pipeline
 

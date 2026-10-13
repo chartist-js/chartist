@@ -15,19 +15,33 @@ A chart's scene SHALL be a tree of nodes. Each node has an SVG element name, att
 - **WHEN** a chart's scene is built in Node.js without any DOM implementation
 - **THEN** the scene is built without errors and contains the same nodes as in a browser for the same size
 
-### Requirement: Builder API on scene nodes
+### Requirement: Immutable nodes with a builder API
 
-Scene nodes SHALL offer a builder API that follows the 1.x `Svg` wrapper: set/get attributes, add/remove classes, create child elements, append, remove, replace, set text and clear children. Builder calls SHALL be chainable.
+Scene nodes SHALL be immutable. They SHALL offer a chainable builder API with the 1.x `Svg` method names for setting attributes, adding and removing classes, appending, removing and replacing children, setting text and clearing children. Every builder call SHALL return a new node and leave the original unchanged. Nodes SHALL NOT offer `parent()` or `root()` navigation.
 
 #### Scenario: Customizing a point in compose
 
-- **WHEN** a compose listener calls `node.addClass('highlight').attr({ r: 8 })` on a point node
-- **THEN** the rendered point element has the class `highlight` and `r="8"`
+- **WHEN** a compose listener returns `node.addClass('highlight').attr({ r: 8 })` for a point node
+- **THEN** the rendered point element has the class `highlight` and `r="8"`, and the node the listener received is unchanged
 
 #### Scenario: Replacing a node
 
-- **WHEN** a compose listener replaces a point node with a newly created `circle` node
+- **WHEN** a compose listener returns a newly created `circle` node for a point node
 - **THEN** the output contains the circle at that position in the tree and not the original point
+
+#### Scenario: Dropping a node
+
+- **WHEN** a compose listener returns `null` for a grid line node
+- **THEN** the output does not contain that grid line
+
+### Requirement: Scene tree functions
+
+The library SHALL provide functions to create nodes, to find nodes by role and data context, and to map a scene into a new scene. Mapping SHALL reuse unchanged subtrees.
+
+#### Scenario: Mapping keeps unchanged subtrees
+
+- **WHEN** a `scene` listener maps the scene and changes only the bar nodes of series 0
+- **THEN** the returned scene shares every subtree that contains no changed node with the original scene
 
 ### Requirement: Semantic roles and data context
 
@@ -44,7 +58,7 @@ For the 1.x chart types, the rendered output SHALL keep the 1.x element structur
 
 #### Scenario: Series group classes
 
-- **WHEN** a `LineChart` with two series is rendered
+- **WHEN** a `lineChart` with two series is rendered
 - **THEN** the output contains `g.ct-series.ct-series-a` and `g.ct-series.ct-series-b` groups with `path.ct-line` and `line.ct-point` elements as in 1.x
 
 ### Requirement: Stable node identity

@@ -13,12 +13,31 @@ The 1.x compatibility SHALL be provided by a plugin that is imported and registe
 #### Scenario: Default bundle has no compat code
 
 - **WHEN** an application uses `LineChart` without the compat plugin
-- **THEN** its bundle contains neither the 1.x `Svg` wrapper nor the legacy event emission
+- **THEN** its bundle contains neither the 1.x `Svg` wrapper nor the legacy event emission, unless the application imports `Svg` itself
 
 #### Scenario: Enabling compat
 
 - **WHEN** the compat plugin is added to a chart's `plugins` option
 - **THEN** 1.x events, the `Svg` wrapper and 1.x plugins work on that chart
+
+### Requirement: 1.x exports remain available
+
+Every export of the 1.5 package root SHALL remain exported from `chartist` under the same name, and from the UMD global `Chartist`, with its 1.5 behavior. This includes `Svg`, `SvgList`, `SvgPath`, `easings`, `Interpolation`, the axis classes, `EventEmitter` and the helper functions. These exports SHALL work without the compat plugin. Bundles that don't import them SHALL NOT contain them.
+
+#### Scenario: Standalone Svg usage
+
+- **WHEN** code imports `Svg` from `chartist` and builds its own SVG with `new Svg('svg').elem('circle', { r: 5 }).animate(...)`, without any chart or compat plugin
+- **THEN** it works as in 1.5
+
+#### Scenario: Export surface check
+
+- **WHEN** the package is built
+- **THEN** a test confirms that every 1.5 root export name exists in the ESM, CJS and UMD builds
+
+#### Scenario: Shared Svg in draw handlers
+
+- **WHEN** a 1.x draw handler with the compat plugin calls `data.element.replace(new Svg('circle', {...}))` using `Svg` imported from `chartist`
+- **THEN** the replacement works and `data.element instanceof Svg` is true
 
 ### Requirement: Warning for 1.x events without compat
 
@@ -46,6 +65,15 @@ With the compat plugin, charts SHALL emit the 1.x events with the payloads, timi
 
 - **WHEN** a `draw` listener is registered on a `LineChart` with the compat plugin
 - **THEN** it receives one event per grid line, grid background, label, line, area and point, with the same `type` values and payload fields as in 1.5
+
+### Requirement: 1.x mutation semantics with compat
+
+With the compat plugin, 1.x `data` and `optionsChanged` handlers SHALL receive mutable payloads, as in 1.5. Their changes SHALL take effect as the transformed value of the corresponding v2 phase, without mutating the read-only v2 payload.
+
+#### Scenario: Mutating data in a 1.x data handler
+
+- **WHEN** a 1.x `data` handler pushes a value onto `data.data.series[0]`
+- **THEN** the rendered chart includes the value, and the `prepare` payload received by v2 listeners registered before compat is unchanged
 
 ### Requirement: Live elements in 1.x draw events
 
