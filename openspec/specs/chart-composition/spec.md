@@ -76,7 +76,26 @@ Axis types SHALL be created by factory functions (`stepAxis`, `autoScaleAxis`, `
 
 A cartesian chart SHALL support several axes per direction, each placed at a side (top, bottom, left, right). Each layer SHALL be bound to one X and one Y axis by id. Each axis SHALL compute its range from the series bound to it.
 
-#### Scenario: Left and r### Requirement: 1.x chart types as presets
+#### Scenario: Left and right Y axes
+
+- **WHEN** a bar layer is bound to a left Y axis and a line layer to a right Y axis
+- **THEN** the left axis range covers only the bar values, the right axis range covers only the line values, and both axes show labels on their sides
+
+### Requirement: Coordinate systems
+
+A chart SHALL use either a cartesian or a polar coordinate system. Layers SHALL declare which systems they support. Combining a layer with an unsupported system SHALL raise a descriptive error.
+
+#### Scenario: Pie in polar coordinates
+
+- **WHEN** a pie layer is used in a polar chart
+- **THEN** slices are laid out around the chart center
+
+#### Scenario: Unsupported combination
+
+- **WHEN** a bar layer is configured in a polar chart
+- **THEN** creating the chart throws an error naming the layer and the unsupported coordinate system
+
+### Requirement: 1.x chart types as presets
 
 `lineChart`, `barChart` and `pieChart` SHALL be preset functions over `chart` that take the 1.x arguments (target, data, options, responsive options) with the 1.x defaults. Their output SHALL match 1.x for the same input.
 
@@ -98,27 +117,6 @@ A cartesian chart SHALL support several axes per direction, each placed at a sid
 
 - **WHEN** `new LineChart('#chart', data).on('mount', fn)` runs
 - **THEN** `fn` is called for the first render
-
-ive error.
-
-#### Scenario: Pie in polar coordinates
-
-- **WHEN** a pie layer is used in a polar chart
-- **THEN** slices are laid out around the chart center
-
-#### Scenario: Unsupported combination
-
-- **WHEN** a bar layer is configured in a polar chart
-- **THEN** creating the chart throws an error naming the layer and the unsupported coordinate system
-
-### Requirement: 1.x chart types as presets
-
-`LineChart`, `BarChart` and `PieChart` SHALL remain available with their 1.x constructor signatures, options, defaults and methods. Their output SHALL match 1.x for the same input.
-
-#### Scenario: Unchanged 1.x usage
-
-- **WHEN** code written for 1.5, e.g. `new BarChart('#chart', data, { stackBars: true }, responsiveOptions)`, runs on v2
-- **THEN** the chart renders the same visual output and class structure as 1.5 did
 
 ### Requirement: Tree-shakable composition
 
