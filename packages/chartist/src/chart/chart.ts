@@ -1,7 +1,7 @@
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline, type PipelineState } from '../pipeline/phases';
 import { domRenderer } from '../render/dom';
-import { estimateText } from '../render/measure';
+import { estimateText, type MeasureText } from '../render/measure';
 import type { RenderOutput } from '../render/types';
 import { eventMethods, installPlugins, registerListeners } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
@@ -38,13 +38,30 @@ export function chart(
   const container = resolveTarget(target);
   const emitter = createPhaseEmitter();
   const renderer = config.renderer ?? domRenderer();
-  const measureText = renderer.measureText ?? estimateText;
+  const rendererMeasure = renderer.measureText;
+  // Whether the last render measured text (SVG text labels do).
+  let measuredText = false;
+  // Text is measured in the container, so the chart's CSS applies.
+  const measureText: MeasureText = (text, options) => {
+    measuredText = true;
+    return rendererMeasure
+      ? rendererMeasure(text, { container, ...options })
+      : estimateText(text, options);
+  };
   let current = config;
   let state: PipelineState | undefined;
   let output: RenderOutput | undefined;
   let observer: ResizeObserver | undefined;
   let destroyed = false;
   const provided = new Set<string>();
+  const fonts = container.ownerDocument.fonts as FontFaceSet | undefined;
+  // Layout that measured text depends on font metrics, so it runs again
+  // when web fonts finish loading. HTML labels reflow by themselves.
+  const onFontsLoaded = () => {
+    if (!destroyed && state && measuredText) {
+      render('layout');
+    }
+  };
 
   /**
    * Measures like 1.x: a probe svg with the chart's size attributes is
@@ -83,6 +100,7 @@ export function chart(
 
   function render(from: 'resolve' | 'layout') {
     const { width, height } = size();
+    measuredText = false;
     state = runPipeline(
       emitter,
       current,
@@ -90,6 +108,7 @@ export function chart(
         width,
         height,
         measureText,
+        labels: renderer.labels ?? 'html',
         rootSize: {
           width: current.width ?? '100%',
           height: current.height ?? '100%'
@@ -115,6 +134,7 @@ export function chart(
     detach() {
       observer?.disconnect();
       observer = undefined;
+      fonts?.removeEventListener('loadingdone', onFontsLoaded);
       return handle;
     },
     destroy() {
@@ -132,6 +152,8 @@ export function chart(
   installPlugins(handle, config.plugins, provided);
   registerListeners(handle, config.on);
   render('resolve');
+
+  fonts?.addEventListener('loadingdone', onFontsLoaded);
 
   if (typeof ResizeObserver !== 'undefined') {
     observer = new ResizeObserver(() => {

@@ -131,13 +131,20 @@ export abstract class PresetChart<
     const syncFields: ChartPlugin = {
       name: 'chart-fields',
       install: handle =>
-        void handle.on('mount', () => {
-          if (this.controller) {
-            this.data = this.controller.data();
-            (this as unknown as { options: unknown }).options =
-              this.controller.options();
-          }
-        })
+        void handle
+          // The 1.x classes always draw HTML labels (no v2 features).
+          .on('resolve', ({ config }) =>
+            config.labels
+              ? { config: { ...config, labels: undefined } }
+              : undefined
+          )
+          .on('mount', () => {
+            if (this.controller) {
+              this.data = this.controller.data();
+              (this as unknown as { options: unknown }).options =
+                this.controller.options();
+            }
+          })
     };
     this.controller = this.createController(
       this.container,

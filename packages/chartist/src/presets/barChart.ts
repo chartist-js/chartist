@@ -11,6 +11,7 @@ import { getHighLow } from '../core/data/highLow';
 import type { Label, Options, ResponsiveOptions } from '../core/types';
 import { bar, getSerialSums } from '../layers/bar';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
+import type { LabelMode } from '../render/measure';
 import { presetAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { isLegacyAxisClass, legacyAxis } from '../scales/legacy';
@@ -37,6 +38,8 @@ export type BarChartPresetOptions = Omit<BarChartOptions, 'axisX' | 'axisY'> & {
     Omit<NonNullable<BarChartOptions['axisX']>, 'type'>;
   readonly axisY?: PresetAxisOptions &
     Omit<NonNullable<BarChartOptions['axisY']>, 'type'>;
+  /** HTML (1.x) or SVG text labels; default: the renderer's mode. */
+  readonly labels?: LabelMode;
 };
 
 type Resolved = typeof barDefaults & BarChartPresetOptions;
@@ -144,6 +147,7 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
       className:
         options.classNames.chart +
         (options.horizontalBars ? ` ${options.classNames.horizontalBars}` : ''),
+      labels: options.labels,
       layers: [
         gridLayer(axisOptions, order),
         seriesGroup(
@@ -157,7 +161,13 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
             classNames: options.classNames
           })
         ),
-        labelLayer(axisOptions, order)
+        labelLayer(
+          {
+            ...axisOptions,
+            labelKind: options.horizontalBars ? 'horizontalBar' : 'bar'
+          },
+          order
+        )
       ]
     };
   }

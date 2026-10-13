@@ -1,6 +1,10 @@
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline } from '../pipeline/phases';
-import { estimateText, type MeasureText } from '../render/measure';
+import {
+  estimateText,
+  type LabelMode,
+  type MeasureText
+} from '../render/measure';
 import type { SceneNode } from '../scene/node';
 import { eventMethods, installPlugins, registerListeners } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
@@ -10,6 +14,11 @@ export interface SceneSize {
   readonly height: number;
   /** Text measurement for layout; an estimate by default. */
   readonly measureText?: MeasureText;
+  /**
+   * Label mode when the config sets none: `svg` by default, since string
+   * output often goes to tools without HTML support.
+   */
+  readonly labels?: LabelMode;
 }
 
 function unavailable(method: string): never {
@@ -36,6 +45,7 @@ export function toScene(config: ChartConfig, size: SceneSize): SceneNode {
   return runPipeline(emitter, config, {
     width: size.width,
     height: size.height,
-    measureText: size.measureText ?? estimateText
+    measureText: size.measureText ?? estimateText,
+    labels: size.labels ?? 'svg'
   }).scene;
 }

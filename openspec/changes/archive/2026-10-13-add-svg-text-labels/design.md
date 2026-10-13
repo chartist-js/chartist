@@ -46,8 +46,7 @@ The SVG label mirrors the HTML one, with the same box (the `foreignObject` recta
 
 - **Role and context:** the role is `label`, and the context (`axis`, `index`, `text`, box `x/y/width/height`) is the same, so compose listeners can treat both modes alike.
 - **Positions:** each `tspan` carries an absolute `x` and `y`, with no `dy` or `dominant-baseline`, because converters handle those inconsistently.
-- **Line height:** the measured height of one line, from `measureText('Mg', { classes })`.
-- **Baseline:** the first baseline sits 0.8 × the font size below the top of the line box. The font size is the line height / 1.2, matching `estimateText` and the 1.x label CSS line height.
+- **Line height and baseline:** see the implementation notes (one font size per line, the first baseline at 0.85 em).
 
 ### D4: Wrapping
 
@@ -92,3 +91,12 @@ But the presets accept `labels`, so `lineChart` and `barChart` bundle it anyway;
 - **Estimated metrics on the server:** wrapping is approximate, and a long label may wrap differently than in a browser.
 - **Baseline approximation:** the 0.8 em ascent is a typical font ascent. The visual review of the new baselines checks it against the HTML labels in the same chart; differences of 1–2 px are accepted.
 - **Converted 1.x plugins:** with `labels: 'svg'` and compat, the 1.x `draw` events for labels carry an `Svg` wrapper of the `text` element instead of the `foreignObject`. 1.x plugins that read the span don't work in this mode (documented).
+
+## Implementation notes
+
+- **Line pitch is one font size, not 1.2.** The 1.x label CSS sets `line-height: 1`. The DOM measurement reports the computed font size (`TextMetrics.fontSize`); the first baseline sits 0.85 em below the top of the block. With this, `line/svg-labels` matches `line/simple` pixel for pixel.
+- **Re-layout when web fonts load.** Charts render before web fonts finish loading, so measured widths would come from the fallback font; HTML labels reflow, SVG text doesn't. `chart()` lays out again on `document.fonts` `loadingdone` when the last render measured text (only SVG text labels measure), until `detach()`. HTML-label charts and the 1.x classes never render twice.
+- **Wrap width rounded to px**, as the 1.x span style rounds the HTML label width; otherwise borderline labels wrapped in SVG but not in HTML.
+- **Composed HTML labels were misaligned** (found while comparing): the 1.x CSS enables the flexbox alignment only under `.ct-chart-line`/`.ct-chart-bar`, and composed charts have neither class, so their HTML labels sat at the top of their boxes, one step above the grid line. `foreignObject > .ct-label` now gets `display: flex` too; 1.x output is unchanged. The `composed/*` baselines were re-recorded, and `bar-and-line` no longer needs extra top padding.
+- **The 1.x classes** drop `labels` in a `resolve` listener of their internal plugin, which covers `update()` and responsive options.
+- **v2 test-only examples** need no 1.x story in the manifest check.

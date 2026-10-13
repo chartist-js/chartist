@@ -118,9 +118,11 @@ describe('render/dom', () => {
     (SVGElement.prototype as unknown as { getBBox: () => DOMRect }).getBBox =
       () => ({ width: 42, height: 7 }) as DOMRect;
     try {
+      // jsdom's computed font size is the 16 px default.
       expect(domRenderer().measureText!('Hello')).toEqual({
         width: 42,
-        height: 7
+        height: 7,
+        fontSize: 16
       });
     } finally {
       (SVGElement.prototype as { getBBox?: unknown }).getBBox = original;

@@ -1,5 +1,5 @@
 import type { ChartPadding } from '../core/types';
-import type { MeasureText } from '../render/measure';
+import type { LabelMode, MeasureText } from '../render/measure';
 import type { CartesianAxes, ChartAxes, LayerBinding } from '../scales/axis';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { assignKeys, mapNodes } from '../scene/tree';
@@ -37,6 +37,12 @@ export interface PipelineOptions {
   /** Fixed drawing coordinates; sets the layout size and the root `viewBox`. */
   readonly viewBox?: { readonly width: number; readonly height: number };
   readonly className?: string;
+  /**
+   * Draws labels as HTML in `foreignObject` (1.x) or as SVG `text`. The
+   * default depends on the renderer: `html` for the DOM, `svg` in
+   * `toScene()`.
+   */
+  readonly labels?: LabelMode;
   /** Opaque data of the preset that created the chart (read by plugins). */
   readonly preset?: unknown;
 }
@@ -46,6 +52,8 @@ export interface PipelineEnvironment {
   readonly width: number;
   readonly height: number;
   readonly measureText: MeasureText;
+  /** The renderer's default label mode; `html` if omitted. */
+  readonly labels?: LabelMode;
   /** Size attributes of the root svg; defaults to the layout size. */
   readonly rootSize?: { width: number | string; height: number | string };
 }
@@ -90,6 +98,7 @@ export function resolve(
     height: options.height,
     viewBox: options.viewBox,
     className: options.className,
+    labels: options.labels,
     preset: options.preset
   };
   const resolved = check(
@@ -197,7 +206,8 @@ export function compose(
   axes: ChartAxes = {},
   normalized?: NormalizedChartData,
   padding: ChartPadding = config.padding,
-  bindings: readonly LayerBinding[] = []
+  bindings: readonly LayerBinding[] = [],
+  labels: LabelMode = 'html'
 ): SceneNode[] {
   const composed: SceneNode[] = [];
   const byId = new Map((axes.all ?? []).map(axis => [axis.id, axis]));
@@ -227,7 +237,8 @@ export function compose(
         all: axes.all
       },
       normalized: layerNormalized,
-      seriesIndexes: selection
+      seriesIndexes: selection,
+      labels
     });
     for (const top of nodes) {
       const result = mapNodes(assignKeys(top, layerIndex), current =>
@@ -288,16 +299,26 @@ export function runPipeline(
   const bindings = config.axes?.bind?.(config.layers, data) ?? [];
   const { axes = {}, normalized = undefined } =
     config.axes?.create(data, laidOut.area, bindings) ?? {};
+  // Measure with the root classes, so chart-type CSS applies.
+  const { className } = config;
+  const measureText: MeasureText = className
+    ? (text, measureOptions) =>
+        environment.measureText(text, {
+          rootClass: className,
+          ...measureOptions
+        })
+    : environment.measureText;
   const children = compose(
     emitter,
     config,
     data,
     laidOut.area,
-    environment.measureText,
+    measureText,
     axes,
     normalized,
     laidOut.padding,
-    bindings
+    bindings,
+    config.labels ?? environment.labels ?? 'html'
   );
   const built = scene(
     emitter,

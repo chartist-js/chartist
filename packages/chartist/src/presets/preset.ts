@@ -17,6 +17,11 @@ import {
   type AxisFrame,
   type DrawnAxisOptions
 } from '../scales/grid';
+import {
+  svgLabels,
+  type LabelChartKind,
+  type SvgLabelBuilder
+} from '../scales/svgLabels';
 import { extend } from '../utils/extend';
 
 /**
@@ -69,10 +74,17 @@ export interface AxisPresetOptions {
   readonly axisY: DrawnAxisOptions;
   readonly showGridBackground?: boolean;
   readonly classNames: ClassNames;
+  /** Which 1.x label CSS row SVG text labels follow. */
+  readonly labelKind?: LabelChartKind;
 }
 
-function frame(options: AxisPresetOptions, context: LayerContext): AxisFrame {
+function frame(
+  options: AxisPresetOptions,
+  context: LayerContext,
+  svgLabel?: SvgLabelBuilder
+): AxisFrame {
   return {
+    svgLabel,
     area: context.area,
     padding: context.padding,
     axisX: options.axisX,
@@ -117,12 +129,18 @@ export function labelLayer(
     type: 'labels',
     coordinates: ['cartesian'],
     compose(context) {
+      const svgLabel =
+        context.labels === 'svg'
+          ? svgLabels(context.measureText, options.labelKind ?? 'line')
+          : undefined;
       return [
         group(
           options.classNames.labelGroup,
           order.flatMap(dimension => {
             const axis = context.axes[dimension];
-            return axis ? axisNodes(axis, frame(options, context)).labels : [];
+            return axis
+              ? axisNodes(axis, frame(options, context, svgLabel)).labels
+              : [];
           })
         )
       ];

@@ -158,8 +158,9 @@ for (const [, story, id, viewports, mapping] of storyRows) {
     fail(`${id}: story ${story} is "${mapping}", but docs is ${example.docs}`);
   }
 }
-for (const { id, docs } of examples) {
-  if (!docs && !storyExamples.has(id)) {
+// v2 test-only examples (e.g. SVG-label variants) have no 1.x story.
+for (const { id, docs, v2 } of examples) {
+  if (!docs && !v2 && !storyExamples.has(id)) {
     fail(`${id}: test-only example without a story in the README table`);
   }
 }

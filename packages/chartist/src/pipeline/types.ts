@@ -1,5 +1,5 @@
 import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
-import type { MeasureText } from '../render/measure';
+import type { LabelMode, MeasureText } from '../render/measure';
 import type { CartesianAxes, ChartAxes } from '../scales/axis';
 import type { SceneNode } from '../scene/node';
 
@@ -65,6 +65,8 @@ export interface LayerContext {
    * of the series). Absent when the layer draws all series.
    */
   readonly seriesIndexes?: readonly number[];
+  /** How label layers draw labels: chart option, else the renderer's. */
+  readonly labels: LabelMode;
 }
 
 /**
@@ -95,6 +97,8 @@ export interface ResolvedConfig {
   readonly height?: number | string;
   readonly viewBox?: { readonly width: number; readonly height: number };
   readonly className?: string;
+  /** Label mode for all label layers; else the renderer decides. */
+  readonly labels?: LabelMode;
   /** Opaque data of the preset that created the chart (read by plugins). */
   readonly preset?: unknown;
 }

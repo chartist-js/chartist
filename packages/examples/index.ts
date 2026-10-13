@@ -80,6 +80,11 @@ function testOnly(input: ExampleInput): Example {
 export const examples: Example[] = [
   // Line charts (1.x sandboxes)
   example({ id: 'line/simple', title: 'Simple line chart' }),
+  testOnly({
+    id: 'line/svg-labels',
+    title: 'Simple line chart with SVG text labels',
+    v2: true
+  }),
   example({ id: 'line/area', title: 'Line chart with area' }),
   example({ id: 'line/axis-auto', title: 'Auto scale axis' }),
   example({
@@ -138,6 +143,16 @@ export const examples: Example[] = [
   example({ id: 'bar/horizontal', title: 'Horizontal bar chart' }),
   example({ id: 'bar/label-position', title: 'Label placement' }),
   example({ id: 'bar/multiline', title: 'Multi-line labels' }),
+  testOnly({
+    id: 'bar/svg-labels-multiline',
+    title: 'Multi-line SVG text labels',
+    v2: true
+  }),
+  testOnly({
+    id: 'bar/svg-labels-horizontal',
+    title: 'Horizontal bar chart with SVG text labels',
+    v2: true
+  }),
   example({ id: 'bar/overlapping-bars', title: 'Overlapping bars on mobile' }),
   example({ id: 'bar/stacked', title: 'Stacked bar chart', compat: true }),
   example({
@@ -246,6 +261,11 @@ export const examples: Example[] = [
   example({
     id: 'composed/bar-and-line',
     title: 'Bars and a line with two Y axes',
+    v2: true
+  }),
+  example({
+    id: 'composed/svg-labels',
+    title: 'SVG text labels',
     v2: true
   }),
   example({

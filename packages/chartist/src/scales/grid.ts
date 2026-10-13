@@ -5,9 +5,10 @@
 import { namespaces } from '../core/constants';
 import type { AxisOptions, ChartPadding } from '../core/types';
 import type { Area } from '../pipeline/types';
-import { node, type SceneNode } from '../scene/node';
+import { node, withFields, type SceneNode } from '../scene/node';
 import { isFalseyButZero } from '../utils/utils';
 import type { ScaleAxis } from './axis';
+import type { SvgLabelBuilder } from './svgLabels';
 
 export interface AxisClassNames {
   readonly grid: string;
@@ -49,6 +50,11 @@ export interface AxisFrame {
   readonly place?: LabelPlacer;
   /** Whether labels get the start class (top, left) or the end class. */
   readonly atStart?: boolean;
+  /**
+   * Draws labels as SVG text instead of HTML in a `foreignObject`. Kept
+   * out of this module (see `svgLabels.ts`) like `place`.
+   */
+  readonly svgLabel?: SvgLabelBuilder;
 }
 
 /** Position of a tick and the offset of its label, per axis side. */
@@ -155,13 +161,31 @@ export function axisNodes(
         [units.len]: labelLength,
         [units.counterLen]: Math.max(0, options.offset - 10)
       };
+      const atStart = frame.atStart ?? options.position === 'start';
       const classes = [
         classNames.label,
         classNames[units.dir],
-        (frame.atStart ?? options.position === 'start')
-          ? classNames.start
-          : classNames.end
+        atStart ? classNames.start : classNames.end
       ].join(' ');
+      const ctx = { axis, index, text: labelValue, ...attrs };
+      if (frame.svgLabel) {
+        const label = frame.svgLabel(
+          String(labelValue),
+          attrs as unknown as {
+            x: number;
+            y: number;
+            width: number;
+            height: number;
+          },
+          classes,
+          axis.dimension,
+          atStart
+        );
+        if (label) {
+          labels.push(withFields(label, { role: 'label', ctx }));
+        }
+        return;
+      }
       // 1.x sizes the span in px, the axis direction first.
       const style =
         `${units.len}: ${Math.round(attrs[units.len])}px; ` +
@@ -175,7 +199,7 @@ export function axisNodes(
       labels.push(
         node('foreignObject', { style: 'overflow: visible;', ...attrs }, '', {
           role: 'label',
-          ctx: { axis, index, text: labelValue, ...attrs }
+          ctx
         }).append(span)
       );
     }

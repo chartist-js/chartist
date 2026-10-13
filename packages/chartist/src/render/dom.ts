@@ -69,6 +69,9 @@ function measureInDocument(document: Document): MeasureText {
       'style',
       'position: absolute; visibility: hidden; width: 0; height: 0;'
     );
+    if (options.rootClass) {
+      svg.setAttribute('class', options.rootClass);
+    }
     const node = document.createElementNS(
       namespaces.svg,
       'text'
@@ -81,14 +84,21 @@ function measureInDocument(document: Document): MeasureText {
     }
     node.textContent = text;
     svg.appendChild(node);
-    document.body.appendChild(svg);
+    (options.container ?? document.body).appendChild(svg);
     try {
       if (typeof node.getBBox !== 'function') {
         return estimateText(text, options);
       }
       const box = node.getBBox();
+      const fontSize = parseFloat(
+        document.defaultView?.getComputedStyle(node).fontSize ?? ''
+      );
       return box.width || box.height
-        ? { width: box.width, height: box.height }
+        ? {
+            width: box.width,
+            height: box.height,
+            ...(fontSize > 0 && { fontSize })
+          }
         : estimateText(text, options);
     } finally {
       svg.remove();
@@ -104,6 +114,7 @@ function measureInDocument(document: Document): MeasureText {
 export function domRenderer(): Renderer<DomRenderOutput> {
   let measure: MeasureText | undefined;
   return {
+    labels: 'html',
     render(scene, container) {
       const document = container.ownerDocument;
       const elements = new WeakMap<SceneNode, Element>();

@@ -5,6 +5,7 @@
  */
 import type { Layer, LayerContext } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
+import type { LabelMode } from '../render/measure';
 import type { PlacedScaleAxis } from '../scales/axis';
 import {
   axisNodes,
@@ -13,6 +14,11 @@ import {
   type DrawnAxisOptions,
   type LabelPlacer
 } from '../scales/grid';
+import {
+  svgLabels,
+  type LabelAlign,
+  type SvgLabelBuilder
+} from '../scales/svgLabels';
 
 export interface AxisLayerClassNames extends AxisClassNames {
   readonly gridGroup: string;
@@ -37,6 +43,14 @@ export interface AxisLayerOptions {
   /** Axis ids to draw; default: all axes, in declaration order. */
   readonly axes?: readonly string[];
   readonly classNames?: Partial<AxisLayerClassNames>;
+}
+
+/** @experimental */
+export interface AxisLabelsOptions extends AxisLayerOptions {
+  /** HTML (`foreignObject`) or SVG `text`; default: the chart's mode. */
+  readonly labels?: LabelMode;
+  /** Alignment of SVG text labels; default: as the 1.x CSS aligns them. */
+  readonly align?: Partial<LabelAlign>;
 }
 
 /** The 1.x axis defaults, for options an axis definition leaves out. */
@@ -100,9 +114,11 @@ export const placeOnSide =
 function nodesOf(
   axis: PlacedScaleAxis,
   context: LayerContext,
-  classNames: AxisLayerClassNames
+  classNames: AxisLayerClassNames,
+  svgLabel?: SvgLabelBuilder
 ) {
   return axisNodes(axis, {
+    svgLabel,
     area: context.area,
     padding: context.padding,
     classNames,
@@ -143,17 +159,21 @@ export function axisGrid(
  * Labels of the named axes (default: all) in `g.ct-labels`.
  * @experimental
  */
-export function axisLabels(options: AxisLayerOptions = {}): Layer {
+export function axisLabels(options: AxisLabelsOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };
   return {
     type: 'axisLabels',
     coordinates: ['cartesian'],
     series: [],
     compose(context) {
+      const svgLabel =
+        (options.labels ?? context.labels) === 'svg'
+          ? svgLabels(context.measureText, 'line', options.align)
+          : undefined;
       return [
         withFields(node('g', {}, classNames.labelGroup), {
           children: selectedAxes(context, options.axes).flatMap(
-            axis => nodesOf(axis, context, classNames).labels
+            axis => nodesOf(axis, context, classNames, svgLabel).labels
           )
         })
       ];

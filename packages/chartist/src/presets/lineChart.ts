@@ -10,6 +10,7 @@ import type { Label, ResponsiveOptions } from '../core/types';
 import type { ChartConfig, ChartHandle } from '../chart/types';
 import { line } from '../layers/line';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
+import type { LabelMode } from '../render/measure';
 import { presetAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { isNumeric } from '../utils/utils';
@@ -39,6 +40,8 @@ export type LineChartPresetOptions = Omit<
     Omit<NonNullable<LineChartOptions['axisX']>, 'type'>;
   readonly axisY?: PresetAxisOptions &
     Omit<NonNullable<LineChartOptions['axisY']>, 'type'>;
+  /** HTML (1.x) or SVG text labels; default: the renderer's mode. */
+  readonly labels?: LabelMode;
 };
 
 type Resolved = typeof lineDefaults & LineChartPresetOptions;
@@ -104,6 +107,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
       height: options.height,
       viewBox: options.viewBox,
       className: options.classNames.chart,
+      labels: options.labels,
       layers: [
         gridLayer(axisOptions),
         seriesGroup(
