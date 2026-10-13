@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 4329;
+// E2E_PORT lets parallel worktrees test their own builds side by side.
+const PORT = Number(process.env.E2E_PORT ?? 4329);
 
 /** E2E tests of the built site, served from dist/apps/docs by e2e/serve.mjs. */
 export default defineConfig({
