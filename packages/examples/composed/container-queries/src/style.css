@@ -17,3 +17,25 @@
 .wide {
   width: 660px;
 }
+
+/* Narrower windows: the cards stack, each at most half the window high;
+   the narrow one stays under 400px, so the container queries still pick
+   different options for each. */
+@media (max-width: 1000px) {
+  #chart {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .cell {
+    height: min(260px, calc(50vh - 30px));
+  }
+
+  .narrow {
+    width: min(300px, 100%);
+  }
+
+  .wide {
+    width: 100%;
+  }
+}

@@ -32,6 +32,10 @@ References: `line/simple` (a plain conversion) and `line/modify-drawing` (1.x `d
 
 Find the v2 details in the library source (`packages/chartist/src`: `presets/`, `layers/`, `scene/`, `chart/`) and in the docs pages (`apps/docs/src/content/docs/events-and-plugins.mdx`, `animations.mdx`, `axes-and-scales.mdx`). The source is the truth.
 
+## Style in CSS, not in JavaScript
+
+1.x examples often set styles from a `draw` event (`stroke-width`, `style="fill-opacity: …"`), because 1.x had no custom properties. The functional entry teaches v2: when JavaScript only styles an element, use the custom properties (`--ct-bar-width`, `--ct-color`, …) or a class and a rule in `src/style.css` instead. Keep JavaScript for what CSS can't do: replacing or adding elements, SMIL. Examples: `bar/stacked` (bar width) and `line/modify-drawing` (the triangle's color).
+
 ## When the pixels differ
 
 1. First suspect the conversion: an option in the wrong place, a different default, a node replaced at a different position, an animation keyed differently, attributes in a different order that change rendering.

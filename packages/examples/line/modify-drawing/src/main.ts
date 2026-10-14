@@ -1,4 +1,5 @@
 import 'chartist/styles.css';
+import './style.css';
 import { lineChart, node, type ChartPlugin } from 'chartist';
 
 // Replaces every point with a triangle around the point's coordinates.
@@ -11,13 +12,11 @@ const triangles: ChartPlugin = {
         return;
       }
       const { x, y } = element.ctx as { x: number; y: number };
+      // Its color comes from CSS (style.css), like every other element.
       return node(
         'path',
-        {
-          d: `M ${x} ${y - 15} L ${x - 15} ${y + 8} L ${x + 15} ${y + 8} z`,
-          style: 'fill-opacity: 1'
-        },
-        'ct-area'
+        { d: `M ${x} ${y - 15} L ${x - 15} ${y + 8} L ${x + 15} ${y + 8} z` },
+        'ct-triangle'
       );
     });
   }

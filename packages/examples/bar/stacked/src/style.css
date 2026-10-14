@@ -1,0 +1,4 @@
+/* Wide bars: a custom property, no JavaScript needed. */
+#chart {
+  --ct-bar-width: 30px;
+}

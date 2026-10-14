@@ -1,20 +1,6 @@
 import 'chartist/styles.css';
-import { barChart, type ChartPlugin } from 'chartist';
-
-// Draws every bar 30px wide.
-const wideBars: ChartPlugin = {
-  name: 'wide-bars',
-  install(chart) {
-    chart.on('compose', element => {
-      if (element.role !== 'bar') {
-        return;
-      }
-      return element.attr({
-        style: 'stroke-width: 30px'
-      });
-    });
-  }
-};
+import './style.css';
+import { barChart } from 'chartist';
 
 barChart(
   '#chart',
@@ -27,7 +13,6 @@ barChart(
     ]
   },
   {
-    plugins: [wideBars],
     stackBars: true,
     axisY: {
       labelInterpolationFnc: value => +value / 1000 + 'k'

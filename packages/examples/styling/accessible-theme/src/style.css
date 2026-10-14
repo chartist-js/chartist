@@ -17,3 +17,18 @@
   --ct-label-color: rgb(255 255 255 / 0.6);
   --ct-grid-color: rgb(255 255 255 / 0.2);
 }
+
+/* Narrower windows: the two charts share the width, and fit the height. */
+@media (max-width: 1000px) {
+  #chart {
+    gap: 12px;
+  }
+
+  .cell {
+    box-sizing: border-box;
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    height: min(300px, calc(100vh - 40px));
+  }
+}

@@ -1,0 +1,4 @@
+/* The triangles take their series color, like lines and points. */
+.ct-triangle {
+  fill: var(--ct-color);
+}
