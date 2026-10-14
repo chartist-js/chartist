@@ -76,18 +76,18 @@ export interface PresetState<
 export interface PresetHandle<TOptions> extends ChartHandle {
   /**
    * Changes the options and redraws: they extend the current options, or
-   * with `override`, the defaults, dropping the options given before.
-   * Matching responsive options still apply on top. `plugins` and `on`
-   * can't change. Coming from 1.x, `setOptions(options)` is
-   * `update(undefined, options, true)` and `setOptions(options, true)` is
-   * `update(undefined, options)`.
+   * with `{ replace: true }`, the defaults, dropping the options given
+   * before. Matching responsive options still apply on top. `plugins` and
+   * `on` can't change. Coming from 1.x, `setOptions(options)` is
+   * `update(undefined, options, true)` and
+   * `setOptions(options, { replace: true })` is `update(undefined, options)`.
    * @param options The options to change.
-   * @param override Starts from the defaults instead of the current
-   * options.
+   * @param how `replace: true` starts from the defaults instead of the
+   * current options.
    */
   setOptions(
     options: Omit<TOptions, 'plugins' | 'on'>,
-    override?: boolean
+    how?: { readonly replace?: boolean }
   ): this;
 }
 
@@ -203,12 +203,13 @@ export function labelLayer(
   };
 }
 
-/** Wraps a layer's output in the unclassed 1.x series group. */
+/**
+ * Wraps a layer's output in the unclassed 1.x series group; everything
+ * else about the layer (its series, axes, extent) stays.
+ */
 export function seriesGroup(layer: Layer): Layer {
   return {
-    type: layer.type,
-    chartType: layer.chartType,
-    coordinates: layer.coordinates,
+    ...layer,
     compose: context => [group('', [...layer.compose(context)])]
   };
 }
@@ -341,9 +342,9 @@ export function createPreset<
       inner.update(changes);
       return handle;
     },
-    setOptions(next, override = false) {
+    setOptions(next, how) {
       // The controller's flag is 1.x's: true extends the current options.
-      controller.setOptions(next as TOptions, !override);
+      controller.setOptions(next as TOptions, !how?.replace);
       controller.render();
       return handle;
     },

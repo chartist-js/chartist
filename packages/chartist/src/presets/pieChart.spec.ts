@@ -71,7 +71,7 @@ describe('presets/pieChart', () => {
     expect(element.querySelector('svg')!.getAttribute('class')).toBe(
       'ct-chart-donut'
     );
-    chart.setOptions({ showLabel: false }, true);
+    chart.setOptions({ showLabel: false }, { replace: true });
     expect(element.querySelector('svg')!.getAttribute('class')).toBe(
       'ct-chart-pie'
     );

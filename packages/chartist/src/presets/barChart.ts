@@ -175,7 +175,6 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
       reverseData: options.reverseData,
       classNames: options.classNames
     });
-    // The group keeps the layer's extent, so the value axis fits the stacks.
     // As 1.x, `overlap` keeps the axis at the stacked sums, though its
     // bars all start at zero; only `true` fits the axis to the values.
     const extentOf =

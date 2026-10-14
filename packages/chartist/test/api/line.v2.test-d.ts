@@ -40,7 +40,7 @@ describe('line preset types', () => {
     expectTypeOf(chart.setOptions({ showArea: true })).toEqualTypeOf<
       PresetHandle<LineChartPresetOptions>
     >();
-    chart.setOptions({ showPoint: false }, true);
+    chart.setOptions({ showPoint: false }, { replace: true });
     // @ts-expect-error showArea is a boolean
     chart.setOptions({ showArea: 'yes' });
     // @ts-expect-error stackBars is a bar chart option

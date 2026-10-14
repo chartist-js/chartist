@@ -129,14 +129,14 @@ describe('presets/lineChart handle', () => {
     expect(element.querySelectorAll('.ct-point')).toHaveLength(0);
   });
 
-  it('setOptions with override starts from the defaults', () => {
+  it('setOptions with replace starts from the defaults', () => {
     const element = sized();
     const chart = lineChart(
       element,
       { series: [[1, 2]] },
       { showPoint: false }
     );
-    chart.setOptions({ showArea: true }, true);
+    chart.setOptions({ showArea: true }, { replace: true });
     expect(element.querySelectorAll('.ct-area')).toHaveLength(1);
     expect(element.querySelectorAll('.ct-point')).toHaveLength(2);
   });
