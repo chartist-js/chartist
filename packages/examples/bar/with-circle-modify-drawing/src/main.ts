@@ -1,17 +1,48 @@
 import 'chartist/styles.css';
-import { BarChart, Svg, getMultiValue } from 'chartist';
-import { compat } from 'chartist/compat';
+import { barChart, getMultiValue, node, type ChartPlugin } from 'chartist';
+
+// Adds a circle at the peak of every bar, its radius depending on the value.
+const peakCircles: ChartPlugin = {
+  name: 'peak-circles',
+  install(chart) {
+    // A series comes through `compose` after its bars, so we rebuild its
+    // children with a circle after each bar.
+    chart.on('compose', series => {
+      if (series.role !== 'series') {
+        return;
+      }
+      return series.children.reduce((result, child) => {
+        const withChild = result.append(child);
+        if (child.role !== 'bar') {
+          return withChild;
+        }
+        // The circle sits at the bar peak's coordinates
+        const { x2, y2 } = child.attrs as { x2: number; y2: number };
+        return withChild.append(
+          node(
+            'circle',
+            {
+              cx: x2,
+              cy: y2,
+              r: Math.abs(Number(getMultiValue(child.ctx?.value))) * 2 + 5
+            },
+            'ct-slice-pie'
+          )
+        );
+      }, series.empty());
+    });
+  }
+};
 
 // Create a simple bi-polar bar chart
-const chart = new BarChart(
+barChart(
   '#chart',
   {
     labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'],
     series: [[1, 2, 4, 8, 6, -2, -1, -4, -6, -2]]
   },
   {
-    // 1.x draw events come from the compat plugin in v2.
-    plugins: [compat],
+    plugins: [peakCircles],
     high: 10,
     low: -10,
     axisX: {
@@ -19,22 +50,3 @@ const chart = new BarChart(
     }
   }
 );
-
-// Listen for draw events on the bar chart
-chart.on('draw', data => {
-  // If this draw event is of type bar we can use the data to create additional content
-  if (data.type === 'bar') {
-    // We use the group element of the current series to append a simple circle with the bar peek coordinates and a circle radius that is depending on the value
-    data.group.append(
-      new Svg(
-        'circle',
-        {
-          cx: data.x2,
-          cy: data.y2,
-          r: Math.abs(Number(getMultiValue(data.value))) * 2 + 5
-        },
-        'ct-slice-pie'
-      )
-    );
-  }
-});

@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { BarChart } from 'chartist';
+import { barChart } from 'chartist';
 
-new BarChart(
+barChart(
   '#chart',
   {
     series: [

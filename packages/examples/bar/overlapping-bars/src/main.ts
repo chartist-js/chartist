@@ -1,8 +1,8 @@
 import 'chartist/styles.css';
 import {
-  BarChart,
-  type BarChartOptions,
-  type ResponsiveOptions
+  barChart,
+  type BarChartPresetOptions,
+  type PresetResponsiveOptions
 } from 'chartist';
 
 const data = {
@@ -30,7 +30,7 @@ const options = {
   seriesBarDistance: 15
 };
 
-const responsiveOptions: ResponsiveOptions<BarChartOptions> = [
+const responsiveOptions: PresetResponsiveOptions<BarChartPresetOptions> = [
   [
     'screen and (min-width: 641px) and (max-width: 1024px)',
     {
@@ -51,4 +51,4 @@ const responsiveOptions: ResponsiveOptions<BarChartOptions> = [
   ]
 ];
 
-new BarChart('#chart', data, options, responsiveOptions);
+barChart('#chart', data, options, responsiveOptions);

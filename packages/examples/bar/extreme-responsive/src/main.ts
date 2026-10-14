@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { BarChart, noop } from 'chartist';
+import { barChart, noop } from 'chartist';
 
-new BarChart(
+barChart(
   '#chart',
   {
     labels: ['Quarter 1', 'Quarter 2', 'Quarter 3', 'Quarter 4'],

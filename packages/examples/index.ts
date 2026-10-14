@@ -228,15 +228,47 @@ export const examples: Example[] = [
   }),
 
   // Bar charts (1.x sandboxes)
-  example({ id: 'bar/bi-polar-interpolated', title: 'Bi-polar bar chart' }),
-  example({ id: 'bar/distributed-series', title: 'Distributed series' }),
+  example({
+    id: 'bar/bi-polar-interpolated',
+    title: 'Bi-polar bar chart',
+    description:
+      'Ten weeks of positive and negative values around zero, with every other label shown.',
+    classic: true
+  }),
+  example({
+    id: 'bar/distributed-series',
+    title: 'Distributed series',
+    description:
+      'One series of clothing sizes, each value drawn as its own bar and color.',
+    classic: true
+  }),
   example({
     id: 'bar/extreme-responsive',
-    title: 'Extreme responsive configuration'
+    title: 'Extreme responsive configuration',
+    description:
+      'Five series per quarter that switch between stacked, horizontal and grouped bars as the screen grows.',
+    classic: true
   }),
-  example({ id: 'bar/horizontal', title: 'Horizontal bar chart' }),
-  example({ id: 'bar/label-position', title: 'Label placement' }),
-  example({ id: 'bar/multiline', title: 'Multi-line labels' }),
+  example({
+    id: 'bar/horizontal',
+    title: 'Horizontal bar chart',
+    description: 'Two series across the days of the week, drawn sideways.',
+    classic: true
+  }),
+  example({
+    id: 'bar/label-position',
+    title: 'Label placement',
+    description:
+      'Two weekly series with the x-axis labels on top and the y-axis labels on the right.',
+    classic: true
+  }),
+  example({
+    id: 'bar/multiline',
+    title: 'Multi-line labels',
+    description:
+      'Quarterly amounts in CHF with long labels that wrap onto several lines.',
+    classic: true
+  }),
   testOnly({
     id: 'bar/svg-labels-multiline',
     title: 'Multi-line SVG text labels',
@@ -247,15 +279,34 @@ export const examples: Example[] = [
     title: 'Horizontal bar chart with SVG text labels',
     v2: true
   }),
-  example({ id: 'bar/overlapping-bars', title: 'Overlapping bars on mobile' }),
-  example({ id: 'bar/stacked', title: 'Stacked bar chart', compat: true }),
+  example({
+    id: 'bar/overlapping-bars',
+    title: 'Overlapping bars on mobile',
+    description:
+      'Two series over twelve months whose bars move closer together and labels shorten on small screens.',
+    classic: true
+  }),
+  example({
+    id: 'bar/stacked',
+    title: 'Stacked bar chart',
+    description:
+      'Three series stacked per quarter, with a plugin that widens every bar.',
+    classic: true,
+    compat: true
+  }),
   example({
     id: 'bar/stacked-accumulate-relative',
-    title: 'Stacked bar chart with accumulate-relative stack mode'
+    title: 'Stacked bar chart with accumulate-relative stack mode',
+    description:
+      'Positive and negative values stacked separately, up and down from zero.',
+    classic: true
   }),
   example({
     id: 'bar/with-circle-modify-drawing',
     title: 'Add peak circles using the draw events',
+    description:
+      'A plugin adds a circle at the peak of every bar, sized by its value.',
+    classic: true,
     compat: true
   }),
 
@@ -359,26 +410,55 @@ export const examples: Example[] = [
     classic: true
   }),
 
-  testOnly({ id: 'bar/auto-scale', title: 'Bar chart with auto scale axes' }),
-  testOnly({ id: 'bar/labels', title: 'Bar chart with labels' }),
+  testOnly({
+    id: 'bar/auto-scale',
+    title: 'Bar chart with auto scale axes',
+    description: 'Two x/y points on auto scale axes with whole-number ticks.',
+    classic: true
+  }),
+  testOnly({
+    id: 'bar/labels',
+    title: 'Bar chart with labels',
+    description: 'One series of five values, labeled Sunday to Thursday.',
+    classic: true
+  }),
   testOnly({
     id: 'bar/multi-series',
-    title: 'Bar chart with series of different lengths'
+    title: 'Bar chart with series of different lengths',
+    description: 'Three series of four, three and two values, without labels.',
+    classic: true
   }),
-  testOnly({ id: 'bar/reverse-data', title: 'Bar chart with reversed data' }),
+  testOnly({
+    id: 'bar/reverse-data',
+    title: 'Bar chart with reversed data',
+    description: 'Three series of different lengths, drawn in reverse order.',
+    classic: true
+  }),
   testOnly({
     id: 'bar/adaptive',
     title: 'Adaptive bar chart',
+    description:
+      'Five series per quarter that switch between stacked, horizontal and grouped bars as the screen grows.',
+    classic: true,
     viewports: ['default', 'tablet', 'mobile', 'mobile-landscape'],
     size: 'viewport'
   }),
   testOnly({
     id: 'bar/overlapping-bars-on-mobile',
     title: 'Overlapping bars on mobile (story)',
+    description:
+      'Two series over twelve months whose bars move closer together and labels shorten on small screens.',
+    classic: true,
     viewports: ['default', 'mobile'],
     size: 'viewport'
   }),
-  testOnly({ id: 'bar/view-box', title: 'Bar chart with a view box' }),
+  testOnly({
+    id: 'bar/view-box',
+    title: 'Bar chart with a view box',
+    description:
+      'Two x/y points in a fixed view box that halves on small screens.',
+    classic: true
+  }),
 
   testOnly({ id: 'pie/fixed-size', title: 'Pie chart with a fixed size' }),
   testOnly({ id: 'pie/labels', title: 'Pie chart with labels' }),

@@ -1,8 +1,22 @@
 import 'chartist/styles.css';
-import { BarChart } from 'chartist';
-import { compat } from 'chartist/compat';
+import { barChart, type ChartPlugin } from 'chartist';
 
-new BarChart(
+// Draws every bar 30px wide.
+const wideBars: ChartPlugin = {
+  name: 'wide-bars',
+  install(chart) {
+    chart.on('compose', element => {
+      if (element.role !== 'bar') {
+        return;
+      }
+      return element.attr({
+        style: 'stroke-width: 30px'
+      });
+    });
+  }
+};
+
+barChart(
   '#chart',
   {
     labels: ['Q1', 'Q2', 'Q3', 'Q4'],
@@ -13,17 +27,10 @@ new BarChart(
     ]
   },
   {
-    // 1.x draw events come from the compat plugin in v2.
-    plugins: [compat],
+    plugins: [wideBars],
     stackBars: true,
     axisY: {
       labelInterpolationFnc: value => +value / 1000 + 'k'
     }
   }
-).on('draw', data => {
-  if (data.type === 'bar') {
-    data.element.attr({
-      style: 'stroke-width: 30px'
-    });
-  }
-});
+);

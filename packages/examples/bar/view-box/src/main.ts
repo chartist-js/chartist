@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { BarChart, AutoScaleAxis } from 'chartist';
+import { autoScaleAxis, barChart } from 'chartist';
 
-new BarChart(
+barChart(
   '#chart',
   {
     series: [
@@ -13,11 +13,11 @@ new BarChart(
   },
   {
     axisX: {
-      type: AutoScaleAxis,
+      type: autoScaleAxis(),
       onlyInteger: true
     },
     axisY: {
-      type: AutoScaleAxis,
+      type: autoScaleAxis(),
       onlyInteger: true
     },
     viewBox: {
