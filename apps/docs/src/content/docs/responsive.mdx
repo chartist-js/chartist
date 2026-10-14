@@ -63,7 +63,7 @@ const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 chart('#chart', {
   data: { labels, series: [[12, 9, 7, 8, 5]] },
   axes: cartesianAxes([
-    { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+    { id: 'x', side: 'bottom', type: stepAxis() },
     { id: 'y', side: 'left', type: autoScaleAxis(), low: 0 }
   ]),
   layers: [axisGrid(), line({ showArea: true }), axisLabels()],

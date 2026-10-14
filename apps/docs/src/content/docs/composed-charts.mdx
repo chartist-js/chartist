@@ -36,11 +36,7 @@ A climate chart: rain as bars on the left axis, temperature as a line on the rig
 <LiveExample
   title='Rain and temperature'
   label='Composed chart: monthly rain in mm as bars on the left axis and temperature in degrees as a line on the right axis, January to June'
-  preview={{
-    type: 'composed',
-    data: climate,
-    options: { className: 'ct-chart-bar' }
-  }}
+  preview={{ type: 'composed', data: climate }}
   example='composed-charts/rain-and-temperature'
 />
 
@@ -64,13 +60,12 @@ On top of that, an axis takes the same options as `axisX` and `axisY` in the pre
 
 A few things differ from the presets:
 
-- **A step axis needs its `ticks`.** It doesn't read the labels from your data, so pass them, like `ticks: months` above.
 - **Offsets default to 30 px for X axes and 40 px for Y axes**, the space reserved for an axis's labels.
 - **Several axes can share a side.** They stack outward in the order you list them, each with its own offset.
 
 ```ts nocheck
 cartesianAxes([
-  { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
+  { id: 'month', side: 'bottom', type: stepAxis() },
   // Both on the left: 'eur' next to the chart, 'usd' outside it.
   { id: 'eur', side: 'left', type: autoScaleAxis() },
   { id: 'usd', side: 'left', type: autoScaleAxis(), offset: 50 }
@@ -105,11 +100,11 @@ Next to `data`, `axes` and `layers`, `chart()` takes:
 | Option            | What it does                                                                                      |
 | ----------------- | ------------------------------------------------------------------------------------------------- |
 | `padding`         | Space around the chart in px: a number, or `{ top, right, bottom, left }` (default 15, 15, 5, 10) |
-| `className`       | Classes for the `<svg>`. A composed chart has none by default                                     |
+| `className`       | Classes for the `<svg>`. By default the chart type's class, from the layers                       |
 | `width`, `height` | A fixed size; by default the chart fills its container                                            |
 | `labels`          | `'html'` or `'svg'` axis labels for every label layer                                             |
 
-The `className` matters for CSS: the default stylesheet aligns labels by chart type. `ct-chart-bar` centers the X labels under the bars, which is why the example sets it.
+The class matters for CSS: the default stylesheet aligns labels by chart type. Without a `className`, a chart with a `bar()` layer gets `ct-chart-bar`, which centers the X labels under the bars, a pie gets `ct-chart-pie` (or `ct-chart-donut`), and anything else gets `ct-chart-line`. A `className` of your own replaces it, so add the chart type's class to it if you want that alignment.
 
 <Callout kind='warn'>
   **Experimental until 2.0.** `chart()`, `cartesianAxes()` and the layers are

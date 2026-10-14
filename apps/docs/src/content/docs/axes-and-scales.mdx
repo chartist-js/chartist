@@ -43,7 +43,7 @@ Chartist has three axis types, each created by a function:
 
 | Type               | Places a value by                        | Ticks                                                         |
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------- |
-| `stepAxis()`       | Its index: first, second, third…         | One per step, from `ticks`                                    |
+| `stepAxis()`       | Its index: first, second, third…         | One per step: the data's `labels`, or the `ticks` you give    |
 | `autoScaleAxis()`  | Its value, on a scale fitted to the data | Round numbers, at least `scaleMinSpace` px apart (default 20) |
 | `fixedScaleAxis()` | Its value, between `low` and `high`      | The `ticks` you give, or `divisor` evenly spaced ones         |
 
@@ -51,11 +51,11 @@ A step axis doesn't look at values at all, which is right for categories like we
 
 ## How the presets choose
 
-| Preset        | X axis                                                    | Y axis                                                                       |
-| ------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `lineChart()` | A step axis over `labels`; `fullWidth: true` stretches it | An auto scale                                                                |
-| `barChart()`  | A step axis over `labels`                                 | An auto scale that includes zero, unless you set the chart's `low` or `high` |
-| `pieChart()`  | None: a pie has no axes                                   |                                                                              |
+| Preset        | X axis                                                    | Y axis                                                                                     |
+| ------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `lineChart()` | A step axis over `labels`; `fullWidth: true` stretches it | An auto scale                                                                              |
+| `barChart()`  | A step axis over `labels`                                 | An auto scale that includes zero, unless you set `low` or `high`, on the chart or the axis |
+| `pieChart()`  | None: a pie has no axes                                   |                                                                                            |
 
 With `horizontalBars: true`, the bar chart swaps them: the labels go down the Y axis and the values along X.
 
@@ -70,7 +70,7 @@ The auto scale fits the data and picks round steps. These axis options steer it:
 | `low`, `high`    | Fix the ends of the scale instead of taking them from the data                |
 | `onlyInteger`    | Steps of whole numbers only                                                   |
 | `scaleMinSpace`  | The smallest distance between two ticks in px; larger values give fewer ticks |
-| `referenceValue` | A value the scale always includes, like a zero line                           |
+| `referenceValue` | A value the scale includes, like a zero line; `low` and `high` win over it    |
 
 Small counts are where `onlyInteger` shines. Without it, this chart would put ticks between the whole numbers:
 
@@ -171,7 +171,7 @@ Sometimes you know which ticks matter. `fixedScaleAxis()` puts the scale between
   example='axes-and-scales/xy-plot'
 />
 
-Without `low` and `high`, the scale runs from the smallest to the largest value in the data. Instead of `ticks`, you can give a `divisor`: it splits the range into that many equal parts and puts a tick at the start of each. With `low: 0`, `high: 100` and `divisor: 4`, the ticks are 0, 25, 50 and 75, without one at 100.
+Without `low` and `high`, the scale runs from the smallest to the largest value in the data. Instead of `ticks`, you can give a `divisor`: it splits the range into that many equal parts, with a tick at each end. With `low: 0`, `high: 100` and `divisor: 4`, the ticks are 0, 25, 50, 75 and 100.
 
 <Callout kind='tip'>
   **The same works on Y.** `axisY: { type: fixedScaleAxis(), ticks: [0, 50, 100], low: 0, high: 100 }` keeps a percentage chart on a 0 to 100 scale with exactly three grid lines.

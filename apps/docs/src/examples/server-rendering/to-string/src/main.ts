@@ -24,11 +24,10 @@ const scene = toScene(
       ]
     },
     axes: cartesianAxes([
-      { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+      { id: 'x', side: 'bottom', type: stepAxis() },
       { id: 'y', side: 'left', type: autoScaleAxis() }
     ]),
     layers: [axisGrid(), line(), axisLabels()],
-    className: 'ct-chart-line',
     viewBox: { width: 400, height: 250 }
   },
   { width: 400, height: 250 }

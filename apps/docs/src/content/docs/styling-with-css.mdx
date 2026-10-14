@@ -42,6 +42,7 @@ The default stylesheet, `chartist/styles.css`, reads its values from custom prop
 | `--ct-point-shape`                | `round`               | `round` or `square` points           |
 | `--ct-area-opacity`               | `0.1`                 | Opacity of the area below a line     |
 | `--ct-bar-width`                  | `10px`                | Bar thickness                        |
+| `--ct-donut-width`                | `60px`                | Donut ring thickness                 |
 | `--ct-grid-color`                 | `rgba(0, 0, 0, 0.2)`  | Grid lines                           |
 | `--ct-grid-width`                 | `1px`                 | Grid line thickness                  |
 | `--ct-grid-dasharray`             | `2px`                 | Grid dashes (`none` for solid lines) |
@@ -49,7 +50,7 @@ The default stylesheet, `chartist/styles.css`, reads its values from custom prop
 | `--ct-label-color`                | `rgba(0, 0, 0, 0.4)`  | Axis and slice labels                |
 | `--ct-label-size`                 | `0.75rem`             | Label font size                      |
 
-Donut ring thickness is the exception: it's the `donutWidth` option of [`pieChart()`](../pie-and-donut-charts/), because the pie layer sets it on each slice.
+A donut's `donutWidth` option wins over `--ct-donut-width`, and the ring is laid out for 60 px unless you set the option. More in [Pie and donut charts](../pie-and-donut-charts/#donuts).
 
 They're regular custom properties, so they cascade. Set them where they should apply:
 

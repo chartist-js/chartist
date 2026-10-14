@@ -124,6 +124,8 @@ The data, the options and the media query pairs in `responsiveOptions` stay as t
 | First render on the next tick              | Renders right away, before the call returns                                      |
 | Redraws when the window resizes            | Redraws when the container resizes (`ResizeObserver`)                            |
 | `chart.update(newData)`                    | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
+| `chart.update(undefined, options, true)`   | `chart.setOptions(options)`                                                      |
+| `chart.update(undefined, options)`         | `chart.setOptions(options, { replace: true })`                                   |
 | `chart.detach()`                           | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
 | `chart.on('draw', …)` and other 1.x events | Pipeline events like `compose`, see [Events and plugins](../events-and-plugins/) |
 
@@ -196,7 +198,8 @@ You don't need `compat` in the list as well.
   **Register 1.x listeners in a plugin.** The functions render before they
   return, so a `draw` listener added with `chart.on()` afterwards misses the
   first render. Put it in a plugin instead:
-  `fromLegacyPlugin(chart => chart.on('draw', …))`.
+  `fromLegacyPlugin(chart => chart.on('draw', …))`. Listeners of the v2 phases
+  go in the `on` option: `lineChart('#chart', data, { on: { compose: … } })`.
 </Callout>
 
 ## What's new
@@ -207,6 +210,7 @@ These come with the functions. The classes stay as they were in 1.x, so they don
 - **Container queries** for responsive options, next to media queries (experimental). See [Responsive sugar topping](../responsive/).
 - **Server rendering** with `toScene()` and `renderToString()`, and SVG text labels. See [Server rendering](../server-rendering/).
 - **v2 plugins** that hook into every step of the pipeline. See [Events and plugins](../events-and-plugins/).
+- **`setOptions()`** changes a chart's options after creation, and the **`on` option** listens from the first render. See [Updating charts](../updating-charts/#new-options).
 - **Stricter types:** scene nodes narrow by role, event names and payloads are checked, and a misspelled event is a compile error instead of a listener that's never called.
 
 And for every chart, classes included:
@@ -239,12 +243,23 @@ The 0.x file names, `dist/chartist.min.js` and `dist/chartist.min.css`, are copi
 
 ## What changed
 
-Nothing was removed. The changes, all covered above:
+Nothing was removed. The changes covered above:
 
 - **1.x events** need `compat` in `plugins`. Without it, listeners aren't called and the console warns.
 - **1.x plugins** need `compat` on the classes, or `fromLegacyPlugin()` on the functions. The functions throw for a plain plugin function.
 - **`draw` events** fire after the DOM render. Elements appended to `data.group` land after the group's other elements.
 - **The compat plugin** covers line, bar and pie charts, not composed charts made with `chart()`. It needs the DOM renderer, so it doesn't work with server rendering.
+
+A few 1.x behaviors were bugs, and v2 fixes them, on the classes too:
+
+- **An axis's own `low` and `high`** win over a bar chart's zero line: `axisY: { low: 10 }` starts the axis at 10. In 1.x, the axis always included zero.
+- **`fixedScaleAxis` with `divisor`** puts a tick at `high` too: `divisor: 4` gives five ticks. 1.x left out the last one.
+- **The donut ring width** comes from the stylesheet (`--ct-donut-width`, 60px) unless you set `donutWidth`. Without the Chartist stylesheet, set `donutWidth`, or the ring gets the browser's 1px stroke.
+- **Donut labels** follow `labelPosition`, as pie labels do. In 1.x they always sat on the ring.
+- **`stackMode: 'accumulate-relative'`** fits the axis to the stacks below zero too, so you no longer need a `low` for them.
+- **`roundWithPrecision(value, 0)`** rounds to whole numbers. In 1.x, 0 digits fell back to 8.
+- **`animationBegin` and `animationEnd`** fire with `compat` when you call `data.element.animate()` in a `draw` listener. In 1.x they never reached your listeners.
+- **`off(name)`** without a listener removes only your listeners. In 1.x it also removed those of plugins.
 
 In the API reference: [`chartist/compat`](../../api/compat/) and [the 1.x classes](../../api/classes/).
 

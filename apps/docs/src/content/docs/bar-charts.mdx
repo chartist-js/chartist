@@ -47,7 +47,7 @@ export const distributed = {
   series: [20, 60, 120, 200, 180]
 };
 
-A bar chart takes the same data as a line chart: labels along one axis, a series per array. Each value becomes a bar that grows from zero, so the axis always includes zero and negative values hang below it.
+A bar chart takes the same data as a line chart: labels along one axis, a series per array. Each value becomes a bar that grows from zero, so the axis includes zero (unless you [set `low` or `high`](#low-and-high)) and negative values hang below it.
 
 `barChart()` takes a container, your data and options. The data shapes are shared by all chart types and explained in [Data and options](../data-and-options/).
 
@@ -115,15 +115,11 @@ barChart(
       [-3, -1, -4, -2]
     ]
   },
-  { stackBars: true, stackMode: 'accumulate-relative', low: -5 }
+  { stackBars: true, stackMode: 'accumulate-relative' }
 );
 ```
 
-<Callout kind='warn'>
-  **Set `low` for relative stacks.** The value axis is fitted to the sum of each
-  stack, positive and negative values together, so the parts below zero can be
-  cut off. Set `low` (and `high`, if needed) to the range your stacks reach.
-</Callout>
+The value axis fits both sides: up to the highest stack above zero and down to the lowest one below it.
 
 ## Horizontal bars
 
@@ -159,7 +155,7 @@ Sometimes every bar is its own thing: sizes, categories, a profile rather than v
 
 ## Low and high
 
-`low` and `high` fix the ends of the value axis, as on line charts. Bars still start at zero: with a `low` above zero, the bars start at the bottom edge of the chart. The axis settings are in [Axes and scales](../axes-and-scales/).
+`low` and `high` fix the ends of the value axis, as on line charts, and so do the value axis's own (`axisY: { low: 10 }`). Bars still start at zero: with a `low` above zero, the bars start at the bottom edge of the chart. The axis settings are in [Axes and scales](../axes-and-scales/).
 
 ```ts
 import 'chartist/styles.css';

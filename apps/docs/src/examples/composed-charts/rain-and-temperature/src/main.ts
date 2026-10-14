@@ -26,7 +26,7 @@ chart('#chart', {
     ]
   },
   axes: cartesianAxes([
-    { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
+    { id: 'month', side: 'bottom', type: stepAxis() },
     { id: 'mm', side: 'left', type: autoScaleAxis(), low: 0 },
     { id: 'celsius', side: 'right', type: autoScaleAxis(), low: 0 }
   ]),
@@ -40,7 +40,5 @@ chart('#chart', {
       align: 'center'
     }),
     axisLabels()
-  ],
-  // The bar chart's label CSS: X labels centered under the bars.
-  className: 'ct-chart-bar'
+  ]
 });

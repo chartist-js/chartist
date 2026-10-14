@@ -50,7 +50,7 @@ import { autoScaleAxis, cartesianAxes, chart, line, stepAxis } from 'chartist';
 chart('#chart', {
   data: { labels: ['Mon', 'Tue', 'Wed'], series: [[1, 3, 2]] },
   axes: cartesianAxes([
-    { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['Mon', 'Tue', 'Wed'] },
+    { id: 'x', side: 'bottom', type: stepAxis() },
     { id: 'y', side: 'left', type: autoScaleAxis() }
   ]),
   layers: [line()],
@@ -62,7 +62,19 @@ chart('#chart', {
 });
 ```
 
-Or call `on()` and `off()` on the chart handle. Both return the handle, so they chain. `off(name)` without a listener removes every listener of that event, and the name `'*'` listens to all events, with the event name as the first argument:
+The presets take the same listeners:
+
+```ts
+import { lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  { series: [[1, 3, 2]] },
+  { on: { mount: () => console.log('drawn') } }
+);
+```
+
+Or call `on()` and `off()` on the chart handle. Both return the handle, so they chain. `off(name, listener)` removes that listener. `off(name)` without one removes the listeners you added to that event, with `on()` or in the `on` config, and leaves the ones of plugins alone. The name `'*'` listens to all events, with the event name as the first argument:
 
 ```ts
 import { lineChart } from 'chartist';
@@ -78,8 +90,8 @@ chart.off('*', log);
 <Callout>
   **The first render happens right away.** `chart()` and the presets draw the
   chart before they return, so a listener added with `on()` afterwards sees the
-  next render, not the first. For the first one, use the `on` config of
-  `chart()` or a plugin, which the presets accept as `plugins`.
+  next render, not the first. For the first one, pass it in `on`, or use a
+  plugin.
 </Callout>
 
 ## Scene nodes
