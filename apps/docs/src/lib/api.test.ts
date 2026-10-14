@@ -36,13 +36,6 @@ const exportsOf = (name: string) =>
  * regardless, without editing this list.
  */
 const PENDING = new Set<string>([
-  'chart',
-  'layers',
-  'scales',
-  'scene',
-  'events-and-plugins',
-  'rendering',
-  'responsive',
   'data',
   'svg',
   'compat',
