@@ -242,3 +242,29 @@ test('the preview component runs an example without the editor', async ({
   await expect(page.locator('.cm-editor')).toHaveCount(0);
   await expect(page.locator('.playground-toolbar')).toHaveCount(0);
 });
+
+test('the bar between editor and preview resizes them', async ({ page }) => {
+  await page.goto('?example=line-area');
+  await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
+    timeout: 20_000
+  });
+  const editor = page.locator('.playground-editor');
+  const bar = page.getByRole('separator', {
+    name: 'Resize the editor and the preview'
+  });
+  const before = (await editor.boundingBox())!.width;
+  const box = (await bar.boundingBox())!;
+  await page.mouse.move(box.x + box.width / 2, box.y + 50);
+  await page.mouse.down();
+  await page.mouse.move(box.x - 200, box.y + 50, { steps: 5 });
+  await page.mouse.up();
+  expect((await editor.boundingBox())!.width).toBeLessThan(before - 150);
+
+  await bar.focus();
+  await page.keyboard.press('End');
+  await expect(bar).toHaveAttribute('aria-valuenow', '85');
+  await page.keyboard.press('ArrowLeft');
+  await expect(bar).toHaveAttribute('aria-valuenow', '80');
+  await bar.dblclick();
+  await expect(bar).toHaveAttribute('aria-valuenow', '50');
+});

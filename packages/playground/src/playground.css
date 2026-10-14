@@ -81,13 +81,83 @@
 
   .playground-main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns:
+      minmax(0, var(--pg-split-editor, 1fr)) 7px
+      minmax(0, var(--pg-split-output, 1fr));
     min-height: 0;
+  }
+
+  /* The resize bar: a 1px line in a 7px hit area. */
+  .playground-splitter {
+    position: relative;
+    cursor: col-resize;
+    touch-action: none;
+    /* Each half matches the panel next to it. */
+    background: linear-gradient(
+      90deg,
+      var(--pg-editor-bg, #fff) 50%,
+      var(--pg-output-bg, #fff) 50%
+    );
+  }
+
+  .playground-splitter::before {
+    content: '';
+    position: absolute;
+    inset: 0 3px;
+    background: var(--pg-chrome-line, #ccc);
+    transition:
+      inset 0.1s,
+      background 0.1s;
+  }
+
+  /* A grip in the middle, so the bar reads as something to drag. */
+  .playground-splitter::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 32px;
+    border-radius: 3px;
+    background: var(--pg-chrome-muted, #555);
+    transform: translate(-50%, -50%);
+  }
+
+  .playground-splitter:hover::before,
+  .playground-splitter:focus-visible::before,
+  .playground-resizing .playground-splitter::before,
+  .playground-splitter:hover::after,
+  .playground-splitter:focus-visible::after,
+  .playground-resizing .playground-splitter::after {
+    background: var(--pg-accent, #333);
+  }
+
+  .playground-splitter:hover::before,
+  .playground-splitter:focus-visible::before,
+  .playground-resizing .playground-splitter::before {
+    inset: 0 2px;
+  }
+
+  .playground-splitter:focus-visible {
+    outline: none;
+  }
+
+  .playground-resizing {
+    cursor: col-resize;
+    user-select: none;
+  }
+
+  .playground-resizing iframe {
+    pointer-events: none;
   }
 
   @media (max-width: 720px) {
     .playground-main {
       grid-template-columns: 1fr;
+    }
+
+    .playground-splitter {
+      display: none;
     }
 
     .playground-editor {
@@ -99,7 +169,6 @@
   .playground-editor {
     min-height: 240px;
     overflow: auto;
-    border-right: 1px solid var(--pg-chrome-line, #ccc);
     background: var(--pg-editor-bg, #fff);
   }
 

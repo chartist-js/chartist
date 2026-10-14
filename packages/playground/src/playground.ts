@@ -40,6 +40,8 @@ export interface PlaygroundOptions extends Omit<
   actions?: PlaygroundAction[];
   /** npm range of `chartist` for the default StackBlitz action. */
   chartistVersion?: string;
+  /** The editor's share of the width, 0.15 to 0.85. Defaults to 0.5. */
+  split?: number;
   /** After an edit (debounced like rendering) or a reset, with the files. */
   onChange?: (files: PlaygroundFiles) => void;
   /** Every message from the preview (errors, console, ready). */
@@ -86,6 +88,7 @@ export async function createPlayground(
     </div>
     <div class="playground-main">
       <div class="playground-editor"></div>
+      <div class="playground-splitter" role="separator" aria-orientation="vertical" aria-label="Resize the editor and the preview" aria-valuemin="15" aria-valuemax="85" aria-valuenow="50" tabindex="0"></div>
       <div class="playground-output"></div>
     </div>
     <div class="playground-panel">
@@ -209,6 +212,8 @@ export async function createPlayground(
     });
   };
 
+  mountSplitter(element, options.split ?? 0.5);
+
   const load = async (next: PlaygroundFiles) => {
     files = { ...next };
     await mountEditor();
@@ -284,4 +289,58 @@ export async function createPlayground(
 
   await Promise.all([load(files), render()]);
   return playground;
+}
+
+/**
+ * The bar between the editor and the preview: drag it, use the arrow keys
+ * (Home and End for the limits), or double-click it for an even split.
+ */
+function mountSplitter(element: HTMLElement, initial: number) {
+  const main = element.querySelector<HTMLElement>('.playground-main')!;
+  const bar = element.querySelector<HTMLElement>('.playground-splitter')!;
+  const MIN = 0.15;
+  const MAX = 0.85;
+  const set = (ratio: number) => {
+    const split = Math.min(MAX, Math.max(MIN, ratio));
+    main.style.setProperty('--pg-split-editor', `${split}fr`);
+    main.style.setProperty('--pg-split-output', `${1 - split}fr`);
+    bar.setAttribute('aria-valuenow', String(Math.round(split * 100)));
+  };
+  const current = () => Number(bar.getAttribute('aria-valuenow')) / 100;
+  set(initial);
+
+  bar.addEventListener('pointerdown', event => {
+    event.preventDefault();
+    bar.setPointerCapture(event.pointerId);
+    // The preview frame would swallow the pointer while it's over it.
+    element.classList.add('playground-resizing');
+  });
+  bar.addEventListener('pointermove', event => {
+    if (bar.hasPointerCapture(event.pointerId)) {
+      const box = main.getBoundingClientRect();
+      set((event.clientX - box.left) / box.width);
+    }
+  });
+  const stop = (event: PointerEvent) => {
+    if (bar.hasPointerCapture(event.pointerId)) {
+      bar.releasePointerCapture(event.pointerId);
+    }
+    element.classList.remove('playground-resizing');
+  };
+  bar.addEventListener('pointerup', stop);
+  bar.addEventListener('pointercancel', stop);
+  bar.addEventListener('dblclick', () => set(0.5));
+  bar.addEventListener('keydown', event => {
+    const step = { ArrowLeft: -0.05, ArrowRight: 0.05 }[event.key];
+    if (step !== undefined) {
+      set(current() + step);
+    } else if (event.key === 'Home') {
+      set(MIN);
+    } else if (event.key === 'End') {
+      set(MAX);
+    } else {
+      return;
+    }
+    event.preventDefault();
+  });
 }
