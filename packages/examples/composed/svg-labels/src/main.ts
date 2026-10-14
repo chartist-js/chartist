@@ -23,7 +23,7 @@ chart('#chart', {
     ]
   },
   axes: cartesianAxes([
-    { id: 'quarters', side: 'bottom', type: stepAxis(), ticks: quarters },
+    { id: 'quarters', side: 'bottom', type: stepAxis() },
     { id: 'revenue', side: 'left', type: autoScaleAxis(), referenceValue: 0 },
     {
       id: 'margin',

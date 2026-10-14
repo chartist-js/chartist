@@ -20,8 +20,7 @@ const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
 const quarterAxis = {
   id: 'quarters',
   side: 'bottom',
-  type: stepAxis(),
-  ticks: quarters
+  type: stepAxis()
 } as const;
 const revenueAxis = {
   id: 'revenue',

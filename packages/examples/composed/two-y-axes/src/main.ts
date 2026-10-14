@@ -21,7 +21,7 @@ chart('#chart', {
     ]
   },
   axes: cartesianAxes([
-    { id: 'months', side: 'bottom', type: stepAxis(), ticks: months },
+    { id: 'months', side: 'bottom', type: stepAxis() },
     {
       id: 'temperature',
       side: 'left',
