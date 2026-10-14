@@ -70,6 +70,17 @@ const card = new URL(href(image ?? cardPath(Astro.url.pathname, import.meta.env.
         document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
       })();
     </script>
+    <script is:inline>
+      // Visitors per page (GoatCounter: no cookies, no personal data), counted
+      // on the live site only: local builds, tests and forks load nothing.
+      if (location.hostname === 'chartist.dev') {
+        const counter = document.createElement('script');
+        counter.async = true;
+        counter.src = 'https://gc.zgo.at/count.js';
+        counter.dataset.goatcounter = 'https://chartist.goatcounter.com/count';
+        document.head.append(counter);
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

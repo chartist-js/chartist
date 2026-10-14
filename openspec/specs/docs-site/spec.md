@@ -17,11 +17,11 @@ The documentation site SHALL be a static Astro app in `apps/docs`, built through
 
 ### Requirement: Brand design system
 
-The site SHALL implement the design tokens and components of `docs/visual-design` (palette, semantic tokens for light and dark, typography, spacing, radii, shadows, motion). The tokens SHALL be defined once as CSS custom properties and exposed as the Tailwind theme, and components SHALL be styled with Tailwind utilities from that theme. Animations, scroll timelines, the chart theme (`--ct-*`) and styles for generated HTML (MDX prose, code highlighting, the editor) SHALL stay plain CSS. Fonts SHALL be self-hosted; pages SHALL make no requests to third-party hosts.
+The site SHALL implement the design tokens and components of `docs/visual-design` (palette, semantic tokens for light and dark, typography, spacing, radii, shadows, motion). The tokens SHALL be defined once as CSS custom properties and exposed as the Tailwind theme, and components SHALL be styled with Tailwind utilities from that theme. Animations, scroll timelines, the chart theme (`--ct-*`) and styles for generated HTML (MDX prose, code highlighting, the editor) SHALL stay plain CSS. Fonts SHALL be self-hosted; pages SHALL make no requests to third-party hosts, except the visitor counter on the live site (see "Visitor counting").
 
 #### Scenario: No third-party requests
 
-- **WHEN** any page of the built site loads
+- **WHEN** any page of the built site loads anywhere but on chartist.dev
 - **THEN** every request goes to the site's own origin
 
 #### Scenario: One source for colors
@@ -332,7 +332,7 @@ The site SHALL publish `/llms.txt` in the llmstxt.org format, with notes that v2
 
 ### Requirement: Credits page
 
-The site SHALL have a credits page at `/credits/` that thanks the people behind Chartist and names its sponsor: Cube first, then the people. The page SHALL be in the site's design (both themes, accessible, no third-party requests). It SHALL be reachable from a "Credits" link in the footer's Community column and from the landing page's sponsor card.
+The site SHALL have a credits page at `/credits/` that thanks the people behind Chartist and names its sponsor: Cube first, then the people. The page SHALL be in the site's design (both themes, accessible, no third-party requests beyond the visitor counter). It SHALL be reachable from a "Credits" link in the footer's Community column and from the landing page's sponsor card.
 
 #### Scenario: Reachable from the footer
 
@@ -403,3 +403,17 @@ When the facts script cannot read the collaborators (no token with access), it S
 
 - **WHEN** the facts script runs without a token that can read the collaborators
 - **THEN** it warns, keeps the previous snapshot's roles and still updates the commit counts
+
+### Requirement: Visitor counting
+
+The live site SHALL count visitors per page with GoatCounter (chartist.goatcounter.com), which sets no cookies and stores no personal data, so no consent banner is needed. The counter SHALL load only when a page is served from chartist.dev, so local builds, tests, previews and forks make no requests to it.
+
+#### Scenario: Counted on the live site
+
+- **WHEN** a page loads from chartist.dev
+- **THEN** it loads GoatCounter's script, which counts the page view
+
+#### Scenario: Not counted elsewhere
+
+- **WHEN** a page of the built site loads from any other host
+- **THEN** it makes no request to GoatCounter
