@@ -60,7 +60,7 @@ class EntityValidator {
 export class DataService {
   constructor(
     private readonly db: DatabaseService,
-    private readonly config: AppConfig,
+    private readonly config: AppConfig
   ) {}
 
   async createEntity(dto: CreateEntityDto): Promise<Entity> {
@@ -111,7 +111,7 @@ export type SizeLevel = 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
 // ❌ DON'T: Enums
 enum EntityStatus {
   DRAFT = 'DRAFT',
-  IN_PROGRESS = 'IN_PROGRESS',
+  IN_PROGRESS = 'IN_PROGRESS'
 }
 ```
 
@@ -204,7 +204,7 @@ const API_VERSION = 'v1';
 // ✅ DO: camelCase for configuration
 const config = {
   maxFileSize: 50,
-  apiVersion: 'v1',
+  apiVersion: 'v1'
 };
 ```
 
@@ -220,7 +220,7 @@ export class AuthService {
 
   constructor(
     private readonly db: DatabaseService,
-    private readonly authProvider: AuthProviderService,
+    private readonly authProvider: AuthProviderService
   ) {}
 }
 ```
@@ -296,7 +296,7 @@ Use type guards with `is` predicates for runtime type checking.
 // ✅ DO: Type guards with 'is' predicate
 export function isStringValue(
   definition: FieldDefinition,
-  value: unknown,
+  value: unknown
 ): value is string {
   return definition.fieldType === 'STRING' && typeof value === 'string';
 }
@@ -383,7 +383,7 @@ export function generateRequestId(): string {
 
 export function evaluateRule(
   expression: string,
-  context: RuleContext,
+  context: RuleContext
 ): RuleEvaluationResult {
   // Implementation
 }
@@ -403,7 +403,7 @@ Use default parameters instead of checking for undefined.
 export function validateFile(
   file: File,
   maxSizeMB = 50,
-  allowedTypes: readonly string[] = ['application/pdf', 'image/jpeg'],
+  allowedTypes: readonly string[] = ['application/pdf', 'image/jpeg']
 ): ValidationResult {
   // Implementation
 }
@@ -412,7 +412,7 @@ export function validateFile(
 export function validateFile(
   file: File,
   maxSizeMB: number,
-  allowedTypes: string[],
+  allowedTypes: string[]
 ): ValidationResult {
   maxSizeMB = maxSizeMB || 50;
   allowedTypes = allowedTypes || ['application/pdf'];
@@ -432,7 +432,7 @@ export function mergeMetadata(
     (merged, current) => {
       return { ...merged, ...current };
     },
-    {} as Record<string, unknown>,
+    {} as Record<string, unknown>
   );
 }
 ```
@@ -454,7 +454,7 @@ export class DataService {
   constructor(
     private readonly db: DatabaseService,
     private readonly config: AppConfig,
-    private readonly eventEmitter: EventEmitter2,
+    private readonly eventEmitter: EventEmitter2
   ) {}
 }
 ```
@@ -497,7 +497,7 @@ Use class-validator decorators for validation when using NestJS. Always use `rea
 export class CreateEntityDto {
   @ApiProperty({
     description: 'User ID who is creating the entity (UUID)',
-    example: '550e8400-e29b-41d4-a716-446655440003',
+    example: '550e8400-e29b-41d4-a716-446655440003'
   })
   @IsString()
   @IsNotEmpty()
@@ -507,7 +507,7 @@ export class CreateEntityDto {
     description: 'Entity name',
     example: 'My Entity',
     minLength: 1,
-    maxLength: 100,
+    maxLength: 100
   })
   @IsString()
   @MinLength(1)
@@ -516,7 +516,7 @@ export class CreateEntityDto {
 
   @ApiPropertyOptional({
     description: 'Optional description',
-    example: 'Entity description',
+    example: 'Entity description'
   })
   @IsOptional()
   @IsString()
@@ -549,10 +549,10 @@ async function processDocument(documentId: string): Promise<ProcessingResult> {
 // ❌ DON'T: .then() chains
 function processDocument(documentId: string): Promise<ProcessingResult> {
   return fetchDocument(documentId)
-    .then((document) => performOCR(document))
-    .then((ocr) => generateSummary(ocr))
-    .then((summary) => ({ success: true, summary }))
-    .catch((error) => {
+    .then(document => performOCR(document))
+    .then(ocr => generateSummary(ocr))
+    .then(summary => ({ success: true, summary }))
+    .catch(error => {
       logger.error('Document processing failed:', error);
       return { success: false, error };
     });
@@ -674,7 +674,7 @@ function processUser({ userId, email, role }: User): void {
 // ✅ DO: Nested destructuring with defaults
 const {
   database: { url: dbUrl = 'localhost' },
-  redis: { port: redisPort = 6379 },
+  redis: { port: redisPort = 6379 }
 } = config;
 ```
 
@@ -739,8 +739,8 @@ Use arrow functions for callbacks and short functions.
 
 ```typescript
 // ✅ DO: Arrow functions
-const doubled = numbers.map((n) => n * 2);
-const filtered = items.filter((item) => item.isActive);
+const doubled = numbers.map(n => n * 2);
+const filtered = items.filter(item => item.isActive);
 const sorted = users.sort((a, b) => a.name.localeCompare(b.name));
 
 // ✅ DO: Arrow functions preserve 'this' context
@@ -850,7 +850,7 @@ Use JSDoc comments for exported functions, classes, and interfaces.
  */
 export function evaluateRuleWithContext(
   expression: string,
-  contextObjects: RuleContextObject[],
+  contextObjects: RuleContextObject[]
 ): RuleEvaluationResult {
   // Implementation
 }
