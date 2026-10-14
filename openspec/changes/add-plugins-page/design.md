@@ -127,7 +127,7 @@ Every listed plugin runs on v2 through `chartist/compat`: the 0.x-era scripts on
 - **"ES module"**: it imports `chartist` and works with bundlers (@stklcode).
 - **"Script"**: it loads as a script after Chartist's UMD builds (everything else).
 
-Every entry says "Runs on v2 with `chartist/compat`". A tag shows the Chartist version the plugin was written for (`v0.x`, `v1.x`, `v2.x`; asked by the author while building the page): eleven are `v0.x`, @stklcode's is `v1.x`, and `v2.x` is there for v2-native plugins to come. The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
+Every entry says "Runs on v2 with `chartist/compat`". A tag shows the Chartist API version the plugin was written for (`API v0.x`, `API v1.x`, `API v2.x`; asked by the author while building the page, with "API" so it isn't read as the plugin's own version): eleven are `API v0.x`, @stklcode's is `API v1.x`, and `API v2.x` is there for v2-native plugins to come. The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
 
 ### Page layout and the filter
 

@@ -277,11 +277,14 @@ A few things keep a plugin working everywhere:
 - Touch elements only in `mount`, and only through `elementOf`.
 - List `chartist` as a peer dependency, so your plugin uses the reader's copy.
 
+Once it's on npm, propose it for the [plugins page](../../plugins/), where readers find the community's plugins.
+
 <Callout>
   **Coming from 1.x?** v2 charts don't emit `draw`, `created` or the other 1.x
   events. Listening to one logs a hint. Your 1.x plugins still run: wrap them
   with `fromLegacyPlugin` from `chartist/compat`. See [Coming from
-  1.x](../coming-from-1x/).
+  1.x](../coming-from-1x/), and the [plugins page](../../plugins/) for the
+  community's plugins running on v2.
 </Callout>
 
 In the API reference: [events and plugins](../../api/events-and-plugins/) and [the scene](../../api/scene/).

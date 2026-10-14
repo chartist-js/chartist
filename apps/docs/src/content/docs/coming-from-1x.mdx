@@ -194,6 +194,8 @@ lineChart(
 
 You don't need `compat` in the list as well.
 
+Most community plugins were written for 0.x, as scripts that read the global `Chartist`. Load them after Chartist's UMD build and `compat.umd.js`, which adds the 0.x names they expect (`Chartist.plugins`, `Chartist.Line`, `Chartist.Bar`, `Chartist.Pie` and `Chartist.getDataArray`), and wrap them with `Chartist.fromLegacyPlugin`. The [plugins page](../../plugins/) shows the popular ones running on v2, with the setup for each.
+
 <Callout kind='warn'>
   **Register 1.x listeners in a plugin.** The functions render before they
   return, so a `draw` listener added with `chart.on()` afterwards misses the
