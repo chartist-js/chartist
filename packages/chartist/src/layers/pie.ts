@@ -160,6 +160,7 @@ export function pie(options: PieLayerOptions = {}): Layer {
     options.labelInterpolationFnc ?? ((value: Label) => value);
   return {
     type: 'pie',
+    chartType: options.donut ? 'donut' : 'pie',
     coordinates: ['polar'],
     compose({ data, area }) {
       // Values or `{ value, name, className, meta }` objects, as in 1.x.

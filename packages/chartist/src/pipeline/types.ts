@@ -136,6 +136,13 @@ export interface LayerContext {
 export interface Layer {
   /** Name used in error messages, e.g. `line`. */
   readonly type: string;
+  /**
+   * The kind of chart the layer draws, when `type` doesn't say it: a
+   * {@link chart} without `className` gets `ct-chart-bar` if a layer is a
+   * `bar`, else `ct-chart-pie` or `ct-chart-donut` for a `pie` or `donut`,
+   * else `ct-chart-line`. Without it, `type` counts.
+   */
+  readonly chartType?: string;
   /** Coordinate systems the layer can draw in. */
   readonly coordinates: readonly Coordinates[];
   /** Axis ids to draw on; default: the first X and the first Y axis. */

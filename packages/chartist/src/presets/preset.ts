@@ -172,6 +172,7 @@ export function labelLayer(
 export function seriesGroup(layer: Layer): Layer {
   return {
     type: layer.type,
+    chartType: layer.chartType,
     coordinates: layer.coordinates,
     compose: context => [group('', [...layer.compose(context)])]
   };

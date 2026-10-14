@@ -6,6 +6,7 @@ import {
   type MeasureText
 } from '../render/measure';
 import type { SceneNode } from '../scene/node';
+import { withChartTypeClass } from './className';
 import {
   eventMethods,
   installPlugins,
@@ -47,7 +48,8 @@ function unavailable(method: string): never {
  * Runs the phases `resolve` to `scene` with the config's plugins and
  * listeners.
  *
- * It takes the same config as `chart()`. Listeners of `render` and `mount`
+ * It takes the same config as `chart()`, and the SVG gets the same chart
+ * type class without `className`. Listeners of `render` and `mount`
  * never run, responsive overrides and the `renderer` are ignored, and
  * calling `update()`, `detach()` or `destroy()` on the handle a plugin gets
  * throws. Turn the scene into markup with {@link renderToString}.
@@ -108,7 +110,7 @@ export function toScene(config: ChartConfig, size: SceneSize): SceneNode {
   };
   installPlugins(handle, config.plugins, provided, scope);
   registerListeners(handle, config.on);
-  return runPipeline(emitter, config, {
+  return runPipeline(emitter, withChartTypeClass(config), {
     width: size.width,
     height: size.height,
     measureText: size.measureText ?? estimateText,

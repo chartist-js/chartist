@@ -4,6 +4,7 @@ import { domRenderer } from '../render/dom';
 import { estimateText, type MeasureText } from '../render/measure';
 import type { RenderOutput } from '../render/types';
 import type { ResponsiveWatcher } from '../responsive/responsive';
+import { withChartTypeClass } from './className';
 import {
   eventMethods,
   installPlugins,
@@ -43,6 +44,11 @@ function resolveTarget(target: string | Element): Element {
  * matching `responsive` entries change. Listeners in `config.on` and
  * plugins receive the events of the first render too.
  *
+ * Without `className`, the SVG gets the chart type class of its layers,
+ * so the stylesheet's chart type rules apply: `ct-chart-bar` if a layer
+ * draws bars, else `ct-chart-pie` or `ct-chart-donut` for a pie layer,
+ * else `ct-chart-line`. A `className` replaces it.
+ *
  * @example
  * ```ts
  * import {
@@ -76,8 +82,7 @@ function resolveTarget(target: string | Element): Element {
  *     bar({ series: ['rain'], x: 'month', y: 'mm' }),
  *     line({ series: ['temperature'], y: 'celsius', align: 'center' }),
  *     axisLabels()
- *   ],
- *   className: 'ct-chart-bar'
+ *   ]
  * });
  * ```
  * @param target The container element, or a CSS selector for it.
@@ -166,7 +171,7 @@ export function chart(
     measuredText = false;
     state = runPipeline(
       emitter,
-      effective,
+      withChartTypeClass(effective),
       {
         width,
         height,

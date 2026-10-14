@@ -1,8 +1,14 @@
 import { dots } from '../../test/layers';
 import type { PhaseEvents } from '../pipeline/types';
+import { axisGrid, axisLabels } from '../layers/axes';
+import { bar } from '../layers/bar';
+import { line } from '../layers/line';
+import { pie } from '../layers/pie';
+import { cartesianAxes } from '../scales/cartesian';
+import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { findAll } from '../scene/tree';
 import { chart } from './chart';
-import type { ChartPlugin } from './types';
+import type { ChartConfig, ChartPlugin } from './types';
 
 // The custom event of the legend plugin below, declared as plugins do.
 declare module './types' {
@@ -301,6 +307,29 @@ describe('chart/chart', () => {
     handle.off('mount', fromPlugin);
     handle.update({});
     expect(fromPlugin).toHaveBeenCalledTimes(2);
+  });
+
+  it('gives the svg the chart type class of its layers', () => {
+    const classOf = (config: Omit<ChartConfig, 'data'>) => {
+      const { element } = sizedContainer();
+      chart(element, { data: { series: [[1, 2]] }, ...config });
+      return element.querySelector('svg')!.getAttribute('class');
+    };
+    const axes = cartesianAxes([
+      { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['a', 'b'] },
+      { id: 'y', side: 'left', type: autoScaleAxis() }
+    ]);
+    expect(classOf({ axes, layers: [axisGrid(), line(), axisLabels()] })).toBe(
+      'ct-chart-line'
+    );
+    expect(classOf({ axes, layers: [bar(), line()] })).toBe('ct-chart-bar');
+    expect(classOf({ coordinates: 'polar', layers: [pie()] })).toBe(
+      'ct-chart-pie'
+    );
+    expect(
+      classOf({ coordinates: 'polar', layers: [pie({ donut: true })] })
+    ).toBe('ct-chart-donut');
+    expect(classOf({ axes, layers: [bar()], className: 'mine' })).toBe('mine');
   });
 
   it('re-lays out on container resize, only when the size changed', () => {

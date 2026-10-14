@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { dots } from '../../test/layers';
+import type { Layer } from '../pipeline/types';
 import { findAll } from '../scene/tree';
 import { toScene } from './toScene';
 
@@ -61,7 +62,34 @@ describe('chart/toScene', () => {
       },
       { width: 100, height: 100, measureText }
     );
-    expect(measureText).toHaveBeenCalledWith('label');
+    // With the chart type class, so chart type CSS applies when measuring.
+    expect(measureText).toHaveBeenCalledWith('label', {
+      rootClass: 'ct-chart-line'
+    });
+  });
+
+  it('gives the svg the chart type class of its layers', () => {
+    const layer = (type: string, chartType?: string): Layer => ({
+      type,
+      chartType,
+      coordinates: ['cartesian'],
+      compose: () => []
+    });
+    const classesOf = (layers: Layer[], className?: string) =>
+      toScene(
+        { data: { series: [[1, 2]] }, layers, className },
+        { width: 100, height: 100 }
+      ).classes;
+    expect(classesOf([layer('line'), layer('axisGrid')])).toEqual([
+      'ct-chart-line'
+    ]);
+    expect(classesOf([layer('line'), layer('bar')])).toEqual(['ct-chart-bar']);
+    expect(classesOf([layer('pie', 'pie')])).toEqual(['ct-chart-pie']);
+    expect(classesOf([layer('pie', 'donut')])).toEqual(['ct-chart-donut']);
+    expect(classesOf([layer('custom', 'bar')])).toEqual(['ct-chart-bar']);
+    expect(classesOf([])).toEqual(['ct-chart-line']);
+    // A given className replaces it.
+    expect(classesOf([layer('bar')], 'mine')).toEqual(['mine']);
   });
 
   it('handle methods other than on/off are not available to plugins', () => {
