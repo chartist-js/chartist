@@ -58,10 +58,7 @@ Every axis in `cartesianAxes([...])` has:
 
 On top of that, an axis takes the same options as `axisX` and `axisY` in the presets: `offset`, `low`, `high`, `onlyInteger`, `ticks`, `showGrid`, `showLabel`, `labelInterpolationFnc` and the rest. [Axes and scales](../axes-and-scales/) explains the types and their options.
 
-A few things differ from the presets:
-
-- **Offsets default to 30 px for X axes and 40 px for Y axes**, the space reserved for an axis's labels.
-- **Several axes can share a side.** They stack outward in the order you list them, each with its own offset.
+One thing goes beyond the presets: **several axes can share a side.** They stack outward in the order you list them, each with its own offset.
 
 ```ts nocheck
 cartesianAxes([
