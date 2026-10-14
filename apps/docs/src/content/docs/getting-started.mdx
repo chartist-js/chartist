@@ -105,6 +105,34 @@ And this is what it draws, live. Press **Edit** and change a number. The editor 
 
 </Step>
 
+## Import Chartist by name
+
+An import map tells the browser where `chartist` lives, so your code can import it by name, just like with npm. The same code then moves to a bundler unchanged, and plugins that import `chartist` find it too:
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "chartist": "https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js",
+      "chartist/compat": "https://cdn.jsdelivr.net/npm/chartist@2/dist/compat.min.js"
+    }
+  }
+</script>
+<script type="module">
+  import { lineChart } from 'chartist';
+
+  lineChart('#chart', {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [
+      [12, 9, 7, 8, 5],
+      [2, 1, 3.5, 7, 3]
+    ]
+  });
+</script>
+```
+
+The import map goes before the first module script. `chartist/compat` is only needed if you use the [1.x compatibility](../coming-from-1x/); it shares the core of the `chartist` entry, since `compat.min.js` imports `index.min.js` next to it.
+
 ## Using npm
 
 Same API, installed from npm. It works with Vite, webpack, Rollup, esbuild and Astro, and it's written in TypeScript, so the types come with it.
