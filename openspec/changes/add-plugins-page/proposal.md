@@ -37,7 +37,7 @@ _None._ The page belongs to the docs site, next to its other page requirements.
 ### Modified Capabilities
 
 - `docs-site`: adds requirements for the plugins page: where it is, what each entry shows (credits, links, license, downloads, v2 status, live example), the order, the local filter, the plugin data source, and serving the plugins' code locally.
-- `example-playground`: a classic `<script src>` in an example's `index.html` may name a bare specifier from the sandbox's import map; the compiler replaces it with that URL, so examples can load UMD builds and plugin scripts from the site in the docs, the playground and shared links.
+- `example-playground`: a classic `<script src>` or a stylesheet `<link href>` in an example's `index.html` may name a bare specifier from the sandbox's import map; the compiler replaces it with that URL, so examples can load UMD builds, plugin scripts and their stylesheets from the site in the docs, the playground and shared links.
 - `v1-compatibility`: adds requirements for 0.x-era plugins: the 0.x global surface from the compat UMD build, the 1.x chart fields and type checks for plugins converted with `fromLegacyPlugin`, the 1.x axes in the `created` payload, and a contract test that runs the listed community plugins.
 
 ## Out of scope

@@ -134,7 +134,7 @@ export async function compile(
   ].join('\n');
 
   return {
-    html: injectHead(page!, head),
+    html: injectHead(resolveClassicScripts(page!, importMap.imports), head),
     diagnostics: [],
     time: now() - start
   };
@@ -299,6 +299,40 @@ function rewriteHtml(
       : tag;
   });
   return result;
+}
+
+/**
+ * Points classic scripts and stylesheet links named like a bare import
+ * (`<script src="x">`, `<link rel="stylesheet" href="x">` with `x` in the
+ * import map) at that URL. Import maps don't apply to them, and the preview
+ * has no base URL to resolve a relative path against, so this is how an
+ * example loads a UMD build, a plugin script or its stylesheet from the
+ * host the same way everywhere.
+ */
+function resolveClassicScripts(
+  html: string,
+  imports: Record<string, string>
+): string {
+  const named = (value: string | undefined): value is string =>
+    !!value && Object.hasOwn(imports, value) && !value.startsWith(VIRTUAL);
+  const point = (tag: string, name: string, value: string) =>
+    tag.replace(
+      new RegExp(`\\b${name}\\s*=\\s*(?:"[^"]*"|'[^']*'|[^\\s>]+)`, 'i'),
+      `${name}="${escapeAttr(imports[value])}"`
+    );
+  return html
+    .replace(/<script\b([^>]*)>/gi, (tag, attrs: string) => {
+      const src = attribute(attrs, 'src');
+      return named(src) && !/\btype\s*=\s*["']?module/i.test(attrs)
+        ? point(tag, 'src', src)
+        : tag;
+    })
+    .replace(/<link\b([^>]*)>/gi, (tag, attrs: string) => {
+      const href = attribute(attrs, 'href');
+      return named(href) && /\brel\s*=\s*["']?stylesheet/i.test(attrs)
+        ? point(tag, 'href', href)
+        : tag;
+    });
 }
 
 function attribute(attrs: string, name: string): string | undefined {

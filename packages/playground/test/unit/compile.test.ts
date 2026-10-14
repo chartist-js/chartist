@@ -223,3 +223,74 @@ test('stackblitz project adds package.json and keeps the files', () => {
   expect(pkg.devDependencies.typescript).toBeTruthy();
   expect(project.files['tsconfig.json']).toBeTruthy();
 });
+
+describe('classic scripts by bare name', () => {
+  const page = (scripts: string) => `<!doctype html>
+<html>
+  <head>
+    ${scripts}
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body><div id="chart"></div></body>
+</html>`;
+  const withImports = {
+    ...options,
+    imports: {
+      'chartist/umd': 'lib/chartist/index.umd.js',
+      'chartist-plugin-axistitle': 'lib/plugins/axistitle.js'
+    }
+  };
+
+  test('loads a script named like an import from its URL, in order', async () => {
+    const { html: doc } = await compile(
+      {
+        'index.html': page(
+          '<script src="chartist/umd"></script>\n    <script src="chartist-plugin-axistitle"></script>'
+        ),
+        'src/main.ts': ''
+      },
+      withImports
+    );
+    const umd = doc!.indexOf(`<script src="${BASE}lib/chartist/index.umd.js">`);
+    const plugin = doc!.indexOf(
+      `<script src="${BASE}lib/plugins/axistitle.js">`
+    );
+    expect(umd).toBeGreaterThan(0);
+    expect(plugin).toBeGreaterThan(umd);
+  });
+
+  test('links a stylesheet named like an import', async () => {
+    const { html: doc } = await compile(
+      {
+        'index.html': page(
+          '<link rel="stylesheet" href="chartist-plugin-tooltips/style" />'
+        ),
+        'src/main.ts': ''
+      },
+      {
+        ...withImports,
+        imports: { 'chartist-plugin-tooltips/style': 'lib/plugins/tooltip.css' }
+      }
+    );
+    expect(doc).toContain(
+      `<link rel="stylesheet" href="${BASE}lib/plugins/tooltip.css" />`
+    );
+  });
+
+  test('leaves other classic scripts and module scripts alone', async () => {
+    const { html: doc } = await compile(
+      {
+        'index.html': page(
+          '<script src="https://cdn.example/x.js"></script>\n    <script src="unknown-name"></script>\n    <script type="module" src="chartist-plugin-axistitle"></script>'
+        ),
+        'src/main.ts': ''
+      },
+      withImports
+    );
+    expect(doc).toContain('<script src="https://cdn.example/x.js">');
+    expect(doc).toContain('<script src="unknown-name">');
+    expect(doc).toContain(
+      '<script type="module" src="chartist-plugin-axistitle">'
+    );
+  });
+});

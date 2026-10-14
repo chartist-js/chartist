@@ -8,7 +8,7 @@
 
 ## 2. Classic scripts by bare name in the sandbox
 
-- [ ] 2.1 In `packages/playground/src/compile.ts`, replace a classic `<script src>` whose value is a key of the import map with its URL, keeping order and leaving other scripts alone; with unit tests (bare name, unknown name, URL, module script untouched). Verify: `pnpm nx test playground`
+- [x] 2.1 In `packages/playground/src/compile.ts`, replace a classic `<script src>` whose value is a key of the import map with its URL, keeping order and leaving other scripts alone; with unit tests (bare name, unknown name, URL, module script untouched). Verify: `pnpm nx test playground`
 - [ ] 2.2 Check that the same example runs in a live example, the full playground and from a shared link. Verify: playground e2e with an example that loads a UMD build by name
 
 ## 3. Compat for 0.x-era plugins
