@@ -200,9 +200,10 @@ for (const slug of DOCS) {
       await live.getByRole('button', { name: 'Edit' }).click();
       await expect(live).toHaveAttribute('data-ready', '');
       const frame = live.frameLocator('iframe');
-      await expect(frame.locator('svg[class*="ct-chart"]').first()).toBeVisible(
-        { timeout: 10_000 }
-      );
+      // Any chart: chart() draws no ct-chart-* class unless given one.
+      await expect(frame.locator('svg').first()).toBeVisible({
+        timeout: 10_000
+      });
       await expect(live.locator('.playground-errors li')).toHaveCount(0);
     }
   });
