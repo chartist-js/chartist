@@ -29,13 +29,16 @@ export function projectLength(
 }
 
 /**
- * This helper function can be used to round values with certain precision level after decimal. This is used to prevent rounding errors near float point precision limit.
- * @param value The value that should be rounded with precision
- * @param [digits] The number of digits after decimal used to do the rounding
- * @returns Rounded value
+ * Rounds a value to a number of digits after the decimal point, to remove
+ * float errors such as `0.30000000000000004`. `0` digits round to whole
+ * numbers.
+ * @param value The value to round
+ * @param [digits] The digits after the decimal point; without it, the
+ *   global precision (8)
+ * @returns The rounded value
  */
 export function roundWithPrecision(value: number, digits?: number) {
-  const precision = Math.pow(10, digits || globalPrecision);
+  const precision = Math.pow(10, digits ?? globalPrecision);
   return Math.round(value * precision) / precision;
 }
 
