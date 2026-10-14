@@ -1,7 +1,10 @@
 import 'chartist/styles.css';
 import './style.css';
+import { lineChart, AutoScaleAxis } from 'chartist';
+import { fromLegacyPlugin } from 'chartist/compat';
 
-const { lineChart, fromLegacyPlugin, plugins, AutoScaleAxis } = Chartist;
+// Plugin scripts register on the global `Chartist`.
+const { plugins } = Chartist;
 const button = document.querySelector<HTMLButtonElement>('#reset')!;
 let reset: (() => void) | undefined;
 

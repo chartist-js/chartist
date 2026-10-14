@@ -349,6 +349,7 @@ export function pluginsMarkdown(): string {
         `- License: ${plugin.license}`,
         `- Written for the Chartist ${plugin.chartist} API; runs on v2 with \`chartist/compat\` (${plugin.loads === 'module' ? 'an ES module' : 'a script'})`,
         `- Charts: ${plugin.types.join(', ')}`,
+        `- Server rendering: ${plugin.ssr ? 'yes' : 'no, it needs a browser'}`,
         `- Downloads: ${stats.monthlyDownloads} a month, last release ${stats.lastRelease}`
       ].join('\n'),
       `Setup:\n\n${fence(setup.code, setup.lang)}`,

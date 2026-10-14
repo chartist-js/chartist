@@ -51,16 +51,28 @@ export function setupSnippet(plugin: Plugin): { lang: string; code: string } {
       ].join('\n')
     };
   }
+  // A script plugin reads the global `Chartist`, which importing
+  // chartist/compat sets up; the deferred script runs after that import.
+  const core = `${CDN}/chartist@2/dist`;
   return {
     lang: 'html',
     code: [
-      `<link rel="stylesheet" href="${CDN}/chartist@2/dist/index.min.css">`,
+      `<link rel="stylesheet" href="${core}/index.min.css">`,
       ...(own.style
         ? [`<link rel="stylesheet" href="${at}/${own.style}">`]
         : []),
-      `<script src="${CDN}/chartist@2/dist/index.umd.js"></script>`,
-      `<script src="${CDN}/chartist@2/dist/compat.umd.js"></script>`,
-      `<script src="${at}/${own.script}"></script>`
+      `<script type="module">`,
+      `  import '${core}/compat.min.js';`,
+      `</script>`,
+      `<script defer src="${at}/${own.script}"></script>`,
+      `<script type="module">`,
+      `  import { lineChart } from '${core}/index.min.js';`,
+      `  import { fromLegacyPlugin } from '${core}/compat.min.js';`,
+      '',
+      `  lineChart('#chart', data, {`,
+      `    plugins: [fromLegacyPlugin(Chartist.plugins.${plugin.registers}())]`,
+      `  });`,
+      `</script>`
     ].join('\n')
   };
 }

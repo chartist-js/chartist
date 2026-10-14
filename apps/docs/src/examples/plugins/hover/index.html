@@ -2,11 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <!-- Chartist and the plugin as scripts. Here the names load the site's
-         copies; on your site, use the script tags shown next to the example. -->
-    <script src="chartist/umd"></script>
-    <script src="chartist/compat/umd"></script>
-    <script src="chartist-hover"></script>
+    <!-- Importing chartist/compat sets up the global Chartist that plugin
+         scripts read. The deferred plugin script runs after it, before
+         main.ts. Here the names load the site's copies. -->
+    <script type="module">
+      import 'chartist/compat';
+    </script>
+    <script defer src="chartist-hover"></script>
     <script type="module" src="/src/main.ts"></script>
   </head>
   <body>

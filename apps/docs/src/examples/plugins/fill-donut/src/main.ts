@@ -1,7 +1,10 @@
 import 'chartist/styles.css';
 import './style.css';
+import { pieChart } from 'chartist';
+import { fromLegacyPlugin } from 'chartist/compat';
 
-const { pieChart, fromLegacyPlugin, plugins } = Chartist;
+// Plugin scripts register on the global `Chartist`.
+const { plugins } = Chartist;
 
 // A gauge, as in the plugin's README: 160 of 260 on a ring that leaves a
 // gap at the bottom. The second slice is the rest of the scale; it's hidden,

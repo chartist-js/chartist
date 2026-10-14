@@ -97,6 +97,9 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
                   API v{plugin.chartist}
                 </span>
                 <span class="tag">{plugin.loads === 'module' ? 'ES module' : 'Script'}</span>
+                <span class="tag" title={plugin.ssr ? 'Draws its additions in server rendering (toScene)' : 'Needs a browser: it hooks into 1.x events, which only fire when the chart is drawn in the page'}>
+                  {plugin.ssr ? 'SSR' : 'No SSR'}
+                </span>
               </div>
               <code class="w-fit">
                 {plugin.package}@{plugin.version}
@@ -136,7 +139,8 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
               <h3 class="text-lg">Use it on your site</h3>
               <p class="muted m-0 text-sm">
                 Runs on v2 with <code>chartist/compat</code>.{' '}
-                {plugin.loads === 'module' ? 'An ES module: install it from npm and import it.' : 'A script: load it after Chartist and its compat build.'}
+                {plugin.loads === 'module' ? 'An ES module: install it from npm and import it.' : 'A script: load it after importing chartist/compat, which sets up the global it reads.'}{' '}
+                <a href={href('docs/coming-from-1x/#community-plugins')}>With the UMD build or a bundler</a>
               </p>
               <Code code={plugin.setup.code} lang={plugin.setup.lang as 'ts' | 'html'} theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
             </div>

@@ -16,15 +16,13 @@ export const types = { url: LIB };
 const lib = (path: string) => new URL(`${LIB}${path}`, location.href).href;
 
 /**
- * Bare names beyond `chartist`: the container query polyfill, the UMD
- * builds, and the plugins of the plugins page. A plugin's name maps to its
+ * Bare names beyond `chartist`: the container query polyfill and the
+ * plugins of the plugins page. A plugin's name maps to its
  * module build when it has one (for `import`), else to its script (for a
  * classic `<script src>`); `<name>/style` maps to its stylesheet.
  */
 export const imports: Record<string, string> = {
   'match-container': lib('match-container.js'),
-  'chartist/umd': lib('index.umd.js'),
-  'chartist/compat/umd': lib('compat.umd.js'),
   ...Object.fromEntries(
     Object.entries(pluginFiles).flatMap(([name, files]) => {
       const file = (path: string) =>

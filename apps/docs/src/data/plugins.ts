@@ -33,6 +33,15 @@ const schema = z.array(
      * `chartist/compat`.
      */
     loads: z.enum(['module', 'script']),
+    /**
+     * Draws its additions in server rendering (`toScene()`). Only v2-native
+     * plugins can: 1.x events (`draw`, `created`) come from the mount phase,
+     * which server rendering never reaches, so plugins of the 0.x and 1.x
+     * APIs need a browser.
+     */
+    ssr: z.boolean(),
+    /** Where a script plugin registers: `Chartist.plugins.<name>`. */
+    registers: z.string().optional(),
     /** The Chartist version the plugin was written for, shown as a tag. */
     chartist: z.enum(['0.x', '1.x', '2.x']),
     /** The live example, `plugins/<name>` in src/examples. */
@@ -47,6 +56,7 @@ const schema = z.array(
 export const PLUGINS = schema.parse([
   {
     package: 'chartist-plugin-axistitle',
+    registers: 'ctAxisTitle',
     title: 'Axis title',
     description:
       'Adds a title to the X and Y axes, with an offset and text anchor of your choice.',
@@ -56,10 +66,12 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/axistitle'
   },
   {
     package: 'chartist-plugin-legend',
+    registers: 'legend',
     title: 'Legend',
     description:
       'Adds a legend from the series names. Click an entry to hide or show its series.',
@@ -69,12 +81,14 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar', 'pie'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/legend',
     hint: 'Click a legend entry to hide its series.',
     note: 'It ships no stylesheet; its README has the CSS, as in the example.'
   },
   {
     package: 'chartist-plugin-tooltips',
+    registers: 'tooltip',
     title: 'Tooltips',
     description:
       "Shows a tooltip with a point's value and meta data on hover, for lines, bars and slices.",
@@ -83,12 +97,14 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar', 'pie'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/tooltips',
     hint: 'Hover a point to see its tooltip.',
     note: "The most used fork of the original tooltip plugin, without jQuery. Its repository is gone; the npm package remains. For a maintained alternative, see Stefan Kalscheuer's tooltips below."
   },
   {
     package: 'chartist-plugin-pointlabels',
+    registers: 'ctPointLabels',
     title: 'Point labels',
     description:
       'Writes each value next to its point, so readers see exact numbers without hovering.',
@@ -98,10 +114,12 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/pointlabels'
   },
   {
     package: 'chartist-hover',
+    registers: 'hover',
     title: 'Hover',
     description:
       'Calls your functions when the pointer enters or leaves a point, so you can show the value anywhere you like.',
@@ -111,11 +129,13 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar', 'pie'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/hover',
     hint: 'Hover a point; the caption shows its value.'
   },
   {
     package: 'chartist-plugin-zoom',
+    registers: 'zoom',
     title: 'Zoom',
     description:
       'Drag a box over a line chart to zoom into it, and reset the zoom from your own button.',
@@ -125,12 +145,14 @@ export const PLUGINS = schema.parse([
     types: ['line'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/zoom',
     hint: 'Drag across the chart to zoom in, then press "Reset zoom".',
     note: 'It zooms auto and fixed scale axes, so the X axis needs one of them instead of the default step axis.'
   },
   {
     package: 'chartist-plugin-fill-donut',
+    registers: 'fillDonut',
     title: 'Fill donut',
     description:
       'Draws a copy of the donut behind it, so an animated donut looks filled from the start, and puts HTML labels in or around it. Together they make gauges.',
@@ -140,10 +162,12 @@ export const PLUGINS = schema.parse([
     types: ['pie'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/fill-donut'
   },
   {
     package: 'chartist-plugin-barlabels',
+    registers: 'ctBarLabels',
     title: 'Bar labels',
     description: 'Writes each value at the end of its bar.',
     author: 'Matt Gibbs',
@@ -152,10 +176,12 @@ export const PLUGINS = schema.parse([
     types: ['bar'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/barlabels'
   },
   {
     package: 'chartist-plugin-accessibility',
+    registers: 'ctAccessibility',
     title: 'Accessibility',
     description:
       'Adds a visually hidden table with the data, a caption and a summary, so screen reader users get the numbers.',
@@ -165,11 +191,13 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar', 'pie'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/accessibility',
     hint: 'The example makes the hidden table visible below the chart.'
   },
   {
     package: 'chartist-plugin-threshold',
+    registers: 'ctThreshold',
     title: 'Threshold',
     description:
       'Splits lines and bars at a value and gives the parts above and below their own classes to style.',
@@ -179,10 +207,12 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/threshold'
   },
   {
     package: 'chartist-plugin-targetline',
+    registers: 'ctTargetLine',
     title: 'Target line',
     description: 'Draws a horizontal line at a target value.',
     author: 'Harry Twyford',
@@ -191,6 +221,7 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar'],
     loads: 'script',
     chartist: '0.x',
+    ssr: false,
     example: 'plugins/targetline',
     note: 'It places the line by the axis maximum, so the axis should start at zero.'
   },
@@ -205,6 +236,7 @@ export const PLUGINS = schema.parse([
     types: ['line', 'bar', 'pie'],
     loads: 'module',
     chartist: '1.x',
+    ssr: false,
     example: 'plugins/stklcode-tooltips',
     hint: 'Hover a point to see its tooltip.'
   }
@@ -233,6 +265,16 @@ export function pluginFacts(name: string) {
 }
 
 for (const plugin of PLUGINS) {
+  if (plugin.ssr && plugin.chartist !== '2.x') {
+    throw new Error(
+      `plugins: ${plugin.package} is written for the ${plugin.chartist} API, whose events don't run in server rendering`
+    );
+  }
+  if (plugin.loads === 'script' && !plugin.registers) {
+    throw new Error(
+      `plugins: ${plugin.package} loads as a script but has no \`registers\``
+    );
+  }
   pinnedVersion(plugin.package);
   pluginFacts(plugin.package);
   if (!(plugin.package in files)) {

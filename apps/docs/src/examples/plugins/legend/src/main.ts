@@ -1,7 +1,10 @@
 import 'chartist/styles.css';
 import './style.css';
+import { lineChart } from 'chartist';
+import { fromLegacyPlugin } from 'chartist/compat';
 
-const { lineChart, fromLegacyPlugin, plugins } = Chartist;
+// Plugin scripts register on the global `Chartist`.
+const { plugins } = Chartist;
 
 lineChart(
   '#chart',
