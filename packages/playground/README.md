@@ -16,11 +16,14 @@ await createPlayground(document.querySelector('#playground')!, {
   files: { 'index.html': '…', 'src/main.ts': '…' },
   chartistUrl: '/lib/chartist/index.js', // must send Access-Control-Allow-Origin
   stylesUrl: '/lib/chartist/index.css',
+  types: { url: '/lib/chartist/' }, // index.d.ts and compat.d.ts, optional
   chartistVersion: '^1.5.0' // for "Open in StackBlitz"
 });
 ```
 
 `compile(files, options)` is the DOM-free core, usable on its own.
+
+With `types`, TypeScript files get type errors (underlined; Ctrl/Cmd+Shift+M lists them), completions (on `.`, while typing, Ctrl+Space) and the type and doc comment of a name on hover. The TypeScript language service runs in a worker (`src/types/`), one per page, which loads when a TypeScript editor first gets focus: about 1.3 MB compressed with the lib declarations, from the page's own origin. Type errors never stop the preview. The playground element gets `data-types="ready"` once types answer. CSS files complete the stylesheet's `--ct-*` properties. Openspec change: `add-playground-types`.
 
 ## Tasks
 
@@ -35,6 +38,6 @@ await createPlayground(document.querySelector('#playground')!, {
 
 Browsers for the e2e test: `pnpm --filter @chartist/playground exec playwright install chromium firefox webkit`.
 
-The demo URL takes `?example=<id>&transformer=sucrase|ts-blank-space`.
+The demo URL takes `?example=<id>&transformer=sucrase|ts-blank-space`, and `&types=off` for plain editing.
 
 "Open in StackBlitz" can only be checked by hand: it opens stackblitz.com in a new tab.

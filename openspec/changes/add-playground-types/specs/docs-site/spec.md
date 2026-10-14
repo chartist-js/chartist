@@ -6,5 +6,5 @@ The site SHALL serve the type declarations of the Chartist build its live exampl
 
 #### Scenario: Editing a live example
 
-- **WHEN** a reader edits a live example and types `lineChart(` in `src/main.ts`
-- **THEN** the editor shows the function's parameters, and no request leaves the site's origin
+- **WHEN** a reader edits a live example and starts typing the name of a Chartist function it imports
+- **THEN** the editor completes it and shows its signature, and no request leaves the site's origin

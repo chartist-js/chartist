@@ -85,6 +85,8 @@ async function startPlayground() {
     transformer,
     chartistUrl: `${base}lib/chartist/index.js`,
     stylesUrl: `${base}lib/chartist/index.css`,
+    // ?types=off: plain editing.
+    types: params.get('types') !== 'off' && { url: `${base}lib/chartist/` },
     chartistVersion: `^${__CHARTIST_VERSION__}`,
     onCompile: ({ time }) => {
       metrics.compileMs = time.toFixed(1);

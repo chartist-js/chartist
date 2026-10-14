@@ -8,7 +8,10 @@ const LIB_FILES: Record<string, string> = {
   'index.js': 'text/javascript',
   // chartist/compat; it imports ./index.js, so it shares the core.
   'compat.js': 'text/javascript',
-  'index.css': 'text/css'
+  'index.css': 'text/css',
+  // Declarations for type-aware editing (types option).
+  'index.d.ts': 'text/plain',
+  'compat.d.ts': 'text/plain'
 };
 
 /**

@@ -26,6 +26,13 @@ export interface PlaygroundOptions extends Omit<
   tabs?: string[];
   /** Load the CodeMirror editor. Defaults to `true`. */
   editor?: boolean;
+  /**
+   * Type-aware editing of TypeScript files: the URL of the directory with
+   * Chartist's `index.d.ts` and `compat.d.ts` (relative to the page), for
+   * the build `chartistUrl` points to. The type service loads when a
+   * TypeScript editor first gets focus. Off without it.
+   */
+  types?: { url: string } | false;
   /** Re-render delay after the last edit, in ms. Defaults to 300. */
   debounce?: number;
   /**
@@ -154,6 +161,7 @@ export async function createPlayground(
   preview.iframe.className = 'playground-preview';
 
   let editor: import('./editor.ts').Editor | undefined;
+  let types: import('./types/client.ts').TypeClient | undefined;
   let active = '';
 
   const fileOrder = () => {
@@ -205,11 +213,34 @@ export async function createPlayground(
     if (options.editor === false) {
       return;
     }
-    const { createEditor } = await import('./editor.ts');
-    editor = createEditor($('.playground-editor'), files, (file, content) => {
-      files[file] = content;
-      schedule();
+    const [{ createEditor }, { createTypeClient }] = await Promise.all([
+      import('./editor.ts'),
+      import('./types/client.ts')
+    ]);
+    // One per playground: it outlives editors remounted by reset and
+    // setFiles, and reads the current files.
+    types ??= options.types
+      ? createTypeClient(
+          {
+            url: options.types.url,
+            untyped: Object.keys(options.imports ?? {})
+          },
+          () => files
+        )
+      : undefined;
+    // For hosts and tests: types answer from here on.
+    types?.onReady(() => {
+      element.dataset.types = 'ready';
     });
+    editor = createEditor(
+      $('.playground-editor'),
+      files,
+      (file, content) => {
+        files[file] = content;
+        schedule();
+      },
+      { types, stylesUrl: options.stylesUrl }
+    );
   };
 
   mountSplitter(element, options.split ?? 0.5);
@@ -257,6 +288,7 @@ export async function createPlayground(
     destroy() {
       clearTimeout(timer);
       editor?.destroy();
+      types?.destroy();
       preview.destroy();
       element.replaceChildren();
       element.classList.remove(

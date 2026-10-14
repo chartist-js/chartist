@@ -12,6 +12,9 @@
  *   to the accent), --pg-radius
  * Editor: --pg-editor-bg, --pg-editor-ink, --pg-gutter-ink,
  *   --pg-active-line, --pg-selection, --pg-code-size, --pg-code-line-height
+ * Types (tooltips, completions, diagnostics): --pg-tooltip-bg (defaults to
+ *   the editor's), --pg-tooltip-border (defaults to --pg-border),
+ *   --pg-tooltip-radius, --pg-error, --pg-warning
  * Output and panel: --pg-output-bg, --pg-panel-ink, --pg-panel-line,
  *   --pg-error, --pg-error-bg, --pg-warn-bg
  * Frame: --pg-border, --pg-min-height, --pg-font, --pg-font-code

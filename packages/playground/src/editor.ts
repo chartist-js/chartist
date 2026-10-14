@@ -12,6 +12,11 @@ import { javascript } from '@codemirror/lang-javascript';
 import { html } from '@codemirror/lang-html';
 import { css } from '@codemirror/lang-css';
 import type { PlaygroundFiles } from './types.ts';
+import {
+  editingExtensions,
+  editingTheme,
+  type TypeExtensionOptions
+} from './types/extensions.ts';
 
 export interface Editor {
   /** Shows a file. */
@@ -62,7 +67,8 @@ const theme = EditorView.theme({
 export function createEditor(
   parent: HTMLElement,
   files: PlaygroundFiles,
-  onChange: (file: string, content: string) => void
+  onChange: (file: string, content: string) => void,
+  editing: TypeExtensionOptions = {}
 ): Editor {
   let current = '';
   const states = new Map<string, EditorState>();
@@ -75,8 +81,14 @@ export function createEditor(
         doc: files[file] ?? '',
         extensions: [
           theme,
-          // The editing area is a textbox; name it after the file.
-          EditorView.contentAttributes.of({ 'aria-label': `Code: ${file}` }),
+          editingTheme,
+          // The editing area is a textbox; name it after the file. It's in
+          // the tab order anyway (contenteditable); the explicit tabindex
+          // tells checkers the scrolling code is reachable by keyboard.
+          EditorView.contentAttributes.of({
+            'aria-label': `Code: ${file}`,
+            tabindex: '0'
+          }),
           lineNumbers(),
           history(),
           keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
@@ -84,6 +96,8 @@ export function createEditor(
           // so a page can theme the editor (see playground.css).
           syntaxHighlighting(classHighlighter),
           language(file),
+          // Completions; diagnostics and hover in TypeScript files.
+          editingExtensions(file, editing),
           EditorView.updateListener.of(update => {
             if (update.docChanged) {
               onChange(file, update.state.doc.toString());

@@ -31,6 +31,8 @@ const GROUPS: Array<[RegExp, string]> = [
     'runtime (demo + playground + es-module-lexer)'
   ],
   [/^editor-.*\.js$/, 'CodeMirror editor'],
+  [/^client-.*\.js$/, 'type client (with the editor)'],
+  [/^worker-.*\.js$/, 'type worker: TypeScript + libs (on first focus)'],
   [/^esm-.*\.js$/, 'sucrase'],
   [/^(typescript|out)-.*\.js$/, 'ts-blank-space + typescript'],
   [/^sdk\..*\.js$/, '@stackblitz/sdk (on click)']
