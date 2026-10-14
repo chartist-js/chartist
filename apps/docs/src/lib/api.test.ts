@@ -123,7 +123,15 @@ function deadLinks(entry: ApiEntry): string[] {
       found.push(`${path}: type ${String(node.name)} isn't exported`);
     }
     for (const [key, child] of Object.entries(node)) {
-      if (key !== 'sources') {
+      // Where TypeDoc says a member comes from isn't a link readers see.
+      if (
+        ![
+          'sources',
+          'inheritedFrom',
+          'implementationOf',
+          'overwrites'
+        ].includes(key)
+      ) {
         visit(
           child,
           typeof node.name === 'string' && node.variant

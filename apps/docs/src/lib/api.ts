@@ -183,13 +183,15 @@ export interface Comment {
 export function commentOf(
   reflection: Reflection | Signature | undefined
 ): Comment | undefined {
+  const declaration = reflection as Reflection | undefined;
   const comment =
     reflection?.comment ??
-    (reflection && 'signatures' in reflection
-      ? reflection.signatures?.[0]?.comment
-      : undefined) ??
-    (reflection && 'getSignature' in reflection
-      ? reflection.getSignature?.comment
+    declaration?.signatures?.[0]?.comment ??
+    declaration?.getSignature?.comment ??
+    // A method-style option (`fn?(value): R`) seen through Omit<> or Pick<>
+    // becomes a property of function type, with the comment on its signature.
+    (declaration?.type?.type === 'reflection'
+      ? declaration.type.declaration.signatures?.[0]?.comment
       : undefined);
   return comment
     ? {
