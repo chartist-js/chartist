@@ -27,11 +27,13 @@ export default defineConfig({
     // the requests already made fail (504 "Outdated Optimize Dep").
     optimizeDeps: {
       include: [
+        '@codemirror/autocomplete',
         '@codemirror/commands',
         '@codemirror/lang-css',
         '@codemirror/lang-html',
         '@codemirror/lang-javascript',
         '@codemirror/language',
+        '@codemirror/lint',
         '@codemirror/state',
         '@codemirror/view',
         '@lezer/highlight',

@@ -24,4 +24,4 @@
 - [x] 4.1 Playground e2e in Chromium, Firefox and WebKit: an underlined misspelled event with its message, completion of `ctx.x` after a role check, hover on `lineChart`, a type error still renders the chart, no type-service request before focus.
 - [x] 4.2 Docs e2e: no third-party requests and no console errors after editing a live example; axe passes with a tooltip open.
 - [x] 4.3 Docs: a line on editor help where readers first edit (Getting started, Events and plugins), if it reads naturally.
-- [ ] 4.4 Sizes measured and recorded in the design; plan updated; full gate.
+- [x] 4.4 Sizes measured and recorded in the design; plan updated; full gate.

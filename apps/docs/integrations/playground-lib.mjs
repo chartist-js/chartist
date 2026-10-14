@@ -1,7 +1,8 @@
 /**
  * Serves the Chartist build for live examples at `<base>playground-lib/`:
  * index.js, compat.js (it imports ./index.js), index.css and
- * themes/accessible.css (as in the package's dist), and the
+ * themes/accessible.css (as in the package's dist), the declarations
+ * index.d.ts and compat.d.ts (for type-aware editing), and the
  * match-container polyfill that container query examples import.
  *
  * The playground's preview is a sandboxed iframe (origin `null`), so it
@@ -23,6 +24,8 @@ const FILES = {
   'index.js': { source: new URL('index.js', DIST), type: 'text/javascript' },
   'compat.js': { source: new URL('compat.js', DIST), type: 'text/javascript' },
   'index.css': { source: new URL('index.css', DIST), type: 'text/css' },
+  'index.d.ts': { source: new URL('index.d.ts', DIST), type: 'text/plain' },
+  'compat.d.ts': { source: new URL('compat.d.ts', DIST), type: 'text/plain' },
   'themes/accessible.css': {
     source: new URL('themes/accessible.css', DIST),
     type: 'text/css'
@@ -30,7 +33,7 @@ const FILES = {
   'match-container.js': { source: POLYFILL, type: 'text/javascript' }
 };
 const PATTERN =
-  /\/playground-lib\/(index\.js|compat\.js|index\.css|themes\/accessible\.css|match-container\.js)(?:\?.*)?$/;
+  /\/playground-lib\/(index\.js|compat\.js|index\.css|index\.d\.ts|compat\.d\.ts|themes\/accessible\.css|match-container\.js)(?:\?.*)?$/;
 
 /** @returns {import('vite').Plugin} */
 function devServer() {

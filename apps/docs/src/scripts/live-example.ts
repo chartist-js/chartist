@@ -3,6 +3,7 @@ import {
   FILL_FRAME,
   chartistUrl,
   imports,
+  types,
   playgroundForCode,
   playgroundForExample,
   previewStyles,
@@ -142,6 +143,7 @@ export function mountLiveExamples() {
           chartistUrl: chartistUrl,
           stylesUrl: stylesUrl,
           imports,
+          types,
           previewStyles: stylesFor(config),
           actions: [
             resetAction(),

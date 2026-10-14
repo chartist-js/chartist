@@ -13,6 +13,7 @@ import {
   FILL_FRAME,
   chartistUrl,
   imports,
+  types,
   previewStyles,
   stylesUrl
 } from './playground-env';
@@ -117,6 +118,7 @@ export async function mountPlaygroundPage() {
     chartistUrl,
     stylesUrl,
     imports,
+    types,
     previewStyles: frameStyles(),
     onChange: files => void follow(files),
     actions: [

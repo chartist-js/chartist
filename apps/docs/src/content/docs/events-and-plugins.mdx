@@ -90,7 +90,7 @@ The `compose` event is where most plugins work. Its payload is a scene node: a p
 - `ctx`: its data, such as `seriesIndex`, `valueIndex`, `value` and `meta`
 - `key`: a stable id like `0/1/3` (layer, series, value)
 
-In TypeScript, checking the role narrows the node: after `node.role === 'point'`, `node.ctx.x` is a number and `node.ctx.path` is an error, since only lines, areas and slices have a path. `findAll(scene, { role: 'bar' })` returns bar nodes, and the builder methods keep the type. If your plugin adds nodes with a role of its own, declare it in the `NodeRoles` interface, the same way as [custom events](#custom-events).
+In TypeScript, checking the role narrows the node: after `node.role === 'point'`, `node.ctx.x` is a number and `node.ctx.path` is an error, since only lines, areas and slices have a path. `findAll(scene, { role: 'bar' })` returns bar nodes, and the builder methods keep the type. The live examples' editor shows it too: type `node.ctx.` inside a role check, and it lists that role's fields. If your plugin adds nodes with a role of its own, declare it in the `NodeRoles` interface, the same way as [custom events](#custom-events).
 
 Every node with a role passes through the listeners, children before their parents. So a series listener sees its points and lines as the other listeners left them.
 

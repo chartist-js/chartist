@@ -10,6 +10,8 @@ const LIB = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}playground-lib/`;
 /** Absolute URLs of the Chartist build and stylesheet for the sandbox. */
 export const chartistUrl = new URL(`${LIB}index.js`, location.href).href;
 export const stylesUrl = new URL(`${LIB}index.css`, location.href).href;
+/** Chartist's declarations, next to the build, for type-aware editing. */
+export const types = { url: LIB };
 /** Bare imports beyond `chartist`: the container query polyfill. */
 export const imports = {
   'match-container': new URL(`${LIB}match-container.js`, location.href).href

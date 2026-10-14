@@ -34,6 +34,11 @@
   --pg-error-bg: var(--danger-bg);
   --pg-warn-bg: var(--warn-bg);
 
+  /* Type tooltips: a step up from the code, so they read over it. */
+  --pg-tooltip-bg: color-mix(in oklab, var(--code-bg), white 7%);
+  --pg-tooltip-border: 1px solid var(--code-line);
+  --pg-tooltip-radius: 6px;
+
   /* Syntax colors: the site's code tokens, as in the static code blocks. */
   --pg-tok-keyword: var(--code-key);
   --pg-tok-string: var(--code-str);
