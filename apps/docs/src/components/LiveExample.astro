@@ -48,21 +48,20 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
 >
   <div class="flex min-w-0 flex-col bg-code-bg text-code-ink">
     <div class="flex items-center justify-between gap-2 border-b border-code-line py-1.5 pr-2 pl-4">
-      {
-        classic ? (
-          <div class="flex gap-0.5" role="tablist" aria-label="Code">
-            <button class="min-h-9 cursor-pointer rounded-[8px] border-0 bg-transparent px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-muted hover:text-code-ink aria-selected:bg-code-hover aria-selected:text-code-ink aria-selected:shadow-[inset_0_-2px_0_var(--code-accent)]" type="button" role="tab" aria-selected="true" data-live-tab="main">
-              {show}
-            </button>
-            <button class="min-h-9 cursor-pointer rounded-[8px] border-0 bg-transparent px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-muted hover:text-code-ink aria-selected:bg-code-hover aria-selected:text-code-ink aria-selected:shadow-[inset_0_-2px_0_var(--code-accent)]" type="button" role="tab" aria-selected="false" data-live-tab="classic">
-              1.x classes
-            </button>
-          </div>
-        ) : (
-          <span class="min-h-9 rounded-[8px] bg-code-hover px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--code-accent)]">{show}</span>
-        )
-      }
+      <span class="min-h-9 rounded-[8px] bg-code-hover px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--code-accent)]"><span data-live-file>{show}</span></span>
       <div class="flex items-center gap-1.5">
+        {
+          classic && (
+            <div class="mr-1 flex overflow-hidden rounded-pill border border-code-line" role="group" aria-label="API version" title="The same chart with the 1.x chart classes">
+              <button class="min-h-7 cursor-pointer border-0 bg-transparent px-2.5 font-mono text-xs leading-none font-semibold text-code-muted hover:text-code-ink aria-pressed:bg-code-hover aria-pressed:text-code-ink" type="button" aria-pressed="true" data-live-version="main">
+                v2
+              </button>
+              <button class="min-h-7 cursor-pointer border-0 bg-transparent px-2.5 font-mono text-xs leading-none font-semibold text-code-muted hover:text-code-ink aria-pressed:bg-code-hover aria-pressed:text-code-ink" type="button" aria-pressed="false" data-live-version="classic">
+                1.x
+              </button>
+            </div>
+          )
+        }
         <button class="icon-btn sm" type="button" data-live-copy aria-label="Copy code">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
         </button>

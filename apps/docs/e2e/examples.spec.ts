@@ -39,7 +39,7 @@ test('an example page shows the functional code and the 1.x code', async ({
   await expect(live.locator('[data-live-panel="main"]')).toContainText(
     'lineChart('
   );
-  await live.getByRole('tab', { name: '1.x classes' }).click();
+  await live.getByRole('button', { name: '1.x' }).click();
   await expect(live.locator('[data-live-panel="classic"]')).toContainText(
     'new LineChart('
   );

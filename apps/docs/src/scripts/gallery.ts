@@ -35,7 +35,7 @@ function mountFilter() {
 
 /** The page's preview theme, with the chart filling the card. */
 const thumbnailStyles = () => `${previewStyles()}${FILL_FRAME}
-body { padding: 10px 12px; background: transparent; }`;
+body { padding: 16px 20px; background: transparent; }`;
 
 async function runThumbnail(stage: HTMLElement) {
   const { files, title } = JSON.parse(stage.dataset.galleryPreview!) as {
@@ -52,8 +52,16 @@ async function runThumbnail(stage: HTMLElement) {
     previewStyles: thumbnailStyles()
   });
   // A picture of the chart: the card is the link, the frame isn't a stop.
+  // Drawn at 480 x 300 and scaled to the tile, so axis offsets and padding
+  // (fixed pixel sizes in the examples) take their usual share, not most
+  // of a small tile.
   preview.iframe.className =
-    'pointer-events-none absolute inset-0 size-full border-0';
+    'pointer-events-none absolute top-0 left-0 h-[300px] w-[480px] origin-top-left border-0';
+  const fit = () => {
+    preview.iframe.style.transform = `scale(${stage.clientWidth / 480})`;
+  };
+  fit();
+  new ResizeObserver(fit).observe(stage);
   preview.iframe.tabIndex = -1;
   preview.iframe.setAttribute('aria-hidden', 'true');
   await preview.render();

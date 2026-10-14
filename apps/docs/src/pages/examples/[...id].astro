@@ -33,7 +33,7 @@ const typeTitle = TYPES.find(entry => entry.type === example.type)!.title;
 
     <div class="flex flex-wrap items-center gap-3">
       <a class="btn sm" href={href(`playground/#example=${example.id}`)}>Open in the playground</a>
-      {example.classic && <span class="text-sm text-ink-2">The 1.x classes tab shows the same chart in Chartist 1.x code.</span>}
+      {example.classic && <span class="text-sm text-ink-2">Switch to 1.x above the code to see the same chart written with the Chartist 1.x classes.</span>}
     </div>
 
     <nav class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-6" aria-label={`More ${typeTitle.toLowerCase()}`}>

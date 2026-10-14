@@ -43,7 +43,12 @@ export function previewStyles(): string {
   const tokens = TOKENS.map(
     name => `${name}: ${root.getPropertyValue(name).trim()};`
   ).join(' ');
-  return `:root { ${tokens} color-scheme: ${root.colorScheme}; }
+  // On the dotted background, dashed grid lines read as more dots: thin
+  // solid lines instead. Examples can still set their own.
+  return `:root { ${tokens} color-scheme: ${root.colorScheme};
+  --ct-grid-dasharray: none;
+  --ct-grid-color: color-mix(in oklab, var(--ink) 10%, transparent);
+}
 html, body { margin: 0; color: var(--ink); font-family: var(--font-body); }
 body {
   background-color: var(--surface);
@@ -68,14 +73,16 @@ export async function playgroundForCode(
 }
 
 /**
- * For gallery examples: they size their chart for a browser window
- * (`height: 50vh`, as the 1.x sandboxes did). In a preview frame the chart
- * is 16:10 instead, centered, and as large as the frame allows.
+ * For gallery examples. Most size their chart for a browser window
+ * (`height: 50vh`, as the 1.x sandboxes did); in a preview frame that chart
+ * is 16:10 instead, centered, as large as the frame allows. Examples with
+ * their own layout keep it.
  */
 export const FILL_FRAME = `
 html, body { height: 100%; }
 body { box-sizing: border-box; display: grid; place-items: center; }
-#chart {
+body > * { width: 100%; }
+#chart[style*="50vh"] {
   width: min(100%, calc((100vh - 32px) * 1.6));
   height: auto !important;
   aspect-ratio: 16 / 10;

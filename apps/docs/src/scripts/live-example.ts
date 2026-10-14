@@ -81,18 +81,25 @@ export function mountLiveExamples() {
       },
       { rootMargin: '200px' }
     ).observe(root);
-    // The 1.x tab: switch which code is shown; Copy copies what's shown.
+    // The v2 / 1.x switch: which code is shown; Copy copies what's shown.
     let showing: 'main' | 'classic' = 'main';
-    for (const tab of root.querySelectorAll<HTMLElement>('[data-live-tab]')) {
-      tab.addEventListener('click', () => {
-        showing = tab.dataset.liveTab as 'main' | 'classic';
-        for (const other of root.querySelectorAll('[data-live-tab]')) {
-          other.setAttribute('aria-selected', String(other === tab));
+    const fileLabel = root.querySelector<HTMLElement>('[data-live-file]');
+    for (const button of root.querySelectorAll<HTMLElement>(
+      '[data-live-version]'
+    )) {
+      button.addEventListener('click', () => {
+        showing = button.dataset.liveVersion as 'main' | 'classic';
+        for (const other of root.querySelectorAll('[data-live-version]')) {
+          other.setAttribute('aria-pressed', String(other === button));
         }
         for (const panel of root.querySelectorAll<HTMLElement>(
           '[data-live-panel]'
         )) {
           panel.hidden = panel.dataset.livePanel !== showing;
+        }
+        if (fileLabel) {
+          fileLabel.textContent =
+            showing === 'classic' ? 'src/main.classic.ts' : config.show;
         }
       });
     }
