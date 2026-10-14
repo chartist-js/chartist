@@ -247,7 +247,10 @@ export const examples: Example[] = [
     title: 'Extreme responsive configuration',
     description:
       'Five series per quarter that switch between stacked, horizontal and grouped bars as the screen grows.',
-    classic: true
+    classic: true,
+    // One viewport per breakpoint: below 400px, 400 to 800px, 800 to
+    // 1000px and from 1000px.
+    viewports: ['default', 'tablet', 'mobile', 'mobile-landscape']
   }),
   example({
     id: 'bar/horizontal',
@@ -482,7 +485,9 @@ export const examples: Example[] = [
     title: 'Bar chart with a view box',
     description:
       'Two x/y points in a fixed view box that halves on small screens.',
-    classic: true
+    classic: true,
+    // Below and above the 575px breakpoint.
+    viewports: ['default', 'mobile']
   }),
 
   testOnly({
