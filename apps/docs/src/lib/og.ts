@@ -78,6 +78,14 @@ export async function cards(): Promise<Card[]> {
       pose: 'hero'
     })),
     {
+      key: 'plugins',
+      eyebrow: ['Plugins'],
+      title: 'Small add-ons, big tricks',
+      description:
+        'Community plugins for Chartist: tooltips, axis titles, legends, labels, zoom and more, each running live on v2.',
+      pose: 'point'
+    },
+    {
       key: 'playground',
       eyebrow: ['Playground'],
       title: 'Write a chart, watch it draw',

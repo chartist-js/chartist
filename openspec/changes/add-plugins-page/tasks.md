@@ -27,7 +27,7 @@
 ## 5. Live examples
 
 - [ ] 5.1 Add one example per plugin in `apps/docs/src/examples/plugins/<name>/` (Vite shape: `index.html` loading `chartist/umd`, `chartist/compat/umd` and the plugin by name; `src/main.ts` using the global `Chartist` and `fromLegacyPlugin`, or the module import for @stklcode's; a global declaration for types), showing what the plugin adds, with an instruction for tooltips, hover and zoom. Verify: each runs on the dev server without console errors
-- [ ] 5.2 Turn off "Open in StackBlitz" for plugin examples, keep "Open in playground". Verify: the toolbar of a plugin example has no StackBlitz action
+- [x] 5.2 Turn off "Open in StackBlitz" for plugin examples, keep "Open in playground". Verify: the toolbar of a plugin example has no StackBlitz action
 
 ## 6. Contract test
 
@@ -35,11 +35,11 @@
 
 ## 7. The page
 
-- [ ] 7.1 Create `src/pages/plugins.astro`: header (eyebrow, "Small add-ons, big tricks", intro, guide link), the filter, the entries sorted by downloads (title, package, description, credits row with author, repository or npm link, license, downloads with the snapshot date, status tag and note, the live example, the CDN snippet), and "Write your own" with a short v2 plugin and the guide link. Verify: `pnpm nx build docs`, no third-party requests
-- [ ] 7.2 Add the filter as a small inline script: text over name, package, author and description, chips for all, line, bar and pie, a live region with the count, the empty message; controls hidden without JavaScript. Verify: e2e tests for text, chart type, no match and the count
-- [ ] 7.3 Add "Plugins" to the header navigation after Examples (`src/lib/site.ts`), the share card (`lib/og.ts`), the Markdown version and its `llms.txt` entry. Verify: e2e page list includes `/plugins/`, and the `.md` version renders
+- [x] 7.1 Create `src/pages/plugins.astro`: header (eyebrow, "Small add-ons, big tricks", intro, guide link), the filter, the entries sorted by downloads (title, package, description, credits row with author, repository or npm link, license, downloads with the snapshot date, status tag and note, the live example, the CDN snippet), and "Write your own" with a short v2 plugin and the guide link. Verify: `pnpm nx build docs`, no third-party requests
+- [x] 7.2 Add the filter as a small inline script: text over name, package, author and description, chips for all, line, bar and pie, a live region with the count, the empty message; controls hidden without JavaScript. Verify: e2e tests for text, chart type, no match and the count
+- [x] 7.3 Add "Plugins" to the header navigation after Examples (`src/lib/site.ts`), the share card (`lib/og.ts`), the Markdown version and its `llms.txt` entry. Verify: e2e page list includes `/plugins/`, and the `.md` version renders
 - [ ] 7.4 Check both themes and phone width on the dev server, with the filter in use. Verify: no horizontal scroll at 375 px, readable entries and tags, visible focus states
-- [ ] 7.5 Add `/plugins/` to `e2e/pages.ts` (accessibility, meta, no third-party requests) and to the docs visual check's pages. Verify: `pnpm nx e2e docs`
+- [x] 7.5 Add `/plugins/` to `e2e/pages.ts` (accessibility, meta, no third-party requests) and to the docs visual check's pages. Verify: `pnpm nx e2e docs`
 
 ## 8. Docs and plan
 

@@ -1,0 +1,17 @@
+/* The table the plugin adds, made visible in this example. */
+table {
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+caption {
+  font-weight: 700;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 2px 10px;
+  border-bottom: 1px solid var(--ct-grid-color);
+  text-align: right;
+}

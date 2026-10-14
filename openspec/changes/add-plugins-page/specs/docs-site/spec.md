@@ -16,7 +16,7 @@ The site SHALL have a plugins page at `/plugins/`, reachable from a "Plugins" it
 
 ### Requirement: Plugin entries credit their authors
 
-Each plugin entry SHALL show the plugin's name, what it does in one or two sentences, its author by name, links to its source repository and its npm package, its license, its monthly npm downloads with the snapshot date, the chart types it works with, and its v2 status. When a plugin's repository no longer exists, the entry SHALL link to its npm package instead and say that the repository is gone. Each entry SHALL show how to load the plugin on v2 with script tags from a CDN, ready to copy.
+Each plugin entry SHALL show the plugin's name, what it does in one or two sentences, its author by name, links to its source repository and its npm package, its license, its monthly npm downloads with the snapshot date, the chart types it works with, the Chartist version it was written for as a tag (`v0.x`, `v1.x` or `v2.x`), and how it loads on v2. When a plugin's repository no longer exists, the entry SHALL link to its npm package instead and say that the repository is gone. Each entry SHALL show how to load the plugin on v2 with script tags from a CDN, ready to copy.
 
 #### Scenario: Credits and links
 
@@ -78,3 +78,8 @@ The site SHALL serve each listed plugin's published code, at a pinned version, t
 
 - **WHEN** a plugin's live example runs on the site
 - **THEN** the plugin's script and Chartist's builds load from the site's own origin
+
+#### Scenario: Version tag
+
+- **WHEN** a visitor reads the entry of a plugin written for Chartist 0.x
+- **THEN** the entry carries a `v0.x` tag

@@ -120,12 +120,14 @@ A plugin whose remaining failure is in its own code is moved off the list, with 
 - **Validation:** a zod schema checks the list and the snapshot. The build fails when a listed package has no count.
 - **Code and licenses:** the plugins are pinned dev dependencies of the docs app. `playground-lib.mjs` serves each one's script and its license file at `/playground-lib/plugins/<package>/`, and fails the build if either is missing.
 
-### The v2 status says how it runs
+### The v2 status says how it loads
 
-- **"Runs on v2"**: the plugin was written for 1.x and loads as is (@stklcode).
-- **"Runs on v2 with compat"**: everything else.
+Every listed plugin runs on v2 through `chartist/compat`: the 0.x-era scripts on its UMD global, and the 1.x-style @stklcode plugin through `fromLegacyPlugin`. So the status tells how a plugin loads:
 
-The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
+- **"ES module"**: it imports `chartist` and works with bundlers (@stklcode).
+- **"Script"**: it loads as a script after Chartist's UMD builds (everything else).
+
+Every entry says "Runs on v2 with `chartist/compat`". A tag shows the Chartist version the plugin was written for (`v0.x`, `v1.x`, `v2.x`; asked by the author while building the page): eleven are `v0.x`, @stklcode's is `v1.x`, and `v2.x` is there for v2-native plugins to come. The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
 
 ### Page layout and the filter
 

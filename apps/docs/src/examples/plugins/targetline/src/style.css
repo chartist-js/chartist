@@ -1,0 +1,7 @@
+/* The target line, as in the plugin's README. */
+.ct-target-line {
+  stroke: var(--ct-series-b);
+  stroke-width: 2px;
+  stroke-dasharray: 4px;
+  shape-rendering: crispEdges;
+}

@@ -14,6 +14,7 @@ export const PAGES = [
   { name: 'home', path: '/' },
   ...DOCS.map(slug => ({ name: `docs/${slug}`, path: `/docs/${slug}/` })),
   { name: 'examples', path: '/examples/' },
+  { name: 'plugins', path: '/plugins/' },
   { name: 'example page', path: '/examples/line/modify-drawing/' },
   { name: 'playground', path: '/playground/' },
   { name: 'api', path: '/api/' },

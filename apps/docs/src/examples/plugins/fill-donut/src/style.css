@@ -1,0 +1,17 @@
+/* As in the plugin's README: the value, the hidden rest, and the track. */
+.ct-chart-donut .ct-series-a .ct-slice-donut {
+  stroke: var(--ct-series-a);
+}
+
+.ct-chart-donut .ct-series-b .ct-slice-donut {
+  opacity: 0;
+}
+
+.ct-chart-donut .ct-fill-donut .ct-slice-donut {
+  stroke: var(--ct-grid-color);
+  opacity: 1;
+}
+
+.ct-fill-donut-label {
+  font-size: 18px;
+}

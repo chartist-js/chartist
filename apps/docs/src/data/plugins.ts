@@ -27,10 +27,14 @@ const schema = z.array(
     license: z.enum(['MIT', 'ISC', 'WTFPL']),
     types: z.array(z.enum(CHART_TYPES)).min(1),
     /**
-     * `v2`: written for 1.x, runs on v2 as is. `compat`: runs on v2 with
+     * How it loads: `module`, an ES module that imports `chartist`;
+     * `script`, a classic script that registers on the global `Chartist`.
+     * Either way it runs on v2 through `fromLegacyPlugin` from
      * `chartist/compat`.
      */
-    status: z.enum(['v2', 'compat']),
+    loads: z.enum(['module', 'script']),
+    /** The Chartist version the plugin was written for, shown as a tag. */
+    chartist: z.enum(['0.x', '1.x', '2.x']),
     /** The live example, `plugins/<name>` in src/examples. */
     example: z.string(),
     /** What to do in the example to see the plugin, for interactive ones. */
@@ -50,7 +54,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/astanb/chartist-plugin-axistitle',
     license: 'MIT',
     types: ['line', 'bar'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/axistitle'
   },
   {
@@ -62,7 +67,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/CodeYellowBV/chartist-plugin-legend',
     license: 'ISC',
     types: ['line', 'bar', 'pie'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/legend',
     hint: 'Click a legend entry to hide its series.',
     note: 'It ships no stylesheet; its README has the CSS, as in the example.'
@@ -75,7 +81,8 @@ export const PLUGINS = schema.parse([
     author: 'Markus Padourek',
     license: 'MIT',
     types: ['line', 'bar', 'pie'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/tooltips',
     hint: 'Hover a point to see its tooltip.',
     note: "The most used fork of the original tooltip plugin, without jQuery. Its repository is gone; the npm package remains. For a maintained alternative, see Stefan Kalscheuer's tooltips below."
@@ -89,7 +96,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/gionkunz/chartist-plugin-pointlabels',
     license: 'WTFPL',
     types: ['line', 'bar'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/pointlabels'
   },
   {
@@ -101,7 +109,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/Zertz/chartist-hover',
     license: 'MIT',
     types: ['line', 'bar', 'pie'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/hover',
     hint: 'Hover a point; the caption shows its value.'
   },
@@ -114,7 +123,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/hansmaad/chartist-plugin-zoom',
     license: 'WTFPL',
     types: ['line'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/zoom',
     hint: 'Drag across the chart to zoom in, then press "Reset zoom".',
     note: 'It zooms auto and fixed scale axes, so the X axis needs one of them instead of the default step axis.'
@@ -123,12 +133,13 @@ export const PLUGINS = schema.parse([
     package: 'chartist-plugin-fill-donut',
     title: 'Fill donut',
     description:
-      'Draws a background track behind a donut and puts HTML labels in or around it, for gauges.',
+      'Draws a copy of the donut behind it, so an animated donut looks filled from the start, and puts HTML labels in or around it. Together they make gauges.',
     author: 'moxx',
     repository: 'https://github.com/moxx/chartist-plugin-fill-donut',
     license: 'MIT',
     types: ['pie'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/fill-donut'
   },
   {
@@ -139,7 +150,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/mtgibbs/chartist-plugin-barlabels',
     license: 'WTFPL',
     types: ['bar'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/barlabels'
   },
   {
@@ -151,7 +163,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/gionkunz/chartist-plugin-accessibility',
     license: 'WTFPL',
     types: ['line', 'bar', 'pie'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/accessibility',
     hint: 'The example makes the hidden table visible below the chart.'
   },
@@ -164,7 +177,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/gionkunz/chartist-plugin-threshold',
     license: 'WTFPL',
     types: ['line', 'bar'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/threshold'
   },
   {
@@ -175,7 +189,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/htwyford/chartist-plugin-targetline',
     license: 'ISC',
     types: ['line', 'bar'],
-    status: 'compat',
+    loads: 'script',
+    chartist: '0.x',
     example: 'plugins/targetline',
     note: 'It places the line by the axis maximum, so the axis should start at zero.'
   },
@@ -188,7 +203,8 @@ export const PLUGINS = schema.parse([
     repository: 'https://github.com/stklcode/chartist-plugin-tooltip',
     license: 'MIT',
     types: ['line', 'bar', 'pie'],
-    status: 'v2',
+    loads: 'module',
+    chartist: '1.x',
     example: 'plugins/stklcode-tooltips',
     hint: 'Hover a point to see its tooltip.'
   }

@@ -19,6 +19,7 @@ export const NAV = [
   { id: 'docs', label: 'Docs', path: 'docs/getting-started/' },
   { id: 'api', label: 'API', path: 'api/' },
   { id: 'examples', label: 'Examples', path: 'examples/' },
+  { id: 'plugins', label: 'Plugins', path: 'plugins/' },
   { id: 'playground', label: 'Playground', path: 'playground/' }
 ] as const;
 

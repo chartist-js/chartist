@@ -1,0 +1,212 @@
+---
+import { Code } from 'astro:components';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LiveExample from '../components/LiveExample.astro';
+import { facts, formatDate } from '../data/facts';
+import { CHART_TYPES, pinnedVersion, pluginFacts } from '../data/plugins';
+import { npmUrl, pluginSlug, setupSnippet, sortedPlugins } from '../lib/plugins';
+import { href } from '../lib/site';
+
+const plugins = sortedPlugins().map(plugin => {
+  const stats = pluginFacts(plugin.package);
+  return {
+    ...plugin,
+    slug: pluginSlug(plugin),
+    version: pinnedVersion(plugin.package),
+    downloads: stats.monthlyDownloads.toLocaleString('en'),
+    lastRelease: new Date(`${stats.lastRelease}T00:00:00Z`).getUTCFullYear(),
+    setup: setupSnippet(plugin),
+    // What the filter's text field searches.
+    search: [plugin.title, plugin.package, plugin.author, plugin.description].join(' ').toLowerCase()
+  };
+});
+const TYPE_LABEL = { line: 'Line', bar: 'Bar', pie: 'Pie' } as const;
+
+// The plugin of the guide's "Writing a plugin".
+const ownPlugin = `import { barChart, type ChartPlugin } from 'chartist';
+
+/** Bars at or above the limit get the class ct-over. */
+const threshold = (limit: number): ChartPlugin => ({
+  name: 'threshold',
+  install(chart) {
+    chart.on('compose', current => {
+      if (current.role !== 'bar') {
+        return;
+      }
+      // A number, { x, y } (with an X scale axis) or a hole.
+      const { value } = current.ctx;
+      const y =
+        typeof value === 'number'
+          ? value
+          : value && 'y' in value
+            ? value.y
+            : undefined;
+      return y !== undefined && y >= limit
+        ? current.addClass('ct-over')
+        : undefined;
+    });
+  }
+});
+
+barChart('#chart', data, { plugins: [threshold(5)] });`;
+---
+
+<BaseLayout title="Plugins" description="Community plugins for Chartist: tooltips, axis titles, legends, labels, zoom and more, each running live on v2." section="plugins" markdown="plugins.md">
+  <div class="wrap flex flex-col gap-10 pt-[clamp(32px,6vw,64px)] pb-[clamp(56px,8vw,104px)]">
+    <header class="flex flex-col gap-4">
+      <span class="eyebrow">Plugins</span>
+      <h1 class="display">Small add-ons, big tricks</h1>
+      <p class="lead max-w-[62ch]">
+        Tooltips, axis titles, legends, labels and zoom: the community's most used plugins, each running live on v2. They hook into the events Chartist emits while drawing. <a href={href('docs/events-and-plugins/')}>How plugins work</a>
+      </p>
+      <p class="muted text-sm">Sorted by npm downloads in the last month · {formatDate(facts.generatedAt)}</p>
+    </header>
+
+    <div class="flex flex-col gap-3 [&[hidden]]:hidden" data-plugin-filter hidden>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <label class="flex min-w-[min(320px,100%)] flex-1 flex-col gap-1.5 text-sm font-bold">
+          Find a plugin
+          <input class="min-h-11 rounded-lg border-2 border-line-strong bg-surface px-3.5 font-sans text-base font-normal text-ink placeholder:text-ink-2" type="search" placeholder="tooltip, labels, zoom…" autocomplete="off" data-plugin-query />
+        </label>
+        <div class="flex flex-wrap gap-2 self-end" role="group" aria-label="Chart type">
+          <button class="chip" type="button" aria-pressed="true" data-plugin-type="">All</button>
+          {
+            CHART_TYPES.map(type => (
+              <button class="chip" type="button" aria-pressed="false" data-plugin-type={type}>
+                {TYPE_LABEL[type]}
+              </button>
+            ))
+          }
+        </div>
+      </div>
+      <p class="muted text-sm" aria-live="polite" data-plugin-count></p>
+    </div>
+
+    <ol class="m-0 flex list-none flex-col gap-14 p-0" data-plugin-list>
+      {
+        plugins.map(plugin => (
+          <li id={plugin.slug} class="flex scroll-mt-24 flex-col gap-5 [&[hidden]]:hidden" data-plugin data-types={plugin.types.join(' ')} data-search={plugin.search}>
+            <div class="flex flex-col gap-2">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+                <h2 class="text-3xl">
+                  <a class="text-ink no-underline hover:underline" href={`#${plugin.slug}`}>
+                    {plugin.title}
+                  </a>
+                </h2>
+                <span class="tag accent" title={`Written for the Chartist ${plugin.chartist} API`}>
+                  API v{plugin.chartist}
+                </span>
+                <span class="tag">{plugin.loads === 'module' ? 'ES module' : 'Script'}</span>
+              </div>
+              <code class="w-fit">
+                {plugin.package}@{plugin.version}
+              </code>
+              <p class="max-w-[70ch]">{plugin.description}</p>
+              {plugin.note && <p class="muted max-w-[70ch] text-sm">{plugin.note}</p>}
+            </div>
+            <dl class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(170px,100%),1fr))] gap-x-6 gap-y-3 border-y border-line py-3.5 text-sm">
+              <div>
+                <dt class="eyebrow">Author</dt>
+                <dd class="m-0 font-bold">{plugin.author}</dd>
+              </div>
+              <div>
+                <dt class="eyebrow">Source</dt>
+                <dd class="m-0">{plugin.repository ? <a href={plugin.repository}>GitHub</a> : <span>Repository gone</span>} · <a href={npmUrl(plugin)}>npm</a></dd>
+              </div>
+              <div>
+                <dt class="eyebrow">License</dt>
+                <dd class="m-0">{plugin.license}</dd>
+              </div>
+              <div>
+                <dt class="eyebrow">Downloads</dt>
+                <dd class="m-0">{plugin.downloads} a month</dd>
+              </div>
+              <div>
+                <dt class="eyebrow">Last release</dt>
+                <dd class="m-0">{plugin.lastRelease}</dd>
+              </div>
+              <div>
+                <dt class="eyebrow">Charts</dt>
+                <dd class="m-0">{plugin.types.map(type => TYPE_LABEL[type]).join(', ')}</dd>
+              </div>
+            </dl>
+            {plugin.hint && <p class="m-0 text-sm font-bold">{plugin.hint}</p>}
+            <LiveExample example={plugin.example} title={plugin.title} label={`${plugin.title}: a chart with ${plugin.package}`} codeHeight="360px" />
+            <div class="flex flex-col gap-2">
+              <h3 class="text-lg">Use it on your site</h3>
+              <p class="muted m-0 text-sm">
+                Runs on v2 with <code>chartist/compat</code>.{' '}
+                {plugin.loads === 'module' ? 'An ES module: install it from npm and import it.' : 'A script: load it after Chartist and its compat build.'}
+              </p>
+              <Code code={plugin.setup.code} lang={plugin.setup.lang as 'ts' | 'html'} theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="muted" data-plugin-empty hidden>
+      No plugin matches. Maybe it's time to <a href="#write-your-own">write your own</a>?
+    </p>
+
+    <section id="write-your-own" class="card grid scroll-mt-24 grid-cols-[repeat(auto-fit,minmax(min(380px,100%),1fr))] items-start gap-7 p-[clamp(20px,4vw,32px)]" aria-labelledby="write-title">
+      <div class="flex flex-col gap-3">
+        <h2 id="write-title" class="text-2xl">Write your own</h2>
+        <p>
+          A v2 plugin is an object with a <code>name</code> and an <code>install</code> function that listens to the chart's events. A dozen lines go a long way.
+        </p>
+        <p>
+          Published one? Open a pull request that adds it to this page. Plugins with a few hundred downloads a month that need nothing but Chartist are welcome.
+        </p>
+        <div class="flex flex-wrap gap-2.5">
+          <a class="btn sm" href={href('docs/events-and-plugins/#writing-a-plugin')}>Plugin guide</a>
+          <a class="btn sm" href="https://github.com/chartist-js/chartist/blob/next/apps/docs/src/data/plugins.ts">Add a plugin</a>
+        </div>
+      </div>
+      <Code code={ownPlugin} lang="ts" theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // The filter: text and chart type. Without JavaScript the controls stay
+  // hidden and every plugin shows.
+  const controls = document.querySelector<HTMLElement>('[data-plugin-filter]');
+  const query = document.querySelector<HTMLInputElement>('[data-plugin-query]');
+  const count = document.querySelector<HTMLElement>('[data-plugin-count]');
+  const empty = document.querySelector<HTMLElement>('[data-plugin-empty]');
+  const entries = [...document.querySelectorAll<HTMLElement>('[data-plugin]')];
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('[data-plugin-type]')];
+  let type = '';
+
+  const update = () => {
+    const words = (query?.value ?? '').toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const entry of entries) {
+      const text = entry.dataset.search ?? '';
+      const match = words.every(word => text.includes(word)) && (!type || (entry.dataset.types ?? '').split(' ').includes(type));
+      entry.hidden = !match;
+      shown += match ? 1 : 0;
+    }
+    if (count) {
+      count.textContent = shown === entries.length ? `${shown} plugins` : `${shown} of ${entries.length} plugins`;
+    }
+    if (empty) {
+      empty.hidden = shown > 0;
+    }
+  };
+
+  if (controls && query) {
+    controls.hidden = false;
+    query.addEventListener('input', update);
+    for (const chip of chips) {
+      chip.addEventListener('click', () => {
+        type = chip.dataset.pluginType ?? '';
+        for (const other of chips) {
+          other.setAttribute('aria-pressed', String(other === chip));
+        }
+        update();
+      });
+    }
+    update();
+  }
+</script>

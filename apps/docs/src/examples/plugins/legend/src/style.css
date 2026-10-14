@@ -1,0 +1,43 @@
+/* The plugin ships no stylesheet; this follows the CSS in its README. */
+.ct-legend {
+  display: flex;
+  gap: 16px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.ct-legend li {
+  position: relative;
+  padding-left: 20px;
+  cursor: pointer;
+}
+
+.ct-legend li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 3px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.ct-legend li.inactive::before {
+  background: transparent;
+}
+
+.ct-legend .ct-series-0 {
+  color: var(--ct-series-a);
+}
+
+.ct-legend .ct-series-1 {
+  color: var(--ct-series-b);
+}
+
+.ct-legend .ct-series-2 {
+  color: var(--ct-series-c);
+}

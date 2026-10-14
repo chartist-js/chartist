@@ -111,6 +111,18 @@ export async function mountPlaygroundPage() {
     );
   };
 
+  // The UMD builds and the plugins load by names only this site's sandbox
+  // knows (see playground-env), so StackBlitz couldn't run such code.
+  const siteNames = Object.keys(imports).filter(
+    name => name !== 'match-container'
+  );
+  const siteOnly = (files: Record<string, string>) =>
+    Object.values(files).some(code =>
+      siteNames.some(
+        name => code.includes(`"${name}`) || code.includes(`'${name}`)
+      )
+    );
+
   const playground: Playground = await createPlayground(host, {
     files: opened.files,
     title: opened.title,
@@ -125,7 +137,9 @@ export async function mountPlaygroundPage() {
       resetAction(),
       copyAction(),
       shareAction({ url: codeAddress }),
-      stackblitzAction({ label: 'Export to StackBlitz' })
+      ...(siteOnly(opened.files)
+        ? []
+        : [stackblitzAction({ label: 'Export to StackBlitz' })])
     ]
   });
   document.title = `${opened.title} · Playground · Chartist`;

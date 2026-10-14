@@ -1,0 +1,6 @@
+/* The box the plugin draws while dragging. */
+.ct-zoom-rect {
+  fill: var(--ct-series-a);
+  fill-opacity: 0.15;
+  stroke: var(--ct-series-a);
+}

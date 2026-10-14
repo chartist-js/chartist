@@ -1,0 +1,18 @@
+/* The parts above and below the threshold, as in the plugin's README. */
+.ct-line.ct-threshold-above,
+.ct-point.ct-threshold-above {
+  stroke: #d70206;
+}
+
+.ct-line.ct-threshold-below,
+.ct-point.ct-threshold-below {
+  stroke: #59922b;
+}
+
+.ct-area.ct-threshold-above {
+  fill: #d70206;
+}
+
+.ct-area.ct-threshold-below {
+  fill: #59922b;
+}

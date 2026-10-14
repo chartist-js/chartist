@@ -30,6 +30,8 @@ import { API_PAGES } from './api-pages';
 import type { DocEntry } from './docs';
 import { exampleFiles } from './examples';
 import { TYPES, gallery, type GalleryExample } from './gallery';
+import { pluginFacts } from '../data/plugins';
+import { npmUrl, setupSnippet, sortedPlugins } from './plugins';
 import { VERSIONS, href } from './site';
 
 /** An absolute URL for a site path, so links work outside the page too. */
@@ -330,6 +332,32 @@ export function exampleMarkdown(example: GalleryExample): string {
   return `# ${example.title} (Chartist example)\n\n${example.description ? `> ${example.description}\n\n` : ''}${files.join('\n\n')}${classic.length ? `\n\n${classic.join('')}` : ''}\n`;
 }
 
+// Plugins ------------------------------------------------------------------
+
+export function pluginsMarkdown(): string {
+  const entries = sortedPlugins().map(plugin => {
+    const stats = pluginFacts(plugin.package);
+    const setup = setupSnippet(plugin);
+    const main = exampleFiles(plugin.example)['src/main.ts'];
+    return [
+      `## ${plugin.title} (\`${plugin.package}\`)`,
+      plugin.description,
+      ...(plugin.note ? [plugin.note] : []),
+      [
+        `- Author: ${plugin.author}`,
+        `- Source: ${plugin.repository ?? 'repository gone'}, npm: ${npmUrl(plugin)}`,
+        `- License: ${plugin.license}`,
+        `- Written for the Chartist ${plugin.chartist} API; runs on v2 with \`chartist/compat\` (${plugin.loads === 'module' ? 'an ES module' : 'a script'})`,
+        `- Charts: ${plugin.types.join(', ')}`,
+        `- Downloads: ${stats.monthlyDownloads} a month, last release ${stats.lastRelease}`
+      ].join('\n'),
+      `Setup:\n\n${fence(setup.code, setup.lang)}`,
+      `Example (\`src/main.ts\`):\n\n${fence(main, 'ts')}`
+    ].join('\n\n');
+  });
+  return `# Plugins (Chartist)\n\n> Community plugins for Chartist, sorted by npm downloads in the last month. Script plugins load after Chartist's UMD builds and \`compat.umd.js\`, which give them the global \`Chartist\` they were written for; wrap them with \`fromLegacyPlugin\` on the v2 API.\n\n${entries.join('\n\n')}\n`;
+}
+
 // llms.txt -----------------------------------------------------------------
 
 /** Notes that keep generated code on the v2 API. */
@@ -349,6 +377,7 @@ export async function llmsTxt(guides: DocEntry[]): Promise<string> {
   const sections = [
     `## Docs\n\n${guides.map(guide => link(guide.data.title, `docs/${guide.id}/`, guide.data.description)).join('\n')}`,
     `## API reference\n\n- [The whole reference and guides in one file](${absolute('llms-full.txt')})\n${API_PAGES.map(page => link(page.title, apiPath(page.slug), page.description)).join('\n')}`,
+    `## Plugins\n\n${link('Plugins', 'plugins/', 'Community plugins: tooltips, axis titles, legends, labels, zoom and more, with setup and a v2 example each')}`,
     `## Examples\n\n${TYPES.map(({ type, title }) => [`### ${title}`, ...gallery.filter(example => example.type === type).map(example => link(example.title, `examples/${example.id}/`, example.description))].join('\n\n')).join('\n\n')}`,
     `## Optional\n\n${VERSIONS.filter(version => version.href)
       .map(
