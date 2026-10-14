@@ -34,6 +34,7 @@ export default defineConfig({
         '@codemirror/language',
         '@codemirror/state',
         '@codemirror/view',
+        '@lezer/highlight',
         '@stackblitz/sdk',
         'es-module-lexer/minimal',
         'sucrase',

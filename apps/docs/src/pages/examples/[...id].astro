@@ -29,7 +29,7 @@ const typeTitle = TYPES.find(entry => entry.type === example.type)!.title;
       {example.description && <p class="lead max-w-[60ch]">{example.description}</p>}
     </header>
 
-    <LiveExample id={example.id} files={example.files} classic={example.classicCode} title={example.title} label={example.title} />
+    <LiveExample id={example.id} files={example.files} classic={example.classicCode} title={example.title} label={example.title} codeHeight="min(520px, 65vh)" />
 
     <div class="flex flex-wrap items-center gap-3">
       <a class="btn sm" href={href(`playground/#example=${example.id}`)}>Open in the playground</a>

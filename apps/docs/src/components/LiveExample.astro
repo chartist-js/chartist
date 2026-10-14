@@ -30,9 +30,15 @@ interface Props {
   classic?: string;
   /** A gallery example's id, so the playground can open it by id. */
   id?: string;
+  /**
+   * The code panel's maximum height (CSS length); longer code scrolls in the
+   * panel. In edit mode the playground gets the same height.
+   */
+  codeHeight?: string;
 }
 
-const { example, preview, label, title = 'Chartist example', show = 'src/main.ts', previewStyle, classic, id } = Astro.props;
+const { example, preview, label, title = 'Chartist example', show = 'src/main.ts', previewStyle, classic, id, codeHeight } = Astro.props;
+const panelStyle = codeHeight ? `max-height: ${codeHeight}; overflow: auto;` : undefined;
 const files = Astro.props.files ?? exampleFiles(example ?? '');
 const shown = files[show];
 const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : 'ts';
@@ -44,7 +50,7 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
 -->
 <div
   class="live grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] overflow-hidden rounded-lg border-2 border-ink bg-surface shadow-print dark:border-line-strong [&.editing]:flex [&.editing]:flex-col"
-  data-live-example={JSON.stringify({ files, title, show, classic, id })}
+  data-live-example={JSON.stringify({ files, title, show, classic, id, codeHeight })}
 >
   <div class="flex min-w-0 flex-col bg-code-bg text-code-ink">
     <div class="flex items-center justify-between gap-2 border-b border-code-line py-1.5 pr-2 pl-4">
@@ -68,12 +74,12 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
         <button class="btn sm min-h-8 shadow-none" type="button" data-live-edit>Edit</button>
       </div>
     </div>
-    <div class="flex flex-1 flex-col [&[hidden]]:hidden" data-live-panel="main">
+    <div class="flex flex-1 flex-col [&[hidden]]:hidden" style={panelStyle} data-live-panel="main">
       <Code code={shown} lang={lang} theme="css-variables" class="flex-1 rounded-none" />
     </div>
     {
       classic && (
-        <div class="flex flex-1 flex-col [&[hidden]]:hidden" data-live-panel="classic" hidden>
+        <div class="flex flex-1 flex-col [&[hidden]]:hidden" style={panelStyle} data-live-panel="classic" hidden>
           <Code code={classic} lang="ts" theme="css-variables" class="flex-1 rounded-none" />
         </div>
       )
