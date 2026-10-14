@@ -129,6 +129,19 @@ describe('Svg', () => {
     expect(svg.getNode().childNodes.length).toBe(0);
   });
 
+  it('remove() returns the parent the element had', () => {
+    const svg = new Svg('svg');
+    const group = svg.elem('g');
+
+    const parent = group.elem('text').remove();
+    expect(parent?.getNode()).toBe(group.getNode());
+    expect(group.getNode().childNodes.length).toBe(0);
+    // So calls chain on from the parent.
+    expect(parent?.elem('line').getNode().parentNode).toBe(group.getNode());
+
+    expect(new Svg('g').remove()).toBeNull();
+  });
+
   it('should allow to write text content into elements', () => {
     const svg = new Svg('svg');
     svg.elem('text').text('Hello World');

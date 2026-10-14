@@ -274,12 +274,13 @@ export class Svg {
 
   /**
    * Removes the element from its parent.
-   * @returns `null`: the parent is looked up after the element was removed,
-   * so there is none.
+   * @returns The parent it had, wrapped in a new `Svg`, or `null` if it had
+   * none or the parent isn't an SVG element.
    */
   remove() {
+    const parent = this.parent();
     this._node.parentNode?.removeChild(this._node);
-    return this.parent();
+    return parent;
   }
 
   /**
