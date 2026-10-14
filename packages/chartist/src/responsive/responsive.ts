@@ -5,24 +5,66 @@
  * `Element.matchContainer()` (native or the `match-container` polyfill).
  */
 
-/** @experimental */
+/**
+ * A container query condition for a responsive entry, created with
+ * {@link container}.
+ * @experimental
+ */
 export interface ContainerCondition {
+  /** Always `container`: tells the condition from a media query string. */
   readonly type: 'container';
   /** A `@container` condition, e.g. `(width < 400px)`. */
   readonly query: string;
 }
 
-/** @experimental */
+/**
+ * When a responsive entry applies: a window media query string, such as
+ * `(max-width: 640px)` (as in 1.x), or a {@link container} condition.
+ * @experimental
+ */
 export type ResponsiveCondition = string | ContainerCondition;
 
-/** @experimental */
+/**
+ * A responsive entry: a condition and the overrides that apply while it
+ * matches, e.g. `['(max-width: 640px)', { showPoint: false }]`. Matching
+ * entries apply in order, so later ones win.
+ * @experimental
+ */
 export type ResponsiveEntry<T> = readonly [ResponsiveCondition, T];
 
 /**
  * Marks a responsive entry as a container query, evaluated against the
  * chart container or an ancestor with a CSS `container-type`. Needs
  * `Element.matchContainer()`; until browsers ship it, load the
- * `match-container` polyfill.
+ * `match-container` polyfill. Without it, Chartist warns once and ignores
+ * container entries; in `toScene()`, they never match.
+ *
+ * Works in the responsive entries of `chart()` and of the presets.
+ *
+ * @param query The condition you'd write after `@container` in CSS
+ * @example
+ * ```ts
+ * import 'match-container';
+ * import { container, lineChart } from 'chartist';
+ *
+ * lineChart(
+ *   '#chart',
+ *   {
+ *     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+ *     series: [[12, 9, 7, 8, 5]]
+ *   },
+ *   { low: 0 },
+ *   [
+ *     [
+ *       container('(width < 400px)'),
+ *       {
+ *         showPoint: false,
+ *         axisX: { labelInterpolationFnc: value => String(value)[0] }
+ *       }
+ *     ]
+ *   ]
+ * );
+ * ```
  * @experimental
  */
 export function container(query: string): ContainerCondition {
@@ -173,14 +215,61 @@ export function watchResponsive(
  * @experimental
  */
 export interface ResponsiveSet<T> {
+  /** The entries as given to `responsive()`. */
   readonly entries: readonly ResponsiveEntry<T>[];
+  /**
+   * Starts watching the entries' conditions; `chart()` calls it. Calls
+   * `onChange` when the set of matching entries changes.
+   * @param host The chart's container, for container conditions
+   * @param onChange Called after the matching entries changed
+   */
   watch(host: Element | undefined, onChange: () => void): ResponsiveWatcher;
 }
 
 /**
  * Responsive overrides for `chart()`: `[condition, overrides]` entries with
  * a media query string or a `container()` condition. Matching overrides are
- * shallow-merged over the config in order.
+ * shallow-merged over the config in order, so later entries win and an
+ * override replaces a whole option (e.g. all `layers`).
+ *
+ * When the matching entries change, the chart emits a `responsive` event
+ * with the config before and after, and renders again.
+ *
+ * @param entries `[condition, overrides]` pairs; the overrides are a
+ * partial config: padding, axes, layers, size and the like
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   responsive,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+ *
+ * chart('#chart', {
+ *   data: { labels, series: [[12, 9, 7, 8, 5]] },
+ *   axes: cartesianAxes([
+ *     { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+ *     { id: 'y', side: 'left', type: autoScaleAxis(), low: 0 }
+ *   ]),
+ *   layers: [axisGrid(), line({ showArea: true }), axisLabels()],
+ *   responsive: responsive([
+ *     [
+ *       '(max-width: 640px)',
+ *       {
+ *         padding: 5,
+ *         layers: [axisGrid(), line({ showPoint: false }), axisLabels()]
+ *       }
+ *     ]
+ *   ])
+ * });
+ * ```
  * @experimental
  */
 export function responsive<T>(

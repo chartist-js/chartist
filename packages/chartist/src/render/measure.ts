@@ -1,5 +1,8 @@
+/** The size of a measured text, as a {@link MeasureText} function returns it. */
 export interface TextMetrics {
+  /** The text's width in px. */
   readonly width: number;
+  /** The text's height in px: one line. */
   readonly height: number;
   /** The font size in px the text was measured with, when known. */
   readonly fontSize?: number;
@@ -11,10 +14,14 @@ export interface TextMetrics {
  */
 export type LabelMode = 'html' | 'svg';
 
+/** What a {@link MeasureText} function gets with the text to measure. */
 export interface MeasureTextOptions {
   /** Class names of the text, for renderers that apply CSS. */
   readonly classes?: readonly string[];
-  /** Font size in px. Defaults to 12, the size of 1.x `.ct-label`. */
+  /**
+   * Font size in px. Without it, the browser measures with the CSS font
+   * size and the estimate uses 12, the size of 1.x `.ct-label`.
+   */
   readonly fontSize?: number;
   /** Classes of the chart's root svg, so chart-type CSS applies. */
   readonly rootClass?: string;
@@ -22,6 +29,23 @@ export interface MeasureTextOptions {
   readonly container?: Element;
 }
 
+/**
+ * Measures how much space a text takes, in px, so labels can be wrapped
+ * and aligned. In the browser, Chartist measures with the page's fonts;
+ * `toScene()` estimates (0.6 em per character, 1.2 em per line) unless you
+ * pass your own in its size.
+ *
+ * @example
+ * ```ts
+ * import type { MeasureText } from 'chartist';
+ *
+ * // Wider glyphs than the estimate, for a wide font.
+ * export const measureText: MeasureText = (text, options = {}) => {
+ *   const fontSize = options.fontSize ?? 12;
+ *   return { width: text.length * fontSize * 0.7, height: fontSize * 1.25 };
+ * };
+ * ```
+ */
 export type MeasureText = (
   text: string,
   options?: MeasureTextOptions

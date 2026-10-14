@@ -26,16 +26,35 @@ export const DEFAULT_PADDING: ChartPadding = {
 
 /** Options accepted by the pipeline (a chart config without listeners). */
 export interface PipelineOptions {
+  /** The labels and series to draw. */
   readonly data: ChartData;
+  /** What to draw, in this order (later layers on top), e.g. `[axisGrid(), line()]`. */
   readonly layers: readonly Layer[];
+  /**
+   * The coordinate system the layers draw in: `cartesian` (the default)
+   * for axes, `polar` for `pie()`.
+   */
   readonly coordinates?: Coordinates;
+  /**
+   * Space in px between the chart's edge and the drawing area: one number
+   * for all sides, or some sides (the others keep the 1.x defaults).
+   */
   readonly padding?: number | Partial<ChartPadding>;
   /** Axes (see `cartesianAxes`); their offsets are reserved around the area. */
   readonly axes?: CartesianAxes;
+  /**
+   * The chart's width: px as a number, or a CSS length such as `100%` or
+   * `20rem`. Without it, `chart()` fills the container's width.
+   */
   readonly width?: number | string;
+  /**
+   * The chart's height: px as a number, or a CSS length such as `300px`.
+   * Without it, `chart()` fills the container's height.
+   */
   readonly height?: number | string;
   /** Fixed drawing coordinates; sets the layout size and the root `viewBox`. */
   readonly viewBox?: { readonly width: number; readonly height: number };
+  /** Class names for the root svg, e.g. `ct-chart-line` for the 1.x line chart CSS. */
   readonly className?: string;
   /**
    * Draws labels as HTML in `foreignObject` (1.x) or as SVG `text`. The

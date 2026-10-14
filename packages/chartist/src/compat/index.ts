@@ -49,8 +49,22 @@ import type {
 // With chartist/compat, the 1.x events are typed on every chart handle.
 declare module '../chart/types' {
   interface ChartEvents {
+    /**
+     * 1.x: the chart's data, before the first render (`type: 'initial'`)
+     * and after an update with new data (`type: 'update'`). Listeners can
+     * change it in place. Needs the {@link compat} plugin.
+     */
     data: DataEvent;
+    /**
+     * 1.x: the responsive options changed, with the options before and
+     * after. Needs the {@link compat} plugin.
+     */
     optionsChanged: OptionsChangedEvent;
+    /**
+     * 1.x: an element was drawn: a grid line, label, point, line, area,
+     * bar or slice, with its live `element`. Check `type` to narrow it.
+     * Needs the {@link compat} plugin.
+     */
     draw:
       | PointDrawEvent
       | LineDrawEvent
@@ -59,11 +73,18 @@ declare module '../chart/types' {
       | SliceDrawEvent
       | SliceLabelDrawEvent
       | AxesDrawEvent;
+    /**
+     * 1.x: the chart is drawn and in the DOM, after its `draw` events,
+     * with the `svg`, the chart area and the axes. Needs the {@link compat}
+     * plugin.
+     */
     created:
       | LineChartCreatedEvent
       | BarChartCreatedEvent
       | PieChartCreatedEvent;
+    /** 1.x: an SMIL animation began (`animate()` given the chart's event emitter). */
     animationBegin: AnimationEvent;
+    /** 1.x: an SMIL animation ended (`animate()` given the chart's event emitter). */
     animationEnd: AnimationEvent;
   }
 }
@@ -559,6 +580,35 @@ function legacyPlugin(
  * The compat plugin. Restores the 1.x events (`data`, `optionsChanged`,
  * `draw`, `created`, `animationBegin`, `animationEnd`) with 1.x payloads.
  * With it, the 1.x chart classes also run 1.x plugin functions.
+ *
+ * Add it to `plugins`, of a 1.x class, a preset or `chart()`. The `draw`
+ * events come in the 1.x order, right after the chart is in the DOM, so
+ * `element` is a live element; then `created`. Importing
+ * `chartist/compat` also types the 1.x events on every chart handle. It
+ * needs the DOM renderer, and the `draw` and `created` events need a
+ * chart made by a preset or a 1.x class.
+ *
+ * @example
+ * ```ts
+ * import { lineChart } from 'chartist';
+ * import { compat } from 'chartist/compat';
+ *
+ * const chart = lineChart(
+ *   '#chart',
+ *   {
+ *     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+ *     series: [[12, 9, 7, 8, 5]]
+ *   },
+ *   { plugins: [compat] }
+ * );
+ *
+ * // Registered after the first render, so it runs from the next one on.
+ * chart.on('draw', data => {
+ *   if (data.type === 'point' && data.index === 4) {
+ *     data.element.addClass('is-friday');
+ *   }
+ * });
+ * ```
  */
 export const compat: ChartPlugin & { legacyPlugin: typeof legacyPlugin } = {
   name: 'compat',
@@ -571,7 +621,31 @@ export const compat: ChartPlugin & { legacyPlugin: typeof legacyPlugin } = {
  * Converts a 1.x plugin function into a v2 plugin for `chart()` and the
  * preset functions. It turns the 1.x events on for the chart and calls the
  * plugin with a 1.x-style chart object (`container`, `data`, `options`,
- * `svg`, `eventEmitter`, `on`, `off`, `update`, `detach`).
+ * `svg`, `eventEmitter`, `on`, `off`, `update`, `detach`). You don't need
+ * {@link compat} in the list as well.
+ *
+ * @param plugin The 1.x plugin: a function that gets the chart (and its
+ * options)
+ * @param options The plugin's options; without them, the plugin is called
+ * with the chart only, as in 1.x
+ * @example
+ * ```ts
+ * import { lineChart, type Plugin } from 'chartist';
+ * import { fromLegacyPlugin } from 'chartist/compat';
+ *
+ * // A 1.x plugin: a function that gets the chart and its options.
+ * const caption: Plugin = (chart, options) => {
+ *   chart.on('created', () => {
+ *     chart.container.setAttribute('aria-label', options.text);
+ *   });
+ * };
+ *
+ * lineChart(
+ *   '#chart',
+ *   { series: [[1, 3, 2, 4]] },
+ *   { plugins: [fromLegacyPlugin(caption, { text: 'Visitors per week' })] }
+ * );
+ * ```
  */
 export function fromLegacyPlugin(
   plugin: LegacyPlugin,

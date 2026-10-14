@@ -1,11 +1,19 @@
 import { withFields, type RoleNode, type SceneNode } from './node';
 import type { NodeRole } from './roles';
 
-/** Matches nodes by role, key and data context fields. */
+/**
+ * What {@link findAll} looks for: nodes by role, key and data context
+ * fields. A node matches when it matches every field given; an empty query
+ * matches every node.
+ */
 export interface NodeQuery {
+  /** Only nodes of this role, e.g. `bar`. */
   readonly role?: NodeRole;
+  /** Only the node with this key, e.g. `0/1/3` (layer, series, value). */
   readonly key?: string;
+  /** Only nodes of the series with this index (`ctx.seriesIndex`). */
   readonly seriesIndex?: number;
+  /** Only nodes of the value with this index (`ctx.valueIndex`). */
   readonly valueIndex?: number;
 }
 
@@ -21,8 +29,34 @@ function matches(candidate: SceneNode, query: NodeQuery) {
 }
 
 /**
- * Returns all nodes of a tree that match the query, in document order.
- * With a `role`, the nodes are typed as that role's nodes.
+ * Finds all nodes of a scene that match the query, in document order, the
+ * root included. With a `role`, the nodes are typed as that role's nodes.
+ *
+ * @param scene The root of the tree to search, e.g. the `scene` payload
+ * @param query The fields to match; without one, every node matches
+ * @example
+ * ```ts
+ * import { barChart, findAll } from 'chartist';
+ *
+ * barChart(
+ *   '#chart',
+ *   { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7]] },
+ *   {
+ *     plugins: [
+ *       {
+ *         name: 'log-bars',
+ *         install(chart) {
+ *           chart.on('scene', ({ scene }) => {
+ *             for (const bar of findAll(scene, { role: 'bar' })) {
+ *               console.log(bar.key, bar.ctx.value, bar.ctx.y2);
+ *             }
+ *           });
+ *         }
+ *       }
+ *     ]
+ *   }
+ * );
+ * ```
  * @experimental
  */
 export function findAll<R extends NodeRole>(
@@ -46,6 +80,47 @@ export function findAll(scene: SceneNode, query: NodeQuery = {}): SceneNode[] {
  * Maps a tree bottom-up: children first, then their parent with the mapped
  * children. Return a node to replace, `null` to drop, or `undefined` to
  * keep. Subtrees without changes are reused, not copied.
+ *
+ * @param scene The root of the tree to map
+ * @param mapper Called once per node, with the node's mapped children
+ * @returns The mapped tree, or `null` if the mapper dropped the root
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   cartesianAxes,
+ *   line,
+ *   mapNodes,
+ *   renderToString,
+ *   stepAxis,
+ *   toScene
+ * } from 'chartist';
+ *
+ * const labels = ['Mon', 'Tue', 'Wed'];
+ * const scene = toScene(
+ *   {
+ *     data: { labels, series: [[1, 3, 2]] },
+ *     axes: cartesianAxes([
+ *       { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+ *       { id: 'y', side: 'left', type: autoScaleAxis() }
+ *     ]),
+ *     layers: [axisGrid(), line()]
+ *   },
+ *   { width: 600, height: 300 }
+ * );
+ *
+ * // No grid lines, and the points marked for the stylesheet.
+ * const mapped = mapNodes(scene, current => {
+ *   if (current.role === 'grid') {
+ *     return null;
+ *   }
+ *   if (current.role === 'point') {
+ *     return current.addClass('is-marked');
+ *   }
+ * });
+ * const markup = mapped ? renderToString(mapped) : '';
+ * ```
  * @experimental
  */
 export function mapNodes(

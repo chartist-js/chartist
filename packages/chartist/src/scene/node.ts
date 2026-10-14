@@ -8,21 +8,42 @@
 
 import type { NodeRole, NodeRoles } from './roles';
 
+/**
+ * The value of a node attribute. Numbers are written as they are, e.g.
+ * `x1="12.5"`.
+ */
 export type AttrValue = string | number;
 
-/** Data attached to a node without a role. Never rendered. */
+/**
+ * Data attached to a node without a role, e.g. by a plugin. Never rendered.
+ * Any fields are allowed; the ones below have a meaning to Chartist.
+ */
 export interface NodeContext {
+  /**
+   * The index of the series the node belongs to. With it, the node gets a
+   * `key` and {@link findAll} can find it by series.
+   */
   readonly seriesIndex?: number;
+  /** The index of the value in its series the node stands for. */
   readonly valueIndex?: number;
+  /** The value the node stands for. */
   readonly value?: unknown;
+  /** The `meta` of the value or series, as given in the data. */
   readonly meta?: unknown;
+  /** Any other data you want to keep with the node. */
   readonly [key: string]: unknown;
 }
 
-/** Semantic node fields that aren't attributes. */
+/**
+ * What a node means, next to how it looks: its key, role and data
+ * context. None of it is rendered.
+ */
 export interface NodeMeta {
+  /** A stable id, e.g. `0/1/3` (layer, series, value). */
   readonly key?: string;
+  /** What the node draws, e.g. `point` or `bar`: a key of {@link NodeRoles}. */
   readonly role?: NodeRole;
+  /** The node's data: what its role declares, or anything for plain nodes. */
   readonly ctx?: object;
 }
 
@@ -30,15 +51,29 @@ export interface NodeMeta {
 export interface SceneNodeFields {
   /** SVG element name, e.g. `g`, `path`, `line`. */
   readonly name: string;
+  /**
+   * The element's attributes, without `class`. Names with a `ct:` prefix
+   * (`ct:value`, `ct:meta`) are written in the Chartist namespace.
+   */
   readonly attrs: Readonly<Record<string, AttrValue>>;
+  /** The element's class names, each once, in the order they were added. */
   readonly classes: readonly string[];
+  /** The child nodes, in document order. */
   readonly children: readonly SceneNode[];
   /** Text content, set with `text()`. */
   readonly content?: string;
+  /**
+   * A stable id that survives updates. The pipeline keys data nodes that
+   * have none: `layer/series/value` for a value's node (e.g. `0/1/3`),
+   * `layer/series` for a series' node.
+   */
   readonly key?: string;
 }
 
-/** The builder methods. Each returns a changed copy of the same type. */
+/**
+ * The builder methods of every node. Each returns a changed copy of the
+ * same type and leaves the node it's called on as it was.
+ */
 export interface SceneNodeMethods {
   /** Sets attributes; `undefined` or `null` removes one. */
   attr(attributes: Record<string, AttrValue | undefined | null>): this;
@@ -58,29 +93,47 @@ export interface SceneNodeMethods {
   empty(): this;
 }
 
-/** A node of a role: its context and attributes are that role's. */
+/**
+ * A node of a role, such as `RoleNode<'point'>`: its context and
+ * attributes are the ones {@link NodeRoles} declares for that role.
+ * {@link findAll} with a `role` returns these.
+ */
 export type RoleNode<R extends NodeRole> = SceneNodeFields &
   SceneNodeMethods & {
+    /** What the node draws, e.g. `point`. */
     readonly role: R;
-    /** Indexes read as `number | undefined` on any node, declared or not. */
+    /**
+     * The node's data, as its role declares it. `seriesIndex` and
+     * `valueIndex` read as `number | undefined` on any node, declared or
+     * not.
+     */
     readonly ctx: NodeRoles[R]['ctx'] & {
       readonly seriesIndex?: number;
       readonly valueIndex?: number;
     };
-    /** As the built-in layers set them; `attr()` can change them. */
+    /**
+     * The element's attributes, typed as the built-in layers set them;
+     * `attr()` can change them.
+     */
     readonly attrs: Readonly<Record<string, AttrValue>> & NodeRoles[R]['attrs'];
   };
 
 /** A node without a role: groups, decorations, anything a plugin adds. */
 export type PlainNode = SceneNodeFields &
   SceneNodeMethods & {
+    /** Always absent: plain nodes have no role. */
     readonly role?: undefined;
+    /** Data you attach to the node, if any. */
     readonly ctx?: NodeContext;
   };
 
 /**
- * A scene node: a node of one of the roles in `NodeRoles`, or a plain one.
- * Check `role` to narrow it, e.g. `if (node.role === 'point') node.ctx.x`.
+ * A scene node: a node of one of the roles in {@link NodeRoles}, or a plain
+ * one. Check `role` to narrow it, e.g. `if (node.role === 'point') node.ctx.x`.
+ *
+ * Nodes are immutable: the builder methods ({@link SceneNodeMethods}) return
+ * a new node. The `compose` and `scene` phase events pass nodes to your
+ * listeners, and the renderers turn them into SVG.
  */
 export type SceneNode = { [R in NodeRole]: RoleNode<R> }[NodeRole] | PlainNode;
 
@@ -180,20 +233,60 @@ export function withFields(
   return create({ ...(source as StoredFields), ...changes });
 }
 
-/** What `node()` takes for a node of role `R`: its context, if it has one. */
+/**
+ * What {@link node} takes as `meta` for a node of role `R`: the role, a key,
+ * and the role's context (required when the role declares fields).
+ */
 export type RoleMeta<R extends NodeRole> = {
+  /** The node's role, e.g. `point`. */
   readonly role: R;
+  /** A stable id; the pipeline sets one for data nodes that have none. */
   readonly key?: string;
 } & (object extends NodeRoles[R]['ctx']
   ? { readonly ctx?: NodeRoles[R]['ctx'] }
   : { readonly ctx: NodeRoles[R]['ctx'] });
 
 /**
- * Creates a scene node.
- * @param name SVG element name
+ * Creates a scene node: an SVG element with attributes and classes, and,
+ * for a node with a role, its data context. Use it in `compose` listeners
+ * and custom layers to add or replace elements. With a `role` in `meta`,
+ * the node is typed as that role's node and the context is checked.
+ *
+ * @param name SVG element name, e.g. `circle`, `g` or `text`
  * @param attributes Attributes; `undefined` and `null` values are skipped
  * @param className Space-separated class names
  * @param meta Role, data context and key of the node
+ * @returns A new node without children
+ * @example
+ * ```ts
+ * import { lineChart, node } from 'chartist';
+ *
+ * // Circles instead of the line chart's points.
+ * lineChart(
+ *   '#chart',
+ *   { series: [[1, 3, 2, 4]] },
+ *   {
+ *     plugins: [
+ *       {
+ *         name: 'circles',
+ *         install(chart) {
+ *           chart.on('compose', current => {
+ *             if (current.role !== 'point') {
+ *               return;
+ *             }
+ *             const { x, y } = current.ctx;
+ *             return node('circle', { cx: x, cy: y, r: 5 }, 'ct-circle', {
+ *               role: 'point',
+ *               ctx: current.ctx,
+ *               key: current.key
+ *             });
+ *           });
+ *         }
+ *       }
+ *     ]
+ *   }
+ * );
+ * ```
  */
 export function node<R extends NodeRole>(
   name: string,
