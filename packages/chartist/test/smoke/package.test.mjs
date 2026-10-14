@@ -324,16 +324,31 @@ test('npm package contains the built files', async () => {
     { cwd: pkgDir }
   );
   const files = JSON.parse(stdout)[0].files.map(file => file.path);
-  for (const file of new Set([...Object.values(IMPORTS), pkg.unpkg.slice(2)])) {
+  // Every import path and package field, the README for the npm page and
+  // both licenses.
+  const fields = ['main', 'module', 'types', 'style', 'unpkg', 'jsdelivr'].map(
+    field => pkg[field].replace(/^\.\//, '')
+  );
+  for (const file of new Set([
+    ...Object.values(IMPORTS),
+    ...fields,
+    'README.md',
+    'LICENSE-MIT',
+    'LICENSE-WTFPL'
+  ])) {
     assert.ok(files.includes(file), `${file} is packed`);
   }
   const unexpected = files.filter(
-    file => !/^(dist\/|package\.json$|README|LICENSE)/.test(file)
+    file =>
+      !file.startsWith('dist/') &&
+      !['package.json', 'README.md', 'LICENSE-MIT', 'LICENSE-WTFPL'].includes(
+        file
+      )
   );
   assert.deepEqual(
     unexpected,
     [],
-    'only dist/ and package metadata are packed'
+    'only dist/, package.json, the README and the licenses are packed'
   );
 });
 

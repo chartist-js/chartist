@@ -2,9 +2,9 @@
 
 ## 1. Publishing the package
 
-- [ ] 1.1 In `packages/chartist/package.json`, remove `publishConfig.directory`/`linkDirectory`, `prepublishOnly`, `postpublish`, `clear:package` and the `clean-publish` dependency; add `publishConfig.access: "public"`, `repository.directory: "packages/chartist"` and `README.md` to `files`. Verify: `pnpm install`, `pnpm nx run-many -t build test:smoke -p chartist`
-- [ ] 1.2 Write `packages/chartist/README.md` (v2 pitch, install with `chartist@next` during RCs, a `lineChart` example, links to chartist.dev, `/v1/`, the changelog and plugins, Cube's sponsor line, licenses) and make the root `README.md` the same text plus contributor notes. Verify: the README renders on GitHub's preview, links resolve
-- [ ] 1.3 Add a smoke test that packs the package (`npm pack --dry-run --json`) and checks the file list: `package.json`, `README.md`, the two licenses and `dist/` only, every `exports` and package-field path among them. Verify: `pnpm nx run chartist:test:smoke`
+- [x] 1.1 In `packages/chartist/package.json`, remove `publishConfig.directory`/`linkDirectory`, `prepublishOnly`, `postpublish`, `clear:package` and the `clean-publish` dependency; add `publishConfig.access: "public"`, `repository.directory: "packages/chartist"` and `README.md` to `files`. Verify: `pnpm install`, `pnpm nx run-many -t build test:smoke -p chartist`
+- [x] 1.2 Write `packages/chartist/README.md` (v2 pitch, install with `chartist@next` during RCs, a `lineChart` example, links to chartist.dev, `/v1/`, the changelog and plugins, Cube's sponsor line, licenses) and make the root `README.md` the same text plus contributor notes. Verify: the README renders on GitHub's preview, links resolve
+- [x] 1.3 Add a smoke test that packs the package (`npm pack --dry-run --json`) and checks the file list: `package.json`, `README.md`, the two licenses and `dist/` only, every `exports` and package-field path among them. Verify: `pnpm nx run chartist:test:smoke`
 
 ## 2. Nx Release
 
