@@ -49,11 +49,75 @@ interface LiveConfig {
   show: string;
 }
 
+/**
+ * View mode: runs the example's own code in a sandboxed preview over the
+ * static chart, so plugins, events and CSS show without pressing Edit.
+ * Only compile() and the preview load here, not the editor.
+ */
+async function runInPlace(root: HTMLElement, config: LiveConfig) {
+  const stage = root.querySelector<HTMLElement>('[data-live-stage]');
+  if (!stage) {
+    return;
+  }
+  const [{ compile }, { Preview }] = await Promise.all([
+    import('@chartist/playground/compile'),
+    import('@chartist/playground/preview')
+  ]);
+  if (root.classList.contains('editing')) {
+    return;
+  }
+  let failed = false;
+  const preview = new Preview(
+    stage,
+    message => {
+      // The static chart stays when the example fails in view mode; Edit
+      // shows the error.
+      if (message.type === 'error' && !failed) {
+        failed = true;
+        preview.iframe.hidden = true;
+      }
+    },
+    config.title
+  );
+  preview.iframe.className = 'absolute inset-0 size-full border-0';
+  preview.iframe.tabIndex = -1;
+  preview.iframe.setAttribute('aria-hidden', 'true');
+  const render = async () => {
+    if (!preview.iframe.isConnected) {
+      return;
+    }
+    const runId = `view-${Math.random().toString(36).slice(2)}`;
+    const result = await compile(config.files, {
+      chartistUrl: new URL(chartistUrl, location.href).href,
+      stylesUrl: new URL(stylesUrl, location.href).href,
+      previewStyles: previewStyles(),
+      runId
+    });
+    if (result.html) {
+      preview.render(result.html, runId);
+    }
+  };
+  await render();
+  new MutationObserver(() => void render()).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme']
+  });
+}
+
 export function mountLiveExamples() {
   for (const root of document.querySelectorAll<HTMLElement>(
     '[data-live-example]'
   )) {
     const config = JSON.parse(root.dataset.liveExample!) as LiveConfig;
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (entries.some(entry => entry.isIntersecting)) {
+          observer.disconnect();
+          void runInPlace(root, config);
+        }
+      },
+      { rootMargin: '200px' }
+    ).observe(root);
     root.querySelector('[data-live-copy]')?.addEventListener('click', event => {
       const button = event.currentTarget as HTMLElement;
       navigator.clipboard.writeText(config.files[config.show]).then(

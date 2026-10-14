@@ -54,7 +54,8 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
     <div class="flex items-center justify-between gap-2 border-b border-line py-2 pr-2 pl-4">
       <span class="eyebrow"><span class="inline-block size-2 rounded-pill bg-ok shadow-[0_0_0_3px_var(--ok-bg)]"></span> Live</span>
     </div>
-    <div class="dot-grid grid min-h-[260px] flex-1 place-items-center px-5 pt-4 pb-5">
+    <!-- data-live-stage: the script swaps the static chart for the example running in a sandbox. -->
+    <div class="dot-grid relative grid min-h-[260px] flex-1 place-items-center px-5 pt-4 pb-5" data-live-stage>
       <div class="w-full" style={previewStyle}>
         <Chart type={preview.type} data={preview.data} options={preview.options} plain draw={false} label={label} aspect="16 / 10" />
       </div>

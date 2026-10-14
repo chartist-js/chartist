@@ -71,6 +71,14 @@ async function settle(page) {
       element => element.querySelector('svg')
     )
   );
+  // Live examples run their code in a sandboxed iframe in view mode.
+  for (const stage of await page.locator('[data-live-stage]').all()) {
+    await stage
+      .frameLocator('iframe')
+      .locator('svg')
+      .first()
+      .waitFor({ timeout: 15_000 });
+  }
   await page.evaluate(() => document.fonts.ready);
   // Sticky and fixed parts would cover the blocks being captured.
   await page.evaluate(() => {

@@ -7,7 +7,8 @@
   "license": "MIT OR WTFPL",
   "exports": {
     ".": "./src/index.ts",
-    "./compile": "./src/compile.ts"
+    "./compile": "./src/compile.ts",
+    "./preview": "./src/preview.ts"
   },
   "scripts": {
     "dev": "vite",
