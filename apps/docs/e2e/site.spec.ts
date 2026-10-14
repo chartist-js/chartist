@@ -144,12 +144,13 @@ test('the Getting started file works as copied', async ({ page }) => {
     .filter({ hasText: '<!doctype html>' })
     .innerText();
 
-  // Serve the snippet, with the CDN mapped to the local chartist build.
+  // Serve the snippet, with the CDN mapped to the local chartist build. The
+  // version in the URL is `2`, or the exact version during prereleases.
   const dist = fileURLToPath(
     new URL('../../../packages/chartist/dist/', import.meta.url)
   );
   await page.route(
-    'https://cdn.jsdelivr.net/npm/chartist@2/dist/**',
+    'https://cdn.jsdelivr.net/npm/chartist@*/dist/**',
     async route => {
       const file = new URL(route.request().url()).pathname.split('/dist/')[1];
       await route.fulfill({
