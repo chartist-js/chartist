@@ -93,6 +93,8 @@ describe('layers/bar', () => {
     // y: 2, 6, -1 at index 0; 1 at index 1.
     expect(stackedExtent(series, 'y')).toEqual({ low: -1, high: 6 });
     expect(stackedExtent(series, 'x')).toEqual({ low: -5, high: 4 });
+    // Positives and negatives apart: 6 up, -7 down.
+    expect(stackedExtent(series, 'y', true)).toEqual({ low: -7, high: 6 });
     expect(stackedExtent([], 'y')).toBeUndefined();
   });
 });
@@ -176,6 +178,44 @@ describe('layers/bar stack modes', () => {
       expectBars(bars, [
         [at(0), at(5)],
         [at(5), at(9)]
+      ]);
+    });
+
+    it('accumulate-relative stacks positives up and negatives down (#1473)', () => {
+      const { range, bars, at } = stacked(
+        [
+          [10, 1],
+          [-6, 1],
+          [-6, 1]
+        ],
+        { horizontalBars, stackMode: 'accumulate-relative' }
+      );
+      expect(range.min).toBeLessThanOrEqual(-12);
+      expect(range.max).toBeGreaterThanOrEqual(10);
+      // The negative stack of a reaches -12, below every single value and
+      // every running sum.
+      expectBars(bars, [
+        [at(0), at(10)],
+        [at(0), at(1)],
+        [at(0), at(-6)],
+        [at(1), at(2)],
+        [at(-6), at(-12)],
+        [at(2), at(3)]
+      ]);
+    });
+
+    it('accumulate-relative picks the stack by the value along the value axis (#1469)', () => {
+      // The other coordinate is a position at or above zero.
+      const point = (v: number) =>
+        horizontalBars ? { x: v, y: 1 } : { x: 1, y: v };
+      const { range, bars, at } = stacked([[point(4)], [point(-4)]], {
+        horizontalBars,
+        stackMode: 'accumulate-relative'
+      });
+      expect(range.min).toBeLessThanOrEqual(-4);
+      expectBars(bars, [
+        [at(0), at(4)],
+        [at(0), at(-4)]
       ]);
     });
 

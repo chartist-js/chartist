@@ -32,9 +32,9 @@ export interface BarLayerOptions {
   readonly stackBars?: boolean;
   /**
    * How stacked bars stack: `accumulate` (default) adds each value to the
-   * ones before, `accumulate-relative` stacks positive and negative values
-   * apart, and `overlap` (or `true`) draws every bar from zero, on top of
-   * each other.
+   * ones before, `accumulate-relative` stacks positive values up and
+   * negative values down from zero, and `overlap` (or `true`) draws every
+   * bar from zero, on top of each other.
    */
   readonly stackMode?:
     | 'accumulate'
@@ -68,18 +68,23 @@ function valueAlong(value: unknown, dimension: 'x' | 'y') {
 
 /**
  * The range stacked bars reach on the value axis: per index, the running
- * sums of the values in series order. Undefined without values.
+ * sums of the values in series order (`accumulate`), or of the positive
+ * and the negative values apart (`accumulate-relative`). Undefined
+ * without values.
  */
 export function stackedExtent(
   series: readonly NormalizedSeries[],
-  dimension: 'x' | 'y'
+  dimension: 'x' | 'y',
+  relative = false
 ): AxisExtent | undefined {
-  const sums: number[] = [];
+  const positive: number[] = [];
+  const negative: number[] = [];
   let low = Infinity;
   let high = -Infinity;
   for (const values of series) {
     values.forEach((value, index) => {
       const amount = valueAlong(value, dimension);
+      const sums = relative && amount < 0 ? negative : positive;
       sums[index] = (sums[index] ?? 0) + amount;
       low = Math.min(low, sums[index]);
       high = Math.max(high, sums[index]);
@@ -159,7 +164,11 @@ export function bar(options: BarLayerOptions = {}): Layer {
       const id = horizontal ? axes.x : axes.y;
       const extent =
         stacks && id !== undefined
-          ? stackedExtent(normalized.series, horizontal ? 'x' : 'y')
+          ? stackedExtent(
+              normalized.series,
+              horizontal ? 'x' : 'y',
+              stackMode === 'accumulate-relative'
+            )
           : undefined;
       return id !== undefined && extent ? { [id]: extent } : {};
     },
@@ -250,8 +259,10 @@ export function bar(options: BarLayerOptions = {}): Layer {
           }
 
           if (isAccumulateRelative) {
+            // By the value along the value axis only: the other one is
+            // missing or a position (#1469).
             stack =
-              Number(valueY) >= 0 || Number(valueX) >= 0 ? posStack : negStack;
+              Number(horizontal ? valueX : valueY) < 0 ? negStack : posStack;
           }
           const previousStack = stack[valueIndex] || zeroPoint;
           stack[valueIndex] =

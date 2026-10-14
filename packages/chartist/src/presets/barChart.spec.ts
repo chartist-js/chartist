@@ -69,6 +69,36 @@ describe('presets/barChart', () => {
     ).toBe(10);
   });
 
+  it('accumulate-relative fits the axis to both stacks (#1473)', () => {
+    const element = sized();
+    barChart(
+      element,
+      {
+        labels: ['A', 'B'],
+        series: [
+          [5, 5],
+          [-3, 2],
+          [-4, 1]
+        ]
+      },
+      { stackBars: true, stackMode: 'accumulate-relative' }
+    );
+    const values = Array.from(
+      element.querySelectorAll('.ct-label.ct-vertical'),
+      label => Number(label.textContent)
+    );
+    // The negative stack of A reaches -7, the positive one of B 8.
+    expect(values[0]).toBeLessThanOrEqual(-7);
+    expect(values.at(-1)).toBeGreaterThanOrEqual(8);
+    // The -3 bar runs down from zero, where the 5 bar starts.
+    const [five, , minusThree] = Array.from(
+      element.querySelectorAll('line.ct-bar'),
+      line => [Number(line.getAttribute('y1')), Number(line.getAttribute('y2'))]
+    );
+    expect(minusThree[0]).toBe(five[0]);
+    expect(minusThree[1]).toBeGreaterThan(minusThree[0]);
+  });
+
   // As 1.x: `overlap` keeps the axis at the sums, `true` fits the values.
   it.each([
     ['accumulate', true],
