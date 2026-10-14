@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-10-13",
+  "generatedAt": "2026-10-14",
   "npm": {
-    "monthlyDownloads": 500197,
+    "monthlyDownloads": 519991,
     "period": {
-      "start": "2026-09-12",
-      "end": "2026-10-11"
+      "start": "2026-09-13",
+      "end": "2026-10-12"
     }
   },
   "github": {
@@ -35,6 +35,84 @@
       "avatar": "pluginkollektiv.png"
     }
   ],
+  "credits": {
+    "roles": {
+      "gionkunz": "core maintainer"
+    },
+    "people": [
+      {
+        "login": "gionkunz",
+        "name": "Gion Kunz",
+        "url": "https://github.com/gionkunz",
+        "commits": 444,
+        "role": "creator",
+        "avatar": "gionkunz.png"
+      },
+      {
+        "login": "dangreen",
+        "name": "Dan Onoshko",
+        "url": "https://github.com/dangreen",
+        "commits": 77,
+        "avatar": "dangreen.png"
+      },
+      {
+        "login": "hansmaad",
+        "name": "Hannes Kamecke",
+        "url": "https://github.com/hansmaad",
+        "commits": 27,
+        "avatar": "hansmaad.png"
+      },
+      {
+        "login": "autarc",
+        "name": "autarc",
+        "url": "https://github.com/autarc",
+        "commits": 10,
+        "avatar": "autarc.png"
+      },
+      {
+        "login": "psalaets",
+        "name": "Paul Salaets",
+        "url": "https://github.com/psalaets",
+        "commits": 8,
+        "avatar": "psalaets.png"
+      },
+      {
+        "login": "jwatmuff",
+        "name": "jwatmuff",
+        "url": "https://github.com/jwatmuff",
+        "commits": 6,
+        "avatar": "jwatmuff.png"
+      },
+      {
+        "login": "Arantiryo",
+        "name": "Ivan Tsenilov",
+        "url": "https://github.com/Arantiryo",
+        "commits": 5,
+        "avatar": "arantiryo.png"
+      },
+      {
+        "login": "astanb",
+        "name": "Alex",
+        "url": "https://github.com/astanb",
+        "commits": 4,
+        "avatar": "astanb.png"
+      },
+      {
+        "login": "danieldiekmeier",
+        "name": "Daniel Diekmeier",
+        "url": "https://github.com/danieldiekmeier",
+        "commits": 4,
+        "avatar": "danieldiekmeier.png"
+      },
+      {
+        "login": "tylergaw",
+        "name": "Tyler Gaw",
+        "url": "https://github.com/tylergaw",
+        "commits": 4,
+        "avatar": "tylergaw.png"
+      }
+    ]
+  },
   "sizes": {
     "method": "One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts’ recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).",
     "versions": {
@@ -46,12 +124,12 @@
     },
     "bytes": {
       "chartist (lineChart)": {
-        "minified": 30491,
-        "gzip": 11868
+        "minified": 31843,
+        "gzip": 12401
       },
       "chartist (core: chart)": {
-        "minified": 9860,
-        "gzip": 4168
+        "minified": 10525,
+        "gzip": 4415
       },
       "chart.js": {
         "minified": 139095,
