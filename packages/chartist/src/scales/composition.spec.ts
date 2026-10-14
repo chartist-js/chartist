@@ -92,6 +92,36 @@ describe('composition: axes', () => {
     expect(axes().definitions.map(d => d.offset)).toEqual([30, 40, 40]);
   });
 
+  it('the { x, y } form has the defaults of the list form (#1484)', () => {
+    const shorthand = cartesianAxes({
+      x: { type: stepAxis() },
+      y: { type: autoScaleAxis() }
+    });
+    expect(shorthand.definitions.map(d => [d.id, d.side, d.offset])).toEqual([
+      ['x', 'bottom', 30],
+      ['y', 'left', 40]
+    ]);
+    expect(shorthand.area(600, 300, PADDING)).toEqual(
+      cartesianAxes([
+        { id: 'x', side: 'bottom', type: stepAxis() },
+        { id: 'y', side: 'left', type: autoScaleAxis() }
+      ]).area(600, 300, PADDING)
+    );
+    const moved = cartesianAxes({
+      x: { type: stepAxis(), position: 'start', offset: 0 },
+      y: { type: autoScaleAxis(), position: 'end' }
+    });
+    expect(moved.definitions.map(d => [d.side, d.offset])).toEqual([
+      ['top', 0],
+      ['right', 40]
+    ]);
+    expect(
+      cartesianAxes({
+        axes: [{ id: 'v', side: 'right', type: autoScaleAxis() }]
+      }).definitions[0].offset
+    ).toBe(40);
+  });
+
   it('rejects duplicate ids and unknown bindings', () => {
     expect(() =>
       cartesianAxes([

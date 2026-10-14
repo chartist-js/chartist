@@ -138,13 +138,12 @@ export interface AxisDefinition extends AxisSetup {
 export interface AxesConfig {
   /**
    * The X axis in the 1.x form: at the bottom, or the top with
-   * `position: 'start'`. Its `offset` defaults to 0, so set one to make
-   * room for labels.
+   * `position: 'start'`. Its `offset` defaults to 30 px.
    */
   readonly x?: AxisSetup;
   /**
-   * The Y axis in the 1.x form: on the right, or the left with
-   * `position: 'start'`. Its `offset` defaults to 0.
+   * The Y axis in the 1.x form: on the left, or the right with
+   * `position: 'end'`. Its `offset` defaults to 40 px.
    */
   readonly y?: AxisSetup;
   /** The axis list form; used instead of `x`/`y`. */
@@ -194,10 +193,7 @@ export interface ChartAxes {
  * @experimental
  */
 export interface CartesianAxes {
-  /**
-   * The config the axes were created from; in the list form, with the
-   * default offsets filled in.
-   */
+  /** The config the axes were created from, with the default offsets filled in. */
   readonly config: AxesConfig;
   /** The chart area with the axis offsets reserved. */
   area(
@@ -236,7 +232,11 @@ export interface LayerBinding {
 export const directionOf = (side: AxisSide): AxisDimension =>
   side === 'top' || side === 'bottom' ? 'x' : 'y';
 
-/** The `{ x, y }` shorthand as definitions: sides from the 1.x `position`. */
+/**
+ * The `{ x, y }` shorthand as definitions, with sides from the 1.x
+ * `position`: X at the bottom unless `'start'`, Y on the left unless
+ * `'end'`.
+ */
 export function definitionsOf(config: AxesConfig): readonly AxisDefinition[] {
   if (config.axes) {
     return config.axes;
@@ -253,7 +253,7 @@ export function definitionsOf(config: AxesConfig): readonly AxisDefinition[] {
     definitions.push({
       ...config.y,
       id: 'y',
-      side: config.y.position === 'start' ? 'left' : 'right'
+      side: config.y.position === 'end' ? 'right' : 'left'
     });
   }
   return definitions;

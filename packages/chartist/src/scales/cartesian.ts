@@ -13,6 +13,7 @@ import {
   insetsOf,
   type AxesConfig,
   type AxisDefinition,
+  type AxisSetup,
   type CartesianAxes,
   type LayerBinding,
   type PlacedScaleAxis
@@ -188,12 +189,13 @@ export function presetAxes(
  * 1.x axis options (`offset`, `low`, `high`, `ticks`, …).
  *
  * Layers pick their axes by id, and each axis scales to the series of the
- * layers drawn on it. In the list form, offsets default to 30 px for X
- * axes and 40 px for Y axes, and axes on the same side stack outward in
- * list order. Unknown or duplicate ids throw.
+ * layers drawn on it. Offsets default to 30 px for X axes and 40 px for Y
+ * axes, and axes on the same side stack outward in list order. Unknown or
+ * duplicate ids throw.
  *
- * The 1.x-style `{ x, y }` form also works. There, offsets default to 0,
- * and the Y axis sits on the right unless its `position` is `'start'`.
+ * The 1.x-style `{ x, y }` form also works, with the same defaults: X at
+ * the bottom unless its `position` is `'start'`, Y on the left unless
+ * it's `'end'`.
  *
  * @example
  * ```ts
@@ -243,18 +245,26 @@ export function cartesianAxes(
   input: AxesConfig | readonly AxisDefinition[],
   extra: Pick<AxesConfig, 'reverseData' | 'normalize'> = {}
 ): CartesianAxes {
-  // The list form gets the 1.x default offsets (30 px for X, 40 px for Y).
-  const config: AxesConfig = Array.isArray(input)
-    ? {
-        ...extra,
-        axes: (input as readonly AxisDefinition[]).map(definition => ({
-          ...definition,
-          offset:
-            definition.offset ??
-            (directionOf(definition.side) === 'x' ? 30 : 40)
-        }))
-      }
+  // Both forms get the 1.x default offsets (30 px for X, 40 px for Y).
+  const withOffset = <T extends AxisSetup>(
+    setup: T,
+    dimension: 'x' | 'y'
+  ): T => ({ ...setup, offset: setup.offset ?? (dimension === 'x' ? 30 : 40) });
+  const given: AxesConfig = Array.isArray(input)
+    ? { ...extra, axes: input as readonly AxisDefinition[] }
     : { ...extra, ...(input as AxesConfig) };
+  const config: AxesConfig = given.axes
+    ? {
+        ...given,
+        axes: given.axes.map(definition =>
+          withOffset(definition, directionOf(definition.side))
+        )
+      }
+    : {
+        ...given,
+        x: given.x && withOffset(given.x, 'x'),
+        y: given.y && withOffset(given.y, 'y')
+      };
   const axes = presetAxes(config, boundSeries);
   const ids = new Set<string>();
   for (const { id } of axes.definitions) {
