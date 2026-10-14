@@ -1,4 +1,5 @@
 name: Release
+run-name: "🚀 Release ${{ github.event_name == 'workflow_run' && format('after CI: {0}', github.event.workflow_run.head_commit.message) || inputs.specifier }}${{ inputs.dry-run && ' (dry run)' || '' }}${{ inputs.publish-only && ' (publish only)' || '' }}"
 
 # Every green CI run on main offers a release, which waits for approval in
 # the release environment; a release that isn't approved publishes nothing.
