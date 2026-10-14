@@ -30,6 +30,7 @@ test('an entry credits its author and links its sources', async ({ page }) => {
   await expect(entry).toContainText('MIT');
   await expect(entry.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
   await expect(entry.locator('.tag', { hasText: 'No SSR' })).toBeVisible();
+  await expect(entry.locator('.tag.warn', { hasText: 'Global' })).toBeVisible();
   await expect(entry.getByRole('link', { name: 'npm' })).toHaveAttribute(
     'href',
     'https://www.npmjs.com/package/chartist-plugin-axistitle'

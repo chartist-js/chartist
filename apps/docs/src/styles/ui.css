@@ -191,6 +191,12 @@ a.btn.primary:hover {
   border-color: transparent;
 }
 
+.tag.warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+  border-color: color-mix(in oklab, var(--warn) 35%, transparent);
+}
+
 .tag.ok {
   background: var(--ok-bg);
   color: var(--ok);

@@ -347,7 +347,7 @@ export function pluginsMarkdown(): string {
         `- Author: ${plugin.author}`,
         `- Source: ${plugin.repository ?? 'repository gone'}, npm: ${npmUrl(plugin)}`,
         `- License: ${plugin.license}`,
-        `- Written for the Chartist ${plugin.chartist} API; runs on v2 with \`chartist/compat\` (${plugin.loads === 'module' ? 'an ES module' : 'a script'})`,
+        `- Written for the Chartist ${plugin.chartist} API; runs on v2 with \`chartist/compat\` (${plugin.loads === 'module' ? 'an ES module' : 'a script that reads the global `Chartist`, for backwards compatibility'})`,
         `- Charts: ${plugin.types.join(', ')}`,
         `- Server rendering: ${plugin.ssr ? 'yes' : 'no, it needs a browser'}`,
         `- Downloads: ${stats.monthlyDownloads} a month, last release ${stats.lastRelease}`

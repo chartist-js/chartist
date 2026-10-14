@@ -126,7 +126,7 @@ A plugin whose remaining failure is in its own code is moved off the list, with 
 Every listed plugin runs on v2 through `chartist/compat`: the 0.x-era scripts on the global it sets up, and the 1.x-style @stklcode plugin through `fromLegacyPlugin`. So the status tells how a plugin loads:
 
 - **"ES module"**: it imports `chartist` and works with bundlers (@stklcode).
-- **"Script"**: it loads as a script after Chartist's UMD builds (everything else).
+- **"Global"**, marked as a warning: a script that reads the global `Chartist`, which compat sets up for backwards compatibility (everything else). Named "Global" with a warning icon at the author's request, instead of "Script".
 
 Every entry says "Runs on v2 with `chartist/compat`". An `SSR` or `No SSR` tag says whether the plugin draws in server rendering (asked by the author). Every listed plugin is `No SSR`: compat emits the 1.x events from the `mount` phase, which `toScene()` never reaches (checked in Node: no `draw` event, nothing added to the markup). Only v2-native plugins, working in `compose`, can be `SSR`, and the data refuses `ssr: true` for a 0.x or 1.x plugin. A tag shows the Chartist API version the plugin was written for (`API v0.x`, `API v1.x`, `API v2.x`; asked by the author while building the page, with "API" so it isn't read as the plugin's own version): eleven are `API v0.x`, @stklcode's is `API v1.x`, and `API v2.x` is there for v2-native plugins to come. The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
 
