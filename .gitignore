@@ -41,5 +41,7 @@ out-tsc
 # Visual regression test output (packages/chartist/test/visual)
 test-results
 playwright-report
+# A visual baseline recorded on this machine (chartist:test:visual:local-baseline)
+.local-baseline
 vitest.config.*.timestamp*
 .vitest

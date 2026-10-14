@@ -1,43 +1,33 @@
 import 'chartist/styles.css';
-import { LineChart, Svg } from 'chartist';
-import { compat } from 'chartist/compat';
+import { lineChart, node, type ChartPlugin } from 'chartist';
 
-const chart = new LineChart(
+// Replaces every point with a triangle around the point's coordinates.
+const triangles: ChartPlugin = {
+  name: 'triangles',
+  install(chart) {
+    // Every element passes through `compose`; returning a node replaces it.
+    chart.on('compose', element => {
+      if (element.role !== 'point') {
+        return;
+      }
+      const { x, y } = element.ctx as { x: number; y: number };
+      return node(
+        'path',
+        {
+          d: `M ${x} ${y - 15} L ${x - 15} ${y + 8} L ${x + 15} ${y + 8} z`,
+          style: 'fill-opacity: 1'
+        },
+        'ct-area'
+      );
+    });
+  }
+};
+
+lineChart(
   '#chart',
   {
     labels: [1, 2, 3, 4, 5],
     series: [[12, 9, 7, 8, 5]]
   },
-  // 1.x draw events come from the compat plugin in v2.
-  { plugins: [compat] }
+  { plugins: [triangles] }
 );
-
-// Listening for draw events that get emitted by the Chartist chart
-chart.on('draw', data => {
-  // If the draw event was triggered from drawing a point on the line chart
-  if (data.type === 'point') {
-    // We are creating a new path SVG element that draws a triangle around the point coordinates
-    const triangle = new Svg(
-      'path',
-      {
-        d: [
-          'M',
-          data.x,
-          data.y - 15,
-          'L',
-          data.x - 15,
-          data.y + 8,
-          'L',
-          data.x + 15,
-          data.y + 8,
-          'z'
-        ].join(' '),
-        style: 'fill-opacity: 1'
-      },
-      'ct-area'
-    );
-
-    // With data.element we get the Chartist SVG wrapper and we can replace the original point drawn by Chartist with our newly created triangle
-    data.element.replace(triangle);
-  }
-});

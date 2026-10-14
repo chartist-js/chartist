@@ -15,7 +15,9 @@
 
 The visual harness renders an example once per entry: the local build with `main.ts`, the local build with `main.classic.ts`, and (when selected) 1.5.0 with `main.classic.ts`. All compare against the same baseline image. A functional entry that can't match the 1.x pixels exactly is a finding: list it, and either keep the difference out of the example or, if the difference is a deliberate v2 change, record it in the change's findings and give that entry its own baseline image with an explicit `baseline` override in the manifest.
 
-History: `main.ts` keeps its `git log --follow` lineage (its content changes, its path doesn't); `main.classic.ts` is a new file. Copy and rewrite go in separate commits per type, so the classic copy is a pure add.
+History: `main.ts` keeps its `git log --follow` lineage (its content changes, its path doesn't); `main.classic.ts` is a new file. Copy and rewrite go in **one** commit (changed during the foundation, 2026-10-14: a copy-only commit would fail the examples check, which requires a converted `main.ts` once a classic entry exists); git detects the classic file as a copy (`git log --follow -C`).
+
+**A baseline recorded on the machine** (added during the foundation): the dev container's font rendering differs from the reference platform, so 36 examples fail against the committed baseline before any change. `VISUAL_SNAPSHOTS` points the harness at another baseline folder; `chartist:test:visual:local-baseline` records 1.5.0's classic code there (and the v2-only examples from the local build), and `chartist:test:visual:local` tests against it. It's git-ignored; the committed baseline is never touched this way.
 
 Alternative: classic examples stay as they are and the gallery shows them. Rejected: it would teach the 1.x API on the v2 site.
 

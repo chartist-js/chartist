@@ -9,7 +9,8 @@
  *
  * The example files are served unchanged. A harness plugin only adds the
  * screenshot environment to each page: the bundled test font, a fixed chart
- * container size and a neutral body margin.
+ * container size and a neutral body margin. `?entry=classic` loads the
+ * example's classic entry (src/main.classic.ts) instead of src/main.ts.
  */
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -69,7 +70,7 @@ function visualHarness(): Plugin {
     name: 'chartist-visual-harness',
     transformIndexHtml: {
       order: 'pre',
-      handler(html, { path: urlPath }) {
+      handler(html, { path: urlPath, originalUrl }) {
         const folder = urlPath.replace(/^\//, '').replace(/\/index\.html$/, '');
         const example = byFolder.get(folder);
         if (!example) {
@@ -81,7 +82,11 @@ function visualHarness(): Plugin {
           // example is a subfolder of the server root.
           html: html.replace(
             'src="/src/main.ts"',
-            `src="/${example.folder}/src/main.ts"`
+            `src="/${example.folder}/src/${
+              /[?&]entry=classic\b/.test(originalUrl ?? '')
+                ? 'main.classic.ts'
+                : 'main.ts'
+            }"`
           ),
           tags: [
             {

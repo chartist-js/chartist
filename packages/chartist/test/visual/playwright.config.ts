@@ -23,7 +23,13 @@ export default defineConfig({
   testMatch: 'visual.spec.ts',
   outputDir: `./test-results/${lib}`,
   // Platform-free names: one baseline, recorded on Linux (see above).
-  snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
+  // VISUAL_SNAPSHOTS points at another baseline folder: for a machine whose
+  // font rendering differs from the reference platform, record 1.5.0 there
+  // (CHARTIST_LIB=v1 ... --update-snapshots) and test the local build
+  // against it. The committed baseline is never touched that way.
+  snapshotPathTemplate: process.env.VISUAL_SNAPSHOTS
+    ? `${process.env.VISUAL_SNAPSHOTS}/{arg}{ext}`
+    : '{testDir}/__screenshots__/{arg}{ext}',
   // A missing baseline fails; recording is explicit (--update-snapshots).
   updateSnapshots: 'none',
   fullyParallel: true,

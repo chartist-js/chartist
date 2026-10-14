@@ -26,19 +26,35 @@ export interface Example {
   /** The example folder, relative to this package. Derived from `id`. */
   folder: string;
   title: string;
+  /** One sentence for the docs gallery card and the example's page. */
+  description?: string;
   type: ChartType;
   /** Shown in the docs (`true`) or only used by the tests (`false`). */
   docs: boolean;
   /**
-   * Uses a 1.x event listener (`.on(...)`) or the 1.x `Svg` API, so it needs
+   * Has a classic entry, `src/main.classic.ts`: the 1.x code that draws the
+   * same chart with the chart classes. `src/main.ts` is then the functional
+   * version. Both are screenshot against the same baseline image, and the
+   * 1.5.0 visual run renders the classic entry.
+   */
+  classic: boolean;
+  /**
+   * The 1.x code (the classic entry, or `main.ts` before it's converted)
+   * uses a 1.x event listener (`.on(...)`) or the 1.x `Svg` API, so it needs
    * the compat plugin in v2.
    */
   compat: boolean;
   /**
-   * Uses the v2 API (`chart()`, layers, …), so chartist@1.5.0 can't render
-   * it; the 1.5.0 visual run skips it.
+   * Has no 1.x code at all (only v2 API, no classic entry), so
+   * chartist@1.5.0 can't render it; the 1.5.0 visual run skips it.
    */
   v2: boolean;
+  /**
+   * Why the functional entry has its own baseline image instead of sharing
+   * the classic one. Only for deliberate v2 differences; leave unset when
+   * both entries draw the same pixels.
+   */
+  ownBaseline?: string;
   /** Viewports the visual regression tests render the example at. */
   viewports: ViewportName[];
   /**
@@ -63,6 +79,7 @@ function example(input: ExampleInput): Example {
     folder: input.id,
     type: input.id.split('/')[0] as ChartType,
     docs: true,
+    classic: false,
     compat: false,
     v2: false,
     viewports: ['default'],
@@ -79,7 +96,12 @@ function testOnly(input: ExampleInput): Example {
 
 export const examples: Example[] = [
   // Line charts (1.x sandboxes)
-  example({ id: 'line/simple', title: 'Simple line chart' }),
+  example({
+    id: 'line/simple',
+    title: 'Simple line chart',
+    description: 'Three series, Monday to Friday, stretched to the full width.',
+    classic: true
+  }),
   testOnly({
     id: 'line/svg-labels',
     title: 'Simple line chart with SVG text labels',
@@ -100,6 +122,9 @@ export const examples: Example[] = [
   example({
     id: 'line/modify-drawing',
     title: 'Using events to replace graphics',
+    description:
+      'A plugin swaps every point for a triangle while the chart is composed.',
+    classic: true,
     compat: true
   }),
   example({ id: 'line/only-integer', title: 'Only whole numbers' }),

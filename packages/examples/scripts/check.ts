@@ -79,8 +79,20 @@ for (const example of examples) {
   }
 
   const code = sources(folder);
-  if (!read(main).includes(`import 'chartist/styles.css';`)) {
-    fail(`${id}: src/main.ts must import 'chartist/styles.css'`);
+  const classicFile = path.join(folder, 'src/main.classic.ts');
+  const hasClassic = existsSync(path.join(root, classicFile));
+  if (hasClassic !== example.classic) {
+    fail(
+      `${id}: classic is ${example.classic}, but src/main.classic.ts ${hasClassic ? 'exists' : 'is missing'}`
+    );
+  }
+  for (const entry of hasClassic ? [main, classicFile] : [main]) {
+    if (!read(entry).includes(`import 'chartist/styles.css';`)) {
+      fail(`${id}: ${path.basename(entry)} must import 'chartist/styles.css'`);
+    }
+  }
+  if (example.ownBaseline !== undefined && !hasClassic) {
+    fail(`${id}: ownBaseline only applies to examples with a classic entry`);
   }
   if (/chartist\/dist\//.test(code)) {
     fail(`${id}: import from 'chartist', not from 'chartist/dist/'`);
@@ -89,8 +101,13 @@ for (const example of examples) {
     fail(`${id}: use a seeded generator instead of Math.random()`);
   }
 
+  // The 1.x code: the classic entry, or main.ts before it's converted.
+  const legacy = hasClassic ? read(classicFile) : code;
+  const usesV2Api = (source: string) =>
+    /\bchart\(|\bcartesianAxes\(|\b(line|bar|pie)Chart\(/.test(source);
+
   // Compat marking: 1.x event listeners or the Svg API need the compat plugin.
-  const needsCompat = compatPattern.test(code);
+  const needsCompat = !usesV2Api(legacy) && compatPattern.test(legacy);
   if (needsCompat && !example.compat) {
     fail(`${id}: uses .on(...) or Svg, so it needs compat: true`);
   }
@@ -98,15 +115,24 @@ for (const example of examples) {
     fail(`${id}: compat: true, but uses neither .on(...) nor Svg`);
   }
 
-  // v2 marking: examples using the v2 API can't run on chartist@1.5.0.
-  const usesV2 = /\bchart\(|\bcartesianAxes\(|\b(line|bar|pie)Chart\(/.test(
-    code
-  );
-  if (usesV2 && !example.v2) {
-    fail(`${id}: uses the v2 API, so it needs v2: true`);
+  // v2 marking: examples without 1.x code can't run on chartist@1.5.0.
+  const onlyV2 = !hasClassic && usesV2Api(code);
+  if (onlyV2 && !example.v2) {
+    fail(
+      `${id}: uses the v2 API and has no classic entry, so it needs v2: true`
+    );
   }
-  if (!usesV2 && example.v2) {
-    fail(`${id}: v2: true, but uses no v2 API`);
+  if (!onlyV2 && example.v2) {
+    fail(`${id}: v2: true, but it has 1.x code`);
+  }
+  // Converted examples: main.ts is functional, the classic entry is 1.x.
+  if (hasClassic) {
+    if (!usesV2Api(read(main))) {
+      fail(`${id}: src/main.ts must use the functional API (lineChart(), …)`);
+    }
+    if (usesV2Api(read(classicFile))) {
+      fail(`${id}: src/main.classic.ts must be 1.x code, without the v2 API`);
+    }
   }
   if (example.viewports.length === 0) {
     fail(`${id}: needs at least one viewport`);

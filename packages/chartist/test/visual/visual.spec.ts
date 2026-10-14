@@ -64,58 +64,77 @@ function seekSvg(page: Page, seconds: number) {
   }, seconds);
 }
 
+const V1 = process.env.CHARTIST_LIB === 'v1';
+
+/**
+ * The entries to render: the local build renders `main.ts` and, when there
+ * is one, the classic entry; 1.5.0 renders the 1.x code (the classic entry,
+ * or `main.ts` before the example is converted).
+ */
+function entriesOf(example: (typeof examples)[number]) {
+  if (V1) {
+    return example.classic ? (['classic'] as const) : (['main'] as const);
+  }
+  return example.classic ? (['main', 'classic'] as const) : (['main'] as const);
+}
+
 for (const example of examples) {
-  for (const viewport of example.viewports) {
-    test(`${example.id} @ ${viewport}`, async ({ page }) => {
-      // v2 examples have no 1.5 counterpart; their baseline comes from v2.
-      test.skip(
-        process.env.CHARTIST_LIB === 'v1' && example.v2,
-        'uses the v2 API'
-      );
-      const problems: string[] = [];
-      page.on('pageerror', error => problems.push(`page error: ${error}`));
-      page.on('console', message => {
-        if (message.type() === 'error' || message.type() === 'warning') {
-          problems.push(`console ${message.type()}: ${message.text()}`);
+  for (const entry of entriesOf(example)) {
+    for (const viewport of example.viewports) {
+      const name = entry === 'classic' ? `${example.id} (classic)` : example.id;
+      test(`${name} @ ${viewport}`, async ({ page }) => {
+        // v2 examples have no 1.5 counterpart; their baseline comes from v2.
+        test.skip(V1 && example.v2, 'uses the v2 API');
+        const problems: string[] = [];
+        page.on('pageerror', error => problems.push(`page error: ${error}`));
+        page.on('console', message => {
+          if (message.type() === 'error' || message.type() === 'warning') {
+            problems.push(`console ${message.type()}: ${message.text()}`);
+          }
+        });
+        // Offline: only the harness server may be reached.
+        await page.route(
+          url => url.hostname !== 'localhost',
+          route => {
+            problems.push(`network request: ${route.request().url()}`);
+            return route.abort();
+          }
+        );
+
+        await page.setViewportSize(viewportSizes[viewport]);
+        await page.addInitScript(deferBeginElement);
+        await page.clock.install({ time: FIXED_TIME });
+        await page.clock.pauseAt(FIXED_TIME);
+        await page.goto(
+          `/${example.folder}/${entry === 'classic' ? '?entry=classic' : ''}`
+        );
+
+        await page.clock.runFor(1);
+        await page.locator('#chart svg').first().waitFor();
+        await page.evaluate(async font => {
+          await document.fonts.load(font);
+          await document.fonts.ready;
+        }, FONT);
+        expect(
+          await page.evaluate(font => document.fonts.check(font), FONT),
+          'test font loaded'
+        ).toBe(true);
+
+        const start = await pauseSvg(page);
+        if (example.settle.at > 0) {
+          await page.clock.runFor(example.settle.at);
         }
+        await seekSvg(page, start + example.settle.at / 1000);
+
+        // Both entries share one baseline image, unless the functional entry
+        // has a documented reason for its own (`ownBaseline`).
+        const own = entry === 'main' && example.classic && example.ownBaseline;
+        await expect(page.locator('#chart')).toHaveScreenshot([
+          example.type,
+          `${example.folder.split('/')[1]}${own ? '--v2' : ''}--${viewport}.png`
+        ]);
+        expect(problems, 'errors, warnings or network requests').toEqual([]);
       });
-      // Offline: only the harness server may be reached.
-      await page.route(
-        url => url.hostname !== 'localhost',
-        route => {
-          problems.push(`network request: ${route.request().url()}`);
-          return route.abort();
-        }
-      );
-
-      await page.setViewportSize(viewportSizes[viewport]);
-      await page.addInitScript(deferBeginElement);
-      await page.clock.install({ time: FIXED_TIME });
-      await page.clock.pauseAt(FIXED_TIME);
-      await page.goto(`/${example.folder}/`);
-
-      await page.clock.runFor(1);
-      await page.locator('#chart svg').first().waitFor();
-      await page.evaluate(async font => {
-        await document.fonts.load(font);
-        await document.fonts.ready;
-      }, FONT);
-      expect(
-        await page.evaluate(font => document.fonts.check(font), FONT),
-        'test font loaded'
-      ).toBe(true);
-
-      const start = await pauseSvg(page);
-      if (example.settle.at > 0) {
-        await page.clock.runFor(example.settle.at);
-      }
-      await seekSvg(page, start + example.settle.at / 1000);
-
-      await expect(page.locator('#chart')).toHaveScreenshot([
-        example.type,
-        `${example.folder.split('/')[1]}--${viewport}.png`
-      ]);
-      expect(problems, 'errors, warnings or network requests').toEqual([]);
-    });
+    }
   }
 }
