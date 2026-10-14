@@ -2,6 +2,7 @@
 import Mascot from '../Mascot.astro';
 import { ECOSYSTEM } from '../../data/ecosystem';
 import { facts } from '../../data/facts';
+import { rewriteInstallText } from '../../lib/release';
 import { REPO, href } from '../../lib/site';
 
 const avatars = import.meta.glob<{ default: ImageMetadata }>('../../assets/credits/*.png', { eager: true });
@@ -64,7 +65,7 @@ const people = facts.credits.people.map(person => {
     <div class="flex flex-col gap-4.5">
       <h2 class="text-4xl">Ready when you are.</h2>
       <p class="lead">One import, one function call, one chart. He's already celebrating.</p>
-      <pre class="m-0 rounded-lg bg-code-bg px-5 py-3.5 font-mono text-sm leading-[normal] text-code-ink"><code>npm install chartist</code></pre>
+      <pre class="m-0 rounded-lg bg-code-bg px-5 py-3.5 font-mono text-sm leading-[normal] text-code-ink"><code>{rewriteInstallText('npm install chartist')}</code></pre>
       <div class="flex flex-wrap gap-2.5">
         <a class="btn primary" href={href('docs/getting-started/')}>Get started</a>
         <a class="btn" href={REPO}>GitHub</a>

@@ -9,6 +9,7 @@ import {
   pluginFacts,
   type Plugin
 } from '../data/plugins';
+import { rewriteInstallText } from './release';
 
 const CDN = 'https://cdn.jsdelivr.net/npm';
 
@@ -31,9 +32,15 @@ type Files = { script: string; module?: string; style?: string };
 
 /**
  * How to load the plugin on a site: script tags from a CDN for script
- * plugins, imports for module plugins.
+ * plugins, imports for module plugins. The Chartist install text follows the
+ * prerelease state; the plugin keeps its pinned version.
  */
 export function setupSnippet(plugin: Plugin): { lang: string; code: string } {
+  const { lang, code } = snippet(plugin);
+  return { lang, code: rewriteInstallText(code) };
+}
+
+function snippet(plugin: Plugin): { lang: string; code: string } {
   const own = (files as Record<string, Files>)[plugin.package];
   const at = `${CDN}/${plugin.package}@${pinnedVersion(plugin.package)}`;
   if (plugin.loads === 'module') {

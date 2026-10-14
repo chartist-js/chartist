@@ -1,6 +1,7 @@
 ---
 /** Install snippets for npm and a native module from a CDN, as accessible tabs. */
 import { Code } from 'astro:components';
+import { rewriteInstallText } from '../lib/release';
 
 const TABS = [
   {
@@ -48,7 +49,7 @@ lineChart('#chart', { series: [[1, 3, 2, 5]] });`
   {
     TABS.map((tab, i) => (
       <div role="tabpanel" id={`panel-${tab.id}`} aria-labelledby={`tab-${tab.id}`} hidden={i !== 0} tabindex="0">
-        <Code code={tab.code} lang={tab.lang} theme="css-variables" />
+        <Code code={rewriteInstallText(tab.code)} lang={tab.lang} theme="css-variables" />
       </div>
     ))
   }

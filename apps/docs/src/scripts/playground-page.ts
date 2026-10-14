@@ -139,7 +139,12 @@ export async function mountPlaygroundPage() {
       shareAction({ url: codeAddress }),
       ...(siteOnly(opened.files)
         ? []
-        : [stackblitzAction({ label: 'Export to StackBlitz' })])
+        : [
+            stackblitzAction({
+              label: 'Export to StackBlitz',
+              chartistVersion: host.dataset.chartistVersion
+            })
+          ])
     ]
   });
   document.title = `${opened.title} · Playground · Chartist`;

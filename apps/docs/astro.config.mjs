@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 import { pagefind } from './integrations/pagefind.mjs';
 import { playgroundLib } from './integrations/playground-lib.mjs';
 import { v1Redirects } from './integrations/v1-redirects.mjs';
+import { installTextTransformer } from './src/lib/release.ts';
 
 // Hosting is decided in the release phase: the site URL and base path come
 // from the environment.
@@ -57,6 +58,11 @@ export default defineConfig({
     }
   },
   markdown: {
-    shikiConfig: { theme: 'css-variables' }
+    // Install text in code blocks follows the prerelease state. A Shiki
+    // transformer sees each block's text before highlighting splits it up.
+    shikiConfig: {
+      theme: 'css-variables',
+      transformers: [installTextTransformer]
+    }
   }
 });

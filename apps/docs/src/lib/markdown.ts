@@ -2,7 +2,8 @@
  * Markdown versions of the docs for language models and for pasting into a
  * chat: the guides from their MDX, the API
  * reference from the TypeDoc model, the examples from their files, and
- * `llms.txt` / `llms-full.txt` from all of them.
+ * `llms.txt` / `llms-full.txt` from all of them. Install text follows the
+ * prerelease state, as on the pages (`rewriteInstallText`).
  */
 import type { JSONOutput as J } from 'typedoc';
 import {
@@ -32,6 +33,7 @@ import { exampleFiles } from './examples';
 import { TYPES, gallery, type GalleryExample } from './gallery';
 import { pluginFacts } from '../data/plugins';
 import { npmUrl, setupSnippet, sortedPlugins } from './plugins';
+import { rewriteInstallText } from './release';
 import { VERSIONS, href } from './site';
 
 /** An absolute URL for a site path, so links work outside the page too. */
@@ -165,7 +167,9 @@ export function guideMarkdown(entry: DocEntry): string {
     .replace(/\n{3,}/g, '\n\n')
     .trim();
   const head = `# ${entry.data.title}\n\n> ${entry.data.description}`;
-  return `${absoluteLinks(`${head}\n\n${body}`, `docs/${entry.id}/`)}\n`;
+  return rewriteInstallText(
+    `${absoluteLinks(`${head}\n\n${body}`, `docs/${entry.id}/`)}\n`
+  );
 }
 
 // API reference -------------------------------------------------------------
@@ -313,7 +317,9 @@ export function apiMarkdown(slug: string): string {
     throw new Error(`No API page "${slug}"`);
   }
   const entries = sortedEntries(slug).map(entryMarkdown);
-  return `# ${page.title} (Chartist API)\n\n> ${page.description}\n\n${entries.join('\n\n')}\n`;
+  return rewriteInstallText(
+    `# ${page.title} (Chartist API)\n\n> ${page.description}\n\n${entries.join('\n\n')}\n`
+  );
 }
 
 // Examples -----------------------------------------------------------------
@@ -329,7 +335,9 @@ export function exampleMarkdown(example: GalleryExample): string {
         `The same chart with the 1.x classes (\`src/main.classic.ts\`):\n\n${fence(example.classicCode, 'ts')}`
       ]
     : [];
-  return `# ${example.title} (Chartist example)\n\n${example.description ? `> ${example.description}\n\n` : ''}${files.join('\n\n')}${classic.length ? `\n\n${classic.join('')}` : ''}\n`;
+  return rewriteInstallText(
+    `# ${example.title} (Chartist example)\n\n${example.description ? `> ${example.description}\n\n` : ''}${files.join('\n\n')}${classic.length ? `\n\n${classic.join('')}` : ''}\n`
+  );
 }
 
 // Plugins ------------------------------------------------------------------

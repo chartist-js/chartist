@@ -6,13 +6,15 @@
  * the code, so a reload or a shared link keeps it.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { release } from '../lib/release';
 ---
 
 <BaseLayout title="Playground" description="Write a Chartist chart in your browser, see it update as you type, and share it with a link." section="playground">
   <h1 class="sr-only">Playground</h1>
   <p class="wrap hidden py-3 text-sm text-danger [&:not([hidden])]:block" role="alert" data-playground-message hidden></p>
-  <!-- Fills the viewport below the header; live.css themes it (.playground-page). -->
-  <div class="playground-page h-[calc(100dvh-69px)] min-h-[480px]" data-playground-page></div>
+  <!-- Fills the viewport below the header; live.css themes it (.playground-page).
+       The StackBlitz export installs the documented version: `next` during prereleases. -->
+  <div class="playground-page h-[calc(100dvh-69px)] min-h-[480px]" data-playground-page data-chartist-version={release.stackblitzVersion}></div>
 </BaseLayout>
 
 <script>
