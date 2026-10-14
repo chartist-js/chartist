@@ -14,7 +14,7 @@ To triage with the `add-docs-content` findings in `fix-library-findings`.
 
 ## Tests
 
-4. **Two responsive paths aren't screenshot:** `bar/extreme-responsive` and `bar/view-box` (its `max-width: 575px` override) are tested only at the default viewport.
+4. **Two responsive paths aren't screenshot:** `bar/extreme-responsive` and `bar/view-box` (its `max-width: 575px` override) are tested only at the default viewport. _Fixed by `fix-library-findings`._
 5. **The committed visual baseline fails in the dev container** for 36 examples: its font rendering differs from the reference platform. `chartist:test:visual:local-baseline` and `:local` test against a 1.5.0 baseline recorded on the machine; CI on the reference platform stays the authority.
 
 ## Tooling

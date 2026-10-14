@@ -144,3 +144,12 @@ Listener registration, removal and emission SHALL be typed by event name: phase 
 
 - **WHEN** code passes `withOptions(threshold, { limt: 7 })` where the plugin's options are `{ limit: number }`
 - **THEN** it does not type-check
+
+### Requirement: Removing listeners leaves plugins alone
+
+`off(name)` without a listener SHALL remove the listeners added through the chart's config and handle for that event, and SHALL NOT remove listeners that plugins added. `off(name, listener)` SHALL remove that listener.
+
+#### Scenario: Removing your listeners
+
+- **WHEN** a chart has a plugin listening to `mount` and code calls `off('mount')`
+- **THEN** the plugin's listener still runs on the next render
