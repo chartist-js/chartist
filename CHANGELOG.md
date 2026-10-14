@@ -1,3 +1,48 @@
+## 2.0.0-rc.1 (2026-10-14)
+
+### 🚀 Features
+
+- **chartist:** add the v2 core pipeline, scene graph and renderers ([8dbc5c1c](https://github.com/chartist-js/chartist/commit/8dbc5c1c))
+- **chartist:** add the v2 line chart preset with 1.x parity ([ee111143](https://github.com/chartist-js/chartist/commit/ee111143))
+- **chartist:** LineChart wraps lineChart; add the compat plugin ([9e86f8c2](https://github.com/chartist-js/chartist/commit/9e86f8c2))
+- **chartist:** add the v2 bar chart; BarChart wraps barChart ([d2b61e11](https://github.com/chartist-js/chartist/commit/d2b61e11))
+- **chartist:** add the v2 pie chart; PieChart wraps pieChart ([39ee3d40](https://github.com/chartist-js/chartist/commit/39ee3d40))
+- **chartist:** add composed charts with multiple axes ([f850f36d](https://github.com/chartist-js/chartist/commit/f850f36d))
+- **chartist:** add SVG text labels ([7397a2cb](https://github.com/chartist-js/chartist/commit/7397a2cb))
+- **chartist:** add container conditions to responsive options ([69224c3e](https://github.com/chartist-js/chartist/commit/69224c3e))
+- **chartist:** theme charts with CSS custom properties ([33c07a4c](https://github.com/chartist-js/chartist/commit/33c07a4c))
+- **chartist:** scene nodes typed by role ([45c4c035](https://github.com/chartist-js/chartist/commit/45c4c035))
+- **chartist:** typed events, plugins and preset options ([7abe50bd](https://github.com/chartist-js/chartist/commit/7abe50bd))
+- **chartist:** typed preset state and render output ([64afe593](https://github.com/chartist-js/chartist/commit/64afe593))
+- **chartist:** export domRenderer, estimateText and ResponsiveWatcher ([#1480](https://github.com/chartist-js/chartist/issues/1480), [#1488](https://github.com/chartist-js/chartist/issues/1488))
+- **chartist:** chart() gets a ct-chart-* class from its layers ([#1481](https://github.com/chartist-js/chartist/issues/1481))
+- **chartist:** preset handles change options and take listeners ([#1477](https://github.com/chartist-js/chartist/issues/1477), [#1472](https://github.com/chartist-js/chartist/issues/1472), [#1478](https://github.com/chartist-js/chartist/issues/1478))
+- **chartist:** animation events with compat ([#1489](https://github.com/chartist-js/chartist/issues/1489))
+- **chartist:** stepAxis() without ticks steps through the data's labels ([#1475](https://github.com/chartist-js/chartist/issues/1475))
+- **chartist:** layers report the extent they need; stacked bars fit their axis ([#1483](https://github.com/chartist-js/chartist/issues/1483))
+- **compat:** add the 0.x names of plugin scripts to the compat UMD global ([1f2017e0](https://github.com/chartist-js/chartist/commit/1f2017e0))
+- **compat:** give converted plugins a 1.x chart of their chart type ([c1748142](https://github.com/chartist-js/chartist/commit/c1748142))
+- **compat:** pass the 0.x bounds in the created event ([e3145633](https://github.com/chartist-js/chartist/commit/e3145633))
+- **compat:** set up the global for plugin scripts in every compat build ([338121c0](https://github.com/chartist-js/chartist/commit/338121c0))
+
+### 🩹 Fixes
+
+- **chartist:** make typecheck pass with TypeScript 5.9 ([01609698](https://github.com/chartist-js/chartist/commit/01609698))
+- **chartist:** align the HTML labels of composed charts ([461c8486](https://github.com/chartist-js/chartist/commit/461c8486))
+- **chartist:** resolve VISUAL_SNAPSHOTS from the working directory ([77c40e03](https://github.com/chartist-js/chartist/commit/77c40e03))
+- **chartist:** let CSS set the donut width unless donutWidth is given ([#1474](https://github.com/chartist-js/chartist/issues/1474))
+- **chartist:** donut labels follow labelPosition, overlap uses drawn text ([#1485](https://github.com/chartist-js/chartist/issues/1485), [#478](https://github.com/chartist-js/chartist/issues/478))
+- **chartist:** Svg#remove() returns the parent it had ([#1490](https://github.com/chartist-js/chartist/issues/1490))
+- **chartist:** measure text in the container's document ([ece6f550](https://github.com/chartist-js/chartist/commit/ece6f550))
+- **chartist:** write px for numeric sizes in the size probe's style ([#1482](https://github.com/chartist-js/chartist/issues/1482))
+- **chartist:** off(name) leaves the listeners of plugins alone ([#1486](https://github.com/chartist-js/chartist/issues/1486))
+- **chartist:** roundWithPrecision rounds to whole numbers with 0 digits ([#1470](https://github.com/chartist-js/chartist/issues/1470))
+- **chartist:** fixedScaleAxis with divisor puts a tick at high ([#1022](https://github.com/chartist-js/chartist/issues/1022))
+- **chartist:** an axis's own low and high win over the reference value ([#1476](https://github.com/chartist-js/chartist/issues/1476))
+- **chartist:** cartesianAxes({ x, y }) has the list form's defaults ([#1484](https://github.com/chartist-js/chartist/issues/1484))
+- **chartist:** accumulate-relative stacks negative values down with an axis that fits ([#1473](https://github.com/chartist-js/chartist/issues/1473), [#1469](https://github.com/chartist-js/chartist/issues/1469))
+- **compat:** set chart.svg on the 1.x classes before the draw events ([4bc0433c](https://github.com/chartist-js/chartist/commit/4bc0433c))
+
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
