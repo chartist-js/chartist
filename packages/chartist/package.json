@@ -103,8 +103,8 @@
   },
   "devDependencies": {
     "@chartist/examples": "workspace:*",
-    "@commitlint/cli": "^17.0.0",
-    "@commitlint/config-conventional": "^17.0.0",
+    "@commitlint/cli": "^21.0.0",
+    "@commitlint/config-conventional": "^21.0.0",
     "@playwright/test": "1.63.0",
     "@size-limit/esbuild": "14.1.0",
     "@size-limit/file": "14.1.0",
