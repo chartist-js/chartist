@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "21.15 kB",
+    "limit": "22.15 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "21.25 kB",
+    "limit": "22.25 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -31,70 +31,70 @@
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
-    "limit": "13.45 kB",
+    "limit": "14.05 kB",
     "gzip": true
   },
   {
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "12.3 kB",
+    "limit": "12.95 kB",
     "gzip": true
   },
   {
     "name": "import { PieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ PieChart }",
-    "limit": "9.7 kB",
+    "limit": "10.05 kB",
     "gzip": true
   },
   {
     "name": "import { chart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ chart }",
-    "limit": "4.2 kB",
+    "limit": "4.45 kB",
     "gzip": true
   },
   {
     "name": "import { toScene, renderToString } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ toScene, renderToString }",
-    "limit": "3.2 kB",
+    "limit": "3.35 kB",
     "gzip": true
   },
   {
     "name": "import { lineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ lineChart }",
-    "limit": "11.95 kB",
+    "limit": "12.5 kB",
     "gzip": true
   },
   {
     "name": "import { barChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ barChart }",
-    "limit": "10.8 kB",
+    "limit": "11.45 kB",
     "gzip": true
   },
   {
     "name": "import { pieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ pieChart }",
-    "limit": "8.25 kB",
+    "limit": "8.5 kB",
     "gzip": true
   },
   {
     "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, \u2026 } (composed chart)",
     "path": "dist/index.js",
     "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
-    "limit": "11.85 kB",
+    "limit": "12.55 kB",
     "gzip": true
   },
   {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "21.6 kB",
+    "limit": "22.7 kB",
     "gzip": true
   },
   {
