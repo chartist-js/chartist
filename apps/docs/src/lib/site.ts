@@ -12,6 +12,7 @@ export const VERSIONS = [
 /** Header navigation. Sections appear as their changes land. */
 export const NAV = [
   { id: 'docs', label: 'Docs', path: 'docs/getting-started/' },
+  { id: 'api', label: 'API', path: 'api/' },
   { id: 'examples', label: 'Examples', path: 'examples/' },
   { id: 'playground', label: 'Playground', path: 'playground/' }
 ] as const;

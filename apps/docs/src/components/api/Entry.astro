@@ -1,0 +1,197 @@
+---
+/**
+ * One export in the API reference (design D3, add-api-reference): heading
+ * with badges, signature or declaration, description, parameters, return
+ * value, members, examples and links. The 1.x sections are shorter: classes
+ * without members, helpers with their summary only.
+ */
+import { Code } from 'astro:components';
+import {
+  KIND,
+  anchor,
+  badgesOf,
+  commentOf,
+  declarationHead,
+  entryMembers,
+  exampleCode,
+  memberTypeTokens,
+  membersOf,
+  pageOf,
+  signatureTokens,
+  tagsOf,
+  typeTokens,
+  type ApiEntry,
+  type Member
+} from '../../lib/api';
+import { defaultFor, hasDefaults } from '../../lib/api-defaults';
+import Blocks from './Blocks.astro';
+import Text from './Text.astro';
+import Tokens from './Tokens.astro';
+
+interface Props {
+  entry: ApiEntry;
+}
+
+const { entry } = Astro.props;
+const reflection = entry.reflection;
+const legacy = pageOf(entry.page)?.legacy;
+const compact = Boolean(pageOf(entry.page)?.compact);
+const isFunction = reflection.kind === KIND.Function;
+const isClass = reflection.kind === KIND.Class;
+const signatures = isFunction ? (reflection.signatures ?? []) : [];
+const constructor = isClass ? reflection.children?.find(child => child.kind === KIND.Constructor)?.signatures?.[0] : undefined;
+const comment = commentOf(isFunction ? signatures[0] : reflection);
+const badges = badgesOf(entry);
+const showMembers = !compact && !(legacy === 'classes' && isClass) && reflection.kind !== KIND.Namespace;
+const members: Member[] = showMembers ? entryMembers(entry) : [];
+const withDefaults = hasDefaults(entry.name);
+const namespaceMembers = reflection.kind === KIND.Namespace ? (reflection.children ?? []) : [];
+
+/** Nested option objects (axisX) list their members too, one level. */
+const nested = (member: Member) => (withDefaults ? (membersOf(member.type) ?? []) : []);
+const deprecated = tagsOf(comment, '@deprecated')[0];
+---
+
+<section class:list={['api-entry', { compact }]} id={anchor(entry.name)} data-api-entry={entry.name}>
+  <div class="api-entry-head">
+    <h2><a href={`#${anchor(entry.name)}`}>{entry.name}</a></h2>
+    {badges.map(badge => <span class={`tag api-badge api-badge-${badge.replace('.', '')}`}>{badge}</span>)}
+    {entry.module === 'chartist/compat' && <span class="tag api-badge">chartist/compat</span>}
+    {entry.sourceUrl && !compact && <a class="api-source" href={entry.sourceUrl}>Source</a>}
+  </div>
+
+  {
+    signatures.length > 0
+      ? signatures.map(signature => <Tokens tokens={signatureTokens(entry.name, signature)} block />)
+      : <Tokens tokens={declarationHead(entry)} block />
+  }
+  {constructor && <Tokens tokens={signatureTokens(entry.name, constructor, 'constructor')} block />}
+
+  {comment && <div class="api-text"><Blocks parts={comment.summary} /></div>}
+  {deprecated && (
+    <p class="api-deprecated">
+      <strong>Deprecated.</strong> <Text parts={deprecated.content} />
+    </p>
+  )}
+
+  {
+    !compact && signatures[0]?.parameters?.length ? (
+      <div class="api-block">
+        <h3>Parameters</h3>
+        <dl class="api-members">
+          {signatures[0].parameters.map(parameter => (
+            <div class="api-member">
+              <dt>
+                <code class="api-name">{parameter.name}{parameter.flags.isOptional || parameter.defaultValue ? '?' : ''}</code>
+                <Tokens tokens={typeTokens(parameter.type)} />
+                {parameter.defaultValue && <span class="api-default">= <code>{parameter.defaultValue}</code></span>}
+              </dt>
+              {parameter.comment && <dd><Blocks parts={parameter.comment.summary} /></dd>}
+            </div>
+          ))}
+        </dl>
+      </div>
+    ) : null
+  }
+
+  {
+    !compact && tagsOf(comment, '@returns').map(tag => (
+      <div class="api-block">
+        <h3>Returns</h3>
+        <div class="api-text"><Blocks parts={tag.content} /></div>
+      </div>
+    ))
+  }
+
+  {
+    members.length > 0 && (
+      <div class="api-block">
+        <h3>{isClass ? 'Members' : 'Properties'}</h3>
+        <dl class="api-members">
+          {members.map(member => {
+            const own = commentOf(member.signature ?? member.reflection);
+            const children = nested(member);
+            const fallback = defaultFor(entry.name, member.name, children.length > 0);
+            return (
+              <div class="api-member" id={anchor(entry.name, member.name)}>
+                <dt>
+                  <a class="api-name" href={`#${anchor(entry.name, member.name)}`}><code>{member.readonly ? 'readonly ' : ''}{member.name}{member.optional ? '?' : ''}</code></a>
+                  <Tokens tokens={memberTypeTokens(member, children.length > 0)} />
+                  {fallback && <span class="api-default">default <code>{fallback}</code></span>}
+                </dt>
+                {own && <dd><Blocks parts={own.summary} /></dd>}
+                {children.length > 0 && (
+                  <dd>
+                    <dl class="api-members api-nested">
+                      {children.map(child => {
+                        const path = `${member.name}.${child.name}`;
+                        const childComment = commentOf(child.signature ?? child.reflection);
+                        const value = defaultFor(entry.name, path);
+                        return (
+                          <div class="api-member" id={anchor(entry.name, path)}>
+                            <dt>
+                              <a class="api-name" href={`#${anchor(entry.name, path)}`}><code>{path}{child.optional ? '?' : ''}</code></a>
+                              <Tokens tokens={memberTypeTokens(child)} />
+                              {value && <span class="api-default">default <code>{value}</code></span>}
+                            </dt>
+                            {childComment && <dd><Blocks parts={childComment.summary} /></dd>}
+                          </div>
+                        );
+                      })}
+                    </dl>
+                  </dd>
+                )}
+              </div>
+            );
+          })}
+        </dl>
+      </div>
+    )
+  }
+
+  {
+    namespaceMembers.length > 0 && (
+      <div class="api-block">
+        <h3>Members</h3>
+        <dl class="api-members">
+          {namespaceMembers.map(member => {
+            const signature = member.signatures?.[0];
+            const own = commentOf(signature ?? member);
+            return (
+              <div class="api-member" id={anchor(entry.name, member.name)}>
+                <dt>{signature ? <Tokens tokens={signatureTokens(member.name, signature, 'method')} /> : <code class="api-name">{member.name}</code>}</dt>
+                {own && <dd><Blocks parts={own.summary} /></dd>}
+              </div>
+            );
+          })}
+        </dl>
+      </div>
+    )
+  }
+
+  {
+    !compact && tagsOf(comment, '@example').map(tag => {
+      const example = exampleCode(tag);
+      return (
+        <div class="api-block">
+          <h3>Example</h3>
+          <Code code={example.code} lang={example.lang as 'ts'} theme="css-variables" />
+        </div>
+      );
+    })
+  }
+
+  {
+    tagsOf(comment, '@see').length > 0 && (
+      <p class="api-see">
+        <strong>See also:</strong>{' '}
+        {tagsOf(comment, '@see').map((tag, i) => (
+          <>
+            {i > 0 && ' · '}
+            <Text parts={tag.content} />
+          </>
+        ))}
+      </p>
+    )
+  }
+</section>

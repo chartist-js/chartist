@@ -1,0 +1,32 @@
+---
+/** Inline comment parts: text, `code`, and {@link} links. */
+import type { JSONOutput as J } from 'typedoc';
+import { partHref } from '../../lib/api';
+
+interface Props {
+  parts: J.CommentDisplayPart[];
+}
+
+const { parts } = Astro.props;
+const code = (text: string) => text.replace(/^`+|`+$/g, '');
+---
+
+{
+  parts.map(part => {
+    if (part.kind === 'code') {
+      return <code>{code(part.text)}</code>;
+    }
+    if (part.kind === 'inline-tag') {
+      const target = partHref(part);
+      const label = part.text.trim() || (typeof part.target === 'string' ? part.target : part.text);
+      return target ? (
+        <a href={target}>
+          <code>{label}</code>
+        </a>
+      ) : (
+        <code>{label}</code>
+      );
+    }
+    return part.text;
+  })
+}

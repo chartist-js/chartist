@@ -12,13 +12,13 @@ A trial run of TypeDoc 0.28.20 over `packages/chartist/src` (2026-10-14) shows w
 
 ## What Changes
 
-- **A generated reference at `/docs/api/`:** an overview, then one page per area: charts and presets, `chart()`, layers, scales and axes, the scene, events and plugins, rendering, responsive options, `chartist/compat`, the 1.x chart classes, and the 1.x helpers. Each entry shows its signature, description, parameters, return value, properties (with types and defaults for options), examples and links. Type names link to their entries.
+- **A generated reference at `/api/`, with its own item in the header** (decided with the author 2026-10-14): an overview, then one page per area: charts and presets, `chart()`, layers, scales and axes, the scene, events and plugins, rendering, responsive options, data, SVG and animation, `chartist/compat`, helpers, and the 1.x classes. Each entry shows its signature, description, parameters, return value, properties (with types and defaults for options), examples and links. Type names link to their entries.
 - **Built from the source at build time** with TypeDoc's JSON model, rendered by the site's own components, so the reference looks like the rest of the docs rather than a TypeDoc theme.
 - **Complete by construction:** every export of `chartist` and `chartist/compat` appears on exactly one page, checked in the build. A new export without a page fails the check.
-- **Marked by status:** `@experimental` and `@deprecated` show as badges; the 1.x classes get a short entry with a link to the function that replaces them, and the 1.x helpers a compact list.
+- **Marked by status:** `@experimental` and `@deprecated` show as badges; the 1.x classes get a short entry with a link to the function that replaces them, and the low-level helpers a compact list.
 - **Option defaults** come from the presets' defaults objects, so they can't drift from the code.
 - **Doc comments filled in** for the v2 public API (every top-level export and its members) and one-liners for the 1.x exports, including the two doc-comment findings from `add-docs-content` (the `lineSmooth` default, and interpolation comments still showing 1.x usage). Comments only: library behavior doesn't change.
-- **Navigation:** a "Reference" group in the docs sidebar, and links between guides and the entries they use.
+- **Navigation:** an "API" header item with its own sidebar, and links between guides and the entries they use.
 
 **Not in this change:** search (Pagefind is in the polish change), versioned references (only v2 is documented; 1.x keeps its archived site), and generic data typing.
 

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": [
+    "../../../packages/chartist/src/index.ts",
+    "../../../packages/chartist/src/compat/index.ts"
+  ],
+  "tsconfig": "./tsconfig.json",
+  "json": "../src/generated/api.json",
+  "excludeExternals": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "logLevel": "Warn"
+}

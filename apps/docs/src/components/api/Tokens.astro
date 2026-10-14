@@ -1,0 +1,14 @@
+---
+/** A type or signature as highlighted, linked tokens (lib/api.ts). */
+import type { Token } from '../../lib/api';
+
+interface Props {
+  tokens: Token[];
+  block?: boolean;
+}
+
+const { tokens, block = false } = Astro.props;
+const Tag = block ? 'pre' : 'code';
+---
+
+<Tag class:list={['api-code', { 'api-sig': block }]}>{block ? <code>{tokens.map(token => (token.href ? <a class={`tk-${token.kind}`} href={token.href}>{token.text}</a> : <span class={`tk-${token.kind}`}>{token.text}</span>))}</code> : tokens.map(token => (token.href ? <a class={`tk-${token.kind}`} href={token.href}>{token.text}</a> : <span class={`tk-${token.kind}`}>{token.text}</span>))}</Tag>

@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # type-checked docs samples (docs:samples)
 .samples/
+
+# the API model from TypeDoc (docs:api)
+src/generated/

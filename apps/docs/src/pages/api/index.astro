@@ -1,0 +1,47 @@
+---
+/** The API reference's overview (design D7, add-api-reference). */
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { anchor, apiPath, entriesOn } from '../../lib/api';
+import { API_PAGES } from '../../lib/api-pages';
+import { API_OVERVIEW } from '../../lib/docs';
+import { href } from '../../lib/site';
+
+const headings = [
+  { depth: 2, slug: 'reading', text: 'Reading the reference' },
+  ...API_PAGES.map(page => ({ depth: 2, slug: page.slug, text: page.title }))
+];
+---
+
+<DocsLayout page={API_OVERVIEW} headings={headings}>
+  <h2 id="reading">Reading the reference</h2>
+  <p>
+    The reference is generated from Chartist’s TypeScript source and its doc comments, so it always matches the version you install. It’s grouped by what
+    you’re working on; the guides explain how the pieces fit together.
+  </p>
+  <ul>
+    <li><span class="tag api-badge api-badge-experimental">experimental</span> The v2 API may still change before v2.0.</li>
+    <li><span class="tag api-badge api-badge-1x">1.x</span> Kept so 1.x code runs unchanged. New code doesn’t need it.</li>
+    <li>Signatures link their types: click a type to see it.</li>
+  </ul>
+  <p>Everything is exported from <code>chartist</code>, except the 1.x events, which come from <code>chartist/compat</code>.</p>
+  {
+    API_PAGES.map(page => (
+      <section class="api-overview-page">
+        <h2 id={page.slug}>
+          <a href={href(apiPath(page.slug))}>{page.title}</a>
+        </h2>
+        <p>{page.description}</p>
+        <p class="api-index">
+          {entriesOn(page.slug).map((entry, i) => (
+            <>
+              {i > 0 && ' '}
+              <a href={`${href(apiPath(page.slug))}#${anchor(entry.name)}`}>
+                <code>{entry.name}</code>
+              </a>
+            </>
+          ))}
+        </p>
+      </section>
+    ))
+  }
+</DocsLayout>

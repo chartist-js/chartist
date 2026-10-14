@@ -8,7 +8,8 @@
     "dev": {
       "executor": "@geekvetica/nx-astro:dev",
       "options": {},
-      "cache": false
+      "cache": false,
+      "dependsOn": ["api"]
     },
     "build": {
       "executor": "@geekvetica/nx-astro:build",
@@ -23,7 +24,7 @@
       ],
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "cache": true,
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build", "api"]
     },
     "preview": {
       "executor": "@geekvetica/nx-astro:preview",
@@ -42,7 +43,7 @@
         }
       ],
       "cache": true,
-      "dependsOn": ["sync", "samples"]
+      "dependsOn": ["sync", "samples", "api", "test"]
     },
     "sync": {
       "executor": "@geekvetica/nx-astro:sync",
@@ -103,6 +104,27 @@
       "metadata": {
         "description": "Type-checks the TypeScript code blocks of the docs pages against Chartist's types"
       }
+    },
+    "api": {
+      "command": "typedoc --options api/typedoc.json",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "inputs": [
+        "{workspaceRoot}/packages/chartist/src/**/*",
+        "{projectRoot}/api/*",
+        {
+          "externalDependencies": ["typedoc", "typescript"]
+        }
+      ],
+      "outputs": ["{projectRoot}/src/generated/api.json"],
+      "cache": true,
+      "metadata": {
+        "description": "Writes the API model of chartist and chartist/compat (TypeDoc JSON) for the reference pages"
+      }
+    },
+    "test": {
+      "dependsOn": ["api"]
     }
   }
 }

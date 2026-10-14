@@ -19,19 +19,21 @@ Alternatives: `typedoc-plugin-markdown` into MDX (fast, but template-like pages 
 
 Pages group exports by what readers look for, not by symbol:
 
-| Page               | Exports (by source folder)                                                      |
-| ------------------ | ------------------------------------------------------------------------------- |
-| Charts             | `presets` (`lineChart`, `barChart`, `pieChart`, their options and controllers)  |
-| `chart()`          | `chart` (config, handle, overrides)                                             |
-| Layers             | `layers`                                                                        |
-| Scales and axes    | `scales`                                                                        |
-| Scene              | `scene` (`node`, `findAll`, `mapNodes`, `NodeRoles`, contexts, attributes)      |
-| Events and plugins | `pipeline`, plus `ChartEvents`, `ChartPlugin`, `withOptions`                    |
-| Rendering          | `render` (`toScene`, `renderToString`, `Renderer`)                              |
-| Responsive         | `responsive`                                                                    |
-| Compat             | `chartist/compat`                                                               |
-| 1.x chart classes  | `charts` (`LineChart`, `BarChart`, `PieChart`, `BaseChart`, their option types) |
-| 1.x helpers        | `core`, `svg`, `axes`, `event`, `utils`, `interpolation`                        |
+| Page               | Exports (by source folder)                                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| Charts             | `presets` (`lineChart`, `barChart`, `pieChart`, their options and controllers)                                          |
+| `chart()`          | `chart` (config, handle, overrides)                                                                                     |
+| Layers             | `layers`                                                                                                                |
+| Scales and axes    | `scales`                                                                                                                |
+| Scene              | `scene` (`node`, `findAll`, `mapNodes`, `NodeRoles`, contexts, attributes)                                              |
+| Events and plugins | `pipeline`, plus `ChartEvents`, `ChartPlugin`, `withOptions`                                                            |
+| Rendering          | `render` (`toScene`, `renderToString`, `Renderer`)                                                                      |
+| Responsive         | `responsive`                                                                                                            |
+| Data               | the data and series types in `core/types.ts`                                                                            |
+| SVG and animation  | `svg`, `interpolation` (used by v2 animations too)                                                                      |
+| Compat             | `chartist/compat`, and the 1.x event and plugin types it brings back                                                    |
+| 1.x classes        | `charts`, `event`, the 1.x axis classes, `optionsProvider` and the 1.x drawing functions (`createSvg`, `createGrid`, …) |
+| Helpers            | `core`, `utils`, `axes` units: data, math and utilities both APIs use                                                   |
 
 The mapping is by source folder in one config (`lib/api-pages.ts`), with per-export overrides for the few that read better elsewhere. On a page: functions first, then interfaces and types, each in source order (which follows the reading order the code already has). Every entry has an anchor (`#lineChart`), so links and the browser's find work. One page per area keeps related things in view (an option type next to its function) and gives about a dozen pages instead of 260.
 
@@ -45,7 +47,7 @@ The mapping is by source folder in one config (`lib/api-pages.ts`), with per-exp
 - **Examples** from `@example`, as code blocks.
 - **See also** from `@see`, for guides and related entries.
 
-The 1.x chart classes get a minimal entry: description, constructor signature and a link to their function; their members aren't listed (the guide "Coming from 1.x" covers them). The 1.x helpers are a compact list: signature and one line each, under a note that they stay for compatibility and that new code rarely needs them.
+The 1.x classes get a minimal entry: description, constructor signature and a link to their function; their members aren't listed (the guide "Coming from 1.x" covers them). The helpers are a compact list: signature and one line each. Changed during implementation (2026-10-14, the author asked): the helpers were planned as "1.x helpers", but the v2 modules use most of them (29 of 66 directly, more through the core), so they're plain helpers in the functional API group, and only what the 1.x classes alone use (their drawing functions, `optionsProvider`, `EventEmitter`, the axis classes) moved to the 1.x page.
 
 ### D4: Defaults from the code
 
@@ -69,7 +71,7 @@ The comment work splits by area, so it fans out to parallel agents after the gen
 
 ### D7: Navigation and links
 
-- The sidebar gets a "Reference" group with the overview and the area pages.
+- The reference is its own header section (decided with the author 2026-10-14): "API" next to Docs, at `/api/` and `/api/<area>/`, with a sidebar of its own (Reference: the overview; Functional API; 1.x). The docs layout serves both sections, and previous/next stays within a section.
 - Guides link to the entries they use where it helps (the chart type pages to their function and options, Events and plugins to `ChartEvents` and the scene types), and entries link back with `@see`.
 - The overview page explains how to read the reference (badges, the 1.x sections) and lists every area with a sentence.
 
@@ -78,7 +80,7 @@ The comment work splits by area, so it fans out to parallel agents after the gen
 - **Comment volume:** several hundred members. Mitigated by the fan-out (D6) and by requiring member docs only for v2.
 - **TypeDoc upgrades** may change the JSON model; the accessor in `lib/api.ts` is the only place that reads it, and the version is pinned.
 - **Build time:** a TypeDoc run takes a few seconds and is cached by Nx on the library's source.
-- **Long pages** (scene, 1.x helpers): each has a table of contents like the guides, and anchors per entry.
+- **Long pages** (scene, helpers): each has a table of contents like the guides, and anchors per entry.
 
 ## Open Questions
 

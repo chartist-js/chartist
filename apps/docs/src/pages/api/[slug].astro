@@ -1,0 +1,41 @@
+---
+/** One page of the API reference (design D2, add-api-reference). */
+import Entry from '../../components/api/Entry.astro';
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { sortedEntries } from '../../lib/api';
+import { API_PAGES } from '../../lib/api-pages';
+import { navPages } from '../../lib/docs';
+import { href } from '../../lib/site';
+
+export function getStaticPaths() {
+  return API_PAGES.map(page => ({ params: { slug: page.slug }, props: { legacy: page.legacy, compact: page.compact } }));
+}
+
+const { slug } = Astro.params;
+const { legacy, compact } = Astro.props;
+const page = (await navPages('api')).find(candidate => candidate.key === `api/${slug}`)!;
+const entries = sortedEntries(slug);
+const headings = entries.map(entry => ({ depth: 2, slug: entry.name, text: entry.name }));
+---
+
+<DocsLayout page={page} headings={headings}>
+  {
+    legacy === 'classes' && (
+      <p>
+        These are the 1.x classes and what only they use, kept so 1.x code runs unchanged. New code uses the chart functions: see <a href={href('api/charts/')}>Charts</a>, and{' '}
+        <a href={href('docs/coming-from-1x/')}>Coming from 1.x</a> for moving over.
+      </p>
+    )
+  }
+  {
+    compact && (
+      <p>
+        The building blocks under the charts: data normalization, scales, math and small utilities. Plugins and custom layers may use them; charts made
+        with the chart functions don’t need them.
+      </p>
+    )
+  }
+  <div class="api-entries">
+    {entries.map(entry => <Entry entry={entry} />)}
+  </div>
+</DocsLayout>

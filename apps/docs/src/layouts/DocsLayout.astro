@@ -2,22 +2,21 @@
 import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import Mascot from '../components/Mascot.astro';
-import { sortedDocs, sidebar, docPath, type DocEntry } from '../lib/docs';
-import { EDIT_BASE, VERSIONS, href } from '../lib/site';
+import { navPages, sidebar, type NavPage } from '../lib/docs';
+import { VERSIONS, href } from '../lib/site';
 
 interface Props {
-  entry: DocEntry;
+  page: NavPage;
   headings: MarkdownHeading[];
 }
 
-const { entry, headings } = Astro.props;
-const docs = await sortedDocs();
-const groups = sidebar(docs);
-const index = docs.findIndex(doc => doc.id === entry.id);
-const previous = docs[index - 1];
-const next = docs[index + 1];
+const { page, headings } = Astro.props;
+const pages = await navPages(page.section);
+const groups = sidebar(pages);
+const index = pages.findIndex(candidate => candidate.key === page.key);
+const previous = pages[index - 1];
+const next = pages[index + 1];
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
-const label = (doc: DocEntry) => doc.data.label ?? doc.data.title;
 const sideLink =
   'flex min-h-9 items-center justify-between rounded-md px-3 py-1.5 text-ink no-underline hover:bg-bg-sunken hover:text-ink aria-[current=page]:bg-surface aria-[current=page]:font-bold aria-[current=page]:shadow-[inset_3px_0_0_var(--brand),0_0_0_1px_var(--line)]';
 const pagerLink =
@@ -27,22 +26,22 @@ const tocLink =
 const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 ---
 
-<BaseLayout title={entry.data.title} description={entry.data.description} section="docs">
+<BaseLayout title={page.title} description={page.description} section={page.section}>
   <div class="wrap flex flex-wrap items-start gap-10 pt-8 pb-20 max-md:gap-6 max-md:pt-4 max-md:pb-14">
     <details class="hidden w-full flex-col gap-2 max-md:flex">
-      <summary class="btn sm w-fit">Docs menu</summary>
-      <nav class="mt-2 flex flex-col gap-0.5 rounded-lg border border-line bg-surface p-3" aria-label="Docs (mobile)">
+      <summary class="btn sm w-fit">{page.section === 'api' ? 'API menu' : 'Docs menu'}</summary>
+      <nav class="mt-2 flex flex-col gap-0.5 rounded-lg border border-line bg-surface p-3" aria-label={page.section === 'api' ? 'API (mobile)' : 'Docs (mobile)'}>
         {
-          docs.map(doc => (
-            <a class={sideLink} href={href(docPath(doc))} aria-current={doc.id === entry.id ? 'page' : undefined}>
-              {label(doc)}
+          pages.map(item => (
+            <a class={sideLink} href={href(item.path)} aria-current={item.key === page.key ? 'page' : undefined}>
+              {item.label}
             </a>
           ))
         }
       </nav>
     </details>
 
-    <aside class={`${column} max-w-[260px] flex-[1_1_220px] gap-5`} aria-label="Docs">
+    <aside class={`${column} max-w-[260px] flex-[1_1_220px] gap-5`} aria-label={page.section === 'api' ? 'API' : 'Docs'}>
       <label class="flex flex-col gap-1.5 px-3">
         <span class="eyebrow">Version</span>
         <select class="version min-h-9 appearance-none rounded-pill border-[1.5px] border-line-strong bg-surface py-2 pr-7 pl-2.5 font-mono text-xs leading-none font-bold text-ink" data-version-switch>
@@ -50,12 +49,12 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
         </select>
       </label>
       {
-        groups.map(({ group, pages }) => (
+        groups.map(({ group, pages: items }) => (
           <nav class="flex flex-col gap-0.5" aria-label={group}>
             <h2 class="px-3 pb-2 font-mono text-xs leading-none font-bold tracking-[0.08em] text-ink-2 uppercase">{group}</h2>
-            {pages.map(doc => (
-              <a class={sideLink} href={href(docPath(doc))} aria-current={doc.id === entry.id ? 'page' : undefined}>
-                {label(doc)}
+            {items.map(item => (
+              <a class={sideLink} href={href(item.path)} aria-current={item.key === page.key ? 'page' : undefined}>
+                {item.label}
               </a>
             ))}
           </nav>
@@ -65,12 +64,12 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 
     <div class="flex min-w-0 max-w-[760px] flex-[999_1_560px] flex-col gap-6">
       <nav class="flex gap-2 text-sm text-ink-2" aria-label="Breadcrumb">
-        <a class="text-ink-2 hover:text-ink-2" href={href(docPath(docs[0]))}>Docs</a><span aria-hidden="true">/</span><span>{entry.data.group}</span>
+        <a class="text-ink-2 hover:text-ink-2" href={href(pages[0].path)}>{page.section === 'api' ? 'API' : 'Docs'}</a><span aria-hidden="true">/</span><span>{page.group}</span>
       </nav>
       <header class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-6 max-md:grid-cols-[minmax(0,1fr)]">
         <div>
-          <h1 class="mb-3.5 text-4xl">{entry.data.title}</h1>
-          <p class="lead">{entry.data.description}</p>
+          <h1 class="mb-3.5 text-4xl">{page.title}</h1>
+          <p class="lead">{page.description}</p>
         </div>
         <div class="-mb-2 w-[130px] max-md:hidden"><Mascot pose="point" /></div>
       </header>
@@ -78,24 +77,29 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
       <article class="prose">
         <slot />
       </article>
+      <slot name="after" />
 
-      <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-4 text-sm text-ink-2">
-        <a href={`${EDIT_BASE}${entry.filePath?.split('/content/docs/')[1] ?? ''}`}>Edit this page on GitHub</a>
-      </div>
+      {
+        page.editUrl && (
+          <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-4 text-sm text-ink-2">
+            <a href={page.editUrl}>Edit this page on GitHub</a>
+          </div>
+        )
+      }
       <nav class="grid grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))] gap-4" aria-label="Previous and next">
         {
           previous && (
-            <a class={pagerLink} href={href(docPath(previous))}>
+            <a class={pagerLink} href={href(previous.path)}>
               <span class="muted">← Previous</span>
-              <strong class="font-slab text-[19px] leading-[normal] font-bold">{label(previous)}</strong>
+              <strong class="font-slab text-[19px] leading-[normal] font-bold">{previous.label}</strong>
             </a>
           )
         }
         {
           next && (
-            <a class={`${pagerLink} col-[-2] text-right`} href={href(docPath(next))}>
+            <a class={`${pagerLink} col-[-2] text-right`} href={href(next.path)}>
               <span class="muted">Next →</span>
-              <strong class="font-slab text-[19px] leading-[normal] font-bold">{label(next)}</strong>
+              <strong class="font-slab text-[19px] leading-[normal] font-bold">{next.label}</strong>
             </a>
           )
         }

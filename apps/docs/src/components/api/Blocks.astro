@@ -1,0 +1,30 @@
+---
+/** A comment's paragraphs and lists. */
+import type { JSONOutput as J } from 'typedoc';
+import { blocksOf } from '../../lib/api';
+import Text from './Text.astro';
+
+interface Props {
+  parts: J.CommentDisplayPart[];
+}
+
+const blocks = blocksOf(Astro.props.parts);
+---
+
+{
+  blocks.map(block =>
+    block.kind === 'list' ? (
+      <ul>
+        {block.items.map(item => (
+          <li>
+            <Text parts={item} />
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>
+        <Text parts={block.items[0]} />
+      </p>
+    )
+  )
+}

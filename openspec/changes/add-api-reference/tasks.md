@@ -2,17 +2,17 @@
 
 ## 1. Foundation
 
-- [ ] 1.1 TypeDoc as a docs dev dependency (pinned), its config (both entry points, `moduleResolution: "bundler"`, internals excluded), and the cached `docs:api` target writing `src/generated/api.json` (D1).
-- [ ] 1.2 `lib/api.ts`: typed access to the model (entries, signatures, comments, links, type rendering) and `lib/api-pages.ts`: the page mapping (D2).
-- [ ] 1.3 Components: entry, signature, properties table (with defaults, D4), badges, see-also; the area page route and the overview; the "Reference" sidebar group (D3, D7).
-- [ ] 1.4 One area finished end to end as the reference for the rest: Charts (presets), with complete doc comments and defaults.
-- [ ] 1.5 The completeness check in `check` (D5).
+- [x] 1.1 TypeDoc as a docs dev dependency (pinned), its config (both entry points, `moduleResolution: "bundler"`, internals excluded), and the cached `docs:api` target writing `src/generated/api.json` (D1).
+- [x] 1.2 `lib/api.ts`: typed access to the model (entries, signatures, comments, links, type rendering) and `lib/api-pages.ts`: the page mapping (D2).
+- [x] 1.3 Components: entry, signature, properties table (with defaults, D4), badges, see-also; the area page route and the overview; the "API" header section with its sidebar (D3, D7).
+- [x] 1.4 One area finished end to end as the reference for the rest: Charts (presets), with complete doc comments and defaults.
+- [x] 1.5 The completeness check in `check` (D5).
 
 ## 2. Doc comments and pages (parallel after 1)
 
 - [ ] 2.1 `chart()`, layers, scales and axes.
 - [ ] 2.2 Scene, events and plugins, rendering, responsive, compat.
-- [ ] 2.3 1.x chart classes (minimal entries) and 1.x helpers (one-liners); findings 9 and 10.
+- [ ] 2.3 1.x classes (minimal entries) and helpers (one-liners); finding 10.
 
 ## 3. Links
 

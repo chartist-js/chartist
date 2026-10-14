@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import DocsLayout from '../../layouts/DocsLayout.astro';
-import { sortedDocs } from '../../lib/docs';
+import { navPages, sortedDocs } from '../../lib/docs';
 
 export async function getStaticPaths() {
   const docs = await sortedDocs();
@@ -10,8 +10,9 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 const { Content, headings } = await render(entry);
+const page = (await navPages('docs')).find(candidate => candidate.key === entry.id)!;
 ---
 
-<DocsLayout entry={entry} headings={headings}>
+<DocsLayout page={page} headings={headings}>
   <Content />
 </DocsLayout>

@@ -1,0 +1,11 @@
+{
+  "//": "The library's compiler options for TypeDoc (docs:api). TypeScript 6 rejects the library's moduleResolution 'node', and the source root is the package.",
+  "extends": "../../../packages/chartist/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "rootDir": "../../../packages/chartist",
+    "noEmit": true
+  },
+  "include": ["../../../packages/chartist/src"],
+  "exclude": ["../../../packages/chartist/src/**/*.spec.ts"]
+}
