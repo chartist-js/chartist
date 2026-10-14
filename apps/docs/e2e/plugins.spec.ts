@@ -28,13 +28,15 @@ test('an entry credits its author and links its sources', async ({ page }) => {
   );
   await expect(entry).toContainText('Alex Stanbury');
   await expect(entry).toContainText('MIT');
-  await expect(entry.locator('.tag', { hasText: 'v0.x' })).toBeVisible();
+  await expect(entry.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
   await expect(entry.getByRole('link', { name: 'npm' })).toHaveAttribute(
     'href',
     'https://www.npmjs.com/package/chartist-plugin-axistitle'
   );
   await expect(
-    page.locator('#stklcode-chartist-plugin-tooltips .tag', { hasText: 'v1.x' })
+    page.locator('#stklcode-chartist-plugin-tooltips .tag', {
+      hasText: 'API v1.x'
+    })
   ).toBeVisible();
   // A plugin whose repository is gone links to npm and says so.
   await expect(page.locator('#chartist-plugin-tooltips')).toContainText(
@@ -86,4 +88,66 @@ test('without JavaScript every plugin shows and the filter stays hidden', async 
   );
   await expect(page.locator('[data-plugin-filter]')).toBeHidden();
   await context.close();
+});
+
+const examples = Object.keys(
+  JSON.parse(
+    await readFile(
+      new URL('../src/data/plugin-files.json', import.meta.url),
+      'utf8'
+    )
+  ) as Record<string, unknown>
+).map(name => ({ package: name }));
+
+for (const plugin of examples) {
+  test(`${plugin.package}: its live example runs without errors`, async ({
+    page
+  }) => {
+    const errors: string[] = [];
+    page.on('pageerror', error => errors.push(String(error)));
+    await page.goto('/plugins/');
+    const live = page.locator(
+      `#${plugin.package.replace(/^@/, '').replace(/\//g, '-')} [data-live-example]`
+    );
+    await live.scrollIntoViewIfNeeded();
+    await live.getByRole('button', { name: 'Edit' }).click();
+    await expect(live).toHaveAttribute('data-ready', '');
+    await expect(
+      live
+        .frameLocator('iframe')
+        .locator(
+          'svg.ct-chart-line, svg.ct-chart-bar, svg.ct-chart-pie, svg.ct-chart-donut'
+        )
+        .first()
+    ).toBeVisible({ timeout: 10_000 });
+    await expect(live.locator('.playground-errors li')).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+}
+
+test('a plugin example runs in the full playground from its link', async ({
+  page
+}) => {
+  await page.goto('/plugins/');
+  const live = page.locator('#chartist-plugin-pointlabels [data-live-example]');
+  await live.scrollIntoViewIfNeeded();
+  await live.getByRole('button', { name: 'Edit' }).click();
+  await expect(live).toHaveAttribute('data-ready', '');
+  // Edited code opens through a share link (#code=…).
+  const editor = live.locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press('ControlOrMeta+End');
+  await page.keyboard.type('\n// edited');
+  await live.getByRole('button', { name: 'Open in playground' }).click();
+  await expect(page).toHaveURL(/\/playground\/#code=/);
+  const playground = page;
+  const frame = playground.frameLocator('iframe');
+  await expect(frame.locator('svg.ct-chart-line')).toBeVisible({
+    timeout: 10_000
+  });
+  // The plugin drew its labels in the playground too.
+  await expect(frame.locator('text.ct-label').first()).toBeVisible();
+  await expect(
+    playground.getByRole('button', { name: 'Export to StackBlitz' })
+  ).toHaveCount(0);
 });
