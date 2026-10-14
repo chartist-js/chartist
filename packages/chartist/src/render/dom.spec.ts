@@ -115,6 +115,22 @@ describe('render/dom', () => {
     expect(document.body.querySelector('svg')).toBeNull();
   });
 
+  it("measureText measures in the container's document", () => {
+    const other = document.implementation.createHTMLDocument('other');
+    const container = other.createElement('div');
+    other.body.appendChild(container);
+    const inOther = vi.spyOn(other, 'createElementNS');
+    const inGlobal = vi.spyOn(document, 'createElementNS');
+    try {
+      domRenderer().measureText!('Hello', { container });
+      expect(inOther).toHaveBeenCalledWith('http://www.w3.org/2000/svg', 'svg');
+      expect(inGlobal).not.toHaveBeenCalled();
+    } finally {
+      inOther.mockRestore();
+      inGlobal.mockRestore();
+    }
+  });
+
   it('measureText uses getBBox where available', () => {
     const original = (SVGElement.prototype as { getBBox?: unknown }).getBBox;
     (SVGElement.prototype as unknown as { getBBox: () => DOMRect }).getBBox =

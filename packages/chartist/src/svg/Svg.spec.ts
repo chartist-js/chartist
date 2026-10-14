@@ -129,6 +129,17 @@ describe('Svg', () => {
     expect(svg.getNode().childNodes.length).toBe(0);
   });
 
+  it("creates children, text and foreignObject content in the parent's document", () => {
+    const other = document.implementation.createHTMLDocument('other');
+    const root = new Svg(other.createElementNS(namespaces.svg, 'svg'));
+    const text = root.elem('text').text('Hi');
+    const html = root.foreignObject('<span>Hi</span>');
+
+    expect(text.getNode().ownerDocument).toBe(other);
+    expect(text.getNode().firstChild?.ownerDocument).toBe(other);
+    expect(html.getNode().firstChild?.ownerDocument).toBe(other);
+  });
+
   it('remove() returns the parent the element had', () => {
     const svg = new Svg('svg');
     const group = svg.elem('g');

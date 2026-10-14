@@ -68,7 +68,12 @@ export class Svg {
     if (name instanceof Element) {
       this._node = name;
     } else {
-      this._node = document.createElementNS(namespaces.svg, name);
+      // In the parent's document, so elements can be added to an iframe's
+      // or a jsdom document's chart (see #1424).
+      this._node = (parent?._node.ownerDocument ?? document).createElementNS(
+        namespaces.svg,
+        name
+      );
 
       // If this is an SVG element created then custom namespace
       if (name === 'svg') {
@@ -223,7 +228,7 @@ export class Svg {
     // If content is string then we convert it to DOM
     // TODO: Handle case where content is not a string nor a DOM Node
     if (typeof content === 'string') {
-      const container = document.createElement('div');
+      const container = this._node.ownerDocument.createElement('div');
       container.innerHTML = content;
       contentNode = container.firstChild as Node;
     } else {
@@ -256,7 +261,7 @@ export class Svg {
    * @return The same wrapper object that was used to add the newly created element
    */
   text(t: string) {
-    this._node.appendChild(document.createTextNode(t));
+    this._node.appendChild(this._node.ownerDocument.createTextNode(t));
     return this;
   }
 

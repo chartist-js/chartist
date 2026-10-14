@@ -59,8 +59,9 @@ function removePrevious(container: Element) {
 }
 
 /**
- * Measures text with an offscreen SVG `<text>` in the document, so CSS
- * fonts apply. Falls back to the estimate where SVG metrics are missing.
+ * Measures text with an offscreen SVG `<text>` in the given document (in
+ * the container, if there is one), so CSS fonts apply. Falls back to the
+ * estimate where SVG metrics are missing.
  */
 function measureInDocument(document: Document): MeasureText {
   return (text, options = {}) => {
@@ -112,7 +113,6 @@ function measureInDocument(document: Document): MeasureText {
  * @experimental
  */
 export function domRenderer(): Renderer<DomRenderOutput> {
-  let measure: MeasureText | undefined;
   return {
     labels: 'html',
     render(scene, container) {
@@ -129,8 +129,12 @@ export function domRenderer(): Renderer<DomRenderOutput> {
       };
     },
     measureText(text, options) {
-      measure ??= measureInDocument(document);
-      return measure(text, options);
+      // The container's document, not the global one, so charts in an
+      // iframe or in a jsdom document measure there (see #1424).
+      const document = options?.container?.ownerDocument ?? globalThis.document;
+      return document
+        ? measureInDocument(document)(text, options)
+        : estimateText(text, options);
     }
   };
 }
