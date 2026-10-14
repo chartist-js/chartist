@@ -11,7 +11,9 @@ export const VERSIONS = [
 
 /** Header navigation. Sections appear as their changes land. */
 export const NAV = [
-  { id: 'docs', label: 'Docs', path: 'docs/getting-started/' }
+  { id: 'docs', label: 'Docs', path: 'docs/getting-started/' },
+  { id: 'examples', label: 'Examples', path: 'examples/' },
+  { id: 'playground', label: 'Playground', path: 'playground/' }
 ] as const;
 
 /** Joins a site path to the configured base. */

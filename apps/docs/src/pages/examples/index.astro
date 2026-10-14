@@ -1,0 +1,57 @@
+---
+/** The examples gallery: every docs example of @chartist/examples. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { TYPES, ofType } from '../../lib/gallery';
+import { href } from '../../lib/site';
+
+const groups = TYPES.map(entry => ({ ...entry, examples: ofType(entry.type) })).filter(group => group.examples.length > 0);
+const total = groups.reduce((sum, group) => sum + group.examples.length, 0);
+---
+
+<BaseLayout title="Examples" description={`${total} Chartist charts to look at, edit and take with you: lines, bars, pies, composed charts and styling.`} section="examples">
+  <div class="wrap flex flex-col gap-8 py-[clamp(32px,5vw,56px)]">
+    <header class="flex flex-col gap-3">
+      <h1 class="display">Examples</h1>
+      <p class="lead max-w-[60ch]">{total} charts, each a small project you can edit in place or open in the playground. Every one is drawn by the same code that's checked against Chartist 1.x, pixel for pixel.</p>
+    </header>
+
+    <div class="flex flex-wrap gap-2" role="group" aria-label="Show chart type">
+      <button class="chip" type="button" aria-pressed="true" data-filter="all">All</button>
+      {
+        groups.map(group => (
+          <button class="chip" type="button" aria-pressed="false" data-filter={group.type}>
+            {group.title}
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      groups.map(group => (
+        <section class="flex flex-col gap-4 [&[hidden]]:hidden" id={group.type} data-group={group.type} aria-labelledby={`${group.type}-title`}>
+          <h2 id={`${group.type}-title`} class="text-2xl">
+            {group.title}
+          </h2>
+          <ul class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-5 p-0">
+            {group.examples.map(example => (
+              <li>
+                <a class="card link flex h-full flex-col overflow-hidden text-ink no-underline" href={href(`examples/${example.id}/`)}>
+                  <div class="dot-grid relative aspect-[16/10] border-b border-line" data-gallery-preview={JSON.stringify({ files: example.files, title: example.title })} />
+                  <div class="flex flex-col gap-1 px-4 py-3">
+                    <strong class="font-slab text-lg leading-snug">{example.title}</strong>
+                    {example.description && <span class="text-sm text-ink-2">{example.description}</span>}
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<script>
+  import { mountGallery } from '../../scripts/gallery';
+  mountGallery();
+</script>

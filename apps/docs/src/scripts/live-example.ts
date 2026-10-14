@@ -1,53 +1,28 @@
 /** Swaps a live example's static code for the playground on "Edit". */
-// Served by integrations/playground-lib.mjs, with compat.js next to it.
-const LIB = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}playground-lib/`;
-const chartistUrl = `${LIB}index.js`;
-const stylesUrl = `${LIB}index.css`;
-
-/**
- * Page tokens the preview needs to look like the page. Raw values, so
- * var() references in them resolve inside the preview as well.
- */
-const TOKENS = [
-  '--ink',
-  '--ink-2',
-  '--surface',
-  '--line',
-  '--font-body',
-  '--ct-label-color',
-  '--ct-label-size',
-  '--ct-grid-color',
-  '--ct-grid-dasharray',
-  '--ct-line-width',
-  '--ct-point-size',
-  '--ct-bar-width',
-  '--ct-area-opacity',
-  '--ct-donut-width',
-  ...'abcdefghijklmno'.split('').map(letter => `--ct-series-${letter}`)
-];
-
-/** CSS that gives the preview the page's current theme. */
-function previewStyles(): string {
-  const root = getComputedStyle(document.documentElement);
-  const tokens = TOKENS.map(
-    name => `${name}: ${root.getPropertyValue(name).trim()};`
-  ).join(' ');
-  return `:root { ${tokens} color-scheme: ${root.colorScheme}; }
-html, body { margin: 0; color: var(--ink); font-family: var(--font-body); }
-body {
-  background-color: var(--surface);
-  background-image: radial-gradient(var(--line) 1px, transparent 1px);
-  background-size: 16px 16px;
-  padding: 16px 20px;
-}`;
-}
+import {
+  FILL_FRAME,
+  chartistUrl,
+  imports,
+  playgroundForCode,
+  playgroundForExample,
+  previewStyles,
+  stylesUrl
+} from './playground-env';
 
 interface LiveConfig {
   files: Record<string, string>;
   title: string;
   /** The file shown before editing; the editor opens on it. */
   show: string;
+  /** The 1.x code, shown in a second tab. */
+  classic?: string;
+  /** A gallery example's id: unedited, the playground opens it by id. */
+  id?: string;
 }
+
+/** Gallery examples (with an id) fill their preview frame. */
+const stylesFor = (config: LiveConfig) =>
+  config.id ? `${previewStyles()}${FILL_FRAME}` : previewStyles();
 
 /**
  * View mode: runs the example's own code in a sandboxed preview over the
@@ -66,9 +41,10 @@ async function runInPlace(root: HTMLElement, config: LiveConfig) {
   const preview = createPreview(stage, {
     files: config.files,
     title: config.title,
-    chartistUrl: new URL(chartistUrl, location.href).href,
-    stylesUrl: new URL(stylesUrl, location.href).href,
-    previewStyles: previewStyles(),
+    chartistUrl: chartistUrl,
+    stylesUrl: stylesUrl,
+    imports,
+    previewStyles: stylesFor(config),
     // The static chart stays when the example fails in view mode; Edit
     // shows the error.
     onMessage: message => {
@@ -83,7 +59,7 @@ async function runInPlace(root: HTMLElement, config: LiveConfig) {
   await preview.render();
   new MutationObserver(() => {
     if (preview.iframe.isConnected) {
-      void preview.setPreviewStyles(previewStyles());
+      void preview.setPreviewStyles(stylesFor(config));
     }
   }).observe(document.documentElement, {
     attributes: true,
@@ -105,9 +81,28 @@ export function mountLiveExamples() {
       },
       { rootMargin: '200px' }
     ).observe(root);
+    // The 1.x tab: switch which code is shown; Copy copies what's shown.
+    let showing: 'main' | 'classic' = 'main';
+    for (const tab of root.querySelectorAll<HTMLElement>('[data-live-tab]')) {
+      tab.addEventListener('click', () => {
+        showing = tab.dataset.liveTab as 'main' | 'classic';
+        for (const other of root.querySelectorAll('[data-live-tab]')) {
+          other.setAttribute('aria-selected', String(other === tab));
+        }
+        for (const panel of root.querySelectorAll<HTMLElement>(
+          '[data-live-panel]'
+        )) {
+          panel.hidden = panel.dataset.livePanel !== showing;
+        }
+      });
+    }
     root.querySelector('[data-live-copy]')?.addEventListener('click', event => {
       const button = event.currentTarget as HTMLElement;
-      navigator.clipboard.writeText(config.files[config.show]).then(
+      const code =
+        showing === 'classic' && config.classic
+          ? config.classic
+          : config.files[config.show];
+      navigator.clipboard.writeText(code).then(
         () => button.setAttribute('aria-label', 'Copied'),
         () => button.setAttribute('aria-label', 'Copy failed')
       );
@@ -119,20 +114,36 @@ export function mountLiveExamples() {
         host.className = 'live-playground';
         root.replaceChildren(host);
         root.classList.add('editing');
-        const { copyAction, createPlayground, resetAction, stackblitzAction } =
+        const { copyAction, createPlayground, openAction, resetAction } =
           await import('@chartist/playground');
+        const unchanged = (files: Record<string, string>) =>
+          Object.keys(files).length === Object.keys(config.files).length &&
+          Object.entries(files).every(
+            ([file, code]) => config.files[file] === code
+          );
         const playground = await createPlayground(host, {
           files: config.files,
           title: config.title,
           tabs: [...new Set([config.show, 'src/main.ts', 'index.html'])],
-          chartistUrl: new URL(chartistUrl, location.href).href,
-          stylesUrl: new URL(stylesUrl, location.href).href,
-          previewStyles: previewStyles(),
-          actions: [resetAction(), copyAction(), stackblitzAction()]
+          chartistUrl: chartistUrl,
+          stylesUrl: stylesUrl,
+          imports,
+          previewStyles: stylesFor(config),
+          actions: [
+            resetAction(),
+            copyAction(),
+            // The full-screen playground, with the current (maybe edited) files.
+            openAction({
+              url: (files, title) =>
+                config.id && unchanged(files)
+                  ? playgroundForExample(config.id)
+                  : playgroundForCode(files, title)
+            })
+          ]
         });
         // The preview follows the theme toggle.
         new MutationObserver(
-          () => void playground.setPreviewStyles(previewStyles())
+          () => void playground.setPreviewStyles(stylesFor(config))
         ).observe(document.documentElement, {
           attributes: true,
           attributeFilter: ['data-theme']

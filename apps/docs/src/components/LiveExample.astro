@@ -14,17 +14,25 @@ interface Props {
   example?: string;
   /** ...or its files directly (built in code, like the landing page's). */
   files?: Record<string, string>;
-  /** The chart `src/main.ts` draws, for the preview before editing. */
-  preview: ChartSpec;
+  /**
+   * The chart `src/main.ts` draws, as a placeholder until the example runs
+   * (and without JavaScript). Leave it out and the stage stays empty until
+   * then, as for gallery examples.
+   */
+  preview?: ChartSpec;
   label: string;
   title?: string;
   /** The file shown before editing, and the editor's first tab. */
   show?: string;
   /** Inline style for the preview chart, e.g. the custom properties the example's CSS sets. */
   previewStyle?: string;
+  /** The 1.x code that draws the same chart, shown in a second tab (read-only). */
+  classic?: string;
+  /** A gallery example's id, so the playground can open it by id. */
+  id?: string;
 }
 
-const { example, preview, label, title = 'Chartist example', show = 'src/main.ts', previewStyle } = Astro.props;
+const { example, preview, label, title = 'Chartist example', show = 'src/main.ts', previewStyle, classic, id } = Astro.props;
 const files = Astro.props.files ?? exampleFiles(example ?? '');
 const shown = files[show];
 const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : 'ts';
@@ -36,11 +44,24 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
 -->
 <div
   class="live grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] overflow-hidden rounded-lg border-2 border-ink bg-surface shadow-print dark:border-line-strong [&.editing]:flex [&.editing]:flex-col"
-  data-live-example={JSON.stringify({ files, title, show })}
+  data-live-example={JSON.stringify({ files, title, show, classic, id })}
 >
   <div class="flex min-w-0 flex-col bg-code-bg text-code-ink">
     <div class="flex items-center justify-between gap-2 border-b border-code-line py-1.5 pr-2 pl-4">
-      <span class="min-h-9 rounded-[8px] bg-code-hover px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--code-accent)]">{show}</span>
+      {
+        classic ? (
+          <div class="flex gap-0.5" role="tablist" aria-label="Code">
+            <button class="min-h-9 cursor-pointer rounded-[8px] border-0 bg-transparent px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-muted hover:text-code-ink aria-selected:bg-code-hover aria-selected:text-code-ink aria-selected:shadow-[inset_0_-2px_0_var(--code-accent)]" type="button" role="tab" aria-selected="true" data-live-tab="main">
+              {show}
+            </button>
+            <button class="min-h-9 cursor-pointer rounded-[8px] border-0 bg-transparent px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-muted hover:text-code-ink aria-selected:bg-code-hover aria-selected:text-code-ink aria-selected:shadow-[inset_0_-2px_0_var(--code-accent)]" type="button" role="tab" aria-selected="false" data-live-tab="classic">
+              1.x classes
+            </button>
+          </div>
+        ) : (
+          <span class="min-h-9 rounded-[8px] bg-code-hover px-3 py-2.5 font-mono text-xs leading-none font-semibold text-code-ink shadow-[inset_0_-2px_0_var(--code-accent)]">{show}</span>
+        )
+      }
       <div class="flex items-center gap-1.5">
         <button class="icon-btn sm" type="button" data-live-copy aria-label="Copy code">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"></rect><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"></path></svg>
@@ -48,7 +69,16 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
         <button class="btn sm min-h-8 shadow-none" type="button" data-live-edit>Edit</button>
       </div>
     </div>
-    <Code code={shown} lang={lang} theme="css-variables" class="flex-1 rounded-none" />
+    <div class="flex flex-1 flex-col [&[hidden]]:hidden" data-live-panel="main">
+      <Code code={shown} lang={lang} theme="css-variables" class="flex-1 rounded-none" />
+    </div>
+    {
+      classic && (
+        <div class="flex flex-1 flex-col [&[hidden]]:hidden" data-live-panel="classic" hidden>
+          <Code code={classic} lang="ts" theme="css-variables" class="flex-1 rounded-none" />
+        </div>
+      )
+    }
   </div>
   <div class="flex min-w-0 flex-col bg-surface">
     <div class="flex items-center justify-between gap-2 border-b border-line py-2 pr-2 pl-4">
@@ -56,9 +86,15 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
     </div>
     <!-- data-live-stage: the script swaps the static chart for the example running in a sandbox. -->
     <div class="dot-grid relative grid min-h-[260px] flex-1 place-items-center px-5 pt-4 pb-5" data-live-stage>
-      <div class="w-full" style={previewStyle}>
-        <Chart type={preview.type} data={preview.data} options={preview.options} plain draw={false} label={label} aspect="16 / 10" />
-      </div>
+      {
+        preview ? (
+          <div class="w-full" style={previewStyle}>
+            <Chart type={preview.type} data={preview.data} options={preview.options} plain draw={false} label={label} aspect="16 / 10" />
+          </div>
+        ) : (
+          <div class="aspect-[16/10] w-full" role="img" aria-label={label} />
+        )
+      }
     </div>
   </div>
 </div>

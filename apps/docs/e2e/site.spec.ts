@@ -11,6 +11,9 @@ const DOCS = (await readdir(new URL('../src/content/docs/', import.meta.url)))
 const PAGES = [
   { name: 'home', path: '/' },
   ...DOCS.map(slug => ({ name: `docs/${slug}`, path: `/docs/${slug}/` })),
+  { name: 'examples', path: '/examples/' },
+  { name: 'example page', path: '/examples/line/modify-drawing/' },
+  { name: 'playground', path: '/playground/' },
   { name: '404', path: '/no-such-page/' }
 ];
 

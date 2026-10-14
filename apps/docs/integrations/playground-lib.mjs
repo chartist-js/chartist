@@ -1,6 +1,8 @@
 /**
  * Serves the Chartist build for live examples at `<base>playground-lib/`:
- * index.js, compat.js (it imports ./index.js) and index.css.
+ * index.js, compat.js (it imports ./index.js), index.css and
+ * themes/accessible.css (as in the package's dist), and the
+ * match-container polyfill that container query examples import.
  *
  * The playground's preview is a sandboxed iframe (origin `null`), so it
  * loads these cross-origin. Astro's dev server rejects cross-origin
@@ -12,12 +14,23 @@ import { copyFile, mkdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const DIST = new URL('../../../packages/chartist/dist/', import.meta.url);
+const POLYFILL = new URL(
+  '../node_modules/match-container/matchContainer.js',
+  import.meta.url
+);
+/** Served name → source and type. */
 const FILES = {
-  'index.js': 'text/javascript',
-  'compat.js': 'text/javascript',
-  'index.css': 'text/css'
+  'index.js': { source: new URL('index.js', DIST), type: 'text/javascript' },
+  'compat.js': { source: new URL('compat.js', DIST), type: 'text/javascript' },
+  'index.css': { source: new URL('index.css', DIST), type: 'text/css' },
+  'themes/accessible.css': {
+    source: new URL('themes/accessible.css', DIST),
+    type: 'text/css'
+  },
+  'match-container.js': { source: POLYFILL, type: 'text/javascript' }
 };
-const PATTERN = /\/playground-lib\/(index\.js|compat\.js|index\.css)(?:\?.*)?$/;
+const PATTERN =
+  /\/playground-lib\/(index\.js|compat\.js|index\.css|themes\/accessible\.css|match-container\.js)(?:\?.*)?$/;
 
 /** @returns {import('vite').Plugin} */
 function devServer() {
@@ -36,8 +49,9 @@ function devServer() {
               return next();
             }
             try {
-              const body = await readFile(new URL(match[1], DIST));
-              response.setHeader('Content-Type', FILES[match[1]]);
+              const file = FILES[match[1]];
+              const body = await readFile(file.source);
+              response.setHeader('Content-Type', file.type);
               response.setHeader('Access-Control-Allow-Origin', '*');
               response.end(body);
             } catch (error) {
@@ -61,10 +75,11 @@ export function playgroundLib() {
       'astro:build:done': async ({ dir }) => {
         const target = new URL('playground-lib/', dir);
         await mkdir(target, { recursive: true });
-        for (const file of Object.keys(FILES)) {
+        for (const [name, file] of Object.entries(FILES)) {
+          await mkdir(new URL('.', new URL(name, target)), { recursive: true });
           await copyFile(
-            fileURLToPath(new URL(file, DIST)),
-            fileURLToPath(new URL(file, target))
+            fileURLToPath(file.source),
+            fileURLToPath(new URL(name, target))
           );
         }
       }

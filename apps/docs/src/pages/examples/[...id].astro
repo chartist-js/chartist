@@ -1,0 +1,60 @@
+---
+/** One page per gallery example: the live example, its 1.x code, neighbors. */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+import { TYPES, gallery, ofType, type GalleryExample } from '../../lib/gallery';
+import { href } from '../../lib/site';
+
+export const getStaticPaths = (() =>
+  gallery.map(example => ({ params: { id: example.id }, props: { example } }))) satisfies GetStaticPaths;
+
+const { example } = Astro.props as { example: GalleryExample };
+const siblings = ofType(example.type);
+const index = siblings.findIndex(other => other.id === example.id);
+const previous = siblings[index - 1];
+const next = siblings[index + 1];
+const typeTitle = TYPES.find(entry => entry.type === example.type)!.title;
+---
+
+<BaseLayout title={example.title} description={example.description ?? `${example.title}, a Chartist example.`} section="examples">
+  <article class="wrap flex flex-col gap-6 py-[clamp(32px,5vw,56px)]">
+    <nav class="flex flex-wrap items-center gap-2 text-sm text-ink-2" aria-label="Breadcrumb">
+      <a href={href('examples/')}>Examples</a>
+      <span aria-hidden="true">/</span>
+      <a href={href(`examples/#${example.type}`)}>{typeTitle}</a>
+    </nav>
+    <header class="flex flex-col gap-3">
+      <h1 class="text-4xl">{example.title}</h1>
+      {example.description && <p class="lead max-w-[60ch]">{example.description}</p>}
+    </header>
+
+    <LiveExample id={example.id} files={example.files} classic={example.classicCode} title={example.title} label={example.title} />
+
+    <div class="flex flex-wrap items-center gap-3">
+      <a class="btn sm" href={href(`playground/#example=${example.id}`)}>Open in the playground</a>
+      {example.classic && <span class="text-sm text-ink-2">The 1.x classes tab shows the same chart in Chartist 1.x code.</span>}
+    </div>
+
+    <nav class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-6" aria-label={`More ${typeTitle.toLowerCase()}`}>
+      {
+        previous ? (
+          <a class="card flat link flex flex-col gap-1 px-4 py-3" href={href(`examples/${previous.id}/`)}>
+            <span class="eyebrow">Previous</span>
+            <strong>{previous.title}</strong>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="card flat link flex flex-col items-end gap-1 px-4 py-3 text-right" href={href(`examples/${next.id}/`)}>
+            <span class="eyebrow">Next</span>
+            <strong>{next.title}</strong>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</BaseLayout>

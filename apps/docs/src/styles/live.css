@@ -21,7 +21,7 @@
 
   --pg-editor-bg: var(--code-bg);
   --pg-editor-ink: var(--code-ink);
-  --pg-gutter-ink: color-mix(in oklab, var(--code-muted) 70%, transparent);
+  --pg-gutter-ink: var(--code-muted);
   --pg-active-line: #ffffff0a;
   --pg-selection: color-mix(in oklab, var(--code-num) 30%, transparent);
   --pg-code-size: 14px;

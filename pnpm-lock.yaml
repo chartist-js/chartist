@@ -99,6 +99,9 @@ importers:
       '@axe-core/playwright':
         specifier: 4.11.0
         version: 4.11.0(playwright-core@1.63.0)
+      '@chartist/examples':
+        specifier: workspace:*
+        version: link:../../packages/examples
       '@chartist/playground':
         specifier: workspace:*
         version: link:../../packages/playground

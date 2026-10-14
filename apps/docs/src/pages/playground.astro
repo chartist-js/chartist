@@ -1,0 +1,21 @@
+---
+/**
+ * The full-screen playground. The address says what to open:
+ * `#example=<type>/<name>` (a gallery example) or `#code=<payload>` (any
+ * files, from Share or a live example). Once edited, the address follows
+ * the code, so a reload or a shared link keeps it.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Playground" description="Write a Chartist chart in your browser, see it update as you type, and share it with a link." section="playground">
+  <h1 class="sr-only">Playground</h1>
+  <p class="wrap hidden py-3 text-sm text-danger [&:not([hidden])]:block" role="alert" data-playground-message hidden></p>
+  <!-- Fills the viewport below the header; live.css themes it (.playground-page). -->
+  <div class="playground-page h-[calc(100dvh-69px)] min-h-[480px]" data-playground-page></div>
+</BaseLayout>
+
+<script>
+  import { mountPlaygroundPage } from '../scripts/playground-page';
+  void mountPlaygroundPage();
+</script>
