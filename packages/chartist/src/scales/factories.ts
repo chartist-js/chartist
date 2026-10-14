@@ -13,8 +13,8 @@ const valueOf = (value: unknown, dimension: 'x' | 'y') =>
  * values by their index rather than by their value. It's the label axis of
  * line and bar charts. Same rules as 1.x `StepAxis`.
  *
- * Pass the labels as the axis's `ticks`; in {@link chart} it doesn't read
- * them from the data. With `stretch`, the last tick sits at the axis end.
+ * Its ticks are the data's `labels`, or the axis's `ticks` when you give
+ * them. With `stretch`, the last tick sits at the axis end.
  *
  * @example
  * ```ts
@@ -33,14 +33,8 @@ const valueOf = (value: unknown, dimension: 'x' | 'y') =>
  * chart('#chart', {
  *   data: { labels: months, series: [[4, 6, 5, 9]] },
  *   axes: cartesianAxes([
- *     // stretch: the first and last month at the edges.
- *     {
- *       id: 'month',
- *       side: 'bottom',
- *       type: stepAxis(),
- *       ticks: months,
- *       stretch: true
- *     },
+ *     // The months as ticks; stretch: the first and last at the edges.
+ *     { id: 'month', side: 'bottom', type: stepAxis(), stretch: true },
  *     { id: 'value', side: 'left', type: autoScaleAxis() }
  *   ]),
  *   layers: [axisGrid(), line(), axisLabels()]
@@ -51,8 +45,8 @@ const valueOf = (value: unknown, dimension: 'x' | 'y') =>
 export function stepAxis(): AxisFactory {
   return {
     kind: 'step',
-    create({ dimension, area, options }) {
-      const ticks = options.ticks || [];
+    create({ dimension, area, labels, options }) {
+      const ticks = options.ticks ?? [...labels];
       const length = axisLength(dimension, area);
       const stepLength =
         length / Math.max(1, ticks.length - (options.stretch ? 1 : 0));

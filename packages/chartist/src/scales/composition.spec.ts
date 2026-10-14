@@ -122,6 +122,30 @@ describe('composition: axes', () => {
     ).toBe(40);
   });
 
+  it('a step axis without ticks steps through the labels (#1475)', () => {
+    const step = probe();
+    run(
+      [step.layer],
+      cartesianAxes([
+        { id: 'quarters', side: 'bottom', type: stepAxis() },
+        { id: 'revenue', side: 'left', type: autoScaleAxis() }
+      ])
+    );
+    const x = step.context().axes.x!;
+    expect(x.ticks).toEqual(['Q1', 'Q2', 'Q3', 'Q4']);
+    expect(x.step).toBe(x.length / 4);
+    // Given ticks still win.
+    const given = probe();
+    run(
+      [given.layer],
+      cartesianAxes([
+        { id: 'q', side: 'bottom', type: stepAxis(), ticks: ['H1', 'H2'] },
+        { id: 'revenue', side: 'left', type: autoScaleAxis() }
+      ])
+    );
+    expect(given.context().axes.x!.ticks).toEqual(['H1', 'H2']);
+  });
+
   it('rejects duplicate ids and unknown bindings', () => {
     expect(() =>
       cartesianAxes([
