@@ -213,6 +213,23 @@ describe('scales: kind, stretch and normalization', () => {
     ).toBe('fixedScale');
   });
 
+  it('fixedScaleAxis with divisor has a tick at low and at high (#1022)', () => {
+    const axis = fixedScaleAxis().create({
+      ...context,
+      dimension: 'y',
+      options: { low: 0, high: 100, divisor: 4 }
+    });
+    expect(axis.ticks).toEqual([0, 25, 50, 75, 100]);
+    expect(axis.project(100)).toBe(axis.length);
+    expect(
+      fixedScaleAxis().create({
+        ...context,
+        dimension: 'y',
+        options: { low: 2, high: 8 }
+      }).ticks
+    ).toEqual([2, 8]);
+  });
+
   it('a 1.x StepAxis class reports step, other classes legacy', () => {
     const step = legacyAxis(StepAxis).create({
       ...context,

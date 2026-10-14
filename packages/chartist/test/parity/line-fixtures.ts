@@ -288,7 +288,8 @@ export const FIXTURES: Fixture[] = [
     }
   ],
   [
-    'timeseries-like (fixed x axis, label fn)',
+    // Ticks instead of 1.x's `divisor`, which v2 gives a tick at high (#1022).
+    'timeseries-like (fixed x axis, ticks, label fn)',
     {
       series: [
         {
@@ -304,7 +305,7 @@ export const FIXTURES: Fixture[] = [
     {
       axisX: {
         type: FixedScaleAxis,
-        divisor: 5,
+        ticks: [1000, 2600, 4200, 5800, 7400],
         labelInterpolationFnc: (value: unknown) => `t${value}`
       }
     }

@@ -138,8 +138,9 @@ export function autoScaleAxis(): AxisFactory {
 /**
  * Creates a fixed-scale axis: a scale from `low` to `high` (by default the
  * smallest and largest value) with the `ticks` you give. Without `ticks`,
- * `divisor` splits the range into equal parts with a tick at the start of
- * each, so `high` gets none. Same rules as 1.x `FixedScaleAxis`.
+ * `divisor` splits the range into equal parts with a tick at each end, so
+ * `divisor: 4` makes 5 ticks from `low` to `high` (1.x left out the one
+ * at `high`).
  *
  * @example
  * ```ts
@@ -182,10 +183,11 @@ export function fixedScaleAxis(): AxisFactory {
       const highLow =
         options.highLow || getHighLow(series, options as Options, dimension);
       const divisor = options.divisor || 1;
+      // `divisor` parts have `divisor + 1` ends, `high` included (#1022).
       const ticks = (
         options.ticks ||
         times(
-          divisor,
+          divisor + 1,
           index =>
             highLow.low + ((highLow.high - highLow.low) / divisor) * index
         )

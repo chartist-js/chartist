@@ -8,7 +8,7 @@ import { getMultiValue, getHighLow } from '../core/data';
 import { times } from '../utils';
 import { AxisUnits, Axis } from './Axis';
 
-/** The 1.x axis with fixed ticks: the `ticks` option, or `divisor` equal steps between low and high. */
+/** The 1.x axis with fixed ticks: the `ticks` option, or `divisor` equal steps from low to high, with a tick at both ends. */
 export class FixedScaleAxis extends Axis {
   public override readonly range: {
     min: number;
@@ -23,10 +23,11 @@ export class FixedScaleAxis extends Axis {
   ) {
     const highLow = options.highLow || getHighLow(data, options, axisUnit.pos);
     const divisor = options.divisor || 1;
+    // `divisor` parts have `divisor + 1` ends, `high` included (#1022).
     const ticks = (
       options.ticks ||
       times(
-        divisor,
+        divisor + 1,
         index => highLow.low + ((highLow.high - highLow.low) / divisor) * index
       )
     ).sort((a, b) => Number(a) - Number(b));

@@ -59,7 +59,7 @@ describe('axis classes as options', () => {
     expect(grids(el, 'horizontal')).toBe(3);
   });
 
-  test('FixedScaleAxis with a divisor (the number of ticks)', async () => {
+  test('FixedScaleAxis with a divisor (the number of steps)', async () => {
     const el = container();
     await created(
       new LineChart(
@@ -75,7 +75,12 @@ describe('axis classes as options', () => {
         withCompat({ axisX: { type: FixedScaleAxis, divisor: 4 } })
       )
     );
-    expect(labels(el, 'horizontal')).toEqual(['0', '25', '50', '75']);
+    // 1.x left out the tick at high; v2 has one at both ends (#1022).
+    expect(labels(el, 'horizontal')).toEqual(
+      process.env.CHARTIST_API_TARGET === 'v1'
+        ? ['0', '25', '50', '75']
+        : ['0', '25', '50', '75', '100']
+    );
   });
 
   test('chart-level low and high apply to the default Y axis', async () => {

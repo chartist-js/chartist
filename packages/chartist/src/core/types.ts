@@ -180,7 +180,7 @@ export interface AxisOptions {
   stretch?: boolean;
   /**
    * Fixed scale axis without `ticks`: the number of equal steps between
-   * its low and high.
+   * its low and high, with a tick at each end.
    */
   divisor?: number;
   /**
