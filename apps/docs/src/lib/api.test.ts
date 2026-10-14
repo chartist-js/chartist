@@ -30,24 +30,6 @@ const exportsOf = (name: string) =>
     )
   ) as { runtime: string[]; types: string[] };
 
-/**
- * Pages whose doc comments are still being written (tasks 2.x); empty when
- * done. API_CHECK_PAGES (`all`, or slugs separated by commas) checks pages
- * regardless, without editing this list.
- */
-const PENDING = new Set<string>([
-  'data',
-  'svg',
-  'compat',
-  'classes',
-  'helpers'
-]);
-
-const forced = (slug: string) => {
-  const pages = process.env.API_CHECK_PAGES?.split(',') ?? [];
-  return pages.includes('all') || pages.includes(slug);
-};
-
 const described = (reflection: Parameters<typeof commentOf>[0]) =>
   plainText(commentOf(reflection)?.summary).trim().length > 0;
 
@@ -182,13 +164,10 @@ describe('API reference', () => {
   });
 
   for (const page of API_PAGES) {
-    test.skipIf(PENDING.has(page.slug) && !forced(page.slug))(
-      `page ${page.slug}: described, no dead links`,
-      () => {
-        const entries = ENTRIES.filter(entry => entry.page === page.slug);
-        expect(entries.flatMap(problems)).toEqual([]);
-        expect(entries.flatMap(deadLinks)).toEqual([]);
-      }
-    );
+    test(`page ${page.slug}: described, no dead links`, () => {
+      const entries = ENTRIES.filter(entry => entry.page === page.slug);
+      expect(entries.flatMap(problems)).toEqual([]);
+      expect(entries.flatMap(deadLinks)).toEqual([]);
+    });
   }
 });

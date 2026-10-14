@@ -15,8 +15,8 @@ The writers checked every claim against the source and tests, and rendered chart
 6. **The presets' `plugins` type** (`core/types.ts`, inherited from 1.x) accepts plain functions, which throw at runtime, and rejects `[plugin, options]` pairs, which work at runtime. _Resolved by `refine-typings`._
 7. **The line chart's `series` option type** allows every `LineChartOptions` key, but only `lineSmooth`, `showLine`, `showPoint`, `showArea` and `areaBase` are read (`LineSeriesOptions`). Narrow it. _Resolved by `refine-typings`._
 8. **`stackMode` doc comment** in `layers/bar.ts` says "`overlap` / `false`": `false` stacks like `accumulate`, only `true` overlaps, and `'overlap'` isn't in the preset's type. _Resolved by `refine-typings`._
-9. **`lineSmooth` default** is documented as cardinal (`LineChart.types.ts`, `interpolation/cardinal.ts`); the code uses `monotoneCubic()`.
-10. **Interpolation doc comments** still use `new LineChart`, `Chartist.Line` and `Chartist.Smoothing.*`.
+9. **`lineSmooth` default** is documented as cardinal (`LineChart.types.ts`, `interpolation/cardinal.ts`); the code uses `monotoneCubic()`. _Resolved by `add-api-reference`._
+10. **Interpolation doc comments** still use `new LineChart`, `Chartist.Line` and `Chartist.Smoothing.*`. _Resolved by `add-api-reference`._
 
 ## Gaps
 

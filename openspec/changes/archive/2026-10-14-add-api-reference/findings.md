@@ -18,3 +18,11 @@ Library behavior noticed while writing the doc comments (the comments describe t
 9. **A `'*'` listener sees `null` for a dropped `compose` node** (`pipeline/emitter.ts`, `transform`). Harmless (typed `unknown`), but surprising.
 10. **With `compat`, `chart()` only gets the `data` events:** `draw` and `created` are emitted only for preset charts (`emitDrawEvents` needs `state.preset`). Described in the `compat` comment; the migration guide already says compat covers line, bar and pie charts.
 11. **`animationBegin` and `animationEnd`** are emitted by `svg/animation.ts` only when `animate()` gets an event emitter; there's no v2 way to pass the chart's. Check whether compat should wire it or the events should be documented as 1.x-only.
+
+## From the data, SVG and 1.x exports
+
+12. **`Svg.remove()` returns `null`:** it returns `this.parent()` after removing the node (`svg/Svg.ts`). The comment says so.
+13. **`SvgPath`:** `splitByCommand()` creates `new SvgPath()`, so the pieces lose `close` and `accuracy`; `SvgPath.join()` shares command objects with the source paths instead of copying; `stringify()` treats `accuracy: 0` as "don't round" rather than "round to integers"; `parse()` handles M/L/C/A only and throws on H/V/Q/S/T (`svg/SvgPath.ts`).
+14. **Holes differ between interpolations:** `simple` and `step` test `value !== undefined`, while `none`, `cardinal` and `monotoneCubic` use `getMultiValue()`, so `{ x, y: undefined }` is a hole for some and not others. Low confidence it matters.
+15. **`AnchorPosition`** in `charts/PieChart/PieChart.types.ts` is unused, and declared again in `layers/pie.ts`.
+16. **`{@link}` doesn't resolve across entry points:** a comment in `chartist` can't link to `chartist/compat`'s exports (TypeDoc), so `Plugin` names `fromLegacyPlugin()` in backticks.

@@ -10,9 +10,9 @@
 
 ## 2. Doc comments and pages (parallel after 1)
 
-- [ ] 2.1 `chart()`, layers, scales and axes.
-- [ ] 2.2 Scene, events and plugins, rendering, responsive, compat.
-- [ ] 2.3 1.x classes (minimal entries) and helpers (one-liners); finding 10.
+- [x] 2.1 `chart()`, layers, scales and axes.
+- [x] 2.2 Scene, events and plugins, rendering, responsive, compat.
+- [x] 2.3 1.x classes (minimal entries) and helpers (one-liners); finding 10.
 
 ## 3. Links
 
@@ -20,7 +20,7 @@
 
 ## 4. Proof
 
-- [ ] 4.1 The check passes: every export on exactly one page, v2 described, no dead links.
-- [ ] 4.2 Docs e2e: every API page loads without console errors and passes axe in both themes (the existing page list picks them up); a type link jumps to its entry.
-- [ ] 4.3 Library gate unchanged: type tests, export lists, visual tests (comments only).
-- [ ] 4.4 Findings 9 and 10 marked resolved; plan updated; full gate.
+- [x] 4.1 The check passes: every export on exactly one page, v2 described, no dead links.
+- [x] 4.2 Docs e2e: every API page loads without console errors and passes axe in both themes (the existing page list picks them up); a type link jumps to its entry.
+- [x] 4.3 Library gate unchanged: type tests, export lists, visual tests (comments only).
+- [x] 4.4 Findings 9 and 10 marked resolved; plan updated; full gate.
