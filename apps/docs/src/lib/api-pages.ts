@@ -124,6 +124,7 @@ const BY_NAME: Record<string, string> = {
   Layer: 'layers',
   LayerContext: 'layers',
   Coordinates: 'layers',
+  ExtentContext: 'layers',
   // The presets' data types.
   LineChartData: 'charts',
   BarChartData: 'charts',
