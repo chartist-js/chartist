@@ -2,7 +2,7 @@ import type { EventEmitter } from '../event';
 import { namespaces } from '../core/constants';
 import type { Attributes, AnimationDefinition } from './types';
 import { SvgList } from './SvgList';
-import { createAnimation, easings } from './animation';
+import { animationEmitterOf, createAnimation, easings } from './animation';
 
 /**
  * Wraps an SVG element for chaining: set attributes and classes, add child
@@ -428,7 +428,8 @@ export class Svg {
    * an array of definitions to run several animations on one attribute.
    * @param guided Runs the animations in guided mode (see above).
    * @param eventEmitter Gets `animationBegin` and `animationEnd` events
-   * ({@link AnimationEvent}) when an animation starts and ends.
+   * ({@link AnimationEvent}) when an animation starts and ends. With the
+   * compat plugin, elements of a chart send them to the chart by default.
    * @returns The same wrapper, for chaining.
    */
   animate(
@@ -436,28 +437,17 @@ export class Svg {
     guided = true,
     eventEmitter?: EventEmitter
   ) {
+    const emitter = eventEmitter ?? animationEmitterOf(this._node);
     Object.keys(animations).forEach(attribute => {
       const attributeAnimation = animations[attribute];
 
       // If current attribute is an array of definition objects we create an animate for each and disable guided mode
       if (Array.isArray(attributeAnimation)) {
         attributeAnimation.forEach(animationDefinition =>
-          createAnimation(
-            this,
-            attribute,
-            animationDefinition,
-            false,
-            eventEmitter
-          )
+          createAnimation(this, attribute, animationDefinition, false, emitter)
         );
       } else {
-        createAnimation(
-          this,
-          attribute,
-          attributeAnimation,
-          guided,
-          eventEmitter
-        );
+        createAnimation(this, attribute, attributeAnimation, guided, emitter);
       }
     });
 

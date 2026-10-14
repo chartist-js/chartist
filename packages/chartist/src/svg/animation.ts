@@ -62,6 +62,31 @@ export const easings = {
   easeInOutBack: [0.68, -0.55, 0.265, 1.55]
 };
 
+/**
+ * The property of an element that holds the emitter its descendants'
+ * animations report to when `animate()` gets none. The compat plugin
+ * sets it on a chart's `svg`. A global symbol, so separate builds of the
+ * core and `chartist/compat` share it.
+ */
+export const ANIMATION_EMITTER = Symbol.for('chartist.animationEmitter');
+
+/** The emitter set on the element or its closest ancestor that has one. */
+export function animationEmitterOf(node: Element): EventEmitter | undefined {
+  for (
+    let current: Element | null = node;
+    current;
+    current = current.parentElement
+  ) {
+    const emitter = (current as { [ANIMATION_EMITTER]?: EventEmitter })[
+      ANIMATION_EMITTER
+    ];
+    if (emitter) {
+      return emitter;
+    }
+  }
+  return undefined;
+}
+
 export function createAnimation(
   element: Svg,
   attribute: string,

@@ -82,9 +82,16 @@ declare module '../chart/types' {
       | LineChartCreatedEvent
       | BarChartCreatedEvent
       | PieChartCreatedEvent;
-    /** 1.x: an SMIL animation began (`animate()` given the chart's event emitter). */
+    /**
+     * 1.x: an SMIL animation began, started with `animate()` on an element
+     * of the chart, such as the `element` of a `draw` event. Needs the
+     * {@link compat} plugin.
+     */
     animationBegin: AnimationEvent;
-    /** 1.x: an SMIL animation ended (`animate()` given the chart's event emitter). */
+    /**
+     * 1.x: an SMIL animation ended, started with `animate()` on an element
+     * of the chart. Needs the {@link compat} plugin.
+     */
     animationEnd: AnimationEvent;
   }
 }
@@ -114,6 +121,13 @@ interface CompatState {
 }
 
 const states = new WeakMap<ChartHandle, CompatState>();
+
+/**
+ * Where `Svg#animate()` looks for the emitter of an element's animations
+ * when it gets none (on the element or an ancestor). The core reads the
+ * same global symbol.
+ */
+const ANIMATION_EMITTER = Symbol.for('chartist.animationEmitter');
 
 /** Copies plain arrays and objects; other values are kept by reference. */
 function mutableCopy<T>(value: T): T {
@@ -487,6 +501,12 @@ function enable(handle: ChartHandle): CompatState {
       throw new Error('Chartist: the compat plugin requires the DOM renderer');
     }
     state.svg = new Svg(svg);
+    // Animations of the chart's elements emit animationBegin and
+    // animationEnd on the chart, as 1.x did with the chart's emitter.
+    (svg as { [ANIMATION_EMITTER]?: unknown })[ANIMATION_EMITTER] = {
+      emit: (event: string, payload: unknown) =>
+        untyped(handle).emit(event, payload)
+    };
     if (state.preset) {
       emitDrawEvents(handle, state, scene, svg, elementOf);
     }
@@ -583,7 +603,9 @@ function legacyPlugin(
  *
  * Add it to `plugins`, of a 1.x class, a preset or `chart()`. The `draw`
  * events come in the 1.x order, right after the chart is in the DOM, so
- * `element` is a live element; then `created`. Importing
+ * `element` is a live element; then `created`. Animations started with
+ * `animate()` on the chart's elements emit `animationBegin` and
+ * `animationEnd`. Importing
  * `chartist/compat` also types the 1.x events on every chart handle. It
  * needs the DOM renderer, and the `draw` and `created` events need a
  * chart made by a preset or a 1.x class.

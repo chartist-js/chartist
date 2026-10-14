@@ -131,6 +131,77 @@ describe('compat: draw and created', () => {
     expect(begin).toHaveBeenCalledTimes(1);
   });
 
+  it('elements of draw events animate with the chart by default (#1489)', () => {
+    vi.useFakeTimers();
+    try {
+      const chart = lineChart(
+        sized(),
+        { series: [[1, 2]] },
+        { plugins: [compat] }
+      );
+      const begin = vi.fn();
+      const end = vi.fn();
+      chart.on('animationBegin', begin).on('animationEnd', end);
+      chart.on('draw', event => {
+        if (event.type === 'line') {
+          event.element.animate({ d: { dur: 100, from: 'M0,0', to: 'M1,1' } });
+        }
+      });
+      chart.on('created', event => {
+        // Elements created later inside the chart animate with it too.
+        event.svg
+          .elem('g')
+          .elem('rect')
+          .animate({ x: { dur: 100, from: 0, to: 10 } });
+      });
+      chart.update({});
+      const [line, rect] = Array.from(document.querySelectorAll('animate'));
+      line.dispatchEvent(new Event('beginEvent'));
+      line.dispatchEvent(new Event('endEvent'));
+      rect.dispatchEvent(new Event('beginEvent'));
+      expect(begin).toHaveBeenCalledTimes(2);
+      expect(begin.mock.calls[0][0]).toMatchObject({
+        animate: line,
+        params: { dur: 100, from: 'M0,0', to: 'M1,1' }
+      });
+      expect(begin.mock.calls[0][0].element).toBeInstanceOf(Svg);
+      expect(end).toHaveBeenCalledTimes(1);
+      vi.runAllTimers();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('elements of a 1.x class animate with the chart by default', async () => {
+    const chart = new LineChart(
+      sized(),
+      { series: [[1, 2]] },
+      { plugins: [compat] }
+    );
+    const begin = vi.fn();
+    chart.on('animationBegin', begin);
+    chart.on('draw', (event: { type: string; element: Svg }) => {
+      if (event.type === 'point') {
+        event.element.animate({ y1: { dur: 100, from: 0, to: 10 } }, false);
+      }
+    });
+    await created(chart);
+    document
+      .querySelectorAll('animate')
+      .forEach(animate => animate.dispatchEvent(new Event('beginEvent')));
+    expect(begin).toHaveBeenCalledTimes(2);
+  });
+
+  it('without compat, animations report to no chart', () => {
+    const element = sized();
+    lineChart(element, { series: [[1]] });
+    const point = new Svg(element.querySelector('.ct-point')!);
+    point.animate({ y1: { dur: 100, from: 0, to: 10 } }, false);
+    expect(() =>
+      element.querySelector('animate')!.dispatchEvent(new Event('beginEvent'))
+    ).not.toThrow();
+  });
+
   it('off(name) on a 1.x class removes its listeners, not those of plugins', async () => {
     const pluginDraws = vi.fn();
     const plugin = (chart: LineChart) => void chart.on('draw', pluginDraws);
