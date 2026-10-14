@@ -16,6 +16,8 @@ const types = {
   '.js': 'text/javascript',
   '.css': 'text/css',
   '.svg': 'image/svg+xml',
+  '.gif': 'image/gif',
+  '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
   '.json': 'application/json'
@@ -28,9 +30,28 @@ async function resolve(pathname) {
   }
   try {
     const info = await stat(file);
-    return info.isDirectory() ? join(file, 'index.html') : file;
+    if (info.isFile()) {
+      return file;
+    }
+    // The 1.x docs (public/v1/) link `page` for `page.html`, next to
+    // `page/` folders without an index.html.
+    if (
+      !(await isFile(join(file, 'index.html'))) &&
+      (await isFile(`${file}.html`))
+    ) {
+      return `${file}.html`;
+    }
+    return join(file, 'index.html');
   } catch {
-    return undefined;
+    return (await isFile(`${file}.html`)) ? `${file}.html` : undefined;
+  }
+}
+
+async function isFile(file) {
+  try {
+    return (await stat(file)).isFile();
+  } catch {
+    return false;
   }
 }
 

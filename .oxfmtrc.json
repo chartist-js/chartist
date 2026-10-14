@@ -21,6 +21,7 @@
     "/.claude",
     "/tmp",
     "/docs/visual-design/project",
+    "/apps/docs/public/v1",
     "/packages/chartist/test/visual/__screenshots__",
     "CHANGELOG.md",
     "*.fixture.html"

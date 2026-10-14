@@ -3,9 +3,14 @@ export const REPO = 'https://github.com/chartist-js/chartist';
 /** Docs sources live on the `next` branch until the v2 release. */
 export const EDIT_BASE = `${REPO}/edit/next/apps/docs/src/content/docs/`;
 
+/**
+ * Documentation versions, for the docs' version switcher and the footer. The
+ * 1.x docs are static files on this site (`public/v1/`), the 0.x docs stay
+ * on GitHub Pages.
+ */
 export const VERSIONS = [
   { label: 'v2 (current)', href: null },
-  { label: 'v1.5 docs', href: 'https://chartist.dev/' },
+  { label: 'v1.5 docs', href: href('v1/') },
   { label: 'v0.11 archive', href: 'https://gionkunz.github.io/chartist-js/' }
 ] as const;
 

@@ -81,15 +81,14 @@ export async function playgroundForCode(
 /**
  * For gallery examples. Most size their chart for a browser window
  * (`height: 50vh`, as the 1.x sandboxes did); in a preview frame that chart
- * is 16:10 instead, centered, as large as the frame allows. Examples with
- * their own layout keep it.
+ * fills the frame both ways instead, so a tall preview shows a tall chart.
+ * Examples with their own layout keep it.
  */
 export const FILL_FRAME = `
 html, body { height: 100%; }
 body { box-sizing: border-box; display: grid; place-items: center; }
 body > * { width: 100%; }
 #chart[style*="50vh"] {
-  width: min(100%, calc((100vh - 32px) * 1.6));
+  align-self: stretch;
   height: auto !important;
-  aspect-ratio: 16 / 10;
 }`;
