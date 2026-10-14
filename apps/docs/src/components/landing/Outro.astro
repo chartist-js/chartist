@@ -43,13 +43,14 @@ const people = facts.credits.people.map(person => {
       <a class="btn sm" href={`${REPO}/blob/main/CONTRIBUTING.md`}>Contribute</a>
     </div>
   </div>
-  <div class="reveal flex flex-col justify-center gap-4 rounded-xl border-2 border-dashed border-line-strong px-8 py-7">
+  <!-- No box: the people stand on the page, next to the card. -->
+  <div class="reveal flex flex-col justify-center gap-4 px-2 py-7">
     <span class="eyebrow">Hats off</span>
     <ul class="m-0 flex list-none flex-wrap p-0 pl-2.5" aria-label="The people credited on the credits page">
       {
         people.map(person => (
           <li class="-ml-2.5">
-            <img src={person.avatar.src} alt={person.name} title={person.name} width="44" height="44" loading="lazy" class="size-11 rounded-full border-3 border-bg" />
+            <img src={person.avatar.src} alt={person.name} title={person.name} width="56" height="56" loading="lazy" class="size-14 rounded-full border-3 border-bg" />
           </li>
         ))
       }
