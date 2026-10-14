@@ -12,7 +12,7 @@ To change the design, change the site; the canvas is the reference for new pages
 - `project/canvas.json`: the canvas index (artboard titles, positions, grouping).
 - `project/chartist.css`: the design system. It holds the palette (`--p-*`), the semantic tokens for light (`.cx`) and dark (`.cx.dark`), the mascot colors (`--m-*`), the chart series palette (`--ct-series-*`, including the accessible theme), and component styles.
 - `project/*.dc.html`: one file per artboard.
-- `project/paper.png`, `project/paper-dark.png`: the design's paper texture, "Cream Paper" from Subtle Patterns (CC BY-SA 3.0). The site doesn't use it; see `apps/docs/src/assets/README.md` for the texture it uses.
+- `project/paper.png`, `project/paper-dark.png`: the design's paper texture, "Cream Paper" from Subtle Patterns (CC BY-SA 3.0). The site uses it as the page ground texture (`apps/docs/src/assets/`).
 - `assets/reference-*-0x.svg`: the original 2014 mascot and icon, uploaded as a reference for the redesign.
 
 The `.dc.html` files are Claude Design component pages. They need the Design runtime (`support.js`, not included) to render, so read them as source (markup, tokens, copy, data), and open the canvas link to see them rendered.

@@ -80,10 +80,7 @@ body {
 body,
 .sunken {
   background-image: var(--paper);
-  background-size: 100px 100px;
-  /* Darkens (light theme) or lightens (dark) the ground color, so the
-     page keeps its exact color and only gains grain. */
-  background-blend-mode: var(--paper-blend);
+  background-size: 158px 144px;
 }
 
 .sunken {

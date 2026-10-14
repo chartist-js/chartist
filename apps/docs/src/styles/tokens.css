@@ -37,10 +37,9 @@
   /* surfaces */
   --bg: var(--p-cream-100);
   --bg-sunken: var(--p-cream-200);
-  /* Paper texture: a grayscale tile blended into the ground color
-     (--paper-blend); set --paper to none to switch it off. */
-  --paper: url('../assets/paper.webp');
-  --paper-blend: multiply;
+  /* Paper texture: "Cream Paper" from Subtle Patterns (CC BY-SA 3.0),
+     recolored as an overlay; set to none to switch it off. */
+  --paper: url('../assets/paper.png');
   --surface: var(--p-cream-50);
   --surface-raised: #ffffff;
   --line: var(--p-cream-300);
@@ -158,8 +157,7 @@
 /* Semantic tokens: dark */
 :root[data-theme='dark'] {
   --bg: var(--p-ink-900);
-  --paper: url('../assets/paper-dark.webp');
-  --paper-blend: screen;
+  --paper: url('../assets/paper-dark.png');
   --bg-sunken: var(--p-ink-950);
   --surface: var(--p-ink-850);
   --surface-raised: #2e2729;
