@@ -1,12 +1,19 @@
 /**
  * Writes src/data/facts.json: the numbers the site shows, from their
  * sources. Run with `pnpm nx run docs:facts` and commit the result; builds
- * never fetch. A GITHUB_TOKEN raises the GitHub API limits (optional).
+ * never fetch. A GITHUB_TOKEN raises the GitHub API limits; the credits'
+ * flags need one that can read the collaborators: a GitHub Actions token
+ * (`secrets.GITHUB_TOKEN`, through its metadata read permission) or a
+ * personal token of someone with push access.
  *
  * - npm: monthly downloads of `chartist`
  * - GitHub: stars, contributors, dependents count, and "Used by"
  *   (organizations among the dependents and the verified candidates in
  *   src/data/used-by-candidates.json, minus used-by-exclude.json)
+ * - credits: the top contributors by commits and the maintainers, flagged
+ *   by their collaborator role (without access to the collaborators, the
+ *   previous snapshot's roles are kept), minus credits-exclude.json; their
+ *   avatars go to src/assets/credits/
  * - sizes: a line chart bundled with each library's recommended import
  *   (esbuild, minified, gzipped), at the versions pinned in package.json
  */
@@ -19,9 +26,14 @@ import {
   parseDependentRows,
   parseDependentsCount,
   parseNextDependentsPage,
+  rolesFromCollaborators,
+  selectCredits,
   selectUsedBy,
+  type Collaborator,
+  type Contributor,
   type UsedByCandidate
 } from '../src/lib/facts/parse.ts';
+import { CREATOR } from '../src/data/credits.ts';
 
 const REPO = 'chartist-js/chartist';
 const root = new URL('../', import.meta.url);
@@ -139,6 +151,76 @@ async function avatars(entries: UsedByCandidate[]) {
 }
 
 /**
+ * The collaborators' flags. Without a token that can read them, the
+ * previous snapshot's roles are kept, so a run never drops the flags.
+ */
+async function creditRoles(): Promise<
+  ReturnType<typeof rolesFromCollaborators>
+> {
+  const response = await fetch(
+    `https://api.github.com/repos/${REPO}/collaborators?affiliation=all&per_page=100`,
+    { headers }
+  );
+  if (response.ok) {
+    return rolesFromCollaborators((await response.json()) as Collaborator[]);
+  }
+  // A token without access gets 401, 403 or (fine-grained) 404.
+  if (![401, 403, 404].includes(response.status)) {
+    throw new Error(`${response.status} ${response.statusText}: collaborators`);
+  }
+  console.warn(
+    `can't read the collaborators (${response.status}): keeping the roles of the previous snapshot. Set GITHUB_TOKEN to an Actions token or a personal token with push access to ${REPO}.`
+  );
+  try {
+    const previous = JSON.parse(
+      await readFile(new URL('src/data/facts.json', root), 'utf8')
+    ) as { credits?: { roles?: ReturnType<typeof rolesFromCollaborators> } };
+    return previous.credits?.roles ?? {};
+  } catch {
+    return {};
+  }
+}
+
+/** The credited people with their names, and their avatars downloaded. */
+async function credits() {
+  const roles = await creditRoles();
+  const contributors = await json<Contributor[]>(
+    `https://api.github.com/repos/${REPO}/contributors?per_page=100`
+  );
+  const exclude = JSON.parse(
+    await readFile(new URL('src/data/credits-exclude.json', root), 'utf8')
+  ) as string[];
+  const selected = selectCredits(contributors, {
+    roles,
+    creator: CREATOR,
+    exclude
+  });
+  const dir = new URL('src/assets/credits/', root);
+  await mkdir(dir, { recursive: true });
+  const people = [];
+  for (const { login, commits, role } of selected) {
+    const user = await json<{ name: string | null; html_url: string }>(
+      `https://api.github.com/users/${login}`
+    );
+    const avatar = `${login.toLowerCase()}.png`;
+    const image = await get(`https://github.com/${login}.png?size=160`);
+    await writeFile(
+      new URL(avatar, dir),
+      Buffer.from(await image.arrayBuffer())
+    );
+    people.push({
+      login,
+      name: user.name?.trim() || login,
+      url: user.html_url,
+      commits,
+      ...(role && { role }),
+      avatar
+    });
+  }
+  return { roles, people };
+}
+
+/**
  * One line chart per library, with the smallest setup its docs describe:
  * Chart.js with tree-shaken registration, ApexCharts' lean core plus the
  * line type, Highcharts' recommended import (it documents nothing smaller).
@@ -215,13 +297,15 @@ async function sizes() {
 }
 
 async function main() {
-  const [downloads, gh, deps, candidates, measured] = await Promise.all([
-    npmDownloads(),
-    github(),
-    dependents(),
-    verifiedCandidates(),
-    sizes()
-  ]);
+  const [downloads, gh, deps, candidates, credited, measured] =
+    await Promise.all([
+      npmDownloads(),
+      github(),
+      dependents(),
+      verifiedCandidates(),
+      credits(),
+      sizes()
+    ]);
   const exclude = JSON.parse(
     await readFile(new URL('src/data/used-by-exclude.json', root), 'utf8')
   ) as string[];
@@ -238,6 +322,7 @@ async function main() {
       evidence,
       avatar: `${owner.toLowerCase()}.png`
     })),
+    credits: credited,
     sizes: measured
   };
   await writeFile(
@@ -245,7 +330,17 @@ async function main() {
     `${JSON.stringify(facts, null, 2)}\n`
   );
   console.log(
-    JSON.stringify({ ...facts, usedBy: facts.usedBy.map(e => e.repo) }, null, 2)
+    JSON.stringify(
+      {
+        ...facts,
+        usedBy: facts.usedBy.map(e => e.repo),
+        credits: facts.credits.people.map(
+          p => `${p.login} ${p.commits}${p.role ? ` (${p.role})` : ''}`
+        )
+      },
+      null,
+      2
+    )
   );
 }
 

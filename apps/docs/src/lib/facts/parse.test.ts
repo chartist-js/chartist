@@ -6,7 +6,10 @@ import {
   parseDependentRows,
   parseDependentsCount,
   parseNextDependentsPage,
+  rolesFromCollaborators,
+  selectCredits,
   selectUsedBy,
+  type Contributor,
   type UsedByCandidate
 } from './parse';
 
@@ -99,5 +102,81 @@ describe('Used by selection', () => {
     expect(
       selectUsedBy(many, { exclude: ['ORG19'], max: 3 }).map(e => e.owner)
     ).toEqual(['org18', 'org17', 'org16']);
+  });
+});
+
+describe('Credits selection', () => {
+  const person = (
+    login: string,
+    contributions: number,
+    type = 'User'
+  ): Contributor => ({ login, contributions, type });
+  const contributors = [
+    person('gionkunz', 444),
+    person('dangreen', 77),
+    person('renovate[bot]', 23),
+    person('dependabot', 20, 'Bot'),
+    ...Array.from({ length: 12 }, (_, i) => person(`dev${i}`, 15 - i)),
+    person('helper', 1)
+  ];
+
+  it('maps collaborator roles to flags', () => {
+    expect(
+      rolesFromCollaborators([
+        { login: 'gionkunz', role_name: 'admin' },
+        { login: 'dangreen', role_name: 'maintain' },
+        { login: 'writer', role_name: 'write' },
+        { login: 'triager', role_name: 'triage' },
+        { login: 'ci[bot]', role_name: 'admin', type: 'Bot' }
+      ])
+    ).toEqual({ gionkunz: 'core maintainer', dangreen: 'maintainer' });
+  });
+
+  it('keeps the top ten humans by commits', () => {
+    const selected = selectCredits(contributors, { creator: 'gionkunz' });
+    expect(selected.map(entry => entry.login)).toEqual([
+      'gionkunz',
+      'dangreen',
+      ...Array.from({ length: 8 }, (_, i) => `dev${i}`)
+    ]);
+    expect(selected[2]).toEqual({ login: 'dev0', commits: 15 });
+  });
+
+  it('flags the creator over a collaborator role, and the maintainers', () => {
+    const selected = selectCredits(contributors, {
+      creator: 'GionKunz',
+      roles: { gionkunz: 'core maintainer', DanGreen: 'core maintainer' }
+    });
+    expect(selected[0]).toEqual({
+      login: 'gionkunz',
+      commits: 444,
+      role: 'creator'
+    });
+    expect(selected[1].role).toBe('core maintainer');
+    expect(selected.filter(entry => entry.role)).toHaveLength(2);
+  });
+
+  it('appends flagged people outside the top ten, by commits', () => {
+    const selected = selectCredits(contributors, {
+      creator: 'gionkunz',
+      roles: { helper: 'maintainer', dev11: 'core maintainer' }
+    });
+    expect(selected.slice(10)).toEqual([
+      { login: 'dev11', commits: 4, role: 'core maintainer' },
+      { login: 'helper', commits: 1, role: 'maintainer' }
+    ]);
+  });
+
+  it('honors the exclude list and the limit', () => {
+    const selected = selectCredits(contributors, {
+      creator: 'gionkunz',
+      exclude: ['DANGREEN'],
+      limit: 3
+    });
+    expect(selected.map(entry => entry.login)).toEqual([
+      'gionkunz',
+      'dev0',
+      'dev1'
+    ]);
   });
 });

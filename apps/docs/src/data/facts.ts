@@ -27,6 +27,26 @@ const schema = z.object({
       avatar: z.string()
     })
   ),
+  credits: z.object({
+    roles: z.record(z.string(), z.enum(['core maintainer', 'maintainer'])),
+    people: z
+      .array(
+        z.object({
+          login: z.string(),
+          name: z.string(),
+          url: z.string().url(),
+          commits: z.number().int().positive(),
+          role: z.enum(['creator', 'core maintainer', 'maintainer']).optional(),
+          avatar: z.string().regex(/^[\w.-]+\.png$/)
+        })
+      )
+      .min(1)
+      .refine(
+        people =>
+          people.filter(person => person.role === 'creator').length === 1,
+        'the credits need exactly one creator'
+      )
+  }),
   sizes: z.object({
     method: z.string(),
     versions: z.record(z.string(), z.string()),
