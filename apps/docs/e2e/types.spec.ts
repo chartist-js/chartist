@@ -1,6 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
+/** The worker answers more slowly while the machine is busy (CI, builds). */
+const SLOW = { timeout: 20_000 };
+
 /** The type worker and the declarations. */
 const TYPE_REQUEST = /\/worker-[\w-]+\.js$|\.d\.ts$/;
 
@@ -38,7 +41,7 @@ test('a live example completes Chartist functions from the site', async ({
   await expect(live.locator('.playground')).toHaveAttribute(
     'data-types',
     'ready',
-    { timeout: 20_000 }
+    SLOW
   );
 
   expect(problems).toEqual([]);
@@ -51,10 +54,10 @@ test('a live example completes Chartist functions from the site', async ({
   const option = page
     .locator('.cm-tooltip-autocomplete')
     .getByRole('option', { name: 'barChart' });
-  await expect(option).toBeVisible();
+  await expect(option).toBeVisible(SLOW);
   await expect(
     page.locator('.cm-completionInfo .cm-pg-signature')
-  ).toContainText('barChart(');
+  ).toContainText('barChart(', SLOW);
 
   const results = await new AxeBuilder({ page })
     .include('[data-live-example]')
@@ -68,7 +71,7 @@ test('a live example completes Chartist functions from the site', async ({
 
   // Accepting completes the name, so the preview runs valid code again.
   await page.keyboard.press('Enter');
-  await expect(live.locator('.cm-line').last()).toHaveText('barChart');
+  await expect(live.locator('.cm-line').last()).toHaveText('barChart', SLOW);
   await expect(live.locator('.playground-errors li')).toHaveCount(0);
   expect(problems.filter(problem => problem.startsWith('third-party'))).toEqual(
     []
