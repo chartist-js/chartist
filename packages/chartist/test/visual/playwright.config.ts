@@ -11,6 +11,7 @@
  * - pnpm nx run chartist:test:visual:v1       published chartist@1.5.0
  * - pnpm nx run chartist:test:visual:update   re-record the baseline from 1.5.0
  */
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@playwright/test';
 
@@ -27,8 +28,9 @@ export default defineConfig({
   // font rendering differs from the reference platform, record 1.5.0 there
   // (CHARTIST_LIB=v1 ... --update-snapshots) and test the local build
   // against it. The committed baseline is never touched that way.
+  // (Relative to the working directory, not to this file.)
   snapshotPathTemplate: process.env.VISUAL_SNAPSHOTS
-    ? `${process.env.VISUAL_SNAPSHOTS}/{arg}{ext}`
+    ? `${path.resolve(process.env.VISUAL_SNAPSHOTS)}/{arg}{ext}`
     : '{testDir}/__screenshots__/{arg}{ext}',
   // A missing baseline fails; recording is explicit (--update-snapshots).
   updateSnapshots: 'none',

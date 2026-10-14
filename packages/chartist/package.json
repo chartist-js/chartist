@@ -99,7 +99,7 @@
     "test:api": "CHARTIST_API_TARGET=local vitest run --config test/api/vitest.config.ts",
     "test:api:v1": "CHARTIST_API_TARGET=v1 vitest run --config test/api/vitest.config.ts",
     "test:api:update-exports": "node test/api/exports/update.ts",
-    "test:visual:local-baseline": "rm -rf test/visual/.local-baseline && CHARTIST_LIB=v1 VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts --update-snapshots=all && VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts --update-snapshots=missing || true",
+    "test:visual:local-baseline": "rm -rf test/visual/.local-baseline && CHARTIST_LIB=v1 VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts --update-snapshots=all && (VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts --update-snapshots=missing || true)",
     "test:visual:local": "VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts"
   },
   "devDependencies": {
