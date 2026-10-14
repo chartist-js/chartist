@@ -277,7 +277,49 @@ A few things keep a plugin working everywhere:
 - Touch elements only in `mount`, and only through `elementOf`.
 - List `chartist` as a peer dependency, so your plugin uses the reader's copy.
 
-Once it's on npm, propose it for the [plugins page](../../plugins/), where readers find the community's plugins.
+## Publishing a plugin
+
+Publish your plugin the way Chartist v2 is published: as an ES module with types.
+
+```json
+{
+  "name": "chartist-plugin-highlight-last",
+  "type": "module",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
+  },
+  "files": ["dist"],
+  "keywords": ["chartist", "chartist-plugin"],
+  "peerDependencies": { "chartist": "^2.0.0" },
+  "sideEffects": false
+}
+```
+
+- **Import, don't read globals.** Import what you need from `chartist`. Don't read the global `Chartist`: it only exists on pages that load Chartist's UMD build, or that import `chartist/compat` for old plugins.
+- **No UMD build.** Pages without a bundler load ES modules directly from a CDN, and an import map tells the browser where `chartist` is, for your plugin's imports too:
+
+  ```html
+  <script type="importmap">
+    {
+      "imports": {
+        "chartist": "https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js"
+      }
+    }
+  </script>
+  <script type="module">
+    import { lineChart } from 'chartist';
+    import { highlightLast } from 'https://cdn.jsdelivr.net/npm/chartist-plugin-highlight-last/dist/index.js';
+
+    lineChart('#chart', data, { plugins: [highlightLast()] });
+  </script>
+  ```
+
+  Chartist still publishes a UMD build and a global `Chartist`, but only so that old pages and the plugins of 0.x keep working. They are for backwards compatibility, not something new plugins should build on.
+
+- **Name it `chartist-plugin-…`** and add the `chartist-plugin` keyword, so people find it on npm.
+- **Work in `compose` and `scene`** where you can. Then your plugin also draws when a chart is [rendered on a server](../server-rendering/), and the plugins page can tag it as SSR-capable.
+
+**Don't forget to tell us about your plugin.** Once it's on npm, open a pull request that adds it to the [plugins page](../../plugins/), where readers find the community's plugins (the list is [`apps/docs/src/data/plugins.ts`](https://github.com/chartist-js/chartist/blob/next/apps/docs/src/data/plugins.ts)), or show it in [GitHub Discussions](https://github.com/chartist-js/chartist/discussions).
 
 <Callout>
   **Coming from 1.x?** v2 charts don't emit `draw`, `created` or the other 1.x
