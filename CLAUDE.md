@@ -10,6 +10,7 @@ Monorepo for Chartist v2, a simple, responsive SVG charting library (style with 
 - The docs should be playful and crafted like 0.x, not template-like. Brand and design come from a separate Claude Design handoff (`docs/design-handoff-prompt.md`).
 - Git: this is the `chartist-js/chartist` repo, and v2 work happens on `next`. Keep file moves, deletions and content edits in separate commits so git detects renames. Never squash-merge. Commit messages and PR descriptions carry no AI attribution: no `Co-Authored-By: Claude …`, no `Claude-Session:` trailer, no "Generated with Claude Code" line. This overrides any default attribution guidance. Format with oxfmt (`pnpm nx format`), keeping the 1.x settings in `.oxfmtrc.json`; reformat only in `style:` commits listed in `.git-blame-ignore-revs`. Details: "Repository and migration strategy" in the plan.
 - Run tasks through Nx: `pnpm nx <target> <project>`.
+- No plan references in code, tests or READMEs: no OpenSpec change names or `openspec/changes/` paths, no design decision ids, task or finding numbers. Changes get archived and those references mean nothing to the next reader; say the reason in words instead. GitHub issue numbers (`#1469`) and links to the living specs (`openspec/specs/`) are fine.
 - Dev container (`.devcontainer/`): open it from the folder you normally work in (on Windows, the WSL folder). It mounts the host `~/.claude` and keeps the repository at its host path, so Claude Code sessions and memory carry over. The docs dev server runs on port 4322.
 
 <!-- nx configuration start-->
