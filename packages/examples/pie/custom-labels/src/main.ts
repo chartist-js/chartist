@@ -1,8 +1,8 @@
 import 'chartist/styles.css';
 import {
-  PieChart,
-  type PieChartOptions,
-  type ResponsiveOptions
+  pieChart,
+  type PieChartPresetOptions,
+  type PresetResponsiveOptions
 } from 'chartist';
 
 const data = {
@@ -10,11 +10,11 @@ const data = {
   series: [20, 15, 40]
 };
 
-const options: PieChartOptions = {
+const options: PieChartPresetOptions = {
   labelInterpolationFnc: value => String(value)[0]
 };
 
-const responsiveOptions: ResponsiveOptions<PieChartOptions> = [
+const responsiveOptions: PresetResponsiveOptions<PieChartPresetOptions> = [
   [
     'screen and (min-width: 640px)',
     {
@@ -33,4 +33,4 @@ const responsiveOptions: ResponsiveOptions<PieChartOptions> = [
   ]
 ];
 
-new PieChart('#chart', data, options, responsiveOptions);
+pieChart('#chart', data, options, responsiveOptions);

@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { PieChart } from 'chartist';
+import { pieChart } from 'chartist';
 
-new PieChart(
+pieChart(
   '#chart',
   {
     series: [1, 2, 0, 4]

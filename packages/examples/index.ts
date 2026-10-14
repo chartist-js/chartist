@@ -311,16 +311,41 @@ export const examples: Example[] = [
   }),
 
   // Pie charts (1.x sandboxes)
-  example({ id: 'pie/simple', title: 'Simple pie chart' }),
-  example({ id: 'pie/custom-labels', title: 'Pie chart with custom labels' }),
-  example({ id: 'pie/donut-chart', title: 'Donut chart' }),
+  example({
+    id: 'pie/simple',
+    title: 'Simple pie chart',
+    description: 'Three slices, each labelled with its share of the total.',
+    classic: true
+  }),
+  example({
+    id: 'pie/custom-labels',
+    title: 'Pie chart with custom labels',
+    description:
+      'Fruit slices labelled with an initial on small screens and the full name, pushed outside, on larger ones.',
+    classic: true
+  }),
+  example({
+    id: 'pie/donut-chart',
+    title: 'Donut chart',
+    description: 'Four labelled slices on a thick ring, starting at the left.',
+    classic: true
+  }),
   example({
     id: 'pie/donut-animation',
     title: 'Animating a Donut with Svg.animate',
+    description:
+      'A plugin draws the donut slice by slice with SMIL, each one starting where the previous one ends.',
+    classic: true,
     compat: true,
     settle: { at: 7100 }
   }),
-  example({ id: 'pie/simple-gauge', title: 'Gauge chart' }),
+  example({
+    id: 'pie/simple-gauge',
+    title: 'Gauge chart',
+    description:
+      'Four values on a half ring: a total of twice their sum leaves the lower half empty.',
+    classic: true
+  }),
 
   // Test-only cases ported from the 1.x Storybook stories (see README.md)
   testOnly({
@@ -460,38 +485,78 @@ export const examples: Example[] = [
     classic: true
   }),
 
-  testOnly({ id: 'pie/fixed-size', title: 'Pie chart with a fixed size' }),
-  testOnly({ id: 'pie/labels', title: 'Pie chart with labels' }),
-  testOnly({ id: 'pie/overlapping-labels', title: 'Overlapping pie labels' }),
+  testOnly({
+    id: 'pie/fixed-size',
+    title: 'Pie chart with a fixed size',
+    classic: true
+  }),
+  testOnly({
+    id: 'pie/labels',
+    title: 'Pie chart with labels',
+    classic: true
+  }),
+  testOnly({
+    id: 'pie/overlapping-labels',
+    title: 'Overlapping pie labels',
+    classic: true
+  }),
   testOnly({
     id: 'pie/label-interpolation',
-    title: 'Pie chart with percentage labels'
+    title: 'Pie chart with percentage labels',
+    classic: true
   }),
-  testOnly({ id: 'pie/start-angle', title: 'Pie chart with a start angle' }),
-  testOnly({ id: 'pie/small-slices', title: 'Pie chart with small slices' }),
+  testOnly({
+    id: 'pie/start-angle',
+    title: 'Pie chart with a start angle',
+    classic: true
+  }),
+  testOnly({
+    id: 'pie/small-slices',
+    title: 'Pie chart with small slices',
+    classic: true
+  }),
   testOnly({
     id: 'pie/ignore-empty-values',
-    title: 'Pie chart ignoring empty values'
+    title: 'Pie chart ignoring empty values',
+    classic: true
   }),
-  testOnly({ id: 'pie/donut', title: 'Simple donut chart' }),
+  testOnly({
+    id: 'pie/donut',
+    title: 'Simple donut chart',
+    classic: true
+  }),
   // Charts with a fixed size larger than the test container keep their size.
-  testOnly({ id: 'pie/gauge-donut', title: 'Gauge donut', size: 'viewport' }),
+  testOnly({
+    id: 'pie/gauge-donut',
+    title: 'Gauge donut',
+    classic: true,
+    size: 'viewport'
+  }),
   testOnly({
     id: 'pie/relative-donut-width',
     title: 'Donut with a relative width',
+    classic: true,
     size: 'viewport'
   }),
-  testOnly({ id: 'pie/view-box', title: 'Pie chart with a view box' }),
+  testOnly({
+    id: 'pie/view-box',
+    title: 'Pie chart with a view box',
+    classic: true
+  }),
 
   // Composed charts (v2)
   example({
     id: 'composed/bar-and-line',
     title: 'Bars and a line with two Y axes',
+    description:
+      'Quarterly revenue as bars on the left axis and the margin as a line on the right one.',
     v2: true
   }),
   example({
     id: 'composed/container-queries',
     title: 'Container queries (experimental)',
+    description:
+      'One config in a narrow and a wide container: the narrow one drops the margin line, its axis and the grid.',
     v2: true,
     // The page sizes its two containers itself.
     size: 'viewport'
@@ -499,11 +564,15 @@ export const examples: Example[] = [
   example({
     id: 'composed/svg-labels',
     title: 'SVG text labels',
+    description:
+      'Bars and a line with SVG text labels, which also work where foreignObject does not.',
     v2: true
   }),
   example({
     id: 'composed/two-y-axes',
     title: 'Two Y axes with different units',
+    description:
+      'Temperature as a line and rainfall as an area, each on its own Y axis.',
     v2: true
   }),
 
@@ -511,12 +580,16 @@ export const examples: Example[] = [
   example({
     id: 'styling/custom-properties',
     title: 'Styling with custom properties',
+    description:
+      'The same area chart twice, the second one restyled only by setting --ct-* custom properties.',
     v2: true,
     size: 'viewport'
   }),
   example({
     id: 'styling/accessible-theme',
     title: 'Accessible theme, light and dark',
+    description:
+      'Four bar series in the color-blind-safe theme, on a light and on a dark background.',
     v2: true,
     size: 'viewport'
   })
