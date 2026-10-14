@@ -8,6 +8,7 @@
  */
 import type { JSONOutput as J } from 'typedoc';
 import raw from '../generated/api.json?raw';
+import { hasDefaults } from './api-defaults';
 import { API_PAGES, pageFor, type ApiPage } from './api-pages';
 import { href } from './site';
 
@@ -132,13 +133,37 @@ export const apiPath = (slug: string) => `api/${slug}/`;
 export const anchor = (name: string, member?: string) =>
   member ? `${name}.${member}` : name;
 
-/** Where a reflection is documented, as a site URL, or undefined. */
+/** Whether an entry's page lists its members (see Entry.astro). */
+function listsMembers(entry: ApiEntry): boolean {
+  const page = pageOf(entry.page);
+  const kind = entry.reflection.kind;
+  if (page?.compact || (page?.legacy && kind === KIND.Class)) {
+    return false;
+  }
+  return (
+    kind === KIND.Interface ||
+    kind === KIND.Class ||
+    kind === KIND.TypeAlias ||
+    kind === KIND.Namespace
+  );
+}
+
+/**
+ * Where a reflection is documented, as a site URL, or undefined. Members
+ * the page doesn't list link to the closest anchor it has: the member, or
+ * the entry.
+ */
 export function linkTo(id: number | undefined): string | undefined {
   const location = id === undefined ? undefined : LOCATIONS.get(id);
   if (!location || !location.entry.page) {
     return undefined;
   }
-  return `${href(apiPath(location.entry.page))}#${anchor(location.entry.name, location.member)}`;
+  const { entry } = location;
+  const path = location.member?.split('.') ?? [];
+  // Nested members are listed for the presets' options only, one level.
+  const depth = !listsMembers(entry) ? 0 : hasDefaults(entry.name) ? 2 : 1;
+  const member = path.slice(0, depth).join('.') || undefined;
+  return `${href(apiPath(entry.page))}#${anchor(entry.name, member)}`;
 }
 
 /** An export's URL by name (for guides). */

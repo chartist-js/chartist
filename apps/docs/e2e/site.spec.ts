@@ -217,3 +217,39 @@ for (const slug of DOCS) {
     }
   });
 }
+
+test('links into the API reference land on an entry', async ({
+  page,
+  request
+}) => {
+  const targets = new Set<string>();
+  for (const path of [
+    ...DOCS.map(slug => `/docs/${slug}/`),
+    '/api/',
+    ...API_PAGES.map(api => `/api/${api.slug}/`)
+  ]) {
+    await page.goto(path);
+    for (const link of await page
+      .locator('a[href*="/api/"]')
+      .evaluateAll(links =>
+        links.map(link => (link as HTMLAnchorElement).href)
+      )) {
+      targets.add(link);
+    }
+  }
+  const missing: string[] = [];
+  const pages = new Map<string, string>();
+  for (const target of targets) {
+    const url = new URL(target);
+    const html =
+      pages.get(url.pathname) ??
+      (await (await request.get(url.pathname)).text());
+    pages.set(url.pathname, html);
+    const id = decodeURIComponent(url.hash.slice(1));
+    if (id && !html.includes(`id="${id}"`)) {
+      missing.push(target);
+    }
+  }
+  expect(targets.size).toBeGreaterThan(100);
+  expect(missing).toEqual([]);
+});

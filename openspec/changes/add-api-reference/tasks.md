@@ -16,7 +16,7 @@
 
 ## 3. Links
 
-- [ ] 3.1 Guides link to their entries; entries link to guides with `@see` (D7).
+- [x] 3.1 Guides link to their entries; entries link to guides with `@see` (D7).
 
 ## 4. Proof
 
