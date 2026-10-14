@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Mascot from '../components/Mascot.astro';
+import { facts, formatDate } from '../data/facts';
+import { REPO } from '../lib/site';
+// Cube's logo as provided; the card is light in both themes.
+import cubeLogo from '../assets/sponsors/cube-logo-light.svg?url';
+
+const avatars = import.meta.glob<{ default: ImageMetadata }>('../assets/credits/*.png', { eager: true });
+// The snapshot names each avatar; a missing file fails the build.
+const people = facts.credits.people.map(person => {
+  const avatar = avatars[`../assets/credits/${person.avatar}`]?.default;
+  if (!avatar) {
+    throw new Error(`credits: missing avatar src/assets/credits/${person.avatar} for ${person.login}; run \`pnpm nx run docs:facts\``);
+  }
+  return { ...person, avatar };
+});
+const FLAGS = {
+  creator: 'tag brand',
+  'core maintainer': 'tag accent',
+  maintainer: 'tag'
+} as const;
+---
+
+<BaseLayout title="Credits" description="The people behind Chartist: its creator, the maintainers and the top contributors, and its sponsor, Cube.">
+  <section class="hero">
+    <div class="wrap grid grid-cols-[repeat(auto-fit,minmax(min(420px,100%),1fr))] items-center gap-x-12 gap-y-8 pt-[clamp(32px,6vw,72px)] pb-[clamp(40px,6vw,80px)]">
+      <div class="flex flex-col gap-6">
+        <span class="tag accent self-start">Credits</span>
+        <h1 class="display">Hats off.</h1>
+        <p class="lead">Chartist has been carried by more people than its author. Here's to the people who kept it drawing.</p>
+        <article class="card flex flex-col gap-3.5 p-7" aria-labelledby="cube-title">
+          <span class="eyebrow">Sponsor</span>
+          <h2 id="cube-title" class="m-0 py-3.5 leading-none">
+            <img src={cubeLogo} alt="Cube" width="98" height="28" class="block h-7 w-auto" />
+          </h2>
+          <p>
+            Cube sponsored Chartist's maintenance and the update from 0.x to 1.x. Thank you!
+          </p>
+          <a class="pill-link self-start" href="https://cube.dev" target="_blank" rel="noopener">Visit cube.dev →<span class="sr-only"> (opens in a new tab)</span></a>
+        </article>
+      </div>
+      <div class="mx-auto w-full max-w-[520px]">
+        <Mascot pose="celebrate">
+          <div class="credits-board grid size-full place-items-center font-slab font-bold text-[clamp(1.5rem,4vw,2.75rem)] leading-none" aria-hidden="true">Thank you!</div>
+        </Mascot>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap section flex flex-col gap-8" aria-labelledby="people-title">
+    <div class="section-head">
+      <h2 id="people-title">The people</h2>
+      <p>The ten people with the most commits to Chartist, and the maintainers.</p>
+    </div>
+    <ul class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-5 p-0" data-credits>
+      {
+        people.map(person => (
+          <li>
+            <a class="card flat link flex h-full items-center gap-4 bg-surface p-4.5 text-ink no-underline" href={person.url}>
+              <img src={person.avatar.src} alt="" width="64" height="64" loading="lazy" class="size-16 shrink-0 rounded-full" />
+              <span class="flex min-w-0 flex-col items-start gap-1">
+                <strong class="max-w-full font-slab text-xl leading-tight">{person.name}</strong>
+                {person.role && <span class={FLAGS[person.role]}>{person.role}</span>}
+                <span class="muted text-sm">
+                  {person.commits.toLocaleString('en')} {person.commits === 1 ? 'commit' : 'commits'} to main
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+      <a class="pill-link" href={`${REPO}/graphs/contributors`}>See all {facts.github.contributors} contributors on GitHub →</a>
+      <span class="muted text-sm">From GitHub · {formatDate(facts.generatedAt)}</span>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* The board stays beige in both themes; the thanks are written on it in ink. */
+  .credits-board {
+    color: var(--p-ink-800);
+  }
+</style>

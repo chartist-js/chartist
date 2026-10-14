@@ -21,5 +21,6 @@ export const PAGES = [
     name: `api/${page.slug}`,
     path: `/api/${page.slug}/`
   })),
+  { name: 'credits', path: '/credits/' },
   { name: '404', path: '/no-such-page/' }
 ];

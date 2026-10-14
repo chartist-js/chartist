@@ -1,6 +1,6 @@
 // Screenshot comparison of the built site (docs:visual). Serves dist/ with
 // serve.mjs, captures every [data-visual] block of the landing page and the
-// whole Getting started and 404 pages, at a desktop and a phone width, in
+// whole Getting started, credits and 404 pages, at a desktop and a phone width, in
 // light and dark, and compares them with a baseline.
 //
 //   node e2e/visual.mjs --update            take the baseline
@@ -44,6 +44,7 @@ const VIEWPORTS = {
 const PAGES = [
   { name: 'landing', path: '/', blocks: true },
   { name: 'getting-started', path: '/docs/getting-started/' },
+  { name: 'credits', path: '/credits/' },
   { name: '404', path: '/no-such-page/' }
 ];
 

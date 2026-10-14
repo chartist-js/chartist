@@ -86,6 +86,14 @@ export async function cards(): Promise<Card[]> {
       pose: 'point'
     },
     {
+      key: 'credits',
+      eyebrow: ['Credits'],
+      title: 'Hats off.',
+      description:
+        'The people behind Chartist: its creator, the maintainers and the top contributors, and its sponsor, Cube.',
+      pose: 'hero'
+    },
+    {
       key: '404',
       eyebrow: ['404'],
       title: 'This chart fell off the easel.',

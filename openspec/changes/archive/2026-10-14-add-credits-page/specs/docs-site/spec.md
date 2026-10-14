@@ -2,7 +2,7 @@
 
 ### Requirement: Credits page
 
-The site SHALL have a credits page at `/credits/` that thanks the company and the people behind Chartist, Cube first, then the people. The page SHALL be in the site's design (both themes, accessible, no third-party requests). It SHALL be reachable from a "Credits" link in the footer's Community column and from the landing page's sponsor card.
+The site SHALL have a credits page at `/credits/` that thanks the people behind Chartist and names its sponsor: Cube first, then the people. The page SHALL be in the site's design (both themes, accessible, no third-party requests). It SHALL be reachable from a "Credits" link in the footer's Community column and from the landing page's sponsor card.
 
 #### Scenario: Reachable from the footer
 
@@ -16,12 +16,12 @@ The site SHALL have a credits page at `/credits/` that thanks the company and th
 
 ### Requirement: Cube credit
 
-The credits page SHALL open with a special credit for Cube. It SHALL say that Cube supported Chartist's maintenance and lifted it from 0.x to 1.x while the author was away, and it SHALL link to cube.dev. It SHALL name the company only, not people at Cube.
+The credits page SHALL open with a sponsor credit for Cube. It SHALL say plainly that Cube sponsored Chartist's maintenance and the update from 0.x to 1.x, and it SHALL link to cube.dev. It SHALL name the company only, not people at Cube.
 
 #### Scenario: Cube comes first
 
 - **WHEN** a visitor opens `/credits/`
-- **THEN** the first credit on the page is Cube's, it names the move from 0.x to 1.x and it links to `https://cube.dev`
+- **THEN** the first credit on the page is Cube's, it names the update from 0.x to 1.x and it links to `https://cube.dev`
 
 ### Requirement: People list
 

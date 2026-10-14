@@ -5,6 +5,7 @@ The docs site already has a "pre-scrape": `apps/docs/scripts/facts.ts` (`pnpm nx
 Cube is thanked in two places today. The footer has "Supported by Cube" (`SiteFooter.astro`). The landing page has a sponsor card, "Cube helped move Chartist to TypeScript…" (`landing/Outro.astro`). The plan says the Cube sponsor placement is an agreed deal.
 
 What GitHub returns (checked 2026-10-14):
+
 - `GET /repos/chartist-js/chartist/contributors` works without a token and returns logins, avatars, `type` (`User`/`Bot`) and commit counts. It only counts the default branch (`main`). Current top: gionkunz 444, dangreen 77, hansmaad 27, renovate[bot] 23, autarc 10, …
 - `GET /orgs/chartist-js/public_members` returns `[]`: no member has made their membership public.
 - `GET /repos/chartist-js/chartist/collaborators` returns 401 without a token. With a token that has push access, it returns each collaborator with `role_name` (`admin`, `maintain`, `write`, …).
@@ -12,11 +13,13 @@ What GitHub returns (checked 2026-10-14):
 ## Goals / Non-Goals
 
 **Goals:**
+
 - A crafted `/credits/` page in the site's design: Cube first, then the people, in one list.
 - People and their roles come from GitHub through the facts snapshot and are never typed in. The avatars are served locally.
 - Cube's existing mentions lead to the page.
 
 **Non-Goals:**
+
 - Live data at page load, sponsorship tiers, crediting third-party tools, other repositories (see the proposal).
 
 ## Decisions
@@ -32,17 +35,18 @@ The page doesn't have separate maintainer and contributor sections. It shows one
 
 A person gets one flag; the creator flag wins over the collaborator role. Maintainers with too few commits for the top ten are added after the top ten. That way the list holds everyone in the core team, and it shows the top ten plus at most the remaining maintainers. Collaborators with the `write` role or lower get no flag.
 
-Today this gives: gionkunz (creator) first, dangreen second, flagged by his collaborator role, then the others. dangreen did the 1.x work Cube supported, so the Cube credit doesn't have to name people.
+Today this gives: gionkunz (creator) first, then dangreen and the others without a flag. On GitHub, dangreen has the `write` role, and the author keeps it that way for now (2026-10-14), so the page shows no maintainer flags yet; a role change on GitHub shows up with the next facts run. dangreen did the 1.x work Cube supported, so the Cube credit doesn't have to name people.
 
 ### Roles come from the collaborators, with a token
 
 The script reads `/repos/{repo}/collaborators?affiliation=all` and maps `role_name` to a flag (`admin` → core maintainer, `maintain` → maintainer), with bots removed.
 
 Alternatives:
-- *Org public members*: works without a token, but it is empty today, and it depends on each person making their membership public. Outside collaborators would be missed.
-- *A hand-kept list of logins and roles*: simple, but the request was to read the maintainers from GitHub.
 
-Trade-off: the collaborators call needs a `GITHUB_TOKEN` with push access. The author has one; CI won't need it, because builds don't fetch. Without that token, the script keeps the roles from the existing `facts.json` (`credits.roles`), warns, and still updates the contributors. A run without a token never drops the flags.
+- _Org public members_: works without a token, but it is empty today, and it depends on each person making their membership public. Outside collaborators would be missed.
+- _A hand-kept list of logins and roles_: simple, but the request was to read the maintainers from GitHub.
+
+Trade-off: the collaborators call needs a token. A personal token needs push access; in CI, the Actions `GITHUB_TOKEN` works too, because GitHub lists the endpoint under the metadata read permission, which every installation token has, so the facts script can run in a workflow that passes `secrets.GITHUB_TOKEN`. Builds still never fetch. Without that token, the script keeps the roles from the existing `facts.json` (`credits.roles`), warns, and still updates the contributors. A run without a token never drops the flags.
 
 ### Selection: humans by commits, then the remaining maintainers
 
@@ -61,9 +65,9 @@ The counts only cover the default branch, so v2 work on `next` shows up once it 
 
 `role` is `creator`, `core maintainer` or `maintainer`, or missing. `roles` is the raw collaborator mapping kept for runs without a token. `avatar` is a file name in `src/assets/credits/` (`<login>.png`, lowercase, 160px from `https://github.com/<login>.png?size=160`). The zod schema requires at least one person, exactly one creator, and an avatar file for each entry. The page checks the files through the glob and throws at build time if one is missing.
 
-### Cube credit is copy, not data, and names no one
+### Cube credit is plain copy, not data, and names no one
 
-Cube's credit is written on the page. It is a thank-you, not a number. It says that Cube supported Chartist's maintenance and, while the author was away, carried it from 0.x to 1.x: TypeScript, Rollup, pnpm and a new site. It names Cube only, not people at Cube. The person who did the work is in the list, with his flag. It links to cube.dev and shows the name as a slab wordmark, with no logo (logos only with permission). The landing card keeps its text and gets a "Read the credits" link. The footer's "Supported by Cube" line still links to cube.dev, and a "Credits" entry is added to the Community column.
+Cube's credit is written on the page. It is a plain sponsor credit, not a number and not a tribute (decided with the author 2026-10-14). It says, without technical details: "Cube sponsored Chartist's maintenance and the update from 0.x to 1.x. Thank you!" It names Cube only, not people at Cube. The person who did the work is in the list, with his flag. It links to cube.dev in a new tab and shows Cube's logo, from Cube's public brand kit (https://cube.dev/brand) and used as its rules ask: the files unchanged, the light or dark file to match the ground (the card is light and the footer dark in both themes), clear space of the cube mark's width. The footer's "Supported by" line shows the dark logo too, and the landing card's cube.dev link also opens in a new tab. The landing card keeps its text and gets a "Read the credits" link. The footer's "Supported by Cube" line still links to cube.dev, and a "Credits" entry is added to the Community column.
 
 ### Page shape
 
