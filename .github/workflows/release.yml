@@ -1,62 +1,133 @@
 name: Release
+
+# Every green CI run on main offers a release, which waits for approval in
+# the release environment; a release that isn't approved publishes nothing.
+# A manual run can set the version, do a dry run, or only publish the
+# version tagged at the head of main after a failed publish.
 on:
-  issue_comment:
-    types: [created, deleted]
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      specifier:
+        description: 'Version (2.0.0-rc.1) or specifier (patch, minor, major, prerelease). Empty: the next RELEASE_PREID prerelease, else conventional commits.'
+        required: false
+        default: ''
+      dry-run:
+        description: 'Show what would happen, change nothing'
+        type: boolean
+        default: false
+      publish-only:
+        description: 'Only publish the version tagged at the head of main'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    name: Context check
-    outputs:
-      continue: ${{ steps.check.outputs.continue }}
-      workflow: ${{ steps.check.outputs.workflow }}
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v5
-      - name: Context check
-        id: check
-        uses: trigensoftware/simple-release-action@latest
-        with:
-          workflow: check
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-  pull-request:
-    runs-on: ubuntu-latest
-    name: Pull request
-    needs: check
-    if: needs.check.outputs.workflow == 'pull-request'
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v5
-      - name: Create or update pull request
-        uses: trigensoftware/simple-release-action@latest
-        with:
-          workflow: pull-request
-          github-token: ${{ secrets.GITHUB_TOKEN }}
   release:
+    # Skips the CI runs of release commits, so a release doesn't offer another.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       !startsWith(github.event.workflow_run.head_commit.message, 'chore(release):'))
     runs-on: ubuntu-latest
-    name: Release
-    needs: check
-    if: needs.check.outputs.workflow == 'release'
+    environment: release
+    env:
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v5
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      # main is protected; the release pushes as the Chartist Release app,
+      # which is on main's bypass list. Its key is a secret of this
+      # environment, so only an approved run can use it.
+      - name: App token
+        id: app
+        uses: actions/create-github-app-token@v2
         with:
-          version: 7
-      - name: Install Node.js
-        uses: actions/setup-node@v5
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v5
         with:
-          node-version: 16
-          cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install dependencies
-        run: pnpm install
-      - name: Release
-        uses: trigensoftware/simple-release-action@latest
+          ref: main
+          fetch-depth: 0
+          token: ${{ steps.app.outputs.token }}
+
+      - name: Guard
+        if: ${{ !inputs.publish-only }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head=$(git rev-parse HEAD)
+          if [ "$head" != "$RELEASE_SHA" ]; then
+            echo "::error::main moved on: the release was for $RELEASE_SHA, main is at $head."
+            exit 1
+          fi
+          passed=$(gh api "repos/${{ github.repository }}/actions/workflows/ci.yml/runs?head_sha=$head&status=success" --jq '.total_count')
+          if [ "$passed" = "0" ]; then
+            echo "::error::CI hasn't passed for $head."
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v4
+      # No registry-url: it writes an .npmrc with an empty token, which gets
+      # in the way of trusted publishing.
+      - uses: actions/setup-node@v5
         with:
-          workflow: release
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          npm-token: ${{ secrets.NPM_TOKEN }}
+          node-version: 22
+          cache: pnpm
+      # Trusted publishing needs npm 11.5.1 or later; pnpm publish hands the
+      # tarball to the npm on the PATH.
+      - run: npm install --global npm@^11.5.1
+      - run: pnpm install --frozen-lockfile
+
+      - name: Git identity
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          APP_SLUG: ${{ steps.app.outputs.app-slug }}
+        run: |
+          id=$(gh api "/users/${APP_SLUG}%5Bbot%5D" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${id}+${APP_SLUG}[bot]@users.noreply.github.com"
+
+      - name: Version, changelog, tag and GitHub release
+        if: ${{ !inputs.publish-only }}
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.app.outputs.token }}
+          SPECIFIER: ${{ inputs.specifier }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          RELEASE_PREID: ${{ vars.RELEASE_PREID }}
+        run: |
+          mapfile -t args < <(node .github/scripts/release.mjs args)
+          pnpm nx release "${args[@]}"
+
+      - name: Check the tag of a re-publish
+        if: ${{ inputs.publish-only }}
+        run: |
+          version=$(node -p "require('./packages/chartist/package.json').version")
+          if [ "$(git rev-parse "v$version^{commit}")" != "$(git rev-parse HEAD)" ]; then
+            echo "::error::The head of main isn't tagged v$version."
+            exit 1
+          fi
+
+      # Prereleases go to the next dist-tag and never move latest.
+      - name: Publish
+        env:
+          DRY_RUN: ${{ inputs.dry-run }}
+        run: |
+          tag=$(node .github/scripts/release.mjs tag)
+          if [ "$DRY_RUN" = "true" ]; then
+            pnpm nx release publish --tag "$tag" --dry-run
+          else
+            pnpm nx release publish --tag "$tag"
+          fi

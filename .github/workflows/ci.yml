@@ -1,36 +1,77 @@
 name: CI
+
 on:
-  pull_request:
   push:
-    branches:
-      - main
+    branches: [main, next]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  ASTRO_TELEMETRY_DISABLED: '1'
+
 jobs:
-  test:
+  check:
+    name: Check (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        stage:
-          - unit
       fail-fast: false
-    name: ${{ matrix.stage }} tests
+      matrix:
+        node-version: [22, 24]
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v5
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
+      - uses: actions/checkout@v5
+      # pnpm's version comes from packageManager in package.json.
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
         with:
-          version: 7
-      - name: Install Node.js
-        uses: actions/setup-node@v5
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm nx format:check --all
+      - run: pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api test:api:v1
+      - name: Release script tests
+        run: node --test .github/scripts/release.test.mjs
+
+  visual:
+    name: Visual regression
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 16
-          cache: 'pnpm'
-      - name: Install dependencies
-        run: pnpm install
-      - name: Run tests
-        run: pnpm test:${{ matrix.stage }}
-      - name: Collect coverage
-        uses: codecov/codecov-action@v5
-        if: "success() && matrix.stage == 'unit'"
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir packages/chartist exec playwright install --with-deps chromium
+      # The committed baselines are recorded on this platform: Linux x64 with
+      # the Chromium of the pinned Playwright version.
+      - run: pnpm nx run-many -t test:visual test:visual:v1 -p chartist
+      - name: Keep the diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          files: ./coverage/lcov.info
+          name: visual-diffs
+          path: |
+            packages/chartist/test/visual/test-results
+            packages/chartist/test/visual/playwright-report
+          retention-days: 14
+
+  playground:
+    name: Playground (Chromium, Firefox, WebKit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --dir packages/playground exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm nx run playground:test:e2e

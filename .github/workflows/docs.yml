@@ -1,0 +1,78 @@
+name: Docs
+
+# Builds and tests the docs site on every push and pull request, and
+# deploys it to chartist.dev (GitHub Pages) from main while the repository
+# variable DOCS_DEPLOY is 'true'.
+on:
+  push:
+    branches: [main, next]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  ASTRO_TELEMETRY_DISABLED: '1'
+  DOCS_SITE: https://chartist.dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm nx run-many -t lint check test build -p docs
+      - run: pnpm --dir apps/docs exec playwright install --with-deps chromium
+      - run: pnpm nx run docs:e2e
+        env:
+          CI: 'true'
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          path: dist/apps/docs
+
+  deploy:
+    needs: build
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main' &&
+      vars.DOCS_DEPLOY == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      # The release commit is pushed just before the package is published:
+      # wait until npm has the version, so the install instructions work.
+      - name: Wait for the version on npm
+        run: |
+          version=$(node -p "require('./packages/chartist/package.json').version")
+          for attempt in $(seq 1 30); do
+            if npm view "chartist@$version" version > /dev/null 2>&1; then
+              echo "chartist@$version is on npm."
+              exit 0
+            fi
+            echo "Waiting for chartist@$version on npm ($attempt/30)…"
+            sleep 20
+          done
+          echo "::error::chartist@$version isn't on npm after 10 minutes."
+          exit 1
+      - id: deployment
+        uses: actions/deploy-pages@v4

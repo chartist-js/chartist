@@ -1,14 +1,20 @@
 name: Commit
+
+# Conventional commit messages drive the version and the changelog of a
+# release, so pushed commits are linted against .commitlintrc.json.
 on:
   push:
+  pull_request:
+
+permissions:
+  contents: read
+
 jobs:
   commitlint:
-    runs-on: ubuntu-latest
     name: commitlint
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Run commitlint
-        uses: wagoid/commitlint-github-action@v4
+      - uses: wagoid/commitlint-github-action@v6
