@@ -4,6 +4,7 @@
  * playground's addresses.
  */
 import { encodeShare } from '@chartist/playground/share';
+import pluginFiles from '../data/plugin-files.json';
 
 // Served by integrations/playground-lib.mjs, with compat.js next to it.
 const LIB = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}playground-lib/`;
@@ -12,9 +13,31 @@ export const chartistUrl = new URL(`${LIB}index.js`, location.href).href;
 export const stylesUrl = new URL(`${LIB}index.css`, location.href).href;
 /** Chartist's declarations, next to the build, for type-aware editing. */
 export const types = { url: LIB };
-/** Bare imports beyond `chartist`: the container query polyfill. */
-export const imports = {
-  'match-container': new URL(`${LIB}match-container.js`, location.href).href
+const lib = (path: string) => new URL(`${LIB}${path}`, location.href).href;
+
+/**
+ * Bare names beyond `chartist`: the container query polyfill, the UMD
+ * builds, and the plugins of the plugins page. A plugin's name maps to its
+ * module build when it has one (for `import`), else to its script (for a
+ * classic `<script src>`); `<name>/style` maps to its stylesheet.
+ */
+export const imports: Record<string, string> = {
+  'match-container': lib('match-container.js'),
+  'chartist/umd': lib('index.umd.js'),
+  'chartist/compat/umd': lib('compat.umd.js'),
+  ...Object.fromEntries(
+    Object.entries(pluginFiles).flatMap(([name, files]) => {
+      const file = (path: string) =>
+        lib(`plugins/${name}/${path.slice(path.lastIndexOf('/') + 1)}`);
+      const entries = [
+        [name, file('module' in files ? files.module : files.script)]
+      ];
+      if ('style' in files) {
+        entries.push([`${name}/style`, file(files.style)]);
+      }
+      return entries;
+    })
+  )
 };
 
 /**

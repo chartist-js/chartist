@@ -2,8 +2,12 @@
  * Serves the Chartist build for live examples at `<base>playground-lib/`:
  * index.js, compat.js (it imports ./index.js), index.css and
  * themes/accessible.css (as in the package's dist), the declarations
- * index.d.ts and compat.d.ts (for type-aware editing), and the
- * match-container polyfill that container query examples import.
+ * index.d.ts and compat.d.ts (for type-aware editing), the
+ * match-container polyfill that container query examples import, the UMD
+ * builds index.umd.js and compat.umd.js, and the community plugins of the
+ * plugins page under plugins/<package>/ (src/data/plugin-files.json): each
+ * one's script, module build and stylesheet when it has them, and its
+ * license. A missing file fails the build.
  *
  * The playground's preview is a sandboxed iframe (origin `null`), so it
  * loads these cross-origin. Astro's dev server rejects cross-origin
@@ -12,12 +16,29 @@
  * static host sends the CORS header (GitHub Pages sends `*`).
  */
 import { copyFile, mkdir, readFile } from 'node:fs/promises';
+import { basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import pluginFiles from '../src/data/plugin-files.json' with { type: 'json' };
 
 const DIST = new URL('../../../packages/chartist/dist/', import.meta.url);
 const POLYFILL = new URL(
   '../node_modules/match-container/matchContainer.js',
   import.meta.url
+);
+const MODULES = new URL('../node_modules/', import.meta.url);
+const TYPES = { '.js': 'text/javascript', '.css': 'text/css' };
+
+/** Served name → source and type, for each plugin file. */
+const PLUGINS = Object.fromEntries(
+  Object.entries(pluginFiles).flatMap(([name, files]) =>
+    Object.values(files).map(file => [
+      `plugins/${name}/${basename(file)}`,
+      {
+        source: new URL(`${name}/${file}`, MODULES),
+        type: TYPES[file.slice(file.lastIndexOf('.'))] ?? 'text/plain'
+      }
+    ])
+  )
 );
 /** Served name → source and type. */
 const FILES = {
@@ -30,10 +51,18 @@ const FILES = {
     source: new URL('themes/accessible.css', DIST),
     type: 'text/css'
   },
-  'match-container.js': { source: POLYFILL, type: 'text/javascript' }
+  'match-container.js': { source: POLYFILL, type: 'text/javascript' },
+  'index.umd.js': {
+    source: new URL('index.umd.js', DIST),
+    type: 'text/javascript'
+  },
+  'compat.umd.js': {
+    source: new URL('compat.umd.js', DIST),
+    type: 'text/javascript'
+  },
+  ...PLUGINS
 };
-const PATTERN =
-  /\/playground-lib\/(index\.js|compat\.js|index\.css|index\.d\.ts|compat\.d\.ts|themes\/accessible\.css|match-container\.js)(?:\?.*)?$/;
+const PATTERN = /\/playground-lib\/([^?]+)(?:\?.*)?$/;
 
 /** @returns {import('vite').Plugin} */
 function devServer() {
@@ -48,11 +77,11 @@ function devServer() {
           route: '',
           handle: async (request, response, next) => {
             const match = request.url?.match(PATTERN);
-            if (!match) {
+            const file = match && FILES[decodeURIComponent(match[1])];
+            if (!file) {
               return next();
             }
             try {
-              const file = FILES[match[1]];
               const body = await readFile(file.source);
               response.setHeader('Content-Type', file.type);
               response.setHeader('Access-Control-Allow-Origin', '*');

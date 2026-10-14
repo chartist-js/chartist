@@ -1,0 +1,50 @@
+{
+  "chartist-plugin-axistitle": {
+    "script": "dist/chartist-plugin-axistitle.js",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-legend": {
+    "script": "chartist-plugin-legend.js",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-tooltips": {
+    "script": "dist/chartist-plugin-tooltip.js",
+    "style": "dist/chartist-plugin-tooltip.css",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-pointlabels": {
+    "script": "dist/chartist-plugin-pointlabels.js",
+    "license": "LICENSE"
+  },
+  "chartist-hover": { "script": "chartist-hover.js", "license": "LICENSE" },
+  "chartist-plugin-zoom": {
+    "script": "dist/chartist-plugin-zoom.js",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-fill-donut": {
+    "script": "dist/chartist-plugin-fill-donut.js",
+    "license": "LICENSE-MIT"
+  },
+  "chartist-plugin-barlabels": {
+    "script": "dist/chartist-plugin-barlabels.js",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-accessibility": {
+    "script": "dist/chartist-plugin-accessibility.js",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-threshold": {
+    "script": "dist/chartist-plugin-threshold.js",
+    "license": "LICENSE"
+  },
+  "chartist-plugin-targetline": {
+    "script": "chartist-plugin-targetline.js",
+    "license": "LICENSE"
+  },
+  "@stklcode/chartist-plugin-tooltips": {
+    "script": "dist/chartist-plugin-tooltip.umd.js",
+    "module": "dist/chartist-plugin-tooltip.js",
+    "style": "dist/chartist-plugin-tooltip.css",
+    "license": "LICENSE"
+  }
+}

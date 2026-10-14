@@ -2,8 +2,8 @@
 
 ## 1. The plugins and their code on the site
 
-- [ ] 1.1 Add the 12 plugins as pinned dev dependencies of the docs app (`chartist-plugin-axistitle`, `chartist-plugin-legend`, `chartist-plugin-tooltips`, `chartist-plugin-pointlabels`, `chartist-hover`, `chartist-plugin-zoom`, `chartist-plugin-fill-donut`, `chartist-plugin-barlabels`, `chartist-plugin-accessibility`, `chartist-plugin-threshold`, `chartist-plugin-targetline`, `@stklcode/chartist-plugin-tooltips`). Verify: `pnpm install` adds them, with no install scripts and no new runtime dependencies besides chartist
-- [ ] 1.2 Extend `integrations/playground-lib.mjs` to serve `index.umd.js` and `compat.umd.js`, and each plugin's script and license file under `plugins/<package>/`, in dev and in the build, failing the build when one is missing. Verify: the dev server and `dist` serve them with CORS, and removing a license file fails the build
+- [x] 1.1 Add the 12 plugins as pinned dev dependencies of the docs app (`chartist-plugin-axistitle`, `chartist-plugin-legend`, `chartist-plugin-tooltips`, `chartist-plugin-pointlabels`, `chartist-hover`, `chartist-plugin-zoom`, `chartist-plugin-fill-donut`, `chartist-plugin-barlabels`, `chartist-plugin-accessibility`, `chartist-plugin-threshold`, `chartist-plugin-targetline`, `@stklcode/chartist-plugin-tooltips`). Verify: `pnpm install` adds them, with no install scripts and no new runtime dependencies besides chartist
+- [x] 1.2 Extend `integrations/playground-lib.mjs` to serve `index.umd.js` and `compat.umd.js`, and each plugin's script and license file under `plugins/<package>/`, in dev and in the build, failing the build when one is missing. Verify: the dev server and `dist` serve them with CORS, and removing a license file fails the build
 - [ ] 1.3 Add the import map keys `chartist/umd`, `chartist/compat/umd` and one per plugin package to the site's sandbox environment (`scripts/playground-env.ts`). Verify: a unit or e2e check resolves each key to the site's origin
 
 ## 2. Classic scripts by bare name in the sandbox
