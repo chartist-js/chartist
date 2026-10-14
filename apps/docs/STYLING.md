@@ -31,6 +31,8 @@ Spacing is Tailwind's 4 px scale (`p-4` = 16 px, `gap-6` = 24 px, `gap-3.5` = 14
 
 Dark mode: `dark:` follows `data-theme="dark"` on `<html>`. Most components need none; use it only where more than a token changes.
 
+Elements that scripts show and hide with the `hidden` attribute: a `flex` or `grid` utility overrides `[hidden]`, so add `[&[hidden]]:hidden` next to it.
+
 ## Shared classes (`src/styles/ui.css`)
 
 Patterns used across the site stay as plain classes in the `components` layer. Modifiers chain, and utilities override them:
