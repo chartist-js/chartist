@@ -82,8 +82,8 @@ const deprecated = tagsOf(comment, '@deprecated')[0];
           {signatures[0].parameters.map(parameter => (
             <div class="api-member">
               <dt>
-                <code class="api-name">{parameter.name}{parameter.flags.isOptional || parameter.defaultValue ? '?' : ''}</code>
-                <Tokens tokens={typeTokens(parameter.type)} />
+                <code class="api-name">{parameter.name}{parameter.flags.isOptional || parameter.defaultValue ? '?' : ''}</code>{' '}
+                <Tokens tokens={typeTokens(parameter.type)} />{' '}
                 {parameter.defaultValue && <span class="api-default">= <code>{parameter.defaultValue}</code></span>}
               </dt>
               {parameter.comment && <dd><Blocks parts={parameter.comment.summary} /></dd>}
@@ -115,8 +115,8 @@ const deprecated = tagsOf(comment, '@deprecated')[0];
             return (
               <div class="api-member" id={anchor(entry.name, member.name)}>
                 <dt>
-                  <a class="api-name" href={`#${anchor(entry.name, member.name)}`}><code>{member.readonly ? 'readonly ' : ''}{member.name}{member.optional ? '?' : ''}</code></a>
-                  <Tokens tokens={memberTypeTokens(member, children.length > 0)} />
+                  <a class="api-name" href={`#${anchor(entry.name, member.name)}`}><code>{member.readonly ? 'readonly ' : ''}{member.name}{member.optional ? '?' : ''}</code></a>{' '}
+                  <Tokens tokens={memberTypeTokens(member, children.length > 0)} />{' '}
                   {fallback && <span class="api-default">default <code>{fallback}</code></span>}
                 </dt>
                 {own && <dd><Blocks parts={own.summary} /></dd>}
@@ -130,8 +130,8 @@ const deprecated = tagsOf(comment, '@deprecated')[0];
                         return (
                           <div class="api-member" id={anchor(entry.name, path)}>
                             <dt>
-                              <a class="api-name" href={`#${anchor(entry.name, path)}`}><code>{path}{child.optional ? '?' : ''}</code></a>
-                              <Tokens tokens={memberTypeTokens(child)} />
+                              <a class="api-name" href={`#${anchor(entry.name, path)}`}><code>{path}{child.optional ? '?' : ''}</code></a>{' '}
+                              <Tokens tokens={memberTypeTokens(child)} />{' '}
                               {value && <span class="api-default">default <code>{value}</code></span>}
                             </dt>
                             {childComment && <dd><Blocks parts={childComment.summary} /></dd>}
