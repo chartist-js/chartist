@@ -8,7 +8,8 @@
  *
  * Chrome (toolbar and editor):
  *   --pg-chrome-bg, --pg-chrome-ink, --pg-chrome-muted, --pg-chrome-line,
- *   --pg-tab-active-bg, --pg-accent (selected tab, caret), --pg-radius
+ *   --pg-tab-active-bg, --pg-accent (selected tab), --pg-caret (defaults
+ *   to the accent), --pg-radius
  * Editor: --pg-editor-bg, --pg-editor-ink, --pg-gutter-ink,
  *   --pg-active-line, --pg-selection, --pg-code-size, --pg-code-line-height
  * Output and panel: --pg-output-bg, --pg-panel-ink, --pg-panel-line,
@@ -38,6 +39,7 @@
 
   .playground-toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
@@ -101,47 +103,7 @@
     background: var(--pg-editor-bg, #fff);
   }
 
-  .playground-editor .cm-editor {
-    height: 100%;
-    background: var(--pg-editor-bg, #fff);
-    color: var(--pg-editor-ink, #111);
-    font-size: var(--pg-code-size, 13px);
-  }
-
-  .playground-editor .cm-scroller {
-    font-family: var(--pg-font-code, ui-monospace, monospace);
-    line-height: var(--pg-code-line-height, 1.5);
-  }
-
-  .playground-editor .cm-content {
-    caret-color: var(--pg-accent, #333);
-    padding-block: 12px;
-  }
-
-  .playground-editor .cm-cursor {
-    border-left-color: var(--pg-accent, #333);
-  }
-
-  .playground-editor .cm-gutters {
-    background: var(--pg-editor-bg, #fff);
-    color: var(--pg-gutter-ink, #999);
-    border-right: 0;
-  }
-
-  .playground-editor .cm-activeLine,
-  .playground-editor .cm-activeLineGutter {
-    background: var(--pg-active-line, #0000000a);
-  }
-
-  .playground-editor .cm-editor.cm-focused {
-    outline: none;
-  }
-
-  .playground-editor .cm-selectionBackground,
-  .playground-editor .cm-focused .cm-selectionBackground,
-  .playground-editor ::selection {
-    background: var(--pg-selection, #b4d5fe);
-  }
+  /* The editor itself is themed in editor.ts (a CodeMirror theme). */
 
   .playground-output {
     display: flex;

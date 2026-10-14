@@ -20,6 +20,42 @@ export interface Editor {
 }
 
 /**
+ * The editor's look, from the --pg-* custom properties (see playground.css).
+ * A CodeMirror theme, because CodeMirror's own base styles are injected
+ * unlayered at runtime and would win over any layered stylesheet.
+ */
+const theme = EditorView.theme({
+  '&': {
+    height: '100%',
+    background: 'var(--pg-editor-bg, #fff)',
+    color: 'var(--pg-editor-ink, #111)',
+    fontSize: 'var(--pg-code-size, 14px)'
+  },
+  '&.cm-focused': { outline: 'none' },
+  '.cm-scroller': {
+    fontFamily: 'var(--pg-font-code, ui-monospace, monospace)',
+    lineHeight: 'var(--pg-code-line-height, 1.5)'
+  },
+  '.cm-content': {
+    caretColor: 'var(--pg-caret, var(--pg-accent, #333))',
+    paddingBlock: '12px'
+  },
+  '.cm-cursor, .cm-dropCursor': {
+    borderLeftColor: 'var(--pg-caret, var(--pg-accent, #333))'
+  },
+  '.cm-gutters': {
+    background: 'var(--pg-editor-bg, #fff)',
+    color: 'var(--pg-gutter-ink, #999)',
+    border: 'none'
+  },
+  '.cm-activeLine, .cm-activeLineGutter': {
+    background: 'var(--pg-active-line, #0000000a)'
+  },
+  '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection':
+    { background: 'var(--pg-selection, #b4d5fe)' }
+});
+
+/**
  * A minimal CodeMirror 6 editor (design D6): one state per file, swapped on
  * tab change, so undo history stays per file.
  */
@@ -38,6 +74,7 @@ export function createEditor(
       state = EditorState.create({
         doc: files[file] ?? '',
         extensions: [
+          theme,
           lineNumbers(),
           history(),
           keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
