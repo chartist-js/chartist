@@ -63,7 +63,11 @@
     "changelog": {
       "workspaceChangelog": {
         "file": "CHANGELOG.md",
-        "createRelease": "github"
+        "createRelease": "github",
+        "renderer": "{workspaceRoot}/tools/changelog-renderer.cjs",
+        "renderOptions": {
+          "authors": false
+        }
       },
       "projectChangelogs": false
     },

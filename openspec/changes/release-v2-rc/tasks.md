@@ -9,7 +9,7 @@
 ## 2. Nx Release
 
 - [x] 2.1 Add the `release` block to `nx.json` (`chartist` only, `v{version}` tags, conventional commits with only feat/fix/perf/breaking in the changelog, workspace `CHANGELOG.md` with GitHub release, `chore(release): publish {version}`, no push from local runs unless asked) and `targetDefaults["nx-release-publish"].dependsOn: ["build"]`; remove `.simple-release.json`. Verify: `pnpm nx release 2.0.0-rc.1 --dry-run --skip-publish` shows the version, the changelog section and the commit, and changes nothing
-- [ ] 2.2 Review the dry-run changelog with the author and tune the type list if needed. Verify: the author accepts the rc.1 section
+- [x] 2.2 Review the dry-run changelog with the author and tune the type list if needed. Verify: the author accepts the rc.1 section
 - [x] 2.3 Check publishing locally without publishing: `pnpm nx release publish --dry-run --tag next` after a build. Verify: the tarball list matches 1.3, the tag is `next`
 
 ## 3. Workflows
