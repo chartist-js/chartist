@@ -489,3 +489,45 @@ describe('compat: chart.svg', () => {
     expect(counts.created).toEqual([2]);
   });
 });
+
+describe('compat: bounds in created', () => {
+  interface Created {
+    bounds: { min: number; max: number; step: number; values: number[] };
+    axisX: { bounds?: unknown };
+    axisY: { bounds?: unknown };
+    chartRect: { y1: number; height(): number };
+  }
+  function createdOf(make: (plugins: never) => void) {
+    let payload: Created | undefined;
+    make([
+      fromLegacyPlugin(
+        (chartObject: { on(e: string, l: (p: Created) => void): unknown }) =>
+          chartObject.on('created', p => void (payload = p))
+      )
+    ] as never);
+    return payload!;
+  }
+
+  it('has the 0.x bounds of the Y axis on line charts', () => {
+    const payload = createdOf(plugins =>
+      lineChart(sized(), { series: [[0, 4, 8]] }, { plugins })
+    );
+    expect(payload.bounds).toMatchObject({ min: 0, max: 8, range: 8 });
+    expect(payload.bounds.step).toEqual(expect.any(Number));
+    expect(payload.bounds.values).toContain(8);
+    expect(payload.bounds).toBe(payload.axisY.bounds);
+
+    // 0.x plugins project values with it, such as a target line at 4.
+    const { chartRect, bounds } = payload;
+    const y = chartRect.y1 - (chartRect.height() / bounds.max) * 4;
+    expect(y).toBeCloseTo(chartRect.y1 - chartRect.height() / 2);
+  });
+
+  it('has the value axis bounds on horizontal bar charts', () => {
+    const payload = createdOf(plugins =>
+      barChart(sized(), { series: [[1, 5]] }, { horizontalBars: true, plugins })
+    );
+    expect(payload.bounds).toBe(payload.axisX.bounds);
+    expect(payload.bounds).toMatchObject({ min: 0, max: 5 });
+  });
+});

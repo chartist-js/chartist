@@ -60,7 +60,11 @@ export function summarize(
     type: payload.type,
     index: payload.index,
     seriesIndex: payload.seriesIndex,
-    fields: Object.keys(payload).sort(),
+    // Compat adds the 0.x `bounds` to `created` for 0.x plugins; 1.5.0
+    // doesn't have it, so it's left out of the comparison.
+    fields: Object.keys(payload)
+      .filter(key => !(event === 'created' && key === 'bounds'))
+      .sort(),
     element: element && markup(element.getNode()),
     details
   };

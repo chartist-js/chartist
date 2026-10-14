@@ -474,11 +474,21 @@ function emitDrawEvents(
     }
   }
 
+  // 0.x plugins also read `bounds`, the value axis's scale, which 0.x
+  // passed next to the axes (auto scale axes only, as in 0.x).
+  const valueAxis = options.horizontalBars ? axisX : axisY;
   untyped(handle).emit(
     'created',
     state.preset!.kind === 'pie'
       ? { chartRect, svg: wrap(svgElement), options }
-      : { chartRect, axisX, axisY, svg: wrap(svgElement), options }
+      : {
+          chartRect,
+          axisX,
+          axisY,
+          bounds: (valueAxis as { bounds?: unknown }).bounds,
+          svg: wrap(svgElement),
+          options
+        }
   );
 }
 

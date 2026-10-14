@@ -144,7 +144,9 @@ describe('event payloads', () => {
       'x',
       'y'
     ]);
-    expect(keys(events.at(-1)!.data)).toEqual([
+    // v2's compat also passes `bounds`, a 0.x field that 0.x plugins read
+    // and 1.5.0 doesn't have.
+    expect(keys(events.at(-1)!.data).filter(key => key !== 'bounds')).toEqual([
       'axisX',
       'axisY',
       'chartRect',
