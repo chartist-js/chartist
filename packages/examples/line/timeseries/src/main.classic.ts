@@ -31,6 +31,8 @@ new LineChart(
     ]
   },
   {
+    // Room for the label of the last tick, at the right edge.
+    chartPadding: { right: 40 },
     axisX: {
       type: FixedScaleAxis,
       divisor: 5,
