@@ -55,6 +55,13 @@ export interface Example {
    * both entries draw the same pixels.
    */
   ownBaseline?: string;
+  /**
+   * Why the example's baseline image (shared by both entries) is recorded
+   * from the local build instead of 1.5.0: v2 deliberately changes how 1.x
+   * draws it, for both APIs. The 1.5.0 visual run skips the example, so
+   * re-recording the baseline from 1.5.0 can't undo the change.
+   */
+  localBaseline?: string;
   /** Viewports the visual regression tests render the example at. */
   viewports: ViewportName[];
   /**
@@ -223,8 +230,10 @@ export const examples: Example[] = [
     id: 'line/timeseries',
     title: 'Timeseries',
     description:
-      'Two series of dated values on a fixed scale X axis with five month and day labels.',
-    classic: true
+      'Two series of dated values on a fixed scale X axis with six month and day labels.',
+    classic: true,
+    localBaseline:
+      'With divisor, fixedScaleAxis puts a tick at high (#1022); 1.5.0 stops one tick short.'
   }),
 
   // Bar charts (1.x sandboxes)

@@ -91,6 +91,12 @@ for (const example of examples) {
       fail(`${id}: ${path.basename(entry)} must import 'chartist/styles.css'`);
     }
   }
+  if (
+    example.ownBaseline !== undefined &&
+    example.localBaseline !== undefined
+  ) {
+    fail(`${id}: ownBaseline and localBaseline exclude each other`);
+  }
   if (example.ownBaseline !== undefined && !hasClassic) {
     fail(`${id}: ownBaseline only applies to examples with a classic entry`);
   }

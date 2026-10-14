@@ -85,6 +85,10 @@ for (const example of examples) {
       test(`${name} @ ${viewport}`, async ({ page }) => {
         // v2 examples have no 1.5 counterpart; their baseline comes from v2.
         test.skip(V1 && example.v2, 'uses the v2 API');
+        test.skip(
+          V1 && example.localBaseline !== undefined,
+          'v2 draws it differently on purpose (localBaseline)'
+        );
         const problems: string[] = [];
         page.on('pageerror', error => problems.push(`page error: ${error}`));
         page.on('console', message => {
