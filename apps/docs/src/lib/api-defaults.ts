@@ -1,5 +1,5 @@
 /**
- * Option defaults for the API reference (design D4, add-api-reference): read
+ * Option defaults for the API reference: read
  * from the presets' defaults objects in the library's source, so the tables
  * can't drift from the code.
  */

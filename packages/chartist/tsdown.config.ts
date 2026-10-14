@@ -2,7 +2,7 @@ import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import { defineConfig, type UserConfig } from 'tsdown';
 
 /**
- * Library build. See openspec/changes/add-library-distribution/design.md.
+ * Library build. The formats and their reasons: openspec/specs/library-distribution/spec.md.
  *
  * dist/index.js       ESM for bundlers (unminified, tree-shakable)
  * dist/index.cjs      CommonJS (+ index.d.cts)

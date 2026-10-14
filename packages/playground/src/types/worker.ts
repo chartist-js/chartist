@@ -1,5 +1,5 @@
 /**
- * The type worker (design D1): one language service per playground, sharing
+ * The type worker: one language service per playground, sharing
  * a document registry so the lib files are parsed once per page.
  */
 import ts from 'typescript';

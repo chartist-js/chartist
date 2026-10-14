@@ -1,6 +1,6 @@
-# @chartist/playground (spike)
+# @chartist/playground
 
-In-browser playground for Chartist example projects: an editor with file tabs and a live preview of a Vite-style example (`index.html`, `src/main.ts`, `src/style.css`), without a server. Private, not published. Spec and design: `openspec/changes/add-playground-repl/`.
+In-browser playground for Chartist example projects: an editor with file tabs and a live preview of a Vite-style example (`index.html`, `src/main.ts`, `src/style.css`), without a server. Private, not published. Spec: `openspec/specs/example-playground/spec.md`.
 
 How it works:
 
@@ -23,7 +23,7 @@ await createPlayground(document.querySelector('#playground')!, {
 
 `compile(files, options)` is the DOM-free core, usable on its own.
 
-With `types`, TypeScript files get type errors (underlined; Ctrl/Cmd+Shift+M lists them), completions (on `.`, while typing, Ctrl+Space) and the type and doc comment of a name on hover. The TypeScript language service runs in a worker (`src/types/`), one per page, which loads when a TypeScript editor first gets focus: about 1.3 MB compressed with the lib declarations, from the page's own origin. Type errors never stop the preview. The playground element gets `data-types="ready"` once types answer. CSS files complete the stylesheet's `--ct-*` properties. Openspec change: `add-playground-types`.
+With `types`, TypeScript files get type errors (underlined; Ctrl/Cmd+Shift+M lists them), completions (on `.`, while typing, Ctrl+Space) and the type and doc comment of a name on hover. The TypeScript language service runs in a worker (`src/types/`), one per page, which loads when a TypeScript editor first gets focus: about 1.3 MB compressed with the lib declarations, from the page's own origin. Type errors never stop the preview. The playground element gets `data-types="ready"` once types answer. CSS files complete the stylesheet's `--ct-*` properties.
 
 ## Tasks
 

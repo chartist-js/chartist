@@ -31,7 +31,7 @@ interface State {
 
 /**
  * Compiles an example project (Vite vanilla-ts layout) into one HTML
- * document for a sandboxed iframe. See design D2 (add-playground-repl).
+ * document for a sandboxed iframe.
  */
 export async function compile(
   files: PlaygroundFiles,

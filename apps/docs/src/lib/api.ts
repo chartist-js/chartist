@@ -1,5 +1,5 @@
 /**
- * The API reference's model (design D1, add-api-reference): TypeDoc's JSON
+ * The API reference's model: TypeDoc's JSON
  * for chartist and chartist/compat (docs:api writes it), read at build time,
  * and what the reference pages need from it: entries per page, comments,
  * types as linked tokens, and the members of option types.

@@ -1,5 +1,5 @@
 /**
- * The search dialog (polish-docs-site, design D1). Pagefind's index and
+ * The search dialog. Pagefind's index and
  * its `pagefind.js` load on the first open, never before. The input is a
  * combobox: arrow keys move through the results (aria-activedescendant),
  * Enter opens one, Escape closes the dialog and focus returns to the

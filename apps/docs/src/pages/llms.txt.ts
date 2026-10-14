@@ -1,4 +1,4 @@
-/** The entry point for language models, in the llmstxt.org format (polish-docs-site, design D6). */
+/** The entry point for language models, in the llmstxt.org format. */
 import type { APIRoute } from 'astro';
 import { sortedDocs } from '../lib/docs';
 import { llmsTxt } from '../lib/markdown';

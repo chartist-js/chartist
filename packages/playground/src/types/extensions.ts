@@ -1,5 +1,5 @@
 /**
- * CodeMirror extensions for type-aware editing (design D3): diagnostics,
+ * CodeMirror extensions for type-aware editing: diagnostics,
  * completions and hover from the type worker, and CSS completions for the
  * stylesheet's custom properties.
  */

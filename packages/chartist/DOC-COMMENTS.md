@@ -12,7 +12,7 @@ The API reference at `/api/` (apps/docs) and the playground's hover and completi
 - **Code in backticks:** option names, values (`'accumulate'`, `true`), class names (`ct-line`).
 - **Links:** `{@link lineChart}` to another export; the reference turns it into a link. Guides go in `@see`: `@see https://chartist.dev/docs/events-and-plugins/` is fine, but prefer a sentence in the comment.
 - **Tags:** `@experimental` on the v2 API (until v2.0), `@deprecated` with what to use instead, `@example` with a fenced code block, `@param name what it is` when a parameter isn't obvious from its name and type, `@returns` when the return value needs a word.
-- **Behavior only as it is.** If a comment would describe a bug, describe the current behavior and add the bug to the findings instead of fixing it here (library fixes come in `fix-library-findings`).
+- **Behavior only as it is.** If a comment would describe a bug, describe the current behavior and report the bug as a GitHub issue labeled `v2`, instead of fixing it in the same change.
 
 ## What needs a comment
 
@@ -42,3 +42,7 @@ lineSmooth?: boolean | LineInterpolation;
 /** The data of a line chart: series of values, and labels for the X axis. */
 export type LineChartData = Data<(Series | SeriesObject)[]>;
 ```
+
+## No plan references
+
+Comments describe the code as it is and say why in words. They don't name OpenSpec changes, design decision ids (a D with a number), task or finding numbers: those get archived and mean nothing to the next reader. GitHub issue numbers are fine ("see #1469"), they last.

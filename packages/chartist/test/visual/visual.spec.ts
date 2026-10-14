@@ -1,7 +1,7 @@
 /**
  * One screenshot test per example and viewport of @chartist/examples.
  *
- * Settling (design D7 of add-visual-regression-harness):
+ * Settling:
  * 1. The page clock is installed and paused before the page loads, so no
  *    timer fires on its own (chart initialization, the delayed starts of
  *    guided SMIL animations, the chart.update() timers of animated examples).

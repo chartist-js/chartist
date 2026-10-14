@@ -1,5 +1,5 @@
 /**
- * The entry point for language models (polish-docs-site, design D6):
+ * The entry point for language models:
  * llms.txt, llms-full.txt and a Markdown version of every guide, API page
  * and example.
  */

@@ -1,5 +1,5 @@
 /**
- * The API reference is complete (design D5, add-api-reference): every
+ * The API reference is complete: every
  * export on exactly one page, every v2 export and member described, every
  * 1.x export with a line, and no reference pointing nowhere. One test per
  * page, so each area can be checked on its own.

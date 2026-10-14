@@ -1,6 +1,6 @@
 /**
  * The helper functions and constants 1.x exports from the package root.
- * They stay public in v2 (design D11), so their 1.5 results are recorded here.
+ * They stay public in v2, so their 1.5 results are recorded here.
  */
 import {
   EPSILON,

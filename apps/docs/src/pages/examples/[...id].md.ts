@@ -1,4 +1,4 @@
-/** An example as Markdown (polish-docs-site, design D6). */
+/** An example as Markdown. */
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { gallery, type GalleryExample } from '../../lib/gallery';
 import { exampleMarkdown } from '../../lib/markdown';

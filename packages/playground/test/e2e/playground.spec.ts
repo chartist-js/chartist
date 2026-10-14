@@ -123,7 +123,7 @@ test('the preview cannot reach the host page', async ({ page }, info) => {
   await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible();
   await replaceCode(page, `parent.document.title = 'pwned';\n`);
   await expect(errors(page).first()).toBeVisible();
-  await expect(page).toHaveTitle('Chartist playground spike');
+  await expect(page).toHaveTitle('Chartist playground');
   await noteError(page, info);
 });
 

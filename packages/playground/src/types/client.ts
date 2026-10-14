@@ -1,5 +1,5 @@
 /**
- * The editor's side of the type worker (design D4): starts it on demand,
+ * The editor's side of the type worker: starts it on demand,
  * keeps the worker's copy of the files current, and asks it questions.
  * One worker per page; each playground is a project in it.
  */

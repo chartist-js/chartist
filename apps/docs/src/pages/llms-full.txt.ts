@@ -1,4 +1,4 @@
-/** The guides and the API reference in one Markdown file (polish-docs-site, design D6). */
+/** The guides and the API reference in one Markdown file. */
 import type { APIRoute } from 'astro';
 import { sortedDocs } from '../lib/docs';
 import { llmsFullTxt } from '../lib/markdown';

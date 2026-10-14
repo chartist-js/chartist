@@ -17,7 +17,7 @@ const LIB_FILES: Record<string, string> = {
 /**
  * Serves the workspace build of `chartist` (packages/chartist/dist) at
  * `{base}lib/chartist/` in dev and copies it into the build output, like the
- * docs site will (design D4). The preview runs in an opaque origin, so the
+ * docs site does. The preview runs in an opaque origin, so the
  * module needs `Access-Control-Allow-Origin` (GitHub Pages sends `*`).
  */
 function chartistLib(): Plugin {

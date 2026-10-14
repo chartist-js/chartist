@@ -140,7 +140,7 @@ a.btn.primary:hover {
   border-color: var(--line-strong);
 }
 
-/* Landing (minimal hero until add-landing-page) */
+/* Landing */
 .section {
   padding-block: clamp(56px, 8vw, 104px);
 }

@@ -1,5 +1,5 @@
 /*
- * Site search (polish-docs-site, design D1): the header's search button and
+ * Site search: the header's search button and
  * the dialog (components/search/). Stays CSS: the dialog's top-layer
  * states (::backdrop, [open]) and the result markup search.ts writes.
  */

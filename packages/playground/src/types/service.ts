@@ -1,5 +1,5 @@
 /**
- * A TypeScript language service over an example's files (design D1, D2).
+ * A TypeScript language service over an example's files.
  * Plain module: the worker runs it, and the unit tests run it in Node.
  */
 import type * as TS from 'typescript';

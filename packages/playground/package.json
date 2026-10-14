@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "In-browser playground for Chartist example projects (spike)",
+  "description": "In-browser playground for Chartist example projects",
   "license": "MIT OR WTFPL",
   "exports": {
     ".": "./src/index.ts",

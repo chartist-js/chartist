@@ -1,4 +1,4 @@
-/** An API reference page as Markdown (polish-docs-site, design D6). */
+/** An API reference page as Markdown. */
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { API_PAGES } from '../../lib/api-pages';
 import { apiMarkdown } from '../../lib/markdown';

@@ -1,5 +1,5 @@
 /**
- * Share cards (design D2, polish-docs-site): which pages have one, what it
+ * Share cards: which pages have one, what it
  * says, and where it lives. A card's path follows its page's path:
  * `docs/line-charts/` has `og/docs/line-charts.png`, the landing page
  * `og/index.png`. The cards are listed from the same sources as the pages

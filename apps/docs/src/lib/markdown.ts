@@ -1,6 +1,6 @@
 /**
  * Markdown versions of the docs for language models and for pasting into a
- * chat (polish-docs-site, design D6): the guides from their MDX, the API
+ * chat: the guides from their MDX, the API
  * reference from the TypeDoc model, the examples from their files, and
  * `llms.txt` / `llms-full.txt` from all of them.
  */

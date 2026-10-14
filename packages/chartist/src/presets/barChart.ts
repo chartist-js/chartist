@@ -95,7 +95,7 @@ function valueAxis(
       const highLow =
         options.stackBars &&
         // As 1.x: only `true` fits the axis to the bars; `overlap` keeps
-        // the stacked sums (see fix-library-findings).
+        // the stacked sums.
         options.stackMode !== true &&
         series.length
           ? getHighLow([getSerialSums(series)], options as Options, dimension)

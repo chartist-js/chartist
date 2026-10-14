@@ -18,7 +18,7 @@ const index = pages.findIndex(candidate => candidate.key === page.key);
 const previous = pages[index - 1];
 const next = pages[index + 1];
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
-// Guides and API pages have a Markdown version (design D6); the overview is llms.txt's job.
+// Guides and API pages have a Markdown version; the overview is llms.txt's job.
 const markdown = page.key === 'api' ? undefined : markdownPath(page.path);
 const sideLink =
   'flex min-h-9 items-center justify-between rounded-md px-3 py-1.5 text-ink no-underline hover:bg-bg-sunken hover:text-ink aria-[current=page]:bg-surface aria-[current=page]:font-bold aria-[current=page]:shadow-[inset_3px_0_0_var(--brand),0_0_0_1px_var(--line)]';

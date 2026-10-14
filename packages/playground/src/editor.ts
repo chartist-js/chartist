@@ -79,7 +79,7 @@ const readInputBeforeScroll = EditorView.domEventObservers({
 });
 
 /**
- * A minimal CodeMirror 6 editor (design D6): one state per file, swapped on
+ * A minimal CodeMirror 6 editor: one state per file, swapped on
  * tab change, so undo history stays per file.
  */
 export function createEditor(

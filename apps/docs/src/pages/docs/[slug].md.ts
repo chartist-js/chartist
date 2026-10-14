@@ -1,4 +1,4 @@
-/** A guide as Markdown (polish-docs-site, design D6). */
+/** A guide as Markdown. */
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { sortedDocs, type DocEntry } from '../../lib/docs';
 import { guideMarkdown } from '../../lib/markdown';

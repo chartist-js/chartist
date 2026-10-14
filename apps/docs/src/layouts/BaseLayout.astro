@@ -21,13 +21,13 @@ interface Props {
   section?: string;
   /** The share card's site path, e.g. `og/docs/line-charts.png`; by default the page's own (lib/og.ts). */
   image?: string;
-  /** The page's Markdown version, a site path such as `docs/line-charts.md` (design D6). */
+  /** The page's Markdown version, a site path such as `docs/line-charts.md`. */
   markdown?: string;
 }
 
 const { title, description, section, image, markdown } = Astro.props;
 const fullTitle = title === 'Chartist' ? title : `${title} · Chartist`;
-// Share previews (design D2, polish-docs-site): absolute URLs from the site.
+// Share previews: absolute URLs from the site.
 const site = Astro.site ?? Astro.url;
 const notFound = /\/404(\.html|\/)?$/.test(Astro.url.pathname);
 const canonical = notFound ? undefined : new URL(Astro.url.pathname, site).href;

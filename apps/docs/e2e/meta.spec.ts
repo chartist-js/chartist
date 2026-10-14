@@ -1,4 +1,4 @@
-/** Share previews (design D2, polish-docs-site): head tags, cards, robots.txt. */
+/** Share previews: head tags, cards, robots.txt. */
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';

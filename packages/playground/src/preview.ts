@@ -1,7 +1,7 @@
 import { MESSAGE_SOURCE, type PreviewMessage } from './types.ts';
 
 /**
- * Owns the sandboxed preview iframe (design D5). Example code runs in an
+ * Owns the sandboxed preview iframe. Example code runs in an
  * opaque origin: `allow-scripts` only, never `allow-same-origin`.
  */
 export class Preview {

@@ -1,5 +1,5 @@
 /**
- * The v2 type contract (refine-typings): nodes narrow by role, queries and
+ * The v2 type contract: nodes narrow by role, queries and
  * builders keep their types, events and plugins are checked.
  */
 import {

@@ -40,4 +40,4 @@ Find the v2 details in the library source (`packages/chartist/src`: `presets/`, 
 
 1. First suspect the conversion: an option in the wrong place, a different default, a node replaced at a different position, an animation keyed differently, attributes in a different order that change rendering.
 2. If the difference comes from a deliberate v2 behavior (documented in the plan or a spec), and only then, set `ownBaseline: '<why>'` on the entry, record the functional entry's image from the local build (`<name>--v2--<viewport>.png` next to the shared one), and list it in your report.
-3. If it comes from a library bug or gap, don't patch the library and don't work around it in a way a user wouldn't write: leave that example unconverted (no classic file), and report it. Library fixes come last (`fix-library-findings`).
+3. If it comes from a library bug or gap, don't patch the library and don't work around it in a way a user wouldn't write: leave that example unconverted (no classic file), and report it. Library fixes are their own work, tracked as GitHub issues labeled `v2`.

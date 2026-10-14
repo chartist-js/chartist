@@ -1,5 +1,5 @@
 /**
- * Site search (polish-docs-site, design D1): indexes the built site with
+ * Site search: indexes the built site with
  * Pagefind after the build, and serves the last build's index in dev.
  *
  * Only what's inside `data-pagefind-body` is indexed (guides, API pages,

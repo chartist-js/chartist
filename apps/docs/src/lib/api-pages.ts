@@ -1,5 +1,5 @@
 /**
- * The API reference's pages (design D2, add-api-reference): which exports
+ * The API reference's pages: which exports
  * each page documents, by source file, with overrides by name.
  */
 
@@ -8,7 +8,7 @@ export interface ApiPage {
   title: string;
   /** One sentence, for the page's lead and the overview. */
   description: string;
-  /** The 1.x section: a 1.x badge, classes without members (design D3). */
+  /** The 1.x section: a 1.x badge, classes without members. */
   legacy?: 'classes';
   /** Signature and summary only, for low-level helpers. */
   compact?: boolean;
