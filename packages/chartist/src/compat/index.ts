@@ -8,6 +8,9 @@
  */
 import {
   AutoScaleAxis,
+  BarChart,
+  LineChart,
+  PieChart,
   Svg,
   StepAxis,
   axisUnits,
@@ -128,6 +131,22 @@ const states = new WeakMap<ChartHandle, CompatState>();
  * same global symbol.
  */
 const ANIMATION_EMITTER = Symbol.for('chartist.animationEmitter');
+
+/**
+ * Where a preset's chart handle holds its preset state from the moment
+ * plugins install. The core sets the same global symbol.
+ */
+const PRESET_STATE = Symbol.for('chartist.presetState');
+
+const presetOf = (handle: ChartHandle) =>
+  (handle as { [PRESET_STATE]?: PresetState<Data, AnyOptions> })[PRESET_STATE];
+
+/** The 1.x class of each preset, for 0.x and 1.x type checks in plugins. */
+const CLASSES: Record<string, { prototype: object }> = {
+  line: LineChart,
+  bar: BarChart,
+  pie: PieChart
+};
 
 /** Copies plain arrays and objects; other values are kept by reference. */
 function mutableCopy<T>(value: T): T {
@@ -514,17 +533,32 @@ function enable(handle: ChartHandle): CompatState {
   return state;
 }
 
-/** A 1.x-style chart object for 1.x plugins on the functional API. */
+/** 1.x `optionsProvider`: the options in effect, after responsive options. */
+function optionsProviderOf(getOptions: () => unknown) {
+  return {
+    getCurrentOptions: getOptions,
+    // The preset watches the media queries and stops on `detach()`.
+    removeMediaQueryListeners: () => undefined
+  };
+}
+
+/**
+ * A 1.x-style chart object for 1.x plugins on the functional API. For a
+ * preset it is an instance of the preset's 1.x class (without running its
+ * constructor), so type checks such as `chart instanceof LineChart` hold;
+ * for `chart()` compositions a plain object.
+ */
 function legacyChart(handle: ChartHandle, state: CompatState) {
+  const preset = presetOf(handle);
   const chart = {
     get container() {
       return handle.container;
     },
     get data() {
-      return state.copy ?? state.preset?.data;
+      return state.copy ?? preset?.data;
     },
     get options() {
-      return state.preset?.options;
+      return preset?.options;
     },
     get svg() {
       return state.svg;
@@ -537,6 +571,7 @@ function legacyChart(handle: ChartHandle, state: CompatState) {
       emit: (event: string, payload: unknown) =>
         untyped(handle).emit(event, payload)
     },
+    optionsProvider: optionsProviderOf(() => preset?.options),
     on(event: string, listener: (payload: unknown) => void) {
       untyped(handle).on(event, listener);
       return chart;
@@ -546,23 +581,25 @@ function legacyChart(handle: ChartHandle, state: CompatState) {
       return chart;
     },
     update(data?: unknown, options?: unknown, override?: boolean) {
-      if (state.preset) {
-        state.preset.update(data as never, options as never, override);
+      if (preset) {
+        preset.update(data as never, options as never, override);
       } else {
         handle.update(data ? { data: data as never } : {});
       }
       return chart;
     },
     detach() {
-      if (state.preset) {
-        state.preset.detach();
+      if (preset) {
+        preset.detach();
       } else {
         handle.detach();
       }
       return chart;
     }
   };
-  return chart;
+  // The fields above are own properties, so they shadow the class's.
+  const type = preset && CLASSES[preset.kind];
+  return type ? Object.setPrototypeOf(chart, type.prototype) : chart;
 }
 
 /**
@@ -584,6 +621,14 @@ function legacyPlugin(
         handle.on('mount', () => {
           (chart as { svg?: Svg }).svg = state.svg;
         });
+        // The 1.x classes run on a preset and have no options provider;
+        // plugins call it for the options in effect.
+        const instance = chart as { optionsProvider?: unknown };
+        if (!instance.optionsProvider) {
+          instance.optionsProvider = optionsProviderOf(
+            () => presetOf(handle)?.options
+          );
+        }
       }
       const chartObject = chart ?? legacyChart(handle, state);
       // As 1.x: plugins without options are called with the chart only.

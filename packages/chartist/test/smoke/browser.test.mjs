@@ -99,6 +99,7 @@ const inlinePages = {
               aliases: Chartist.Line === Chartist.LineChart &&
                 Chartist.Bar === Chartist.BarChart &&
                 Chartist.Pie === Chartist.PieChart,
+              isLine: chart instanceof Chartist.Line,
               data: Chartist.getDataArray(chart.data, true)
             };
           });
@@ -240,6 +241,7 @@ test('compat.umd.js adds the 0.x names for plugin scripts', async () => {
   assert.deepEqual(await page.evaluate(() => window.result), {
     plugins: ['early', 'ctLate'],
     aliases: true,
+    isLine: true,
     data: [[3, 2, 1]]
   });
   assert.deepEqual(errors, []);

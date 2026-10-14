@@ -1,5 +1,10 @@
+import { BarChart } from '../charts/BarChart/BarChart';
 import { LineChart } from '../charts/LineChart/LineChart';
+import { PieChart } from '../charts/PieChart/PieChart';
+import { chart } from '../chart/chart';
+import { barChart } from '../presets/barChart';
 import { lineChart } from '../presets/lineChart';
+import { pieChart } from '../presets/pieChart';
 import { Svg } from '../svg/Svg';
 import { compat, fromLegacyPlugin } from '.';
 
@@ -329,5 +334,111 @@ describe('compat: 1.x plugins', () => {
       }
     );
     expect(draws).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('compat: the chart object of converted plugins', () => {
+  type Seen = Record<string, unknown>;
+  /** Converts a plugin that records its chart object at install. */
+  function recorder(read: (chart: Seen) => void = () => undefined) {
+    const seen: { chart?: Seen } = {};
+    const plugin = fromLegacyPlugin((chart: Seen) => {
+      seen.chart = chart;
+      read(chart);
+    });
+    return { seen, plugin };
+  }
+
+  it('is an instance of the 1.x class of its preset', () => {
+    const line = recorder();
+    lineChart(sized(), { series: [[1, 2]] }, { plugins: [line.plugin] });
+    expect(line.seen.chart).toBeInstanceOf(LineChart);
+    expect(line.seen.chart).not.toBeInstanceOf(BarChart);
+
+    const bar = recorder();
+    barChart(sized(), { series: [[1, 2]] }, { plugins: [bar.plugin] });
+    expect(bar.seen.chart).toBeInstanceOf(BarChart);
+    expect(bar.seen.chart).not.toBeInstanceOf(LineChart);
+
+    const pie = recorder();
+    pieChart(sized(), { series: [1, 2] }, { plugins: [pie.plugin] });
+    expect(pie.seen.chart).toBeInstanceOf(PieChart);
+  });
+
+  it('is a plain object for chart() compositions', () => {
+    const { seen, plugin } = recorder();
+    chart(sized(), { data: { series: [[1]] }, layers: [], plugins: [plugin] });
+    expect(Object.getPrototypeOf(seen.chart)).toBe(Object.prototype);
+    expect(seen.chart!.container).toBeInstanceOf(Element);
+  });
+
+  it('has the data and the options with the 1.x defaults at install', () => {
+    const data = { series: [[1, 2]] };
+    let atInstall: { series?: unknown; className?: string } = {};
+    const { plugin } = recorder(chartObject => {
+      atInstall = {
+        series: (chartObject.data as typeof data).series,
+        className: (chartObject.options as { classNames: { series: string } })
+          .classNames.series
+      };
+    });
+    lineChart(sized(), data, { plugins: [plugin] });
+    expect(atInstall).toEqual({ series: [[1, 2]], className: 'ct-series' });
+  });
+
+  it('getCurrentOptions() gives the options after the responsive options', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query === 'print',
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined
+    }));
+    const { seen, plugin } = recorder();
+    lineChart(
+      sized(),
+      { series: [[1]] },
+      { showPoint: true, plugins: [plugin] },
+      [['print', { showPoint: false }]]
+    );
+    const provider = seen.chart!.optionsProvider as {
+      getCurrentOptions(): { showPoint: boolean };
+    };
+    expect(provider.getCurrentOptions().showPoint).toBe(false);
+  });
+
+  it('keeps the 1.x fields and methods as its own', () => {
+    const { seen, plugin } = recorder();
+    lineChart(sized(), { series: [[1]] }, { plugins: [plugin] });
+    for (const key of [
+      'container',
+      'data',
+      'options',
+      'svg',
+      'eventEmitter',
+      'optionsProvider',
+      'on',
+      'off',
+      'update',
+      'detach'
+    ]) {
+      expect(Object.hasOwn(seen.chart!, key), key).toBe(true);
+    }
+  });
+
+  it('the 1.x classes give plugins an options provider too', async () => {
+    let current: unknown;
+    const plugin = (chartObject: {
+      optionsProvider: { getCurrentOptions(): unknown };
+      on(event: string, listener: () => void): unknown;
+    }) =>
+      chartObject.on('created', () => {
+        current = chartObject.optionsProvider.getCurrentOptions();
+      });
+    const lineChartClass = new LineChart(
+      sized(),
+      { series: [[1]] },
+      { showArea: true, plugins: [compat, plugin as never] }
+    );
+    await created(lineChartClass);
+    expect(current).toMatchObject({ showArea: true, showPoint: true });
   });
 });

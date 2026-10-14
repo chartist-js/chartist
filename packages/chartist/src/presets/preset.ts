@@ -214,13 +214,27 @@ export function seriesGroup(layer: Layer): Layer {
   };
 }
 
-/** Adds the 1.x inline size style to the root svg. */
+/**
+ * The property of a preset's chart handle that holds its {@link PresetState}
+ * from the moment plugins install, before the first `resolve` hands it over
+ * in the config. The compat plugin reads it to give 1.x plugins the chart's
+ * data and options while they install, as 1.x did. A global symbol, so
+ * separate builds of the core and `chartist/compat` share it.
+ */
+export const PRESET_STATE = Symbol.for('chartist.presetState');
+
+/**
+ * Adds the 1.x inline size style to the root svg. Installed first, it also
+ * puts the preset state on the handle for the plugins after it.
+ */
 function rootStyle(
-  getOptions: () => { width?: number | string; height?: number | string }
+  getOptions: () => { width?: number | string; height?: number | string },
+  state: PresetState
 ): ChartPlugin {
   return {
     name: 'preset-root-style',
     install(handle) {
+      Object.defineProperty(handle, PRESET_STATE, { value: state });
       handle.on('scene', ({ scene }) => {
         const { width = '100%', height = '100%' } = getOptions();
         return {
@@ -320,7 +334,7 @@ export function createPreset<
 
   const inner = chart(target, {
     ...withState(spec.config(data, current)),
-    plugins: [rootStyle(() => current), ...(plugins ?? [])],
+    plugins: [rootStyle(() => current, state), ...(plugins ?? [])],
     on: (options as { on?: PhaseListeners }).on
   });
 
