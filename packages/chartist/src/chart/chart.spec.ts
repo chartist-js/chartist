@@ -98,6 +98,20 @@ describe('chart/chart', () => {
     ]);
   });
 
+  it('measures with a probe whose style has valid CSS lengths', () => {
+    const { element } = sizedContainer();
+    const styles: (string | null)[] = [];
+    const appendChild = element.appendChild.bind(element);
+    vi.spyOn(element, 'appendChild').mockImplementation(child => {
+      if (child instanceof Element && !child.hasAttribute('xmlns:ct')) {
+        styles.push(child.getAttribute('style'));
+      }
+      return appendChild(child);
+    });
+    chart(element, { data, layers: [dots()], width: 300, height: '50%' });
+    expect(styles).toEqual(['width: 300px; height: 50%;']);
+  });
+
   it('a responsive chart fills its container (100%)', () => {
     const { element } = sizedContainer();
     chart(element, { data, layers: [dots()] });

@@ -128,7 +128,12 @@ export function chart(
     );
     probe.setAttribute('width', width);
     probe.setAttribute('height', height);
-    probe.setAttribute('style', `width: ${width}; height: ${height};`);
+    // CSS lengths need a unit, unlike the attributes (see #1482).
+    const px = (value: unknown) => (typeof value === 'number' ? 'px' : '');
+    probe.setAttribute(
+      'style',
+      `width: ${width}${px(effective.width)}; height: ${height}${px(effective.height)};`
+    );
     container.appendChild(probe);
     const measured = { width: probe.clientWidth, height: probe.clientHeight };
     probe.remove();
