@@ -177,12 +177,12 @@ export interface ChartHandle {
    * Shallow-merges the changes into the config and renders again. Plugins
    * and listeners stay; `plugins` and `on` can't change.
    */
-  update(config: Partial<Omit<ChartConfig, 'plugins' | 'on'>>): ChartHandle;
+  update(config: Partial<Omit<ChartConfig, 'plugins' | 'on'>>): this;
   /**
    * Stops reacting to container size changes (and media queries in
    * presets). The output and the listeners stay.
    */
-  detach(): ChartHandle;
+  detach(): this;
   /** Detaches, removes the output and clears all listeners. */
   destroy(): void;
   /**
@@ -195,25 +195,25 @@ export interface ChartHandle {
    * `resolve` to `scene` may return a new payload to change what's drawn;
    * `compose` listeners may return `null` to drop a node.
    */
-  on<K extends PhaseName>(name: K, listener: PhaseListener<K>): ChartHandle;
+  on<K extends PhaseName>(name: K, listener: PhaseListener<K>): this;
   /** Listens to every phase event, with the phase name and its payload. */
-  on(name: '*', listener: AllPhasesListener): ChartHandle;
+  on(name: '*', listener: AllPhasesListener): this;
   /** Listens to a custom event, declared in {@link ChartEvents}. */
   on<K extends CustomEventName>(
     name: K,
     listener: (payload: ChartEvents[K]) => void
-  ): ChartHandle;
+  ): this;
   /**
    * Removes a phase listener, whoever added it. Without a listener,
    * removes the listeners of the phase added through `on` and the
    * config's `on`; plugins keep theirs.
    */
-  off<K extends PhaseName>(name: K, listener?: PhaseListener<K>): ChartHandle;
+  off<K extends PhaseName>(name: K, listener?: PhaseListener<K>): this;
   /**
    * Removes a listener of all phases, or without a listener, those added
    * through `on`.
    */
-  off(name: '*', listener?: AllPhasesListener): ChartHandle;
+  off(name: '*', listener?: AllPhasesListener): this;
   /**
    * Removes a custom event listener, or without a listener, the event's
    * listeners added through `on`.
@@ -221,7 +221,7 @@ export interface ChartHandle {
   off<K extends CustomEventName>(
     name: K,
     listener?: (payload: ChartEvents[K]) => void
-  ): ChartHandle;
+  ): this;
 }
 
 /**

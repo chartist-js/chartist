@@ -70,4 +70,16 @@ describe('presets/barChart', () => {
       'ct-chart-bar ct-horizontal-bars'
     );
   });
+
+  it('setOptions changes the options and redraws', () => {
+    const element = sized();
+    const mount = vi.fn();
+    const chart = barChart(element, { series: [[1, 2]] }, { on: { mount } });
+    expect(mount).toHaveBeenCalledTimes(1);
+    chart.setOptions({ horizontalBars: true });
+    expect(element.querySelector('svg')!.getAttribute('class')).toBe(
+      'ct-chart-bar ct-horizontal-bars'
+    );
+    expect(mount).toHaveBeenCalledTimes(2);
+  });
 });

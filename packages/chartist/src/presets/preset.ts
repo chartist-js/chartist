@@ -6,7 +6,7 @@
 import { chart } from '../chart/chart';
 import type { ChartConfig, ChartHandle, ChartPlugin } from '../chart/types';
 import { untyped } from '../chart/types';
-import type { Layer, LayerContext } from '../pipeline/types';
+import type { Layer, LayerContext, PhaseListeners } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
 import type { AxisOptions } from '../core/types';
 import type { AxisDimension, AxisSetup } from '../scales/axis';
@@ -56,9 +56,44 @@ export interface PresetState<
   detach(): void;
 }
 
+/**
+ * The handle `lineChart`, `barChart` and `pieChart` return: a
+ * {@link ChartHandle} that also changes the chart's options.
+ * `update({ data })` changes the preset's data too, so responsive changes
+ * redraw with it.
+ *
+ * @example
+ * ```ts
+ * import { lineChart } from 'chartist';
+ *
+ * const chart = lineChart('#chart', { series: [[1, 3, 2, 5]] });
+ *
+ * // Areas from now on; the other options stay.
+ * chart.setOptions({ showArea: true });
+ * ```
+ * @experimental
+ */
+export interface PresetHandle<TOptions> extends ChartHandle {
+  /**
+   * Changes the options and redraws: they extend the current options, or
+   * with `override`, the defaults, dropping the options given before.
+   * Matching responsive options still apply on top. `plugins` and `on`
+   * can't change. Coming from 1.x, `setOptions(options)` is
+   * `update(undefined, options, true)` and `setOptions(options, true)` is
+   * `update(undefined, options)`.
+   * @param options The options to change.
+   * @param override Starts from the defaults instead of the current
+   * options.
+   */
+  setOptions(
+    options: Omit<TOptions, 'plugins' | 'on'>,
+    override?: boolean
+  ): this;
+}
+
 /** Internal: a preset with 1.x-style data and option updates. */
 export interface PresetController<TData, TOptions> {
-  readonly handle: ChartHandle;
+  readonly handle: PresetHandle<TOptions>;
   /** Replaces the data (1.x `update(data)`); call `render()` after. */
   setData(data: TData): void;
   /** 1.x option update: extends the defaults, or the current options. */
@@ -284,7 +319,8 @@ export function createPreset<
 
   const inner = chart(target, {
     ...withState(spec.config(data, current)),
-    plugins: [rootStyle(() => current), ...(plugins ?? [])]
+    plugins: [rootStyle(() => current), ...(plugins ?? [])],
+    on: (options as { on?: PhaseListeners }).on
   });
 
   function onResponsiveChange() {
@@ -294,10 +330,21 @@ export function createPreset<
     controller.render();
   }
 
-  const handle: ChartHandle = {
+  const handle: PresetHandle<TOptions> = {
     container: inner.container,
     update(changes) {
+      // Kept as the preset's data, so responsive changes and plugins
+      // reading the preset state (compat) see it.
+      if (changes.data) {
+        data = changes.data as TData;
+      }
       inner.update(changes);
+      return handle;
+    },
+    setOptions(next, override = false) {
+      // The controller's flag is 1.x's: true extends the current options.
+      controller.setOptions(next as TOptions, !override);
+      controller.render();
       return handle;
     },
     detach() {
@@ -313,11 +360,11 @@ export function createPreset<
     on: ((name: never, listener: never) => {
       inner.on(name, listener);
       return handle;
-    }) as ChartHandle['on'],
+    }) as PresetHandle<TOptions>['on'],
     off: ((name: never, listener?: never) => {
       inner.off(name, listener);
       return handle;
-    }) as ChartHandle['off']
+    }) as PresetHandle<TOptions>['off']
   };
   return controller;
 }

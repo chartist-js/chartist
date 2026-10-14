@@ -61,4 +61,20 @@ describe('presets/pieChart', () => {
       'ct-chart-donut'
     );
   });
+
+  it('setOptions changes the options and redraws', () => {
+    const element = sized();
+    const mount = vi.fn();
+    const chart = pieChart(element, { series: [1, 2] }, { on: { mount } });
+    expect(mount).toHaveBeenCalledTimes(1);
+    chart.setOptions({ donut: true });
+    expect(element.querySelector('svg')!.getAttribute('class')).toBe(
+      'ct-chart-donut'
+    );
+    chart.setOptions({ showLabel: false }, true);
+    expect(element.querySelector('svg')!.getAttribute('class')).toBe(
+      'ct-chart-pie'
+    );
+    expect(element.querySelectorAll('.ct-label')).toHaveLength(0);
+  });
 });

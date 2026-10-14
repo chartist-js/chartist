@@ -7,22 +7,33 @@ import type {
   PieChartData,
   PieChartOptions
 } from '../charts/PieChart/PieChart.types';
-import type { ChartConfig, ChartHandle, PluginEntry } from '../chart/types';
+import type { ChartConfig, PluginEntry } from '../chart/types';
+import type { PhaseListeners } from '../pipeline/types';
 import { pie } from '../layers/pie';
 import { pieDefaults } from './pieDefaults';
 import {
   createPreset,
   type PresetController,
+  type PresetHandle,
   type PresetSpec,
   type PresetState,
   type PresetResponsiveOptions
 } from './preset';
 
-/** @experimental */
-/** Options of `pieChart`: the 1.x `PieChart` options, with v2 plugins. */
+/**
+ * Options of `pieChart`: the 1.x `PieChart` options, with v2 plugins and
+ * phase listeners.
+ * @experimental
+ */
 export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
   readonly plugins?: readonly PluginEntry[];
+  /**
+   * Phase listeners by phase name (or `'*'` for all phases), as `on` in
+   * the config of `chart()`. They're registered before the first render,
+   * so they see it too.
+   */
+  readonly on?: PhaseListeners;
 };
 
 type Resolved = typeof pieDefaults & PieChartOptions;
@@ -103,6 +114,6 @@ export function pieChart(
   data: PieChartData,
   options: PieChartPresetOptions = {},
   responsiveOptions?: PresetResponsiveOptions<PieChartPresetOptions>
-): ChartHandle {
+): PresetHandle<PieChartPresetOptions> {
   return createPieChart(target, data, options, responsiveOptions).handle;
 }

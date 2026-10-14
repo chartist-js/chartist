@@ -7,7 +7,8 @@ import type {
   LineChartOptions
 } from '../charts/LineChart/LineChart.types';
 import type { Label } from '../core/types';
-import type { ChartConfig, ChartHandle, PluginEntry } from '../chart/types';
+import type { ChartConfig, PluginEntry } from '../chart/types';
+import type { PhaseListeners } from '../pipeline/types';
 import { line, type LineSeriesOptions } from '../layers/line';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
 import type { LabelMode } from '../render/measure';
@@ -23,6 +24,7 @@ import {
   type AxisPresetOptions,
   type PresetAxisOptions,
   type PresetController,
+  type PresetHandle,
   type PresetSpec,
   type PresetState,
   type PresetResponsiveOptions
@@ -39,6 +41,12 @@ export type LineChartPresetOptions = Omit<
 > & {
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
   readonly plugins?: readonly PluginEntry[];
+  /**
+   * Phase listeners by phase name (or `'*'` for all phases), as `on` in
+   * the config of `chart()`. They're registered before the first render,
+   * so they see it too.
+   */
+  readonly on?: PhaseListeners;
   /** Options per series name: only these five apply per series. */
   readonly series?: Readonly<Record<string, LineSeriesOptions>>;
   /** Options of the X axis; its `type` may also be a v2 axis factory. */
@@ -165,6 +173,6 @@ export function lineChart(
   data: LineChartData,
   options: LineChartPresetOptions = {},
   responsiveOptions?: PresetResponsiveOptions<LineChartPresetOptions>
-): ChartHandle {
+): PresetHandle<LineChartPresetOptions> {
   return createLineChart(target, data, options, responsiveOptions).handle;
 }

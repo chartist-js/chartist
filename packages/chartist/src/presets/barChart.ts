@@ -6,7 +6,8 @@ import type {
   BarChartData,
   BarChartOptions
 } from '../charts/BarChart/BarChart.types';
-import type { ChartConfig, ChartHandle, PluginEntry } from '../chart/types';
+import type { ChartConfig, PluginEntry } from '../chart/types';
+import type { PhaseListeners } from '../pipeline/types';
 import { getHighLow } from '../core/data/highLow';
 import type { Label, Options } from '../core/types';
 import { bar, getSerialSums } from '../layers/bar';
@@ -24,6 +25,7 @@ import {
   type AxisPresetOptions,
   type PresetAxisOptions,
   type PresetController,
+  type PresetHandle,
   type PresetSpec,
   type PresetState,
   type PresetResponsiveOptions
@@ -40,6 +42,12 @@ export type BarChartPresetOptions = Omit<
 > & {
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
   readonly plugins?: readonly PluginEntry[];
+  /**
+   * Phase listeners by phase name (or `'*'` for all phases), as `on` in
+   * the config of `chart()`. They're registered before the first render,
+   * so they see it too.
+   */
+  readonly on?: PhaseListeners;
   /**
    * How stacked bars stack: `accumulate` (default), `accumulate-relative`
    * (positives up, negatives down), or `overlap` (also `true`): every bar
@@ -226,6 +234,6 @@ export function barChart(
   data: BarChartData,
   options: BarChartPresetOptions = {},
   responsiveOptions?: PresetResponsiveOptions<BarChartPresetOptions>
-): ChartHandle {
+): PresetHandle<BarChartPresetOptions> {
   return createBarChart(target, data, options, responsiveOptions).handle;
 }

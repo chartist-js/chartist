@@ -115,6 +115,110 @@ describe('presets/lineChart', () => {
   });
 });
 
+describe('presets/lineChart handle', () => {
+  it('setOptions extends the current options and redraws', () => {
+    const element = sized();
+    const chart = lineChart(
+      element,
+      { series: [[1, 2]] },
+      { showPoint: false }
+    );
+    expect(element.querySelectorAll('.ct-area')).toHaveLength(0);
+    expect(chart.setOptions({ showArea: true })).toBe(chart);
+    expect(element.querySelectorAll('.ct-area')).toHaveLength(1);
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(0);
+  });
+
+  it('setOptions with override starts from the defaults', () => {
+    const element = sized();
+    const chart = lineChart(
+      element,
+      { series: [[1, 2]] },
+      { showPoint: false }
+    );
+    chart.setOptions({ showArea: true }, true);
+    expect(element.querySelectorAll('.ct-area')).toHaveLength(1);
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(2);
+  });
+
+  it('setOptions keeps the matching responsive options on top', () => {
+    const media = mockMedia();
+    media.set('(max-width: 600px)', true);
+    const element = sized();
+    const chart = lineChart(element, { series: [[1, 2]] }, {}, [
+      ['(max-width: 600px)', { showPoint: false }]
+    ]);
+    chart.setOptions({ showArea: true, showPoint: true });
+    expect(element.querySelectorAll('.ct-area')).toHaveLength(1);
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(0);
+    media.set('(max-width: 600px)', false);
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(2);
+    expect(element.querySelectorAll('.ct-area')).toHaveLength(1);
+  });
+
+  it('keeps data given to update when a breakpoint changes (#1472)', () => {
+    const media = mockMedia();
+    const element = sized();
+    let preset: { data: unknown } | undefined;
+    const chart = lineChart(
+      element,
+      { series: [[1, 2, 3]] },
+      {
+        on: {
+          resolve: ({ config }) =>
+            void (preset = config.preset as typeof preset)
+        }
+      },
+      [['(max-width: 600px)', { showLine: false }]]
+    );
+    const next = { series: [[5, 4, 3, 2]] };
+    chart.update({ data: next });
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(4);
+    media.set('(max-width: 600px)', true);
+    expect(element.querySelectorAll('.ct-line')).toHaveLength(0);
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(4);
+    expect(preset?.data).toBe(next);
+    // And after setOptions, which rebuilds the config from the preset.
+    chart.setOptions({ showArea: true });
+    expect(element.querySelectorAll('.ct-point')).toHaveLength(4);
+  });
+
+  it('on in the options sees the first render', () => {
+    const element = sized();
+    const mount = vi.fn();
+    const all = vi.fn();
+    lineChart(element, { series: [[1, 2]] }, { on: { mount, '*': all } });
+    expect(mount).toHaveBeenCalledTimes(1);
+    expect(mount.mock.calls[0][0].output.svg).toBe(
+      element.querySelector('svg')
+    );
+    expect(all).toHaveBeenCalledWith('mount', expect.anything());
+  });
+
+  it('off(name) removes the listeners of on in the options, not plugins', () => {
+    const element = sized();
+    const fromOptions = vi.fn();
+    const fromPlugin = vi.fn();
+    const chart = lineChart(
+      element,
+      { series: [[1, 2]] },
+      {
+        on: { mount: fromOptions },
+        plugins: [
+          {
+            name: 'plugin',
+            install: handle => void handle.on('mount', fromPlugin)
+          }
+        ]
+      }
+    );
+    chart.off('mount');
+    chart.update({});
+    expect(fromOptions).toHaveBeenCalledTimes(1);
+    expect(fromPlugin).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('presets/createLineChart (controller)', () => {
   it('setOptions extends the defaults, or the current options with override', async () => {
     const { createLineChart } = await import('./lineChart');
