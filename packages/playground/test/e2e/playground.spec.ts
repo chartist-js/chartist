@@ -268,3 +268,29 @@ test('the bar between editor and preview resizes them', async ({ page }) => {
   await bar.dblclick();
   await expect(bar).toHaveAttribute('aria-valuenow', '50');
 });
+
+for (const layout of ['inline', 'full']) {
+  test(`fast typing lands in order (${layout} layout)`, async ({ page }) => {
+    // A scroll between the browser's insertion and CodeMirror reading it
+    // used to put the cursor in front of the typed character (editor.ts).
+    const typed = Array.from({ length: 12 }, (_, i) => `const v${i} = ${i};`);
+    await page.goto(`?example=line-area&layout=${layout}`);
+    await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
+      timeout: 20_000
+    });
+    await page.getByRole('tab', { name: 'src/main.ts' }).click();
+    const lines = page.locator('.cm-line');
+    await page.locator('.cm-content').click();
+    await page.keyboard.press('ControlOrMeta+End');
+    const last = await lines.last().textContent();
+    for (const line of typed) {
+      await page.keyboard.press('ControlOrMeta+End');
+      await page.keyboard.type(`\n${line}`);
+    }
+    await expect
+      .poll(async () =>
+        (await lines.allTextContents()).slice(-(typed.length + 1))
+      )
+      .toEqual([last, ...typed]);
+  });
+}

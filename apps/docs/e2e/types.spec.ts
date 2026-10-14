@@ -48,9 +48,7 @@ test('a live example completes Chartist functions from the site', async ({
 
   // From here the preview runs half-typed code, which may throw.
   await page.keyboard.press('ControlOrMeta+End');
-  // Typed like a person: instant typing can displace a character in live
-  // examples (a finding of add-playground-types, not about types).
-  await page.keyboard.type('\nbarCh', { delay: 50 });
+  await page.keyboard.type('\nbarCh');
   const option = page
     .locator('.cm-tooltip-autocomplete')
     .getByRole('option', { name: 'barChart' });

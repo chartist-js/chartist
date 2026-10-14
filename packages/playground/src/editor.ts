@@ -61,6 +61,24 @@ const theme = EditorView.theme({
 });
 
 /**
+ * Reads typed text before a scroll can. CodeMirror reads typing from the
+ * DOM, in a MutationObserver, which runs at the next microtask checkpoint.
+ * Without a script listening for `input`, the first script to run after
+ * the browser inserts a character can be a `scroll` listener: Chrome
+ * dispatches scroll events (the editor or the page following the cursor)
+ * in the same frame. CodeMirror's scroll handler then applies the pending
+ * insertion with the selection from before it, so the cursor lands in front
+ * of the typed character and the rest of the line goes before it. Any
+ * `input` listener ends in a microtask checkpoint right after the
+ * insertion, so the observer reads it, with the selection, first.
+ */
+const readInputBeforeScroll = EditorView.domEventObservers({
+  input() {
+    // Nothing to do: running at all is the point (see above).
+  }
+});
+
+/**
  * A minimal CodeMirror 6 editor (design D6): one state per file, swapped on
  * tab change, so undo history stays per file.
  */
@@ -81,6 +99,7 @@ export function createEditor(
         doc: files[file] ?? '',
         extensions: [
           theme,
+          readInputBeforeScroll,
           editingTheme,
           // The editing area is a textbox; name it after the file. It's in
           // the tab order anyway (contenteditable); the explicit tabindex
