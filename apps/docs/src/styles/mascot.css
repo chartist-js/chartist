@@ -113,16 +113,42 @@
   }
 }
 
-/* The board is paper-white in both themes, so its chart keeps light colors. */
+/*
+ * The board is beige in both themes, as the 0.x site's chart was: brown
+ * labels (darker than 0.x's, for contrast), a brownish grid, thick lines.
+ */
 .mascot-board {
-  --ct-label-color: #6b5e5a;
-  --ct-grid-color: rgb(43 36 38 / 0.22);
-  --ct-label-size: 9px;
-  --ct-line-width: 3px;
-  --ct-point-size: 8px;
+  --ct-label-color: #73552a;
+  --ct-grid-color: #cfad79;
+  --ct-label-size: 11px;
+  --ct-line-width: 5px;
+  --ct-point-size: 10px;
   --ct-series-e: #453d3f;
   --ct-series-g: #0544d3;
   --ct-series-h: #6b0392;
+}
+
+/* The first line marches, as in 0.x: dashes with a moving offset, and
+   square points. (The board's draw-in leaves this line out.) */
+.mascot-board .ct-series-a .ct-line {
+  stroke-dasharray: 5px;
+  animation: m-dashoffset 1s linear infinite;
+}
+
+.mascot-board .ct-series-a .ct-point {
+  stroke-linecap: square;
+}
+
+@keyframes m-dashoffset {
+  to {
+    stroke-dashoffset: -20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-board .ct-series-a .ct-line {
+    animation: none;
+  }
 }
 
 /* Mouths and reactions: the default mouth unless a reaction asks for another. */

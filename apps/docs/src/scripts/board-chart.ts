@@ -1,10 +1,24 @@
 /** The line chart on the mascot's board (hero). */
-import { lineChart, type ChartHandle } from 'chartist';
-import { drawIn } from './charts';
+import { lineChart, type ChartHandle, type ChartPlugin } from 'chartist';
 
 const millions = (value: number | string) => {
   const m = Number(value) / 1e6;
   return m === 0 ? '0' : `${Number.isInteger(m) ? m : m.toFixed(1)}m.`;
+};
+
+/**
+ * Draws the second line in (pathLength for .ct-draw); the first one
+ * marches with dashes instead (mascot.css), as on the 0.x site.
+ */
+const boardDrawIn: ChartPlugin = {
+  name: 'board-draw-in',
+  install(handle) {
+    handle.on('compose', node =>
+      node.role === 'line' && node.ctx.seriesIndex > 0
+        ? node.attr({ pathLength: 1 })
+        : undefined
+    );
+  }
 };
 
 export function mountBoardChart(element: HTMLElement): ChartHandle {
@@ -21,15 +35,15 @@ export function mountBoardChart(element: HTMLElement): ChartHandle {
       low: 0,
       high: 6000000,
       fullWidth: true,
-      chartPadding: { top: 12, right: 14, bottom: 0, left: 0 },
-      axisX: { offset: 18 },
+      chartPadding: { top: 12, right: 22, bottom: 0, left: 0 },
+      axisX: { offset: 20 },
       axisY: {
-        offset: 26,
+        offset: 30,
         scaleMinSpace: 16,
         onlyInteger: true,
         labelInterpolationFnc: millions
       },
-      plugins: [drawIn]
+      plugins: [boardDrawIn]
     }
   );
 }

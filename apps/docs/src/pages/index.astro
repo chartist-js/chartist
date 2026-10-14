@@ -20,12 +20,8 @@ import { REPO, href } from '../lib/site';
 
 <BaseLayout title="Chartist" description="Simple, responsive charts drawn in SVG and styled with CSS. Tiny, typed, and happy without a build step.">
   <ChapterNav />
-  <section
-    id="top"
-    class="wrap grid grid-cols-[repeat(auto-fit,minmax(min(460px,100%),1fr))] items-center gap-x-12 gap-y-6 pt-[clamp(32px,6vw,72px)] pb-[clamp(40px,6vw,80px)]"
-    data-section
-    data-visual="hero"
-  >
+  <section id="top" class="hero" data-section data-visual="hero">
+    <div class="wrap grid grid-cols-[repeat(auto-fit,minmax(min(460px,100%),1fr))] items-center gap-x-12 gap-y-6 pt-[clamp(32px,6vw,72px)] pb-[clamp(40px,6vw,80px)]">
     <div class="flex flex-col gap-6">
       <span class="tag accent self-start">Open source · MIT or WTFPL · since 2014</span>
       <h1 class="display">Simple charts, <span class="hl">dressed in CSS.</span></h1>
@@ -47,6 +43,7 @@ import { REPO, href } from '../lib/site';
         <div class="board-chart ct-draw size-full" data-board-chart role="img" aria-label="A line chart with two series"></div>
       </Mascot>
       <a href="#story" class="pill-link">Scroll, he'll show you around ↓</a>
+    </div>
     </div>
   </section>
   <ReleaseBanner />

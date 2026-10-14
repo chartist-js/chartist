@@ -12,6 +12,8 @@
   --p-cream-200: #f3eadb;
   --p-cream-300: #e6d9c6;
   --p-cream-400: #cdbda6;
+  /* The 0.x site's beige: the mascot's board. */
+  --p-parchment-300: #eadbc4;
   --p-ink-300: #b3a49c;
   --p-ink-500: #6b5e5a;
   --p-ink-700: #3a3133;
@@ -99,7 +101,7 @@
   --m-skin-2: var(--p-skin-600);
   --m-vest: var(--p-waistcoat-500);
   --m-wood: var(--p-wood-500);
-  --m-board: var(--p-cream-50);
+  --m-board: var(--p-parchment-300);
   --m-tie: var(--p-mustard-400);
 
   /* ---------- 4. Type ---------- */
@@ -181,7 +183,7 @@
   --info-bg: #1b2638;
   --code-bg: #151112;
   --m-ink: #151112;
-  --m-board: #fffdf9;
+  --m-board: var(--p-parchment-300);
   --shadow-2: 0 2px 0 #000;
   --shadow-3: 4px 4px 0 #000;
 }

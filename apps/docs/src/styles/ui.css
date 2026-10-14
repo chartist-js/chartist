@@ -268,3 +268,44 @@ a.btn.primary:hover {
   color: var(--link);
   text-decoration: none;
 }
+
+/*
+ * The landing hero: a yellow band, as on the 0.x site, in both themes. It
+ * keeps the light theme's ink, so text and buttons read on the yellow, and
+ * its accents turn white.
+ */
+.hero {
+  --bg: var(--p-mustard-400);
+  --paper: url('../assets/paper.webp');
+  --paper-blend: multiply;
+  --surface: var(--p-cream-50);
+  --line: var(--p-ink-800);
+  --ink: var(--p-ink-800);
+  --ink-2: var(--p-ink-700);
+  --link: var(--p-waistcoat-600);
+  --brand: var(--p-waistcoat-500);
+  --on-brand: var(--p-cream-50);
+  --accent: var(--p-cream-50);
+  --on-accent: var(--p-ink-800);
+  color: var(--ink);
+  background-color: var(--bg);
+  background-image: var(--paper);
+  background-size: 320px 320px;
+  background-blend-mode: var(--paper-blend);
+}
+
+:root[data-theme='dark'] .hero .hl {
+  color: var(--ink);
+  background: linear-gradient(
+    transparent 58%,
+    var(--accent) 58%,
+    var(--accent) 92%,
+    transparent 92%
+  );
+}
+
+@media print {
+  .hero {
+    background-image: none;
+  }
+}
