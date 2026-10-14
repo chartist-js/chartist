@@ -1,12 +1,5 @@
 import 'chartist/styles.css';
-import {
-  lineChart,
-  easings,
-  findAll,
-  Svg,
-  type ChartPlugin,
-  type SvgPath
-} from 'chartist';
+import { lineChart, easings, findAll, Svg, type ChartPlugin } from 'chartist';
 
 // Lines and areas grow from the bottom with SMIL, one series after the other.
 const growPaths: ChartPlugin = {
@@ -26,10 +19,10 @@ const growPaths: ChartPlugin = {
         if (!element) {
           continue;
         }
-        const path = shape.ctx?.path as SvgPath;
+        const path = shape.ctx.path;
         new Svg(element).animate({
           d: {
-            begin: 2000 * (shape.ctx?.seriesIndex ?? 0),
+            begin: 2000 * shape.ctx.seriesIndex,
             dur: 2000,
             from: path.clone().scale(1, 0).translate(0, height).stringify(),
             to: path.clone().stringify(),

@@ -13,8 +13,11 @@ const heat: ChartPlugin = {
       if (node.role !== 'bar') {
         return;
       }
-      const value = node.ctx?.value as { y?: number } | undefined;
-      const share = ((value?.y ?? min) - min) / (max - min);
+      // Bar values are { x, y } (or a hole).
+      const { value } = node.ctx;
+      const y =
+        value && typeof value === 'object' && 'y' in value ? value.y : min;
+      const share = (y - min) / (max - min);
       const hue = Math.round(share * 120);
       return node.attr({ style: `stroke: hsl(${hue} 70% 45%)` });
     });

@@ -12,7 +12,7 @@ const drawIn: ChartPlugin = {
         return node.attr({ pathLength: 1 });
       }
       if (node.role === 'point') {
-        return node.attr({ style: `--i: ${node.ctx?.valueIndex ?? 0}` });
+        return node.attr({ style: `--i: ${node.ctx.valueIndex}` });
       }
     });
   }

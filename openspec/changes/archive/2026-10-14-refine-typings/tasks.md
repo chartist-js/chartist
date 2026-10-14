@@ -23,4 +23,4 @@
 - [x] 4.1 Type tests (`*.v2.test-d.ts`): narrowing, queries, builders, events, plugins, options, with `@ts-expect-error` cases; the 1.x type tests unchanged against `chartist@1.5.0`.
 - [x] 4.2 Remove the casts from examples, compat and docs examples (D8); visual tests and docs checks pass.
 - [x] 4.3 Docs: a note on typed nodes and events in Events and plugins, and in Coming from 1.x; findings updated (typing items resolved).
-- [ ] 4.4 Plan updated; full gate.
+- [x] 4.4 Plan updated; full gate.

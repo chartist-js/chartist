@@ -21,7 +21,7 @@ const drawSlices: ChartPlugin = {
         if (!element) {
           continue;
         }
-        const index = (slice.ctx?.index as number | undefined) ?? 0;
+        const index = slice.ctx.index;
         const svg = new Svg(element);
 
         // Get the total path length in order to use for dash array animation

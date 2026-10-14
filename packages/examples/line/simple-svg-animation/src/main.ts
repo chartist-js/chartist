@@ -16,7 +16,7 @@ const fadeInPoints: ChartPlugin = {
         if (!element) {
           continue;
         }
-        const x = point.ctx?.x as number;
+        const x = point.ctx.x;
         // We use the Svg API to trigger SMIL animations on each point
         new Svg(element).animate({
           opacity: {

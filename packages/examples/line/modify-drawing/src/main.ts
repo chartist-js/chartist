@@ -11,7 +11,7 @@ const triangles: ChartPlugin = {
       if (element.role !== 'point') {
         return;
       }
-      const { x, y } = element.ctx as { x: number; y: number };
+      const { x, y } = element.ctx;
       // Its color comes from CSS (style.css), like every other element.
       return node(
         'path',

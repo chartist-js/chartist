@@ -70,7 +70,7 @@ chart.on('draw', data => {
 });
 ```
 
-Without `compat`, a listener for a 1.x event isn't called, and the console tells you once per event name what to add.
+Without `compat`, a listener for a 1.x event isn't called, and the console tells you once per event name what to add. In TypeScript it doesn't compile either: importing `chartist/compat` is what declares the 1.x events, so `data` in a `draw` listener is typed as before.
 
 With `compat`, `draw` events come in the 1.x order and with the 1.x payloads. They fire right after the chart is in the DOM, so `data.element` is a live element you can measure, animate or replace. One small difference: an element you append to `data.group` lands after the group's other elements.
 
@@ -149,7 +149,7 @@ const markFriday: ChartPlugin = {
   name: 'mark-friday',
   install(chart) {
     chart.on('compose', node =>
-      node.role === 'point' && node.ctx?.valueIndex === 4
+      node.role === 'point' && node.ctx.valueIndex === 4
         ? node.addClass('is-friday')
         : undefined
     );
@@ -207,6 +207,7 @@ These come with the functions. The classes stay as they were in 1.x, so they don
 - **Container queries** for responsive options, next to media queries (experimental). See [Responsive sugar topping](../responsive/).
 - **Server rendering** with `toScene()` and `renderToString()`, and SVG text labels. See [Server rendering](../server-rendering/).
 - **v2 plugins** that hook into every step of the pipeline. See [Events and plugins](../events-and-plugins/).
+- **Stricter types:** scene nodes narrow by role, event names and payloads are checked, and a misspelled event is a compile error instead of a listener that's never called.
 
 And for every chart, classes included:
 

@@ -18,7 +18,7 @@ const growBars: ChartPlugin = {
         }
         new Svg(element).animate({
           y2: {
-            begin: (bar.ctx?.valueIndex ?? 0) * 120,
+            begin: bar.ctx.valueIndex * 120,
             dur: 700,
             from: bar.attrs.y1,
             to: bar.attrs.y2,

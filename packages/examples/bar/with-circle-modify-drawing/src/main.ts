@@ -17,14 +17,14 @@ const peakCircles: ChartPlugin = {
           return withChild;
         }
         // The circle sits at the bar peak's coordinates
-        const { x2, y2 } = child.attrs as { x2: number; y2: number };
+        const { x2, y2 } = child.attrs;
         return withChild.append(
           node(
             'circle',
             {
               cx: x2,
               cy: y2,
-              r: Math.abs(Number(getMultiValue(child.ctx?.value))) * 2 + 5
+              r: Math.abs(Number(getMultiValue(child.ctx.value))) * 2 + 5
             },
             'ct-slice-pie'
           )
