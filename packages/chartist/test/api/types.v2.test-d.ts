@@ -8,9 +8,11 @@ import {
   findAll,
   lineChart,
   node,
+  responsive,
   withOptions,
   type ChartPlugin,
   type Layer,
+  type ResponsiveWatcher,
   type RoleNode,
   type SceneNode,
   type ScaleAxis,
@@ -175,5 +177,13 @@ describe('v2 type contract', () => {
       install: () => undefined
     };
     void unknownEvent;
+  });
+
+  test('a responsive set watches with a ResponsiveWatcher', () => {
+    const set = responsive([['(width < 400px)', { width: 300 }]]);
+    expectTypeOf(set.watch).returns.toEqualTypeOf<ResponsiveWatcher>();
+    expectTypeOf<ResponsiveWatcher['matching']>().toEqualTypeOf<
+      readonly number[]
+    >();
   });
 });

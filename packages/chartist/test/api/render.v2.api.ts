@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { renderToString, toScene } from 'chartist';
+import { estimateText, renderToString, toScene } from 'chartist';
 import { dotsLayer } from './layers.v2.ts';
 
 describe('server-side rendering (v2)', () => {
@@ -26,5 +26,16 @@ describe('server-side rendering (v2)', () => {
         )
       );
     expect(render()).toBe(render());
+  });
+});
+
+describe('estimateText (v2)', () => {
+  test('estimates text sizes without a DOM', () => {
+    expect(estimateText('Hello', { fontSize: 10 })).toEqual({
+      width: 30,
+      height: 12,
+      fontSize: 10
+    });
+    expect(estimateText('Hi').fontSize).toBe(12);
   });
 });

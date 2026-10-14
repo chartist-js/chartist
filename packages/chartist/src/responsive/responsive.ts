@@ -108,11 +108,17 @@ export function resetResponsiveWarning() {
   warned = false;
 }
 
+/**
+ * Watches the conditions of a {@link ResponsiveSet}'s entries, as its
+ * `watch()` returns it: which entries match, and when that changes.
+ * @experimental
+ */
 export interface ResponsiveWatcher {
   /** Indexes of the matching entries, as of the last `check()`. */
   readonly matching: readonly number[];
   /** Re-reads all conditions; true if the matching set changed. */
   check(): boolean;
+  /** Stops watching: no more `onChange` calls, and no listeners left. */
   stop(): void;
 }
 

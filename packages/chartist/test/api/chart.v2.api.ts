@@ -1,4 +1,12 @@
-import { chart, findAll, type PhaseEvents, type SceneNode } from 'chartist';
+import {
+  chart,
+  domRenderer,
+  findAll,
+  type DomRenderOutput,
+  type PhaseEvents,
+  type Renderer,
+  type SceneNode
+} from 'chartist';
 import { container } from './fixture.ts';
 import { dotsLayer } from './layers.v2.ts';
 
@@ -227,5 +235,23 @@ describe('pipeline events (chart-pipeline spec)', () => {
       'render',
       'mount'
     ]);
+  });
+});
+
+describe('domRenderer (v2)', () => {
+  test('a custom renderer can wrap the DOM renderer', () => {
+    const el = container();
+    const dom = domRenderer();
+    const renderer: Renderer<DomRenderOutput> = {
+      ...dom,
+      render(scene, target) {
+        const output = dom.render(scene, target);
+        output.svg.setAttribute('role', 'img');
+        return output;
+      }
+    };
+    chart(el, { data, layers: [dotsLayer()], renderer });
+    expect(el.querySelector('svg')?.getAttribute('role')).toBe('img');
+    expect(el.querySelectorAll('circle.dot')).toHaveLength(3);
   });
 });

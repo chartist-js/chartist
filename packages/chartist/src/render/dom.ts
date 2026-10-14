@@ -3,9 +3,17 @@ import type { SceneNode } from '../scene/node';
 import { estimateText, type MeasureText } from './measure';
 import type { Renderer, RenderOutput } from './types';
 
+/**
+ * What {@link domRenderer} returns from `render()`: the inline SVG it
+ * added to the container.
+ * @experimental
+ */
 export interface DomRenderOutput extends RenderOutput {
+  /** The chart's `svg` element, in the container. */
   readonly svg: SVGSVGElement;
+  /** The rendered element of a scene node of this render. */
   readonly elementOf: (node: SceneNode) => Element | undefined;
+  /** Takes the SVG out of the container again. */
   readonly remove: () => void;
 }
 
@@ -108,8 +116,34 @@ function measureInDocument(document: Document): MeasureText {
 }
 
 /**
- * Renders scenes as inline SVG into a container, replacing an earlier
- * Chartist SVG there (as 1.x does).
+ * Creates the renderer `chart()` uses by default: it renders scenes as
+ * inline SVG into the container, replacing an earlier Chartist SVG there
+ * (as 1.x does), and measures text in the container, so its CSS applies.
+ * Wrap it to change what every render puts on the page.
+ *
+ * @example
+ * ```ts
+ * import { chart, domRenderer, pie, type Renderer } from 'chartist';
+ *
+ * const dom = domRenderer();
+ * // The DOM renderer, with a name for screen readers on every render.
+ * const renderer: Renderer = {
+ *   ...dom,
+ *   render(scene, container) {
+ *     const output = dom.render(scene, container);
+ *     output.svg.setAttribute('role', 'img');
+ *     output.svg.setAttribute('aria-label', 'Monthly budget');
+ *     return output;
+ *   }
+ * };
+ *
+ * chart('#chart', {
+ *   data: { series: [50, 30, 20] },
+ *   coordinates: 'polar',
+ *   layers: [pie()],
+ *   renderer
+ * });
+ * ```
  * @experimental
  */
 export function domRenderer(): Renderer<DomRenderOutput> {

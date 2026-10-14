@@ -55,7 +55,20 @@ export const DEFAULT_FONT_SIZE = 12;
 
 /**
  * Estimates text size without a DOM: an average glyph is 0.6 em wide, and a
- * line is 1.2 em high.
+ * line is 1.2 em high, at `fontSize` or else 12 px. `toScene()` measures
+ * with it unless you pass your own, which can build on it.
+ *
+ * @example
+ * ```ts
+ * import { estimateText, type MeasureText } from 'chartist';
+ *
+ * // Bold labels: a tenth wider than the estimate.
+ * export const measureText: MeasureText = (text, options) => {
+ *   const size = estimateText(text, options);
+ *   return { ...size, width: size.width * 1.1 };
+ * };
+ * ```
+ * @experimental
  */
 export const estimateText: MeasureText = (text, options = {}) => {
   const fontSize = options.fontSize ?? DEFAULT_FONT_SIZE;

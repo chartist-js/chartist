@@ -3,5 +3,6 @@ export type {
   ContainerCondition,
   ResponsiveCondition,
   ResponsiveEntry,
-  ResponsiveSet
+  ResponsiveSet,
+  ResponsiveWatcher
 } from './responsive';
