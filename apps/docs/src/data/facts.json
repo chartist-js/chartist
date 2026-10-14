@@ -113,6 +113,56 @@
       }
     ]
   },
+  "plugins": {
+    "chartist-plugin-axistitle": {
+      "monthlyDownloads": 45483,
+      "lastRelease": "2019-12-19"
+    },
+    "chartist-plugin-legend": {
+      "monthlyDownloads": 29053,
+      "lastRelease": "2017-08-05"
+    },
+    "chartist-plugin-tooltips": {
+      "monthlyDownloads": 22820,
+      "lastRelease": "2016-09-18"
+    },
+    "chartist-plugin-pointlabels": {
+      "monthlyDownloads": 11888,
+      "lastRelease": "2018-02-18"
+    },
+    "chartist-hover": {
+      "monthlyDownloads": 9844,
+      "lastRelease": "2018-05-15"
+    },
+    "chartist-plugin-zoom": {
+      "monthlyDownloads": 9140,
+      "lastRelease": "2019-12-14"
+    },
+    "chartist-plugin-fill-donut": {
+      "monthlyDownloads": 5181,
+      "lastRelease": "2016-11-05"
+    },
+    "chartist-plugin-barlabels": {
+      "monthlyDownloads": 2585,
+      "lastRelease": "2016-02-01"
+    },
+    "chartist-plugin-accessibility": {
+      "monthlyDownloads": 1988,
+      "lastRelease": "2018-02-11"
+    },
+    "chartist-plugin-threshold": {
+      "monthlyDownloads": 1441,
+      "lastRelease": "2015-11-18"
+    },
+    "chartist-plugin-targetline": {
+      "monthlyDownloads": 748,
+      "lastRelease": "2017-08-11"
+    },
+    "@stklcode/chartist-plugin-tooltips": {
+      "monthlyDownloads": 811,
+      "lastRelease": "2026-09-20"
+    }
+  },
   "sizes": {
     "method": "One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts’ recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).",
     "versions": {
