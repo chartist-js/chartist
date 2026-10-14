@@ -50,6 +50,10 @@ export function previewStyles(): string {
   --ct-grid-color: color-mix(in oklab, var(--ink) 10%, transparent);
 }
 html, body { margin: 0; color: var(--ink); font-family: var(--font-body); }
+html {
+  scrollbar-color: color-mix(in oklab, var(--ink) 24%, transparent) transparent;
+}
+:where(*) { scrollbar-width: thin; }
 body {
   background-color: var(--surface);
   background-image: radial-gradient(var(--line) 1px, transparent 1px);

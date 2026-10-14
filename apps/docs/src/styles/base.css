@@ -16,6 +16,55 @@ html {
   line-height: var(--lh-body);
   -webkit-font-smoothing: antialiased;
   scroll-padding-top: 88px;
+  /* Scrollbar colors inherit from here; the width doesn't (below). */
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* Thin scrollbars on every scrolling element (scrollbar-width doesn't
+   inherit). No specificity, so anything can override it. */
+:where(*) {
+  scrollbar-width: thin;
+}
+
+/* Code is dark in both themes, so its scrollbars are light. */
+pre,
+.live,
+.playground-page {
+  scrollbar-color: var(--code-scrollbar-thumb) transparent;
+}
+
+/* Safari: no scrollbar-color yet, so the WebKit pseudo-elements. */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: var(--scrollbar-thumb) padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
+  pre::-webkit-scrollbar-thumb,
+  .live ::-webkit-scrollbar-thumb,
+  .playground-page ::-webkit-scrollbar-thumb {
+    background-color: var(--code-scrollbar-thumb);
+  }
+
+  pre::-webkit-scrollbar-thumb:hover,
+  .live ::-webkit-scrollbar-thumb:hover,
+  .playground-page ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--code-scrollbar-thumb-hover);
+  }
 }
 
 body {

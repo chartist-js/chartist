@@ -71,6 +71,19 @@
   --code-str: #f4c63d;
   --code-num: #8fb8ff;
   --code-fn: #7fd1c2;
+  /* scrollbars: thin, a translucent thumb on the surface they scroll */
+  --scrollbar-thumb: color-mix(in oklab, var(--ink) 24%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklab, var(--ink) 40%, transparent);
+  --code-scrollbar-thumb: color-mix(
+    in oklab,
+    var(--code-muted) 45%,
+    transparent
+  );
+  --code-scrollbar-thumb-hover: color-mix(
+    in oklab,
+    var(--code-muted) 70%,
+    transparent
+  );
   --code-line: #ffffff1a; /* borders over code */
   --code-hover: #ffffff14; /* hovered and selected tabs over code */
   --code-accent: var(--p-grapefruit-400); /* the selected tab's underline */
