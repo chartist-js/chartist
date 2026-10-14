@@ -1,0 +1,169 @@
+---
+title: Server rendering
+description: Build a chart's scene without a browser and turn it into SVG markup, for server-rendered pages, PDFs, email and images.
+group: Guides
+order: 8
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    [12, 9, 7, 8, 5],
+    [2, 1, 3.5, 7, 3]
+  ]
+};
+
+A Chartist chart doesn't need a browser until the very end. The pipeline builds a scene, a plain tree of SVG elements, and only the last step writes it into the page. Stop before that step, and you can render the scene to a string anywhere JavaScript runs: in Node.js, in a server bundle, in a worker.
+
+## Two functions
+
+`toScene(config, size)` runs the pipeline from `resolve` to `scene` and returns the scene. It takes the same config as `chart()`, with your plugins and listeners, plus the size to lay out at. It touches no DOM, timers or globals.
+
+`renderToString(scene)` turns a scene into standalone SVG markup, namespaces included.
+
+```ts
+import {
+  autoScaleAxis,
+  axisGrid,
+  axisLabels,
+  cartesianAxes,
+  line,
+  renderToString,
+  stepAxis,
+  toScene
+} from 'chartist';
+
+export function weekChart(values: number[]): string {
+  const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+  const scene = toScene(
+    {
+      data: { labels, series: [values] },
+      axes: cartesianAxes([
+        { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+        { id: 'y', side: 'left', type: autoScaleAxis() }
+      ]),
+      layers: [axisGrid(), line(), axisLabels()],
+      className: 'ct-chart-line'
+    },
+    { width: 600, height: 300 }
+  );
+  return renderToString(scene);
+}
+```
+
+`toScene()` takes a config, so it works with `chart()`'s building blocks: axes and layers. The presets (`lineChart()` and friends) draw into an element and have no string form. The [composed charts](../composed-charts/) page has more on axes and layers.
+
+The browser can run the same code. This example builds the markup with `toScene()` and `renderToString()` and puts it into the page with `innerHTML`:
+
+<LiveExample
+  title='Rendered to a string'
+  label='A line chart with two series from Monday to Friday, rendered to SVG markup'
+  preview={{ type: 'line', data }}
+  example='server-rendering/to-string'
+/>
+
+## Size
+
+A server has no container to measure, so you pass the size: the scene is laid out at `width` × `height`, and the root `svg` gets those as its `width` and `height`. To let the markup scale with its container, add a `viewBox` of the same size to the config, as the example does, and size the SVG with CSS:
+
+```css
+.chart svg {
+  width: 100%;
+  height: auto;
+}
+```
+
+## Measuring text
+
+SVG labels (see [below](#svg-or-html-labels)) are wrapped into lines and aligned by Chartist, so it needs to know how wide text is. In the browser, it measures the text with the page's fonts. On a server, `toScene()` estimates it: each character is 0.6 em wide and a line 1.2 em high, at 12px unless told otherwise. That's close enough for numbers and short labels.
+
+When you know your fonts, pass a `measureText` function in the size, next to `width` and `height`. It gets the text and options with the `fontSize` (and the label's `classes`), and returns a `width` and `height` in px:
+
+```ts
+import type { MeasureText } from 'chartist';
+
+// Wider glyphs than the estimate, for a wide font.
+export const measureText: MeasureText = (text, options = {}) => {
+  const fontSize = options.fontSize ?? 12;
+  return { width: text.length * fontSize * 0.7, height: fontSize * 1.25 };
+};
+```
+
+Then call `toScene(config, { width: 600, height: 300, measureText })`.
+
+## SVG or HTML labels
+
+Chartist draws axis labels in one of two ways, set with the `labels` option:
+
+- `html`: a `<span>` inside a `<foreignObject>`, as 1.x did. CSS lays them out, wraps long text and aligns it with flexbox. Only browsers draw them.
+- `svg`: an SVG `<text>`, wrapped and aligned by Chartist. Every SVG viewer draws these.
+
+The renderer picks the default: `chart()` and the presets draw HTML labels in the page, and `toScene()` draws SVG labels, because string output often ends up in tools without HTML support. Set `labels` to choose for yourself, in the config (`labels: 'html'`) or in the size of `toScene()`. The config wins.
+
+`axisLabels()` takes `labels` too, for one layer, and the presets take it as an option. Pie and donut labels are always SVG text.
+
+## Where the markup goes
+
+The markup has the same classes as a chart in the page, but no styles. Where it ends up decides how it gets them.
+
+**Server-rendered pages.** Put the string into your HTML and load `chartist/styles.css` (or your own chart styles) on the page, like for any chart. Since the page is HTML, HTML labels work, if you want them.
+
+**PDFs.** If you print HTML to PDF with a headless browser, it's the same as a web page. Other PDF tools read the SVG on its own: there, use SVG labels and put the styles into the SVG.
+
+**Email and images.** Many email clients don't show SVG at all, so send a PNG. Convert the markup with an SVG rasterizer, for example in a Node.js service, and use SVG labels with the styles inside the SVG. Rasterizers support less CSS than browsers: keep those styles to plain selectors and values.
+
+To put styles into the SVG, add a `<style>` element to the scene with a `scene` listener:
+
+```ts
+import {
+  autoScaleAxis,
+  axisGrid,
+  axisLabels,
+  cartesianAxes,
+  line,
+  node,
+  renderToString,
+  stepAxis,
+  toScene
+} from 'chartist';
+
+const css = `
+  .ct-grid { stroke: #ccc; stroke-dasharray: 2px; }
+  .ct-label { fill: #666; font: 12px sans-serif; }
+  .ct-line { fill: none; stroke: #d70206; stroke-width: 4px; }
+  .ct-point { stroke: #d70206; stroke-width: 10px; stroke-linecap: round; }
+`;
+
+const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+const scene = toScene(
+  {
+    data: { labels, series: [[12, 9, 7, 8, 5]] },
+    axes: cartesianAxes([
+      { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+      { id: 'y', side: 'left', type: autoScaleAxis() }
+    ]),
+    layers: [axisGrid(), line(), axisLabels()],
+    on: {
+      scene: ({ scene }) => ({
+        scene: scene.append(node('style').text(css), true)
+      })
+    }
+  },
+  { width: 600, height: 300 }
+);
+
+export const markup = renderToString(scene);
+```
+
+<Callout>
+  **Plugins run on the server too.** `toScene()` installs the config's plugins
+  and calls their listeners, up to the `scene` phase. Plugins that change the
+  scene work there unchanged; listeners of `render` and `mount` never run, and
+  calling `update()`, `detach()` or `destroy()` throws. See [Events and
+  plugins](../events-and-plugins/).
+</Callout>
+
+Next: [update charts with new data](../updating-charts/).

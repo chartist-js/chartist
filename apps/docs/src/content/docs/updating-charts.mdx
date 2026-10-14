@@ -1,0 +1,101 @@
+---
+title: Updating charts
+description: Every chart function returns a handle. Use it to draw new data, stop a chart from following its container, and clean up when it goes away.
+group: Guides
+order: 9
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    [5, 4, 3, 7],
+    [3, 2, 9, 5]
+  ]
+};
+
+`lineChart()`, `barChart()`, `pieChart()` and `chart()` draw the chart right away and return a handle. Keep it: it's how you give the chart new data, and how you tell it you're done with it.
+
+| Method            | What it does                                                                 |
+| ----------------- | ---------------------------------------------------------------------------- |
+| `update(changes)` | Merges the changes into the config and draws the chart again                 |
+| `detach()`        | Stops following the container's size; the chart stays as it is               |
+| `destroy()`       | Detaches, removes the SVG and removes every listener                         |
+| `on()`, `off()`   | Adds and removes listeners, see [Events and plugins](../events-and-plugins/) |
+
+## New data
+
+Pass `update()` the parts of the config that changed. Press **Edit** and then the button:
+
+<LiveExample
+  title='New data'
+  label='A bar chart with two series by quarter that gets new numbers on a button press'
+  preview={{ type: 'bar', data }}
+  example='updating-charts/update'
+/>
+
+The merge is shallow: each key you pass replaces that key, the rest stays. `update({ data })` replaces all of the data, labels included, so pass the whole data object, not only the series that changed. The same goes for `axes` and `layers` in a `chart()` config.
+
+```ts
+import { autoScaleAxis, cartesianAxes, chart, line, stepAxis } from 'chartist';
+
+const labels = ['Mon', 'Tue', 'Wed'];
+const handle = chart('#chart', {
+  data: { labels, series: [[1, 3, 2]] },
+  axes: cartesianAxes([
+    { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
+    { id: 'y', side: 'left', type: autoScaleAxis() }
+  ]),
+  layers: [line()]
+});
+
+// New data; the axes and layers stay.
+handle.update({ data: { labels, series: [[2, 4, 3]] } });
+
+// Another look; the data stays.
+handle.update({ layers: [line({ showArea: true, showPoint: false })] });
+```
+
+Every update runs the whole pipeline again, and your plugins and listeners stay. They aren't part of what `update()` takes: add and remove listeners with `on()` and `off()`.
+
+<Callout>
+  **Preset options are set at creation.** `update()` takes the config of
+  `chart()`, so on a preset chart it can replace the `data`, but options like
+  `showArea` or `stackBars` aren't part of it. To change those, `destroy()` the
+  chart and create a new one in the same container.
+</Callout>
+
+Each render draws a new SVG and replaces the old one. That's why [CSS animations](../animations/) play again after an update: the elements are new.
+
+## Redrawing on resize
+
+You don't need to listen to `resize` on the window. A chart watches its container with a `ResizeObserver` and lays itself out again when the container's size changes, whether the window, a sidebar or a CSS grid changed it. Only the layout and later phases run again; the config and data are reused.
+
+Two things make this work: the container needs a size, and the chart needs room to follow it. [Sizing charts](../sizing-charts/) covers both. For different options at different sizes, see [Responsive sugar topping](../responsive/).
+
+Charts with [SVG labels](../server-rendering/#svg-or-html-labels) also lay out again when web fonts finish loading, since Chartist may have measured the labels before the font arrived.
+
+## Detach and destroy
+
+`detach()` stops a chart from following its container (and, for presets, the media queries of their responsive options). The SVG and your listeners stay, and `update()` still draws. Use it to freeze a chart, for example before printing or while you animate its container.
+
+`destroy()` is for when the chart goes away: it detaches, removes the SVG from the container and removes every listener. Calling it twice is safe. In a component framework, destroy the chart where the component cleans up, so no observer keeps a removed element alive:
+
+```ts
+import { lineChart, type ChartHandle } from 'chartist';
+
+let handle: ChartHandle | undefined;
+
+export function mount(element: HTMLElement) {
+  handle = lineChart(element, { series: [[1, 3, 2]] });
+}
+
+export function unmount() {
+  handle?.destroy();
+  handle = undefined;
+}
+```
+
+Next: [animate charts with CSS](../animations/), or [write a plugin](../events-and-plugins/).

@@ -1,0 +1,180 @@
+---
+title: Animations
+description: Draw lines in, grow bars and reveal charts on scroll with CSS, reach for SMIL where CSS can't go, and respect people who prefer less motion.
+group: Guides
+order: 6
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const lineData = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    [12, 9, 7, 8, 5],
+    [2, 1, 3.5, 7, 3]
+  ]
+};
+
+export const barData = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    [5, 4, 3, 7],
+    [3, 2, 9, 5]
+  ]
+};
+
+Chartist has no animation option. Charts are SVG elements with classes, and CSS animates SVG well: keyframes, transitions, delays and scroll timelines all work on `.ct-line` like on any other element. Animations stay in your stylesheet, next to the rest of the chart's look.
+
+CSS covers most of it. For the few SVG attributes CSS can't reach, there's SMIL, and for everyone who'd rather not see things move, there's `prefers-reduced-motion`.
+
+## Draw lines in
+
+The classic trick: give a line a dash as long as the line itself, push the dash out of view with `stroke-dashoffset`, and animate the offset back to zero. The catch is the length. Every line has a different one, and it changes with the chart's size.
+
+`pathLength` solves that. With `pathLength="1"`, the browser treats the path as one unit long, whatever its real length, so `stroke-dasharray: 1` and `stroke-dashoffset: 1` hide any line. A tiny [plugin](../events-and-plugins/) adds the attribute while the chart is built. Press **Edit** and change the timings:
+
+<LiveExample
+  title='Draw lines in'
+  label='A line chart whose two lines draw in from left to right, then the points pop in'
+  show='src/style.css'
+  preview={{ type: 'line', data: lineData }}
+  example='animations/draw-in'
+/>
+
+The same works for bars (each bar is an SVG `line`) and donut slices (`ct-slice-donut`, a stroked path): give them `pathLength: 1` too and animate their dash offset.
+
+<Callout kind='tip'>
+  **Each render draws a new SVG.** When the chart updates or its container
+  resizes, Chartist replaces the SVG, and your animations play again. See
+  [Updating charts](../updating-charts/).
+</Callout>
+
+## Stagger
+
+Delays make a chart unfold instead of popping up all at once. For series, use their letter classes:
+
+```css
+.ct-series-b .ct-line {
+  animation-delay: 0.3s;
+}
+.ct-series-c .ct-line {
+  animation-delay: 0.6s;
+}
+```
+
+For points and bars, number them. The plugin above sets `--i` from the value index of each point (`node.ctx.valueIndex`), and the CSS turns the number into a delay:
+
+```css
+.ct-point {
+  animation-delay: calc(1s + var(--i) * 80ms);
+}
+```
+
+## Reveal on scroll
+
+A chart far down the page has finished its animation long before anyone sees it. Scroll-driven animations tie the animation to the element's way through the viewport instead of to time: `animation-timeline: view()` runs it while the element scrolls into view.
+
+```css
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal .ct-line {
+      stroke-dasharray: 1;
+      animation-name: draw-in;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+  }
+}
+
+@keyframes draw-in {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+```
+
+The lines still need `pathLength="1"` from the plugin above. Browsers without scroll timelines skip the whole block and show the chart as it is.
+
+<Callout kind='warn'>
+  **Write `animation-timeline` as a longhand.** Don't put it into the
+  `animation` shorthand, and don't follow it with one: the shorthand resets the
+  timeline. And watch your minifier: given an `animation` shorthand next to the
+  timeline, it may fold the timeline into the shorthand, which browsers reject,
+  and nothing animates. Spell out `animation-name`, `animation-timing-function`
+  and the rest, as above.
+</Callout>
+
+## SMIL, for what CSS can't animate
+
+CSS animates properties, and some SVG attributes aren't properties. A bar is a `line`, and its end point (`y2`) is an attribute, so CSS can't grow it from the axis. SMIL can: an `<animate>` element inside the SVG animates any attribute, and Chartist's `Svg` wrapper writes one for you with `animate()`.
+
+The plugin waits for the `mount` event, when the chart's elements exist, wraps each bar's element and animates `y2` from the axis (`y1`) to the bar's end:
+
+<LiveExample
+  title='Bars grow with SMIL'
+  label='A bar chart whose bars grow from the axis, one quarter after the other'
+  preview={{ type: 'bar', data: barData }}
+  example='animations/smil'
+/>
+
+`animate()` takes one SMIL definition per attribute: `dur` and `begin` (numbers are milliseconds), `from`, `to`, and an `easing`, either a name from `easings` (exported by `chartist`, from `easeInSine` to `easeInOutBack`) or four numbers of a cubic Bézier curve. By default it runs in guided mode: the attribute starts at `from` before the animation begins, the animation starts after `begin`, and when it ends the attribute keeps `to` and the `<animate>` element is removed. Pass `false` as the second argument to write the `<animate>` element as given.
+
+Charts [rendered to a string](../server-rendering/) have no elements to wrap. There, add the `<animate>` element to the scene yourself, and it travels with the markup. Tools that don't run SMIL, like most image converters, show the line without the fade:
+
+```ts
+import { node, type ChartPlugin } from 'chartist';
+
+/** Fades each line in, also in SVG rendered on a server. */
+export const fadeIn: ChartPlugin = {
+  name: 'fade-in',
+  install(chart) {
+    chart.on('compose', current =>
+      current.role === 'line'
+        ? current.append(
+            node('animate', {
+              attributeName: 'opacity',
+              from: 0,
+              to: 1,
+              dur: '1s'
+            })
+          )
+        : undefined
+    );
+  }
+};
+```
+
+## Less motion
+
+Some people get dizzy or distracted from things moving on screen and ask their system for reduced motion. Respect it. For CSS, put the animations behind the media query, or turn them off inside it, as the examples above do:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  .ct-line,
+  .ct-point,
+  .ct-bar {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+```
+
+The media query doesn't stop SMIL, so check it in JavaScript before you add SMIL animations, like the bar plugin does:
+
+```ts
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+if (!reducedMotion.matches) {
+  // add the animations
+}
+```
+
+Make sure the end state is the one people see without motion: lines drawn, bars at full height.
+
+Next: [write your own plugins](../events-and-plugins/), or [update charts with new data](../updating-charts/).

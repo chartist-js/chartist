@@ -1,0 +1,39 @@
+#chart .ct-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 1.2s ease-out forwards;
+}
+
+/* The second line starts a little later. */
+#chart .ct-series-b .ct-line {
+  animation-delay: 0.3s;
+}
+
+/* Points pop in one after the other, once the lines are drawn. */
+#chart .ct-point {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop 0.4s ease-out both;
+  animation-delay: calc(1s + var(--i) * 80ms);
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #chart .ct-line,
+  #chart .ct-point {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

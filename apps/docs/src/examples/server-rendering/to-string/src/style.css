@@ -1,0 +1,6 @@
+/* The markup has a fixed size and a viewBox, so CSS can scale it. */
+#chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

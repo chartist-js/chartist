@@ -1,0 +1,264 @@
+---
+title: Events and plugins
+description: Every chart is built in phases, and each phase is an event you can listen to and change. Plugins package those listeners so you can share them.
+group: Guides
+order: 7
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const heatData = {
+  series: [[3, 6, 9, 12, 9, 6, 3, 6, 9, 12, 9, 6]]
+};
+
+export const barData = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    [5, 4, 3, 7],
+    [3, 2, 9, 5]
+  ]
+};
+
+Chartist keeps its core small and leaves the extras to you. Tooltips, value labels, legends, a bar that turns red past a threshold: none of them are options. Instead, every step of drawing a chart is an event, and a listener can change what that step produces. A plugin is a set of such listeners with a name, ready to share.
+
+## The pipeline
+
+A chart goes through seven phases, in this order. Each one emits an event with what it produced:
+
+| Phase     | Payload                            | What it is                                                                               |
+| --------- | ---------------------------------- | ---------------------------------------------------------------------------------------- |
+| `resolve` | `{ config }`                       | The config with defaults applied: padding, coordinates, layers, axes                     |
+| `prepare` | `{ data }`                         | The data, each series as `{ values, name, className, meta }`                             |
+| `layout`  | `{ width, height, padding, area }` | The chart's size and the drawing area inside the padding and axes                        |
+| `compose` | a scene node                       | Each element the layers draw: series, lines, points, bars, slices, grid lines and labels |
+| `scene`   | `{ scene }`                        | The whole tree, its root the `svg`                                                       |
+| `render`  | `{ scene, output }`                | The renderer has written the SVG                                                         |
+| `mount`   | `{ scene, output, elementOf }`     | The SVG is in the page; `elementOf(node)` gives you a node's element                     |
+
+A listener that returns a new payload changes the phase, and later phases build on the change. Return nothing to leave it as it is. The return values of `render` and `mount` listeners are ignored: by then, the SVG exists.
+
+When the container resizes, the chart runs again from `layout`. The config and data haven't changed, so `resolve` and `prepare` don't run, and their listeners aren't called.
+
+## Listening
+
+Pass listeners in the config of `chart()`, by phase name:
+
+```ts
+import { autoScaleAxis, cartesianAxes, chart, line, stepAxis } from 'chartist';
+
+chart('#chart', {
+  data: { labels: ['Mon', 'Tue', 'Wed'], series: [[1, 3, 2]] },
+  axes: cartesianAxes([
+    { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['Mon', 'Tue', 'Wed'] },
+    { id: 'y', side: 'left', type: autoScaleAxis() }
+  ]),
+  layers: [line()],
+  on: {
+    layout: ({ width, height }) =>
+      console.log(`laid out at ${width}×${height}`),
+    mount: ({ scene }) => console.log('mounted', scene)
+  }
+});
+```
+
+Or call `on()` and `off()` on the chart handle. Both return the handle, so they chain. `off(name)` without a listener removes every listener of that event, and the name `'*'` listens to all events, with the event name as the first argument:
+
+```ts
+import { lineChart } from 'chartist';
+
+const chart = lineChart('#chart', { series: [[1, 3, 2]] });
+
+const log = (name: string, payload: unknown) => console.log(name, payload);
+chart.on('*', log);
+chart.update({}); // logs every phase of this render
+chart.off('*', log);
+```
+
+<Callout>
+  **The first render happens right away.** `chart()` and the presets draw the
+  chart before they return, so a listener added with `on()` afterwards sees the
+  next render, not the first. For the first one, use the `on` config of
+  `chart()` or a plugin, which the presets accept as `plugins`.
+</Callout>
+
+## Scene nodes
+
+The `compose` event is where most plugins work. Its payload is a scene node: a plain description of an SVG element with its `name`, `attrs`, `classes` and `children`, plus what Chartist knows about it:
+
+- `role`: `series`, `line`, `point`, `area`, `bar`, `slice`, `grid`, `gridBackground` or `label`
+- `ctx`: its data, such as `seriesIndex`, `valueIndex`, `value` and `meta`
+- `key`: a stable id like `0/1/3` (layer, series, value)
+
+Every node with a role passes through the listeners, children before their parents. So a series listener sees its points and lines as the other listeners left them.
+
+Nodes are immutable. Their methods (`attr()`, `addClass()`, `removeClass()`, `append()`, `remove()`, `replace()`, `text()`, `empty()`) return a new node, and you return that node from the listener.
+
+### Dynamic coloring
+
+Color isn't only for stylesheets. Here a plugin reads each bar's value and gives it a hue from red to green:
+
+<LiveExample
+  title='Dynamic coloring'
+  label='A bar chart whose bars go from red for low values to green for high values'
+  preview={{
+    type: 'bar',
+    data: heatData,
+    options: { axisX: { showLabel: false } }
+  }}
+  example='events-and-plugins/dynamic-coloring'
+/>
+
+### Change, replace or drop
+
+To change a node, return it with new attributes or classes, as above. To replace it, return a different node; keep its `role`, `ctx` and `key` so later listeners still know what it is. To drop it, return `null`:
+
+```ts
+import { node, type ChartPlugin } from 'chartist';
+
+/** Circles instead of points, and no points for zero values. */
+export const circles: ChartPlugin = {
+  name: 'circles',
+  install(chart) {
+    chart.on('compose', current => {
+      if (current.role !== 'point') {
+        return;
+      }
+      const { x, y, value } = current.ctx as {
+        x: number;
+        y: number;
+        value: { y?: number };
+      };
+      if (value.y === 0) {
+        return null;
+      }
+      return node('circle', { cx: x, cy: y, r: 5 }, 'ct-circle', {
+        role: current.role,
+        ctx: current.ctx,
+        key: current.key
+      });
+    });
+  }
+};
+```
+
+The circle has none of the point's classes, so style it yourself, for example with `.ct-circle { fill: var(--ct-color); }`.
+
+### Decorate
+
+To add elements, append them to a parent. A value above each bar goes into the bar's series, which comes through the listener after its bars:
+
+```ts
+import { node, type ChartPlugin } from 'chartist';
+
+export const valueLabels: ChartPlugin = {
+  name: 'value-labels',
+  install(chart) {
+    chart.on('compose', series => {
+      if (series.role !== 'series') {
+        return;
+      }
+      return series.children
+        .filter(child => child.role === 'bar')
+        .reduce((result, bar) => {
+          const { x2, y2 } = bar.attrs as { x2: number; y2: number };
+          const value = (bar.ctx?.value as { y?: number } | undefined)?.y;
+          return result.append(
+            node(
+              'text',
+              { x: x2, y: y2 - 8, 'text-anchor': 'middle' },
+              'ct-value'
+            ).text(String(value))
+          );
+        }, series);
+    });
+  }
+};
+```
+
+## Writing a plugin
+
+A plugin is an object with a `name` and an `install` function. `install` runs once, before the first render, with the chart handle, and registers listeners on it. They stay for every later render, after updates and resizes too. For options, write a function that returns the plugin:
+
+```ts
+import { barChart, type ChartPlugin } from 'chartist';
+
+/** Bars at or above the limit get the class ct-over. */
+const threshold = (limit: number): ChartPlugin => ({
+  name: 'threshold',
+  install(chart) {
+    chart.on('compose', current => {
+      const value = (current.ctx?.value as { y?: number } | undefined)?.y;
+      return current.role === 'bar' && value !== undefined && value >= limit
+        ? current.addClass('ct-over')
+        : undefined;
+    });
+  }
+});
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7]] },
+  { plugins: [threshold(5)] }
+);
+```
+
+Plugins go into `plugins`, in the config of `chart()` or the options of the presets. Plugins install in order, so with two listeners on the same event, the earlier plugin's runs first. `chart()` also takes a `[plugin, options]` pair as an entry, and `install` receives the options as its second argument.
+
+## Custom events
+
+Plugins can emit events of their own with `chart.emit(name, payload)`. Declare their names in `provides`, and listen to them with `on()` like to any other event. This plugin reports clicks on bars; the page listens and shows the clicked value. Press **Edit** and click a bar:
+
+<LiveExample
+  title='A custom event'
+  label='A bar chart with two series by quarter; clicking a bar shows its value'
+  preview={{ type: 'bar', data: barData }}
+  example='events-and-plugins/custom-event'
+/>
+
+The click handlers go on in `mount`, the first phase in which the elements exist. There's no cleanup to do: every render draws a new SVG, and the old elements go away with their handlers.
+
+Phase names are reserved: emitting `compose` or `mount` throws. A prefix such as `bar:` keeps your names apart from other plugins'.
+
+## Sharing a plugin
+
+A plugin is plain data and functions, so sharing one is publishing a module. Export a function that takes the options and returns the plugin, and type it with `ChartPlugin`:
+
+```ts
+import type { ChartPlugin } from 'chartist';
+
+export interface HighlightOptions {
+  className?: string;
+}
+
+export function highlightLast(options: HighlightOptions = {}): ChartPlugin {
+  const className = options.className ?? 'ct-last';
+  return {
+    name: 'highlight-last',
+    install(chart) {
+      chart.on('compose', current => {
+        if (current.role !== 'series') {
+          return;
+        }
+        const last = current.children.at(-1);
+        return last && current.replace(last, last.addClass(className));
+      });
+    }
+  };
+}
+```
+
+A few things keep a plugin working everywhere:
+
+- Change the scene in `compose` and `scene`, not the DOM. Then it also works when the chart is [rendered to a string](../server-rendering/), where `render` and `mount` never happen.
+- Touch elements only in `mount`, and only through `elementOf`.
+- List `chartist` as a peer dependency, so your plugin uses the reader's copy.
+
+<Callout>
+  **Coming from 1.x?** v2 charts don't emit `draw`, `created` or the other 1.x
+  events. Listening to one logs a hint. Your 1.x plugins still run: wrap them
+  with `fromLegacyPlugin` from `chartist/compat`. See [Coming from
+  1.x](../coming-from-1x/).
+</Callout>
+
+Next: [render charts on a server](../server-rendering/), or [animate them](../animations/).

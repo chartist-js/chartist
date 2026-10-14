@@ -1,0 +1,8 @@
+#chart .ct-bar {
+  cursor: pointer;
+  stroke-width: 24px;
+}
+
+#chart .ct-bar:hover {
+  opacity: 0.7;
+}
