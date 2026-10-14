@@ -1,182 +1,54 @@
 /*
- * The live example in edit mode: the playground (packages/playground)
- * dressed like the static view. Code is dark in both themes, like every
- * code block; the preview is themed by the page (see live-example.ts).
+ * The playground (packages/playground) in the site's look: only its --pg-*
+ * custom properties, set from the site tokens. Code is dark in both themes,
+ * like every code block; the preview is themed by the page (live-example.ts).
+ * `.live` is an inline live example, `.playground-page` the full-screen one.
  */
-.live .playground {
-  border: 0;
-  min-height: 460px;
-  font: inherit;
-  background: var(--code-bg);
+.live,
+.playground-page {
+  --pg-border: 0;
+  --pg-font: var(--font-body);
+  --pg-font-code: var(--font-code);
+  --pg-radius: 8px;
+
+  --pg-chrome-bg: var(--code-bg);
+  --pg-chrome-ink: var(--code-ink);
+  --pg-chrome-muted: var(--code-muted);
+  --pg-chrome-line: var(--code-line);
+  --pg-tab-active-bg: var(--code-hover);
+  --pg-accent: var(--code-accent);
+  --pg-caret: var(--code-key);
+
+  --pg-editor-bg: var(--code-bg);
+  --pg-editor-ink: var(--code-ink);
+  --pg-gutter-ink: color-mix(in oklab, var(--code-muted) 70%, transparent);
+  --pg-active-line: #ffffff0a;
+  --pg-selection: color-mix(in oklab, var(--code-num) 30%, transparent);
+  --pg-code-size: 14px;
+  --pg-code-line-height: 1.65;
+
+  --pg-output-bg: var(--surface);
+  --pg-panel-ink: var(--ink);
+  --pg-panel-line: var(--line);
+  --pg-error: var(--danger);
+  --pg-error-bg: var(--danger-bg);
+  --pg-warn-bg: var(--warn-bg);
+
+  /* Syntax colors: the site's code tokens, as in the static code blocks. */
+  --pg-tok-keyword: var(--code-key);
+  --pg-tok-string: var(--code-str);
+  --pg-tok-number: var(--code-num);
+  --pg-tok-function: var(--code-fn);
+  --pg-tok-definition: var(--code-ink);
+  --pg-tok-property: var(--code-ink);
+  --pg-tok-type: var(--code-fn);
+  --pg-tok-tag: var(--code-fn);
+  --pg-tok-attribute: var(--code-num);
+  --pg-tok-comment: var(--code-muted);
+  --pg-tok-punctuation: var(--code-muted);
 }
 
-.live .playground-toolbar {
-  align-items: center;
-  border-bottom: 1px solid var(--code-line);
-  background: var(--code-bg);
-  padding: 0 8px;
-}
-
-.live .playground-toolbar .live-actions {
-  display: flex;
-  gap: 2px;
-  margin-left: auto;
-}
-
-.live .playground-action {
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.live .playground-tab,
-.live .playground-action,
-.live .playground-stackblitz {
-  font: 600 12px / 1 var(--font-code);
-  color: var(--code-muted);
-  padding: 10px 12px;
-  min-height: 36px;
-  border-radius: 8px;
-}
-
-.live .playground-tab[aria-selected='true'] {
-  color: var(--code-ink);
-  background: var(--code-hover);
-  box-shadow: inset 0 -2px 0 var(--code-accent);
-}
-
-.live .playground-tab:hover,
-.live .playground-action:hover,
-.live .playground-stackblitz:hover {
-  color: var(--code-ink);
-}
-
-.live .playground-editor {
-  border-right: 1px solid var(--code-line);
-  background: var(--code-bg);
-}
-
-.live .cm-editor {
-  background: var(--code-bg);
-  color: var(--code-ink);
-  font-size: 14px;
-}
-
-.live .cm-editor .cm-scroller {
-  font-family: var(--font-code);
-  line-height: 1.65;
-}
-
-.live .cm-editor .cm-content {
-  caret-color: var(--code-key);
-  padding-block: 12px;
-}
-
-.live .cm-editor .cm-cursor {
-  border-left-color: var(--code-key);
-}
-
-.live .cm-editor .cm-gutters {
-  background: var(--code-bg);
-  color: color-mix(in oklab, var(--code-muted) 70%, transparent);
-  border-right: 0;
-}
-
-.live .cm-editor .cm-activeLine,
-.live .cm-editor .cm-activeLineGutter {
-  background: #ffffff0a;
-}
-
-.live .cm-editor.cm-focused {
-  outline: none;
-}
-
-.live .cm-editor .cm-selectionBackground,
-.live .cm-editor.cm-focused .cm-selectionBackground,
-.live .cm-editor ::selection {
-  background: color-mix(in oklab, var(--code-num) 30%, transparent);
-}
-
-/* Syntax colors: the site's code tokens, as in the static code blocks. */
-.live .playground .tok-keyword,
-.live .playground .tok-operator,
-.live .playground .tok-modifier {
-  color: var(--code-key);
-}
-
-.live .playground .tok-string,
-.live .playground .tok-string2 {
-  color: var(--code-str);
-}
-
-.live .playground .tok-number,
-.live .playground .tok-bool,
-.live .playground .tok-atom {
-  color: var(--code-num);
-}
-
-.live .playground .tok-function,
-.live .playground .tok-variableName.tok-function {
-  color: var(--code-fn);
-}
-
-/* Object keys and declarations stay plain, as in the static code blocks. */
-.live .playground .tok-propertyName,
-.live .playground .tok-propertyName.tok-definition,
-.live .playground .tok-variableName.tok-definition {
-  color: var(--code-ink);
-}
-
-.live .playground .tok-typeName,
-.live .playground .tok-className,
-.live .playground .tok-tagName {
-  color: var(--code-fn);
-}
-
-.live .playground .tok-attributeName {
-  color: var(--code-num);
-}
-
-.live .playground .tok-comment {
-  color: var(--code-muted);
-  font-style: italic;
-}
-
-.live .playground .tok-punctuation {
-  color: var(--code-muted);
-}
-
-/* Preview: the output panel of the static view. */
-.live .playground-output {
-  background: var(--surface);
-}
-
-.live .playground-preview {
-  background: transparent;
-}
-
-.live .playground-panel ul {
-  font: 12.5px / 1.5 var(--font-code);
-}
-
-.live .playground-panel li {
-  border-top-color: var(--line);
-  color: var(--ink);
-}
-
-.live .playground-error,
-.live .playground-log-error {
-  color: var(--danger);
-  background: var(--danger-bg);
-}
-
-.live .playground-log-warn {
-  background: var(--warn-bg);
-}
-
-@media (max-width: 720px) {
-  .live .playground-editor {
-    border-right: 0;
-    border-bottom: 1px solid var(--code-line);
-  }
+/* An inline live example's height in edit mode. */
+.live {
+  --pg-min-height: 420px;
 }

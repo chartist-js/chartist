@@ -67,12 +67,3 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
   import { mountLiveExamples } from '../scripts/live-example';
   mountLiveExamples();
 </script>
-
-
-<style>
-  /* The playground's own stylesheet loads unlayered (min-height: 480px), so
-     only an unlayered rule can size it: utilities and live.css are layered. */
-  .live :global(.live-playground) {
-    min-height: 420px;
-  }
-</style>

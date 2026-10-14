@@ -52,53 +52,40 @@ interface LiveConfig {
 /**
  * View mode: runs the example's own code in a sandboxed preview over the
  * static chart, so plugins, events and CSS show without pressing Edit.
- * Only compile() and the preview load here, not the editor.
+ * Only the preview component loads here, not the editor.
  */
 async function runInPlace(root: HTMLElement, config: LiveConfig) {
   const stage = root.querySelector<HTMLElement>('[data-live-stage]');
   if (!stage) {
     return;
   }
-  const [{ compile }, { Preview }] = await Promise.all([
-    import('@chartist/playground/compile'),
-    import('@chartist/playground/preview')
-  ]);
+  const { createPreview } = await import('@chartist/playground/preview');
   if (root.classList.contains('editing')) {
     return;
   }
-  let failed = false;
-  const preview = new Preview(
-    stage,
-    message => {
-      // The static chart stays when the example fails in view mode; Edit
-      // shows the error.
-      if (message.type === 'error' && !failed) {
-        failed = true;
+  const preview = createPreview(stage, {
+    files: config.files,
+    title: config.title,
+    chartistUrl: new URL(chartistUrl, location.href).href,
+    stylesUrl: new URL(stylesUrl, location.href).href,
+    previewStyles: previewStyles(),
+    // The static chart stays when the example fails in view mode; Edit
+    // shows the error.
+    onMessage: message => {
+      if (message.type === 'error') {
         preview.iframe.hidden = true;
       }
-    },
-    config.title
-  );
+    }
+  });
   preview.iframe.className = 'absolute inset-0 size-full border-0';
   preview.iframe.tabIndex = -1;
   preview.iframe.setAttribute('aria-hidden', 'true');
-  const render = async () => {
-    if (!preview.iframe.isConnected) {
-      return;
+  await preview.render();
+  new MutationObserver(() => {
+    if (preview.iframe.isConnected) {
+      void preview.setPreviewStyles(previewStyles());
     }
-    const runId = `view-${Math.random().toString(36).slice(2)}`;
-    const result = await compile(config.files, {
-      chartistUrl: new URL(chartistUrl, location.href).href,
-      stylesUrl: new URL(stylesUrl, location.href).href,
-      previewStyles: previewStyles(),
-      runId
-    });
-    if (result.html) {
-      preview.render(result.html, runId);
-    }
-  };
-  await render();
-  new MutationObserver(() => void render()).observe(document.documentElement, {
+  }).observe(document.documentElement, {
     attributes: true,
     attributeFilter: ['data-theme']
   });
@@ -132,14 +119,16 @@ export function mountLiveExamples() {
         host.className = 'live-playground';
         root.replaceChildren(host);
         root.classList.add('editing');
-        const { createPlayground } = await import('@chartist/playground');
+        const { copyAction, createPlayground, resetAction, stackblitzAction } =
+          await import('@chartist/playground');
         const playground = await createPlayground(host, {
           files: config.files,
           title: config.title,
           tabs: [...new Set([config.show, 'src/main.ts', 'index.html'])],
           chartistUrl: new URL(chartistUrl, location.href).href,
           stylesUrl: new URL(stylesUrl, location.href).href,
-          previewStyles: previewStyles()
+          previewStyles: previewStyles(),
+          actions: [resetAction(), copyAction(), stackblitzAction()]
         });
         // The preview follows the theme toggle.
         new MutationObserver(
@@ -148,23 +137,6 @@ export function mountLiveExamples() {
           attributes: true,
           attributeFilter: ['data-theme']
         });
-        // Reset and Copy join the playground's own toolbar.
-        const actions = document.createElement('div');
-        actions.className = 'live-actions';
-        actions.innerHTML =
-          '<button class="playground-action" type="button" data-live-reset>Reset</button>' +
-          '<button class="playground-action" type="button" data-live-copy-current>Copy</button>';
-        host.querySelector('.playground-stackblitz')?.before(actions);
-        actions
-          .querySelector('[data-live-reset]')!
-          .addEventListener('click', () => {
-            void playground.setFiles(config.files, config.title);
-          });
-        actions
-          .querySelector('[data-live-copy-current]')!
-          .addEventListener('click', () => {
-            void navigator.clipboard.writeText(playground.files[config.show]);
-          });
         root.dataset.ready = '';
       });
   }
