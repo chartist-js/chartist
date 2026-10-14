@@ -64,12 +64,15 @@ export function getHighLow(
     recursiveHighLow(data);
   }
 
-  // Overrides of high / low based on reference value, it will make sure that the invisible reference value is
-  // used to generate the chart. This is useful when the chart always needs to contain the position of the
-  // invisible reference value in the view i.e. for bipolar scales.
+  // The reference value (e.g. 0 for bars) widens the range to include it,
+  // for bipolar scales. An explicit high or low wins over it (#1476).
   if (options.referenceValue || options.referenceValue === 0) {
-    highLow.high = Math.max(options.referenceValue, highLow.high);
-    highLow.low = Math.min(options.referenceValue, highLow.low);
+    if (findHigh) {
+      highLow.high = Math.max(options.referenceValue, highLow.high);
+    }
+    if (findLow) {
+      highLow.low = Math.min(options.referenceValue, highLow.low);
+    }
   }
 
   // If high and low are the same because of misconfiguration or flat data (only the same value) we need

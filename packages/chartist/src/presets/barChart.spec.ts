@@ -47,6 +47,28 @@ describe('presets/barChart', () => {
     expect(grids.at(-1)).toBe('ct-grid ct-horizontal');
   });
 
+  it("the value axis's own low and high win over the reference value (#1476)", () => {
+    const valueLabels = (options: Parameters<typeof barChart>[2]) => {
+      const element = sized();
+      barChart(element, { series: [[12, 15, 18]] }, options);
+      return Array.from(
+        element.querySelectorAll('.ct-label.ct-vertical'),
+        label => Number(label.textContent)
+      );
+    };
+    expect(valueLabels({})[0]).toBe(0);
+    expect(valueLabels({ axisY: { low: 10 } })[0]).toBe(10);
+    const element = sized();
+    barChart(
+      element,
+      { series: [[12, 15, 18]] },
+      { horizontalBars: true, axisX: { low: 10 } }
+    );
+    expect(
+      Number(element.querySelector('.ct-label.ct-horizontal')!.textContent)
+    ).toBe(10);
+  });
+
   it('switches responsive options', () => {
     let matches = false;
     const listeners: (() => void)[] = [];
