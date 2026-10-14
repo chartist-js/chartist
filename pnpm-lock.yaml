@@ -222,9 +222,6 @@ importers:
       chartist-v1:
         specifier: npm:chartist@1.5.0
         version: chartist@1.5.0
-      clean-publish:
-        specifier: ^4.0.1
-        version: 4.4.0
       cssnano:
         specifier: ^4.1.11
         version: 4.1.11
@@ -255,7 +252,6 @@ importers:
       vite:
         specifier: 8.3.1
         version: 8.3.1(@types/node@18.19.130)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.1)(terser@5.51.2)(yaml@2.9.1)
-    publishDirectory: package
 
   packages/examples:
     dependencies:
@@ -3565,11 +3561,6 @@ packages:
   ci-info@4.4.0:
     resolution: {integrity: sha512-77PSwercCZU2Fc4sX94eF8k8Pxte6JAwL4/ICZLFjJLqegs7kCuAsqqj/70NQF6TvDpgFjkubQB2FW2ZZddvQg==}
     engines: {node: '>=8'}
-
-  clean-publish@4.4.0:
-    resolution: {integrity: sha512-wAJxoegQKPN/BhAp1cOb7XID5Q3LBMpMUOmLjr1zWUwOOR7QDM+3zN3ViJQVAy4WbCXLI8bTJrFglIO1ldkE0g==}
-    engines: {node: '>= 16.0.0'}
-    hasBin: true
 
   clean-stack@4.2.0:
     resolution: {integrity: sha512-LYv6XPxoyODi36Dp976riBtSY27VmFo+MKqEU9QCCWyTrdEPDog+RWA7xQWHi6Vbp61j5c4cdzzX1NidnwtUWg==}
@@ -10305,13 +10296,6 @@ snapshots:
       readdirp: 5.1.1
 
   ci-info@4.4.0: {}
-
-  clean-publish@4.4.0:
-    dependencies:
-      cross-spawn: 7.0.6
-      fast-glob: 3.3.3
-      lilconfig: 3.1.3
-      micromatch: 4.0.8
 
   clean-stack@4.2.0:
     dependencies:

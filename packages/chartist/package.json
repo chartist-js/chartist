@@ -18,7 +18,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/chartist-js/chartist.git"
+    "url": "https://github.com/chartist-js/chartist.git",
+    "directory": "packages/chartist"
   },
   "bugs": {
     "url": "https://github.com/chartist-js/chartist/issues"
@@ -76,19 +77,16 @@
     "./dist/*": "./dist/*"
   },
   "publishConfig": {
-    "directory": "package",
-    "linkDirectory": false
+    "access": "public"
   },
   "files": [
     "dist",
+    "README.md",
     "LICENSE-WTFPL",
     "LICENSE-MIT"
   ],
   "scripts": {
-    "clear:package": "del ./package",
-    "clear": "del ./package ./dist ./coverage",
-    "prepublishOnly": "vitest run && pnpm build && pnpm clear:package && clean-publish",
-    "postpublish": "pnpm clear:package",
+    "clear": "del ./dist ./coverage",
     "build:styles": "node ./scripts/styles.cjs",
     "build": "del-cli ./dist && tsdown && node ./scripts/styles.cjs",
     "test:size": "size-limit",
@@ -113,7 +111,6 @@
     "@types/node": "^18.0.0",
     "browserslist": "^4.20.2",
     "chartist-v1": "npm:chartist@1.5.0",
-    "clean-publish": "^4.0.1",
     "cssnano": "^4.1.11",
     "del-cli": "^5.0.0",
     "playwright": "1.63.0",
