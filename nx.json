@@ -50,5 +50,42 @@
       }
     }
   ],
-  "analytics": false
+  "analytics": false,
+  "release": {
+    "projects": ["chartist"],
+    "projectsRelationship": "fixed",
+    "releaseTag": {
+      "pattern": "v{version}"
+    },
+    "version": {
+      "conventionalCommits": true
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "file": "CHANGELOG.md",
+        "createRelease": "github"
+      },
+      "projectChangelogs": false
+    },
+    "git": {
+      "commitMessage": "chore(release): publish {version}",
+      "push": true
+    },
+    "conventionalCommits": {
+      "types": {
+        "docs": false,
+        "test": false,
+        "build": false,
+        "chore": false,
+        "refactor": false,
+        "style": false,
+        "ci": false
+      }
+    }
+  },
+  "targetDefaults": {
+    "nx-release-publish": {
+      "dependsOn": ["build"]
+    }
+  }
 }
