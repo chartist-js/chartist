@@ -100,7 +100,10 @@ export interface ChartSpec {
    * layer like `{ $call: 'line', args: [{ series: ['a'] }] }`.
    */
   options?: Record<string, unknown>;
-  /** The library's own padding and label sizes (live example previews). */
+  /**
+   * Exactly as the library draws it: its own padding and label sizes, no
+   * draw-in (live example previews, so they match their code).
+   */
   plain?: boolean;
 }
 
@@ -145,19 +148,21 @@ export function renderChart(
   return preset(
     element,
     spec.data,
-    spec.plain || (spec.type !== 'line' && spec.type !== 'bar')
-      ? { ...options, plugins: [drawIn] }
-      : {
-          ...options,
-          // Narrower Y labels than the library's 40px; the padding leaves
-          // room on the right for the last X label.
-          chartPadding: {
-            ...COMPACT_PADDING,
-            ...(options.chartPadding as object)
-          },
-          axisY: { offset: 30, ...(options.axisY as object) },
-          plugins: [drawIn]
-        }
+    spec.plain
+      ? options
+      : spec.type !== 'line' && spec.type !== 'bar'
+        ? { ...options, plugins: [drawIn] }
+        : {
+            ...options,
+            // Narrower Y labels than the library's 40px; the padding leaves
+            // room on the right for the last X label.
+            chartPadding: {
+              ...COMPACT_PADDING,
+              ...(options.chartPadding as object)
+            },
+            axisY: { offset: 30, ...(options.axisY as object) },
+            plugins: [drawIn]
+          }
   );
 }
 

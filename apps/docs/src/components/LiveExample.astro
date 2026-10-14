@@ -56,7 +56,7 @@ const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : '
     </div>
     <div class="dot-grid grid min-h-[260px] flex-1 place-items-center px-5 pt-4 pb-5">
       <div class="w-full" style={previewStyle}>
-        <Chart type={preview.type} data={preview.data} options={preview.options} plain label={label} aspect="16 / 10" />
+        <Chart type={preview.type} data={preview.data} options={preview.options} plain draw={false} label={label} aspect="16 / 10" />
       </div>
     </div>
   </div>
