@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { LineChart, AutoScaleAxis } from 'chartist';
+import { lineChart, autoScaleAxis } from 'chartist';
 
-new LineChart(
+lineChart(
   '#chart',
   {
     series: [
@@ -16,7 +16,7 @@ new LineChart(
   },
   {
     axisX: {
-      type: AutoScaleAxis,
+      type: autoScaleAxis(),
       onlyInteger: true
     }
   }

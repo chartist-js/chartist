@@ -107,18 +107,48 @@ export const examples: Example[] = [
     title: 'Simple line chart with SVG text labels',
     v2: true
   }),
-  example({ id: 'line/area', title: 'Line chart with area' }),
-  example({ id: 'line/axis-auto', title: 'Auto scale axis' }),
+  example({
+    id: 'line/area',
+    title: 'Line chart with area',
+    description:
+      'One series drawn as a line with the area below it filled down to zero.',
+    classic: true
+  }),
+  example({
+    id: 'line/axis-auto',
+    title: 'Auto scale axis',
+    description:
+      'A halving series on an auto scale x axis that only uses whole numbers.',
+    classic: true
+  }),
   example({
     id: 'line/axis-fixed-and-auto',
-    title: 'Fixed and auto scale axis'
+    title: 'Fixed and auto scale axis',
+    description:
+      'A step line on an auto scale x axis and a fixed y axis with hand-picked ticks.',
+    classic: true
   }),
   example({
     id: 'line/bipolar-area',
-    title: 'Bi-polar Line chart with area only'
+    title: 'Bi-polar Line chart with area only',
+    description:
+      'Four series swinging above and below zero, drawn as filled areas only.',
+    classic: true
   }),
-  example({ id: 'line/data-holes', title: 'Holes in data' }),
-  example({ id: 'line/data-fill-holes', title: 'Filled holes in data' }),
+  example({
+    id: 'line/data-holes',
+    title: 'Holes in data',
+    description:
+      'Series with missing values, where each line breaks at every hole.',
+    classic: true
+  }),
+  example({
+    id: 'line/data-fill-holes',
+    title: 'Filled holes in data',
+    description:
+      'Series with missing values, bridged by a cardinal spline that fills the holes.',
+    classic: true
+  }),
   example({
     id: 'line/modify-drawing',
     title: 'Using events to replace graphics',
@@ -127,7 +157,13 @@ export const examples: Example[] = [
     classic: true,
     compat: true
   }),
-  example({ id: 'line/only-integer', title: 'Only whole numbers' }),
+  example({
+    id: 'line/only-integer',
+    title: 'Only whole numbers',
+    description:
+      'Four series between -3 and 3 on a y axis that only labels whole numbers.',
+    classic: true
+  }),
   example({
     id: 'line/path-animation',
     title: 'SVG Path animation',
@@ -203,23 +239,45 @@ export const examples: Example[] = [
   example({ id: 'pie/simple-gauge', title: 'Gauge chart' }),
 
   // Test-only cases ported from the 1.x Storybook stories (see README.md)
-  testOnly({ id: 'line/auto-scale', title: 'Line chart with auto scale axes' }),
-  testOnly({ id: 'line/labels', title: 'Line chart with labels' }),
+  testOnly({
+    id: 'line/auto-scale',
+    title: 'Line chart with auto scale axes',
+    description:
+      'Two x/y points on whole-number auto scale axes in both directions.',
+    classic: true
+  }),
+  testOnly({
+    id: 'line/labels',
+    title: 'Line chart with labels',
+    description: 'One series over five weekday labels.',
+    classic: true
+  }),
   testOnly({
     id: 'line/multi-series',
-    title: 'Line chart with series of different lengths'
+    title: 'Line chart with series of different lengths',
+    description: 'Two series of different lengths over eight weekday labels.',
+    classic: true
   }),
   testOnly({
     id: 'line/no-interpolation-with-holes',
-    title: 'No interpolation with holes'
+    title: 'No interpolation with holes',
+    description:
+      'Straight line segments that break wherever the series has a missing value.',
+    classic: true
   }),
   testOnly({
     id: 'line/cardinal-interpolation-with-holes',
-    title: 'Cardinal interpolation with holes'
+    title: 'Cardinal interpolation with holes',
+    description:
+      'A cardinal spline that breaks wherever the series has a missing value.',
+    classic: true
   }),
   testOnly({
     id: 'line/monotone-cubic-interpolation-with-holes',
-    title: 'Monotone cubic interpolation with holes'
+    title: 'Monotone cubic interpolation with holes',
+    description:
+      'A monotone cubic spline that breaks wherever the series has a missing value.',
+    classic: true
   }),
   testOnly({
     id: 'line/simple-interpolation-with-holes',
@@ -234,7 +292,12 @@ export const examples: Example[] = [
     title: 'Step interpolation without postpone, with holes'
   }),
   testOnly({ id: 'line/reverse-data', title: 'Line chart with reversed data' }),
-  testOnly({ id: 'line/full-width', title: 'Full width line chart' }),
+  testOnly({
+    id: 'line/full-width',
+    title: 'Full width line chart',
+    description: 'Two x/y points stretched across the full width of the chart.',
+    classic: true
+  }),
   testOnly({ id: 'line/scatter', title: 'Line scatter diagram' }),
   testOnly({ id: 'line/view-box', title: 'Line chart with a view box' }),
 

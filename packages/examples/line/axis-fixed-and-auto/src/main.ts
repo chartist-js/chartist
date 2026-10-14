@@ -1,12 +1,12 @@
 import 'chartist/styles.css';
 import {
-  LineChart,
-  AutoScaleAxis,
-  FixedScaleAxis,
+  lineChart,
+  autoScaleAxis,
+  fixedScaleAxis,
   Interpolation
 } from 'chartist';
 
-new LineChart(
+lineChart(
   '#chart',
   {
     series: [
@@ -21,11 +21,11 @@ new LineChart(
   },
   {
     axisX: {
-      type: AutoScaleAxis,
+      type: autoScaleAxis(),
       onlyInteger: true
     },
     axisY: {
-      type: FixedScaleAxis,
+      type: fixedScaleAxis(),
       ticks: [0, 50, 75, 87.5, 100],
       low: 0
     },

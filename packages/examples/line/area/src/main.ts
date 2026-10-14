@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { LineChart } from 'chartist';
+import { lineChart } from 'chartist';
 
-new LineChart(
+lineChart(
   '#chart',
   {
     labels: [1, 2, 3, 4, 5, 6, 7, 8],
