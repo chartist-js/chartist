@@ -8,6 +8,7 @@ import type {
 import { getBounds, getHighLow, getMultiValue } from '../core';
 import { AxisUnits, Axis } from './Axis';
 
+/** The 1.x axis with a scale fitted to the values, in round steps at least `scaleMinSpace` px apart. */
 export class AutoScaleAxis extends Axis {
   private readonly bounds: Bounds;
   public override readonly range: {

@@ -61,9 +61,32 @@ function forEachParam<T extends PathParams = PathParams>(
   });
 }
 
+/**
+ * Builds and changes the `d` of an SVG `path`: move, line, curve and arc
+ * commands, with a cursor where new commands go. Lines, areas and slices
+ * are `SvgPath`s, and interpolations such as {@link Interpolation.cardinal}
+ * return one. Each command can carry the data of its point, which the
+ * chart reads back for its points.
+ *
+ * @example
+ * ```ts
+ * import { SvgPath } from 'chartist';
+ *
+ * const path = new SvgPath()
+ *   .move(0, 100)
+ *   .line(50, 20)
+ *   .curve(70, 0, 90, 0, 100, 40);
+ *
+ * path.stringify(); // 'M0,100L50,20C70,0,90,0,100,40'
+ *
+ * // 10px to the right, at half the height
+ * path.translate(10, 0).scale(1, 0.5);
+ * ```
+ */
 export class SvgPath {
   /**
-   * This static function on `SvgPath` is joining multiple paths together into one paths.
+   * Joins paths into a new path, in the order given. The new path shares
+   * the commands of the paths (they aren't copied).
    * @param paths A list of paths to be joined together. The order is important.
    * @param close If the newly created path should be a closed path
    * @param options Path options for the newly created path.
@@ -79,14 +102,15 @@ export class SvgPath {
     return joinedPath;
   }
 
+  /** The path's commands, in order: each with its letter, its coordinates and the data of its point. */
   pathElements: PathCommand[] = [];
   private pos = 0;
   private options: Required<SvgPathOptions>;
 
   /**
-   * Used to construct a new path object.
-   * @param close If set to true then this path will be closed when stringified (with a Z at the end)
-   * @param options Options object that overrides the default objects. See default options for more details.
+   * Creates an empty path.
+   * @param close Closes the path when it's stringified (a `Z` at the end).
+   * @param options The path's options, such as the rounding `accuracy`.
    */
   constructor(
     private readonly close = false,
@@ -251,8 +275,10 @@ export class SvgPath {
   }
 
   /**
-   * Parses an SVG path seen in the d attribute of path elements, and inserts the parsed elements into the existing path object at the current cursor position. Any closing path indicators (Z at the end of the path) will be ignored by the parser as this is provided by the close option in the options of the path object.
-   * @param path Any SVG path that contains move (m), line (l) or curve (c) components.
+   * Parses the `d` of an SVG path and inserts its commands at the cursor. A
+   * closing `Z` at the end is dropped: the `close` of the path object decides
+   * that.
+   * @param path An SVG path of move (`M`), line (`L`), curve (`C`) and arc (`A`) commands, absolute or relative.
    * @return The current path object for easy call chaining.
    */
   parse(path: string) {
@@ -302,7 +328,9 @@ export class SvgPath {
   }
 
   /**
-   * This function renders to current SVG path object into a final SVG string that can be used in the d attribute of SVG path elements. It uses the accuracy option to round big decimals. If the close parameter was set in the constructor of this path object then a path closing Z will be appended to the output string.
+   * Writes the path as a string for the `d` attribute of a `path` element.
+   * Numbers are rounded to the `accuracy` option's decimals (no rounding
+   * with `0`), and a closed path ends with `Z`.
    */
   stringify() {
     const accuracyMultiplier = Math.pow(10, this.options.accuracy);
@@ -402,8 +430,10 @@ export class SvgPath {
   }
 
   /**
-   * Split a Svg.Path object by a specific command in the path chain. The path chain will be split and an array of newly created paths objects will be returned. This is useful if you'd like to split an SVG path by it's move commands, for example, in order to isolate chunks of drawings.
-   * @param command The command you'd like to use to split the path
+   * Splits the path into new paths, each starting at the given command,
+   * such as `'M'` to get the separate pieces of a line with holes. The new
+   * paths share the commands, are open and have the default options.
+   * @param command The command letter to split at.
    */
   splitByCommand(command: string) {
     const split = [new SvgPath()];

@@ -1,28 +1,39 @@
 import type { SegmentData } from '../core';
 import { SvgPath } from '../svg';
 
+/** The options of {@link Interpolation.step}. */
 export interface StepInterpolationOptions {
+  /**
+   * Holds each value until the next point, so the step happens where the
+   * value changes (the default). With `false`, the line steps to the next
+   * value right away.
+   */
   postpone?: boolean;
+  /**
+   * Joins the line across holes (`null` or `undefined` values) instead of
+   * breaking it. Off by default.
+   */
   fillHoles?: boolean;
 }
 
 /**
- * Step interpolation will cause the line chart to move in steps rather than diagonal or smoothed lines. This interpolation will create additional points that will also be drawn when the `showPoint` option is enabled.
- *
- * All smoothing functions within Chartist are factory functions that accept an options parameter. The step interpolation function accepts one configuration parameter `postpone`, that can be `true` or `false`. The default value is `true` and will cause the step to occur where the value actually changes. If a different behaviour is needed where the step is shifted to the left and happens before the actual value, this option can be set to `false`.
+ * Draws a line in steps: horizontal and vertical segments instead of
+ * diagonals or curves. Each step adds a corner to the path, and with
+ * `showPoint` a point is drawn there too.
  *
  * @example
  * ```ts
- * const chart = new Chartist.Line('.ct-chart', {
- *   labels: [1, 2, 3, 4, 5],
- *   series: [[1, 2, 8, 1, 7]]
- * }, {
- *   lineSmooth: Interpolation.step({
- *     postpone: true,
- *     fillHoles: false
- *   })
- * });
+ * import { lineChart, Interpolation } from 'chartist';
+ *
+ * lineChart(
+ *   '#chart',
+ *   { labels: [1, 2, 3, 4, 5], series: [[1, 2, 8, 1, 7]] },
+ *   { lineSmooth: Interpolation.step({ postpone: false }) }
+ * );
  * ```
+ *
+ * @param options When to step, and whether to join the line across holes.
+ * @returns The interpolation, for the `lineSmooth` option.
  */
 export function step(options?: StepInterpolationOptions) {
   const finalOptions = {

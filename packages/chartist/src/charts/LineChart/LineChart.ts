@@ -15,6 +15,11 @@ import type { PresetController } from '../../presets/preset';
 import { safeHasProperty } from '../../utils';
 import { PresetChart } from '../PresetChart';
 
+/**
+ * Reads a line chart option for a series: the per-series value from
+ * `options.series[name]` if the series has a name and sets it, the chart's
+ * value otherwise.
+ */
 export function getSeriesOption<
   T extends keyof Omit<LineChartOptionsWithDefaults, 'series'>
 >(
@@ -41,7 +46,7 @@ export function getSeriesOption<
  * The 1.x line chart class: a wrapper over the `lineChart` preset with the
  * 1.x API. 1.x events and 1.x plugin functions need the compat plugin
  * (`chartist/compat`).
- * @see lineChart for the v2 functional API.
+ * @see {@link lineChart} for the v2 functional API.
  */
 export class LineChart extends PresetChart<
   LineChartEventsTypes,

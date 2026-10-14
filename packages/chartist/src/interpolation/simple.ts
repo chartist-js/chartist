@@ -1,32 +1,39 @@
 import type { SegmentData } from '../core/types';
 import { SvgPath } from '../svg';
 
+/** The options of {@link Interpolation.simple}. */
 export interface SimpleInteractionOptions {
+  /**
+   * How long the curve's handles are: the distance between two points
+   * divided by this, so larger values give tighter curves. `2` by default,
+   * at least `1`.
+   */
   divisor?: number;
+  /**
+   * Joins the line across holes (`null` or `undefined` values) instead of
+   * breaking it. Off by default.
+   */
   fillHoles?: boolean;
 }
 
 /**
- * Simple smoothing creates horizontal handles that are positioned with a fraction of the length between two data points. You can use the divisor option to specify the amount of smoothing.
- *
- * Simple smoothing can be used instead of `Chartist.Smoothing.cardinal` if you'd like to get rid of the artifacts it produces sometimes. Simple smoothing produces less flowing lines but is accurate by hitting the points and it also doesn't swing below or above the given data point.
- *
- * All smoothing functions within Chartist are factory functions that accept an options parameter. The simple interpolation function accepts one configuration parameter `divisor`, between 1 and ∞, which controls the smoothing characteristics.
+ * Smooths a line with curves whose handles are horizontal: it goes through
+ * every point and never swings above or below them, but flows less than
+ * {@link Interpolation.cardinal}. `divisor` sets how round it is.
  *
  * @example
  * ```ts
- * const chart = new LineChart('.ct-chart', {
- *   labels: [1, 2, 3, 4, 5],
- *   series: [[1, 2, 8, 1, 7]]
- * }, {
- *   lineSmooth: Interpolation.simple({
- *     divisor: 2,
- *     fillHoles: false
- *   })
- * });
+ * import { lineChart, Interpolation } from 'chartist';
+ *
+ * lineChart(
+ *   '#chart',
+ *   { labels: [1, 2, 3, 4, 5], series: [[1, 2, 8, 1, 7]] },
+ *   { lineSmooth: Interpolation.simple({ divisor: 3 }) }
+ * );
  * ```
  *
- * @param options The options of the simple interpolation factory function.
+ * @param options The divisor, and whether to join the line across holes.
+ * @returns The interpolation, for the `lineSmooth` option.
  */
 export function simple(options?: SimpleInteractionOptions) {
   const finalOptions = {

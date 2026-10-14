@@ -77,6 +77,7 @@ export interface BarChartOptions<
   showGridBackground?: boolean;
 }
 
+/** {@link BarChartOptions} after the defaults are applied: the 1.x `BarChart` works with these. */
 export type BarChartOptionsWithDefaults = RequiredKeys<
   BarChartOptions<
     RequiredKeys<
@@ -109,17 +110,29 @@ export type BarChartOptionsWithDefaults = RequiredKeys<
   'classNames'
 >;
 
+/** The payload of a bar chart's 1.x `created` event. */
 export type BarChartCreatedEvent = CreatedEvent<BarChartOptions>;
 
+/**
+ * The 1.x `draw` event of a bar, one per value. The bar is a `line` element
+ * from its base (`x1`, `y1`) to its value (`x2`, `y2`).
+ */
 export interface BarDrawEvent extends DrawEvent {
+  /** Always `'bar'`. */
   type: 'bar';
+  /** The bar's normalized value: a number, or `{ x, y }` numbers. */
   value: number | NormalizedMulti;
+  /** The x of the bar's base, in px. */
   x1: number;
+  /** The y of the bar's base, in px. */
   y1: number;
+  /** The x of the bar's end (its value), in px. */
   x2: number;
+  /** The y of the bar's end (its value), in px. */
   y2: number;
 }
 
+/** The 1.x events of a {@link BarChart} and their payloads, by event name. */
 export type BarChartEventsTypes = BaseChartEventsTypes<
   BarChartCreatedEvent,
   AxesDrawEvent | BarDrawEvent

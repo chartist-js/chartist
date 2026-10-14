@@ -4,10 +4,36 @@ import type { Attributes, AnimationDefinition, AnimationEvent } from './types';
 import type { Svg } from './Svg';
 
 /**
- * This Object contains some standard easing cubic bezier curves.
- * Then can be used with their name in the `Svg.animate`.
- * You can also extend the list and use your own name in the `animate` function.
- * Click the show code button to see the available bezier functions.
+ * The named easing curves for {@link Svg.animate}, from `easeInSine` to
+ * `easeInOutBack`: each the four numbers of a cubic Bézier curve. Name one
+ * as an animation's `easing`, or pass four numbers of your own, such as
+ * `easing: [0.25, 0.1, 0.25, 1]`.
+ *
+ * @example
+ * ```ts
+ * import { lineChart, findAll, Svg, type ChartPlugin } from 'chartist';
+ *
+ * // Points drop in from the top and bounce a little at the end.
+ * const dropIn: ChartPlugin = {
+ *   name: 'drop-in',
+ *   install(chart) {
+ *     chart.on('mount', ({ scene, elementOf }) => {
+ *       for (const point of findAll(scene, { role: 'point' })) {
+ *         const element = elementOf(point);
+ *         const { y } = point.ctx;
+ *         if (element) {
+ *           new Svg(element).animate({
+ *             y1: { dur: 600, from: 0, to: y, easing: 'easeOutBack' },
+ *             y2: { dur: 600, from: 0, to: y, easing: 'easeOutBack' }
+ *           });
+ *         }
+ *       }
+ *     });
+ *   }
+ * };
+ *
+ * lineChart('#chart', { series: [[5, 2, 4, 3]] }, { plugins: [dropIn] });
+ * ```
  */
 export const easings = {
   easeInSine: [0.47, 0, 0.745, 0.715],

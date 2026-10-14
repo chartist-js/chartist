@@ -3,32 +3,37 @@ import { splitIntoSegments } from '../core';
 import { SvgPath } from '../svg';
 import { none } from './none';
 
+/** The options of {@link Interpolation.monotoneCubic}. */
 export interface MonotoneCubicInterpolationOptions {
+  /**
+   * Joins the line across holes (`null` or `undefined` values) instead of
+   * breaking it. Off by default.
+   */
   fillHoles?: boolean;
 }
 
 /**
- * Monotone Cubic spline interpolation produces a smooth curve which preserves monotonicity. Unlike cardinal splines, the curve will not extend beyond the range of y-values of the original data points.
+ * Smooths a line with a monotone cubic spline: a smooth curve through
+ * every point that never swings above or below the values around it. It's
+ * what `lineSmooth: true` uses.
  *
- * Monotone Cubic splines can only be created if there are more than two data points. If this is not the case this smoothing will fallback to `Chartist.Smoothing.none`.
- *
- * The x-values of subsequent points must be increasing to fit a Monotone Cubic spline. If this condition is not met for a pair of adjacent points, then there will be a break in the curve between those data points.
- *
- * All smoothing functions within Chartist are factory functions that accept an options parameter.
+ * The x values have to increase from point to point: where one doesn't,
+ * the line breaks. With two points or fewer, the line is straight, as with
+ * {@link Interpolation.none}.
  *
  * @example
  * ```ts
- * const chart = new LineChart('.ct-chart', {
- *   labels: [1, 2, 3, 4, 5],
- *   series: [[1, 2, 8, 1, 7]]
- * }, {
- *   lineSmooth: Interpolation.monotoneCubic({
- *     fillHoles: false
- *   })
- * });
+ * import { lineChart, Interpolation } from 'chartist';
+ *
+ * lineChart(
+ *   '#chart',
+ *   { labels: [1, 2, 3, 4, 5], series: [[1, 2, 8, 1, 7]] },
+ *   { lineSmooth: Interpolation.monotoneCubic({ fillHoles: true }) }
+ * );
  * ```
  *
- * @param options The options of the monotoneCubic factory function.
+ * @param options Whether to join the line across holes.
+ * @returns The interpolation, for the `lineSmooth` option.
  */
 export function monotoneCubic(options?: MonotoneCubicInterpolationOptions) {
   const finalOptions = {

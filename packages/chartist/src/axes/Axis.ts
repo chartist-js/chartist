@@ -10,6 +10,7 @@ import type { EventEmitter } from '../event';
 import { isFalseyButZero } from '../utils';
 import { createGrid, createLabel } from '../core';
 
+/** The names an axis uses per dimension: its position, length and direction, and its edges in the {@link ChartRect}. */
 export const axisUnits = {
   x: {
     pos: 'x',
@@ -29,10 +30,17 @@ export const axisUnits = {
   }
 } as const;
 
+/** The units of the X axis: `axisUnits.x`. */
 export type XAxisUnits = typeof axisUnits.x;
+/** The units of the Y axis: `axisUnits.y`. */
 export type YAxisUnits = typeof axisUnits.y;
+/** The units of either axis. */
 export type AxisUnits = XAxisUnits | YAxisUnits;
 
+/**
+ * The base class of the 1.x axes: projects values to px along the drawing
+ * area and draws its grid lines and labels.
+ */
 export abstract class Axis {
   public readonly counterUnits: AxisUnits;
   public readonly range:

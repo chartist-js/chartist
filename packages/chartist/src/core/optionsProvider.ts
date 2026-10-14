@@ -2,6 +2,7 @@ import type { EventEmitter } from '../event';
 import type { OptionsChangedEvent, ResponsiveOptions } from './types';
 import { extend } from '../utils';
 
+/** What {@link optionsProvider} returns: the current options, and a way to stop listening to media queries. */
 export interface OptionsProvider<T = unknown> {
   removeMediaQueryListeners(): void;
   getCurrentOptions(): T;

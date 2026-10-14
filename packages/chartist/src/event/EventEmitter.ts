@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/** A listener of one event: gets the event's payload. */
 export type EventListener<T = any> = (data: T) => void;
 
+/** A listener of every event (`'*'`): gets the event's name and payload. */
 export type AllEventsListener<T = any> = (event: string, data: T) => void;
 
+/** The 1.x event emitter: `on`, `off` and `emit` by event name, with `'*'` for all events. */
 export class EventEmitter {
   private readonly listeners = new Map<string, Set<EventListener>>();
   private readonly allListeners = new Set<AllEventsListener>();

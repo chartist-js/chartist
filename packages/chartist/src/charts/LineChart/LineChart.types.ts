@@ -94,6 +94,7 @@ export interface LineChartOptions<
   >;
 }
 
+/** {@link LineChartOptions} after the defaults are applied: the 1.x `LineChart` works with these. */
 export type LineChartOptionsWithDefaults = RequiredKeys<
   LineChartOptions<
     RequiredKeys<
@@ -126,27 +127,51 @@ export type LineChartOptionsWithDefaults = RequiredKeys<
   'classNames'
 >;
 
+/** The payload of a line chart's 1.x `created` event. */
 export type LineChartCreatedEvent = CreatedEvent<LineChartOptions>;
 
+/**
+ * The 1.x `draw` event of a line chart's point, one per value. The point is a
+ * very short `line` element at `x`, `y` (CSS gives it a round cap).
+ */
 export interface PointDrawEvent extends DrawEvent {
+  /** Always `'point'`. */
   type: 'point';
+  /** The point's normalized value: `{ x, y }` numbers, or a number. */
   value: NormalizedSeriesValue;
+  /** The point's x, in px. */
   x: number;
+  /** The point's y, in px. */
   y: number;
 }
 
+/**
+ * The 1.x `draw` event of a line, one per series. `index` is the series'
+ * index and `meta` the series' meta.
+ */
 export interface LineDrawEvent extends DrawEvent {
+  /** Always `'line'`. */
   type: 'line';
+  /** All normalized values of the series. */
   values: NormalizedSeries;
+  /** The line's path as drawn (a copy, safe to change). */
   path: SvgPath;
 }
 
+/**
+ * The 1.x `draw` event of an area (with `showArea`), one per series and
+ * segment. `index` is the series' index and `meta` the series' meta.
+ */
 export interface AreaDrawEvent extends DrawEvent {
+  /** Always `'area'`. */
   type: 'area';
+  /** All normalized values of the series. */
   values: NormalizedSeries;
+  /** The area's path as drawn (a copy, safe to change). */
   path: SvgPath;
 }
 
+/** The 1.x events of a {@link LineChart} and their payloads, by event name. */
 export type LineChartEventsTypes = BaseChartEventsTypes<
   LineChartCreatedEvent,
   AxesDrawEvent | PointDrawEvent | LineDrawEvent | AreaDrawEvent

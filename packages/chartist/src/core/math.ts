@@ -1,6 +1,7 @@
 import type { Bounds } from './types';
 import { precision as globalPrecision } from './constants';
 
+/** A tiny number, about the gap between 1 and the next float: the tolerance of float comparisons. */
 export const EPSILON = 2.221e-16;
 
 /**

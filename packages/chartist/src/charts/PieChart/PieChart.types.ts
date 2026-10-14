@@ -14,14 +14,20 @@ import type { BaseChartEventsTypes } from '../types';
 /** The data of a pie chart: one value per slice, and labels for the slices. */
 export type PieChartData = Data<FlatSeries>;
 
+/** Which way pie labels anchor: see `labelDirection` in {@link PieChartOptions}. */
 export type LabelDirection = 'implode' | 'neutral' | 'explode';
 
+/** The `text-anchor` of a pie label: `'start'`, `'middle'` or `'end'`. */
 export type AnchorPosition = 'start' | 'middle' | 'end';
 
+/** Where pie labels go: see `labelPosition` in {@link PieChartOptions}. */
 export type RadialLabelPosition = 'inside' | 'center' | 'outside';
 
+/** A point in px, such as the center of a pie. */
 export interface Dot {
+  /** The x, in px. */
   x: number;
+  /** The y, in px. */
   y: number;
 }
 
@@ -91,6 +97,7 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   preventOverlappingLabelOffset?: number;
 }
 
+/** {@link PieChartOptions} after the defaults are applied: the 1.x `PieChart` works with these. */
 export type PieChartOptionsWithDefaults = RequiredKeys<
   PieChartOptions,
   | 'chartPadding'
@@ -105,35 +112,57 @@ export type PieChartOptionsWithDefaults = RequiredKeys<
   'classNames'
 >;
 
+/** The payload of a pie chart's 1.x `created` event: as for other charts, without axes. */
 export type PieChartCreatedEvent = Omit<
   CreatedEvent<PieChartOptions>,
   'axisX' | 'axisY'
 >;
 
+/**
+ * The 1.x `draw` event of a pie or donut slice, one per value. `index` is
+ * the slice's index and `series` its value as given in the data.
+ */
 export interface SliceDrawEvent extends Omit<
   DrawEvent,
   'axisX' | 'axisY' | 'seriesIndex'
 > {
+  /** Always `'slice'`. */
   type: 'slice';
+  /** The slice's value. */
   value: NormalizedSeriesValue;
+  /** The value of the full circle: the sum of all values, or the `total` option. */
   totalDataSum: number;
+  /** The slice's path as drawn (a copy, safe to change). */
   path: SvgPath;
+  /** The center of the pie, in px. */
   center: Dot;
+  /** The radius of the pie, in px. */
   radius: number;
+  /** Where the slice starts, in degrees clockwise from the top. */
   startAngle: number;
+  /** Where the slice ends, in degrees clockwise from the top. */
   endAngle: number;
 }
 
+/**
+ * The 1.x `draw` event of a pie slice's label. `index` is the slice's
+ * index; the label is a `text` element anchored at `x`, `y`.
+ */
 export interface SliceLabelDrawEvent extends Omit<
   DrawEvent,
   'axisX' | 'axisY' | 'seriesIndex'
 > {
+  /** Always `'label'`. */
   type: 'label';
+  /** The label as shown, after `labelInterpolationFnc`. */
   text: string;
+  /** The x the label is anchored at, in px. */
   x: number;
+  /** The y the label is anchored at, in px. */
   y: number;
 }
 
+/** The 1.x events of a {@link PieChart} and their payloads, by event name. */
 export type PieChartEventsTypes = BaseChartEventsTypes<
   PieChartCreatedEvent,
   SliceDrawEvent | SliceLabelDrawEvent

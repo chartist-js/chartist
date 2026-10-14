@@ -6,6 +6,7 @@ import type {
 } from '../core';
 import type { AnimationEvent } from '../svg';
 
+/** The 1.x events every chart class emits and their payloads, by event name. */
 export interface BaseChartEventsTypes<
   TCreateEvent = CreatedEvent,
   TDrawEvents = DrawEvent

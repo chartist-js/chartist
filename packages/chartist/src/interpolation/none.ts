@@ -2,24 +2,32 @@ import type { SegmentData } from '../core';
 import { getMultiValue } from '../core';
 import { SvgPath } from '../svg';
 
+/** The options of {@link Interpolation.none}. */
 export interface NoneInterpolationOptions {
+  /**
+   * Joins the line across holes (`null` or `undefined` values) instead of
+   * breaking it. Off by default.
+   */
   fillHoles?: boolean;
 }
 
 /**
- * This interpolation function does not smooth the path and the result is only containing lines and no curves.
+ * Draws a line as straight segments from point to point, without
+ * smoothing. It's what `lineSmooth: false` uses.
  *
  * @example
  * ```ts
- * const chart = new LineChart('.ct-chart', {
- *   labels: [1, 2, 3, 4, 5],
- *   series: [[1, 2, 8, 1, 7]]
- * }, {
- *   lineSmooth: Interpolation.none({
- *     fillHoles: false
- *   })
- * });
+ * import { lineChart, Interpolation } from 'chartist';
+ *
+ * lineChart(
+ *   '#chart',
+ *   { labels: [1, 2, 3, 4, 5], series: [[1, 2, 8, 1, 7]] },
+ *   { lineSmooth: Interpolation.none({ fillHoles: true }) }
+ * );
  * ```
+ *
+ * @param options Whether to join the line across holes.
+ * @returns The interpolation, for the `lineSmooth` option.
  */
 export function none(options?: NoneInterpolationOptions) {
   const finalOptions = {

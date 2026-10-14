@@ -1,6 +1,7 @@
 import type { ChartRect, AxisOptions } from '../core';
 import { AxisUnits, Axis } from './Axis';
 
+/** The 1.x axis with one step per tick, such as the labels of a line chart's X axis. */
 export class StepAxis extends Axis {
   private readonly stepLength: number;
   public readonly stretch: boolean;

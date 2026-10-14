@@ -7,6 +7,11 @@ import { EventListener, AllEventsListener, EventEmitter } from '../event';
 
 const instances = new WeakMap<Element, BaseChart<unknown>>();
 
+/**
+ * The base class of the 1.x chart classes ({@link LineChart},
+ * {@link BarChart}, {@link PieChart}): the container, `update`, `detach`,
+ * `on` and `off`.
+ */
 export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
   protected svg?: Svg;
   protected readonly container: Element;

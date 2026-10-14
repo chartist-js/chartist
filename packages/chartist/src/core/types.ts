@@ -14,19 +14,42 @@ export interface ChartPadding {
   left: number;
 }
 
+/**
+ * The drawing area of a 1.x chart in px: `x1`, `y1` is its bottom left
+ * corner and `x2`, `y2` its top right (SVG y grows downward, so `y1` is the
+ * larger one).
+ */
 export interface ChartRect {
+  /** The left edge of the drawing area, in px. */
   x1: number;
+  /** The right edge of the drawing area, in px. */
   x2: number;
+  /** The bottom edge of the drawing area, in px. */
   y1: number;
+  /** The top edge of the drawing area, in px. */
   y2: number;
+  /** The chart padding on each side, in px. */
   padding: ChartPadding;
+  /** The width of the drawing area (`x2 - x1`), in px. */
   width(): number;
+  /** The height of the drawing area (`y1 - y2`), in px. */
   height(): number;
 }
 
+/**
+ * A 1.x plugin: a function that gets the chart object (and its options)
+ * and registers listeners with `chart.on('draw', …)`. It runs with the
+ * `compat` plugin from `chartist/compat`, whose `fromLegacyPlugin()` also
+ * turns it into a v2 plugin.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Plugin = (chart: any, options?: any) => void;
 
+/**
+ * Anything you attach to a series or value as `meta`, such as a tooltip
+ * text. Chartist doesn't read it: it hands it back in events and writes it
+ * to the `ct:meta` attribute.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Meta = any;
 
@@ -38,6 +61,11 @@ export interface ViewBox {
   height: number;
 }
 
+/**
+ * The options all 1.x charts share: size, value range, padding, axes, class
+ * names and plugins. {@link LineChartOptions}, {@link BarChartOptions} and
+ * {@link PieChartOptions} build on them.
+ */
 export interface Options<
   TXAxisOptions = AxisOptions,
   TYAxisOptions = TXAxisOptions
@@ -165,6 +193,7 @@ export interface AxisOptions {
   };
 }
 
+/** {@link Options} after the defaults are applied: the axes and class names are set. */
 export type OptionsWithDefaults = RequiredKeys<
   Options<
     RequiredKeys<
@@ -179,34 +208,61 @@ export type OptionsWithDefaults = RequiredKeys<
   'axisX' | 'axisY' | 'classNames'
 >;
 
+/**
+ * The 1.x responsive options: `[mediaQuery, options]` pairs, applied over
+ * the chart's options while the media query matches.
+ */
 export type ResponsiveOptions<T = Options> = [string, T][];
 
+/** The scale {@link getBounds} computes for an axis: its range and steps. */
 export interface Bounds {
+  /** The highest value to show. */
   high: number;
+  /** The lowest value to show. */
   low: number;
+  /** `high - low`. */
   valueRange: number;
+  /** The order of magnitude of the value range. */
   oom: number;
+  /** The distance between two ticks. */
   step: number;
+  /** The first tick: `low` rounded down to a step. */
   min: number;
+  /** The last tick: `high` rounded up to a step. */
   max: number;
+  /** `max - min`. */
   range: number;
+  /** The number of steps between `min` and `max`. */
   numberOfSteps: number;
+  /** The tick values, from `min` to `max`. */
   values: number[];
 }
 
+/** A run of points without holes, as {@link splitIntoSegments} returns it. */
 export interface Segment {
+  /** The points' coordinates in px, as `[x1, y1, x2, y2, …]`. */
   pathCoordinates: number[];
+  /** The value of each point, in the same order. */
   valueData: SegmentData[];
 }
 
+/** A point's value, its index in the series and its meta. */
 export interface SegmentData {
+  /** The normalized value. */
   value: NormalizedSeriesValue;
+  /** The value's index in its series. */
   valueIndex: number;
+  /** The value's `meta`, if it has one. */
   meta?: Meta;
 }
 
+/** An axis dimension: `'x'` or `'y'`. */
 export type AxisName = 'x' | 'y';
 
+/**
+ * A value with coordinates: `{ x, y }`, or only `x` or `y`. Line charts
+ * draw `{ x, y }` values on two scale axes (scatter plots).
+ */
 export type Multi =
   | {
       x: number | string | Date | null;
@@ -219,6 +275,7 @@ export type Multi =
       y: number | string | Date | null;
     };
 
+/** A {@link Multi} value after normalizing: its coordinates as numbers. */
 export type NormalizedMulti =
   | {
       x: number;
@@ -231,12 +288,15 @@ export type NormalizedMulti =
       y: number;
     };
 
-/**
- * Data
- */
+// Data
 
+/** A label of an axis step or a pie slice. */
 export type Label = string | number | Date;
 
+/**
+ * Every shape `series` can take: a {@link FlatSeries} (pies, distributed
+ * bars), or a list of {@link Series} arrays and {@link SeriesObject}s.
+ */
 export type AllSeriesTypes = FlatSeries | (Series | SeriesObject)[];
 
 /**
@@ -256,21 +316,39 @@ export interface Data<T extends AllSeriesTypes = AllSeriesTypes> {
   series: T;
 }
 
-/**
- * Series
- */
+// Series
 
+/**
+ * A series as an array of values: `[5, 2, 4]`. Use a {@link SeriesObject}
+ * to give it a name, class name or meta.
+ */
 export type Series<T = SeriesPrimitiveValue> = SeriesValue<T>[];
 
+/**
+ * A series with a name, class name or meta:
+ * `{ name: 'Sales', data: [5, 2, 4] }`.
+ */
 export interface SeriesObject<T = SeriesPrimitiveValue> {
+  /**
+   * The series' name. Line charts look up per-series options in `series`
+   * by it.
+   */
   name?: string;
+  /** A class name for the series' group, instead of `ct-series-a`, `-b`, … */
   className?: string;
+  /** Anything to attach to the series, handed back in events. */
   meta?: Meta;
+  /** The series' values. */
   data: SeriesValue<T>[];
 }
 
+/** A value of a series: a plain value, or `{ value, meta }`. */
 export type SeriesValue<T = SeriesPrimitiveValue> = SeriesObjectValue<T> | T;
 
+/**
+ * A plain value of a series: a number (numeric strings are read as
+ * numbers), a {@link Multi} `{ x, y }`, or `null` or `undefined` for a hole.
+ */
 export type SeriesPrimitiveValue =
   | number
   | string
@@ -280,130 +358,221 @@ export type SeriesPrimitiveValue =
   | null
   | undefined;
 
+/** A value with meta: `{ value: 5, meta: 'Tuesday' }`. */
 export interface SeriesObjectValue<T = SeriesPrimitiveValue> {
+  /** Anything to attach to the value, handed back in events. */
   meta?: Meta;
+  /** The value. */
   value: T;
 }
 
-/**
- * Flat Series
- */
+// Flat series
 
+/**
+ * One flat array of values, one per slice or bar: the series of a pie
+ * chart, or of a bar chart with `distributeSeries`.
+ */
 export type FlatSeries<T = FlatSeriesPrimitiveValue> = FlatSeriesValue<T>[];
 
+/**
+ * A value of a {@link FlatSeries}: a plain value, `{ value, meta }`, or a
+ * {@link FlatSeriesObjectValue} with a name and class name for its slice.
+ */
 export type FlatSeriesValue<T = FlatSeriesPrimitiveValue> =
   | SeriesValue<T>
   | FlatSeriesObjectValue<T>;
 
+/**
+ * A plain value of a {@link FlatSeries}: a number (numeric strings are read
+ * as numbers), or `null` or `undefined` for a hole.
+ */
 export type FlatSeriesPrimitiveValue = number | string | null | undefined;
 
+/**
+ * A value of a flat series that is its own series, such as a pie slice:
+ * `{ value: 20, name: 'Rent', className: 'rent' }`.
+ */
 export interface FlatSeriesObjectValue<T = FlatSeriesPrimitiveValue> {
+  /** The name of the value's series. */
   name?: string;
+  /** A class name for the value's series group, such as a slice's. */
   className?: string;
+  /** Anything to attach to the value, handed back in events. */
   meta?: Meta;
+  /** The value. */
   value: T;
 }
 
-/**
- * Normalized Data
- */
+// Normalized data
 
+/**
+ * Every shape a normalized `series` can take: a
+ * {@link NormalizedFlatSeries} or a list of {@link NormalizedSeries}.
+ */
 export type AllNormalizedSeriesTypes =
   | NormalizedFlatSeries
   | NormalizedSeries[];
 
+/**
+ * Chart data after {@link normalizeData}: labels filled in, and every
+ * series an array of numbers, `{ x, y }` numbers or holes.
+ */
 export interface NormalizedData<
   T extends AllNormalizedSeriesTypes = AllNormalizedSeriesTypes
 > extends Data {
+  /** One label per value position, empty strings where none was given. */
   labels: Label[];
+  /** The normalized series. */
   series: T;
 }
 
-/**
- * Normalized Series
- */
+// Normalized series
 
+/** A series after normalizing: its values without meta or series object. */
 export type NormalizedSeries = NormalizedSeriesValue[];
 
+/** A normalized value: a number, `{ x, y }` numbers, or `undefined` for a hole. */
 export type NormalizedSeriesValue = NormalizedSeriesPrimitiveValue;
 
+/** A normalized value: a number, `{ x, y }` numbers, or `undefined` for a hole. */
 export type NormalizedSeriesPrimitiveValue =
   | number
   | NormalizedMulti
   | undefined;
 
-/**
- * Normalized Flat Series
- */
+// Normalized flat series
 
+/** A {@link FlatSeries} after normalizing: one number per slice or bar. */
 export type NormalizedFlatSeries = number[];
 
-/**
- * Events
- */
+// Events
 
+/**
+ * The payload of the 1.x `created` event, emitted once a chart is drawn:
+ * its SVG, drawing area, axes and options.
+ */
 export interface CreatedEvent<TOptions = Options> {
+  /** The drawing area, in px. */
   chartRect: ChartRect;
+  /** The X axis, a 1.x {@link Axis} object. */
   axisX: Axis;
+  /** The Y axis, a 1.x {@link Axis} object. */
   axisY: Axis;
+  /** The chart's SVG element, wrapped in {@link Svg}. */
   svg: Svg;
+  /** The options the chart was drawn with, defaults and responsive options applied. */
   options: TOptions;
 }
 
+/**
+ * The fields every 1.x `draw` event shares. A `draw` listener gets one per
+ * element drawn; check `type` to tell them apart.
+ */
 export interface DrawEvent {
+  /** What was drawn: `'point'`, `'line'`, `'bar'`, `'grid'`, … */
   type: string;
+  /** The drawn element, wrapped in {@link Svg}: change or animate it here. */
   element: Svg;
+  /** The group the element is in, wrapped in {@link Svg}. */
   group: Svg;
+  /** The drawing area, in px. */
   chartRect: ChartRect;
+  /** The X axis, a 1.x {@link Axis} object. */
   axisX: Axis;
+  /** The Y axis, a 1.x {@link Axis} object. */
   axisY: Axis;
+  /** The `meta` of the value (or of the series, for lines and areas). */
   meta: Meta;
+  /** The index of the value in its series (of the series, for lines and areas). */
   index: number;
+  /** The series as given in the data: an array or a series object. */
   series: FlatSeriesValue | Series | SeriesObject;
+  /** The index of the series in the data. */
   seriesIndex: number;
 }
 
+/**
+ * The payload of the 1.x `data` event, emitted before a chart draws new
+ * data. Listeners may change `data` in place to transform it.
+ */
 export interface DataEvent {
+  /** `'initial'` for the first data, `'update'` for data set later. */
   type: 'initial' | 'update';
+  /** The data the chart is about to draw (a copy, safe to change). */
   data: Data;
 }
 
+/**
+ * The payload of the 1.x `optionsChanged` event, emitted when a responsive
+ * option starts or stops applying.
+ */
 export interface OptionsChangedEvent<T = Options> {
+  /** The options before the change. */
   previousOptions: T;
+  /** The options now in effect. */
   currentOptions: T;
 }
 
+/**
+ * The 1.x `draw` event of a grid line, one per tick of each axis. `x1`,
+ * `y1`, `x2`, `y2` are the line's ends in px.
+ */
 export interface GridDrawEvent extends Omit<
   DrawEvent,
   'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
 > {
+  /** Always `'grid'`. */
   type: 'grid';
+  /** The axis the grid line belongs to. */
   axis: Axis;
+  /** The x of the line's start, in px. */
   x1: number;
+  /** The y of the line's start, in px. */
   y1: number;
+  /** The x of the line's end, in px. */
   x2: number;
+  /** The y of the line's end, in px. */
   y2: number;
 }
 
+/**
+ * The 1.x `draw` event of the grid background, the `rect` behind the
+ * drawing area (with `showGridBackground`).
+ */
 export interface GridBackgroundDrawEvent {
+  /** Always `'gridBackground'`. */
   type: 'gridBackground';
+  /** The grid group the background is in. */
   group: Svg;
+  /** The background `rect`. */
   element: Svg;
 }
 
+/**
+ * The 1.x `draw` event of an axis label, one per tick. The label is a
+ * `foreignObject` with a `span`, placed at `x`, `y` with the given size.
+ */
 export interface LabelDrawEvent extends Omit<
   DrawEvent,
   'chartRect' | 'axisX' | 'axisY' | 'meta' | 'series' | 'seriesIndex'
 > {
+  /** Always `'label'`. */
   type: 'label';
+  /** The axis the label belongs to. */
   axis: Axis;
+  /** The label as shown, after `labelInterpolationFnc`. */
   text: Label;
+  /** The x of the label's box, in px. */
   x: number;
+  /** The y of the label's box, in px. */
   y: number;
+  /** The width of the label's box, in px. */
   width: number;
+  /** The height of the label's box, in px. */
   height: number;
 }
 
+/** The 1.x `draw` events of the axes: grid lines, the grid background and labels. */
 export type AxesDrawEvent =
   | GridDrawEvent
   | GridBackgroundDrawEvent

@@ -1,8 +1,9 @@
 /**
- * Simple recursive object extend
- * @param target Target object where the source will be merged into
- * @param sources This object (objects) will be merged into target and then target is returned
- * @return An object that has the same reference as target but is extended and merged with the properties of source
+ * Merges the sources into `target`, deeply, and returns `target`. Plain
+ * objects merge key by key; arrays and other values replace what's there.
+ * Keys of the target's prototype are skipped, against prototype pollution.
+ * @param target The object the sources are merged into (changed in place).
+ * @returns `target`, with the sources' properties.
  */
 export function extend<T>(target: T): T;
 export function extend<T, A>(target: T, a: A): T & A;

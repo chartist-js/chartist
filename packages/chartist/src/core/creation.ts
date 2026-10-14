@@ -65,10 +65,10 @@ export function createSvg(
 }
 
 /**
- * Converts a number into a padding object.
- * @param padding
- * @param fallback This value is used to fill missing values if a incomplete padding object was passed
- * @returns Returns a padding object containing top, right, bottom, left properties filled with the padding number passed in as argument. If the argument is something else than a number (presumably already a correct padding object) then this argument is directly returned.
+ * Turns a padding option into a full {@link ChartPadding}: a number pads
+ * every side, an object keeps its numeric sides and sets the missing ones
+ * to 0, and `undefined` gives 0 on every side.
+ * @returns A new padding object with `top`, `right`, `bottom` and `left`.
  */
 export function normalizePadding(
   padding: number | Partial<ChartPadding> | undefined

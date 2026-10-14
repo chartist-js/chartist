@@ -5,18 +5,52 @@ import { SvgList } from './SvgList';
 import { createAnimation, easings } from './animation';
 
 /**
- * Svg creates a new SVG object wrapper with a starting element. You can use the wrapper to fluently create sub-elements and modify them.
+ * Wraps an SVG element for chaining: set attributes and classes, add child
+ * elements, and animate attributes with SMIL. Wrap an element of a rendered
+ * chart (from `elementOf` in a `mount` listener), or create a new one by
+ * name.
+ *
+ * @example
+ * ```ts
+ * import { barChart, findAll, Svg, type ChartPlugin } from 'chartist';
+ *
+ * // Bars grow from the axis, animated from a plugin's mount listener.
+ * const growBars: ChartPlugin = {
+ *   name: 'grow-bars',
+ *   install(chart) {
+ *     chart.on('mount', ({ scene, elementOf }) => {
+ *       for (const bar of findAll(scene, { role: 'bar' })) {
+ *         const element = elementOf(bar);
+ *         if (element) {
+ *           new Svg(element).animate({
+ *             y2: {
+ *               begin: bar.ctx.valueIndex * 120,
+ *               dur: 700,
+ *               from: bar.attrs.y1,
+ *               to: bar.attrs.y2,
+ *               easing: 'easeOutQuint'
+ *             }
+ *           });
+ *         }
+ *       }
+ *     });
+ *   }
+ * };
+ *
+ * barChart('#chart', { series: [[5, 4, 3, 7]] }, { plugins: [growBars] });
+ * ```
  */
 export class Svg {
   /**
-   * @todo Only there for chartist <1 compatibility. Remove after deprecation warining.
-   * @deprecated Use the animation module export `easings` directly.
+   * The easing curves for {@link Svg.animate}, as 1.x had them on the class.
+   * @deprecated Use the {@link easings} export.
    */
   static readonly Easing = easings;
 
   private _node: Element;
 
   /**
+   * Creates an SVG element and wraps it, or wraps an existing element.
    * @param name The name of the SVG element to create or an SVG dom element which should be wrapped into Svg
    * @param attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
    * @param className This class or class list will be added to the SVG element
@@ -117,8 +151,8 @@ export class Svg {
   }
 
   /**
-   * Returns the parent Chartist.SVG wrapper object
-   * @return Returns a Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
+   * Wraps the element's parent.
+   * @returns The parent in a new `Svg`, or `null` if there is none or it isn't an SVG element.
    */
   parent() {
     return this._node.parentNode instanceof SVGElement
@@ -155,9 +189,9 @@ export class Svg {
   }
 
   /**
-   * Find the all child SVG elements of the current element that match a CSS selector. The returned object is a Svg.List wrapper.
+   * Finds all descendants of the element that match a CSS selector.
    * @param selector A CSS selector that is used to query for child SVG elements
-   * @return The SVG wrapper list for the element found or null if no element was found
+   * @returns The elements found in an {@link SvgList} (empty if none match).
    */
   querySelectorAll(selector: string) {
     const foundNodes = this._node.querySelectorAll(selector);
@@ -239,8 +273,9 @@ export class Svg {
   }
 
   /**
-   * This method will cause the current wrapper to remove itself from its parent wrapper. Use this method if you'd like to get rid of an element in a given DOM structure.
-   * @return The parent wrapper object of the element that got removed
+   * Removes the element from its parent.
+   * @returns `null`: the parent is looked up after the element was removed,
+   * so there is none.
    */
   remove() {
     this._node.parentNode?.removeChild(this._node);
@@ -346,9 +381,14 @@ export class Svg {
   }
 
   /**
-   * The animate function lets you animate the current element with SMIL animations. You can add animations for multiple attributes at the same time by using an animation definition object. This object should contain SMIL animation attributes. Please refer to http://www.w3.org/TR/SVG/animate.html for a detailed specification about the available animation attributes. Additionally an easing property can be passed in the animation definition object. This can be a string with a name of an easing function in `Svg.Easing` or an array with four numbers specifying a cubic Bézier curve.
-   * **An animations object could look like this:**
-   * ```javascript
+   * Animates attributes of the element with SMIL: adds an `<animate>`
+   * element per attribute. Each {@link AnimationDefinition} holds SMIL
+   * attributes (usually `begin`, `dur`, `from` and `to`, see
+   * https://www.w3.org/TR/SVG11/animate.html), plus an optional `easing`: a
+   * name from {@link easings} or four numbers of a cubic Bézier curve.
+   *
+   * An animations object could look like this:
+   * ```ts
    * element.animate({
    *   opacity: {
    *     dur: 1000,
@@ -368,21 +408,22 @@ export class Svg {
    *   }
    * });
    * ```
-   * **Automatic unit conversion**
-   * For the `dur` and the `begin` animate attribute you can also omit a unit by passing a number. The number will automatically be converted to milli seconds.
-   * **Guided mode**
-   * The default behavior of SMIL animations with offset using the `begin` attribute is that the attribute will keep it's original value until the animation starts. Mostly this behavior is not desired as you'd like to have your element attributes already initialized with the animation `from` value even before the animation starts. Also if you don't specify `fill="freeze"` on an animate element or if you delete the animation after it's done (which is done in guided mode) the attribute will switch back to the initial value. This behavior is also not desired when performing simple one-time animations. For one-time animations you'd want to trigger animations immediately instead of relative to the document begin time. That's why in guided mode Svg will also use the `begin` property to schedule a timeout and manually start the animation after the timeout. If you're using multiple SMIL definition objects for an attribute (in an array), guided mode will be disabled for this attribute, even if you explicitly enabled it.
-   * If guided mode is enabled the following behavior is added:
-   * - Before the animation starts (even when delayed with `begin`) the animated attribute will be set already to the `from` value of the animation
-   * - `begin` is explicitly set to `indefinite` so it can be started manually without relying on document begin time (creation)
-   * - The animate element will be forced to use `fill="freeze"`
-   * - The animation will be triggered with `beginElement()` in a timeout where `begin` of the definition object is interpreted in milli seconds. If no `begin` was specified the timeout is triggered immediately.
-   * - After the animation the element attribute value will be set to the `to` value of the animation
-   * - The animate element is deleted from the DOM
-   * @param animations An animations object where the property keys are the attributes you'd like to animate. The properties should be objects again that contain the SMIL animation attributes (usually begin, dur, from, and to). The property begin and dur is auto converted (see Automatic unit conversion). You can also schedule multiple animations for the same attribute by passing an Array of SMIL definition objects. Attributes that contain an array of SMIL definition objects will not be executed in guided mode.
-   * @param guided Specify if guided mode should be activated for this animation (see Guided mode). If not otherwise specified, guided mode will be activated.
-   * @param eventEmitter If specified, this event emitter will be notified when an animation starts or ends.
-   * @return The current element where the animation was added
+   *
+   * `dur` and `begin` given as numbers are milliseconds.
+   *
+   * **Guided mode** (the default) makes one-off animations behave: the
+   * attribute is set to `from` right away, even before a delayed start; the
+   * animation starts after `begin` ms (a timeout, not the document's
+   * timeline); and when it ends, the attribute keeps `to` and the
+   * `<animate>` element is removed. Pass `guided: false` to write the
+   * `<animate>` elements as given. An attribute with an array of
+   * definitions never runs guided.
+   * @param animations The attributes to animate, each with a definition, or
+   * an array of definitions to run several animations on one attribute.
+   * @param guided Runs the animations in guided mode (see above).
+   * @param eventEmitter Gets `animationBegin` and `animationEnd` events
+   * ({@link AnimationEvent}) when an animation starts and ends.
+   * @returns The same wrapper, for chaining.
    */
   animate(
     animations: Record<string, AnimationDefinition | AnimationDefinition[]>,

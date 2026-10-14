@@ -3,32 +3,42 @@ import { splitIntoSegments } from '../core';
 import { SvgPath } from '../svg';
 import { none } from './none';
 
+/** The options of {@link Interpolation.cardinal}. */
 export interface CardinalInterpolationOptions {
+  /**
+   * How round the curve is, from `0` (straight segments) to `1` (the
+   * default, a Catmull-Rom spline).
+   */
   tension?: number;
+  /**
+   * Joins the line across holes (`null` or `undefined` values) instead of
+   * breaking it. Off by default.
+   */
   fillHoles?: boolean;
 }
 
 /**
- * Cardinal / Catmull-Rome spline interpolation is the default smoothing function in Chartist. It produces nice results where the splines will always meet the points. It produces some artifacts though when data values are increased or decreased rapidly. The line may not follow a very accurate path and if the line should be accurate this smoothing function does not produce the best results.
+ * Smooths a line with a cardinal (Catmull-Rom) spline: round curves that
+ * go through every point. When values change quickly, the curve can swing
+ * past them; {@link Interpolation.monotoneCubic} (the default for
+ * `lineSmooth: true`) doesn't.
  *
- * Cardinal splines can only be created if there are more than two data points. If this is not the case this smoothing will fallback to `Chartist.Smoothing.none`.
- *
- * All smoothing functions within Chartist are factory functions that accept an options parameter. The cardinal interpolation function accepts one configuration parameter `tension`, between 0 and 1, which controls the smoothing intensity.
+ * With two points or fewer, the line is straight, as with
+ * {@link Interpolation.none}.
  *
  * @example
  * ```ts
- * const chart = new LineChart('.ct-chart', {
- *   labels: [1, 2, 3, 4, 5],
- *   series: [[1, 2, 8, 1, 7]]
- * }, {
- *   lineSmooth: Interpolation.cardinal({
- *     tension: 1,
- *     fillHoles: false
- *   })
- * });
+ * import { lineChart, Interpolation } from 'chartist';
+ *
+ * lineChart(
+ *   '#chart',
+ *   { labels: [1, 2, 3, 4, 5], series: [[1, 2, 8, 1, 7]] },
+ *   { lineSmooth: Interpolation.cardinal({ tension: 0.2 }) }
+ * );
  * ```
  *
- * @param options The options of the cardinal factory function.
+ * @param options The tension, and whether to join the line across holes.
+ * @returns The interpolation, for the `lineSmooth` option.
  */
 export function cardinal(options?: CardinalInterpolationOptions) {
   const finalOptions = {
