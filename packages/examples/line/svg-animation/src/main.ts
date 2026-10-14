@@ -5,15 +5,22 @@ import {
   Svg,
   type AnimationDefinition,
   type ChartPlugin,
-  type ScaleAxis,
   type SceneNode
 } from 'chartist';
 
 const delays = 80;
 const durations = 500;
 
-const dimensionOf = (element: SceneNode) =>
-  (element.ctx?.axis as ScaleAxis | undefined)?.dimension;
+// Grid lines and axis labels know their axis.
+const dimensionOf = (element: SceneNode) => {
+  if (element.role === 'grid') {
+    return element.ctx.axis.dimension;
+  }
+  if (element.role === 'label' && element.ctx.kind === 'axis') {
+    return element.ctx.axis.dimension;
+  }
+  return undefined;
+};
 
 // Every element of the chart flies in with SMIL, one after the other: per
 // axis tick its grid line and its label (X axis first), then per series its
@@ -72,7 +79,7 @@ const flyIn: ChartPlugin = {
 
           const label = labels.find(
             candidate =>
-              onAxis(candidate) && candidate.ctx?.index === grid.ctx?.index
+              onAxis(candidate) && candidate.ctx.index === grid.ctx.index
           );
           if (!label) {
             continue;
@@ -107,7 +114,7 @@ const flyIn: ChartPlugin = {
       for (const series of findAll(scene, { role: 'series' })) {
         for (const point of series.children.filter(n => n.role === 'point')) {
           seq++;
-          const x = point.ctx?.x as number;
+          const x = point.ctx.x;
           animate(point, {
             x1: {
               begin: seq * delays,

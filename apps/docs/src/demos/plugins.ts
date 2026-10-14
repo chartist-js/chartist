@@ -1,4 +1,4 @@
-import type { ChartPlugin, SceneNode } from 'chartist';
+import type { ChartPlugin, RoleNode, SceneNode } from 'chartist';
 import { node } from 'chartist';
 
 /**
@@ -8,7 +8,7 @@ import { node } from 'chartist';
  */
 function decorateBars(
   series: SceneNode,
-  decorate: (bar: SceneNode) => SceneNode | undefined
+  decorate: (bar: RoleNode<'bar'>) => SceneNode | undefined
 ): SceneNode {
   return series.children
     .filter(child => child.role === 'bar')
@@ -16,6 +16,16 @@ function decorateBars(
       const decoration = decorate(bar);
       return decoration ? result.append(decoration) : result;
     }, series);
+}
+
+/** A bar's value: bar charts normalize values to { x, y }. */
+function barValue(bar: RoleNode<'bar'>): number | undefined {
+  const { value } = bar.ctx;
+  return typeof value === 'number'
+    ? value
+    : value && 'y' in value
+      ? value.y
+      : undefined;
 }
 
 /** Lollipop bars: a dot on each bar; CSS makes the stick thin. */
@@ -43,13 +53,12 @@ export const valueLabels = (): ChartPlugin => ({
         return;
       }
       return decorateBars(series, bar => {
-        const { x2, y2 } = bar.attrs as { x2: number; y2: number };
-        const value = (bar.ctx?.value as { y?: number })?.y;
+        const { x2, y2 } = bar.attrs;
         return node(
           'text',
           { x: x2, y: y2 - 12, 'text-anchor': 'middle' },
           'ct-value-label'
-        ).text(String(value));
+        ).text(String(barValue(bar)));
       });
     });
   }
@@ -60,8 +69,11 @@ export const threshold = (limit: number): ChartPlugin => ({
   name: 'threshold',
   install(chart) {
     chart.on('compose', bar => {
-      const value = (bar.ctx?.value as { y?: number })?.y;
-      if (bar.role !== 'bar' || value === undefined || value < limit) {
+      if (bar.role !== 'bar') {
+        return;
+      }
+      const value = barValue(bar);
+      if (value === undefined || value < limit) {
         return;
       }
       return bar.attr({ style: '--ct-color: var(--ct-series-g)' });

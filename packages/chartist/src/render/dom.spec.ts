@@ -1,3 +1,4 @@
+import { pointContext } from '../../test/contexts';
 import { node } from '../scene/node';
 import { domRenderer } from './dom';
 import { estimateText } from './measure';
@@ -7,7 +8,8 @@ const CT = 'http://gionkunz.github.com/chartist-js/ct';
 
 function sample() {
   const point = node('line', { x1: 1, 'ct:value': 5 }, 'ct-point', {
-    role: 'point'
+    role: 'point',
+    ctx: pointContext()
   });
   return {
     point,

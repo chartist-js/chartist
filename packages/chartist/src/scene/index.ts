@@ -3,8 +3,32 @@ export type {
   AttrValue,
   NodeContext,
   NodeMeta,
+  PlainNode,
+  RoleMeta,
+  RoleNode,
   SceneNode,
-  SceneNodeFields
+  SceneNodeFields,
+  SceneNodeMethods
 } from './node';
+export type {
+  AxisLabelContext,
+  BarContext,
+  GridContext,
+  LineAttrs,
+  NodeRole,
+  NodeRoles,
+  PathAttrs,
+  PathContext,
+  PieLabelContext,
+  Point,
+  PointContext,
+  RectAttrs,
+  SeriesAttrs,
+  SeriesContext,
+  SeriesGroupContext,
+  NoSeries,
+  SliceContext,
+  ValueContext
+} from './roles';
 export { findAll, mapNodes } from './tree';
 export type { NodeQuery } from './tree';

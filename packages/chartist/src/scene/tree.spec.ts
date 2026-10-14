@@ -1,3 +1,4 @@
+import { pointContext, seriesContext } from '../../test/contexts';
 import { freezeDeep } from '../../test/freeze';
 import { node } from './node';
 import { assignKeys, findAll, mapNodes } from './tree';
@@ -6,10 +7,13 @@ function sample() {
   const point = (seriesIndex: number, valueIndex: number) =>
     node('line', {}, 'ct-point', {
       role: 'point',
-      ctx: { seriesIndex, valueIndex }
+      ctx: pointContext({ seriesIndex, valueIndex })
     });
   const series = (seriesIndex: number) =>
-    node('g', {}, 'ct-series', { role: 'series', ctx: { seriesIndex } })
+    node('g', {}, 'ct-series', {
+      role: 'series',
+      ctx: seriesContext({ seriesIndex })
+    })
       .append(point(seriesIndex, 0))
       .append(point(seriesIndex, 1));
   return freezeDeep(

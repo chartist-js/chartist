@@ -188,8 +188,18 @@ const threshold = (limit: number): ChartPlugin => ({
   name: 'threshold',
   install(chart) {
     chart.on('compose', current => {
-      const value = (current.ctx?.value as { y?: number } | undefined)?.y;
-      return current.role === 'bar' && value !== undefined && value >= limit
+      if (current.role !== 'bar') {
+        return;
+      }
+      // A number, { x, y } (with an X scale axis) or a hole.
+      const { value } = current.ctx;
+      const y =
+        typeof value === 'number'
+          ? value
+          : value && 'y' in value
+            ? value.y
+            : undefined;
+      return y !== undefined && y >= limit
         ? current.addClass('ct-over')
         : undefined;
     });

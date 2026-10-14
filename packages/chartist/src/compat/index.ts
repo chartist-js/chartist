@@ -24,6 +24,9 @@ import {
   type Layout,
   type PresetState,
   type NormalizedSeries,
+  type AxisLabelContext,
+  type PieLabelContext,
+  type RoleNode,
   type SceneNode
 } from '../index';
 
@@ -225,24 +228,26 @@ function emitDrawEvents(
   // appear in the chart (X first for lines, the label axis first for bars).
   const grids = findAll(scene, { role: 'grid' });
   // Only axis labels; pie labels belong to their slice.
-  const labels = findAll(scene, { role: 'label' }).filter(n => n.ctx?.axis);
-  const sliceLabels = findAll(scene, { role: 'label' }).filter(
-    n => !n.ctx?.axis
+  const allLabels = findAll(scene, { role: 'label' });
+  const labels = allLabels.filter(
+    (n): n is RoleNode<'label'> & { ctx: AxisLabelContext } =>
+      n.ctx.kind === 'axis'
   );
-  const dimensionOf = (node: SceneNode) =>
-    (node.ctx?.axis as { dimension?: string } | undefined)?.dimension;
-  const order = [...new Set([...grids, ...labels].map(dimensionOf))];
+  const sliceLabels = allLabels.filter(
+    (n): n is RoleNode<'label'> & { ctx: PieLabelContext } =>
+      n.ctx.kind === 'pie'
+  );
+  const order = [
+    ...new Set([...grids, ...labels].map(n => n.ctx.axis.dimension))
+  ];
   for (const dimension of order) {
-    const onAxis = (node: SceneNode) =>
-      (node.ctx?.axis as { dimension?: string } | undefined)?.dimension ===
-      dimension;
+    const onAxis = (node: { ctx: { axis: { dimension: string } } }) =>
+      node.ctx.axis.dimension === dimension;
     const indexes = [
-      ...new Set(
-        [...grids, ...labels].filter(onAxis).map(n => n.ctx!.index as number)
-      )
+      ...new Set([...grids, ...labels].filter(onAxis).map(n => n.ctx.index))
     ].sort((a, b) => a - b);
     for (const index of indexes) {
-      const grid = grids.find(n => onAxis(n) && n.ctx!.index === index);
+      const grid = grids.find(n => onAxis(n) && n.ctx.index === index);
       if (grid) {
         const { x1, y1, x2, y2 } = grid.attrs;
         draw({
@@ -256,7 +261,7 @@ function emitDrawEvents(
           y2
         });
       }
-      const label = labels.find(n => onAxis(n) && n.ctx!.index === index);
+      const label = labels.find(n => onAxis(n) && n.ctx.index === index);
       if (label) {
         const { x, y, width, height } = label.attrs;
         draw({
@@ -264,7 +269,7 @@ function emitDrawEvents(
           axis: axisOf(dimension),
           index,
           ...parts(label),
-          text: label.ctx!.text,
+          text: label.ctx.text,
           x,
           y,
           width,
@@ -280,7 +285,7 @@ function emitDrawEvents(
   // Series: points, then the line, then the areas in creation order.
   const rawSeries = (data.series ?? []) as unknown[];
   for (const series of findAll(scene, { role: 'series' })) {
-    const seriesIndex = series.ctx!.seriesIndex as number;
+    const seriesIndex = series.ctx.seriesIndex;
     const original =
       rawSeries[
         options.reverseData ? rawSeries.length - 1 - seriesIndex : seriesIndex
@@ -289,7 +294,7 @@ function emitDrawEvents(
     const children = series.children;
     const slice = children.find(n => n.role === 'slice');
     if (slice) {
-      const ctx = slice.ctx!;
+      const ctx = slice.ctx;
       draw({
         type: 'slice',
         value: ctx.value,
@@ -298,16 +303,16 @@ function emitDrawEvents(
         meta: ctx.meta,
         series: ctx.series,
         ...parts(slice),
-        path: (ctx.path as { clone(): unknown }).clone(),
+        path: ctx.path.clone(),
         center: ctx.center,
         radius: ctx.radius,
         startAngle: ctx.startAngle,
         endAngle: ctx.endAngle,
         chartRect
       });
-      const label = sliceLabels.find(n => n.ctx?.index === ctx.index);
+      const label = sliceLabels.find(n => n.ctx.index === ctx.index);
       if (label) {
-        const labelCtx = label.ctx!;
+        const labelCtx = label.ctx;
         draw({
           type: 'label',
           index: labelCtx.index,

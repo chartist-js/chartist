@@ -165,11 +165,22 @@ describe('scales/grid matches 1.x createGridAndLabels', () => {
       options: axisX
     });
     const { grids, labels } = axisNodes(axis, frame);
-    expect(grids.map(g => [g.role, g.ctx?.index, g.ctx?.axis])).toEqual([
+    expect(
+      grids.map(g => [
+        g.role,
+        g.role === 'grid' && g.ctx.index,
+        g.role === 'grid' && g.ctx.axis
+      ])
+    ).toEqual([
       ['grid', 0, axis],
       ['grid', 1, axis]
     ]);
-    expect(labels.map(l => [l.role, l.ctx?.text])).toEqual([
+    expect(
+      labels.map(l => [
+        l.role,
+        l.role === 'label' && l.ctx.kind === 'axis' && l.ctx.text
+      ])
+    ).toEqual([
       ['label', 'a'],
       ['label', 'b']
     ]);

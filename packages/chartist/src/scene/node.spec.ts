@@ -1,3 +1,4 @@
+import { pointContext } from '../../test/contexts';
 import { freezeDeep } from '../../test/freeze';
 import { node } from './node';
 
@@ -5,14 +6,14 @@ describe('scene/node', () => {
   it('creates nodes with attributes, unique classes and meta', () => {
     const point = node('line', { x1: 1, y1: undefined, y2: null }, 'a  b a', {
       role: 'point',
-      ctx: { seriesIndex: 0, valueIndex: 2 }
+      ctx: pointContext({ valueIndex: 2 })
     });
     expect(point.name).toBe('line');
     expect(point.attrs).toEqual({ x1: 1 });
     expect(point.classes).toEqual(['a', 'b']);
     expect(point.children).toEqual([]);
     expect(point.role).toBe('point');
-    expect(point.ctx).toEqual({ seriesIndex: 0, valueIndex: 2 });
+    expect(point.ctx).toEqual(pointContext({ valueIndex: 2 }));
     expect(Object.keys(point)).not.toContain('key');
   });
 

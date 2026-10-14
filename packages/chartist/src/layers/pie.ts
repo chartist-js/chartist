@@ -218,6 +218,7 @@ export function pie(options: PieLayerOptions = {}): Layer {
               value: values[index],
               totalDataSum,
               index,
+              seriesIndex: index,
               valueIndex: 0,
               meta: seriesMeta,
               series,
@@ -291,7 +292,10 @@ export function pie(options: PieLayerOptions = {}): Layer {
                 {
                   role: 'label',
                   ctx: {
+                    kind: 'pie',
                     index,
+                    seriesIndex: index,
+                    valueIndex: 0,
                     text: String(interpolated),
                     series,
                     meta: seriesMeta,

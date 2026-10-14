@@ -1,8 +1,9 @@
-import { withFields, type SceneNode } from './node';
+import { withFields, type RoleNode, type SceneNode } from './node';
+import type { NodeRole } from './roles';
 
 /** Matches nodes by role, key and data context fields. */
 export interface NodeQuery {
-  readonly role?: string;
+  readonly role?: NodeRole;
   readonly key?: string;
   readonly seriesIndex?: number;
   readonly valueIndex?: number;
@@ -21,8 +22,14 @@ function matches(candidate: SceneNode, query: NodeQuery) {
 
 /**
  * Returns all nodes of a tree that match the query, in document order.
+ * With a `role`, the nodes are typed as that role's nodes.
  * @experimental
  */
+export function findAll<R extends NodeRole>(
+  scene: SceneNode,
+  query: NodeQuery & { readonly role: R }
+): RoleNode<R>[];
+export function findAll(scene: SceneNode, query?: NodeQuery): SceneNode[];
 export function findAll(scene: SceneNode, query: NodeQuery = {}): SceneNode[] {
   const found: SceneNode[] = [];
   const visit = (current: SceneNode) => {

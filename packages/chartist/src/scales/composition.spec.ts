@@ -183,7 +183,11 @@ describe('composition: layers', () => {
     const [grids, labels] = scene.children;
     expect(grids.classes).toEqual(['ct-grids']);
     expect(
-      new Set(grids.children.map(n => (n.ctx!.axis as { id: string }).id))
+      new Set(
+        grids.children.map(n =>
+          n.role === 'grid' && 'id' in n.ctx.axis ? n.ctx.axis.id : undefined
+        )
+      )
     ).toEqual(new Set(['quarters', 'revenue']));
     expect(labels.classes).toEqual(['ct-labels']);
     const sides = new Set(

@@ -109,7 +109,7 @@ describe('presets/lineChart', () => {
     const chart = lineChart(element, { labels: ['a', 'b'], series: [[1, 2]] });
     chart.on('scene', payload => void (scene = payload.scene));
     chart.update({});
-    for (const role of ['grid', 'label', 'series', 'line', 'point']) {
+    for (const role of ['grid', 'label', 'series', 'line', 'point'] as const) {
       expect(findAll(scene!, { role }).length, role).toBeGreaterThan(0);
     }
   });

@@ -84,11 +84,11 @@ describe('layers/line', () => {
 
   it('line and area context carry the values and a path copy', () => {
     const result = scene([[1, 2]], { showArea: true });
-    for (const role of ['line', 'area']) {
+    for (const role of ['line', 'area'] as const) {
       const [shape] = findAll(result, { role });
-      expect(shape.ctx?.path).toBeInstanceOf(SvgPath);
+      expect(shape.ctx.path).toBeInstanceOf(SvgPath);
       // Padded to the three labels, as 1.x normalizes.
-      expect(shape.ctx?.values).toEqual([
+      expect(shape.ctx.values).toEqual([
         { x: undefined, y: 1 },
         { x: undefined, y: 2 },
         undefined

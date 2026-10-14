@@ -140,12 +140,13 @@ export function axisNodes(
     }
 
     if (options.showGrid) {
+      // x1, x2, y1, y2 in the axis direction first (the output order).
       const attrs = {
         [`${units.pos}1`]: position,
         [`${units.pos}2`]: position,
         [`${units.counterPos}1`]: gridOffset,
         [`${units.counterPos}2`]: gridOffset + gridLength
-      };
+      } as Record<'x1' | 'x2' | 'y1' | 'y2', number>;
       grids.push(
         node('line', attrs, `${classNames.grid} ${classNames[units.dir]}`, {
           role: 'grid',
@@ -155,28 +156,30 @@ export function axisNodes(
     }
 
     if (options.showLabel) {
+      // x, y, width, height in the axis direction first (the output order).
       const attrs = {
         [units.pos]: position + labelOffset[units.pos],
         [units.counterPos]: labelOffset[units.counterPos],
         [units.len]: labelLength,
         [units.counterLen]: Math.max(0, options.offset - 10)
-      };
+      } as Record<'x' | 'y' | 'width' | 'height', number>;
       const atStart = frame.atStart ?? options.position === 'start';
       const classes = [
         classNames.label,
         classNames[units.dir],
         atStart ? classNames.start : classNames.end
       ].join(' ');
-      const ctx = { axis, index, text: labelValue, ...attrs };
+      const ctx = {
+        kind: 'axis' as const,
+        axis,
+        index,
+        text: labelValue,
+        ...attrs
+      };
       if (frame.svgLabel) {
         const label = frame.svgLabel(
           String(labelValue),
-          attrs as unknown as {
-            x: number;
-            y: number;
-            width: number;
-            height: number;
-          },
+          attrs,
           classes,
           axis.dimension,
           atStart

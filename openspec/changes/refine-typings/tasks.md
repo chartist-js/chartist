@@ -2,10 +2,10 @@
 
 ## 1. Scene nodes
 
-- [ ] 1.1 `NodeRoles` with the built-in contexts and attributes (D1), `RoleNode<R>`, `SceneNode` union with `CustomNode`; `label` context `kind`.
-- [ ] 1.2 `this`-typed builders; `node()` infers role nodes (D2).
-- [ ] 1.3 `findAll` narrowing and `NodeQuery.role` (D3).
-- [ ] 1.4 Pie context additions and slice keys (D7); rendering and visual tests unchanged.
+- [x] 1.1 `NodeRoles` with the built-in contexts and attributes (D1), `RoleNode<R>`, `SceneNode` union with `CustomNode`; `label` context `kind`.
+- [x] 1.2 `this`-typed builders; `node()` infers role nodes (D2).
+- [x] 1.3 `findAll` narrowing and `NodeQuery.role` (D3).
+- [x] 1.4 Pie context additions and slice keys (D7); rendering and visual tests unchanged.
 
 ## 2. Events and plugins
 
