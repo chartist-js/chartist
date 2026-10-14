@@ -75,6 +75,8 @@ export function createEditor(
         doc: files[file] ?? '',
         extensions: [
           theme,
+          // The editing area is a textbox; name it after the file.
+          EditorView.contentAttributes.of({ 'aria-label': `Code: ${file}` }),
           lineNumbers(),
           history(),
           keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),

@@ -90,6 +90,24 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
       );
     });
 
+    test('serves other chartist stylesheets next to the main one', async () => {
+      const result = await compile(
+        project(
+          `import 'chartist/styles.css';\nimport 'chartist/themes/accessible.css';\nimport { barChart } from 'chartist';\nbarChart('#chart', { series: [] });`
+        ),
+        opts
+      );
+      const doc = result.html!;
+      const main = doc.indexOf(`href="${BASE}lib/chartist/index.css"`);
+      const theme = doc.indexOf(
+        `href="${BASE}lib/chartist/themes/accessible.css"`
+      );
+      expect(
+        main > 0 && theme > main,
+        'theme after the main sheet'
+      ).toBeTruthy();
+    });
+
     test('resolves relative module imports to virtual modules', async () => {
       const result = await compile(
         project(

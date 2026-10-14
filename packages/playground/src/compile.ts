@@ -112,9 +112,7 @@ export async function compile(
     .map(style =>
       'href' in style
         ? `<link rel="stylesheet" href="${escapeAttr(
-            style.href === CHARTIST_STYLES
-              ? absolute(options.stylesUrl)
-              : style.href
+            chartistStylesheet(style.href, absolute(options.stylesUrl))
           )}">`
         : `<style data-file="${escapeAttr(style.file)}">\n${style.css.replace(
             /<\/style/gi,
@@ -206,11 +204,22 @@ function rewriteImports(
   return output + code.slice(last);
 }
 
+/**
+ * Where a stylesheet of the `chartist` package is served: `styles.css` at
+ * `stylesUrl`, any other (e.g. `chartist/themes/accessible.css`) at the
+ * same path next to it, as in the package (`dist/themes/accessible.css`).
+ */
+function chartistStylesheet(specifier: string, stylesUrl: string) {
+  return specifier === CHARTIST_STYLES
+    ? stylesUrl
+    : new URL(specifier.slice('chartist/'.length), stylesUrl).href;
+}
+
 function addStyle(specifier: string, from: string, state: State, at: number) {
-  if (specifier === CHARTIST_STYLES) {
-    if (!state.seenStyles.has(CHARTIST_STYLES)) {
-      state.seenStyles.add(CHARTIST_STYLES);
-      state.styles.push({ href: CHARTIST_STYLES });
+  if (specifier.startsWith('chartist/')) {
+    if (!state.seenStyles.has(specifier)) {
+      state.seenStyles.add(specifier);
+      state.styles.push({ href: specifier });
     }
     return;
   }
