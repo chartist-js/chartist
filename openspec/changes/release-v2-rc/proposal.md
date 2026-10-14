@@ -38,13 +38,13 @@ The package publishes the 1.x way (`clean-publish` into a `package` folder) and 
 - **Install instructions for release candidates.**
   - **While the package version is a prerelease,** the site turns `npm install chartist` into `npm install chartist@next`, and pins CDN URLs (`chartist@2/…`) to the exact version. Version ranges skip prereleases.
   - **Source stays final:** the guides keep the wording for 2.0.0, so nothing needs editing at the release.
-- **The move to `main`** follows the plan's decisions:
+- **The move to `main`** follows the repository decisions in `docs/decisions.md`:
   1. a `1.x` branch from the `v1.5.0` tag, for maintenance;
   2. `main` fast-forwarded to `next` (no merge commit, so all history and renames stay) and pushed;
   3. `2.0.0-rc.1` released through the pipeline;
   4. the live checks: npm, chartist.dev, the `/v1/` archive and the redirects.
 
-  `next` stays as the development branch for the next RCs.
+  After the move, `main` is the development branch, and `next` is deleted.
 
 ## Capabilities
 
@@ -80,7 +80,7 @@ This change adds none to the library. The release makes v2's documented breaking
 - **Package and docs:**
   - a new `packages/chartist/README.md`, the package's README, linked from the repository root, and a packaging test;
   - `apps/docs`: the redirect generation, the prerelease-aware install text, the site URL in the build;
-  - `docs/v2-high-level-plan.md`.
+  - `docs/decisions.md`.
 - **GitHub and npm settings, done by the author:**
   - a `release` environment with a required reviewer;
   - repository variables;

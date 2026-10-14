@@ -23,7 +23,7 @@
 
 - [ ] 4.1 Add the 1.x redirects: an Astro integration that writes a redirect page at each 1.x page path the v2 build doesn't have, pointing to `/v1/…` and keeping the hash; a `docs:test` check that every 1.x page is a v2 page or redirected; redirects stay out of the sitemap and search. Verify: `pnpm nx build docs`, e2e tests open `/api/classes/LineChart` and land on `/v1/api/classes/LineChart`, and `/api/` stays the v2 reference
 - [ ] 4.2 Add `src/lib/release.ts` and the install-text rewrite (rehype plugin for all rendered code, `markdown.ts`, StackBlitz version) for prerelease versions. Verify: unit tests for the rewrite; an e2e test of getting started with a prerelease version on disk shows `chartist@next` and the pinned CDN URL
-- [ ] 4.3 Update `docs/v2-high-level-plan.md` with the release decisions. Verify: the plan names the change and the move order
+- [ ] 4.3 Update `docs/decisions.md` with the release decisions made while building this change. Verify: its Repository and Releases sections match the workflows and settings
 
 ## 5. Local gate
 
@@ -47,7 +47,7 @@
 
 - [ ] 8.1 npm: `npm view chartist dist-tags` shows `latest: 1.5.0` and `next: 2.0.0-rc.1`; provenance shows on the npm page; `npm i chartist@next` in a scratch project imports and draws
 - [ ] 8.2 chartist.dev: the v2 home, guides, API, examples, plugins, playground, search and share cards; `/v1/` and the 1.x redirects; the CDN URLs of getting started load `2.0.0-rc.1`; GoatCounter counts a visit
-- [ ] 8.3 Clean up: delete `next` locally, and record the outcome in the plan
+- [ ] 8.3 Clean up: delete `next` locally, and update `docs/decisions.md` for `main` as the development branch (drop the note about `next`)
 
 ## Workflow follow-up
 
