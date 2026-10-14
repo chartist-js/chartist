@@ -12,7 +12,7 @@
 [build-url]: https://github.com/chartist-js/chartist/actions
 
 <p align="center">
-  <a href="https://chartist.dev"><img width="600" alt="Chartist: simple charts, dressed in CSS. The Chartist Guy presents a line chart." src="https://chartist.dev/og/index.png"></a>
+  <a href="https://chartist.dev"><img width="480" alt="The Chartist Guy presents a line chart that draws itself on his easel." src="https://raw.githubusercontent.com/chartist-js/chartist/main/docs/assets/chartist-guy.gif"></a>
 </p>
 
 Simple, responsive charts, drawn in SVG and styled with CSS. Tiny, typed, and happy without a build step.
