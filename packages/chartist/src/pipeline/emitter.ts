@@ -8,9 +8,20 @@
 export type AnyListener = (value: any) => unknown;
 export type WildcardListener = (name: string, value: unknown) => void;
 
+/**
+ * Who added a listener: a plugin while it installs, or the chart's user
+ * (config `on`, the handle's `on`). `off(name)` without a listener removes
+ * only the user's, so it never breaks a plugin.
+ */
+export type ListenerOwner = 'plugin' | 'user';
+
 export interface PhaseEmitter {
-  on(name: '*', listener: WildcardListener): void;
-  on(name: string, listener: AnyListener): void;
+  on(name: '*', listener: WildcardListener, owner?: ListenerOwner): void;
+  on(name: string, listener: AnyListener, owner?: ListenerOwner): void;
+  /**
+   * Removes `listener`, whoever added it, or without a listener, every
+   * listener of the event that the user added.
+   */
   off(name: '*', listener?: WildcardListener): void;
   off(name: string, listener?: AnyListener): void;
   /**
@@ -21,44 +32,61 @@ export interface PhaseEmitter {
   transform<T>(name: string, value: T): T | null;
   /** Runs the listeners and ignores their return values. */
   notify(name: string, value: unknown): void;
-  /** Removes every listener. */
+  /** Removes every listener, plugins' too. */
   clear(): void;
 }
 
+interface Entry<T> {
+  readonly listener: T;
+  readonly owner: ListenerOwner;
+}
+
+/** The entries without `listener`, or without the user's ones. */
+function without<T>(entries: readonly Entry<T>[], listener?: T) {
+  return entries.filter(entry =>
+    listener ? entry.listener !== listener : entry.owner !== 'user'
+  );
+}
+
 export function createPhaseEmitter(): PhaseEmitter {
-  const listeners = new Map<string, AnyListener[]>();
-  let wildcards: WildcardListener[] = [];
+  const listeners = new Map<string, Entry<AnyListener>[]>();
+  let wildcards: Entry<WildcardListener>[] = [];
 
   function observe(name: string, value: unknown) {
-    wildcards.forEach(listener => listener(name, value));
+    wildcards.forEach(({ listener }) => listener(name, value));
   }
 
   return {
-    on(name: string, listener: AnyListener | WildcardListener) {
+    on(
+      name: string,
+      listener: AnyListener | WildcardListener,
+      owner: ListenerOwner = 'user'
+    ) {
       if (name === '*') {
-        wildcards = [...wildcards, listener as WildcardListener];
+        wildcards = [
+          ...wildcards,
+          { listener: listener as WildcardListener, owner }
+        ];
       } else {
         listeners.set(name, [
           ...(listeners.get(name) ?? []),
-          listener as AnyListener
+          { listener: listener as AnyListener, owner }
         ]);
       }
     },
     off(name: string, listener?: AnyListener | WildcardListener) {
       if (name === '*') {
-        wildcards = listener ? wildcards.filter(l => l !== listener) : [];
-      } else if (listener) {
+        wildcards = without(wildcards, listener as WildcardListener);
+      } else {
         listeners.set(
           name,
-          (listeners.get(name) ?? []).filter(l => l !== listener)
+          without(listeners.get(name) ?? [], listener as AnyListener)
         );
-      } else {
-        listeners.delete(name);
       }
     },
     transform<T>(name: string, value: T): T | null {
       let current: T | null = value;
-      for (const listener of listeners.get(name) ?? []) {
+      for (const { listener } of listeners.get(name) ?? []) {
         const result = listener(current) as T | null | undefined;
         if (result === null) {
           current = null;
@@ -72,7 +100,7 @@ export function createPhaseEmitter(): PhaseEmitter {
       return current;
     },
     notify(name: string, value: unknown) {
-      (listeners.get(name) ?? []).forEach(listener => listener(value));
+      (listeners.get(name) ?? []).forEach(({ listener }) => listener(value));
       observe(name, value);
     },
     clear() {

@@ -269,6 +269,40 @@ describe('chart/chart', () => {
     expect(listener).toHaveBeenCalledTimes(1);
   });
 
+  it('off without a listener removes yours, not those of plugins', () => {
+    const { element } = sizedContainer();
+    const fromPlugin = vi.fn();
+    const fromPluginAll = vi.fn();
+    const plugin: ChartPlugin = {
+      name: 'plugin',
+      install: chart =>
+        void chart.on('mount', fromPlugin).on('*', fromPluginAll)
+    };
+    const fromConfig = vi.fn();
+    const fromHandle = vi.fn();
+    const fromHandleAll = vi.fn();
+    const handle = chart(element, {
+      data,
+      layers: [dots()],
+      plugins: [plugin],
+      on: { mount: fromConfig }
+    })
+      .on('mount', fromHandle)
+      .on('*', fromHandleAll);
+    handle.off('mount').off('*');
+    handle.update({});
+    expect(fromPlugin).toHaveBeenCalledTimes(2);
+    expect(fromPluginAll.mock.calls.length).toBeGreaterThan(7);
+    expect(fromConfig).toHaveBeenCalledTimes(1);
+    expect(fromHandle).not.toHaveBeenCalled();
+    expect(fromHandleAll).not.toHaveBeenCalled();
+
+    // With the listener, a plugin's goes too.
+    handle.off('mount', fromPlugin);
+    handle.update({});
+    expect(fromPlugin).toHaveBeenCalledTimes(2);
+  });
+
   it('re-lays out on container resize, only when the size changed', () => {
     const resize = stubResizeObserver();
     const { element, size } = sizedContainer(400, 200);

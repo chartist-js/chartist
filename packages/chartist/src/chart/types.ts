@@ -96,7 +96,8 @@ export interface ChartPlugin<TOptions = unknown> {
   /**
    * Sets the plugin up: runs once, before the first render, with the
    * chart's handle. Listeners registered here stay for every later render,
-   * after updates and resizes too.
+   * after updates and resizes too, and `off(name)` without a listener
+   * leaves them alone: remove one with its reference.
    * @param chart The chart's handle, to listen to events and emit them.
    * @param options The options of a `[plugin, options]` entry, if any.
    */
@@ -203,13 +204,20 @@ export interface ChartHandle {
     listener: (payload: ChartEvents[K]) => void
   ): ChartHandle;
   /**
-   * Removes a phase listener. Without a listener, removes every listener
-   * of the phase, plugins' too.
+   * Removes a phase listener, whoever added it. Without a listener,
+   * removes the listeners of the phase added through `on` and the
+   * config's `on`; plugins keep theirs.
    */
   off<K extends PhaseName>(name: K, listener?: PhaseListener<K>): ChartHandle;
-  /** Removes a listener of all phases, or all of them without a listener. */
+  /**
+   * Removes a listener of all phases, or without a listener, those added
+   * through `on`.
+   */
   off(name: '*', listener?: AllPhasesListener): ChartHandle;
-  /** Removes a custom event listener, or all of the event's listeners. */
+  /**
+   * Removes a custom event listener, or without a listener, the event's
+   * listeners added through `on`.
+   */
   off<K extends CustomEventName>(
     name: K,
     listener?: (payload: ChartEvents[K]) => void

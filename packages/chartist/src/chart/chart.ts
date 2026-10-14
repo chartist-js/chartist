@@ -4,7 +4,12 @@ import { domRenderer } from '../render/dom';
 import { estimateText, type MeasureText } from '../render/measure';
 import type { RenderOutput } from '../render/types';
 import type { ResponsiveWatcher } from '../responsive/responsive';
-import { eventMethods, installPlugins, registerListeners } from './plugins';
+import {
+  eventMethods,
+  installPlugins,
+  listenerScope,
+  registerListeners
+} from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
 /** A fixed size in px: a number or a px string. Other units are measured. */
@@ -86,6 +91,7 @@ export function chart(
 ): ChartHandle {
   const container = resolveTarget(target);
   const emitter = createPhaseEmitter();
+  const scope = listenerScope();
   const renderer = config.renderer ?? domRenderer();
   const rendererMeasure = renderer.measureText;
   // Whether the last render measured text (SVG text labels do).
@@ -238,10 +244,10 @@ export function chart(
       output?.remove?.();
       emitter.clear();
     },
-    ...eventMethods(emitter, () => handle, provided)
+    ...eventMethods(emitter, () => handle, provided, scope)
   };
 
-  installPlugins(handle, config.plugins, provided);
+  installPlugins(handle, config.plugins, provided, scope);
   registerListeners(handle, config.on);
   watch();
   render('resolve');

@@ -6,7 +6,12 @@ import {
   type MeasureText
 } from '../render/measure';
 import type { SceneNode } from '../scene/node';
-import { eventMethods, installPlugins, registerListeners } from './plugins';
+import {
+  eventMethods,
+  installPlugins,
+  listenerScope,
+  registerListeners
+} from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
 /**
@@ -94,13 +99,14 @@ function unavailable(method: string): never {
 export function toScene(config: ChartConfig, size: SceneSize): SceneNode {
   const emitter = createPhaseEmitter();
   const provided = new Set<string>();
+  const scope = listenerScope();
   const handle: ChartHandle = {
     update: () => unavailable('update'),
     detach: () => unavailable('detach'),
     destroy: () => unavailable('destroy'),
-    ...eventMethods(emitter, () => handle, provided)
+    ...eventMethods(emitter, () => handle, provided, scope)
   };
-  installPlugins(handle, config.plugins, provided);
+  installPlugins(handle, config.plugins, provided, scope);
   registerListeners(handle, config.on);
   return runPipeline(emitter, config, {
     width: size.width,

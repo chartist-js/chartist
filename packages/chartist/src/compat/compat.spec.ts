@@ -131,6 +131,26 @@ describe('compat: draw and created', () => {
     expect(begin).toHaveBeenCalledTimes(1);
   });
 
+  it('off(name) on a 1.x class removes its listeners, not those of plugins', async () => {
+    const pluginDraws = vi.fn();
+    const plugin = (chart: LineChart) => void chart.on('draw', pluginDraws);
+    const chart = new LineChart(
+      sized(),
+      { series: [[1, 2]] },
+      { plugins: [compat, plugin as never] }
+    );
+    const draws = vi.fn();
+    chart.on('draw', draws);
+    await created(chart);
+    expect(draws).toHaveBeenCalled();
+    const before = pluginDraws.mock.calls.length;
+    draws.mockClear();
+    chart.off('draw');
+    chart.update();
+    expect(draws).not.toHaveBeenCalled();
+    expect(pluginDraws.mock.calls.length).toBe(before * 2);
+  });
+
   it('throws with a non-DOM renderer', async () => {
     const { chart } = await import('../chart/chart');
     expect(() =>

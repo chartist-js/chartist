@@ -47,6 +47,31 @@ describe('pipeline/emitter', () => {
     expect(b).toHaveBeenCalledTimes(1);
   });
 
+  it('off without a listener keeps plugin listeners', () => {
+    const emitter = createPhaseEmitter();
+    const plugin = vi.fn();
+    const pluginAll = vi.fn();
+    const user = vi.fn();
+    const userAll = vi.fn();
+    emitter.on('mount', plugin, 'plugin');
+    emitter.on('mount', user);
+    emitter.on('*', pluginAll, 'plugin');
+    emitter.on('*', userAll, 'user');
+    emitter.off('mount');
+    emitter.off('*');
+    emitter.notify('mount', 1);
+    expect(plugin).toHaveBeenCalledTimes(1);
+    expect(pluginAll).toHaveBeenCalledTimes(1);
+    expect(user).not.toHaveBeenCalled();
+    expect(userAll).not.toHaveBeenCalled();
+    // With the listener, a plugin's listener goes too.
+    emitter.off('mount', plugin);
+    emitter.off('*', pluginAll);
+    emitter.notify('mount', 2);
+    expect(plugin).toHaveBeenCalledTimes(1);
+    expect(pluginAll).toHaveBeenCalledTimes(1);
+  });
+
   it('"*" listeners observe the final value of every phase', () => {
     const emitter = createPhaseEmitter();
     const all = vi.fn();
@@ -84,11 +109,11 @@ describe('pipeline/emitter', () => {
     expect(second).toHaveBeenCalledTimes(1);
   });
 
-  it('clear removes all listeners', () => {
+  it('clear removes all listeners, those of plugins too', () => {
     const emitter = createPhaseEmitter();
     const a = vi.fn();
     const all = vi.fn();
-    emitter.on('layout', a);
+    emitter.on('layout', a, 'plugin');
     emitter.on('*', all);
     emitter.clear();
     emitter.notify('layout', 1);

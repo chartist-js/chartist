@@ -1,5 +1,6 @@
 import type { ChartHandle, ChartPlugin, PluginEntry } from '../chart/types';
 import { untyped } from '../chart/types';
+import { asUserListeners } from '../chart/plugins';
 import type { Data, Options, ResponsiveOptions } from '../core';
 import type { AllEventsListener, EventListener } from '../event';
 import type { PresetController } from '../presets/preset';
@@ -122,8 +123,12 @@ export abstract class PresetChart<
       install: handle => {
         // 1.x plugins call chart.on() while they install.
         this.installing = handle;
-        queued.forEach(([event, listener]) =>
-          this.on(event as never, listener as never)
+        // The queued listeners are the user's, though added from a plugin,
+        // so off(name) removes them.
+        asUserListeners(handle, () =>
+          queued.forEach(([event, listener]) =>
+            this.on(event as never, listener as never)
+          )
         );
       }
     };

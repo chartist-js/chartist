@@ -1,4 +1,4 @@
-import type { PhaseEmitter } from '../pipeline/emitter';
+import type { ListenerOwner, PhaseEmitter } from '../pipeline/emitter';
 import type { PhaseListeners } from '../pipeline/types';
 import type { ChartHandle, ChartPlugin, PluginEntry } from './types';
 import { untyped } from './types';
@@ -49,21 +49,62 @@ function normalize(plugins: readonly PluginEntry[]) {
 }
 
 /**
+ * Who a chart's `on` attributes new listeners to: plugins while they
+ * install, the user otherwise. `off(name)` removes only the user's.
+ */
+export interface ListenerScope {
+  owner: ListenerOwner;
+}
+
+const scopes = new WeakMap<ChartHandle, ListenerScope>();
+
+/** A new scope, attributing listeners to the user. */
+export const listenerScope = (): ListenerScope => ({ owner: 'user' });
+
+/** Runs `add` with the chart's listeners attributed to `owner`. */
+function addingAs(scope: ListenerScope, owner: ListenerOwner, add: () => void) {
+  const previous = scope.owner;
+  scope.owner = owner;
+  try {
+    add();
+  } finally {
+    scope.owner = previous;
+  }
+}
+
+/**
+ * Internal: adds the listeners in `add` as the user's, though a plugin's
+ * `install` runs it. The 1.x classes register their users' listeners from
+ * a plugin, so they're in place for the first render.
+ */
+export function asUserListeners(chart: ChartHandle, add: () => void) {
+  const scope = scopes.get(chart);
+  if (scope) {
+    addingAs(scope, 'user', add);
+  } else {
+    add();
+  }
+}
+
+/**
  * Installs v2 plugins in order and returns the event names they provide.
  * Provided names are known before any plugin installs, so a plugin may
- * listen to events another plugin provides.
+ * listen to events another plugin provides. Listeners added while a
+ * plugin installs belong to plugins.
  */
 export function installPlugins(
   chart: ChartHandle,
   plugins: readonly PluginEntry[] = [],
-  provided: Set<string>
+  provided: Set<string>,
+  scope: ListenerScope
 ) {
+  scopes.set(chart, scope);
   const entries = normalize(plugins);
   for (const [plugin] of entries) {
     plugin.provides?.forEach(name => provided.add(name));
   }
   for (const [plugin, options] of entries) {
-    plugin.install(chart, options);
+    addingAs(scope, 'plugin', () => plugin.install(chart, options));
   }
 }
 
@@ -83,12 +124,14 @@ type Listener = (...args: never[]) => unknown;
 
 /**
  * `on`, `off` and `emit` for a handle: forward to the emitter and return
- * the handle. `on` warns once per name for 1.x events nobody provides.
+ * the handle. `on` warns once per name for 1.x events nobody provides, and
+ * records who adds the listener (see {@link ListenerScope}).
  */
 export function eventMethods(
   emitter: PhaseEmitter,
   handle: () => ChartHandle,
-  provided: Set<string>
+  provided: Set<string>,
+  scope: ListenerScope
 ): Pick<ChartHandle, 'on' | 'off' | 'emit'> {
   return {
     on: ((name: string, listener: Listener) => {
@@ -102,7 +145,7 @@ export function eventMethods(
           `Chartist: "${name}" is a 1.x event. v2 charts emit it only with the compat plugin: add compat from chartist/compat to plugins (see the migration guide).`
         );
       }
-      emitter.on(name, listener as (value: unknown) => unknown);
+      emitter.on(name, listener as (value: unknown) => unknown, scope.owner);
       return handle();
     }) as ChartHandle['on'],
     off: ((name: string, listener?: Listener) => {
