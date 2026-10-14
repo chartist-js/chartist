@@ -2,6 +2,7 @@
  * Renders the site's charts: every element with `data-chart` gets a live
  * Chartist chart (functional API) when it comes near the viewport.
  */
+import * as Chartist from 'chartist';
 import {
   autoScaleAxis,
   axisGrid,
@@ -83,13 +84,52 @@ const PRESETS = {
   line: lineChart,
   bar: barChart,
   pie: pieChart,
-  composed: composedChart
+  composed: composedChart,
+  /** `chart()` itself: `options` is the config without `data`. */
+  chart: (target: Element, data: unknown, options: Record<string, unknown>) =>
+    chart(target, { ...options, data } as Parameters<typeof chart>[1])
 } as const;
 
 export interface ChartSpec {
   type: keyof typeof PRESETS;
   data: unknown;
+  /**
+   * JSON, so functions are written as `{ $call: 'Interpolation.step',
+   * args: [{ postpone: false }] }`: a Chartist export by name, called with
+   * the args (themselves revived), e.g. `{ $call: 'autoScaleAxis' }` or a
+   * layer like `{ $call: 'line', args: [{ series: ['a'] }] }`.
+   */
   options?: Record<string, unknown>;
+  /** The library's own padding and label sizes (live example previews). */
+  plain?: boolean;
+}
+
+/** Replaces `{ $call, args }` markers with what the Chartist export returns. */
+export function revive(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(revive);
+  }
+  if (!value || typeof value !== 'object') {
+    return value;
+  }
+  const { $call, args = [] } = value as { $call?: string; args?: unknown[] };
+  if (typeof $call === 'string') {
+    const fn = $call
+      .split('.')
+      .reduce<unknown>(
+        (scope, key) => (scope as Record<string, unknown>)?.[key],
+        Chartist
+      );
+    if (typeof fn !== 'function') {
+      throw new Error(`Chartist has no function "${$call}"`);
+    }
+    return (fn as (...params: unknown[]) => unknown)(
+      ...(revive(args) as unknown[])
+    );
+  }
+  return Object.fromEntries(
+    Object.entries(value).map(([key, entry]) => [key, revive(entry)])
+  );
 }
 
 export function renderChart(
@@ -101,11 +141,11 @@ export function renderChart(
     data: unknown,
     options: Record<string, unknown>
   ) => ChartHandle;
-  const options = spec.options ?? {};
+  const options = revive(spec.options ?? {}) as Record<string, unknown>;
   return preset(
     element,
     spec.data,
-    spec.type === 'pie' || spec.type === 'composed'
+    spec.plain || (spec.type !== 'line' && spec.type !== 'bar')
       ? { ...options, plugins: [drawIn] }
       : {
           ...options,

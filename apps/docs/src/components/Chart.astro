@@ -14,8 +14,8 @@ interface Props extends ChartSpec {
   class?: string;
 }
 
-const { type, data, options, label, aspect = '16 / 9', draw = true, class: className } = Astro.props;
-const spec: ChartSpec = { type, data, options };
+const { type, data, options, plain, label, aspect = '16 / 9', draw = true, class: className } = Astro.props;
+const spec: ChartSpec = { type, data, options, plain };
 ---
 
 <!--
