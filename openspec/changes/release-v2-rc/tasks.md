@@ -31,15 +31,15 @@
 
 ## 6. Settings (the author)
 
-- [ ] 6.1 Create the GitHub App "Chartist Release" for the organization (Contents read and write, no webhook), install it on `chartist-js/chartist` only, add it to the pull-request bypass list of `main`, and store its ID and a private key as the `release` environment secrets `RELEASE_APP_ID` and `RELEASE_APP_PRIVATE_KEY`
-- [ ] 6.2 Create the `release` environment with the author as required reviewer and a `main`-only branch policy
-- [ ] 6.3 Configure the npm trusted publisher for `chartist`: repository `chartist-js/chartist`, workflow `release.yml`, environment `release`
-- [ ] 6.4 Set the repository variable `RELEASE_PREID=rc`; leave `DOCS_DEPLOY` unset
+- [x] 6.1 Create the GitHub App "Chartist Release" for the organization (Contents read and write, no webhook), install it on `chartist-js/chartist` only, add it to the pull-request bypass list of `main`, and store its ID and a private key as the `release` environment secrets `RELEASE_APP_ID` and `RELEASE_APP_PRIVATE_KEY`
+- [x] 6.2 Create the `release` environment with the author as required reviewer and a `main`-only branch policy
+- [x] 6.3 Configure the npm trusted publisher for `chartist`: repository `chartist-js/chartist`, workflow `release.yml`, environment `release`
+- [x] 6.4 Set the repository variable `RELEASE_PREID=rc`; leave `DOCS_DEPLOY` unset
 
 ## 7. The move (each push approved by the author)
 
-- [ ] 7.1 Push `next`; CI and `docs.yml` must be green on it. Verify: both runs pass
-- [ ] 7.2 Create `1.x` from `v1.5.0` and push it. Verify: the branch is on GitHub at `v1.5.0`
+- [x] 7.1 Push `next`; CI and `docs.yml` must be green on it. Verify: both runs pass
+- [x] 7.2 Create `1.x` from `v1.5.0` and push it. Verify: the branch is on GitHub at `v1.5.0`
 - [ ] 7.3 Fast-forward `main` to `next` and push `main`. Verify: CI passes; the automatic release run stops with its message; nothing is deployed or published
 - [ ] 7.4 Set `DOCS_DEPLOY=true`, run the release by hand with `2.0.0-rc.1`, approve it. Verify: the run publishes, pushes the release commit and tag as the App, creates the GitHub release; the push starts CI and the docs deployment, and the release workflow skips its own commit
 
