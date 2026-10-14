@@ -1,8 +1,8 @@
 import 'chartist/styles.css';
 import {
-  LineChart,
-  type LineChartOptions,
-  type ResponsiveOptions
+  lineChart,
+  type LineChartPresetOptions,
+  type PresetResponsiveOptions
 } from 'chartist';
 
 /* Add a basic data series with six labels and values */
@@ -16,14 +16,14 @@ const data = {
 };
 
 /* Set some base options (settings will override the default settings in js *see default settings*). We are adding a basic label interpolation function for the xAxis labels. */
-const options: LineChartOptions = {
+const options: LineChartPresetOptions = {
   axisX: {
     labelInterpolationFnc: value => 'Calendar Week ' + value
   }
 };
 
 /* Now we can specify multiple responsive settings that will override the base settings based on order and if the media queries match. In this example we are changing the visibility of dots and lines as well as use different label interpolations for space reasons. */
-const responsiveOptions: ResponsiveOptions<LineChartOptions> = [
+const responsiveOptions: PresetResponsiveOptions<LineChartPresetOptions> = [
   [
     'screen and (min-width: 641px) and (max-width: 1024px)',
     {
@@ -45,4 +45,4 @@ const responsiveOptions: ResponsiveOptions<LineChartOptions> = [
 ];
 
 /* Initialize the chart with the above settings */
-new LineChart('#chart', data, options, responsiveOptions);
+lineChart('#chart', data, options, responsiveOptions);

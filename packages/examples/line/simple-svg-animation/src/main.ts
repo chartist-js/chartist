@@ -1,8 +1,54 @@
 import 'chartist/styles.css';
-import { LineChart, easings } from 'chartist';
-import { compat } from 'chartist/compat';
+import { lineChart, easings, findAll, Svg, type ChartPlugin } from 'chartist';
 
-const chart = new LineChart(
+// The points fade and slide in with SMIL, one after the other.
+const fadeInPoints: ChartPlugin = {
+  name: 'fade-in-points',
+  install(chart) {
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+
+    chart.on('mount', ({ scene, elementOf }) => {
+      // A sequence number, reset on every render
+      let seq = 0;
+
+      for (const point of findAll(scene, { role: 'point' })) {
+        const element = elementOf(point);
+        if (!element) {
+          continue;
+        }
+        const x = point.ctx?.x as number;
+        // We use the Svg API to trigger SMIL animations on each point
+        new Svg(element).animate({
+          opacity: {
+            // The delay when we like to start the animation
+            begin: seq++ * 80,
+            // Duration of the animation
+            dur: 500,
+            // The value where the animation should start
+            from: 0,
+            // The value where it should end
+            to: 1
+          },
+          x1: {
+            begin: seq++ * 80,
+            dur: 500,
+            from: x - 100,
+            to: x,
+            // You can specify an easing function name or use easing functions from `easings` directly
+            easing: easings.easeOutQuart
+          }
+        });
+      }
+
+      // For the sake of the example we redraw the chart every time it's
+      // rendered with a delay of 8 seconds
+      clearTimeout(timerId);
+      timerId = setTimeout(() => chart.update({}), 8000);
+    });
+  }
+};
+
+lineChart(
   '#chart',
   {
     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -12,8 +58,7 @@ const chart = new LineChart(
     ]
   },
   {
-    // 1.x draw events come from the compat plugin in v2.
-    plugins: [compat],
+    plugins: [fadeInPoints],
     low: 0,
     showLine: false,
     axisX: {
@@ -26,49 +71,3 @@ const chart = new LineChart(
     }
   }
 );
-
-// Let's put a sequence number aside so we can use it in the event callbacks
-let seq = 0;
-
-// Once the chart is fully created we reset the sequence
-chart.on('created', () => {
-  seq = 0;
-});
-
-// On each drawn element by Chartist we use the Svg API to trigger SMIL animations
-chart.on('draw', data => {
-  if (data.type === 'point') {
-    // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
-    data.element.animate({
-      opacity: {
-        // The delay when we like to start the animation
-        begin: seq++ * 80,
-        // Duration of the animation
-        dur: 500,
-        // The value where the animation should start
-        from: 0,
-        // The value where it should end
-        to: 1
-      },
-      x1: {
-        begin: seq++ * 80,
-        dur: 500,
-        from: data.x - 100,
-        to: data.x,
-        // You can specify an easing function name or use easing functions from `easings` directly
-        easing: easings.easeOutQuart
-      }
-    });
-  }
-});
-
-let timerId: ReturnType<typeof setTimeout> | undefined;
-
-// For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-chart.on('created', () => {
-  if (timerId) {
-    clearTimeout(timerId);
-  }
-
-  timerId = setTimeout(chart.update.bind(chart), 8000);
-});

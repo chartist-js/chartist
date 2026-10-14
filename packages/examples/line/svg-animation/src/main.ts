@@ -1,8 +1,164 @@
 import 'chartist/styles.css';
-import { LineChart } from 'chartist';
-import { compat } from 'chartist/compat';
+import {
+  lineChart,
+  findAll,
+  Svg,
+  type AnimationDefinition,
+  type ChartPlugin,
+  type ScaleAxis,
+  type SceneNode
+} from 'chartist';
 
-const chart = new LineChart(
+const delays = 80;
+const durations = 500;
+
+const dimensionOf = (element: SceneNode) =>
+  (element.ctx?.axis as ScaleAxis | undefined)?.dimension;
+
+// Every element of the chart flies in with SMIL, one after the other: per
+// axis tick its grid line and its label (X axis first), then per series its
+// points and its line.
+const flyIn: ChartPlugin = {
+  name: 'fly-in',
+  install(chart) {
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+
+    chart.on('mount', ({ scene, elementOf }) => {
+      // A sequence number that counts the animated elements
+      let seq = 0;
+      const animate = (
+        element: SceneNode,
+        animations: Record<string, AnimationDefinition>
+      ) => {
+        const svgElement = elementOf(element);
+        if (svgElement) {
+          new Svg(svgElement).animate(animations);
+        }
+      };
+
+      const grids = findAll(scene, { role: 'grid' });
+      const labels = findAll(scene, { role: 'label' });
+      for (const dimension of ['x', 'y'] as const) {
+        const onAxis = (element: SceneNode) =>
+          dimensionOf(element) === dimension;
+        for (const grid of grids.filter(onAxis)) {
+          seq++;
+          // The grid line moves along its axis: x1 and x2 on the X axis
+          const pos1Value = Number(grid.attrs[`${dimension}1`]);
+          const pos2Value = Number(grid.attrs[`${dimension}2`]);
+          animate(grid, {
+            [`${dimension}1`]: {
+              begin: seq * delays,
+              dur: durations,
+              from: pos1Value - 30,
+              to: pos1Value,
+              easing: 'easeOutQuart'
+            },
+            [`${dimension}2`]: {
+              begin: seq * delays,
+              dur: durations,
+              from: pos2Value - 100,
+              to: pos2Value,
+              easing: 'easeOutQuart'
+            },
+            opacity: {
+              begin: seq * delays,
+              dur: durations,
+              from: 0,
+              to: 1,
+              easing: 'easeOutQuart'
+            }
+          });
+
+          const label = labels.find(
+            candidate =>
+              onAxis(candidate) && candidate.ctx?.index === grid.ctx?.index
+          );
+          if (!label) {
+            continue;
+          }
+          seq++;
+          if (dimension === 'y') {
+            const y = Number(label.attrs.y);
+            animate(label, {
+              y: {
+                begin: seq * delays,
+                dur: durations,
+                from: y + 100,
+                to: y,
+                easing: 'easeOutQuart'
+              }
+            });
+          } else {
+            const x = Number(label.attrs.x);
+            animate(label, {
+              x: {
+                begin: seq * delays,
+                dur: durations,
+                from: x - 100,
+                to: x,
+                easing: 'easeOutQuart'
+              }
+            });
+          }
+        }
+      }
+
+      for (const series of findAll(scene, { role: 'series' })) {
+        for (const point of series.children.filter(n => n.role === 'point')) {
+          seq++;
+          const x = point.ctx?.x as number;
+          animate(point, {
+            x1: {
+              begin: seq * delays,
+              dur: durations,
+              from: x - 10,
+              to: x,
+              easing: 'easeOutQuart'
+            },
+            x2: {
+              begin: seq * delays,
+              dur: durations,
+              from: x - 10,
+              to: x,
+              easing: 'easeOutQuart'
+            },
+            opacity: {
+              begin: seq * delays,
+              dur: durations,
+              from: 0,
+              to: 1,
+              easing: 'easeOutQuart'
+            }
+          });
+        }
+        for (const line of series.children.filter(n => n.role === 'line')) {
+          seq++;
+          // The line fades in. This could also be achieved using CSS3 animations.
+          animate(line, {
+            opacity: {
+              // The delay when we like to start the animation
+              begin: seq * delays + 1000,
+              // Duration of the animation
+              dur: durations,
+              // The value where the animation should start
+              from: 0,
+              // The value where it should end
+              to: 1
+            }
+          });
+        }
+      }
+
+      // For the sake of the example we redraw the chart every time it's
+      // rendered with a delay of 12 seconds
+      clearTimeout(timerId);
+      timerId = setTimeout(() => chart.update({}), 12000);
+    });
+  }
+};
+
+lineChart(
   '#chart',
   {
     labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
@@ -13,133 +169,5 @@ const chart = new LineChart(
       [3, 4, 5, 6, 7, 6, 4, 5, 6, 7, 6, 3]
     ]
   },
-  {
-    // 1.x draw events come from the compat plugin in v2.
-    plugins: [compat],
-    low: 0
-  }
+  { plugins: [flyIn], low: 0 }
 );
-
-// Let's put a sequence number aside so we can use it in the event callbacks
-let seq = 0;
-const delays = 80;
-const durations = 500;
-
-// Once the chart is fully created we reset the sequence
-chart.on('created', () => {
-  seq = 0;
-});
-
-// On each drawn element by Chartist we use the Svg API to trigger SMIL animations
-chart.on('draw', data => {
-  seq++;
-
-  if (data.type === 'line') {
-    // If the drawn element is a line we do a simple opacity fade in. This could also be achieved using CSS3 animations.
-    data.element.animate({
-      opacity: {
-        // The delay when we like to start the animation
-        begin: seq * delays + 1000,
-        // Duration of the animation
-        dur: durations,
-        // The value where the animation should start
-        from: 0,
-        // The value where it should end
-        to: 1
-      }
-    });
-  } else if (data.type === 'label' && data.axis.counterUnits.pos === 'x') {
-    data.element.animate({
-      y: {
-        begin: seq * delays,
-        dur: durations,
-        from: data.y + 100,
-        to: data.y,
-        // We can specify an easing function from Svg.Easing
-        easing: 'easeOutQuart'
-      }
-    });
-  } else if (data.type === 'label' && data.axis.counterUnits.pos === 'y') {
-    data.element.animate({
-      x: {
-        begin: seq * delays,
-        dur: durations,
-        from: data.x - 100,
-        to: data.x,
-        easing: 'easeOutQuart'
-      }
-    });
-  } else if (data.type === 'point') {
-    data.element.animate({
-      x1: {
-        begin: seq * delays,
-        dur: durations,
-        from: data.x - 10,
-        to: data.x,
-        easing: 'easeOutQuart'
-      },
-      x2: {
-        begin: seq * delays,
-        dur: durations,
-        from: data.x - 10,
-        to: data.x,
-        easing: 'easeOutQuart'
-      },
-      opacity: {
-        begin: seq * delays,
-        dur: durations,
-        from: 0,
-        to: 1,
-        easing: 'easeOutQuart'
-      }
-    });
-  } else if (data.type === 'grid') {
-    // Using data.axis we get x or y which we can use to construct our animation definition objects
-    const pos1Key = (data.axis.units.pos +
-      '1') as `${typeof data.axis.units.pos}1`;
-    const pos1Value = data[pos1Key];
-    const pos1Animation = {
-      begin: seq * delays,
-      dur: durations,
-      from: pos1Value - 30,
-      to: pos1Value,
-      easing: 'easeOutQuart' as const
-    };
-
-    const pos2Key = (data.axis.units.pos +
-      '2') as `${typeof data.axis.units.pos}2`;
-    const pos2Value = data[pos2Key];
-    const pos2Animation = {
-      begin: seq * delays,
-      dur: durations,
-      from: pos2Value - 100,
-      to: pos2Value,
-      easing: 'easeOutQuart' as const
-    };
-
-    const animations = {
-      [data.axis.units.pos + '1']: pos1Animation,
-      [data.axis.units.pos + '2']: pos2Animation,
-      opacity: {
-        begin: seq * delays,
-        dur: durations,
-        from: 0,
-        to: 1,
-        easing: 'easeOutQuart' as const
-      }
-    };
-
-    data.element.animate(animations);
-  }
-});
-
-let timerId: ReturnType<typeof setTimeout> | undefined;
-
-// For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-chart.on('created', () => {
-  if (timerId) {
-    clearTimeout(timerId);
-  }
-
-  timerId = setTimeout(chart.update.bind(chart), 12000);
-});

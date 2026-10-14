@@ -1,8 +1,47 @@
 import 'chartist/styles.css';
-import { LineChart, easings } from 'chartist';
-import { compat } from 'chartist/compat';
+import {
+  lineChart,
+  easings,
+  findAll,
+  Svg,
+  type ChartPlugin,
+  type SvgPath
+} from 'chartist';
 
-const chart = new LineChart(
+// Lines and areas grow from the bottom with SMIL, one series after the other.
+const growPaths: ChartPlugin = {
+  name: 'grow-paths',
+  install(chart) {
+    let height = 0;
+    chart.on('layout', ({ area }) => {
+      height = area.y1 - area.y2;
+    });
+    chart.on('mount', ({ scene, elementOf }) => {
+      const shapes = [
+        ...findAll(scene, { role: 'line' }),
+        ...findAll(scene, { role: 'area' })
+      ];
+      for (const shape of shapes) {
+        const element = elementOf(shape);
+        if (!element) {
+          continue;
+        }
+        const path = shape.ctx?.path as SvgPath;
+        new Svg(element).animate({
+          d: {
+            begin: 2000 * (shape.ctx?.seriesIndex ?? 0),
+            dur: 2000,
+            from: path.clone().scale(1, 0).translate(0, height).stringify(),
+            to: path.clone().stringify(),
+            easing: easings.easeOutQuint
+          }
+        });
+      }
+    });
+  }
+};
+
+lineChart(
   '#chart',
   {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -13,29 +52,10 @@ const chart = new LineChart(
     ]
   },
   {
-    // 1.x draw events come from the compat plugin in v2.
-    plugins: [compat],
+    plugins: [growPaths],
     low: 0,
     showArea: true,
     showPoint: false,
     fullWidth: true
   }
 );
-
-chart.on('draw', data => {
-  if (data.type === 'line' || data.type === 'area') {
-    data.element.animate({
-      d: {
-        begin: 2000 * data.index,
-        dur: 2000,
-        from: data.path
-          .clone()
-          .scale(1, 0)
-          .translate(0, data.chartRect.height())
-          .stringify(),
-        to: data.path.clone().stringify(),
-        easing: easings.easeOutQuint
-      }
-    });
-  }
-});

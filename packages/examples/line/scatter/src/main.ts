@@ -1,5 +1,5 @@
 import 'chartist/styles.css';
-import { LineChart } from 'chartist';
+import { lineChart } from 'chartist';
 
 // A tiny seeded random generator (mulberry32): same chart on every load.
 function mulberry32(seed: number) {
@@ -32,7 +32,7 @@ const data = Array.from({ length: 52 }).reduce<{
   }
 );
 
-new LineChart(
+lineChart(
   '#chart',
   data,
   {

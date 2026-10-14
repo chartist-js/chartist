@@ -1,7 +1,7 @@
 import 'chartist/styles.css';
-import { LineChart, FixedScaleAxis } from 'chartist';
+import { lineChart, fixedScaleAxis } from 'chartist';
 
-new LineChart(
+lineChart(
   '#chart',
   {
     series: [
@@ -32,7 +32,7 @@ new LineChart(
   },
   {
     axisX: {
-      type: FixedScaleAxis,
+      type: fixedScaleAxis(),
       divisor: 5,
       labelInterpolationFnc: value =>
         new Date(value).toLocaleString(undefined, {

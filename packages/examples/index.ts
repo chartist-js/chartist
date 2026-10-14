@@ -167,32 +167,65 @@ export const examples: Example[] = [
   example({
     id: 'line/path-animation',
     title: 'SVG Path animation',
+    description:
+      'Lines and areas of three series grow from the bottom, one series after the other.',
+    classic: true,
     compat: true,
     settle: { at: 6100 }
   }),
   example({
     id: 'line/scatter-random',
-    title: 'Line scatter diagram with responsive settings'
+    title: 'Line scatter diagram with responsive settings',
+    description:
+      'Four series of random points over 52 weeks, with more week labels on wider screens.',
+    classic: true
   }),
-  example({ id: 'line/series-override', title: 'Series Overrides' }),
-  example({ id: 'line/simple-responsive', title: 'Simple responsive options' }),
+  example({
+    id: 'line/series-override',
+    title: 'Series Overrides',
+    description:
+      'Three named series, each with its own interpolation, area or points.',
+    classic: true
+  }),
+  example({
+    id: 'line/simple-responsive',
+    title: 'Simple responsive options',
+    description:
+      'A growing series whose labels shorten and whose points or line hide as the screen narrows.',
+    classic: true
+  }),
   example({
     id: 'line/simple-smoothing',
-    title: 'Line Interpolation / Smoothing'
+    title: 'Line Interpolation / Smoothing',
+    description:
+      'Two series with large jumps, drawn with simple smoothing instead of a cardinal spline.',
+    classic: true
   }),
   example({
     id: 'line/simple-svg-animation',
     title: 'Simple SMIL Animations',
+    description:
+      'Points of two series fade and slide in one after the other, replayed every eight seconds.',
+    classic: true,
     compat: true,
     settle: { at: 4400 }
   }),
   example({
     id: 'line/svg-animation',
     title: 'Advanced SMIL Animations',
+    description:
+      'Grid lines, labels, points and lines of four series fly in one after the other.',
+    classic: true,
     compat: true,
     settle: { at: 8600 }
   }),
-  example({ id: 'line/timeseries', title: 'Timeseries' }),
+  example({
+    id: 'line/timeseries',
+    title: 'Timeseries',
+    description:
+      'Two series of dated values on a fixed scale X axis with five month and day labels.',
+    classic: true
+  }),
 
   // Bar charts (1.x sandboxes)
   example({ id: 'bar/bi-polar-interpolated', title: 'Bi-polar bar chart' }),
@@ -281,25 +314,50 @@ export const examples: Example[] = [
   }),
   testOnly({
     id: 'line/simple-interpolation-with-holes',
-    title: 'Simple interpolation with holes'
+    title: 'Simple interpolation with holes',
+    description:
+      'A series with holes, drawn with simple smoothing that breaks at each hole.',
+    classic: true
   }),
   testOnly({
     id: 'line/step-interpolation-with-holes',
-    title: 'Step interpolation with holes'
+    title: 'Step interpolation with holes',
+    description: 'A series with holes, drawn as steps that break at each hole.',
+    classic: true
   }),
   testOnly({
     id: 'line/step-no-postpone-interpolation-with-holes',
-    title: 'Step interpolation without postpone, with holes'
+    title: 'Step interpolation without postpone, with holes',
+    description:
+      'A series with holes, drawn as steps that change before each point instead of after.',
+    classic: true
   }),
-  testOnly({ id: 'line/reverse-data', title: 'Line chart with reversed data' }),
+  testOnly({
+    id: 'line/reverse-data',
+    title: 'Line chart with reversed data',
+    description: 'A two-point series of x and y values, drawn in reverse.',
+    classic: true
+  }),
   testOnly({
     id: 'line/full-width',
     title: 'Full width line chart',
     description: 'Two x/y points stretched across the full width of the chart.',
     classic: true
   }),
-  testOnly({ id: 'line/scatter', title: 'Line scatter diagram' }),
-  testOnly({ id: 'line/view-box', title: 'Line chart with a view box' }),
+  testOnly({
+    id: 'line/scatter',
+    title: 'Line scatter diagram',
+    description:
+      'Four series of whole-number points over 52 weeks, without lines.',
+    classic: true
+  }),
+  testOnly({
+    id: 'line/view-box',
+    title: 'Line chart with a view box',
+    description:
+      'Three series in a fixed view box that scales with the container.',
+    classic: true
+  }),
 
   testOnly({ id: 'bar/auto-scale', title: 'Bar chart with auto scale axes' }),
   testOnly({ id: 'bar/labels', title: 'Bar chart with labels' }),
