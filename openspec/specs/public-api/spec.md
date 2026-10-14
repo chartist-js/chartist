@@ -55,7 +55,7 @@ The suite SHALL cover the documented behavior of the public API through its entr
 #### Scenario: 1.x contract before core work
 
 - **WHEN** the first core implementation change starts
-- **THEN** the 1.x public API tests already pass on `next` against the 1.5 code, and they must keep passing (with the compat plugin where they use 1.x events or plugins)
+- **THEN** the 1.x public API tests already pass against the 1.5 code, and they must keep passing (with the compat plugin where they use 1.x events or plugins)
 
 #### Scenario: v2 API covered as it is built
 

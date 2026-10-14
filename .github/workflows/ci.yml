@@ -1,8 +1,9 @@
 name: CI
+run-name: "🧪 CI: ${{ github.event.pull_request.title || github.event.head_commit.message }}"
 
 on:
   push:
-    branches: [main, next]
+    branches: [main]
   pull_request:
 
 permissions:

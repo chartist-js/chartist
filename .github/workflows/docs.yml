@@ -1,11 +1,12 @@
 name: Docs
+run-name: "📚 Docs: ${{ github.event.pull_request.title || github.event.head_commit.message || format('manual run on {0}', github.ref_name) }}"
 
 # Builds and tests the docs site on every push and pull request, and
 # deploys it to chartist.dev (GitHub Pages) from main while the repository
 # variable DOCS_DEPLOY is 'true'.
 on:
   push:
-    branches: [main, next]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 

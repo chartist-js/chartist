@@ -25,7 +25,7 @@ Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, cont
 
 ## Repository
 
-- This is `chartist-js/chartist`, with its stars, issues and history back to 2014. `main` is the development branch. A `1.x` branch, created from the `v1.5.0` tag, holds 1.x maintenance. (Until the release moves `main`, v2 work is on `next` and `main` is still 1.x.)
+- This is `chartist-js/chartist`, with its stars, issues and history back to 2014. `main` is the development branch. A `1.x` branch, created from the `v1.5.0` tag, holds 1.x maintenance.
 - Git doesn't record renames; it infers them from similarity. File moves, deletions and content edits therefore go in separate commits, and branches are integrated with merge commits or a rebase, never a squash merge, which would collapse a move into its edits.
 - Formatting is oxfmt with the 1.x Prettier settings in `.oxfmtrc.json`. Reformat-only commits are `style:` commits listed in `.git-blame-ignore-revs`.
 - Tooling: Nx 23 with pnpm workspaces; tsdown (Rolldown + Oxc) for the library, Sass + PostCSS for its CSS; oxlint; Vitest; Playwright for visual, e2e and playground tests; Astro with `@geekvetica/nx-astro` and Tailwind v4 for the docs site.
