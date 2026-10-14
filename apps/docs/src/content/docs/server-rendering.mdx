@@ -161,8 +161,9 @@ export const markup = renderToString(scene);
   **Plugins run on the server too.** `toScene()` installs the config's plugins
   and calls their listeners, up to the `scene` phase. Plugins that change the
   scene work there unchanged; listeners of `render` and `mount` never run, and
-  calling `update()`, `detach()` or `destroy()` throws. See [Events and
-  plugins](../events-and-plugins/).
+  calling `update()`, `detach()` or `destroy()` throws. 1.x plugins converted
+  with `fromLegacyPlugin` don't run there: their `draw` and `created` events
+  come from the `mount` phase. See [Events and plugins](../events-and-plugins/).
 </Callout>
 
 In the API reference: [rendering](../../api/rendering/).

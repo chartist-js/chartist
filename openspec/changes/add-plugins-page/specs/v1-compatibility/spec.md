@@ -2,17 +2,45 @@
 
 ### Requirement: 0.x global surface for plugin scripts
 
-When the compat UMD build is loaded as a script after the main UMD build, the global `Chartist` SHALL also offer what 0.x-era plugin scripts use: a `plugins` object to register on, `Line`, `Bar` and `Pie` as the 1.x `LineChart`, `BarChart` and `PieChart` classes, and the 0.x helper `getDataArray(data, reverse)`, which returns the series values as 1.x normalizes them. These names SHALL NOT be added to the ESM or CommonJS exports of `chartist` or `chartist/compat`.
+Importing `chartist/compat` in a browser, from any of its builds (ES module, CommonJS, or the UMD build as a script), SHALL set up the global `Chartist` for plugin scripts: the library, compat, a `plugins` object to register on, `Line`, `Bar` and `Pie` as the 1.x `LineChart`, `BarChart` and `PieChart` classes, and the 0.x helper `getDataArray(data, reverse)`. It SHALL only add names the global lacks. Outside a browser it SHALL do nothing.
 
-#### Scenario: A 0.x plugin script registers
+#### Scenario: A 0.x plugin script after a module import
 
-- **WHEN** a page loads `index.umd.js`, then `compat.umd.js`, then a plugin script that sets `Chartist.plugins.ctPointLabels`
-- **THEN** the script runs without errors and `Chartist.plugins.ctPointLabels` is a function
+- **WHEN** a page imports `chartist/compat` as a module, then a deferred plugin script sets `Chartist.plugins.ctPointLabels`
+- **THEN** the script runs without errors, and a chart of that module's `lineChart` with the converted plugin draws its labels
+
+#### Scenario: With the UMD build
+
+- **WHEN** a page loads `index.umd.js`, then `compat.umd.js`, then a plugin script
+- **THEN** the plugin registers on the same global `Chartist` and runs
+
+#### Scenario: Registered plugins stay
+
+- **WHEN** `Chartist.plugins` already has entries when compat is imported
+- **THEN** they are kept
+
+### Requirement: The global names stay off the exports
+
+The names compat adds to the global SHALL NOT be exports of `chartist` or `chartist/compat`. The package SHALL declare the compat files, and only those besides stylesheets, as having side effects, so bundlers keep an import of `chartist/compat` and can still drop unused parts of the core.
 
 #### Scenario: Not in the module exports
 
 - **WHEN** code imports `chartist` or `chartist/compat` as modules
 - **THEN** neither has `Line`, `Bar`, `Pie`, `plugins` or `getDataArray` exports
+
+#### Scenario: Side effects declared
+
+- **WHEN** a bundler reads the package's `sideEffects`
+- **THEN** it lists the stylesheets and the compat files, and nothing else
+
+### Requirement: One copy of Chartist on the global
+
+When the global `Chartist` belongs to another copy of Chartist than the imported `chartist/compat` (for example the UMD build next to the modules), compat SHALL leave the global unchanged and SHALL warn in the console, since mixing copies breaks the plugins' type checks.
+
+#### Scenario: UMD core and compat modules
+
+- **WHEN** a page loads `index.umd.js` and then imports `chartist/compat` as a module
+- **THEN** the global keeps only the UMD build's names, and the console shows a warning about another copy of Chartist
 
 ### Requirement: Converted plugins see their chart type
 

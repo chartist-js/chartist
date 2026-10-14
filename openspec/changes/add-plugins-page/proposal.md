@@ -19,7 +19,7 @@ Chartist's plugin ecosystem is one of its strengths, and the site doesn't show i
   The original `chartist-plugin-tooltip` is left out: it needs jQuery, and the tooltips fork replaced it.
 
 - **Compat work**, so these plugins run on v2 as they ran on 0.x and 1.x:
-  - **The 0.x global surface:** loading `compat.umd.js` as a script adds what 0.x-era plugins expect on the global `Chartist`: the `plugins` namespace, `Line`, `Bar` and `Pie` as names for the 1.x classes, and the 0.x helper `getDataArray`.
+  - **The global for plugin scripts:** importing `chartist/compat` (any build) sets up the global `Chartist` that 0.x-era plugin scripts read: the library, compat, the `plugins` namespace, `Line`, `Bar` and `Pie` as names for the 1.x classes, and the 0.x helper `getDataArray`. It leaves a global of another Chartist copy alone, with a warning. The compat files are declared as having side effects.
   - **The chart object of `fromLegacyPlugin`:** it is an instance of its chart type's 1.x class, so type checks like `chart instanceof Chartist.Line` pass. It has `data` and the resolved `options` (with defaults, such as `classNames`) when the plugin installs, an `optionsProvider` with `getCurrentOptions()`, and an `svg` with the 1.x `Svg` methods plugins call, such as `querySelectorAll`.
   - **The `created` event:** with compat, its payload carries the axes with their 1.x fields, such as the bounds.
 
@@ -50,11 +50,11 @@ _None._ The page belongs to the docs site, next to its other page requirements.
 
 ## Breaking changes vs 1.x
 
-None. The compat additions only add 0.x names to the compat UMD global and fill in fields of the legacy chart object; nothing that works today changes. The 0.x aliases (`Chartist.Line`, `Chartist.plugins`, `Chartist.getDataArray`) exist only when `compat.umd.js` is loaded as a script, never in the ESM or CommonJS exports.
+None. The compat additions only add 0.x names to the global `Chartist` (never to the exports) and fill in fields of the legacy chart object; nothing that works today changes. The 0.x aliases (`Chartist.Line`, `Chartist.plugins`, `Chartist.getDataArray`) exist only when `compat.umd.js` is loaded as a script, never in the ESM or CommonJS exports.
 
 ## Impact
 
-- `packages/chartist/src/compat/`: the legacy chart object, the `created` payload and the UMD global additions, with unit tests and a plugin contract test.
+- `packages/chartist/src/compat/`: the legacy chart object, the `created` payload and the global setup, with unit tests and a plugin contract test.
 - `packages/playground/src/compile.ts`: bare names in classic script tags.
 - The docs app:
   - `apps/docs/package.json`: the 12 plugins as pinned dev dependencies;

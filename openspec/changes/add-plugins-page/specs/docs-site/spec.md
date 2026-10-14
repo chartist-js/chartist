@@ -30,12 +30,17 @@ Each plugin entry SHALL show the plugin's name, what it does in one or two sente
 
 ### Requirement: Plugin entries show their facts and setup
 
-Each plugin entry SHALL show its monthly npm downloads with the snapshot date, the chart types it works with, the Chartist API version it was written for as a tag (`API v0.x`, `API v1.x` or `API v2.x`, so it isn't taken for the plugin's own version), and how it loads on v2 (as an ES module or as a script). It SHALL show how to load the plugin on a site, ready to copy: script tags from a CDN for a script, imports for an ES module.
+Each plugin entry SHALL show its monthly npm downloads with the snapshot date, the chart types it works with, the Chartist API version it was written for as a tag (`API v0.x`, `API v1.x` or `API v2.x`, so it isn't taken for the plugin's own version), how it loads on v2 (as an ES module or as a script), and whether it works in server rendering (an `SSR` or `No SSR` tag). It SHALL show how to load the plugin on a site, ready to copy: script tags from a CDN for a script, imports for an ES module.
 
 #### Scenario: Version tag
 
 - **WHEN** a visitor reads the entry of a plugin written for Chartist 0.x
 - **THEN** the entry carries an `API v0.x` tag
+
+#### Scenario: SSR tag
+
+- **WHEN** a visitor reads the entry of a plugin written for the 0.x or 1.x API
+- **THEN** the entry carries a `No SSR` tag, since 1.x events don't fire in server rendering
 
 #### Scenario: Setup for a script
 

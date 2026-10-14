@@ -194,8 +194,6 @@ lineChart(
 
 You don't need `compat` in the list as well.
 
-Most community plugins were written for 0.x, as scripts that read the global `Chartist`. Load them after Chartist's UMD build and `compat.umd.js`, which adds the 0.x names they expect (`Chartist.plugins`, `Chartist.Line`, `Chartist.Bar`, `Chartist.Pie` and `Chartist.getDataArray`), and wrap them with `Chartist.fromLegacyPlugin`. The [plugins page](../../plugins/) shows the popular ones running on v2, with the setup for each.
-
 <Callout kind='warn'>
   **Register 1.x listeners in a plugin.** The functions render before they
   return, so a `draw` listener added with `chart.on()` afterwards misses the
@@ -203,6 +201,127 @@ Most community plugins were written for 0.x, as scripts that read the global `Ch
   `fromLegacyPlugin(chart => chart.on('draw', …))`. Listeners of the v2 phases
   go in the `on` option: `lineChart('#chart', data, { on: { compose: … } })`.
 </Callout>
+
+## Community plugins
+
+Most community plugins, like the tooltips, axis titles and legends on the [plugins page](../../plugins/), were written for 0.x. They're scripts: they read the global `Chartist`, register on `Chartist.plugins`, and check the chart type with `chart instanceof Chartist.Line`.
+
+Importing `chartist/compat` sets that global up for them, in every build: the library, compat, and the 0.x names they use (`plugins`, `Line`, `Bar` and `Pie` for the chart classes, and `getDataArray`). It only adds what's missing, so plugins that already registered keep their place. These names live on the global only; they aren't exports.
+
+Then load the plugin as a script that runs after that import, and wrap it with `fromLegacyPlugin`. How depends on how you load Chartist.
+
+These plugins need a browser: their `draw` and `created` events fire when the chart is drawn in the page, so they don't run in [server rendering](../server-rendering/).
+
+### With modules, without a bundler
+
+The plugin script needs `defer` and has to come after the module that imports compat: deferred scripts and module scripts run in document order. Then your chart code runs after both.
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.css"
+/>
+<script type="module">
+  import 'https://cdn.jsdelivr.net/npm/chartist@2/dist/compat.min.js';
+</script>
+<script
+  defer
+  src="https://cdn.jsdelivr.net/npm/chartist-plugin-axistitle@0.0.7/dist/chartist-plugin-axistitle.js"
+></script>
+
+<div id="chart" class="ct-golden-section"></div>
+<script type="module">
+  import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+  import { fromLegacyPlugin } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/compat.min.js';
+
+  lineChart(
+    '#chart',
+    { series: [[1, 3, 2, 4]] },
+    {
+      plugins: [
+        fromLegacyPlugin(
+          Chartist.plugins.ctAxisTitle({ axisY: { axisTitle: 'Visits' } })
+        )
+      ]
+    }
+  );
+</script>
+```
+
+Import `index.min.js` with `compat.min.js`, or `index.js` with `compat.js`: each pair shares one copy of Chartist.
+
+### With the UMD build
+
+With classic script tags, load the plugin after Chartist's UMD build and `compat.umd.js`, and use everything from the global:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartist@2/dist/compat.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartist-plugin-axistitle@0.0.7/dist/chartist-plugin-axistitle.js"></script>
+
+<div id="chart" class="ct-golden-section"></div>
+<script>
+  Chartist.lineChart(
+    '#chart',
+    { series: [[1, 3, 2, 4]] },
+    {
+      plugins: [
+        Chartist.fromLegacyPlugin(
+          Chartist.plugins.ctAxisTitle({ axisY: { axisTitle: 'Visits' } })
+        )
+      ]
+    }
+  );
+</script>
+```
+
+On the 1.x classes, list the plugin next to `compat` as before: `new Chartist.LineChart('#chart', data, { plugins: [Chartist.compat, Chartist.plugins.ctAxisTitle()] })`.
+
+### With a bundler
+
+A bundler can't use these plugins as modules: it takes their CommonJS entry, which reads `require('chartist')` and expects the 0.x names on it. Import compat as usual, then load the plugin as a script at runtime, before the first chart that uses it:
+
+```ts nocheck
+import { lineChart } from 'chartist';
+import { fromLegacyPlugin } from 'chartist/compat';
+
+function loadScript(src: string) {
+  return new Promise<void>((resolve, reject) => {
+    const script = Object.assign(document.createElement('script'), { src });
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Can't load ${src}`));
+    document.head.append(script);
+  });
+}
+
+await loadScript(
+  'https://cdn.jsdelivr.net/npm/chartist-plugin-axistitle@0.0.7/dist/chartist-plugin-axistitle.js'
+);
+
+lineChart('#chart', data, {
+  plugins: [
+    fromLegacyPlugin(
+      Chartist.plugins.ctAxisTitle({ axisY: { axisTitle: 'Visits' } })
+    )
+  ]
+});
+```
+
+`chartist/compat` is marked as having side effects in its package, so bundlers keep the import even where nothing from it is used. In TypeScript, declare the global the plugins register on:
+
+```ts nocheck
+declare const Chartist: {
+  plugins: Record<string, (options?: unknown) => import('chartist').Plugin>;
+};
+```
+
+### Plugins that are ES modules
+
+A plugin written for 1.x as an ES module imports `chartist` itself, like [`@stklcode/chartist-plugin-tooltips`](../../plugins/#stklcode-chartist-plugin-tooltips). Import it as usual and wrap it with `fromLegacyPlugin`; it needs no global.
+
+### One copy of Chartist
+
+Load Chartist once: as modules, or as the UMD build. If compat is imported as a module while the UMD build of another copy already owns the global `Chartist`, compat leaves that global alone and logs a warning. Two copies would break the plugins' type checks: a chart of one copy isn't an instance of the other copy's `LineChart`.
 
 ## What's new
 
@@ -241,7 +360,7 @@ The UMD build is still published for pages that load Chartist with a classic `<s
 </script>
 ```
 
-The 0.x file names, `dist/chartist.min.js` and `dist/chartist.min.css`, are copies of the same files, so old links keep loading. The 0.x API (`Chartist.Line`) went away in 1.0 and doesn't come back.
+The 0.x file names, `dist/chartist.min.js` and `dist/chartist.min.css`, are copies of the same files, so old links keep loading. The 0.x API (`new Chartist.Line(…)`) went away in 1.0 and doesn't come back. Compat puts `Chartist.Line`, `Bar` and `Pie` on the global only so the type checks of [community plugins](#community-plugins) keep working; in your own code, use the functions or the 1.x classes.
 
 ## What changed
 

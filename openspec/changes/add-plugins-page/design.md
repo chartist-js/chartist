@@ -93,9 +93,10 @@ This keeps examples identical across the page, the playground and shared links, 
 
 The probe pins the gaps. Each is filled where 1.x code expects it:
 
-- **The 0.x names on the UMD global.** `compat.umd.js`, as a script, adds `Chartist.plugins = {}`, `Line`, `Bar` and `Pie` (the 1.x classes), and `getDataArray`. The function is rebuilt from 1.x's data normalization: the series as arrays of numbers, reversed when asked.
-  - Only the compat UMD build adds them. The main exports keep v2's names, because those 0.x names never were 1.x API.
-  - The UMD entry adds them on load. The ES module and CommonJS builds don't.
+- **The global for plugin scripts.** Importing `chartist/compat`, from any build, adds to the global `Chartist` what it lacks: the library, compat, `plugins`, `Line`, `Bar` and `Pie` (the 1.x classes) and `getDataArray` (rebuilt from 1.x's data normalization). Decided with the author while building the page: first only the compat UMD build did this; then the author asked to do it as a module side effect, so a 0.x plugin script works after a module import of compat, with one Chartist instance and no UMD build.
+  - A test showed the plugin has to stay a classic script: imported as a module, 9 of the 12 fail, because their UMD wrapper writes to the top-level `this`, which modules leave `undefined`. A `defer` script after the module import works for all 12 (deferred and module scripts run in document order); with a bundler, a script loaded at runtime does.
+  - The names are on the global only, never exports. The package lists `./dist/compat.*` under `sideEffects`; the core stays free of side effects. A separate compat package was considered and not needed for this, since `sideEffects` lists files.
+  - If the global belongs to another copy of Chartist (the UMD build next to modules), compat leaves it alone and warns: two copies would break `instanceof` in the plugins. Outside a browser it does nothing.
 - **The legacy chart object.** `fromLegacyPlugin` builds the object with `Object.create` of the chart type's 1.x class prototype. `instanceof` then holds without constructing a 1.x chart. The type comes from the preset: `lineChart`, `barChart` or `pieChart`.
   - For `chart()` compositions, there is no 1.x class, so the object stays a plain object. Plugins that check the type skip such charts, as they would skip an unknown chart in 1.x.
   - `data`, the resolved `options` with the preset's 1.x defaults, and an `optionsProvider` are set before `install` returns.
@@ -122,12 +123,12 @@ A plugin whose remaining failure is in its own code is moved off the list, with 
 
 ### The v2 status says how it loads
 
-Every listed plugin runs on v2 through `chartist/compat`: the 0.x-era scripts on its UMD global, and the 1.x-style @stklcode plugin through `fromLegacyPlugin`. So the status tells how a plugin loads:
+Every listed plugin runs on v2 through `chartist/compat`: the 0.x-era scripts on the global it sets up, and the 1.x-style @stklcode plugin through `fromLegacyPlugin`. So the status tells how a plugin loads:
 
 - **"ES module"**: it imports `chartist` and works with bundlers (@stklcode).
 - **"Script"**: it loads as a script after Chartist's UMD builds (everything else).
 
-Every entry says "Runs on v2 with `chartist/compat`". A tag shows the Chartist API version the plugin was written for (`API v0.x`, `API v1.x`, `API v2.x`; asked by the author while building the page, with "API" so it isn't read as the plugin's own version): eleven are `API v0.x`, @stklcode's is `API v1.x`, and `API v2.x` is there for v2-native plugins to come. The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
+Every entry says "Runs on v2 with `chartist/compat`". An `SSR` or `No SSR` tag says whether the plugin draws in server rendering (asked by the author). Every listed plugin is `No SSR`: compat emits the 1.x events from the `mount` phase, which `toScene()` never reaches (checked in Node: no `draw` event, nothing added to the markup). Only v2-native plugins, working in `compose`, can be `SSR`, and the data refuses `ssr: true` for a 0.x or 1.x plugin. A tag shows the Chartist API version the plugin was written for (`API v0.x`, `API v1.x`, `API v2.x`; asked by the author while building the page, with "API" so it isn't read as the plugin's own version): eleven are `API v0.x`, @stklcode's is `API v1.x`, and `API v2.x` is there for v2-native plugins to come. The design canvas's "Official" and "Community" chips are dropped: none is official. Entries also carry a short note when it matters, such as "Repository gone; the npm package remains" or "Not updated since 2016".
 
 ### Page layout and the filter
 
@@ -154,7 +155,7 @@ The page joins the header navigation after Examples, as in the canvas. It gets a
 ## Risks / Trade-offs
 
 - **Old plugins break in ways the probe didn't see.** The contract test runs them, and anything left is moved off the list with a reason instead of being patched.
-- **Compat grows for old code.** It only covers what these plugins use, and only on the compat UMD global and the legacy chart object, so the v2 API stays clean.
+- **Compat grows for old code.** It only covers what these plugins use, and only on the global for plugin scripts and the legacy chart object, so the v2 API stays clean.
 - **Third-party code on the site.** It's pinned, licensed and served from our origin. Dependabot or Renovate may bump it, and the contract test catches regressions.
 - **Downloads are a crude measure.** The list also needs the plugin to run on v2 and to need nothing else, and the curated data can add a note.
 - **A heavy page:** 12 live examples. They mount lazily, as on the guide pages, and the plugin scripts are small.
