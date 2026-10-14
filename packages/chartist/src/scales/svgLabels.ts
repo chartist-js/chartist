@@ -7,9 +7,15 @@ import type { MeasureText } from '../render/measure';
 import { node, withFields, type SceneNode } from '../scene/node';
 import type { AxisDimension } from './axis';
 
-/** @experimental */
+/**
+ * How an SVG text label sits in its label box, as set in the `align`
+ * option of {@link axisLabels}.
+ * @experimental
+ */
 export interface LabelAlign {
+  /** Aligns the text to the box's left (`start`), center or right (`end`). */
   readonly horizontal: 'start' | 'middle' | 'end';
+  /** Aligns the lines of text to the box's top, middle or bottom. */
   readonly vertical: 'top' | 'middle' | 'bottom';
 }
 

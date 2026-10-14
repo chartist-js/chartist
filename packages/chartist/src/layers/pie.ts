@@ -13,7 +13,9 @@ import { SvgPath } from '../svg/SvgPath';
 import { sum } from '../utils/functional';
 import { isFalseyButZero, safeHasProperty } from '../utils/utils';
 
+/** Which way pie labels anchor, relative to the center. */
 export type LabelDirection = 'implode' | 'neutral' | 'explode';
+/** The `text-anchor` of a pie label. */
 export type AnchorPosition = 'start' | 'middle' | 'end';
 
 interface Dot {
@@ -21,26 +23,52 @@ interface Dot {
   y: number;
 }
 
-/** @experimental */
+/**
+ * The options of the {@link pie} layer. Without them, it draws a filled
+ * pie from the top, with a label halfway out on each slice.
+ * @experimental
+ */
 export interface PieLayerOptions {
+  /** Where the first slice starts, in degrees clockwise from the top. */
   readonly startAngle?: number;
   /** Fixed total; slices are relative to it (gauges). Defaults to the sum. */
   readonly total?: number;
+  /** Draws a donut: rings instead of filled slices. */
   readonly donut?: boolean;
-  /** Donut stroke width in px, or a percentage of the radius (`'25%'`). */
+  /** Donut stroke width in px (default 60), or a share of the radius (`'25%'`). */
   readonly donutWidth?: number | string;
+  /** Draws a label for each slice; on by default. */
   readonly showLabel?: boolean;
+  /**
+   * Moves the labels away from the center (positive) or toward it
+   * (negative), in px.
+   */
   readonly labelOffset?: number;
+  /**
+   * Where labels go: `inside` (halfway out, the default), `outside` (at
+   * the edge) or `center` (in the middle; move them with `labelOffset`).
+   * Donut labels sit on the ring, whatever the position.
+   */
   readonly labelPosition?: 'inside' | 'outside' | 'center';
   /** Formats a slice's label: its entry in `labels`, or else its value. */
   readonly labelInterpolationFnc?: (
     value: Label,
     index: number
   ) => Label | null | undefined;
+  /**
+   * Which way labels anchor: `neutral` (the default), `explode` (away from
+   * the center, for labels outside the pie) or `implode` (toward it).
+   */
   readonly labelDirection?: LabelDirection;
+  /** Leaves out the slices and labels of zero values. */
   readonly ignoreEmptyValues?: boolean;
   /** Shifts labels that would overlap by this many px. */
   readonly preventOverlappingLabelOffset?: number;
+  /**
+   * Replaces the classes of what the layer draws: `series` (`ct-series`),
+   * `slicePie` (`ct-slice-pie`), `sliceDonut` (`ct-slice-donut`) and
+   * `label` (`ct-label`).
+   */
   readonly classNames?: {
     readonly series?: string;
     readonly slicePie?: string;
@@ -97,7 +125,26 @@ const CLASS_NAMES = {
 };
 
 /**
- * Draws a flat series as pie or donut slices with labels.
+ * Creates a layer that draws a flat series as pie or donut slices with
+ * labels, in the markup of the 1.x pie chart (a `g.ct-series` per slice,
+ * then a group of `text.ct-label`). It draws in polar coordinates, so the
+ * chart needs `coordinates: 'polar'` and no axes. With several series, it
+ * draws one slice per series, from each series' first value.
+ *
+ * @example
+ * ```ts
+ * import { chart, pie } from 'chartist';
+ *
+ * chart('#chart', {
+ *   data: {
+ *     labels: ['Rent', 'Food', 'Fun'],
+ *     series: [50, 30, 20]
+ *   },
+ *   coordinates: 'polar',
+ *   layers: [pie({ donut: true, donutWidth: 30 })],
+ *   className: 'ct-chart-donut'
+ * });
+ * ```
  * @experimental
  */
 export function pie(options: PieLayerOptions = {}): Layer {

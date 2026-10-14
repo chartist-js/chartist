@@ -9,8 +9,43 @@ const valueOf = (value: unknown, dimension: 'x' | 'y') =>
   Number(getMultiValue(value as NormalizedSeriesPrimitiveValue, dimension));
 
 /**
- * Evenly spaced ticks (labels), one per step. With `stretch`, the last
- * tick sits at the axis end. Same rules as 1.x `StepAxis`.
+ * Creates a step axis: evenly spaced ticks, one per step, that place
+ * values by their index rather than by their value. It's the label axis of
+ * line and bar charts. Same rules as 1.x `StepAxis`.
+ *
+ * Pass the labels as the axis's `ticks`; in {@link chart} it doesn't read
+ * them from the data. With `stretch`, the last tick sits at the axis end.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const months = ['Jan', 'Feb', 'Mar', 'Apr'];
+ *
+ * chart('#chart', {
+ *   data: { labels: months, series: [[4, 6, 5, 9]] },
+ *   axes: cartesianAxes([
+ *     // stretch: the first and last month at the edges.
+ *     {
+ *       id: 'month',
+ *       side: 'bottom',
+ *       type: stepAxis(),
+ *       ticks: months,
+ *       stretch: true
+ *     },
+ *     { id: 'value', side: 'left', type: autoScaleAxis() }
+ *   ]),
+ *   layers: [axisGrid(), line(), axisLabels()]
+ * });
+ * ```
  * @experimental
  */
 export function stepAxis(): AxisFactory {
@@ -35,8 +70,43 @@ export function stepAxis(): AxisFactory {
 }
 
 /**
- * A scale computed from the data: nice bounds, `scaleMinSpace` between
- * ticks, `onlyInteger`, `low`/`high`. Same rules as 1.x `AutoScaleAxis`.
+ * Creates an auto-scaled axis: a scale fitted to the data, with round
+ * ticks at least `scaleMinSpace` px apart. Set `low`, `high` or
+ * `referenceValue` to widen it, and `onlyInteger` for whole-number steps.
+ * Same rules as 1.x `AutoScaleAxis`.
+ *
+ * It's the value axis of line and bar charts. As an X axis, it places
+ * `{ x, y }` values at their real distances.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   line
+ * } from 'chartist';
+ *
+ * chart('#chart', {
+ *   data: {
+ *     series: [
+ *       [
+ *         { x: 1, y: 2 },
+ *         { x: 2.5, y: 5 },
+ *         { x: 7, y: 3 },
+ *         { x: 10, y: 8 }
+ *       ]
+ *     ]
+ *   },
+ *   axes: cartesianAxes([
+ *     { id: 'x', side: 'bottom', type: autoScaleAxis(), onlyInteger: true },
+ *     { id: 'y', side: 'left', type: autoScaleAxis(), low: 0 }
+ *   ]),
+ *   layers: [axisGrid(), line(), axisLabels()]
+ * });
+ * ```
  * @experimental
  */
 export function autoScaleAxis(): AxisFactory {
@@ -66,8 +136,42 @@ export function autoScaleAxis(): AxisFactory {
 }
 
 /**
- * A scale with explicit `ticks`, or `divisor` evenly spaced ticks between
- * low and high. Same rules as 1.x `FixedScaleAxis`.
+ * Creates a fixed-scale axis: a scale from `low` to `high` (by default the
+ * smallest and largest value) with the `ticks` you give. Without `ticks`,
+ * `divisor` splits the range into equal parts with a tick at the start of
+ * each, so `high` gets none. Same rules as 1.x `FixedScaleAxis`.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   fixedScaleAxis,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const teams = ['Red', 'Blue', 'Green'];
+ *
+ * chart('#chart', {
+ *   data: { labels: teams, series: [[64, 81, 47]] },
+ *   axes: cartesianAxes([
+ *     { id: 'team', side: 'bottom', type: stepAxis(), ticks: teams },
+ *     // A percentage scale with three grid lines.
+ *     {
+ *       id: 'percent',
+ *       side: 'left',
+ *       type: fixedScaleAxis(),
+ *       ticks: [0, 50, 100],
+ *       low: 0,
+ *       high: 100
+ *     }
+ *   ]),
+ *   layers: [axisGrid(), line({ showLine: false }), axisLabels()]
+ * });
+ * ```
  * @experimental
  */
 export function fixedScaleAxis(): AxisFactory {

@@ -20,9 +20,16 @@ import {
   type SvgLabelBuilder
 } from '../scales/svgLabels';
 
+/**
+ * The classes {@link axisGrid} and {@link axisLabels} give what they draw.
+ * The defaults are the 1.x classes, so 1.x CSS applies.
+ */
 export interface AxisLayerClassNames extends AxisClassNames {
+  /** The group of all grid lines (`ct-grids`). */
   readonly gridGroup: string;
+  /** The group of all labels (`ct-labels`). */
   readonly labelGroup: string;
+  /** The rect behind the grid, with `background: true` (`ct-grid-background`). */
   readonly gridBackground: string;
 }
 
@@ -38,18 +45,33 @@ const CLASS_NAMES: AxisLayerClassNames = {
   gridBackground: 'ct-grid-background'
 };
 
-/** @experimental */
+/**
+ * The options of {@link axisGrid} and {@link axisLabels}.
+ * @experimental
+ */
 export interface AxisLayerOptions {
-  /** Axis ids to draw; default: all axes, in declaration order. */
+  /**
+   * Axis ids to draw; default: all axes, in declaration order. An unknown
+   * id throws.
+   */
   readonly axes?: readonly string[];
+  /** Replaces some of the classes; the others keep their 1.x names. */
   readonly classNames?: Partial<AxisLayerClassNames>;
 }
 
-/** @experimental */
+/**
+ * The options of {@link axisLabels}: those of every axis layer, plus how
+ * the labels are drawn.
+ * @experimental
+ */
 export interface AxisLabelsOptions extends AxisLayerOptions {
   /** HTML (`foreignObject`) or SVG `text`; default: the chart's mode. */
   readonly labels?: LabelMode;
-  /** Alignment of SVG text labels; default: as the 1.x CSS aligns them. */
+  /**
+   * Aligns SVG text labels in their box, on every axis of the layer;
+   * default: as the 1.x CSS aligns HTML labels. HTML labels ignore it
+   * (align them with CSS).
+   */
   readonly align?: Partial<LabelAlign>;
 }
 
@@ -129,7 +151,40 @@ function nodesOf(
 }
 
 /**
- * Grid lines of the named axes (default: all) in `g.ct-grids`.
+ * Creates a layer that draws the grid lines of the named axes (default:
+ * all) in `g.ct-grids`, one `line.ct-grid` per tick. List it first, so
+ * the series draw over it.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const hours = ['6am', '9am', '12pm', '3pm', '6pm'];
+ *
+ * chart('#chart', {
+ *   data: { labels: hours, series: [[12, 17, 23, 21, 15]] },
+ *   axes: cartesianAxes([
+ *     { id: 'time', side: 'bottom', type: stepAxis(), ticks: hours },
+ *     { id: 'celsius', side: 'left', type: autoScaleAxis() }
+ *   ]),
+ *   // Horizontal lines only, on a background rect.
+ *   layers: [
+ *     axisGrid({ axes: ['celsius'], background: true }),
+ *     line(),
+ *     axisLabels()
+ *   ]
+ * });
+ * ```
+ * @param options The axes to draw and their classes; `background` adds a
+ *   `rect.ct-grid-background` over the chart area, behind the lines.
  * @experimental
  */
 export function axisGrid(
@@ -156,7 +211,42 @@ export function axisGrid(
 }
 
 /**
- * Labels of the named axes (default: all) in `g.ct-labels`.
+ * Creates a layer that draws the labels of the named axes (default: all)
+ * in `g.ct-labels`, each on its axis's side. Axes on the same side stack
+ * outward, each in its own `offset`. List it last, so the labels draw
+ * over the series.
+ *
+ * Labels are HTML in a `foreignObject` (as in 1.x) or SVG `text`: the
+ * chart's `labels` option decides, unless the layer sets its own.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const weeks = ['W1', 'W2', 'W3', 'W4'];
+ *
+ * chart('#chart', {
+ *   data: { labels: weeks, series: [[3, 5, 4, 8]] },
+ *   axes: cartesianAxes([
+ *     { id: 'week', side: 'bottom', type: stepAxis(), ticks: weeks },
+ *     { id: 'km', side: 'left', type: autoScaleAxis(), low: 0 }
+ *   ]),
+ *   layers: [
+ *     axisGrid(),
+ *     line(),
+ *     // SVG text instead of HTML, e.g. to export the SVG.
+ *     axisLabels({ labels: 'svg' })
+ *   ]
+ * });
+ * ```
  * @experimental
  */
 export function axisLabels(options: AxisLabelsOptions = {}): Layer {

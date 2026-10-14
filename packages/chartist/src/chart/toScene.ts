@@ -9,8 +9,14 @@ import type { SceneNode } from '../scene/node';
 import { eventMethods, installPlugins, registerListeners } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
+/**
+ * The size and text measuring for {@link toScene}, which has no container
+ * to read them from.
+ */
 export interface SceneSize {
+  /** The chart's width in px. */
   readonly width: number;
+  /** The chart's height in px. */
   readonly height: number;
   /** Text measurement for layout; an estimate by default. */
   readonly measureText?: MeasureText;

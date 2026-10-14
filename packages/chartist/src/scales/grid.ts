@@ -10,12 +10,19 @@ import { isFalseyButZero } from '../utils/utils';
 import type { ScaleAxis } from './axis';
 import type { SvgLabelBuilder } from './svgLabels';
 
+/** The classes of an axis's grid lines and labels. */
 export interface AxisClassNames {
+  /** Each grid line (`ct-grid`). */
   readonly grid: string;
+  /** Each label (`ct-label`). */
   readonly label: string;
+  /** Grid lines and labels of an X axis (`ct-horizontal`). */
   readonly horizontal: string;
+  /** Grid lines and labels of a Y axis (`ct-vertical`). */
   readonly vertical: string;
+  /** Labels of an axis at the top or left (`ct-start`). */
   readonly start: string;
+  /** Labels of an axis at the bottom or right (`ct-end`). */
   readonly end: string;
 }
 

@@ -181,10 +181,62 @@ export function presetAxes(
 }
 
 /**
- * Axes for `chart(el, { axes })`. Either the 1.x-style `{ x, y }` form, or a
- * list of axes with an `id` and a `side`, several per side if needed:
- * `cartesianAxes([{ id: 'x', side: 'bottom', type: stepAxis() }, …])`.
- * Axis types are v2 factories (`stepAxis()`, …) or 1.x axis classes.
+ * Creates the axes for the `axes` option of {@link chart}: a list of axes,
+ * each with an `id`, a `side` and a `type`, several per side if needed.
+ * Axis types are v2 factories ({@link stepAxis}, {@link autoScaleAxis},
+ * {@link fixedScaleAxis}) or 1.x axis classes; the other fields are the
+ * 1.x axis options (`offset`, `low`, `high`, `ticks`, …).
+ *
+ * Layers pick their axes by id, and each axis scales to the series of the
+ * layers drawn on it. In the list form, offsets default to 30 px for X
+ * axes and 40 px for Y axes, and axes on the same side stack outward in
+ * list order. Unknown or duplicate ids throw.
+ *
+ * The 1.x-style `{ x, y }` form also works. There, offsets default to 0,
+ * and the Y axis sits on the right unless its `position` is `'start'`.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   bar,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const months = ['Jan', 'Feb', 'Mar', 'Apr'];
+ *
+ * chart('#chart', {
+ *   data: {
+ *     labels: months,
+ *     series: [
+ *       { name: 'eur', data: [120, 180, 150, 210] },
+ *       { name: 'usd', data: [130, 195, 160, 230] }
+ *     ]
+ *   },
+ *   axes: cartesianAxes([
+ *     { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
+ *     // Both on the left: 'eur' next to the chart, 'usd' outside it.
+ *     { id: 'eur', side: 'left', type: autoScaleAxis(), low: 0 },
+ *     { id: 'usd', side: 'left', type: autoScaleAxis(), low: 0, offset: 50 }
+ *   ]),
+ *   layers: [
+ *     axisGrid({ axes: ['month', 'eur'] }),
+ *     bar({ series: ['eur'], y: 'eur' }),
+ *     line({ series: ['usd'], y: 'usd', align: 'center' }),
+ *     axisLabels()
+ *   ],
+ *   className: 'ct-chart-bar'
+ * });
+ * ```
+ * @param input The axes: a list of {@link AxisDefinition}s, or the 1.x
+ *   `{ x, y }` form.
+ * @param extra `reverseData` and `normalize`, for the list form (the
+ *   `{ x, y }` form takes them inline).
  * @experimental
  */
 export function cartesianAxes(

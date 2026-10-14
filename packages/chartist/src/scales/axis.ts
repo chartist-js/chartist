@@ -16,26 +16,40 @@ import type {
   PreparedData
 } from '../pipeline/types';
 
+/** Which way an axis runs: `x` (horizontal) or `y` (vertical). */
 export type AxisDimension = 'x' | 'y';
 
 /** Where an axis sits: `top`/`bottom` are X axes, `left`/`right` Y axes. */
 export type AxisSide = 'top' | 'bottom' | 'left' | 'right';
 
+/**
+ * What an {@link AxisFactory} gets to create an axis: its direction, the
+ * data, the chart area and the axis options.
+ */
 export interface AxisContext {
+  /** Which way the axis runs: `x` or `y`, from its side. */
   readonly dimension: AxisDimension;
-  /** Normalized multi-value series (`{ x, y }` values). */
+  /**
+   * Normalized multi-value series (`{ x, y }` values): the series bound to
+   * the axis, or all of them.
+   */
   readonly series: NormalizedSeries[];
   /** Normalized labels, padded to the longest series. */
   readonly labels: readonly Label[];
+  /** The chart area in px, with the offsets of all axes reserved. */
   readonly area: Area;
+  /** The options of the axis definition, without `id`, `side` and `type`. */
   readonly options: AxisOptions;
 }
 
 /**
  * A positioned axis: ticks, range and projection into px along the axis.
+ * An {@link AxisFactory} creates it once the chart area is known; layers
+ * read it to place what they draw.
  * @experimental
  */
 export interface ScaleAxis {
+  /** Which way the axis runs: `x` or `y`. */
   readonly dimension: AxisDimension;
   /** The axis type, e.g. `step`, `autoScale`, `fixedScale`. */
   readonly kind: string;
@@ -43,11 +57,22 @@ export interface ScaleAxis {
   readonly stretch?: boolean;
   /** Step axes: the distance between two ticks in px. */
   readonly step?: number;
+  /**
+   * The values at which grid lines and labels are drawn: labels on a step
+   * axis, numbers on a scale.
+   */
   readonly ticks: readonly Label[];
+  /**
+   * The values at the axis start (`min`) and end (`max`). Step axes have
+   * none.
+   */
   readonly range?: { readonly min: number; readonly max: number };
   /** Axis length in px. */
   readonly length: number;
-  /** Distance in px from the axis start (left, or bottom for y). */
+  /**
+   * Places a value on the axis: the distance in px from the axis start
+   * (left, or bottom for y). Step axes place by `index` instead.
+   */
   project(
     value: NormalizedSeriesPrimitiveValue | Label,
     index?: number,
@@ -56,11 +81,22 @@ export interface ScaleAxis {
 }
 
 /**
- * Creates an axis once the chart area and data are known.
+ * An axis type: creates the axis once the chart area and data are known.
+ * {@link stepAxis}, {@link autoScaleAxis} and {@link fixedScaleAxis} return
+ * one; write your own for a scale they don't cover. It goes in the `type`
+ * of an axis.
  * @experimental
  */
 export interface AxisFactory {
+  /**
+   * The axis type, e.g. `step`. The axis it creates has the same `kind`;
+   * the line and bar layers center on `step` axes.
+   */
   readonly kind: string;
+  /**
+   * Creates the axis for a chart area and data. Runs on every layout, so
+   * after resizes too.
+   */
   create(context: AxisContext): ScaleAxis;
 }
 
@@ -68,24 +104,48 @@ export interface AxisFactory {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type LegacyAxisClass = abstract new (...args: any[]) => unknown;
 
-/** Axis configuration: an axis type plus the 1.x axis options. */
+/**
+ * An axis's setup: an axis type plus the 1.x axis options (`offset`,
+ * `low`, `high`, `ticks`, `showGrid`, …).
+ */
 export interface AxisSetup extends Omit<AxisOptions, 'type'> {
   /** A v2 axis factory, or a 1.x axis class. */
   readonly type: AxisFactory | LegacyAxisClass;
 }
 
 /**
- * An axis of a composed chart: an id that layers bind to, a side, a type
- * and the 1.x axis options.
+ * An axis of a composed chart, in the list form of {@link cartesianAxes}:
+ * an id that layers bind to, a side, a type and the 1.x axis options.
  * @experimental
  */
 export interface AxisDefinition extends AxisSetup {
+  /**
+   * Names the axis, for the `x` and `y` of layers and the `axes` of
+   * {@link axisGrid} and {@link axisLabels}. Ids must be unique.
+   */
   readonly id: string;
+  /**
+   * Where the axis sits: `bottom` or `top` makes an X axis, `left` or
+   * `right` a Y axis. Axes on the same side stack outward in list order.
+   */
   readonly side: AxisSide;
 }
 
+/**
+ * The config of {@link cartesianAxes}: one X and one Y axis in the 1.x
+ * form, or a list of axes, plus how the data is read.
+ */
 export interface AxesConfig {
+  /**
+   * The X axis in the 1.x form: at the bottom, or the top with
+   * `position: 'start'`. Its `offset` defaults to 0, so set one to make
+   * room for labels.
+   */
   readonly x?: AxisSetup;
+  /**
+   * The Y axis in the 1.x form: on the right, or the left with
+   * `position: 'start'`. Its `offset` defaults to 0.
+   */
   readonly y?: AxisSetup;
   /** The axis list form; used instead of `x`/`y`. */
   readonly axes?: readonly AxisDefinition[];
@@ -102,9 +162,14 @@ export interface AxesConfig {
   };
 }
 
-/** A created axis with its place in the chart. */
+/**
+ * A created axis with its place in the chart: what the axis layers draw,
+ * and what a layer finds in `axes.all`.
+ */
 export interface PlacedScaleAxis extends ScaleAxis {
+  /** The axis id: from its definition, or `x` and `y` in the 1.x form. */
   readonly id: string;
+  /** The side the axis sits on. */
   readonly side: AxisSide;
   /** Distance in px from the chart area to this axis's band (stacking). */
   readonly inset: number;
@@ -123,12 +188,16 @@ export interface ChartAxes {
 }
 
 /**
- * Axes for a chart's `axes` option, created by `cartesianAxes()`. The
+ * Axes for a chart's `axes` option, created by {@link cartesianAxes}. The
  * pipeline asks them for the chart area and, after `layout`, to create the
  * axes. Charts without axes don't bundle any of this.
  * @experimental
  */
 export interface CartesianAxes {
+  /**
+   * The config the axes were created from; in the list form, with the
+   * default offsets filled in.
+   */
   readonly config: AxesConfig;
   /** The chart area with the axis offsets reserved. */
   area(
@@ -156,7 +225,9 @@ export interface CartesianAxes {
 
 /** How a layer is bound: its axis ids and series indexes. */
 export interface LayerBinding {
+  /** The id of the X axis the layer draws on. */
   readonly x?: string;
+  /** The id of the Y axis the layer draws on. */
   readonly y?: string;
   /** Selected series indexes; undefined means all. */
   readonly series?: readonly number[];

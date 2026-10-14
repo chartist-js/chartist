@@ -11,17 +11,33 @@ import { node, withFields, type SceneNode } from '../scene/node';
 import { serialMap } from '../utils/functional';
 import { isNumeric, safeHasProperty } from '../utils/utils';
 
-/** @experimental */
+/**
+ * The options of the {@link bar} layer. Without them, it draws the bars of
+ * each label side by side, 15 px apart, on the first X and Y axis.
+ * @experimental
+ */
 export interface BarLayerOptions {
   /** Series to draw, by index or name; default: all series. */
   readonly series?: readonly (number | string)[];
-  /** Axis ids to draw on; default: the first X and the first Y axis. */
+  /** The id of the X axis to draw on; default: the first X axis. */
   readonly x?: string;
+  /** The id of the Y axis to draw on; default: the first Y axis. */
   readonly y?: string;
   /** Values on the X axis, labels on the Y axis. */
   readonly horizontalBars?: boolean;
+  /**
+   * Stacks the bars of a label on each other; `stackMode` says how. In
+   * {@link chart}, the value axis scales to the single values, not to
+   * their sums, so give it a `high` that fits the stacks (`barChart` does
+   * this for you).
+   */
   readonly stackBars?: boolean;
-  /** `accumulate` (default), `accumulate-relative`, or `overlap` (or `true`). */
+  /**
+   * How stacked bars stack: `accumulate` (default) adds each value to the
+   * ones before, `accumulate-relative` stacks positive and negative values
+   * apart, and `overlap` (or `true`) draws every bar from zero, on top of
+   * each other.
+   */
   readonly stackMode?:
     | 'accumulate'
     | 'accumulate-relative'
@@ -31,7 +47,15 @@ export interface BarLayerOptions {
   readonly seriesBarDistance?: number;
   /** One series per value of a flat series (1.x `distributeSeries`). */
   readonly distributeSeries?: boolean;
+  /**
+   * Draws the series in reverse order (1.x `reverseData`). Can't be
+   * combined with `series`.
+   */
   readonly reverseData?: boolean;
+  /**
+   * Replaces the classes of what the layer draws: `series` (`ct-series`)
+   * and `bar` (`ct-bar`).
+   */
   readonly classNames?: { readonly series?: string; readonly bar?: string };
 }
 
@@ -58,8 +82,44 @@ function rawSeries(series: PreparedSeries): Series | SeriesObject {
 }
 
 /**
- * Draws series as bars. The label axis is X (Y with `horizontalBars`), the
- * value axis the other one.
+ * Creates a layer that draws series as bars, in the markup of the 1.x bar
+ * chart (`g.ct-series` with a `line.ct-bar` per value). The label axis is
+ * X (Y with `horizontalBars`), the value axis the other one; both come
+ * from {@link cartesianAxes}.
+ *
+ * Bars grow from zero on the value axis, so keep zero on it: `low: 0`, or
+ * `referenceValue: 0`. On a step axis they sit in the middle of each step.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   bar,
+ *   cartesianAxes,
+ *   chart,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+ *
+ * chart('#chart', {
+ *   data: {
+ *     labels: quarters,
+ *     series: [
+ *       [800, 1200, 1400, 1300],
+ *       [200, 400, 500, 300]
+ *     ]
+ *   },
+ *   axes: cartesianAxes([
+ *     { id: 'quarter', side: 'bottom', type: stepAxis(), ticks: quarters },
+ *     { id: 'sales', side: 'left', type: autoScaleAxis(), low: 0 }
+ *   ]),
+ *   layers: [axisGrid(), bar({ seriesBarDistance: 12 }), axisLabels()],
+ *   className: 'ct-chart-bar'
+ * });
+ * ```
  * @experimental
  */
 export function bar(options: BarLayerOptions = {}): Layer {

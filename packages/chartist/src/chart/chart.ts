@@ -28,8 +28,56 @@ function resolveTarget(target: string | Element): Element {
 }
 
 /**
- * Creates a chart in a container and renders it synchronously. Listeners in
- * `config.on` and plugins receive the events of this first render.
+ * Creates a chart from data, axes and layers in a container, and renders
+ * it right away. The presets (`lineChart`, `barChart`, `pieChart`) are
+ * built on it; use it for what they don't cover, like bars and a line on
+ * two Y axes.
+ *
+ * The chart fills its container unless the config sets a size, and renders
+ * again when the container resizes, web fonts finish loading or the
+ * matching `responsive` entries change. Listeners in `config.on` and
+ * plugins receive the events of the first render too.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   bar,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+ *
+ * chart('#chart', {
+ *   data: {
+ *     labels: months,
+ *     series: [
+ *       { name: 'rain', data: [64, 58, 70, 82, 104, 120] },
+ *       { name: 'temperature', data: [1, 3, 8, 12, 16, 20] }
+ *     ]
+ *   },
+ *   axes: cartesianAxes([
+ *     { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
+ *     { id: 'mm', side: 'left', type: autoScaleAxis(), low: 0 },
+ *     { id: 'celsius', side: 'right', type: autoScaleAxis(), low: 0 }
+ *   ]),
+ *   layers: [
+ *     axisGrid({ axes: ['month', 'mm'] }),
+ *     bar({ series: ['rain'], x: 'month', y: 'mm' }),
+ *     line({ series: ['temperature'], y: 'celsius', align: 'center' }),
+ *     axisLabels()
+ *   ],
+ *   className: 'ct-chart-bar'
+ * });
+ * ```
+ * @param target The container element, or a CSS selector for it.
+ * @param config The data, axes, layers and the rest of the chart.
+ * @returns A handle to update the chart, listen to it or remove it.
  * @experimental
  */
 export function chart(

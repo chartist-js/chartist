@@ -18,21 +18,43 @@ import type { Layer, PreparedSeries } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { isNumeric, safeHasProperty } from '../utils/utils';
 
-/** Options that can be overridden per series (by series name). */
+/**
+ * The line options you can set per series: in the `overrides` of
+ * {@link line}, or the `series` option of `lineChart`.
+ */
 export interface LineSeriesOptions {
+  /**
+   * How a line runs between its points: `true` smooths it with
+   * `Interpolation.monotoneCubic`, `false` draws straight segments
+   * (`Interpolation.none`), or pass an interpolation such as
+   * `Interpolation.cardinal()`, `Interpolation.step()` or your own.
+   */
   readonly lineSmooth?: boolean | LineInterpolation;
+  /** Draws a point at each value. */
   readonly showPoint?: boolean;
+  /** Draws the lines. */
   readonly showLine?: boolean;
+  /** Fills the area between each line and `areaBase`. */
   readonly showArea?: boolean;
+  /**
+   * The value the areas close at, usually 0. It's kept within the Y axis
+   * range.
+   */
   readonly areaBase?: number;
 }
 
-/** @experimental */
+/**
+ * The options of the {@link line} layer. Without them, it draws every
+ * series as a smooth line with points and no area, on the first X and Y
+ * axis.
+ * @experimental
+ */
 export interface LineLayerOptions extends LineSeriesOptions {
   /** Series to draw, by index or name; default: all series. */
   readonly series?: readonly (number | string)[];
-  /** Axis ids to draw on; default: the first X and the first Y axis. */
+  /** The id of the X axis to draw on; default: the first X axis. */
   readonly x?: string;
+  /** The id of the Y axis to draw on; default: the first Y axis. */
   readonly y?: string;
   /**
    * Point position on a step axis: `start` of each step (1.x) or its
@@ -41,8 +63,15 @@ export interface LineLayerOptions extends LineSeriesOptions {
   readonly align?: 'start' | 'center';
   /** Option overrides per series name (the 1.x `series` option). */
   readonly overrides?: Readonly<Record<string, LineSeriesOptions>>;
-  /** Iterate the series in reverse (1.x `reverseData`). */
+  /**
+   * Draws the series in reverse order (1.x `reverseData`). Can't be
+   * combined with `series`.
+   */
   readonly reverseData?: boolean;
+  /**
+   * Replaces the classes of what the layer draws: `series` (`ct-series`),
+   * `line` (`ct-line`), `point` (`ct-point`) and `area` (`ct-area`).
+   */
   readonly classNames?: {
     readonly series?: string;
     readonly line?: string;
@@ -98,8 +127,44 @@ function seriesOption<K extends keyof LineSeriesOptions>(
 }
 
 /**
- * Draws series as lines with points and optional areas. Needs an x and a
- * y axis.
+ * Creates a layer that draws series as lines, with points and optional
+ * areas, in the markup of the 1.x line chart (`g.ct-series` with
+ * `path.ct-line`, `line.ct-point` and `path.ct-area`). It needs an X and a
+ * Y axis, from {@link cartesianAxes}.
+ *
+ * @example
+ * ```ts
+ * import {
+ *   autoScaleAxis,
+ *   axisGrid,
+ *   axisLabels,
+ *   cartesianAxes,
+ *   chart,
+ *   line,
+ *   stepAxis
+ * } from 'chartist';
+ *
+ * const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+ *
+ * chart('#chart', {
+ *   data: {
+ *     labels: days,
+ *     series: [
+ *       { name: 'visits', data: [12, 9, 7, 8, 5] },
+ *       { name: 'sales', data: [2, 1, 3.5, 7, 3] }
+ *     ]
+ *   },
+ *   axes: cartesianAxes([
+ *     { id: 'day', side: 'bottom', type: stepAxis(), ticks: days },
+ *     { id: 'count', side: 'left', type: autoScaleAxis(), low: 0 }
+ *   ]),
+ *   layers: [
+ *     axisGrid(),
+ *     line({ showArea: true, overrides: { sales: { showArea: false } } }),
+ *     axisLabels()
+ *   ]
+ * });
+ * ```
  * @experimental
  */
 export function line(options: LineLayerOptions = {}): Layer {
