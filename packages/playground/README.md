@@ -31,10 +31,12 @@ With `types`, TypeScript files get type errors (underlined; Ctrl/Cmd+Shift+M lis
 | --------------------------------- | ------------------------------------------------------------------- |
 | `pnpm nx dev playground`          | Demo with the example fixtures in `demo/examples` (Vite dev server) |
 | `pnpm nx build playground`        | Static demo in `dist/`, base path `/chartist/`                      |
-| `pnpm nx preview playground`      | Serves `dist/` at `http://localhost:4321/chartist/`                 |
-| `pnpm nx test playground`         | Unit tests of the compile pipeline (`node:test`)                    |
+| `pnpm nx preview playground`      | Serves `dist/` at `http://localhost:4321/chartist/` (see below)     |
+| `pnpm nx test playground`         | Unit tests of the compile pipeline (Vitest)                         |
 | `pnpm nx run playground:test:e2e` | Playwright, Chromium + Firefox + WebKit, against the built demo     |
-| `pnpm nx run playground:measure`  | Bundle sizes and transformer timings (see design.md, Findings)      |
+| `pnpm nx run playground:measure`  | Bundle sizes and transformer timings                                |
+
+The preview uses the docs dev server's port; while that runs, serve the demo on another one with `node test/e2e/serve.mjs <port>` (from `packages/playground`). The e2e tests use port 4331.
 
 Browsers for the e2e test: `pnpm --filter @chartist/playground exec playwright install chromium firefox webkit`.
 
