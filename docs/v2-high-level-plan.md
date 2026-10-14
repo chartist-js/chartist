@@ -203,5 +203,5 @@ Platform work Chartist builds on. Check these before each release and update the
 ## Open questions
 
 - Final npm package name and scope (`chartist` stays the main package?)
-- Sponsor placement for Cube in README and site (agreed deal, carried over: the footer, the landing sponsor card and a sponsor credit on `/credits/`; the README is for the release)
+- Sponsor placement for Cube in README and site (agreed deal, carried over: the footer's "Supported by" with Cube's logo and a sponsor credit on `/credits/`; the landing page's community section shows the credited people instead, since 2026-10-14; the README is for the release)
 - Hosting and domain (chartist.dev)

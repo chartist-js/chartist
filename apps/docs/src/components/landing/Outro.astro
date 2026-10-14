@@ -3,6 +3,16 @@ import Mascot from '../Mascot.astro';
 import { ECOSYSTEM } from '../../data/ecosystem';
 import { facts } from '../../data/facts';
 import { REPO, href } from '../../lib/site';
+
+const avatars = import.meta.glob<{ default: ImageMetadata }>('../../assets/credits/*.png', { eager: true });
+// The credited people, as on the credits page; the snapshot names each avatar.
+const people = facts.credits.people.map(person => {
+  const avatar = avatars[`../../assets/credits/${person.avatar}`]?.default;
+  if (!avatar) {
+    throw new Error(`landing: missing avatar src/assets/credits/${person.avatar} for ${person.login}`);
+  }
+  return { name: person.name, avatar };
+});
 ---
 
 <section class="wrap section" data-visual="ecosystem">
@@ -33,12 +43,18 @@ import { REPO, href } from '../../lib/site';
       <a class="btn sm" href={`${REPO}/blob/main/CONTRIBUTING.md`}>Contribute</a>
     </div>
   </div>
-  <div class="reveal grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-center gap-6 rounded-xl border-2 border-dashed border-line-strong px-8 py-7">
-    <div>
-      <span class="eyebrow">Supported by</span>
-      <strong class="block font-slab text-2xl leading-[normal] font-bold">Cube</strong>
-    </div>
-    <p>Cube helped move Chartist to TypeScript and keeps supporting its development. Thank you! <a href="https://cube.dev" target="_blank" rel="noopener">Visit cube.dev<span class="sr-only"> (opens in a new tab)</span></a> · <a href={href('credits/')}>Read the credits</a></p>
+  <div class="reveal flex flex-col justify-center gap-4 rounded-xl border-2 border-dashed border-line-strong px-8 py-7">
+    <span class="eyebrow">Hats off</span>
+    <ul class="m-0 flex list-none flex-wrap p-0 pl-2.5" aria-label="The people credited on the credits page">
+      {
+        people.map(person => (
+          <li class="-ml-2.5">
+            <img src={person.avatar.src} alt={person.name} title={person.name} width="44" height="44" loading="lazy" class="size-11 rounded-full border-3 border-bg" />
+          </li>
+        ))
+      }
+    </ul>
+    <p>From the first commit in 2014 to v2: the creator, the maintainers and everyone who sent a pull request. <a href={href('credits/')}>Read the credits</a></p>
   </div>
 </section>
 
