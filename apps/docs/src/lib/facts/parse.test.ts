@@ -3,9 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   countFromLinkHeader,
   dependsOnChartist,
-  parseDependentRows,
   parseDependentsCount,
-  parseNextDependentsPage,
   rolesFromCollaborators,
   selectCredits,
   selectUsedBy,
@@ -22,26 +20,6 @@ const html = readFileSync(
 describe('facts parsers', () => {
   it('reads the dependents count', () => {
     expect(parseDependentsCount(html)).toBe(72834);
-  });
-
-  it('reads the dependent repositories with owner type and stars', () => {
-    const rows = parseDependentRows(html);
-    expect(rows).toHaveLength(30);
-    expect(
-      rows.filter(row => row.ownerType === 'organization').length
-    ).toBeGreaterThan(0);
-    expect(
-      rows.find(row => row.repo === 'L-entreprise/vendure_menata')
-    ).toEqual({
-      owner: 'L-entreprise',
-      repo: 'L-entreprise/vendure_menata',
-      ownerType: 'organization',
-      stars: 0
-    });
-  });
-
-  it('finds the next page', () => {
-    expect(parseNextDependentsPage(html)).toMatch(/dependents_after=/);
   });
 
   it('counts from a Link header', () => {
@@ -74,6 +52,7 @@ describe('Used by selection', () => {
     ownerType: UsedByCandidate['ownerType'] = 'organization'
   ): UsedByCandidate => ({
     owner,
+    name: owner,
     repo: `${owner}/app`,
     ownerType,
     stars,

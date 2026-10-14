@@ -12,44 +12,6 @@ export function parseDependentsCount(html: string): number {
   return Number(match[1].replace(/,/g, ''));
 }
 
-export interface DependentRow {
-  owner: string;
-  repo: string;
-  ownerType: 'organization' | 'user';
-  stars: number;
-}
-
-/** The repositories listed on one dependents page. */
-export function parseDependentRows(html: string): DependentRow[] {
-  const rows: DependentRow[] = [];
-  const blocks = html.split('data-test-id="dg-repo-pkg-dependent"').slice(1);
-  for (const block of blocks) {
-    const owner = block.match(
-      /data-hovercard-type="(organization|user)"[^>]*href="\/([^"/]+)"/
-    );
-    const repo = block.match(
-      /data-hovercard-type="repository"[^>]*href="\/([^"]+)"/
-    );
-    const stars = block.match(/octicon-star[\s\S]*?<\/svg>\s*([\d,]+)/);
-    if (owner && repo && stars) {
-      rows.push({
-        ownerType: owner[1] as DependentRow['ownerType'],
-        owner: owner[2],
-        repo: repo[1],
-        stars: Number(stars[1].replace(/,/g, ''))
-      });
-    }
-  }
-  return rows;
-}
-
-/** The link to the next dependents page, if any. */
-export function parseNextDependentsPage(html: string): string | undefined {
-  return html.match(
-    /href="(https:\/\/github\.com\/[^"]*dependents_after=[^"]+)"/
-  )?.[1];
-}
-
 /**
  * The total from a GitHub list request made with per_page=1: the page
  * number of the `last` link (or 1 without pagination).
@@ -78,6 +40,8 @@ export function dependsOnChartist(packageJson: unknown): boolean {
 
 export interface UsedByCandidate {
   owner: string;
+  /** The project's name, as the list shows it. */
+  name: string;
   repo: string;
   ownerType: 'organization' | 'user';
   stars: number;
@@ -87,7 +51,8 @@ export interface UsedByCandidate {
 
 /**
  * "Used by": organizations only, with notable repositories, one entry per
- * organization (its most-starred repository), minus excluded owners.
+ * organization (its most-starred repository), minus excluded owners, most
+ * starred first.
  */
 export function selectUsedBy(
   candidates: readonly UsedByCandidate[],

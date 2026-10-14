@@ -7,7 +7,7 @@ const facts = JSON.parse(
 ) as {
   generatedAt: string;
   github: { contributors: number };
-  usedBy: { owner: string; evidence: string }[];
+  usedBy: { name: string; evidence: string }[];
 };
 const SECTIONS = [
   'top',
@@ -58,7 +58,7 @@ test('numbers and "Used by" come from the facts snapshot', async ({ page }) => {
   for (const entry of facts.usedBy) {
     await expect(
       page.locator(`.used-by a[href="${entry.evidence}"]`)
-    ).toContainText(entry.owner);
+    ).toContainText(entry.name);
   }
 });
 

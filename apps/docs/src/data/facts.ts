@@ -21,6 +21,7 @@ const schema = z.object({
   usedBy: z.array(
     z.object({
       owner: z.string(),
+      name: z.string(),
       repo: z.string(),
       stars: z.number(),
       evidence: z.string().url(),

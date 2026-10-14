@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "repo": "vendurehq/vendure",
+    "path": "packages/admin-ui",
+    "name": "Vendure"
+  },
+  { "repo": "opensourcepos/opensourcepos", "name": "Open Source POS" },
+  { "repo": "indico/indico", "name": "Indico" },
+  {
+    "repo": "vatesfr/xen-orchestra",
+    "path": "packages/xo-web",
+    "name": "Xen Orchestra"
+  },
+  {
+    "repo": "getgrav/grav-plugin-admin",
+    "path": "themes/grav",
+    "name": "Grav"
+  },
+  { "repo": "zooniverse/Panoptes-Front-End", "name": "Zooniverse" }
+]

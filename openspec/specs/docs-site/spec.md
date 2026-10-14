@@ -118,12 +118,22 @@ Numbers and comparison values on the site SHALL come from a committed, dated sna
 
 ### Requirement: Used by
 
-The landing page SHALL show a "Used by" list mirroring GitHub's public dependents of the Chartist repository, filtered to organizations, where every entry links to the public repository that depends on Chartist. Entries SHALL be removable through an exclude list.
+The landing page SHALL show a "Used by" list of well-known projects that use Chartist, curated in the site's data. Every entry SHALL show the project's name and link to the `package.json` in its public repository that lists Chartist; the facts script SHALL keep an entry only while that file still lists Chartist. Entries SHALL be removable through an exclude list. The list SHALL end with an invitation to tell the project about your use of Chartist (a GitHub Discussions "Show and tell" post).
 
 #### Scenario: Entry with evidence
 
 - **WHEN** the "Used by" list is rendered
-- **THEN** each entry shows the organization's name and links to a public repository whose dependency on Chartist GitHub reports
+- **THEN** each entry shows the project's name and links to the `package.json` in its repository that lists Chartist
+
+#### Scenario: A project drops Chartist
+
+- **WHEN** the facts script runs and a listed project's `package.json` no longer lists Chartist
+- **THEN** the project leaves the list and the script names it in a warning
+
+#### Scenario: Invitation
+
+- **WHEN** a visitor follows the invitation at the end of the list
+- **THEN** a new "Show and tell" discussion opens on the Chartist repository
 
 ### Requirement: Fair comparison
 

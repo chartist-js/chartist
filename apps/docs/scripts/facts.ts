@@ -7,9 +7,10 @@
  * personal token of someone with push access.
  *
  * - npm: monthly downloads of `chartist`
- * - GitHub: stars, contributors, dependents count, and "Used by"
- *   (organizations among the dependents and the verified candidates in
- *   src/data/used-by-candidates.json, minus used-by-exclude.json)
+ * - GitHub: stars, contributors, dependents count, and "Used by": the
+ *   projects in src/data/used-by-candidates.json (with the path of the
+ *   package.json that lists chartist, when it isn't the root), kept only
+ *   while that package.json still lists chartist, minus used-by-exclude.json
  * - credits: the top contributors by commits and the maintainers, flagged
  *   by their collaborator role (without access to the collaborators, the
  *   previous snapshot's roles are kept), minus credits-exclude.json; their
@@ -25,9 +26,7 @@ import { build } from 'esbuild';
 import {
   countFromLinkHeader,
   dependsOnChartist,
-  parseDependentRows,
   parseDependentsCount,
-  parseNextDependentsPage,
   rolesFromCollaborators,
   selectCredits,
   selectUsedBy,
@@ -39,7 +38,6 @@ import { CREATOR } from '../src/data/credits.ts';
 
 const REPO = 'chartist-js/chartist';
 const root = new URL('../', import.meta.url);
-const DEPENDENT_PAGES = Number(process.env.FACTS_DEPENDENT_PAGES ?? 10);
 const headers: Record<string, string> = {
   'user-agent': 'chartist-docs-facts',
   ...(process.env.GITHUB_TOKEN && {
@@ -84,53 +82,50 @@ async function github() {
   };
 }
 
-/** The dependents count and the candidates from the first pages. */
+/** The number of public repositories GitHub lists as dependents. */
 async function dependents() {
-  let url: string | undefined = `https://github.com/${REPO}/network/dependents`;
-  let count = 0;
-  const candidates: UsedByCandidate[] = [];
-  for (let page = 0; url && page < DEPENDENT_PAGES; page++) {
-    const html = await (
-      await get(url, { headers: { 'user-agent': 'Mozilla/5.0' } })
-    ).text();
-    if (page === 0) {
-      count = parseDependentsCount(html);
-    }
-    for (const row of parseDependentRows(html)) {
-      candidates.push({ ...row, evidence: `https://github.com/${row.repo}` });
-    }
-    url = parseNextDependentsPage(html);
-    await sleep(1500);
-  }
-  return { count, candidates };
+  const html = await (
+    await get(`https://github.com/${REPO}/network/dependents`, {
+      headers: { 'user-agent': 'Mozilla/5.0' }
+    })
+  ).text();
+  return parseDependentsCount(html);
 }
 
-/** Researched candidates, kept only if their package.json lists chartist. */
+/**
+ * The curated "Used by" projects, kept only while the package.json at
+ * their path still lists chartist.
+ */
 async function verifiedCandidates(): Promise<UsedByCandidate[]> {
-  const repos = JSON.parse(
+  const projects = JSON.parse(
     await readFile(new URL('src/data/used-by-candidates.json', root), 'utf8')
-  ) as string[];
+  ) as { repo: string; name: string; path?: string }[];
   const verified: UsedByCandidate[] = [];
-  for (const repo of repos) {
+  for (const { repo, name, path } of projects) {
     try {
       const info = await json<{
         stargazers_count: number;
         default_branch: string;
         owner: { login: string; type: string };
       }>(`https://api.github.com/repos/${repo}`);
-      const path = `https://raw.githubusercontent.com/${repo}/${info.default_branch}/package.json`;
-      const packageJson = await (await get(path)).json();
+      const file = `${path ? `${path}/` : ''}package.json`;
+      const packageJson = await (
+        await get(
+          `https://raw.githubusercontent.com/${repo}/${info.default_branch}/${file}`
+        )
+      ).json();
       if (dependsOnChartist(packageJson)) {
         verified.push({
           owner: info.owner.login,
+          name,
           repo,
           ownerType:
             info.owner.type === 'Organization' ? 'organization' : 'user',
           stars: info.stargazers_count,
-          evidence: `https://github.com/${repo}/blob/${info.default_branch}/package.json`
+          evidence: `https://github.com/${repo}/blob/${info.default_branch}/${file}`
         });
       } else {
-        console.warn(`skipped ${repo}: package.json doesn't list chartist`);
+        console.warn(`skipped ${repo}: ${file} doesn't list chartist`);
       }
     } catch (error) {
       console.warn(`skipped ${repo}: ${(error as Error).message}`);
@@ -339,14 +334,15 @@ async function main() {
   const exclude = JSON.parse(
     await readFile(new URL('src/data/used-by-exclude.json', root), 'utf8')
   ) as string[];
-  const usedBy = selectUsedBy([...deps.candidates, ...candidates], { exclude });
+  const usedBy = selectUsedBy(candidates, { exclude });
   await avatars(usedBy);
   const facts = {
     generatedAt: new Date().toISOString().slice(0, 10),
     npm: downloads,
-    github: { ...gh, dependents: deps.count },
-    usedBy: usedBy.map(({ owner, repo, stars, evidence }) => ({
+    github: { ...gh, dependents: deps },
+    usedBy: usedBy.map(({ owner, name, repo, stars, evidence }) => ({
       owner,
+      name,
       repo,
       stars,
       evidence,

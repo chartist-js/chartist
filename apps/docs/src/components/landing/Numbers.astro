@@ -1,5 +1,6 @@
 ---
 import { facts, formatCount, formatDate, yearsSince2014 } from '../../data/facts';
+import { REPO } from '../../lib/site';
 
 const avatars = import.meta.glob<{ default: ImageMetadata }>('../../assets/used-by/*.png', { eager: true });
 const avatarOf = (file: string) => avatars[`../../assets/used-by/${file}`]?.default;
@@ -38,14 +39,14 @@ const stats = [
                 <li>
                   <a href={entry.evidence} title={`${entry.repo} depends on Chartist`} class="group inline-flex min-h-11 items-center gap-2 font-bold text-ink no-underline">
                     {avatar && <img src={avatar.src} alt="" width="28" height="28" loading="lazy" class="rounded-[6px]" />}
-                    <span class="group-hover:underline">{entry.owner}</span>
+                    <span class="group-hover:underline">{entry.name}</span>
                   </a>
                 </li>
               );
             })}
           </ul>
-          <a class="pill-link" href="https://github.com/chartist-js/chartist/network/dependents">
-            All dependents on GitHub →
+          <a class="pill-link" href={`${REPO}/discussions/new?category=show-and-tell`}>
+            Using Chartist? Tell us about it →
           </a>
         </div>
       )
