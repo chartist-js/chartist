@@ -75,9 +75,9 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
    */
   labelOffset?: number;
   /**
-   * Where labels go: `inside` (halfway out, plus `labelOffset`), `outside`
-   * (at the edge) or `center` (in the middle; move them with
-   * `labelOffset`).
+   * Where labels go: `inside` (halfway out on a pie, on the middle of a
+   * donut's ring, plus `labelOffset`), `outside` (at the outer edge) or
+   * `center` (in the middle; move them with `labelOffset`).
    */
   labelPosition?: RadialLabelPosition;
   /**
@@ -93,8 +93,9 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   /** Leaves out the slices and labels of empty values. */
   ignoreEmptyValues?: boolean;
   /**
-   * Moves labels apart so they don't overlap, using this offset in px. 0
-   * leaves them where they are.
+   * Moves labels apart so they don't overlap, using this offset in px. The
+   * overlap is judged by the length of the drawn label text. 0 leaves them
+   * where they are.
    */
   preventOverlappingLabelOffset?: number;
 }

@@ -49,9 +49,9 @@ export interface PieLayerOptions {
    */
   readonly labelOffset?: number;
   /**
-   * Where labels go: `inside` (halfway out, the default), `outside` (at
-   * the edge) or `center` (in the middle; move them with `labelOffset`).
-   * Donut labels sit on the ring, whatever the position.
+   * Where labels go: `inside` (the default: halfway out on a pie, on the
+   * middle of a donut's ring), `outside` (at the outer edge) or `center`
+   * (in the middle; move them with `labelOffset`).
    */
   readonly labelPosition?: 'inside' | 'outside' | 'center';
   /** Formats a slice's label: its entry in `labels`, or else its value. */
@@ -66,7 +66,10 @@ export interface PieLayerOptions {
   readonly labelDirection?: LabelDirection;
   /** Leaves out the slices and labels of zero values. */
   readonly ignoreEmptyValues?: boolean;
-  /** Shifts labels that would overlap by this many px. */
+  /**
+   * Shifts labels that would overlap another one by this many px, up and
+   * left, judging the overlap by the length of the drawn label text.
+   */
   readonly preventOverlappingLabelOffset?: number;
   /**
    * Replaces the classes of what the layer draws: `series` (`ct-series`),
@@ -188,13 +191,15 @@ export function pie(options: PieLayerOptions = {}): Layer {
       }
       radius -= options.donut ? donutWidth.value / 2 : 0;
 
+      // `radius` is the middle of a donut's ring, and a pie's edge. Unlike
+      // 1.x, donut labels follow `labelPosition` too (see #478).
       let labelRadius: number;
-      if (options.labelPosition === 'outside' || options.donut) {
-        labelRadius = radius;
-      } else if (options.labelPosition === 'center') {
+      if (options.labelPosition === 'center') {
         labelRadius = 0;
+      } else if (options.labelPosition === 'outside') {
+        labelRadius = options.donut ? radius + donutWidth.value / 2 : radius;
       } else {
-        labelRadius = radius / 2;
+        labelRadius = options.donut ? radius : radius / 2;
       }
       if (options.labelOffset) {
         labelRadius += options.labelOffset;
@@ -322,8 +327,11 @@ export function pie(options: PieLayerOptions = {}): Layer {
               : values[index];
           const interpolated = labelInterpolationFnc(rawValue, index);
           if (interpolated || interpolated === 0) {
+            const text = String(interpolated);
             if (options.preventOverlappingLabelOffset) {
-              const length = String(labels[index]).length;
+              // The drawn text, not the label entry, which may be missing
+              // or formatted differently (see #1485).
+              const length = text.length;
               labelPositions.forEach(item =>
                 moveLabel(
                   labelPosition,
@@ -354,14 +362,14 @@ export function pie(options: PieLayerOptions = {}): Layer {
                     index,
                     seriesIndex: index,
                     valueIndex: 0,
-                    text: String(interpolated),
+                    text,
                     series,
                     meta: seriesMeta,
                     x: labelPosition.x,
                     y: labelPosition.y
                   }
                 }
-              ).text(String(interpolated))
+              ).text(text)
             );
           }
         }

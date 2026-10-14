@@ -78,6 +78,73 @@ describe('layers/pie', () => {
     ).toBe('stroke-width: 60px');
   });
 
+  describe('donut labels follow labelPosition', () => {
+    // Donut ring in the middle at 70 (100 minus half the 60px width); the
+    // first slice's label is at 30 degrees.
+    const firstLabel = (options: PieLayerOptions) => {
+      const [label] = findAll(scene([1, 2, 3], { donut: true, ...options }), {
+        role: 'label'
+      });
+      return [label.attrs.dx, label.attrs.dy] as number[];
+    };
+    const at = (radius: number) => [
+      100 + radius * Math.sin(Math.PI / 6),
+      100 - radius * Math.cos(Math.PI / 6)
+    ];
+
+    it('inside (the default) puts them on the middle of the ring', () => {
+      expect(firstLabel({})).toEqual(at(70).map(v => expect.closeTo(v)));
+      expect(firstLabel({ labelPosition: 'inside' })).toEqual(
+        at(70).map(v => expect.closeTo(v))
+      );
+    });
+
+    it('outside puts them on the outer edge of the ring', () => {
+      expect(firstLabel({ labelPosition: 'outside' })).toEqual(
+        at(100).map(v => expect.closeTo(v))
+      );
+      expect(firstLabel({ labelPosition: 'outside', donutWidth: 20 })).toEqual(
+        at(100).map(v => expect.closeTo(v))
+      );
+    });
+
+    it('center puts them in the middle, moved by labelOffset', () => {
+      expect(firstLabel({ labelPosition: 'center' })).toEqual([100, 100]);
+      expect(firstLabel({ labelPosition: 'center', labelOffset: 10 })).toEqual(
+        at(10).map(v => expect.closeTo(v))
+      );
+    });
+  });
+
+  describe('preventOverlappingLabelOffset', () => {
+    // Two labels 100px apart on one line: they overlap for texts longer
+    // than 100 / 12 characters.
+    const positions = (labels?: string[], options: PieLayerOptions = {}) =>
+      findAll(
+        scene(
+          [1, 1],
+          { preventOverlappingLabelOffset: 12, ...options },
+          labels
+        ),
+        { role: 'label' }
+      ).map(label => [label.attrs.dx, label.attrs.dy]);
+    const apart = positions(['1', '1']);
+
+    it('measures the drawn text when there are no labels', () => {
+      expect(positions()).toEqual(apart);
+      // The length of "undefined" would move the second label.
+      expect(positions(['undefined', 'undefined'])).not.toEqual(apart);
+    });
+
+    it('measures the formatted text, not the label entry', () => {
+      expect(
+        positions(['A long label', 'A long label'], {
+          labelInterpolationFnc: value => String(value)[0]
+        })
+      ).toEqual(apart);
+    });
+  });
+
   it('a single value puts its label in the center', () => {
     const [label] = findAll(scene([5]), { role: 'label' });
     expect([label.attrs.dx, label.attrs.dy]).toEqual([100, 100]);
