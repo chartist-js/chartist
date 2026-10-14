@@ -2,10 +2,15 @@ import type { RequiredKeys } from '../utils';
 import type { Axis, AxisType } from '../axes';
 import type { Svg } from '../svg';
 
+/** Space in px between the chart's edges and its drawing area, per side. */
 export interface ChartPadding {
+  /** Space above the drawing area, in px. */
   top: number;
+  /** Space right of the drawing area, in px. */
   right: number;
+  /** Space below the drawing area, in px. */
   bottom: number;
+  /** Space left of the drawing area, in px. */
   left: number;
 }
 
@@ -25,8 +30,11 @@ export type Plugin = (chart: any, options?: any) => void;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Meta = any;
 
+/** The size of an SVG `viewBox`. */
 export interface ViewBox {
+  /** The viewBox width, in SVG units. */
   width: number;
+  /** The viewBox height, in SVG units. */
   height: number;
 }
 
@@ -35,39 +43,42 @@ export interface Options<
   TYAxisOptions = TXAxisOptions
 > {
   /**
-   * Specify a fixed width for the chart as a string (i.e. '100px' or '50%')
+   * The chart's width: px as a number, or a CSS length such as `'100%'`.
+   * Without it, the chart takes the width of its container.
    */
   width?: number | string;
   /**
-   * Specify a fixed height for the chart as a string (i.e. '100px' or '50%')
+   * The chart's height: px as a number, or a CSS length such as `'300px'`.
+   * Without it, the chart takes the height of its container.
    */
   height?: number | string;
   /**
-   * Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
+   * The lowest value the value axis shows, instead of the data's lowest.
+   * Values below it are drawn outside the drawing area.
    */
   low?: number;
   /**
-   * Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
+   * The highest value the value axis shows, instead of the data's highest.
+   * Values above it are drawn outside the drawing area.
    */
   high?: number;
   /**
-   * Unless low/high are explicitly set, bar chart will be centered at zero by default. Set referenceValue to null to auto scale.
+   * A value the value axis always includes, such as 0, so it shows even
+   * when all values are above or below it. Bar charts use 0.
    */
   referenceValue?: number;
   /**
-   *  Padding of the chart drawing area to the container element and labels as a number or padding object.
+   * Space in px between the chart's edges and its drawing area (labels sit
+   * in it): one number for every side, or an object with some sides.
    */
   chartPadding?: number | Partial<ChartPadding>;
-  /**
-   * Options for X-Axis
-   */
+  /** Options of the X axis. */
   axisX?: TXAxisOptions;
-  /**
-   * Options for Y-Axis
-   */
+  /** Options of the Y axis. */
   axisY?: TYAxisOptions;
   /**
-   * Override the class names that get used to generate the SVG structure of the chart
+   * The class names of the chart's elements, to style a chart with your
+   * own classes instead of Chartist's.
    */
   classNames?: Record<string, string>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,64 +92,73 @@ export interface Options<
     | { readonly name: string; install(chart: any, options?: any): void }
   )[];
   /**
-   * Define the ViewBox for an SVG, this is optional and only required if you need a scalable chart. This should be used together with responsive options to ensure a proper text size.
+   * A `viewBox` for the SVG, so the drawing scales with its box instead of
+   * being drawn for its size. Text scales too: adjust it with responsive
+   * options.
    */
   viewBox?: ViewBox;
 }
 
+/** The options of one axis of a line or bar chart. */
 export interface AxisOptions {
+  /**
+   * The axis type: `StepAxis` (one step per label), `AutoScaleAxis` (a
+   * scale fitted to the values) or `FixedScaleAxis` (fixed ticks).
+   */
   type?: AxisType;
-  /**
-   * Overriding the natural low of the chart allows you to zoom in or limit the charts lowest displayed value
-   */
+  /** The lowest value this axis shows, instead of the data's lowest. */
   low?: number;
-  /**
-   * Overriding the natural high of the chart allows you to zoom in or limit the charts highest displayed value
-   */
+  /** The highest value this axis shows, instead of the data's highest. */
   high?: number;
-  /**
-   * Unless low/high are explicitly set, bar chart will be centered at zero by default. Set referenceValue to null to auto scale.
-   */
+  /** A value this axis always includes, such as 0. */
   referenceValue?: number;
-  /**
-   * The offset of the chart drawing area to the border of the container
-   */
+  /** Room in px for the axis labels, between the drawing area and the chart's edge. */
   offset?: number;
   /**
-   * Position where labels are placed.
-   * Can be set to `start` or `end` where `start` is equivalent to left or top on vertical axis and `end` is equivalent to right or bottom on horizontal axis.
+   * Where the labels go: `start` (left or top) or `end` (right or
+   * bottom).
    */
   position?: 'start' | 'end';
-  /**
-   * Allows you to correct label positioning on this axis by positive or negative x and y offset.
-   */
+  /** Moves the labels by `x` and `y` px from where they'd go. */
   labelOffset?: {
     x: number;
     y: number;
   };
-  /**
-   * If labels should be shown or not
-   */
+  /** Draws the axis labels. */
   showLabel?: boolean;
-  /**
-   * If the axis grid should be drawn or not
-   */
+  /** Draws the grid lines of the axis. */
   showGrid?: boolean;
   /**
-   * Interpolation function that allows you to intercept the value from the axis label
+   * Turns each label (and its index) into the text to show. Return `null`
+   * or `undefined` to leave a label out.
    */
   labelInterpolationFnc?(value: Label, index: number): Label | null | undefined;
   /**
-   * This value specifies the minimum width in pixel of the scale steps
+   * The minimum space in px between two grid lines of a scale: the scale
+   * takes fewer, larger steps to keep it.
    */
   scaleMinSpace?: number;
-  /**
-   * Use only integer values (whole numbers) for the scale steps
-   */
+  /** Only whole numbers on the scale. */
   onlyInteger?: boolean;
+  /**
+   * The ticks: the labels of a step axis, or the values of a fixed scale
+   * axis.
+   */
   ticks?: Label[];
+  /**
+   * Step axis: spreads the ticks over the whole axis, so the last one lands
+   * on its end (line charts with `fullWidth` set it).
+   */
   stretch?: boolean;
+  /**
+   * Fixed scale axis without `ticks`: the number of equal steps between
+   * its low and high.
+   */
   divisor?: number;
+  /**
+   * The value range of a scale as `{ high, low }`, instead of the one
+   * computed from the data.
+   */
   highLow?: {
     high: number;
     low: number;
@@ -219,8 +239,20 @@ export type Label = string | number | Date;
 
 export type AllSeriesTypes = FlatSeries | (Series | SeriesObject)[];
 
+/**
+ * Chart data: the series, and labels for the positions of their values (or
+ * for the slices of a pie).
+ */
 export interface Data<T extends AllSeriesTypes = AllSeriesTypes> {
+  /**
+   * One label per value position: the steps of the X axis in line and bar
+   * charts, the slices in pie charts.
+   */
   labels?: Label[] | undefined;
+  /**
+   * The values: an array per series (or a series object with a name, class
+   * name and meta), or one flat array for pies and distributed bars.
+   */
   series: T;
 }
 

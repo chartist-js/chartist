@@ -11,6 +11,7 @@ import type { RequiredKeys } from '../../utils';
 import type { SvgPath } from '../../svg';
 import type { BaseChartEventsTypes } from '../types';
 
+/** The data of a pie chart: one value per slice, and labels for the slices. */
 export type PieChartData = Data<FlatSeries>;
 
 export type LabelDirection = 'implode' | 'neutral' | 'explode';
@@ -24,66 +25,68 @@ export interface Dot {
   y: number;
 }
 
+/** The options of a pie or donut chart (1.x `PieChart`, and `pieChart`). */
 export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   /**
-   * Override the class names that are used to generate the SVG structure of the chart
+   * The class names of the chart's elements. Change them to style the
+   * chart with your own CSS instead of Chartist's.
    */
   classNames?: {
+    /** The chart's SVG element, for pies. */
     chartPie?: string;
+    /** The chart's SVG element, for donuts. */
     chartDonut?: string;
+    /** The group of each series. */
     series?: string;
+    /** Each pie slice. */
     slicePie?: string;
+    /** Each donut slice. */
     sliceDonut?: string;
+    /** Each axis label. */
     label?: string;
   };
-  /**
-   * The start angle of the pie chart in degrees where 0 points north. A higher value offsets the start angle clockwise.
-   */
+  /** Where the first slice starts, in degrees clockwise from the top. */
   startAngle?: number;
   /**
-   * An optional total you can specify. By specifying a total value, the sum of the values in the series must be this total in order to draw a full pie. You can use this parameter to draw only parts of a pie or gauge charts.
+   * The value a full circle stands for. With a total above the sum of the
+   * values, the pie stays open, as for a gauge.
    */
   total?: number;
-  /**
-   * If specified the donut CSS classes will be used and strokes will be drawn instead of pie slices.
-   */
+  /** Draws a donut: rings instead of filled slices. */
   donut?: boolean;
   /**
-   * Specify the donut stroke width, currently done in javascript for convenience. May move to CSS styles in the future.
-   * This option can be set as number or string to specify a relative width (i.e. 100 or '30%').
+   * The width of a donut's ring: px as a number, or a share of the radius as
+   * a string (`'30%'`).
    */
   donutWidth?: number | string;
-  /**
-   * If a label should be shown or not
-   */
+  /** Draws a label for each slice. */
   showLabel?: boolean;
   /**
-   * Label position offset from the standard position which is half distance of the radius. This value can be either positive or negative. Positive values will position the label away from the center.
+   * Moves the labels away from the center (positive) or toward it
+   * (negative), in px.
    */
   labelOffset?: number;
   /**
-   * This option can be set to 'inside', 'outside' or 'center'.
-   * Positioned with 'inside' the labels will be placed on half the distance of the radius to the border of the Pie by respecting the 'labelOffset'.
-   * The 'outside' option will place the labels at the border of the pie and 'center' will place the labels in the absolute center point of the chart.
-   * The 'center' option only makes sense in conjunction with the 'labelOffset' option.
+   * Where labels go: `inside` (halfway out, plus `labelOffset`), `outside`
+   * (at the edge) or `center` (in the middle; move them with
+   * `labelOffset`).
    */
   labelPosition?: RadialLabelPosition;
   /**
-   * An interpolation function for the label value
+   * Turns each slice's label (or value) and index into the text to show.
+   * Return `null` or `undefined` to leave a label out.
    */
   labelInterpolationFnc?(value: Label, index: number): Label | null | undefined;
   /**
-   * Label direction can be 'neutral', 'explode' or 'implode'.
-   * The labels anchor will be positioned based on those settings as well as the fact if the labels are on the right or left side of the center of the chart.
-   * Usually explode is useful when labels are positioned far away from the center.
+   * Which way labels anchor: `neutral`, `explode` (away from the center,
+   * for labels outside the pie) or `implode` (toward it).
    */
   labelDirection?: LabelDirection;
-  /**
-   * If true empty values will be ignored to avoid drawing unnecessary slices and labels
-   */
+  /** Leaves out the slices and labels of empty values. */
   ignoreEmptyValues?: boolean;
   /**
-   * If nonzero labels will not overlap.
+   * Moves labels apart so they don't overlap, using this offset in px. 0
+   * leaves them where they are.
    */
   preventOverlappingLabelOffset?: number;
 }

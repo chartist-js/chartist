@@ -19,6 +19,7 @@ import {
 } from './preset';
 
 /** @experimental */
+/** Options of `pieChart`: the 1.x `PieChart` options, with v2 plugins. */
 export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
   readonly plugins?: readonly PluginEntry[];

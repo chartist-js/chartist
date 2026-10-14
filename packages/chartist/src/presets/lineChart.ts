@@ -41,8 +41,10 @@ export type LineChartPresetOptions = Omit<
   readonly plugins?: readonly PluginEntry[];
   /** Options per series name: only these five apply per series. */
   readonly series?: Readonly<Record<string, LineSeriesOptions>>;
+  /** Options of the X axis; its `type` may also be a v2 axis factory. */
   readonly axisX?: PresetAxisOptions &
     Omit<NonNullable<LineChartOptions['axisX']>, 'type'>;
+  /** Options of the Y axis; its `type` may also be a v2 axis factory. */
   readonly axisY?: PresetAxisOptions &
     Omit<NonNullable<LineChartOptions['axisY']>, 'type'>;
   /** HTML (1.x) or SVG text labels; default: the renderer's mode. */

@@ -10,59 +10,70 @@ import type {
 import type { RequiredKeys } from '../../utils';
 import type { BaseChartEventsTypes } from '../types';
 
+/** The data of a bar chart: series of values, and labels for the bar groups. */
 export type BarChartData = Data;
 
+/** The options of a bar chart (1.x `BarChart`, and `barChart`). */
 export interface BarChartOptions<
   TXAxisOptions = AxisOptions,
   TYAxisOptions = TXAxisOptions
 > extends Options<TXAxisOptions, TYAxisOptions> {
   /**
-   * Override the class names that get used to generate the SVG structure of the chart
+   * The class names of the chart's elements. Change them to style the
+   * chart with your own CSS instead of Chartist's.
    */
   classNames?: {
+    /** The chart's SVG element. */
     chart?: string;
+    /** The chart's SVG element, with `horizontalBars`. */
     horizontalBars?: string;
+    /** Each axis label. */
     label?: string;
+    /** The group of an axis's labels. */
     labelGroup?: string;
+    /** The group of each series. */
     series?: string;
+    /** Each bar. */
     bar?: string;
+    /** Each grid line. */
     grid?: string;
+    /** The group of the grid lines. */
     gridGroup?: string;
+    /** The grid background (with `showGridBackground`). */
     gridBackground?: string;
+    /** Labels and grid lines of the vertical axis. */
     vertical?: string;
+    /** Labels and grid lines of the horizontal axis. */
     horizontal?: string;
+    /** Labels at the start of their axis (left or top). */
     start?: string;
+    /** Labels at the end of their axis (right or bottom). */
     end?: string;
   };
-  /**
-   * Specify the distance in pixel of bars in a group
-   */
+  /** The distance in px between the bars of a group (one bar per series). */
   seriesBarDistance?: number;
-  /**
-   * If set to true this property will cause the series bars to be stacked. Check the `stackMode` option for further stacking options.
-   */
+  /** Stacks the bars of a group on each other; `stackMode` says how. */
   stackBars?: boolean;
   /**
-   * If set to true this property will force the stacked bars to draw from the zero line.
-   * If set to 'accumulate' this property will form a total for each series point. This will also influence the y-axis and the overall bounds of the chart. In stacked mode the seriesBarDistance property will have no effect.
-   * If set to 'accumulate-relative' positive and negative values will be handled separately.
+   * How stacked bars stack: `accumulate` adds up each group's values (the
+   * value axis fits the totals), `accumulate-relative` stacks positive
+   * values up and negative values down, and `true` draws every bar from
+   * zero, overlapping.
    */
   stackMode?: 'accumulate' | 'accumulate-relative' | boolean;
   /**
-   * Inverts the axes of the bar chart in order to draw a horizontal bar chart. Be aware that you also need to invert your axis settings as the Y Axis will now display the labels and the X Axis the values.
+   * Draws horizontal bars. The axes swap: the Y axis shows the labels and
+   * the X axis the values, so swap their options too.
    */
   horizontalBars?: boolean;
   /**
-   * If set to true then each bar will represent a series and the data array is expected to be a one dimensional array of data values rather than a series array of series. This is useful if the bar chart should represent a profile rather than some data over time.
+   * Treats one flat array of values as one series per value, each in its
+   * own color: a profile rather than values over time.
    */
   distributeSeries?: boolean;
-  /**
-   * If true the whole data is reversed including labels, the series order as well as the whole series data arrays.
-   */
+  /** Reverses the labels, the order of the series and each series' values. */
   reverseData?: boolean;
-  /**
-   * If the bar chart should add a background fill to the .ct-grids group.
-   */
+  /** Fills the grid area with a background (class `ct-grid-background`). */
   showGridBackground?: boolean;
 }
 

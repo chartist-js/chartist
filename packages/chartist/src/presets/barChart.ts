@@ -50,8 +50,10 @@ export type BarChartPresetOptions = Omit<
     | 'accumulate-relative'
     | 'overlap'
     | boolean;
+  /** Options of the X axis; its `type` may also be a v2 axis factory. */
   readonly axisX?: PresetAxisOptions &
     Omit<NonNullable<BarChartOptions['axisX']>, 'type'>;
+  /** Options of the Y axis; its `type` may also be a v2 axis factory. */
   readonly axisY?: PresetAxisOptions &
     Omit<NonNullable<BarChartOptions['axisY']>, 'type'>;
   /** HTML (1.x) or SVG text labels; default: the renderer's mode. */

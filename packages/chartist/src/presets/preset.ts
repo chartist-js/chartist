@@ -40,9 +40,19 @@ export interface PresetState<
 > {
   /** Which preset: `line`, `bar` or `pie`. */
   readonly kind: TKind;
+  /**
+   * The current options: the given ones over the defaults, with the
+   * matching responsive options applied.
+   */
   readonly options: TOptions;
+  /** The current data. */
   readonly data: TData;
+  /**
+   * Changes the data, the options or both and redraws, as 1.x `update()`:
+   * the options extend the current ones, or with `override`, the defaults.
+   */
   update(data?: TData, options?: TOptions, override?: boolean): void;
+  /** Stops the chart's responsive updates, as 1.x `detach()`. */
   detach(): void;
 }
 
