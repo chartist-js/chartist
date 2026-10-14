@@ -5,6 +5,7 @@
  */
 import { chart } from '../chart/chart';
 import type { ChartConfig, ChartHandle, ChartPlugin } from '../chart/types';
+import { untyped } from '../chart/types';
 import type { Layer, LayerContext } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
 import type { AxisOptions } from '../core/types';
@@ -291,7 +292,7 @@ export function createPreset<
       handle.detach();
       inner.destroy();
     },
-    emit: (name, payload) => inner.emit(name, payload),
+    emit: (name, payload) => untyped(inner).emit(name, payload),
     on: ((name: never, listener: never) => {
       inner.on(name, listener);
       return handle;

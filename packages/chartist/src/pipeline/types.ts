@@ -122,13 +122,17 @@ export interface PhaseEvents {
 export type PhaseName = keyof PhaseEvents;
 
 /**
- * A phase listener returns a new payload to transform the phase, or nothing
- * to keep it. `compose` listeners may return `null` to drop the node.
- * Return values of `render` and `mount` listeners are ignored.
+ * What a phase listener returns: a new payload to transform the phase, or
+ * nothing to keep it. `compose` listeners may return `null` to drop the
+ * node. `render` and `mount` listeners return nothing (they observe).
  */
+export type PhaseResult<K extends PhaseName> = K extends 'render' | 'mount'
+  ? void
+  : PhaseEvents[K] | (K extends 'compose' ? null : never) | undefined | void;
+
 export type PhaseListener<K extends PhaseName> = (
   payload: PhaseEvents[K]
-) => PhaseEvents[K] | (K extends 'compose' ? null : never) | undefined | void;
+) => PhaseResult<K>;
 
 export type AllPhasesListener = (name: PhaseName, payload: unknown) => void;
 

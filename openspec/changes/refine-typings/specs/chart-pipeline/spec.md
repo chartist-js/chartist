@@ -2,7 +2,7 @@
 
 ### Requirement: Typed events and plugins
 
-Listener registration, removal and emission SHALL be typed by event name: phase events with their payloads and return types, and custom events with the payloads their plugins declare. An event name that is neither a phase nor declared SHALL NOT type-check. Plugin option pairs SHALL be checked against the plugin's options type.
+Listener registration, removal and emission SHALL be typed by event name: phase events with their payloads and return types, and custom events with the payloads their plugins declare. An event name that is neither a phase nor declared SHALL NOT type-check. A plugin given with its options through `withOptions()` SHALL be checked against the plugin's options type, and the presets SHALL accept only v2 plugin entries.
 
 #### Scenario: A typo in an event name
 
@@ -16,5 +16,5 @@ Listener registration, removal and emission SHALL be typed by event name: phase 
 
 #### Scenario: Wrong plugin options
 
-- **WHEN** code passes `[threshold, { limt: 7 }]` where the plugin's options are `{ limit: number }`
+- **WHEN** code passes `withOptions(threshold, { limt: 7 })` where the plugin's options are `{ limit: number }`
 - **THEN** it does not type-check

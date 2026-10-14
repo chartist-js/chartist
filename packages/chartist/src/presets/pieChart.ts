@@ -7,7 +7,7 @@ import type {
   PieChartData,
   PieChartOptions
 } from '../charts/PieChart/PieChart.types';
-import type { ChartConfig, ChartHandle } from '../chart/types';
+import type { ChartConfig, ChartHandle, PluginEntry } from '../chart/types';
 import { pie } from '../layers/pie';
 import { pieDefaults } from './pieDefaults';
 import {
@@ -19,19 +19,22 @@ import {
 } from './preset';
 
 /** @experimental */
-export type PieChartPresetOptions = PieChartOptions;
+export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
+  /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
+  readonly plugins?: readonly PluginEntry[];
+};
 
 type Resolved = typeof pieDefaults & PieChartOptions;
 
 /** What the pie preset passes to plugins as `ResolvedConfig.preset`. */
-export type PiePresetState = PresetState<PieChartData, PieChartOptions>;
+export type PiePresetState = PresetState<PieChartData, PieChartPresetOptions>;
 
 export type PieChartController = PresetController<
   PieChartData,
-  PieChartOptions
+  PieChartPresetOptions
 >;
 
-const pieSpec: PresetSpec<PieChartData, PieChartOptions> = {
+const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
   kind: 'pie',
   defaults: pieDefaults,
   config(data, preset): ChartConfig {
@@ -73,8 +76,8 @@ const pieSpec: PresetSpec<PieChartData, PieChartOptions> = {
 export function createPieChart(
   target: string | Element,
   data: PieChartData,
-  options: PieChartOptions = {},
-  responsiveOptions?: PresetResponsiveOptions<PieChartOptions>,
+  options: PieChartPresetOptions = {},
+  responsiveOptions?: PresetResponsiveOptions<PieChartPresetOptions>,
   plugins?: ChartConfig['plugins']
 ): PieChartController {
   return createPreset(
@@ -83,7 +86,7 @@ export function createPieChart(
     data,
     options,
     responsiveOptions,
-    plugins ?? (options.plugins as ChartConfig['plugins'])
+    plugins ?? options.plugins
   );
 }
 
@@ -96,8 +99,8 @@ export function createPieChart(
 export function pieChart(
   target: string | Element,
   data: PieChartData,
-  options: PieChartOptions = {},
-  responsiveOptions?: PresetResponsiveOptions<PieChartOptions>
+  options: PieChartPresetOptions = {},
+  responsiveOptions?: PresetResponsiveOptions<PieChartPresetOptions>
 ): ChartHandle {
   return createPieChart(target, data, options, responsiveOptions).handle;
 }

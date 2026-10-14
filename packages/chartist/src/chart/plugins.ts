@@ -1,6 +1,7 @@
 import type { PhaseEmitter } from '../pipeline/emitter';
 import type { PhaseListeners } from '../pipeline/types';
 import type { ChartHandle, ChartPlugin, PluginEntry } from './types';
+import { untyped } from './types';
 
 const PHASES = new Set([
   'resolve',
@@ -73,7 +74,7 @@ export function registerListeners(
 ) {
   for (const [name, listener] of Object.entries(listeners)) {
     if (listener) {
-      chart.on(name, listener as (value: unknown) => void);
+      untyped(chart).on(name, listener as (value: unknown) => void);
     }
   }
 }

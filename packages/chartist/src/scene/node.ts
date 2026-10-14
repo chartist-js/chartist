@@ -62,7 +62,11 @@ export interface SceneNodeMethods {
 export type RoleNode<R extends NodeRole> = SceneNodeFields &
   SceneNodeMethods & {
     readonly role: R;
-    readonly ctx: NodeRoles[R]['ctx'];
+    /** Indexes read as `number | undefined` on any node, declared or not. */
+    readonly ctx: NodeRoles[R]['ctx'] & {
+      readonly seriesIndex?: number;
+      readonly valueIndex?: number;
+    };
     /** As the built-in layers set them; `attr()` can change them. */
     readonly attrs: Readonly<Record<string, AttrValue>> & NodeRoles[R]['attrs'];
   };
@@ -162,7 +166,11 @@ export function withFields<R extends NodeRole>(
   source: SceneNode,
   changes: Partial<SceneNodeFields> & {
     readonly role: R;
-    readonly ctx: NodeRoles[R]['ctx'];
+    /** Indexes read as `number | undefined` on any node, declared or not. */
+    readonly ctx: NodeRoles[R]['ctx'] & {
+      readonly seriesIndex?: number;
+      readonly valueIndex?: number;
+    };
   }
 ): RoleNode<R>;
 export function withFields(

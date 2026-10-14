@@ -10,6 +10,8 @@ import {
   type ChartPlugin,
   type Layer,
   type PhaseEvents,
+  type PlainNode,
+  type RoleNode,
   type SceneNode
 } from 'chartist';
 
@@ -72,12 +74,15 @@ describe('v2 types', () => {
   });
 
   test('scene functions', () => {
-    const n = node('g', { x: 1 }, 'a', { role: 'series' });
-    expectTypeOf(n).toEqualTypeOf<SceneNode>();
+    const n = node('g', { x: 1 }, 'a');
+    expectTypeOf(n).toEqualTypeOf<PlainNode>();
     expectTypeOf(
       n.addClass('b').attr({ y: undefined })
-    ).toEqualTypeOf<SceneNode>();
-    expectTypeOf(findAll(n, { role: 'point' })).toEqualTypeOf<SceneNode[]>();
+    ).toEqualTypeOf<PlainNode>();
+    expectTypeOf(findAll(n, { role: 'point' })).toEqualTypeOf<
+      RoleNode<'point'>[]
+    >();
+    expectTypeOf(findAll(n)).toEqualTypeOf<SceneNode[]>();
     expectTypeOf(
       mapNodes(n, () => undefined)
     ).toEqualTypeOf<SceneNode | null>();

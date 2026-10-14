@@ -1,4 +1,5 @@
 import type { ChartHandle, ChartPlugin, PluginEntry } from '../chart/types';
+import { untyped } from '../chart/types';
 import type { Data, Options, ResponsiveOptions } from '../core';
 import type { AllEventsListener, EventListener } from '../event';
 import type { PresetController } from '../presets/preset';
@@ -97,7 +98,8 @@ export abstract class PresetChart<
         off: (event: string, listener?: EventListener) =>
           this.off(event, listener),
         emit: (event: string, payload: unknown) =>
-          this.controller?.handle.emit(event, payload)
+          this.controller &&
+          untyped(this.controller.handle).emit(event, payload)
       }
     });
   }
@@ -224,7 +226,7 @@ export abstract class PresetChart<
       this.wildcards.set(wildcard, filtered);
       handle.on('*', filtered);
     } else {
-      handle.on(event, listener as (payload: unknown) => void);
+      untyped(handle).on(event, listener as (payload: unknown) => void);
     }
     return this;
   }
@@ -242,7 +244,10 @@ export abstract class PresetChart<
         event === '*' && listener
           ? this.wildcards.get(listener as AllEventsListener)
           : listener;
-      handle.off(event, target as ((payload: unknown) => void) | undefined);
+      untyped(handle).off(
+        event,
+        target as ((payload: unknown) => void) | undefined
+      );
     } else {
       const index = this.queued.findIndex(
         ([name, queuedListener]) =>

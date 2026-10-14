@@ -4,6 +4,13 @@ import { findAll } from '../scene/tree';
 import { chart } from './chart';
 import type { ChartPlugin } from './types';
 
+// The custom event of the legend plugin below, declared as plugins do.
+declare module './types' {
+  interface ChartEvents {
+    'legend:click': { readonly series: number };
+  }
+}
+
 /** A container with a controllable size (jsdom has no layout). */
 function sizedContainer(width = 400, height = 200) {
   const element = document.createElement('div');
@@ -188,6 +195,7 @@ describe('chart/chart', () => {
 
   it('emitting a phase name throws', () => {
     const handle = chart(sizedContainer().element, { data, layers: [dots()] });
+    // @ts-expect-error: phase names aren't custom events, so a type error too
     expect(() => handle.emit('scene', {})).toThrow(
       `"scene" is a phase event; plugins can't emit phase events`
     );

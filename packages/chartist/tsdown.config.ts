@@ -1,4 +1,4 @@
-import { copyFile } from 'node:fs/promises';
+import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import { defineConfig, type UserConfig } from 'tsdown';
 
 /**
@@ -56,6 +56,26 @@ const toCore =
     paths: (id: string) => (isCore(id) ? file : id)
   });
 
+/**
+ * Compat declares the 1.x events by augmenting `ChartEvents` in
+ * src/chart/types. The declaration bundler rewrites imports to the core
+ * entry but not `declare module` paths, so point the augmentation at the
+ * published core declarations (`./index.js` / `./index.cjs`).
+ */
+const augmentCore = (file: string, core: string) => ({
+  async 'build:done'() {
+    const text = await readFile(file, 'utf8');
+    const fixed = text.replaceAll(
+      "declare module '../chart/types'",
+      `declare module '${core}'`
+    );
+    if (fixed === text) {
+      throw new Error(`${file}: the ChartEvents augmentation wasn't found`);
+    }
+    await writeFile(file, fixed);
+  }
+});
+
 export default defineConfig([
   { ...base, format: 'esm' },
   // CJS declarations (.d.cts) are built in a separate pass by tsdown.
@@ -87,14 +107,16 @@ export default defineConfig([
     ...compatBase,
     format: 'cjs',
     dts,
-    outputOptions: toCore('./index.cjs')
+    outputOptions: toCore('./index.cjs'),
+    hooks: augmentCore('dist/compat.d.cts', './index.cjs')
   },
   {
     ...compatBase,
     format: 'esm',
     sourcemap: false,
     dts: { ...dts, emitDtsOnly: true },
-    outputOptions: toCore('./index.js')
+    outputOptions: toCore('./index.js'),
+    hooks: augmentCore('dist/compat.d.ts', './index.js')
   },
   {
     ...compatBase,

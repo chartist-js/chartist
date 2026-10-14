@@ -6,7 +6,7 @@ import type {
   BarChartData,
   BarChartOptions
 } from '../charts/BarChart/BarChart.types';
-import type { ChartConfig, ChartHandle } from '../chart/types';
+import type { ChartConfig, ChartHandle, PluginEntry } from '../chart/types';
 import { getHighLow } from '../core/data/highLow';
 import type { Label, Options } from '../core/types';
 import { bar, getSerialSums } from '../layers/bar';
@@ -34,7 +34,22 @@ import {
  * v2 axis factories.
  * @experimental
  */
-export type BarChartPresetOptions = Omit<BarChartOptions, 'axisX' | 'axisY'> & {
+export type BarChartPresetOptions = Omit<
+  BarChartOptions,
+  'axisX' | 'axisY' | 'plugins' | 'stackMode'
+> & {
+  /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
+  readonly plugins?: readonly PluginEntry[];
+  /**
+   * How stacked bars stack: `accumulate` (default), `accumulate-relative`
+   * (positives up, negatives down), or `overlap` (also `true`): every bar
+   * from zero.
+   */
+  readonly stackMode?:
+    | 'accumulate'
+    | 'accumulate-relative'
+    | 'overlap'
+    | boolean;
   readonly axisX?: PresetAxisOptions &
     Omit<NonNullable<BarChartOptions['axisX']>, 'type'>;
   readonly axisY?: PresetAxisOptions &
@@ -43,7 +58,7 @@ export type BarChartPresetOptions = Omit<BarChartOptions, 'axisX' | 'axisY'> & {
   readonly labels?: LabelMode;
 };
 
-type Resolved = typeof barDefaults & BarChartPresetOptions;
+type Resolved = Omit<typeof barDefaults, 'stackMode'> & BarChartPresetOptions;
 
 /** What the bar preset passes to plugins as `ResolvedConfig.preset`. */
 export type BarPresetState = PresetState<BarChartData, BarChartPresetOptions>;
@@ -73,7 +88,9 @@ function valueAxis(
       const series = context.series;
       const highLow =
         options.stackBars &&
-        (options.stackMode as unknown) !== true &&
+        // As 1.x: only `true` fits the axis to the bars; `overlap` keeps
+        // the stacked sums (see fix-library-findings).
+        options.stackMode !== true &&
         series.length
           ? getHighLow([getSerialSums(series)], options as Options, dimension)
           : getHighLow(series, options as Options, dimension);
@@ -188,7 +205,7 @@ export function createBarChart(
     data,
     options,
     responsiveOptions,
-    plugins ?? (options.plugins as ChartConfig['plugins'])
+    plugins ?? options.plugins
   );
 }
 

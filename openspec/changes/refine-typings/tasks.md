@@ -9,13 +9,13 @@
 
 ## 2. Events and plugins
 
-- [ ] 2.1 `ChartEvents` and typed `on`/`off`/`emit` without the catch-all (D4); compat declares the 1.x events.
-- [ ] 2.2 Listener return types per phase (D5).
-- [ ] 2.3 `ChartPlugin<Options, Events>`, checked pairs, `withOptions()` (D6).
+- [x] 2.1 `ChartEvents` and typed `on`/`off`/`emit` without the catch-all (D4); compat declares the 1.x events.
+- [x] 2.2 Listener return types per phase (D5).
+- [x] 2.3 `ChartPlugin<Options, Events>`, checked pairs, `withOptions()` (D6).
 
 ## 3. Options
 
-- [ ] 3.1 Preset `plugins`, line `series`, `stackMode` `'overlap'`, label formatter value types (D6).
+- [x] 3.1 Preset `plugins`, line `series`, `stackMode` `'overlap'`, label formatter value types (D6).
 - [ ] 3.2 `ResolvedConfig<Preset>`, `isPreset()`, typed renderer output (D6).
 
 ## 4. Proof

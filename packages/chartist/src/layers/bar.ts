@@ -21,7 +21,7 @@ export interface BarLayerOptions {
   /** Values on the X axis, labels on the Y axis. */
   readonly horizontalBars?: boolean;
   readonly stackBars?: boolean;
-  /** `accumulate` (default), `accumulate-relative`, or `overlap` / `false`. */
+  /** `accumulate` (default), `accumulate-relative`, or `overlap` (or `true`). */
   readonly stackMode?:
     | 'accumulate'
     | 'accumulate-relative'

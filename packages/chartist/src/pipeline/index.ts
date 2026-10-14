@@ -11,6 +11,7 @@ export type {
   PhaseListener,
   PhaseListeners,
   PhaseName,
+  PhaseResult,
   PreparedData,
   PreparedSeries,
   ResolvedConfig

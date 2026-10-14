@@ -51,7 +51,9 @@ The builder methods return `this`-typed nodes (`attr(...): this`), so a point st
 
 ### D6: Plugins and options
 
-- `PluginEntry` becomes `ChartPlugin<void> | readonly [ChartPlugin<O>, O]` with the pair checked; `withOptions(plugin, options)` returns a checked entry.
+- `withOptions(plugin, options)` returns a checked entry. Changed during implementation (2026-10-14): a bare `[plugin, options]` pair in a config array can't be checked without making `chart()` generic over the whole plugin list (mapped tuple types, poor errors), so bare pairs stay accepted for compatibility and the docs recommend `withOptions()` or a factory function that returns a plugin.
+- `ChartPlugin<Options>` keeps one parameter; `provides` lists keys of the augmentable `ChartEvents` (D4), which is where the payloads live, so a second `Events` parameter isn't needed. `chartist/compat` declares the 1.x events by augmentation; the build points that augmentation at the published core declarations (`./index.js`, `./index.cjs`), since the declaration bundler doesn't rewrite `declare module` paths.
+- Role attributes are required as the layers set them (not `Partial`), and every role context reads `seriesIndex`/`valueIndex` as `number | undefined` (contexts without a series declare them `undefined`), so generic code can read indexes on any node.
 - `*PresetOptions` override `plugins` with `readonly PluginEntry[]`; the 1.x `Options.plugins` stays for the classes.
 - `LineChartPresetOptions.series` is `Record<string, LineSeriesOptions>`; `BarChartPresetOptions.stackMode` adds `'overlap'`.
 - Label formatters in preset and layer options: scale axes get `(value: number, index: number) => Label | null | undefined`, step axes get the label type; pie gets `(value: number | string, index) => …`.

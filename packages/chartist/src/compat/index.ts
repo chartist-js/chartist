@@ -29,6 +29,44 @@ import {
   type RoleNode,
   type SceneNode
 } from '../index';
+import { untyped } from '../chart/types';
+import type {
+  AnimationEvent,
+  AreaDrawEvent,
+  AxesDrawEvent,
+  BarChartCreatedEvent,
+  BarDrawEvent,
+  DataEvent,
+  LineChartCreatedEvent,
+  LineDrawEvent,
+  OptionsChangedEvent,
+  PieChartCreatedEvent,
+  PointDrawEvent,
+  SliceDrawEvent,
+  SliceLabelDrawEvent
+} from '../index';
+
+// With chartist/compat, the 1.x events are typed on every chart handle.
+declare module '../chart/types' {
+  interface ChartEvents {
+    data: DataEvent;
+    optionsChanged: OptionsChangedEvent;
+    draw:
+      | PointDrawEvent
+      | LineDrawEvent
+      | AreaDrawEvent
+      | BarDrawEvent
+      | SliceDrawEvent
+      | SliceLabelDrawEvent
+      | AxesDrawEvent;
+    created:
+      | LineChartCreatedEvent
+      | BarChartCreatedEvent
+      | PieChartCreatedEvent;
+    animationBegin: AnimationEvent;
+    animationEnd: AnimationEvent;
+  }
+}
 
 /** The 1.x events the compat plugin emits. */
 const LEGACY_EVENTS = [
@@ -218,7 +256,7 @@ function emitDrawEvents(
   const axisOf = (dimension?: string) => (dimension === 'x' ? axisX : axisY);
   const wrap = (element: Element) => new Svg(element);
   const draw = (payload: Record<string, unknown>) =>
-    handle.emit('draw', payload);
+    untyped(handle).emit('draw', payload);
   const parts = (node: SceneNode) => {
     const element = elementOf(node)!;
     return { element: wrap(element), group: wrap(element.parentElement!) };
@@ -380,7 +418,7 @@ function emitDrawEvents(
     }
   }
 
-  handle.emit(
+  untyped(handle).emit(
     'created',
     state.preset!.kind === 'pie'
       ? { chartRect, svg: wrap(svgElement), options }
@@ -403,7 +441,7 @@ function enable(handle: ChartHandle): CompatState {
       // 1.x data handlers mutate the data; they get a copy, and the copy
       // is used from now on (as 1.x keeps its mutated data).
       state.copy = mutableCopy(config.data) as Data;
-      handle.emit('data', {
+      untyped(handle).emit('data', {
         type: state.source === undefined ? 'initial' : 'update',
         data: state.copy
       });
@@ -414,8 +452,13 @@ function enable(handle: ChartHandle): CompatState {
   handle.on('layout', layout => {
     state.layout = layout;
   });
-  handle.on('responsive', ({ previousOptions, currentOptions }) =>
-    handle.emit('optionsChanged', { previousOptions, currentOptions })
+  handle.on('responsive', change =>
+    'previousOptions' in change
+      ? untyped(handle).emit('optionsChanged', {
+          previousOptions: change.previousOptions,
+          currentOptions: change.currentOptions
+        })
+      : undefined
   );
   handle.on('mount', ({ scene, output, elementOf }) => {
     const svg = (output as { svg?: Element }).svg;
@@ -447,17 +490,18 @@ function legacyChart(handle: ChartHandle, state: CompatState) {
     },
     eventEmitter: {
       on: (event: string, listener: (payload: unknown) => void) =>
-        handle.on(event, listener),
+        untyped(handle).on(event, listener),
       off: (event: string, listener?: (payload: unknown) => void) =>
-        handle.off(event, listener),
-      emit: (event: string, payload: unknown) => handle.emit(event, payload)
+        untyped(handle).off(event, listener),
+      emit: (event: string, payload: unknown) =>
+        untyped(handle).emit(event, payload)
     },
     on(event: string, listener: (payload: unknown) => void) {
-      handle.on(event, listener);
+      untyped(handle).on(event, listener);
       return chart;
     },
     off(event: string, listener?: (payload: unknown) => void) {
-      handle.off(event, listener);
+      untyped(handle).off(event, listener);
       return chart;
     },
     update(data?: unknown, options?: unknown, override?: boolean) {

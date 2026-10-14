@@ -41,7 +41,15 @@ describe('without compat', () => {
   test('the functional API rejects 1.x plugin functions', () => {
     const el = container();
     expect(() =>
-      lineChart(el, { series: [[1]] }, { ...SIZE, plugins: [() => undefined] })
+      lineChart(
+        el,
+        { series: [[1]] },
+        {
+          ...SIZE,
+          // @ts-expect-error: 1.x plugin functions are a type error too
+          plugins: [() => undefined]
+        }
+      )
     ).toThrow(/fromLegacyPlugin\(\) from chartist\/compat/);
     expect(el.querySelector('svg')).toBeNull();
   });

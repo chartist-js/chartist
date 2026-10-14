@@ -7,8 +7,8 @@ import type {
   LineChartOptions
 } from '../charts/LineChart/LineChart.types';
 import type { Label } from '../core/types';
-import type { ChartConfig, ChartHandle } from '../chart/types';
-import { line } from '../layers/line';
+import type { ChartConfig, ChartHandle, PluginEntry } from '../chart/types';
+import { line, type LineSeriesOptions } from '../layers/line';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
 import type { LabelMode } from '../render/measure';
 import { presetAxes } from '../scales/cartesian';
@@ -35,8 +35,12 @@ import {
  */
 export type LineChartPresetOptions = Omit<
   LineChartOptions,
-  'axisX' | 'axisY'
+  'axisX' | 'axisY' | 'plugins' | 'series'
 > & {
+  /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
+  readonly plugins?: readonly PluginEntry[];
+  /** Options per series name: only these five apply per series. */
+  readonly series?: Readonly<Record<string, LineSeriesOptions>>;
   readonly axisX?: PresetAxisOptions &
     Omit<NonNullable<LineChartOptions['axisX']>, 'type'>;
   readonly axisY?: PresetAxisOptions &
@@ -143,7 +147,7 @@ export function createLineChart(
     data,
     options,
     responsiveOptions,
-    plugins ?? (options.plugins as ChartConfig['plugins'])
+    plugins ?? options.plugins
   );
 }
 

@@ -217,7 +217,7 @@ Plugins go into `plugins`, in the config of `chart()` or the options of the pres
 
 ## Custom events
 
-Plugins can emit events of their own with `chart.emit(name, payload)`. Declare their names in `provides`, and listen to them with `on()` like to any other event. This plugin reports clicks on bars; the page listens and shows the clicked value. Press **Edit** and click a bar:
+Plugins can emit events of their own with `chart.emit(name, payload)`. Declare each event and its payload in the `ChartEvents` interface (TypeScript merges your declaration into Chartist's), list it in `provides`, and listen to it with `on()` like to any other event. A misspelled name or a wrong payload is then a type error, not a silent no-op. This plugin reports clicks on bars; the page listens and shows the clicked value. Press **Edit** and click a bar:
 
 <LiveExample
   title='A custom event'

@@ -7,7 +7,10 @@ import type {
 import type { ResponsiveOptions } from '../../core';
 import type { PluginEntry } from '../../chart/types';
 import { moveLabel } from '../../layers/pie';
-import { createPieChart } from '../../presets/pieChart';
+import {
+  createPieChart,
+  type PieChartPresetOptions
+} from '../../presets/pieChart';
 import { pieDefaults } from '../../presets/pieDefaults';
 import type { PresetController } from '../../presets/preset';
 import { PresetChart } from '../PresetChart';
@@ -71,8 +74,8 @@ export class PieChart extends PresetChart<
     return createPieChart(
       container,
       data,
-      options,
-      responsiveOptions,
+      options as PieChartPresetOptions,
+      responsiveOptions as ResponsiveOptions<PieChartPresetOptions>,
       plugins
     ) as unknown as PresetController<PieChartData, PieChartOptions>;
   }

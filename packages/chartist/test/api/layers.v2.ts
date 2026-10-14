@@ -14,22 +14,34 @@ export function dotsLayer(
     compose({ data, area }) {
       return data.series.map((series, seriesIndex) =>
         series.values.reduce<SceneNode>(
-          (group, value, valueIndex) =>
-            group.append(
+          (group, value, valueIndex) => {
+            const x =
+              area.x1 + (area.width / series.values.length) * valueIndex;
+            const y = area.y1 - Number(value);
+            return group.append(
               node(
                 'circle',
-                {
-                  cx:
-                    area.x1 + (area.width / series.values.length) * valueIndex,
-                  cy: area.y1 - Number(value),
-                  r: 3,
-                  'ct:value': String(value)
-                },
+                { cx: x, cy: y, r: 3, 'ct:value': String(value) },
                 className,
-                { role: 'point', ctx: { seriesIndex, valueIndex, value } }
+                {
+                  role: 'point',
+                  ctx: {
+                    series: series.values,
+                    seriesIndex,
+                    meta: undefined,
+                    valueIndex,
+                    value: Number(value),
+                    x,
+                    y
+                  }
+                }
               )
-            ),
-          node('g', {}, 'ct-series', { role: 'series', ctx: { seriesIndex } })
+            );
+          },
+          node('g', {}, 'ct-series', {
+            role: 'series',
+            ctx: { series: series.values, seriesIndex, meta: undefined }
+          })
         )
       );
     }
