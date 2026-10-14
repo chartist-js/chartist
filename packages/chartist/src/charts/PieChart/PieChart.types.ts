@@ -62,7 +62,9 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   donut?: boolean;
   /**
    * The width of a donut's ring: px as a number, or a share of the radius as
-   * a string (`'30%'`).
+   * a string (`'30%'`). Without it, the stylesheet sets the width
+   * (`--ct-donut-width`, 60px by default), and the ring is laid out for
+   * 60 px.
    */
   donutWidth?: number | string;
   /** Draws a label for each slice. */
@@ -102,7 +104,6 @@ export type PieChartOptionsWithDefaults = RequiredKeys<
   PieChartOptions,
   | 'chartPadding'
   | 'startAngle'
-  | 'donutWidth'
   | 'showLabel'
   | 'labelOffset'
   | 'labelPosition'

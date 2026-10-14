@@ -35,7 +35,11 @@ export interface PieLayerOptions {
   readonly total?: number;
   /** Draws a donut: rings instead of filled slices. */
   readonly donut?: boolean;
-  /** Donut stroke width in px (default 60), or a share of the radius (`'25%'`). */
+  /**
+   * Donut ring width in px, or a share of the radius (`'25%'`). Without
+   * it, the stylesheet sets the width (`--ct-donut-width`, 60px by
+   * default), and the ring is laid out for 60 px.
+   */
   readonly donutWidth?: number | string;
   /** Draws a label for each slice; on by default. */
   readonly showLabel?: boolean;
@@ -176,6 +180,8 @@ export function pie(options: PieLayerOptions = {}): Layer {
 
       let radius = Math.min(area.width / 2, area.height / 2);
       const totalDataSum = options.total || values.reduce(sum, 0);
+      // Without `donutWidth`, CSS draws the ring (`--ct-donut-width`); the
+      // layout assumes the stylesheet's default of 60px (see #1474).
       const donutWidth = quantity(options.donutWidth ?? 60);
       if (donutWidth.unit === '%') {
         donutWidth.value *= radius / 100;
@@ -258,9 +264,10 @@ export function pie(options: PieLayerOptions = {}): Layer {
             d: path.stringify(),
             'ct:value': values[index],
             'ct:meta': serialize(seriesMeta) as string | undefined,
-            style: options.donut
-              ? `stroke-width: ${donutWidth.value}px`
-              : undefined
+            style:
+              options.donut && options.donutWidth !== undefined
+                ? `stroke-width: ${donutWidth.value}px`
+                : undefined
           },
           options.donut ? classNames.sliceDonut : classNames.slicePie,
           {

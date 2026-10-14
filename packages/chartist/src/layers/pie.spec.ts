@@ -66,6 +66,18 @@ describe('layers/pie', () => {
     ).toBe('stroke-width: 20px');
   });
 
+  it('leaves the donut width to CSS unless donutWidth is given', () => {
+    const [slice] = findAll(scene([1, 2], { donut: true }), { role: 'slice' });
+    expect(slice.attrs.style).toBeUndefined();
+    // Laid out for the stylesheet's default width of 60px.
+    expect(slice.ctx?.radius).toBe(70);
+    expect(
+      findAll(scene([1, 2], { donut: true, donutWidth: 60 }), {
+        role: 'slice'
+      })[0].attrs.style
+    ).toBe('stroke-width: 60px');
+  });
+
   it('a single value puts its label in the center', () => {
     const [label] = findAll(scene([5]), { role: 'label' });
     expect([label.attrs.dx, label.attrs.dy]).toEqual([100, 100]);

@@ -22,6 +22,21 @@ async function render1x(data: PieChartData, options?: PieChartOptions) {
   return element.querySelector('svg')!;
 }
 
+/**
+ * 1.x writes the default donut width (60px) on every slice; v2 leaves it
+ * to the stylesheet's `--ct-donut-width`, also 60px, unless `donutWidth`
+ * is set (#1474). The drawn width is the same.
+ */
+function withoutDefaultDonutWidth(svg: Element, options?: PieChartOptions) {
+  if (options?.donut && options.donutWidth === undefined) {
+    svg.querySelectorAll('.ct-slice-donut').forEach(slice => {
+      expect(slice.getAttribute('style')).toBe('stroke-width: 60px');
+      slice.removeAttribute('style');
+    });
+  }
+  return svg;
+}
+
 function renderV2(data: PieChartData, options?: PieChartOptions) {
   const element = container();
   pieChart(element, structuredClone(data), options);
@@ -30,7 +45,9 @@ function renderV2(data: PieChartData, options?: PieChartOptions) {
 
 describe('pieChart renders like 1.x PieChart', () => {
   it.each(PIE_FIXTURES)('%s', async (_name, data, options) => {
-    const expected = markup(await render1x(data, options));
+    const expected = markup(
+      withoutDefaultDonutWidth(await render1x(data, options), options)
+    );
     expect(markup(renderV2(data, options))).toBe(expected);
   });
 });

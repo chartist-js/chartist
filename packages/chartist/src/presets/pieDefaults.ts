@@ -16,7 +16,6 @@ export const pieDefaults = {
   startAngle: 0,
   total: undefined,
   donut: false,
-  donutWidth: 60,
   showLabel: true,
   labelOffset: 0,
   labelPosition: 'inside' as const,
