@@ -61,7 +61,11 @@ export type BarChartPresetOptions = Omit<
 type Resolved = Omit<typeof barDefaults, 'stackMode'> & BarChartPresetOptions;
 
 /** What the bar preset passes to plugins as `ResolvedConfig.preset`. */
-export type BarPresetState = PresetState<BarChartData, BarChartPresetOptions>;
+export type BarPresetState = PresetState<
+  BarChartData,
+  BarChartPresetOptions,
+  'bar'
+>;
 
 export type BarChartController = PresetController<
   BarChartData,

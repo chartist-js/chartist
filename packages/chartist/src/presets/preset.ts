@@ -33,8 +33,13 @@ import { extend } from '../utils/extend';
  * What a preset passes to plugins as `ResolvedConfig.preset`: its kind, the
  * current 1.x options and 1.x-style updates.
  */
-export interface PresetState<TData = unknown, TOptions = unknown> {
-  readonly kind: string;
+export interface PresetState<
+  TData = unknown,
+  TOptions = unknown,
+  TKind extends string = string
+> {
+  /** Which preset: `line`, `bar` or `pie`. */
+  readonly kind: TKind;
   readonly options: TOptions;
   readonly data: TData;
   update(data?: TData, options?: TOptions, override?: boolean): void;
@@ -221,7 +226,8 @@ export function createPreset<
 
   const withState = (config: ChartConfig): ChartConfig => ({
     ...config,
-    preset: state
+    // Generic here; each preset's spec gives its own kind, data and options.
+    preset: state as ChartConfig['preset']
   });
 
   const controller: PresetController<TData, TOptions> = {

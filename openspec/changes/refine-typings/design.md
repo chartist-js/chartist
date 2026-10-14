@@ -58,6 +58,10 @@ The builder methods return `this`-typed nodes (`attr(...): this`), so a point st
 - `LineChartPresetOptions.series` is `Record<string, LineSeriesOptions>`; `BarChartPresetOptions.stackMode` adds `'overlap'`.
 - Label formatters in preset and layer options: scale axes get `(value: number, index: number) => Label | null | undefined`, step axes get the label type; pie gets `(value: number | string, index) => …`.
 - `ResolvedConfig<Preset = unknown>`; `isPreset(config, 'line')` narrows it to the line preset state. `Renderer<Output>` flows into the `render`/`mount` payloads.
+  Changed during implementation (2026-10-14):
+  - `ResolvedConfig.preset` is the union of the three preset states, discriminated by `kind`, so `config.preset?.kind === 'line'` narrows it without a generic parameter or an `isPreset()` guard.
+  - The `render`/`mount` payloads carry `RenderOutput` (with `elementOf` and `remove`), not a generic `Output`: listeners are registered on the chart, which doesn't know its renderer's type.
+  - Axis label formatters keep the 1.x `(value: Label, index)` type. They're declared with method syntax, so `(value: number) => …` already compiles; narrowing per axis kind would depend on preset defaults that swap with `horizontalBars`. The pie layer's formatter, typed `unknown` before, gets the same type as the axes.
 
 1.x types (`LineChartOptions`, `Options`, `AxisOptions`, `Data`, `Series*`, `*DrawEvent`) don't change; the 1.x type tests prove it.
 

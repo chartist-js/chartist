@@ -54,7 +54,8 @@ type Resolved = typeof lineDefaults & LineChartPresetOptions;
 /** What the line preset passes to plugins as `ResolvedConfig.preset`. */
 export type LinePresetState = PresetState<
   LineChartData,
-  LineChartPresetOptions
+  LineChartPresetOptions,
+  'line'
 >;
 
 /** Internal: the line preset with 1.x-style data and option updates. */

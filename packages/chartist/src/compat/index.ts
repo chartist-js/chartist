@@ -408,7 +408,7 @@ function emitDrawEvents(
       draw({
         type: shape.role,
         values: ctx.values,
-        path: (ctx.path as { clone(): unknown }).clone(),
+        path: ctx.path.clone(),
         chartRect,
         index: seriesIndex,
         ...common,

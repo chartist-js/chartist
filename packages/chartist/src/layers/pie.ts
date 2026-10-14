@@ -32,7 +32,11 @@ export interface PieLayerOptions {
   readonly showLabel?: boolean;
   readonly labelOffset?: number;
   readonly labelPosition?: 'inside' | 'outside' | 'center';
-  readonly labelInterpolationFnc?: (value: unknown, index: number) => unknown;
+  /** Formats a slice's label: its entry in `labels`, or else its value. */
+  readonly labelInterpolationFnc?: (
+    value: Label,
+    index: number
+  ) => Label | null | undefined;
   readonly labelDirection?: LabelDirection;
   readonly ignoreEmptyValues?: boolean;
   /** Shifts labels that would overlap by this many px. */
@@ -99,7 +103,7 @@ const CLASS_NAMES = {
 export function pie(options: PieLayerOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };
   const labelInterpolationFnc =
-    options.labelInterpolationFnc ?? ((value: unknown) => value);
+    options.labelInterpolationFnc ?? ((value: Label) => value);
   return {
     type: 'pie',
     coordinates: ['polar'],

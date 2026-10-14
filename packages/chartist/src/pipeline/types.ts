@@ -1,3 +1,7 @@
+import type { LinePresetState } from '../presets/lineChart';
+import type { BarPresetState } from '../presets/barChart';
+import type { PiePresetState } from '../presets/pieChart';
+import type { RenderOutput } from '../render/types';
 import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
 import type { LabelMode, MeasureText } from '../render/measure';
 import type { CartesianAxes, ChartAxes } from '../scales/axis';
@@ -99,8 +103,11 @@ export interface ResolvedConfig {
   readonly className?: string;
   /** Label mode for all label layers; else the renderer decides. */
   readonly labels?: LabelMode;
-  /** Opaque data of the preset that created the chart (read by plugins). */
-  readonly preset?: unknown;
+  /**
+   * The preset that created the chart, if any: its kind, options and data.
+   * Check `kind` to narrow it, e.g. `config.preset?.kind === 'line'`.
+   */
+  readonly preset?: LinePresetState | BarPresetState | PiePresetState;
 }
 
 /** Payloads of the phase events. */
@@ -110,10 +117,10 @@ export interface PhaseEvents {
   layout: Layout;
   compose: SceneNode;
   scene: { readonly scene: SceneNode };
-  render: { readonly scene: SceneNode; readonly output: unknown };
+  render: { readonly scene: SceneNode; readonly output: RenderOutput };
   mount: {
     readonly scene: SceneNode;
-    readonly output: unknown;
+    readonly output: RenderOutput;
     /** The rendered element of a scene node, if the renderer has one. */
     readonly elementOf: (node: SceneNode) => Element | undefined;
   };

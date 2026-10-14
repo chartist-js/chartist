@@ -43,8 +43,8 @@ export interface PipelineOptions {
    * `toScene()`.
    */
   readonly labels?: LabelMode;
-  /** Opaque data of the preset that created the chart (read by plugins). */
-  readonly preset?: unknown;
+  /** The preset that created the chart, if any (read by plugins). */
+  readonly preset?: ResolvedConfig['preset'];
 }
 
 export interface PipelineEnvironment {

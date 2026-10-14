@@ -27,7 +27,11 @@ export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
 type Resolved = typeof pieDefaults & PieChartOptions;
 
 /** What the pie preset passes to plugins as `ResolvedConfig.preset`. */
-export type PiePresetState = PresetState<PieChartData, PieChartPresetOptions>;
+export type PiePresetState = PresetState<
+  PieChartData,
+  PieChartPresetOptions,
+  'pie'
+>;
 
 export type PieChartController = PresetController<
   PieChartData,
@@ -58,10 +62,7 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
           showLabel: options.showLabel,
           labelOffset: options.labelOffset,
           labelPosition: options.labelPosition,
-          labelInterpolationFnc: options.labelInterpolationFnc as (
-            value: unknown,
-            index: number
-          ) => unknown,
+          labelInterpolationFnc: options.labelInterpolationFnc,
           labelDirection: options.labelDirection,
           ignoreEmptyValues: options.ignoreEmptyValues,
           preventOverlappingLabelOffset: options.preventOverlappingLabelOffset,

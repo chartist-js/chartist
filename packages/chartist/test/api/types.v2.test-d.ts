@@ -96,6 +96,50 @@ describe('v2 type contract', () => {
     handle.emit('scene', {});
   });
 
+  test('plugins read the preset by its kind', () => {
+    const reader: ChartPlugin = {
+      name: 'reader',
+      install(chart) {
+        chart.on('resolve', ({ config }) => {
+          if (config.preset?.kind === 'line') {
+            expectTypeOf(config.preset.options.showArea).toEqualTypeOf<
+              boolean | undefined
+            >();
+          }
+          if (config.preset?.kind === 'bar') {
+            expectTypeOf(config.preset.options.stackMode).toEqualTypeOf<
+              | 'accumulate'
+              | 'accumulate-relative'
+              | 'overlap'
+              | boolean
+              | undefined
+            >();
+          }
+        });
+        chart.on('mount', ({ output }) => {
+          expectTypeOf(output.elementOf).toEqualTypeOf<
+            ((node: SceneNode) => Element | undefined) | undefined
+          >();
+        });
+      }
+    };
+    void reader;
+  });
+
+  test('preset options are v2 options', () => {
+    // @ts-expect-error: 1.x plugin functions need fromLegacyPlugin()
+    lineChart('#c', { series: [[1]] }, { plugins: [() => undefined] });
+    lineChart(
+      '#c',
+      { series: [[1]] },
+      {
+        series: { a: { showArea: true } }
+      }
+    );
+    // @ts-expect-error: only five options apply per series
+    lineChart('#c', { series: [[1]] }, { series: { a: { low: 0 } } });
+  });
+
   test('compose listeners may return conditionally', () => {
     lineChart('#c', { series: [[1, 2]] }).on('compose', current => {
       if (current.role !== 'point') {
