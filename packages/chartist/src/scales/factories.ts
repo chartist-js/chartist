@@ -106,10 +106,11 @@ export function stepAxis(): AxisFactory {
 export function autoScaleAxis(): AxisFactory {
   return {
     kind: 'autoScale',
-    create({ dimension, series, area, options }) {
+    create({ dimension, series, area, options, extent }) {
       const length = axisLength(dimension, area);
       const highLow =
-        options.highLow || getHighLow(series, options as Options, dimension);
+        options.highLow ||
+        getHighLow(series, options as Options, dimension, extent);
       const bounds = getBounds(
         length,
         highLow,
@@ -172,10 +173,11 @@ export function autoScaleAxis(): AxisFactory {
 export function fixedScaleAxis(): AxisFactory {
   return {
     kind: 'fixedScale',
-    create({ dimension, series, area, options }) {
+    create({ dimension, series, area, options, extent }) {
       const length = axisLength(dimension, area);
       const highLow =
-        options.highLow || getHighLow(series, options as Options, dimension);
+        options.highLow ||
+        getHighLow(series, options as Options, dimension, extent);
       const divisor = options.divisor || 1;
       // `divisor` parts have `divisor + 1` ends, `high` included (#1022).
       const ticks = (

@@ -3,6 +3,7 @@ export type {
   Area,
   ChartData,
   Coordinates,
+  ExtentContext,
   Layer,
   LayerContext,
   NormalizedChartData,

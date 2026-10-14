@@ -13,6 +13,7 @@ import {
   insetsOf,
   type AxesConfig,
   type AxisDefinition,
+  type AxisExtent,
   type AxisSetup,
   type CartesianAxes,
   type LayerBinding,
@@ -120,12 +121,56 @@ function normalizeForAxes(
   };
 }
 
+/**
+ * The extents the layers report, merged per axis id: each axis gets the
+ * range that covers every layer's extent on it.
+ */
+function layerExtents(
+  definitions: readonly AxisDefinition[],
+  layers: readonly Layer[],
+  bindings: readonly LayerBinding[],
+  data: PreparedData,
+  normalized: NormalizedChartData
+): Map<string, AxisExtent> {
+  const firstOf = (dimension: 'x' | 'y') =>
+    definitions.find(d => directionOf(d.side) === dimension)?.id;
+  const merged = new Map<string, AxisExtent>();
+  layers.forEach((layer, index) => {
+    if (!layer.extent) {
+      return;
+    }
+    const binding = bindings[index] ?? {};
+    // As in compose: a flat series isn't split by a selection.
+    const selection = data.flat ? undefined : binding.series;
+    const reported = layer.extent({
+      normalized: selection
+        ? { ...normalized, series: selection.map(i => normalized.series[i]) }
+        : normalized,
+      axes: { x: binding.x ?? firstOf('x'), y: binding.y ?? firstOf('y') }
+    });
+    for (const [id, extent] of Object.entries(reported ?? {})) {
+      const current = merged.get(id);
+      merged.set(
+        id,
+        current
+          ? {
+              low: Math.min(current.low, extent.low),
+              high: Math.max(current.high, extent.high)
+            }
+          : extent
+      );
+    }
+  });
+  return merged;
+}
+
 function createAxis(
   definition: AxisDefinition,
   inset: number,
   series: NormalizedSeries[],
   normalized: NormalizedChartData,
-  area: Area
+  area: Area,
+  extent: AxisExtent | undefined
 ): PlacedScaleAxis {
   const { type, id, side, ...options } = definition;
   const factory = isLegacyAxisClass(type) ? legacyAxis(type) : type;
@@ -134,7 +179,8 @@ function createAxis(
     series,
     labels: normalized.labels,
     area,
-    options
+    options,
+    ...(extent && { extent })
   });
   return { ...axis, id, side, inset, options };
 }
@@ -155,19 +201,29 @@ export function presetAxes(
     definitions,
     area: (width: number, height: number, padding: ChartPadding) =>
       axisArea(width, height, padding, definitions),
-    create(data, area, bindings) {
+    create(data, area, bindings, layers) {
       const bound = bindings && boundOf?.(bindings, data.series.length);
       const normalized = normalizeForAxes(
         data,
         config.reverseData,
         config.normalize
       );
+      const extents = layers
+        ? layerExtents(definitions, layers, bindings ?? [], data, normalized)
+        : undefined;
       const allSeries = normalized.series as NormalizedSeries[];
       const all = definitions.map((definition, index) => {
         const indexes = bound?.get(definition.id);
         const series =
           indexes && !data.flat ? indexes.map(i => allSeries[i]) : allSeries;
-        return createAxis(definition, insets[index], series, normalized, area);
+        return createAxis(
+          definition,
+          insets[index],
+          series,
+          normalized,
+          area,
+          extents?.get(definition.id)
+        );
       });
       return {
         normalized,

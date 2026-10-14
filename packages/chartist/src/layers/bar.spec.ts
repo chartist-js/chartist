@@ -4,7 +4,7 @@ import { runPipeline } from '../pipeline/phases';
 import { cartesianAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { findAll } from '../scene/tree';
-import { bar, getSerialSums } from './bar';
+import { bar, stackedExtent } from './bar';
 
 function scene(series: unknown[], options: Parameters<typeof bar>[0] = {}) {
   const horizontal = options.horizontalBars;
@@ -81,18 +81,138 @@ describe('layers/bar', () => {
     expect(Number(last.attrs.x2)).toBeGreaterThan(Number(last.attrs.x1));
   });
 
-  it('getSerialSums adds values per index', () => {
-    expect(
-      getSerialSums([
+  it('stackedExtent spans the running sums per index', () => {
+    const series = [
+      [
+        { x: 1, y: 2 },
+        { x: 0, y: 1 }
+      ],
+      [{ x: 3, y: 4 }, undefined],
+      [{ x: -9, y: -7 }]
+    ] as never;
+    // y: 2, 6, -1 at index 0; 1 at index 1.
+    expect(stackedExtent(series, 'y')).toEqual({ low: -1, high: 6 });
+    expect(stackedExtent(series, 'x')).toEqual({ low: -5, high: 4 });
+    expect(stackedExtent([], 'y')).toBeUndefined();
+  });
+});
+
+describe('layers/bar stack modes', () => {
+  type Pair = readonly [from: number, to: number];
+
+  /** Bars as [from, to] along the value axis, and where a value lands. */
+  function stacked(series: unknown[], options: Parameters<typeof bar>[0]) {
+    const horizontal = Boolean(options?.horizontalBars);
+    const label = { type: stepAxis() };
+    const value = { type: autoScaleAxis(), referenceValue: 0 };
+    const state = runPipeline(
+      createPhaseEmitter(),
+      {
+        data: { labels: ['a', 'b'], series },
+        axes: cartesianAxes({
+          x: horizontal ? value : label,
+          y: horizontal ? label : value,
+          normalize: { multi: horizontal ? 'x' : 'y' }
+        }),
+        layers: [bar({ stackBars: true, ...options })]
+      },
+      { width: 400, height: 300, measureText: estimateText }
+    );
+    const axis = horizontal ? state.axes.x! : state.axes.y!;
+    const { area } = state.layout;
+    const at = (v: number) =>
+      horizontal ? area.x1 + axis.project(v) : area.y1 - axis.project(v);
+    const bars = findAll(state.scene, { role: 'bar' }).map(({ attrs }): Pair =>
+      horizontal
+        ? [Number(attrs.x1), Number(attrs.x2)]
+        : [Number(attrs.y1), Number(attrs.y2)]
+    );
+    return { range: axis.range!, bars, at };
+  }
+
+  function expectBars(actual: readonly Pair[], expected: readonly Pair[]) {
+    expect(actual).toHaveLength(expected.length);
+    actual.forEach(([from, to], index) => {
+      expect(from).toBeCloseTo(expected[index][0], 6);
+      expect(to).toBeCloseTo(expected[index][1], 6);
+    });
+  }
+
+  describe.each([
+    ['vertical', false],
+    ['horizontal', true]
+  ])('%s', (_name, horizontalBars) => {
+    it('accumulate stacks each value on the ones before; the axis fits the sums (#1483)', () => {
+      const { range, bars, at } = stacked(
         [
-          { x: 1, y: 2 },
-          { x: 0, y: 1 }
+          [5, 5],
+          [4, 4]
         ],
-        [{ x: 3, y: 4 }]
-      ] as never)
-    ).toEqual([
-      { x: 4, y: 6 },
-      { x: 0, y: 1 }
-    ]);
+        { horizontalBars }
+      );
+      expect(range.max).toBeGreaterThanOrEqual(9);
+      expectBars(bars, [
+        [at(0), at(5)],
+        [at(0), at(5)],
+        [at(5), at(9)],
+        [at(5), at(9)]
+      ]);
+    });
+
+    it('accumulate with negatives runs back from the sum before', () => {
+      const { range, bars, at } = stacked([[5], [-3]], { horizontalBars });
+      expect(range.max).toBeGreaterThanOrEqual(5);
+      expectBars(bars, [
+        [at(0), at(5)],
+        [at(5), at(2)]
+      ]);
+    });
+
+    it('stackMode false stacks like accumulate', () => {
+      const { bars, at } = stacked([[5], [4]], {
+        horizontalBars,
+        stackMode: false
+      });
+      expectBars(bars, [
+        [at(0), at(5)],
+        [at(5), at(9)]
+      ]);
+    });
+
+    it.each([['overlap' as const], [true as const]])(
+      'stackMode %s draws every bar from zero; the axis fits the values',
+      stackMode => {
+        const { range, bars, at } = stacked([[5], [4]], {
+          horizontalBars,
+          stackMode
+        });
+        expect(range.max).toBeLessThan(9);
+        expectBars(bars, [
+          [at(0), at(5)],
+          [at(0), at(4)]
+        ]);
+      }
+    );
+
+    it('without stackBars the layer reports no extent', () => {
+      const layer = bar({ horizontalBars });
+      expect(
+        layer.extent!({
+          normalized: { labels: [], series: [[{ x: 5, y: 5 }]] },
+          axes: { x: 'x', y: 'y' }
+        })
+      ).toEqual({});
+    });
+  });
+
+  it('reports the extent on the axis it draws on', () => {
+    const layer = bar({ stackBars: true });
+    const normalized = {
+      labels: [],
+      series: [[{ x: undefined, y: 5 }], [{ x: undefined, y: 4 }]]
+    };
+    expect(layer.extent!({ normalized, axes: { x: 'q', y: 'v' } })).toEqual({
+      v: { low: 5, high: 9 }
+    });
   });
 });

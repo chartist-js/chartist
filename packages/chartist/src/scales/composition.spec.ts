@@ -193,6 +193,42 @@ describe('composition: axes', () => {
     expect(grid.context().axes.y!.range!.max).toBeGreaterThanOrEqual(210);
   });
 
+  it('a layer extent widens only the axes it names (#1483)', () => {
+    const other = probe({ axes: { y: 'other' } });
+    const stacks = probe({ axes: { y: 'value' } });
+    runPipeline(
+      createPhaseEmitter(),
+      {
+        data: {
+          series: [
+            { name: 'a', data: [5, 5] },
+            { name: 'b', data: [4, 4] }
+          ]
+        },
+        axes: cartesianAxes([
+          { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['A', 'B'] },
+          { id: 'value', side: 'left', type: autoScaleAxis() },
+          { id: 'other', side: 'right', type: autoScaleAxis() }
+        ]),
+        layers: [
+          bar({ y: 'value', stackBars: true }),
+          stacks.layer,
+          other.layer,
+          // Extents of several layers on one axis merge.
+          {
+            ...probe().layer,
+            extent: ({ axes }) => ({ [axes.y!]: { low: -2, high: 1 } })
+          }
+        ]
+      },
+      { width: 600, height: 300, measureText: estimateText }
+    );
+    const value = stacks.context().axes.y!.range!;
+    expect(value.max).toBeGreaterThanOrEqual(9);
+    expect(value.min).toBeLessThanOrEqual(-2);
+    expect(other.context().axes.y!.range!.max).toBeLessThan(9);
+  });
+
   it('layers get their series with chart-wide indexes', () => {
     const margin = probe({ series: ['margin'] });
     run([margin.layer]);

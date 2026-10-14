@@ -12,12 +12,14 @@ import { isDataHoleValue } from './data';
  * @param data The array that contains the data to be visualized in the chart
  * @param options The Object that contains the chart options
  * @param dimension Axis dimension 'x' or 'y' used to access the correct value and high / low configuration
+ * @param extent A range to include beyond the data, such as the sums of stacked bars
  * @return An object that contains the highest and lowest value that will be visualized on the chart.
  */
 export function getHighLow(
   data: NormalizedSeries[],
   options: Options,
-  dimension?: AxisName
+  dimension?: AxisName,
+  extent?: { readonly low: number; readonly high: number }
 ) {
   // TODO: Remove workaround for deprecated global high / low config. Axis high / low configuration is preferred
   options = {
@@ -62,6 +64,17 @@ export function getHighLow(
   // Start to find highest and lowest number recursively
   if (findHigh || findLow) {
     recursiveHighLow(data);
+  }
+
+  // A range the chart needs beyond the values, e.g. the sums of stacked
+  // bars, widens what isn't set explicitly.
+  if (extent) {
+    if (findHigh) {
+      highLow.high = Math.max(extent.high, highLow.high);
+    }
+    if (findLow) {
+      highLow.low = Math.min(extent.low, highLow.low);
+    }
   }
 
   // The reference value (e.g. 0 for bars) widens the range to include it,

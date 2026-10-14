@@ -4,7 +4,7 @@ import type { PiePresetState } from '../presets/pieChart';
 import type { RenderOutput } from '../render/types';
 import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
 import type { LabelMode, MeasureText } from '../render/measure';
-import type { CartesianAxes, ChartAxes } from '../scales/axis';
+import type { AxisExtent, CartesianAxes, ChartAxes } from '../scales/axis';
 import type { SceneNode } from '../scene/node';
 
 /**
@@ -129,6 +129,21 @@ export interface LayerContext {
 }
 
 /**
+ * What a layer's `extent` gets: its series as the axes see them, and the
+ * ids of the axes it draws on.
+ * @experimental
+ */
+export interface ExtentContext {
+  /**
+   * The layer's series, normalized as for the axes (`{ x, y }` values or
+   * holes); only the layer's series when it selects some.
+   */
+  readonly normalized: NormalizedChartData;
+  /** The ids of the X and Y axis the layer draws on. */
+  readonly axes: { readonly x?: string; readonly y?: string };
+}
+
+/**
  * A layer renders series into the chart area. Built-in and custom layers
  * use the same contract.
  * @experimental
@@ -149,6 +164,26 @@ export interface Layer {
   readonly axes?: { readonly x?: string; readonly y?: string };
   /** Series to draw, by index or name; default: all series. */
   readonly series?: readonly (number | string)[];
+  /**
+   * Reports the range of values the layer needs on its axes beyond the
+   * values themselves, by axis id, such as the sums of stacked bars. Scale
+   * axes include it in the range they fit to the data (an axis's own `low`
+   * and `high` still win); on an axis several layers report a range for,
+   * the axis covers them all. Runs before the axes are created, on every
+   * layout.
+   *
+   * @example
+   * ```ts
+   * import type { Layer } from 'chartist';
+   *
+   * // Keeps 0 to 100 on the layer's Y axis, e.g. for a target line.
+   * const withTarget = (base: Layer): Layer => ({
+   *   ...base,
+   *   extent: ({ axes }) => (axes.y ? { [axes.y]: { low: 0, high: 100 } } : {})
+   * });
+   * ```
+   */
+  extent?(context: ExtentContext): Readonly<Record<string, AxisExtent>>;
   /**
    * Draws the layer: returns its top-level nodes, usually one `series`
    * group per series. The pipeline keys their data nodes and passes every

@@ -69,6 +69,32 @@ describe('presets/barChart', () => {
     ).toBe(10);
   });
 
+  // As 1.x: `overlap` keeps the axis at the sums, `true` fits the values.
+  it.each([
+    ['accumulate', true],
+    ['overlap', true],
+    [true, false]
+  ] as const)('stackMode %s fits the sums: %s', (stackMode, sums) => {
+    const element = sized();
+    barChart(
+      element,
+      {
+        series: [
+          [5, 5],
+          [4, 4]
+        ]
+      },
+      { stackBars: true, stackMode, axisY: { onlyInteger: true } }
+    );
+    const top = Math.max(
+      ...Array.from(element.querySelectorAll('.ct-label.ct-vertical'), label =>
+        Number(label.textContent)
+      )
+    );
+    // The values reach 5, the sums 9.
+    expect(top > 5).toBe(sums);
+  });
+
   it('switches responsive options', () => {
     let matches = false;
     const listeners: (() => void)[] = [];

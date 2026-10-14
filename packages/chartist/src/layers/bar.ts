@@ -7,8 +7,8 @@ import { serialize } from '../core/data/serialize';
 import { alphaNumerate } from '../core/lang';
 import type { NormalizedSeries, Series, SeriesObject } from '../core/types';
 import type { Layer, PreparedSeries } from '../pipeline/types';
+import type { AxisExtent } from '../scales/axis';
 import { node, withFields, type SceneNode } from '../scene/node';
-import { serialMap } from '../utils/functional';
 import { isNumeric, safeHasProperty } from '../utils/utils';
 
 /**
@@ -26,10 +26,8 @@ export interface BarLayerOptions {
   /** Values on the X axis, labels on the Y axis. */
   readonly horizontalBars?: boolean;
   /**
-   * Stacks the bars of a label on each other; `stackMode` says how. In
-   * {@link chart}, the value axis scales to the single values, not to
-   * their sums, so give it a `high` that fits the stacks (`barChart` does
-   * this for you).
+   * Stacks the bars of a label on each other; `stackMode` says how. The
+   * value axis grows to fit the stacks (see {@link Layer.extent}).
    */
   readonly stackBars?: boolean;
   /**
@@ -59,17 +57,35 @@ export interface BarLayerOptions {
   readonly classNames?: { readonly series?: string; readonly bar?: string };
 }
 
-/** Sums of the values per index across all series (for stacked bounds). */
-export function getSerialSums(series: NormalizedSeries[]) {
-  return serialMap(series, (...args) =>
-    Array.from(args).reduce<{ x: number; y: number }>(
-      (prev, curr) => ({
-        x: prev.x + (safeHasProperty(curr, 'x') ? (curr.x as number) : 0),
-        y: prev.y + (safeHasProperty(curr, 'y') ? (curr.y as number) : 0)
-      }),
-      { x: 0, y: 0 }
-    )
-  );
+/** A value along one dimension; holes and missing values count as 0. */
+function valueAlong(value: unknown, dimension: 'x' | 'y') {
+  const raw =
+    value !== null && typeof value === 'object'
+      ? (value as Record<string, unknown>)[dimension]
+      : value;
+  return isNumeric(raw) ? Number(raw) : 0;
+}
+
+/**
+ * The range stacked bars reach on the value axis: per index, the running
+ * sums of the values in series order. Undefined without values.
+ */
+export function stackedExtent(
+  series: readonly NormalizedSeries[],
+  dimension: 'x' | 'y'
+): AxisExtent | undefined {
+  const sums: number[] = [];
+  let low = Infinity;
+  let high = -Infinity;
+  for (const values of series) {
+    values.forEach((value, index) => {
+      const amount = valueAlong(value, dimension);
+      sums[index] = (sums[index] ?? 0) + amount;
+      low = Math.min(low, sums[index]);
+      high = Math.max(high, sums[index]);
+    });
+  }
+  return low <= high ? { low, high } : undefined;
 }
 
 function rawSeries(series: PreparedSeries): Series | SeriesObject {
@@ -131,11 +147,22 @@ export function bar(options: BarLayerOptions = {}): Layer {
   const horizontal = Boolean(options.horizontalBars);
   const seriesBarDistance = options.seriesBarDistance ?? 15;
   const stackMode = options.stackMode ?? 'accumulate';
+  // `overlap` and `true` draw every bar from zero: the values fit them.
+  const stacks =
+    options.stackBars && stackMode !== 'overlap' && stackMode !== true;
   return {
     type: 'bar',
     coordinates: ['cartesian'],
     axes: { x: options.x, y: options.y },
     series: options.series,
+    extent({ normalized, axes }) {
+      const id = horizontal ? axes.x : axes.y;
+      const extent =
+        stacks && id !== undefined
+          ? stackedExtent(normalized.series, horizontal ? 'x' : 'y')
+          : undefined;
+      return id !== undefined && extent ? { [id]: extent } : {};
+    },
     compose({ data, area, axes, normalized, seriesIndexes }) {
       const valueAxis = horizontal ? axes.x : axes.y;
       const labelAxis = horizontal ? axes.y : axes.x;

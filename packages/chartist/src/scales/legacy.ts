@@ -1,5 +1,6 @@
 import { axisUnits } from '../axes/Axis';
-import type { ChartRect, Label } from '../core/types';
+import { getHighLow } from '../core/data/highLow';
+import type { ChartRect, Label, Options } from '../core/types';
 import { axisLength, type AxisFactory, type LegacyAxisClass } from './axis';
 
 interface LegacyAxisInstance {
@@ -26,7 +27,7 @@ export function isLegacyAxisClass(type: unknown): type is LegacyAxisClass {
 export function legacyAxis(type: LegacyAxisClass): AxisFactory {
   return {
     kind: 'legacy',
-    create({ dimension, series, area, options }) {
+    create({ dimension, series, area, options, extent }) {
       const chartRect: ChartRect = {
         x1: area.x1,
         x2: area.x2,
@@ -36,13 +37,22 @@ export function legacyAxis(type: LegacyAxisClass): AxisFactory {
         width: () => area.x2 - area.x1,
         height: () => area.y1 - area.y2
       };
+      // 1.x classes fit their scale to `highLow` when given, so an extent
+      // reaches them as the range it widens.
+      const legacyOptions =
+        extent && !options.highLow
+          ? {
+              ...options,
+              highLow: getHighLow(series, options as Options, dimension, extent)
+            }
+          : options;
       const instance = new (type as unknown as new (
         ...args: unknown[]
       ) => LegacyAxisInstance)(
         axisUnits[dimension],
         series,
         chartRect,
-        options
+        legacyOptions
       );
       return {
         dimension,

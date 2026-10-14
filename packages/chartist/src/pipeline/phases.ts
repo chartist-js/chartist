@@ -316,8 +316,9 @@ export function runPipeline(
   );
   // Axis ids and series selections; only cartesian axes bind layers.
   const bindings = config.axes?.bind?.(config.layers, data) ?? [];
+  // The layers go along for the extents they report (stacked bars).
   const { axes = {}, normalized = undefined } =
-    config.axes?.create(data, laidOut.area, bindings) ?? {};
+    config.axes?.create(data, laidOut.area, bindings, config.layers) ?? {};
   // Measure with the root classes, so chart-type CSS applies.
   const { className } = config;
   const measureText: MeasureText = className

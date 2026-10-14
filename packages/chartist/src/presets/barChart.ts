@@ -10,7 +10,7 @@ import type { ChartConfig, PluginEntry } from '../chart/types';
 import type { PhaseListeners } from '../pipeline/types';
 import { getHighLow } from '../core/data/highLow';
 import type { Label, Options } from '../core/types';
-import { bar, getSerialSums } from '../layers/bar';
+import { bar } from '../layers/bar';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
 import type { LabelMode } from '../render/measure';
 import { presetAxes } from '../scales/cartesian';
@@ -83,8 +83,8 @@ export type BarChartController = PresetController<
 >;
 
 /**
- * The 1.x value axis: bounds from the data (stacked sums when stacking),
- * chart-level `high`/`low`, and `referenceValue: 0`.
+ * The 1.x value axis: bounds from the data and the stacks the bar layer
+ * reports, chart-level `high`/`low`, and `referenceValue: 0`.
  */
 function valueAxis(
   options: Resolved,
@@ -99,15 +99,12 @@ function valueAxis(
   return {
     kind: inner.kind,
     create(context) {
-      const series = context.series;
-      const highLow =
-        options.stackBars &&
-        // As 1.x: only `true` fits the axis to the bars; `overlap` keeps
-        // the stacked sums.
-        options.stackMode !== true &&
-        series.length
-          ? getHighLow([getSerialSums(series)], options as Options, dimension)
-          : getHighLow(series, options as Options, dimension);
+      const highLow = getHighLow(
+        context.series,
+        options as Options,
+        dimension,
+        context.extent
+      );
       if (typeof options.high === 'number') {
         highLow.high = options.high;
       }
@@ -169,6 +166,26 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
     const order = options.horizontalBars
       ? (['y', 'x'] as const)
       : (['x', 'y'] as const);
+    const layer = bar({
+      horizontalBars: options.horizontalBars,
+      stackBars: options.stackBars,
+      stackMode: options.stackMode,
+      seriesBarDistance: options.seriesBarDistance,
+      distributeSeries: options.distributeSeries,
+      reverseData: options.reverseData,
+      classNames: options.classNames
+    });
+    // The group keeps the layer's extent, so the value axis fits the stacks.
+    // As 1.x, `overlap` keeps the axis at the stacked sums, though its
+    // bars all start at zero; only `true` fits the axis to the values.
+    const extentOf =
+      options.stackMode === 'overlap'
+        ? bar({
+            horizontalBars: options.horizontalBars,
+            stackBars: options.stackBars
+          })
+        : layer;
+    const bars = { ...seriesGroup(layer), extent: extentOf.extent };
     return {
       data,
       axes: presetAxes(axesConfig(options)),
@@ -182,17 +199,7 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
       labels: options.labels,
       layers: [
         gridLayer(axisOptions, order),
-        seriesGroup(
-          bar({
-            horizontalBars: options.horizontalBars,
-            stackBars: options.stackBars,
-            stackMode: options.stackMode,
-            seriesBarDistance: options.seriesBarDistance,
-            distributeSeries: options.distributeSeries,
-            reverseData: options.reverseData,
-            classNames: options.classNames
-          })
-        ),
+        bars,
         labelLayer(
           {
             ...axisOptions,

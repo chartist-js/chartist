@@ -40,6 +40,25 @@ export interface AxisContext {
   readonly area: Area;
   /** The options of the axis definition, without `id`, `side` and `type`. */
   readonly options: AxisOptions;
+  /**
+   * The range the layers drawn on the axis need beyond their values, such
+   * as the sums of stacked bars (see {@link Layer.extent}). Scale axes
+   * include it in the range they fit to the data; their own `low` and
+   * `high` still win.
+   */
+  readonly extent?: AxisExtent;
+}
+
+/**
+ * A range of values on an axis, from `low` to `high`: what a layer reports
+ * in {@link Layer.extent}.
+ * @experimental
+ */
+export interface AxisExtent {
+  /** The lowest value. */
+  readonly low: number;
+  /** The highest value. */
+  readonly high: number;
 }
 
 /**
@@ -211,11 +230,14 @@ export interface CartesianAxes {
   /**
    * The axes for the final chart area, and the data as they see it. With
    * `bindings`, each axis's range comes only from the series bound to it.
+   * With `layers`, it also covers the extents they report (see
+   * {@link Layer.extent}).
    */
   create(
     data: PreparedData,
     area: Area,
-    bindings?: readonly LayerBinding[]
+    bindings?: readonly LayerBinding[],
+    layers?: readonly Layer[]
   ): { axes: ChartAxes; normalized: NormalizedChartData };
 }
 

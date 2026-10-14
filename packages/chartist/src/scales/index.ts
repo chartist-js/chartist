@@ -6,6 +6,7 @@ export type {
   AxisDefinition,
   AxisSide,
   AxisDimension,
+  AxisExtent,
   AxisFactory,
   AxisSetup,
   CartesianAxes,
