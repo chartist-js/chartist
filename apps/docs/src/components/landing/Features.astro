@@ -3,6 +3,7 @@ import { Code } from 'astro:components';
 import Chart from '../Chart.astro';
 import { SWATCHES } from '../../data/landing';
 import { facts, formatKb } from '../../data/facts';
+import { href } from '../../lib/site';
 
 const sizes = facts.sizes.bytes;
 const RESPONSIVE = `responsive([
@@ -10,6 +11,11 @@ const RESPONSIVE = `responsive([
   [container('(width < 400px)'), tiny]
 ])`;
 const SSR = `renderToString(toScene(config, size))`;
+const EXTEND = `chart.on('compose', node =>
+  node.role === 'point'
+    ? node.addClass('ct-hot')
+    : node
+);`;
 ---
 
 <section id="features" class="section sunken" data-section data-visual="features">
@@ -74,13 +80,11 @@ const SSR = `renderToString(toScene(config, size))`;
         </div>
       </article>
       <article class="card reveal flex flex-col gap-3 px-5.5 py-5">
-        <h3 class="text-xl">Colors for everyone</h3>
-        <p class="muted">An opt-in color-blind-safe palette for light and dark mode.</p>
-        <div class="ct-theme-accessible mt-auto rounded-md border border-line bg-bg p-2 flex flex-col gap-3">
-          <div class="grid grid-cols-8 gap-1.5" aria-hidden="true">
-            {['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map(letter => <span class={`ct-series-${letter} h-9 rounded-sm bg-(--ct-color)`} />)}
-          </div>
-          <code>class="ct-theme-accessible"</code>
+        <h3 class="text-xl">Extend everything</h3>
+        <p class="muted">Every element passes through an open pipeline. Change, replace or decorate any of it in a few lines, or pick a <a href={href('plugins/')}>community plugin</a>.</p>
+        <div class="snippet mt-auto rounded-md border border-line bg-bg p-2 flex flex-col gap-3">
+          <Code code={EXTEND} lang="ts" theme="css-variables" />
+          <a class="pill-link self-start" href="#extend">See the pipeline ↓</a>
         </div>
       </article>
     </div>
@@ -89,6 +93,7 @@ const SSR = `renderToString(toScene(config, size))`;
       <span class="tag">Typed functional API</span>
       <span class="tag">Zero dependencies</span>
       <span class="tag">1.x code keeps working</span>
+      <span class="tag">Color-blind-safe palette</span>
     </div>
   </div>
 </section>
