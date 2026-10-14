@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
+import sitemap from '@astrojs/sitemap';
+import { pagefind } from './integrations/pagefind.mjs';
 import { playgroundLib } from './integrations/playground-lib.mjs';
 
 // Hosting is decided in the release phase: the site URL and base path come
@@ -11,7 +13,13 @@ export default defineConfig({
   trailingSlash: 'always',
   output: 'static',
   outDir: '../../dist/apps/docs',
-  integrations: [mdx(), playgroundLib()],
+  integrations: [
+    mdx(),
+    playgroundLib(),
+    pagefind(),
+    // The archived 1.x docs (public/v1/) and the card images stay out.
+    sitemap({ filter: page => !/\/(v1|og)\//.test(new URL(page).pathname) })
+  ],
   // `nx dev docs` passes --port 4321 (nx-astro's default), which wins over
   // this; `astro dev` run directly uses 4322. The playground e2e uses 4331.
   // IPv4 loopback: Node may otherwise bind only [::1], which dev container
