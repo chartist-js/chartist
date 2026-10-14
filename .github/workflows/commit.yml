@@ -1,5 +1,5 @@
 name: Commit
-run-name: "📝 Commit: ${{ github.event.pull_request.title || github.event.head_commit.message }}"
+run-name: '📝 Commit: ${{ github.event.pull_request.title || github.event.head_commit.message }}'
 
 # Conventional commit messages drive the version and the changelog of a
 # release, so pushed commits are linted against .commitlintrc.json.
