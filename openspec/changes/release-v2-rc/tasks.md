@@ -40,14 +40,14 @@
 
 - [x] 7.1 Push `next`; CI and `docs.yml` must be green on it. Verify: both runs pass
 - [x] 7.2 Create `1.x` from `v1.5.0` and push it. Verify: the branch is on GitHub at `v1.5.0`
-- [ ] 7.3 Fast-forward `main` to `next` and push `main`. Verify: CI passes; the automatic release run stops with its message; nothing is deployed or published
-- [ ] 7.4 Set `DOCS_DEPLOY=true`, run the release by hand with `2.0.0-rc.1`, approve it. Verify: the run publishes, pushes the release commit and tag as the App, creates the GitHub release; the push starts CI and the docs deployment, and the release workflow skips its own commit
+- [x] 7.3 Fast-forward `main` to `next` and push `main`. Verify: CI passes; the automatic release run stops with its message; nothing is deployed or published
+- [x] 7.4 Set `DOCS_DEPLOY=true`, run the release by hand with `2.0.0-rc.1`, approve it. Verify: the run publishes, pushes the release commit and tag as the App, creates the GitHub release; the push starts CI and the docs deployment, and the release workflow skips its own commit
 
 ## 8. Live checks
 
-- [ ] 8.1 npm: `npm view chartist dist-tags` shows `latest: 1.5.0` and `next: 2.0.0-rc.1`; provenance shows on the npm page; `npm i chartist@next` in a scratch project imports and draws
-- [ ] 8.2 chartist.dev: the v2 home, guides, API, examples, plugins, playground, search and share cards; `/v1/` and the 1.x redirects; the CDN URLs of getting started load `2.0.0-rc.1`; GoatCounter counts a visit
-- [ ] 8.3 Clean up: delete `next` locally, and update `docs/decisions.md` for `main` as the development branch (drop the note about `next`)
+- [x] 8.1 npm: `npm view chartist dist-tags` shows `latest: 1.5.0` and `next: 2.0.0-rc.1`; provenance shows on the npm page; `npm i chartist@next` in a scratch project imports and draws
+- [x] 8.2 chartist.dev: the v2 home, guides, API, examples, plugins, playground, search and share cards; `/v1/` and the 1.x redirects; the CDN URLs of getting started load `2.0.0-rc.1`; GoatCounter counts a visit
+- [x] 8.3 Clean up: delete `next` locally, and update `docs/decisions.md` for `main` as the development branch (drop the note about `next`)
 
 ## Workflow follow-up
 
