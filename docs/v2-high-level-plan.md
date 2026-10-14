@@ -182,6 +182,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
      6. `add-docs-examples`: the gallery from the examples manifest, the `LiveExample` island and the full-screen playground on `packages/playground`.
      7. `add-api-reference`: generated from the TypeScript types; minimal class entries with `@see` links.
      8. Polish: search (Pagefind), OG cards, the v1/v0 archive links, and a **credits page** (required before the site goes public: the paper texture is CC BY-SA 3.0 and needs attribution; the footer credit was removed at the author's request on 2026-10-13).
+     9. `fix-library-findings` (decided with the author 2026-10-14: library bug fixes come last, once the docs site is finished, before the release): triage and fix the findings from `add-docs-content` (`openspec/changes/archive/2026-10-14-add-docs-content/findings.md`), then update the docs pages that work around them.
    - Must (decided 2026-10-13): container conditions (`container()` in responsive entries) are documented as **experimental** and as working **only with the `match-container` polyfill** (until browsers ship `Element.matchContainer()`). Every container example shows the polyfill import and the `container-type` CSS on the chart container. The playground maps `match-container` through its `imports` option (import map) for these examples.
 
 ## Standards to monitor
