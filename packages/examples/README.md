@@ -20,6 +20,22 @@ Copy a folder into a Vite app that has `chartist` installed and it runs unchange
 - CSS imported from TypeScript (`chartist/styles.css`, relative `./style.css`), and no Vite-specific features (`import.meta.glob`, `?raw`, path aliases);
 - seeded randomness (an inlined `mulberry32`) instead of `Math.random()`, so every render is identical.
 
+`src/main.ts` uses the functional API (`lineChart()`, `chart()`, v2 plugins) and teaches v2: when JavaScript would only style an element, it uses the custom properties (`--ct-bar-width`, `--ct-color`, …) or a class and a rule in `src/style.css`.
+
+Each example has an entry in the manifest, `index.ts` (title, a one-sentence `description` for the gallery card and the example's page, viewports, sizing, settle time). `pnpm nx check examples` keeps the manifest and the folders in sync.
+
+## Classic entries
+
+Every example that came from 1.x also has `src/main.classic.ts`, its original 1.x code (`classic: true` in the manifest; `compat: true` when that code needs the compat plugin). Never edit a classic file, comments included: it's the 1.x original. The docs show it behind the example's v2 / 1.x switch.
+
+The visual tests screenshot both entries against one baseline image, recorded from Chartist 1.5.0 with the classic code, which proves that the functions draw what the classes drew. When the two differ:
+
+1. Suspect the functional code first: an option in the wrong place, a different default, a node replaced at a different position, attributes in a different order.
+2. If v2 draws it differently on purpose, give the entry a reason in the manifest and a baseline from the local build: `ownBaseline` when only the functional entry differs, `localBaseline` when v2 changes the chart for both APIs (the 1.5.0 run then skips it).
+3. If it's a library bug, fix the library (with a GitHub issue labeled `v2`), not the example.
+
+New examples have no 1.x code (`v2: true`); their baselines come from the local build, and the 1.5.0 run skips them. Baselines are recorded only on the reference platform (see "Visual regression" in `docs/decisions.md`).
+
 ## Commands
 
 - `pnpm nx typecheck examples`: type-checks every example in strict mode against the built `chartist` declarations (builds `chartist` first).
@@ -28,7 +44,7 @@ Copy a folder into a Vite app that has `chartist` installed and it runs unchange
 
 ## Coverage of the 1.x examples
 
-The 32 1.x CodeSandbox examples (`packages/chartist/sandboxes` on `main`) moved here unchanged apart from the Vite format; their history follows the files (`git log --follow <type>/<name>/src/main.ts`).
+The 32 1.x CodeSandbox examples (`sandboxes/` at the `v1.5.0` tag) moved here in the Vite format. Their history follows the files: `git log --follow <type>/<name>/src/main.ts` for the functional code, which was rewritten in place, and `git log --follow -C` on `src/main.classic.ts`, a copy of the 1.x code.
 
 Every 1.x Storybook story (`src/charts/*/*.stories.ts`) maps to an example. A story was merged into a sandbox example only if its data, options and event handlers are identical (same values and same behavior). All other stories became test-only examples (`docs: false`), with these changes:
 
