@@ -27,8 +27,10 @@ export function mountBoardChart(element: HTMLElement): ChartHandle {
     {
       labels: ['1st', '2nd', '3rd'],
       series: [
+        // Claimed (dashed, marching) and counted: only the third was
+        // recounted.
         [1280000, 3317752, 5706000],
-        [1883000, 2050000, 3706000]
+        [1280000, 3317752, 1975496]
       ]
     },
     {

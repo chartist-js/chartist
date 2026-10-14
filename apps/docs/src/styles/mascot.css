@@ -124,7 +124,8 @@
   --ct-line-width: 5px;
   --ct-point-size: 10px;
   --ct-series-e: #453d3f;
-  --ct-series-g: #0544d3;
+  /* Composed charts draw their line in g: the Chartist salmon here. */
+  --ct-series-g: var(--ct-series-b);
   --ct-series-h: #6b0392;
 }
 
