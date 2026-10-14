@@ -51,13 +51,30 @@ On example pages, a chart sized for a window (`height: 50vh`, as in the 1.x sand
 
 ### D5: The typing glitch
 
-Investigate first: the glitch shows in live examples, whose editor sits in a container that scrolls itself, and not in the full-screen playground. The fix goes where the cause is (the live example's layout or the playground's inline layout), with an e2e test that types fast and checks the text, replacing the delay in today's test.
+Investigated (2026-10-14), and the premise was wrong: the glitch isn't specific to live examples. It happens in every layout, the full-screen playground included, only more often where the editor scrolls itself. Instrumenting CodeMirror's observer showed every misplaced character came the same way: CodeMirror reads typing in a MutationObserver, which runs at the next microtask checkpoint. When the first script to run after the browser inserts a character is a `scroll` listener (the editor following the cursor), CodeMirror's `onScroll` flushes the pending change with the selection it had cached from before the character, and the cursor lands in front of it.
+
+Fix in the playground's editor: an `input` listener (`EditorView.domEventObservers({ input() {} })`, public API), which forces a microtask checkpoint right after the insertion, so the observer reads the change with the right selection first. Fast-typing e2e tests in the inline layout (docs live examples, example pages) and the full layout fail 10 of 10 runs without the fix and pass with it. The underlying behavior is a CodeMirror bug worth reporting upstream.
+
+### D6: An entry point for language models
+
+Models were trained on years of 0.x and 1.x code (`new Chartist.Line`), so the site offers what tools and agents read first, built from the same sources as the pages (added with the author, 2026-10-14):
+
+- **`/llms.txt`** (the llmstxt.org format): `# Chartist`, a one-paragraph summary, firm notes for writing code (v2 is the functional API: `lineChart`, `barChart`, `pieChart`, `chart()`; the 1.x classes exist for compatibility; plugins and events on the pipeline), then sections of links: Docs, API reference, Examples, and Optional (the 1.x and 0.x archives).
+- **`/llms-full.txt`**: the guides and the API reference in one Markdown file.
+- **Markdown per page**: `/docs/<guide>.md`, `/api/<area>.md` and `/examples/<type>/<name>.md`.
+  - Guides from their MDX: frontmatter title and description, component imports and data exports dropped, `LiveExample` replaced by its example's files as code blocks, `Callout` as a blockquote, `Step` unwrapped; code blocks untouched.
+  - API pages from the TypeDoc model (`lib/api.ts`): each entry with its signature as a code block, description, parameters, properties with types and defaults.
+  - Examples: title, description and files.
+  - Links become absolute URLs, so they keep working in `llms-full.txt`.
+- **On the pages**: `<link rel="alternate" type="text/markdown">` in the head and a "View as Markdown" link next to "Edit this page", for people pasting pages into a chat.
+- **Checked**: a unit test converts every guide and fails on leftover JSX or imports; an e2e test fetches `llms.txt`, follows every link and checks every guide, API page and example has its Markdown.
 
 ## Risks / Trade-offs
 
 - **Build time:** Pagefind indexes about 100 pages in seconds; OG images render about 100 PNGs (cached by Nx with the build).
 - **Index size:** downloaded in chunks on search only.
 - **satori's CSS subset:** flexbox only; the card design stays within it.
+- **MDX to Markdown by line rules:** fine for the three components the guides use; the unit test catches a new component that isn't converted.
 
 ## Open Questions
 

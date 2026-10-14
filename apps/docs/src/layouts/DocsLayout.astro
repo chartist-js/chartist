@@ -3,6 +3,7 @@ import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import Mascot from '../components/Mascot.astro';
 import { navPages, sidebar, type NavPage } from '../lib/docs';
+import { markdownPath } from '../lib/markdown';
 import { VERSIONS, href } from '../lib/site';
 
 interface Props {
@@ -17,6 +18,8 @@ const index = pages.findIndex(candidate => candidate.key === page.key);
 const previous = pages[index - 1];
 const next = pages[index + 1];
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
+// Guides and API pages have a Markdown version (design D6); the overview is llms.txt's job.
+const markdown = page.key === 'api' ? undefined : markdownPath(page.path);
 const sideLink =
   'flex min-h-9 items-center justify-between rounded-md px-3 py-1.5 text-ink no-underline hover:bg-bg-sunken hover:text-ink aria-[current=page]:bg-surface aria-[current=page]:font-bold aria-[current=page]:shadow-[inset_3px_0_0_var(--brand),0_0_0_1px_var(--line)]';
 const pagerLink =
@@ -26,7 +29,7 @@ const tocLink =
 const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 ---
 
-<BaseLayout title={page.title} description={page.description} section={page.section}>
+<BaseLayout title={page.title} description={page.description} section={page.section} markdown={markdown}>
   <div class="wrap flex flex-wrap items-start gap-10 pt-8 pb-20 max-md:gap-6 max-md:pt-4 max-md:pb-14">
     <details class="hidden w-full flex-col gap-2 max-md:flex">
       <summary class="btn sm w-fit">{page.section === 'api' ? 'API menu' : 'Docs menu'}</summary>
@@ -80,9 +83,10 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
       <slot name="after" />
 
       {
-        page.editUrl && (
+        (page.editUrl || markdown) && (
           <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-4 text-sm text-ink-2" data-pagefind-ignore>
-            <a href={page.editUrl}>Edit this page on GitHub</a>
+            {page.editUrl && <a href={page.editUrl}>Edit this page on GitHub</a>}
+            {markdown && <a href={href(markdown)}>View as Markdown</a>}
           </div>
         )
       }

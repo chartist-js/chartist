@@ -19,6 +19,7 @@ The site has its content: landing page, guides, examples, playground and API ref
 - **Example previews fill their box:** example charts sized for a window are drawn to the size of the preview, so tall previews show a tall chart instead of empty space.
 - **The live example typing glitch:** find the cause and fix it.
 - **Footer:** an API link.
+- **An entry point for language models** (added with the author): `/llms.txt`, `/llms-full.txt` and a Markdown version of every guide, API page and example, generated from the same sources, with firm notes that v2 code uses the functional API. Models trained on 1.x code otherwise write `new Chartist.Line(…)`.
 
 **Not in this change:** hosting and deployment (the release phase), and library changes (`fix-library-findings`).
 
@@ -34,4 +35,4 @@ The site has its content: landing page, guides, examples, playground and API ref
 - `apps/docs/public/v1/`: the 1.x docs build output (static files).
 - `apps/docs`: Pagefind (dev dependency, index step after the build), a search dialog, OG image generation (satori and resvg as dev dependencies, fonts from the site's own font packages), head tags, `@astrojs/sitemap`, version URLs in `lib/site.ts`, the example preview styles, the footer.
 - `packages/playground`: the fix for the typing glitch, if it's on the playground's side.
-- e2e tests for search, the head tags and the preview sizing.
+- e2e tests for search, the head tags, the preview sizing and the Markdown versions.

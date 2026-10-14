@@ -21,9 +21,11 @@ interface Props {
   section?: string;
   /** The share card's site path, e.g. `og/docs/line-charts.png`; by default the page's own (lib/og.ts). */
   image?: string;
+  /** The page's Markdown version, a site path such as `docs/line-charts.md` (design D6). */
+  markdown?: string;
 }
 
-const { title, description, section, image } = Astro.props;
+const { title, description, section, image, markdown } = Astro.props;
 const fullTitle = title === 'Chartist' ? title : `${title} · Chartist`;
 // Share previews (design D2, polish-docs-site): absolute URLs from the site.
 const site = Astro.site ?? Astro.url;
@@ -40,6 +42,7 @@ const card = new URL(href(image ?? cardPath(Astro.url.pathname, import.meta.env.
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {markdown && <link rel="alternate" type="text/markdown" href={href(markdown)} title="Markdown" />}
     {notFound && <meta name="robots" content="noindex" />}
     <meta property="og:type" content={section === 'docs' ? 'article' : 'website'} />
     <meta property="og:site_name" content="Chartist" />

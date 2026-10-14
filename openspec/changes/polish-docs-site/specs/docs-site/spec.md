@@ -40,3 +40,17 @@ On example pages, an example whose chart is sized for a window SHALL be drawn to
 
 - **WHEN** an example page's code is taller than a 16:10 chart in the preview's width
 - **THEN** the chart fills the preview's height too, without empty bands above and below
+
+### Requirement: Docs for language models
+
+The site SHALL publish `/llms.txt` in the llmstxt.org format, with notes that v2 code uses the functional API and links to Markdown versions of every guide, API page and example; `/llms-full.txt` with the guides and the API reference in one file; and a Markdown version of each of those pages, generated from the same sources as the page.
+
+#### Scenario: An agent writing Chartist code
+
+- **WHEN** a tool fetches `/llms.txt`
+- **THEN** it reads that v2 charts are created with `lineChart`, `barChart`, `pieChart` or `chart()`, and finds a link to each guide's Markdown
+
+#### Scenario: A new guide
+
+- **WHEN** a guide is added to the docs
+- **THEN** its Markdown version and its `llms.txt` link exist without further work

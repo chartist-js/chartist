@@ -20,7 +20,11 @@ const types = {
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
-  '.json': 'application/json'
+  '.json': 'application/json',
+  '.png': 'image/png',
+  '.md': 'text/markdown; charset=utf-8',
+  '.txt': 'text/plain; charset=utf-8',
+  '.xml': 'application/xml'
 };
 
 async function resolve(pathname) {

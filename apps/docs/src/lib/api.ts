@@ -134,7 +134,7 @@ export const anchor = (name: string, member?: string) =>
   member ? `${name}.${member}` : name;
 
 /** Whether an entry's page lists its members (see Entry.astro). */
-function listsMembers(entry: ApiEntry): boolean {
+export function listsMembers(entry: ApiEntry): boolean {
   const page = pageOf(entry.page);
   const kind = entry.reflection.kind;
   if (page?.compact || (page?.legacy && kind === KIND.Class)) {
