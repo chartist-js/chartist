@@ -21,7 +21,7 @@
 
 ## 4. Plugin data
 
-- [ ] 4.1 Add `src/data/plugins.ts`: per plugin the package, title, description, author, repository URL (or none when gone, with the note), npm URL, license, chart types, v2 status, example id and optional note, validated with zod. Verify: `pnpm nx check docs`
+- [x] 4.1 Add `src/data/plugins.ts`: per plugin the package, title, description, author, repository URL (or none when gone, with the note), npm URL, license, chart types, v2 status, example id and optional note, validated with zod. Verify: `pnpm nx check docs`
 - [ ] 4.2 Extend `scripts/facts.ts` to write `plugins.<package>.monthlyDownloads` for the listed packages, and the schema in `src/data/facts.ts` to require a count for each listed plugin, failing with the package's name. Run the script and commit the snapshot. Verify: `pnpm nx run docs:facts`, and the build fails when a count is removed
 
 ## 5. Live examples

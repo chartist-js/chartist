@@ -1,0 +1,227 @@
+/**
+ * The community plugins of the plugins page. What can be measured comes
+ * from elsewhere: monthly downloads and the last release from the facts
+ * snapshot, the files the site serves from plugin-files.json, the version
+ * from the docs app's package.json. Plugins that don't run on v2 for a
+ * reason in their own code aren't listed; `chartist-plugin-tooltip` (the
+ * original) is left out because it needs jQuery, and the tooltips fork
+ * replaced it.
+ */
+import { z } from 'astro/zod';
+import pkg from '../../package.json';
+import files from './plugin-files.json';
+import { facts } from './facts';
+
+export const CHART_TYPES = ['line', 'bar', 'pie'] as const;
+
+const schema = z.array(
+  z.object({
+    /** The npm package. */
+    package: z.string(),
+    title: z.string(),
+    /** One or two sentences on what it adds. */
+    description: z.string(),
+    author: z.string(),
+    /** The source repository; missing when it's gone. */
+    repository: z.string().url().optional(),
+    license: z.enum(['MIT', 'ISC', 'WTFPL']),
+    types: z.array(z.enum(CHART_TYPES)).min(1),
+    /**
+     * `v2`: written for 1.x, runs on v2 as is. `compat`: runs on v2 with
+     * `chartist/compat`.
+     */
+    status: z.enum(['v2', 'compat']),
+    /** The live example, `plugins/<name>` in src/examples. */
+    example: z.string(),
+    /** What to do in the example to see the plugin, for interactive ones. */
+    hint: z.string().optional(),
+    /** Anything a reader should know before using it. */
+    note: z.string().optional()
+  })
+);
+
+export const PLUGINS = schema.parse([
+  {
+    package: 'chartist-plugin-axistitle',
+    title: 'Axis title',
+    description:
+      'Adds a title to the X and Y axes, with an offset and text anchor of your choice.',
+    author: 'Alex Stanbury',
+    repository: 'https://github.com/astanb/chartist-plugin-axistitle',
+    license: 'MIT',
+    types: ['line', 'bar'],
+    status: 'compat',
+    example: 'plugins/axistitle'
+  },
+  {
+    package: 'chartist-plugin-legend',
+    title: 'Legend',
+    description:
+      'Adds a legend from the series names. Click an entry to hide or show its series.',
+    author: 'Kees Kluskens',
+    repository: 'https://github.com/CodeYellowBV/chartist-plugin-legend',
+    license: 'ISC',
+    types: ['line', 'bar', 'pie'],
+    status: 'compat',
+    example: 'plugins/legend',
+    hint: 'Click a legend entry to hide its series.',
+    note: 'It ships no stylesheet; its README has the CSS, as in the example.'
+  },
+  {
+    package: 'chartist-plugin-tooltips',
+    title: 'Tooltips',
+    description:
+      "Shows a tooltip with a point's value and meta data on hover, for lines, bars and slices.",
+    author: 'Markus Padourek',
+    license: 'MIT',
+    types: ['line', 'bar', 'pie'],
+    status: 'compat',
+    example: 'plugins/tooltips',
+    hint: 'Hover a point to see its tooltip.',
+    note: "The most used fork of the original tooltip plugin, without jQuery. Its repository is gone; the npm package remains. For a maintained alternative, see Stefan Kalscheuer's tooltips below."
+  },
+  {
+    package: 'chartist-plugin-pointlabels',
+    title: 'Point labels',
+    description:
+      'Writes each value next to its point, so readers see exact numbers without hovering.',
+    author: 'Gion Kunz',
+    repository: 'https://github.com/gionkunz/chartist-plugin-pointlabels',
+    license: 'WTFPL',
+    types: ['line', 'bar'],
+    status: 'compat',
+    example: 'plugins/pointlabels'
+  },
+  {
+    package: 'chartist-hover',
+    title: 'Hover',
+    description:
+      'Calls your functions when the pointer enters or leaves a point, so you can show the value anywhere you like.',
+    author: 'Pier-Luc Gendreau',
+    repository: 'https://github.com/Zertz/chartist-hover',
+    license: 'MIT',
+    types: ['line', 'bar', 'pie'],
+    status: 'compat',
+    example: 'plugins/hover',
+    hint: 'Hover a point; the caption shows its value.'
+  },
+  {
+    package: 'chartist-plugin-zoom',
+    title: 'Zoom',
+    description:
+      'Drag a box over a line chart to zoom into it, and reset the zoom from your own button.',
+    author: 'Hannes Kamecke',
+    repository: 'https://github.com/hansmaad/chartist-plugin-zoom',
+    license: 'WTFPL',
+    types: ['line'],
+    status: 'compat',
+    example: 'plugins/zoom',
+    hint: 'Drag across the chart to zoom in, then press "Reset zoom".',
+    note: 'It zooms auto and fixed scale axes, so the X axis needs one of them instead of the default step axis.'
+  },
+  {
+    package: 'chartist-plugin-fill-donut',
+    title: 'Fill donut',
+    description:
+      'Draws a background track behind a donut and puts HTML labels in or around it, for gauges.',
+    author: 'moxx',
+    repository: 'https://github.com/moxx/chartist-plugin-fill-donut',
+    license: 'MIT',
+    types: ['pie'],
+    status: 'compat',
+    example: 'plugins/fill-donut'
+  },
+  {
+    package: 'chartist-plugin-barlabels',
+    title: 'Bar labels',
+    description: 'Writes each value at the end of its bar.',
+    author: 'Matt Gibbs',
+    repository: 'https://github.com/mtgibbs/chartist-plugin-barlabels',
+    license: 'WTFPL',
+    types: ['bar'],
+    status: 'compat',
+    example: 'plugins/barlabels'
+  },
+  {
+    package: 'chartist-plugin-accessibility',
+    title: 'Accessibility',
+    description:
+      'Adds a visually hidden table with the data, a caption and a summary, so screen reader users get the numbers.',
+    author: 'Gion Kunz',
+    repository: 'https://github.com/gionkunz/chartist-plugin-accessibility',
+    license: 'WTFPL',
+    types: ['line', 'bar', 'pie'],
+    status: 'compat',
+    example: 'plugins/accessibility',
+    hint: 'The example makes the hidden table visible below the chart.'
+  },
+  {
+    package: 'chartist-plugin-threshold',
+    title: 'Threshold',
+    description:
+      'Splits lines and bars at a value and gives the parts above and below their own classes to style.',
+    author: 'Gion Kunz',
+    repository: 'https://github.com/gionkunz/chartist-plugin-threshold',
+    license: 'WTFPL',
+    types: ['line', 'bar'],
+    status: 'compat',
+    example: 'plugins/threshold'
+  },
+  {
+    package: 'chartist-plugin-targetline',
+    title: 'Target line',
+    description: 'Draws a horizontal line at a target value.',
+    author: 'Harry Twyford',
+    repository: 'https://github.com/htwyford/chartist-plugin-targetline',
+    license: 'ISC',
+    types: ['line', 'bar'],
+    status: 'compat',
+    example: 'plugins/targetline',
+    note: 'It places the line by the axis maximum, so the axis should start at zero.'
+  },
+  {
+    package: '@stklcode/chartist-plugin-tooltips',
+    title: 'Tooltips (maintained)',
+    description:
+      'Shows a tooltip with the value and meta data on hover. A maintained version of the tooltips plugin, written for 1.x, with an ES module build.',
+    author: 'Stefan Kalscheuer',
+    repository: 'https://github.com/stklcode/chartist-plugin-tooltip',
+    license: 'MIT',
+    types: ['line', 'bar', 'pie'],
+    status: 'v2',
+    example: 'plugins/stklcode-tooltips',
+    hint: 'Hover a point to see its tooltip.'
+  }
+]);
+
+export type Plugin = (typeof PLUGINS)[number];
+
+/** The version the site serves and tests, from the docs app's package.json. */
+export function pinnedVersion(name: string): string {
+  const version = (pkg.devDependencies as Record<string, string>)[name];
+  if (!version) {
+    throw new Error(`plugins: ${name} is not a dev dependency of the docs app`);
+  }
+  return version;
+}
+
+/** The plugin's monthly downloads and last release, from the facts snapshot. */
+export function pluginFacts(name: string) {
+  const entry = facts.plugins[name];
+  if (!entry) {
+    throw new Error(
+      `plugins: no download count for ${name} in facts.json; run \`pnpm nx run docs:facts\``
+    );
+  }
+  return entry;
+}
+
+for (const plugin of PLUGINS) {
+  pinnedVersion(plugin.package);
+  pluginFacts(plugin.package);
+  if (!(plugin.package in files)) {
+    throw new Error(
+      `plugins: ${plugin.package} has no entry in plugin-files.json`
+    );
+  }
+}

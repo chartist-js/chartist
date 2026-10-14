@@ -47,6 +47,13 @@ const schema = z.object({
         'the credits need exactly one creator'
       )
   }),
+  plugins: z.record(
+    z.string(),
+    z.object({
+      monthlyDownloads: z.number().int().nonnegative(),
+      lastRelease: z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+    })
+  ),
   sizes: z.object({
     method: z.string(),
     versions: z.record(z.string(), z.string()),

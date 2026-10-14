@@ -14,6 +14,8 @@
  *   by their collaborator role (without access to the collaborators, the
  *   previous snapshot's roles are kept), minus credits-exclude.json; their
  *   avatars go to src/assets/credits/
+ * - plugins: monthly downloads and the last release of the plugins page's
+ *   plugins (the packages in src/data/plugin-files.json)
  * - sizes: a line chart bundled with each library's recommended import
  *   (esbuild, minified, gzipped), at the versions pinned in package.json
  */
@@ -220,6 +222,33 @@ async function credits() {
   return { roles, people };
 }
 
+/** Monthly downloads and the last release date of each listed plugin. */
+async function plugins() {
+  const names = Object.keys(
+    JSON.parse(
+      await readFile(new URL('src/data/plugin-files.json', root), 'utf8')
+    ) as Record<string, unknown>
+  );
+  const result: Record<
+    string,
+    { monthlyDownloads: number; lastRelease: string }
+  > = {};
+  for (const name of names) {
+    const { downloads } = await json<{ downloads: number }>(
+      `https://api.npmjs.org/downloads/point/last-month/${name}`
+    );
+    const meta = await json<{
+      'dist-tags': { latest: string };
+      time: Record<string, string>;
+    }>(`https://registry.npmjs.org/${name.replace('/', '%2F')}`);
+    result[name] = {
+      monthlyDownloads: downloads,
+      lastRelease: meta.time[meta['dist-tags'].latest].slice(0, 10)
+    };
+  }
+  return result;
+}
+
 /**
  * One line chart per library, with the smallest setup its docs describe:
  * Chart.js with tree-shaken registration, ApexCharts' lean core plus the
@@ -297,13 +326,14 @@ async function sizes() {
 }
 
 async function main() {
-  const [downloads, gh, deps, candidates, credited, measured] =
+  const [downloads, gh, deps, candidates, credited, plugged, measured] =
     await Promise.all([
       npmDownloads(),
       github(),
       dependents(),
       verifiedCandidates(),
       credits(),
+      plugins(),
       sizes()
     ]);
   const exclude = JSON.parse(
@@ -323,6 +353,7 @@ async function main() {
       avatar: `${owner.toLowerCase()}.png`
     })),
     credits: credited,
+    plugins: plugged,
     sizes: measured
   };
   await writeFile(
