@@ -1,6 +1,9 @@
-import { compile } from './compile.ts';
-import { Preview } from './preview.ts';
-import { openInStackblitz } from './stackblitz.ts';
+import {
+  stackblitzAction,
+  type PlaygroundAction,
+  type PlaygroundContext
+} from './actions.ts';
+import { createPreview } from './run.ts';
 import type {
   CompileOptions,
   Diagnostic,
@@ -16,22 +19,36 @@ export interface PlaygroundOptions extends Omit<
   files: PlaygroundFiles;
   /** Title for the preview frame and the StackBlitz project. */
   title?: string;
-  /** Order of the editor tabs; other files follow alphabetically. */
+  /**
+   * Order of the editor tabs; other files follow alphabetically. The first
+   * tab is open when the playground starts.
+   */
   tabs?: string[];
   /** Load the CodeMirror editor. Defaults to `true`. */
   editor?: boolean;
   /** Re-render delay after the last edit, in ms. Defaults to 300. */
   debounce?: number;
-  /** npm range of `chartist` for the StackBlitz export. */
+  /**
+   * `inline` (default): a block in a page. `full`: fills its element, with
+   * the editor and the preview side by side.
+   */
+  layout?: 'inline' | 'full';
+  /**
+   * Toolbar buttons, in order (see actions.ts). Defaults to
+   * `[stackblitzAction({ chartistVersion })]`.
+   */
+  actions?: PlaygroundAction[];
+  /** npm range of `chartist` for the default StackBlitz action. */
   chartistVersion?: string;
+  /** After an edit (debounced like rendering) or a reset, with the files. */
+  onChange?: (files: PlaygroundFiles) => void;
   /** Every message from the preview (errors, console, ready). */
   onMessage?: (message: PreviewMessage) => void;
   /** After each compile, with its duration in ms. */
   onCompile?: (result: { diagnostics: Diagnostic[]; time: number }) => void;
 }
 
-export interface Playground {
-  readonly files: PlaygroundFiles;
+export interface Playground extends PlaygroundContext {
   /** Replaces all files (e.g. another example) and renders. */
   setFiles(files: PlaygroundFiles, title?: string): Promise<void>;
   /** Changes one file and schedules a render, as an edit would. */
@@ -45,23 +62,27 @@ export interface Playground {
 const DEFAULT_TABS = ['index.html', 'src/main.ts', 'src/style.css'];
 
 /**
- * Mounts editor tabs, a sandboxed preview and an error/console panel into
- * `element`. Framework-free, so the docs site can call it from any page.
+ * Mounts editor tabs, a sandboxed preview, toolbar actions and an
+ * error/console panel into `element`. Framework-free, so any page can call
+ * it; pages theme it with the `--pg-*` custom properties (playground.css).
  */
 export async function createPlayground(
   element: HTMLElement,
   options: PlaygroundOptions
 ): Promise<Playground> {
-  let files = { ...options.files };
+  let original = { ...options.files };
+  let files = { ...original };
   let title = options.title ?? 'Chartist example';
-  let run = 0;
   let timer: ReturnType<typeof setTimeout> | undefined;
 
-  element.classList.add('playground');
+  element.classList.add(
+    'playground',
+    `playground-${options.layout ?? 'inline'}`
+  );
   element.innerHTML = `
     <div class="playground-toolbar">
       <div class="playground-tabs" role="tablist"></div>
-      <button type="button" class="playground-stackblitz">Open in StackBlitz</button>
+      <div class="playground-actions"></div>
     </div>
     <div class="playground-main">
       <div class="playground-editor"></div>
@@ -88,9 +109,11 @@ export async function createPlayground(
       ? `${d.file}${d.line ? `:${d.line}${d.column ? `:${d.column}` : ''}` : ''}: `
       : '';
 
-  const preview = new Preview(
-    $('.playground-output'),
-    message => {
+  const preview = createPreview($('.playground-output'), {
+    ...options,
+    files,
+    title,
+    onMessage: message => {
       if (message.type === 'error') {
         addEntry(
           errors,
@@ -106,8 +129,26 @@ export async function createPlayground(
       }
       options.onMessage?.(message);
     },
-    title
-  );
+    onCompile: result => {
+      options.onCompile?.(result);
+      errors.replaceChildren();
+      if (!result.html) {
+        // Keep the last good preview visible and show what's wrong.
+        for (const diagnostic of result.diagnostics) {
+          addEntry(
+            errors,
+            'playground-error',
+            `${where(diagnostic)}${diagnostic.message}`
+          );
+        }
+        element.dataset.state = 'error';
+        return;
+      }
+      consoleList.replaceChildren();
+      element.dataset.state = 'ok';
+    }
+  });
+  preview.iframe.className = 'playground-preview';
 
   let editor: import('./editor.ts').Editor | undefined;
   let active = '';
@@ -143,38 +184,17 @@ export async function createPlayground(
     renderTabs();
   };
 
-  let previewStyles = options.previewStyles;
-
   const render = async () => {
     clearTimeout(timer);
-    const runId = `run-${++run}`;
-    const result = await compile(files, { ...options, previewStyles, runId });
-    // A newer render started while this one compiled.
-    if (runId !== `run-${run}`) {
-      return;
-    }
-    options.onCompile?.(result);
-    errors.replaceChildren();
-    if (!result.html) {
-      // Keep the last good preview visible and show what's wrong.
-      for (const diagnostic of result.diagnostics) {
-        addEntry(
-          errors,
-          'playground-error',
-          `${where(diagnostic)}${diagnostic.message}`
-        );
-      }
-      element.dataset.state = 'error';
-      return;
-    }
-    consoleList.replaceChildren();
-    element.dataset.state = 'ok';
-    preview.render(result.html, runId);
+    await preview.setFiles(files);
   };
 
   const schedule = () => {
     clearTimeout(timer);
-    timer = setTimeout(render, options.debounce ?? 300);
+    timer = setTimeout(() => {
+      void render();
+      options.onChange?.({ ...files });
+    }, options.debounce ?? 300);
   };
 
   const mountEditor = async () => {
@@ -189,47 +209,79 @@ export async function createPlayground(
     });
   };
 
-  $('.playground-stackblitz').addEventListener('click', () => {
-    void openInStackblitz(files, {
-      title,
-      chartistVersion: options.chartistVersion ?? 'latest'
-    });
-  });
-
   const load = async (next: PlaygroundFiles) => {
     files = { ...next };
     await mountEditor();
+    // The first tab in the given order, else src/main.ts.
+    const order = fileOrder();
     openTab(
-      fileOrder().includes('src/main.ts') ? 'src/main.ts' : fileOrder()[0]
+      options.tabs?.length || !order.includes('src/main.ts')
+        ? order[0]
+        : 'src/main.ts'
     );
   };
 
-  await Promise.all([load(files), render()]);
-
-  return {
+  const playground: Playground = {
     get files() {
       return files;
+    },
+    get title() {
+      return title;
+    },
+    get activeFile() {
+      return active;
+    },
+    async reset() {
+      await Promise.all([load(original), render()]);
+      options.onChange?.({ ...files });
     },
     async setFiles(next, nextTitle) {
       title = nextTitle ?? title;
       preview.iframe.title = title;
-      files = { ...next };
-      await Promise.all([load(files), render()]);
+      original = { ...next };
+      await Promise.all([load(original), render()]);
     },
     updateFile(file, content) {
       files[file] = content;
       schedule();
     },
     render,
-    setPreviewStyles(css) {
-      previewStyles = css;
-      return render();
+    async setPreviewStyles(css) {
+      await preview.setPreviewStyles(css);
     },
     destroy() {
       clearTimeout(timer);
       editor?.destroy();
       preview.destroy();
       element.replaceChildren();
+      element.classList.remove(
+        'playground',
+        `playground-${options.layout ?? 'inline'}`
+      );
     }
   };
+
+  const actions = options.actions ?? [
+    stackblitzAction({ chartistVersion: options.chartistVersion })
+  ];
+  $('.playground-actions').replaceChildren(
+    ...actions.map(action => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'playground-action';
+      button.textContent = action.label;
+      if (action.title) {
+        button.title = action.title;
+        button.setAttribute('aria-label', action.title);
+      }
+      button.addEventListener(
+        'click',
+        () => void action.run(playground, button)
+      );
+      return button;
+    })
+  );
+
+  await Promise.all([load(files), render()]);
+  return playground;
 }

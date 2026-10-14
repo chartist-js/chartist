@@ -1,127 +1,239 @@
-/* Plain, unbranded layout. Brand styling comes with the docs site. */
-.playground {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  border: 1px solid #ccc;
-  font:
-    14px/1.4 system-ui,
-    sans-serif;
-  min-height: 480px;
-}
-
-.playground-toolbar {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  border-bottom: 1px solid #ccc;
-  background: #f6f6f6;
-}
-
-.playground-tabs {
-  display: flex;
-  overflow-x: auto;
-}
-
-.playground-tab,
-.playground-stackblitz {
-  border: 0;
-  background: none;
-  padding: 6px 12px;
-  font: inherit;
-  cursor: pointer;
-}
-
-.playground-tab[aria-selected='true'] {
-  background: #fff;
-  box-shadow: inset 0 -2px 0 #333;
-}
-
-.playground-main {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  min-height: 0;
-}
-
-@media (max-width: 720px) {
-  .playground-main {
-    grid-template-columns: 1fr;
+/*
+ * The playground's layout and neutral look. Pages theme it by setting the
+ * --pg-* custom properties on the playground or any ancestor; every value
+ * falls back to the neutral default below, so none has to be set.
+ *
+ * In a layer of its own, below a page's layers when the page declares
+ * `@layer playground` first, so page styles never need higher specificity.
+ *
+ * Chrome (toolbar and editor):
+ *   --pg-chrome-bg, --pg-chrome-ink, --pg-chrome-muted, --pg-chrome-line,
+ *   --pg-tab-active-bg, --pg-accent (selected tab, caret), --pg-radius
+ * Editor: --pg-editor-bg, --pg-editor-ink, --pg-gutter-ink,
+ *   --pg-active-line, --pg-selection, --pg-code-size, --pg-code-line-height
+ * Output and panel: --pg-output-bg, --pg-panel-ink, --pg-panel-line,
+ *   --pg-error, --pg-error-bg, --pg-warn-bg
+ * Frame: --pg-border, --pg-min-height, --pg-font, --pg-font-code
+ * Syntax: --pg-tok-keyword, --pg-tok-string, --pg-tok-number,
+ *   --pg-tok-function, --pg-tok-definition, --pg-tok-property,
+ *   --pg-tok-type, --pg-tok-tag, --pg-tok-attribute, --pg-tok-comment,
+ *   --pg-tok-punctuation
+ */
+@layer playground {
+  .playground {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    border: var(--pg-border, 1px solid #ccc);
+    font: 14px/1.4 var(--pg-font, system-ui, sans-serif);
+    min-height: var(--pg-min-height, 480px);
+    background: var(--pg-editor-bg, #fff);
   }
-}
 
-.playground-editor {
-  min-height: 240px;
-  overflow: auto;
-  border-right: 1px solid #ccc;
-}
+  /* Fills its element: the page gives it a height (e.g. the viewport). */
+  .playground-full {
+    box-sizing: border-box;
+    height: 100%;
+    min-height: 0;
+  }
 
-.playground-editor .cm-editor {
-  height: 100%;
-}
+  .playground-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 8px;
+    border-bottom: 1px solid var(--pg-chrome-line, #ccc);
+    background: var(--pg-chrome-bg, #f6f6f6);
+  }
 
-.playground-output {
-  display: flex;
-}
+  .playground-tabs,
+  .playground-actions {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+  }
 
-.playground-preview {
-  flex: 1;
-  border: 0;
-  min-height: 320px;
-  background: #fff;
-}
+  .playground-tab,
+  .playground-action {
+    border: 0;
+    background: none;
+    min-height: 36px;
+    padding: 10px 12px;
+    border-radius: var(--pg-radius, 0);
+    font: 600 12px / 1 var(--pg-font-code, ui-monospace, monospace);
+    color: var(--pg-chrome-muted, #555);
+    cursor: pointer;
+    white-space: nowrap;
+  }
 
-.playground-panel ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font:
-    12px/1.4 ui-monospace,
-    monospace;
-}
+  .playground-tab:hover,
+  .playground-action:hover {
+    color: var(--pg-chrome-ink, #111);
+  }
 
-.playground-panel li {
-  padding: 4px 8px;
-  border-top: 1px solid #eee;
-  white-space: pre-wrap;
-}
+  .playground-tab[aria-selected='true'] {
+    color: var(--pg-chrome-ink, #111);
+    background: var(--pg-tab-active-bg, #fff);
+    box-shadow: inset 0 -2px 0 var(--pg-accent, #333);
+  }
 
-.playground-error,
-.playground-log-error {
-  color: #b00020;
-  background: #fff0f0;
-}
+  .playground-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    min-height: 0;
+  }
 
-.playground-log-warn {
-  background: #fffbe6;
-}
+  @media (max-width: 720px) {
+    .playground-main {
+      grid-template-columns: 1fr;
+    }
 
-/* Syntax colors (CodeMirror classHighlighter); pages can override them. */
-.playground .tok-keyword,
-.playground .tok-operator {
-  color: #7a3e9d;
-}
+    .playground-editor {
+      border-right: 0;
+      border-bottom: 1px solid var(--pg-chrome-line, #ccc);
+    }
+  }
 
-.playground .tok-string,
-.playground .tok-string2 {
-  color: #1a7f37;
-}
+  .playground-editor {
+    min-height: 240px;
+    overflow: auto;
+    border-right: 1px solid var(--pg-chrome-line, #ccc);
+    background: var(--pg-editor-bg, #fff);
+  }
 
-.playground .tok-number,
-.playground .tok-bool,
-.playground .tok-atom {
-  color: #0550ae;
-}
+  .playground-editor .cm-editor {
+    height: 100%;
+    background: var(--pg-editor-bg, #fff);
+    color: var(--pg-editor-ink, #111);
+    font-size: var(--pg-code-size, 13px);
+  }
 
-.playground .tok-variableName.tok-definition,
-.playground .tok-propertyName.tok-definition {
-  color: #953800;
-}
+  .playground-editor .cm-scroller {
+    font-family: var(--pg-font-code, ui-monospace, monospace);
+    line-height: var(--pg-code-line-height, 1.5);
+  }
 
-.playground .tok-comment {
-  color: #6e7781;
-  font-style: italic;
-}
+  .playground-editor .cm-content {
+    caret-color: var(--pg-accent, #333);
+    padding-block: 12px;
+  }
 
-.playground .tok-typeName,
-.playground .tok-className {
-  color: #0a3069;
+  .playground-editor .cm-cursor {
+    border-left-color: var(--pg-accent, #333);
+  }
+
+  .playground-editor .cm-gutters {
+    background: var(--pg-editor-bg, #fff);
+    color: var(--pg-gutter-ink, #999);
+    border-right: 0;
+  }
+
+  .playground-editor .cm-activeLine,
+  .playground-editor .cm-activeLineGutter {
+    background: var(--pg-active-line, #0000000a);
+  }
+
+  .playground-editor .cm-editor.cm-focused {
+    outline: none;
+  }
+
+  .playground-editor .cm-selectionBackground,
+  .playground-editor .cm-focused .cm-selectionBackground,
+  .playground-editor ::selection {
+    background: var(--pg-selection, #b4d5fe);
+  }
+
+  .playground-output {
+    display: flex;
+    background: var(--pg-output-bg, #fff);
+  }
+
+  .playground-preview {
+    flex: 1;
+    border: 0;
+    min-height: 320px;
+    background: transparent;
+  }
+
+  .playground-full .playground-preview {
+    min-height: 0;
+  }
+
+  .playground-panel ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font: 12px/1.5 var(--pg-font-code, ui-monospace, monospace);
+  }
+
+  .playground-panel li {
+    padding: 4px 8px;
+    border-top: 1px solid var(--pg-panel-line, #eee);
+    color: var(--pg-panel-ink, inherit);
+    white-space: pre-wrap;
+  }
+
+  .playground-error,
+  .playground-log-error {
+    color: var(--pg-error, #b00020);
+    background: var(--pg-error-bg, #fff0f0);
+  }
+
+  .playground-log-warn {
+    background: var(--pg-warn-bg, #fffbe6);
+  }
+
+  /* Syntax colors (CodeMirror classHighlighter). */
+  .playground .tok-keyword,
+  .playground .tok-operator,
+  .playground .tok-modifier {
+    color: var(--pg-tok-keyword, #7a3e9d);
+  }
+
+  .playground .tok-string,
+  .playground .tok-string2 {
+    color: var(--pg-tok-string, #1a7f37);
+  }
+
+  .playground .tok-number,
+  .playground .tok-bool,
+  .playground .tok-atom {
+    color: var(--pg-tok-number, #0550ae);
+  }
+
+  .playground .tok-function,
+  .playground .tok-variableName.tok-function {
+    color: var(--pg-tok-function, inherit);
+  }
+
+  .playground .tok-variableName.tok-definition,
+  .playground .tok-propertyName.tok-definition {
+    color: var(--pg-tok-definition, #953800);
+  }
+
+  .playground .tok-propertyName {
+    color: var(--pg-tok-property, inherit);
+  }
+
+  .playground .tok-typeName,
+  .playground .tok-className {
+    color: var(--pg-tok-type, #0a3069);
+  }
+
+  .playground .tok-tagName {
+    color: var(--pg-tok-tag, #116329);
+  }
+
+  .playground .tok-attributeName {
+    color: var(--pg-tok-attribute, #0550ae);
+  }
+
+  .playground .tok-comment {
+    color: var(--pg-tok-comment, #6e7781);
+    font-style: italic;
+  }
+
+  .playground .tok-punctuation {
+    color: var(--pg-tok-punctuation, inherit);
+  }
 }

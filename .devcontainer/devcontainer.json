@@ -29,8 +29,9 @@
   // The image ships pnpm, which follows packageManager in package.json, so
   // corepack isn't needed (enabling it fails: /usr/local/bin isn't writable).
   "postCreateCommand": "pnpm install --frozen-lockfile && pnpm --filter chartist exec playwright install --with-deps chromium firefox webkit",
-  // 4322: docs dev server, 4321: playground e2e, 4329: docs e2e server.
-  "forwardPorts": [4322, 4321, 4329],
+  // 4321: docs dev server (nx dev docs), 4331: playground e2e,
+  // 4329: docs e2e server.
+  "forwardPorts": [4321, 4331, 4329],
   "customizations": {
     "vscode": {
       "extensions": [

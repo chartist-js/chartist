@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const PORT = 4321;
+// Not 4321: that's where the docs dev server runs (nx-astro's default).
+const PORT = Number(process.env.E2E_PORT ?? 4331);
 
 /**
  * End-to-end test of the built demo (dist/, built with --base /chartist/),

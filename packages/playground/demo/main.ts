@@ -1,5 +1,11 @@
 import {
+  copyAction,
   createPlayground,
+  createPreview,
+  encodeShare,
+  resetAction,
+  shareAction,
+  stackblitzAction,
   type PlaygroundFiles,
   type TransformerName
 } from '../src/index.ts';
@@ -34,9 +40,46 @@ select.addEventListener('change', () => {
 });
 
 const metrics = document.body.dataset;
-const playground = await createPlayground(
-  document.getElementById('playground')!,
-  {
+const host = document.getElementById('playground')!;
+
+// ?mode=preview: only the preview component, no editor.
+if (params.get('mode') === 'preview') {
+  host.style.height = '400px';
+  host.style.display = 'flex';
+  const handle = createPreview(host, {
+    files: examples[current],
+    title: titleOf(current),
+    transformer,
+    chartistUrl: `${base}lib/chartist/index.js`,
+    stylesUrl: `${base}lib/chartist/index.css`
+  });
+  handle.iframe.className = 'playground-preview';
+  await handle.render();
+  Object.assign(globalThis, { preview: handle });
+} else {
+  await startPlayground();
+}
+
+/** The playground, with the demo's example navigation. */
+async function startPlayground() {
+  // ?layout=full fills the viewport; ?actions=all shows every built-in action.
+  const layout = params.get('layout') === 'full' ? 'full' : 'inline';
+  if (layout === 'full') {
+    host.style.height = '100vh';
+  }
+  const shareUrl = async (files: PlaygroundFiles, title: string) =>
+    `${location.origin}${location.pathname}#code=${await encodeShare({ files, title })}`;
+  const playground = await createPlayground(host, {
+    layout,
+    actions:
+      params.get('actions') === 'all'
+        ? [
+            resetAction(),
+            copyAction(),
+            shareAction({ url: shareUrl }),
+            stackblitzAction()
+          ]
+        : undefined,
     files: examples[current],
     title: titleOf(current),
     transformer,
@@ -51,32 +94,32 @@ const playground = await createPlayground(
         metrics.firstReadyMs = performance.now().toFixed(0);
       }
     }
-  }
-);
+  });
 
-const renderNav = () => {
-  nav.replaceChildren(
-    ...Object.keys(examples).map(id => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.textContent = titleOf(id);
-      button.dataset.example = id;
-      button.setAttribute('aria-current', String(id === current));
-      button.addEventListener('click', async () => {
-        current = id;
-        renderNav();
-        history.replaceState(
-          null,
-          '',
-          `?example=${id}&transformer=${transformer}`
-        );
-        await playground.setFiles(examples[id], titleOf(id));
-      });
-      return button;
-    })
-  );
-};
-renderNav();
+  const renderNav = () => {
+    nav.replaceChildren(
+      ...Object.keys(examples).map(id => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = titleOf(id);
+        button.dataset.example = id;
+        button.setAttribute('aria-current', String(id === current));
+        button.addEventListener('click', async () => {
+          current = id;
+          renderNav();
+          history.replaceState(
+            null,
+            '',
+            `?example=${id}&transformer=${transformer}`
+          );
+          await playground.setFiles(examples[id], titleOf(id));
+        });
+        return button;
+      })
+    );
+  };
+  renderNav();
 
-// For manual experiments in the devtools console.
-Object.assign(globalThis, { playground });
+  // For manual experiments in the devtools console.
+  Object.assign(globalThis, { playground });
+}

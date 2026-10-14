@@ -12,7 +12,8 @@ export default defineConfig({
   output: 'static',
   outDir: '../../dist/apps/docs',
   integrations: [mdx(), playgroundLib()],
-  // 4321 (Astro's default) is the playground e2e server's port.
+  // `nx dev docs` passes --port 4321 (nx-astro's default), which wins over
+  // this; `astro dev` run directly uses 4322. The playground e2e uses 4331.
   // IPv4 loopback: Node may otherwise bind only [::1], which dev container
   // port forwarding (IPv4) can't reach. Still private to the machine.
   server: { port: 4322, host: '127.0.0.1' },

@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { decodeShare } from '../../src/share.ts';
 
 const EXAMPLES = {
   'line-area': 'line',
@@ -169,4 +170,75 @@ new PieChart('#chart', { series: [1, 2] }, options);
     await expect(errors(page).first()).toContainText('src/main.ts:1');
     await noteError(page, info);
   });
+});
+
+test('reset restores the files after an edit', async ({ page }) => {
+  await page.goto('?example=line-area&actions=all');
+  await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
+    timeout: 20_000
+  });
+  await replaceCode(
+    page,
+    "import 'chartist/styles.css';\nimport { BarChart } from 'chartist';\nnew BarChart('#chart', { labels: ['A'], series: [[1]] });\n"
+  );
+  await expect(preview(page).locator('svg.ct-chart-bar')).toBeVisible({
+    timeout: 20_000
+  });
+  await page.getByRole('button', { name: 'Reset' }).click();
+  await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
+    timeout: 20_000
+  });
+});
+
+test('actions render in the given order', async ({ page }) => {
+  await page.goto('?example=line-area&actions=all');
+  await expect(page.locator('.playground-action')).toHaveText([
+    'Reset',
+    'Copy',
+    'Share',
+    'Open in StackBlitz'
+  ]);
+});
+
+test('share copies a link that decodes to the current files', async ({
+  page,
+  context,
+  browserName
+}) => {
+  test.skip(
+    browserName !== 'chromium',
+    'clipboard permissions are Chromium-only'
+  );
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto('?example=line-area&actions=all');
+  await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
+    timeout: 20_000
+  });
+  await page.getByRole('button', { name: 'Copy a link to this code' }).click();
+  await expect(
+    page.getByRole('button', { name: 'Copy a link to this code' })
+  ).toHaveText('Link copied');
+  const link = await page.evaluate(() => navigator.clipboard.readText());
+  expect(link).toMatch(/#code=1\./);
+  const decoded = await decodeShare(new URL(link).hash.slice('#code='.length));
+  expect(Object.keys(decoded.files)).toContain('src/main.ts');
+});
+
+test('the full layout fills its element', async ({ page }) => {
+  await page.goto('?example=line-area&layout=full');
+  const box = await page.locator('.playground').boundingBox();
+  const viewport = page.viewportSize()!;
+  expect(box?.height).toBeCloseTo(viewport.height, 1);
+  await expect(page.locator('.playground')).toHaveClass(/playground-full/);
+});
+
+test('the preview component runs an example without the editor', async ({
+  page
+}) => {
+  await page.goto('?example=line-area&mode=preview');
+  await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
+    timeout: 20_000
+  });
+  await expect(page.locator('.cm-editor')).toHaveCount(0);
+  await expect(page.locator('.playground-toolbar')).toHaveCount(0);
 });

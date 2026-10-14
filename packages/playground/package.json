@@ -8,7 +8,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./compile": "./src/compile.ts",
-    "./preview": "./src/preview.ts"
+    "./preview": "./src/run.ts",
+    "./share": "./src/share.ts"
   },
   "scripts": {
     "dev": "vite",
