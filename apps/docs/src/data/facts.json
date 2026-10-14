@@ -10,29 +10,56 @@
   "github": {
     "stars": 13389,
     "contributors": 92,
-    "dependents": 72834
+    "dependents": 72835
   },
   "usedBy": [
     {
-      "owner": "leek-wars",
-      "repo": "leek-wars/leek-wars",
-      "stars": 205,
-      "evidence": "https://github.com/leek-wars/leek-wars",
-      "avatar": "leek-wars.png"
+      "owner": "vendurehq",
+      "name": "Vendure",
+      "repo": "vendurehq/vendure",
+      "stars": 8517,
+      "evidence": "https://github.com/vendurehq/vendure/blob/master/packages/admin-ui/package.json",
+      "avatar": "vendurehq.png"
     },
     {
-      "owner": "Pinelab-studio",
-      "repo": "Pinelab-studio/pinelab-vendure-plugins",
-      "stars": 138,
-      "evidence": "https://github.com/Pinelab-studio/pinelab-vendure-plugins",
-      "avatar": "pinelab-studio.png"
+      "owner": "opensourcepos",
+      "name": "Open Source POS",
+      "repo": "opensourcepos/opensourcepos",
+      "stars": 4436,
+      "evidence": "https://github.com/opensourcepos/opensourcepos/blob/master/package.json",
+      "avatar": "opensourcepos.png"
     },
     {
-      "owner": "pluginkollektiv",
-      "repo": "pluginkollektiv/statify",
-      "stars": 87,
-      "evidence": "https://github.com/pluginkollektiv/statify",
-      "avatar": "pluginkollektiv.png"
+      "owner": "indico",
+      "name": "Indico",
+      "repo": "indico/indico",
+      "stars": 2118,
+      "evidence": "https://github.com/indico/indico/blob/master/package.json",
+      "avatar": "indico.png"
+    },
+    {
+      "owner": "vatesfr",
+      "name": "Xen Orchestra",
+      "repo": "vatesfr/xen-orchestra",
+      "stars": 994,
+      "evidence": "https://github.com/vatesfr/xen-orchestra/blob/master/packages/xo-web/package.json",
+      "avatar": "vatesfr.png"
+    },
+    {
+      "owner": "getgrav",
+      "name": "Grav",
+      "repo": "getgrav/grav-plugin-admin",
+      "stars": 377,
+      "evidence": "https://github.com/getgrav/grav-plugin-admin/blob/develop/themes/grav/package.json",
+      "avatar": "getgrav.png"
+    },
+    {
+      "owner": "zooniverse",
+      "name": "Zooniverse",
+      "repo": "zooniverse/Panoptes-Front-End",
+      "stars": 68,
+      "evidence": "https://github.com/zooniverse/Panoptes-Front-End/blob/main/package.json",
+      "avatar": "zooniverse.png"
     }
   ],
   "credits": {
@@ -174,8 +201,8 @@
     },
     "bytes": {
       "chartist (lineChart)": {
-        "minified": 31843,
-        "gzip": 12401
+        "minified": 31927,
+        "gzip": 12447
       },
       "chartist (core: chart)": {
         "minified": 10525,
