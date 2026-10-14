@@ -1,28 +1,30 @@
 # Contributing to Chartist
 
-- [Issues and Bugs](#issue)
-- [Submission Guidelines](#submit)
+- [Issues and bugs](#issue)
+- [Development setup](#setup)
+- [Submission guidelines](#submit)
 
-## <a name="issue"></a> Found an Issue?
+## <a name="issue"></a> Found an issue?
 
-If you find a bug in the source code or a mistake in the documentation, you can help us by
-submitting an issue to our [GitHub Repository][github]. Even better you can submit a Pull Request
-with a fix.
+If you find a bug in the source code or a mistake in the documentation, you can help us by submitting an issue to our [GitHub repository](https://github.com/chartist-js/chartist/issues). Even better, you can submit a pull request with a fix.
 
-## Pre-requisites
+## <a name="setup"></a> Development setup
 
-You will need the following to run a local development enviroment.
+You need the current Node.js LTS (`.nvmrc`) and pnpm (the version in `package.json`'s `packageManager`). A dev container in `.devcontainer/` has everything installed.
 
-- Node.js & npm
-- pnpm (`npm install -g pnpm`)
-- Text editor of your choice
+1. Clone the repository and run `pnpm install`.
+2. Run tasks through Nx, for example:
+   - `pnpm nx test chartist --watch`: the library's unit tests in watch mode.
+   - `pnpm --dir packages/examples exec vite line/simple`: run one example.
+   - `pnpm nx dev docs`: the docs site at http://localhost:4321.
+   - `pnpm nx run chartist:test:visual`: compare every example with the screenshot baseline. The committed baselines are recorded on Linux with Playwright's Chromium; on other machines, fonts render differently, so use `pnpm nx run chartist:test:visual:local-baseline` once and then `pnpm nx run chartist:test:visual:local`.
 
-## How to Run a Local Distribution
+The repository layout and the standing decisions are described in [`docs/decisions.md`](docs/decisions.md); the behavior of each part is specified in [`openspec/specs/`](openspec/specs/).
 
-1. `cd` into your local copy of the repository.
-2. Run `pnpm i` to install dependencies located in `package.json`.
-3. Run an example from `packages/examples` with `pnpm --dir packages/examples exec vite line/simple`, or run `pnpm nx test chartist --watch` to run tests in watch mode. `pnpm nx run chartist:test:visual` compares every example with the screenshot baseline.
+## <a name="submit"></a> Submission guidelines
 
-## <a name="submit"></a> Submission Guidelines
-
-If you are creating a Pull Request, fork the repository and make any changes on the `develop` branch.
+- Fork the repository and branch from `main`.
+- Use [conventional commit](https://www.conventionalcommits.org/) messages (`fix: …`, `feat: …`, `docs: …`); they drive the changelog.
+- Keep file moves and deletions in commits of their own, so git can follow the files' history.
+- Run `pnpm nx format` before committing, and make sure `pnpm nx run-many -t lint typecheck check test` passes.
+- Docs pages follow [`apps/docs/WRITING.md`](apps/docs/WRITING.md), doc comments [`packages/chartist/DOC-COMMENTS.md`](packages/chartist/DOC-COMMENTS.md).
