@@ -1,0 +1,119 @@
+---
+title: Composed charts
+description: Build charts from axes and layers with chart(), for bars and a line on two Y axes, axes on any side and anything the presets don't cover.
+group: Chart types
+order: 4
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const climate = {
+  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+  series: [
+    [64, 58, 70, 82, 104, 120],
+    [1, 3, 8, 12, 16, 20]
+  ]
+};
+
+`lineChart()`, `barChart()` and `pieChart()` are presets: ready-made recipes over one function, `chart()`. When a recipe doesn't fit, you cook with the same parts yourself: a list of axes, and a list of layers that draw on them.
+
+## Preset or compose?
+
+Use a preset when your chart is a line, bar or pie chart. Presets take the familiar options, handle responsive options and give you the classic markup in one call.
+
+Compose when you need something a preset can't do:
+
+- bars and a line in one chart,
+- two value scales, like millimeters on the left and degrees on the right,
+- several axes on one side, or an X axis at the top,
+- your own layer next to the built-in ones.
+
+## Bars and a line on two axes
+
+A climate chart: rain as bars on the left axis, temperature as a line on the right axis, each on its own scale.
+
+<LiveExample
+  title='Rain and temperature'
+  label='Composed chart: monthly rain in mm as bars on the left axis and temperature in degrees as a line on the right axis, January to June'
+  preview={{
+    type: 'composed',
+    data: climate,
+    options: { className: 'ct-chart-bar' }
+  }}
+  example='composed-charts/rain-and-temperature'
+/>
+
+Three things make this work:
+
+- **Axes have ids.** `cartesianAxes()` takes a list of axes, each with an `id`, a `side` and a `type`.
+- **Layers pick their series and axes.** `bar({ series: ['rain'], x: 'month', y: 'mm' })` draws the series named `rain` against the `month` and `mm` axes.
+- **Each axis scales to its own series.** The `mm` axis only looks at the rain, the `celsius` axis only at the temperature.
+
+## Axes
+
+Every axis in `cartesianAxes([...])` has:
+
+| Field  | What it is                                                              |
+| ------ | ----------------------------------------------------------------------- |
+| `id`   | The name layers use to draw on it. Ids must be unique                   |
+| `side` | `'bottom'` or `'top'` for an X axis, `'left'` or `'right'` for a Y axis |
+| `type` | `stepAxis()`, `autoScaleAxis()` or `fixedScaleAxis()`                   |
+
+On top of that, an axis takes the same options as `axisX` and `axisY` in the presets: `offset`, `low`, `high`, `onlyInteger`, `ticks`, `showGrid`, `showLabel`, `labelInterpolationFnc` and the rest. [Axes and scales](../axes-and-scales/) explains the types and their options.
+
+A few things differ from the presets:
+
+- **A step axis needs its `ticks`.** It doesn't read the labels from your data, so pass them, like `ticks: months` above.
+- **Offsets default to 30 px for X axes and 40 px for Y axes**, the space reserved for an axis's labels.
+- **Several axes can share a side.** They stack outward in the order you list them, each with its own offset.
+
+```ts nocheck
+cartesianAxes([
+  { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
+  // Both on the left: 'eur' next to the chart, 'usd' outside it.
+  { id: 'eur', side: 'left', type: autoScaleAxis() },
+  { id: 'usd', side: 'left', type: autoScaleAxis(), offset: 50 }
+]);
+```
+
+## Layers
+
+Layers draw in the order you list them, each on top of the ones before. Put the grid first and the labels last.
+
+| Layer          | Draws                       | Options                                                                                                 |
+| -------------- | --------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `line()`       | Lines, points and areas     | `series`, `x`, `y`, `align`, `lineSmooth`, `showLine`, `showPoint`, `showArea`, `areaBase`              |
+| `bar()`        | Bars                        | `series`, `x`, `y`, `horizontalBars`, `stackBars`, `stackMode`, `seriesBarDistance`, `distributeSeries` |
+| `axisGrid()`   | Grid lines (`g.ct-grids`)   | `axes` (default: all), `background`                                                                     |
+| `axisLabels()` | Axis labels (`g.ct-labels`) | `axes` (default: all), `labels` (`'html'` or `'svg'`)                                                   |
+
+`series` picks series by `name` or by index; leave it out and the layer draws all of them. `x` and `y` are axis ids; leave them out and the layer uses the first X and the first Y axis. An unknown name or id throws an error that names the layer. Grid and label layers draw for every axis unless you name some: the example draws the grid of `month` and `mm` only, so the right axis doesn't add a second set of lines.
+
+Series keep their place in the data: the temperature is the second series, so it would be `ct-series-b` even though it's the only series its layer draws. Your [series colors](../styling-with-css/#one-color-per-series) stay put when you move a series to another layer. (The example picks `ct-series-g` with `className`, a blue that stands apart from the red bars.)
+
+### Lining up with bars
+
+Bars sit in the middle of each step, while line points sit at the start of it by default. `align: 'center'` moves the points to the bar centers, as in the example.
+
+Bars grow from zero on their value axis, so make sure zero is on it: `low: 0`, or `referenceValue: 0` to include zero and still scale to the data.
+
+## The rest of the config
+
+Next to `data`, `axes` and `layers`, `chart()` takes:
+
+| Option            | What it does                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------------- |
+| `padding`         | Space around the chart in px: a number, or `{ top, right, bottom, left }` (default 15, 15, 5, 10) |
+| `className`       | Classes for the `<svg>`. A composed chart has none by default                                     |
+| `width`, `height` | A fixed size; by default the chart fills its container                                            |
+| `labels`          | `'html'` or `'svg'` axis labels for every label layer                                             |
+
+The `className` matters for CSS: the default stylesheet aligns labels by chart type. `ct-chart-bar` centers the X labels under the bars, which is why the example sets it.
+
+<Callout kind='warn'>
+  **Experimental until 2.0.** `chart()`, `cartesianAxes()` and the layers are
+  new in v2. Their names and options may still change before the 2.0 release.
+</Callout>
+
+Next: [learn what each axis type does](../axes-and-scales/), or [keep the chart up to date with new data](../updating-charts/).

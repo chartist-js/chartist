@@ -1,0 +1,164 @@
+---
+title: Pie and donut charts
+description: Pies, donuts and gauges with pieChart(), from the data shape to label placement, slice colors and half-circle gauges.
+group: Chart types
+order: 3
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const meeting = {
+  labels: ['Agenda', 'Small talk', 'Decisions', 'Coffee'],
+  series: [10, 25, 5, 20]
+};
+
+A pie shows parts of a whole. `pieChart()` draws one slice per value, sized by its share of the total, and turns into a donut or a gauge with a few options. Pies work best with a handful of slices. If you're comparing more than five or six values, a [bar chart](../bar-charts/) is easier to read.
+
+## Your first pie
+
+A pie takes a flat series: one array of numbers, not an array of arrays. The labels are optional and go on the slices in the same order:
+
+<LiveExample
+  title='A one-hour meeting'
+  label='Pie chart of a one-hour meeting: agenda 10, small talk 25, decisions 5 and coffee 20 minutes'
+  preview={{ type: 'pie', data: meeting }}
+  example='pie-and-donut-charts/meeting'
+/>
+
+Every value becomes its own series group, `ct-series-a`, `ct-series-b` and so on, so every slice gets its own color from the stylesheet. Leave out the labels and the slices show their values instead.
+
+## Donuts
+
+Set `donut: true` and the slices become arcs of a ring. `donutWidth` is the ring's thickness: a number in px (the default is `60`) or a percentage of the radius as a string, like `'30%'`.
+
+<LiveExample
+  title='Donut'
+  label='Donut chart of a one-hour meeting with a 40 px ring'
+  preview={{
+    type: 'pie',
+    data: meeting,
+    options: { donut: true, donutWidth: 40 }
+  }}
+  example='pie-and-donut-charts/donut'
+/>
+
+A donut's SVG gets `ct-chart-donut` instead of `ct-chart-pie`, and its slices are `ct-slice-donut` paths drawn with a stroke, not a fill. Labels sit in the middle of the ring, whatever `labelPosition` says; `labelOffset` still moves them.
+
+<Callout>
+  **The ring width is an option.** `pieChart()` writes `donutWidth` as an inline
+  `stroke-width` on every donut slice, so it wins over the stylesheet. Change
+  the option, not the CSS, to make the ring thicker.
+</Callout>
+
+## Gauges
+
+Two options turn a donut into a gauge. `startAngle` is where the first slice starts, in degrees: `0` points up and the slices run clockwise. `total` fixes the value of a full circle; without it, the slices always add up to one. When your values sum to less than `total`, part of the circle stays empty.
+
+Start at `270` (the left side) and make the total twice the sum, and the slices fill the upper half:
+
+<LiveExample
+  title='Sprint gauge'
+  label='Half-circle gauge of a sprint: 12 points done, 5 in progress and 3 to do'
+  preview={{
+    type: 'pie',
+    data: { series: [12, 5, 3] },
+    options: {
+      donut: true,
+      donutWidth: 40,
+      startAngle: 270,
+      total: 40,
+      showLabel: false
+    }
+  }}
+  example='pie-and-donut-charts/gauge'
+/>
+
+Gauges usually go without slice labels, so this one sets `showLabel: false`. A single-value gauge works the same way: `{ series: [72] }` with `total: 200` fills a little more than a third of the circle.
+
+## Labels
+
+By default, labels sit halfway between the center and the edge of the slice. Four options move them:
+
+| Option           | Default     | What it does                                                                                                     |
+| ---------------- | ----------- | ---------------------------------------------------------------------------------------------------------------- |
+| `showLabel`      | `true`      | Draws the labels at all                                                                                          |
+| `labelPosition`  | `'inside'`  | `'inside'` (half the radius), `'outside'` (on the edge) or `'center'` (the center point, plus `labelOffset`)     |
+| `labelOffset`    | `0`         | Px added to that distance from the center; negative values move labels inward                                    |
+| `labelDirection` | `'neutral'` | `'explode'` anchors labels so the text grows away from the center, `'implode'` toward it; `'neutral'` centers it |
+
+Labels outside the pie need room, so give the chart some `chartPadding` (the pie's default is `5`):
+
+<LiveExample
+  title='Labels outside'
+  label='Pie chart of a one-hour meeting with its labels outside the slices'
+  preview={{
+    type: 'pie',
+    data: meeting,
+    options: {
+      labelPosition: 'outside',
+      labelOffset: 16,
+      labelDirection: 'explode',
+      chartPadding: 30
+    }
+  }}
+  example='pie-and-donut-charts/outside-labels'
+/>
+
+### Label text
+
+`labelInterpolationFnc` gets each slice's label (or its value, when there are no labels) and its index, and returns the text to show. Return `null` to leave a slice without a label:
+
+```ts
+import 'chartist/styles.css';
+import { pieChart } from 'chartist';
+
+const series = [10, 25, 5, 20];
+const total = series.reduce((sum, value) => sum + value, 0);
+
+pieChart(
+  '#chart',
+  { series },
+  {
+    // 17%, 42% and 33%; the 8% slice stays unlabeled.
+    labelInterpolationFnc: value => {
+      const percent = Math.round((Number(value) / total) * 100);
+      return percent < 10 ? null : `${percent}%`;
+    }
+  }
+);
+```
+
+Small slices crowd their labels. `preventOverlappingLabelOffset` is a px step: when a label would overlap one drawn before it, it moves up and to the left by that step until it doesn't.
+
+## Slices with names and colors
+
+A value can also be an object. `className` replaces the slice's letter class, so you pick its color in CSS. `name` and `meta` end up in the SVG as `ct:series-name` and `ct:meta` attributes, for plugins and your own scripts:
+
+```ts
+import 'chartist/styles.css';
+import { pieChart } from 'chartist';
+
+pieChart('#chart', {
+  labels: ['Yes', 'No'],
+  series: [
+    { value: 62, className: 'vote-yes' },
+    { value: 38, className: 'vote-no' }
+  ]
+});
+```
+
+```css
+.vote-yes {
+  --ct-color: #59922b;
+}
+.vote-no {
+  --ct-color: #d70206;
+}
+```
+
+More on series colors in [Styling with CSS](../styling-with-css/#one-color-per-series).
+
+A `0` still gets a label and a sliver of a slice. Set `ignoreEmptyValues: true` to skip both.
+
+Next: [put bars and a line on one chart](../composed-charts/), or [make the pie respond to its container](../responsive/).

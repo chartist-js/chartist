@@ -1,0 +1,184 @@
+---
+title: Axes and scales
+description: Step axes, auto-scaled and fixed axes, XY plots with two-dimensional data, label formatting, and how the presets pick their axes.
+group: Guides
+order: 5
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const bugs = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [[2, 3, 1, 4, 2]]
+};
+
+export const readings = {
+  1: 9,
+  4: 7,
+  7: 8,
+  8: 11,
+  9: 13,
+  12: 18,
+  15: 21,
+  16: 20,
+  20: 15,
+  23: 11
+};
+
+export const hours = [...Array(25).keys()];
+
+export const xy = {
+  /* The preview can't take axis factories: it draws the readings on a
+     stretched step axis, one step per hour, at the same places. */
+  labels: hours.map(hour => (hour % 6 === 0 ? hour : null)),
+  series: [hours.map(hour => readings[hour] ?? null)]
+};
+
+An axis decides where a value lands. The line and bar charts come with sensible axes, and they cover a lot. When they don't, you swap an axis type or tune its options: plot values along X too, fix the ticks you care about, or keep the scale to whole numbers.
+
+## Three kinds of axes
+
+Chartist has three axis types, each created by a function:
+
+| Type               | Places a value by                        | Ticks                                                         |
+| ------------------ | ---------------------------------------- | ------------------------------------------------------------- |
+| `stepAxis()`       | Its index: first, second, third…         | One per step, from `ticks`                                    |
+| `autoScaleAxis()`  | Its value, on a scale fitted to the data | Round numbers, at least `scaleMinSpace` px apart (default 20) |
+| `fixedScaleAxis()` | Its value, between `low` and `high`      | The `ticks` you give, or `divisor` evenly spaced ones         |
+
+A step axis doesn't look at values at all, which is right for categories like weekdays or quarters. The two scale axes are continuous: a value of 7 lands at 70% of an axis from 0 to 10.
+
+## How the presets choose
+
+| Preset        | X axis                                                    | Y axis                                                                       |
+| ------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `lineChart()` | A step axis over `labels`; `fullWidth: true` stretches it | An auto scale                                                                |
+| `barChart()`  | A step axis over `labels`                                 | An auto scale that includes zero, unless you set the chart's `low` or `high` |
+| `pieChart()`  | None: a pie has no axes                                   |                                                                              |
+
+With `horizontalBars: true`, the bar chart swaps them: the labels go down the Y axis and the values along X.
+
+The labels in your data only become ticks through that default step axis. Give `axisX` another `type` and the labels have nothing left to do.
+
+## Tuning the auto scale
+
+The auto scale fits the data and picks round steps. These axis options steer it:
+
+| Option           | What it does                                                                  |
+| ---------------- | ----------------------------------------------------------------------------- |
+| `low`, `high`    | Fix the ends of the scale instead of taking them from the data                |
+| `onlyInteger`    | Steps of whole numbers only                                                   |
+| `scaleMinSpace`  | The smallest distance between two ticks in px; larger values give fewer ticks |
+| `referenceValue` | A value the scale always includes, like a zero line                           |
+
+Small counts are where `onlyInteger` shines. Without it, this chart would put ticks between the whole numbers:
+
+<LiveExample
+  title='Only whole bugs'
+  label='Line chart of bugs found per day, Monday to Friday, on a Y axis of whole numbers from zero'
+  preview={{
+    type: 'line',
+    data: bugs,
+    options: { axisY: { onlyInteger: true, low: 0 } }
+  }}
+  example='axes-and-scales/only-integer'
+/>
+
+## Label text
+
+Every axis takes a `labelInterpolationFnc`. It gets each tick's value and index and returns the label to show. Return `null` and the tick is skipped, label and grid line both:
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+const days = Array.from({ length: 30 }, (_, i) => i + 1);
+
+lineChart(
+  '#chart',
+  {
+    labels: days,
+    series: [days.map(day => Math.round(12 + 6 * Math.sin(day / 4)))]
+  },
+  {
+    axisX: {
+      // A label every five days.
+      labelInterpolationFnc: (value, index) =>
+        index % 5 === 0 ? `Day ${value}` : null
+    },
+    axisY: {
+      labelInterpolationFnc: value => `${value} °C`
+    }
+  }
+);
+```
+
+To keep a grid line but hide its label, return an empty string instead.
+
+## A line chart is only 1-dimensional?!
+
+A step axis places values by index, so a plain series is all it needs. Under the hood, Chartist turns every value into a point with an empty `x`:
+
+```ts nocheck
+[5, 2, 8];
+// becomes
+[
+  { x: undefined, y: 5 },
+  { x: undefined, y: 2 },
+  { x: undefined, y: 8 }
+];
+```
+
+Which means you can fill in `x` yourself. Give the series `{ x, y }` points and the X axis a scale type, and the line chart becomes an XY plot. You don't need `labels` anymore:
+
+```ts
+import 'chartist/styles.css';
+import { autoScaleAxis, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    series: [
+      [
+        { x: 1, y: 2 },
+        { x: 2.5, y: 5 },
+        { x: 7, y: 3 },
+        { x: 10, y: 8 }
+      ]
+    ]
+  },
+  {
+    axisX: { type: autoScaleAxis(), onlyInteger: true }
+  }
+);
+```
+
+The points now sit at their real distances: the gap between 2.5 and 7 is three times the gap between 1 and 2.5, as it should be.
+
+## Fixed stuff can be sweet too!
+
+Sometimes you know which ticks matter. `fixedScaleAxis()` puts the scale between `low` and `high` and draws exactly the `ticks` you give it. Here it gives a day its four quarters, with temperature readings taken at odd hours. `showLine: false` turns the line chart into a scatter plot:
+
+<LiveExample
+  title='Readings at odd hours'
+  label='Scatter plot of ten temperature readings over a day, on an X axis from 0 to 24 hours with ticks every six hours'
+  preview={{
+    type: 'line',
+    data: xy,
+    options: { showLine: false, fullWidth: true }
+  }}
+  example='axes-and-scales/xy-plot'
+/>
+
+Without `low` and `high`, the scale runs from the smallest to the largest value in the data. Instead of `ticks`, you can give a `divisor`: it splits the range into that many equal parts and puts a tick at the start of each. With `low: 0`, `high: 100` and `divisor: 4`, the ticks are 0, 25, 50 and 75, without one at 100.
+
+<Callout kind='tip'>
+  **The same works on Y.** `axisY: { type: fixedScaleAxis(), ticks: [0, 50, 100], low: 0, high: 100 }` keeps a percentage chart on a 0 to 100 scale with exactly three grid lines.
+</Callout>
+
+## Axes in composed charts
+
+The axis types and options are the same in [composed charts](../composed-charts/), where you list the axes yourself, give them ids and put them on any side.
+
+Next: [compose bars and a line on two axes](../composed-charts/), or [animate a chart](../animations/).
