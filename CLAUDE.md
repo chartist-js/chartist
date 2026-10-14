@@ -9,6 +9,7 @@ Chartist is a simple, responsive SVG charting library: style with CSS, control w
 - `packages/playground`: the browser-only playground that runs those projects.
 - `apps/docs`: the Astro docs site. Voice and page rules in `apps/docs/WRITING.md`, styling rules in `apps/docs/STYLING.md`.
 - `openspec/specs/`: the living specs, the source of truth for behavior. `openspec/changes/archive/` records how each part was built and why.
+- `docs/typescript.md`: the TypeScript guidelines (functional style, `readonly` interfaces, no enums, named exports, `unknown` over `any`), with a note on where Chartist differs. Follow them in new code, and don't edit the file unless the author asks.
 - `docs/decisions.md`: the standing decisions (principles, 1.x compatibility, repository, distribution, releases, hosting, the visual reference platform). Read it before changing any of these.
 - `docs/visual-design/`: the brand and design snapshot from Claude Design.
 - `tmp/chartist-v0` (0.x, the 2014 site and library) and `tmp/chartist-v1` (1.x, TypeScript and Docusaurus) are git-ignored reference clones. Read and copy from them, never edit them.

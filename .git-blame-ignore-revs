@@ -4,3 +4,6 @@
 
 # style: reformat with oxfmt
 78412a2f8ffceb2922738af5ad484f6465d2cfee
+
+# style: format the TypeScript guidelines with oxfmt
+85d90378b53bdc93e30bf79632bf9dd23e01472f

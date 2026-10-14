@@ -2,6 +2,13 @@
 
 This document defines the TypeScript coding standards and best practices for TypeScript projects.
 
+> **In Chartist.** These guidelines come from the author's exprit repository and apply to new code here. Where Chartist differs:
+>
+> - **Doc comments** follow [`packages/chartist/DOC-COMMENTS.md`](../packages/chartist/DOC-COMMENTS.md), which wins over the JSDoc section below: the reference and the editor hovers are generated from them, in the voice of the guides.
+> - **1.x compatibility** keeps what 1.x code relies on: the 1.x classes (`LineChart`, `Svg`, …), the `any` in 1.x public types such as the 1.x plugin function, and the `index.ts` files in subfolders of `packages/chartist/src`, which the 1.x layout and the tested export lists use. New code is functional, and new folders get no barrel file.
+> - **Formatting** is oxfmt with the settings in `.oxfmtrc.json`, so the examples' commas and line breaks follow the formatter, not this text.
+> - The framework examples (NestJS, Angular) illustrate the rules; Chartist uses neither.
+
 ## Table of Contents
 
 - [Core Principles](#core-principles)

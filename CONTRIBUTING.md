@@ -27,4 +27,5 @@ The repository layout and the standing decisions are described in [`docs/decisio
 - Use [conventional commit](https://www.conventionalcommits.org/) messages (`fix: …`, `feat: …`, `docs: …`); they drive the changelog.
 - Keep file moves and deletions in commits of their own, so git can follow the files' history.
 - Run `pnpm nx format` before committing, and make sure `pnpm nx run-many -t lint typecheck check test` passes.
+- Code follows the TypeScript guidelines in [`docs/typescript.md`](docs/typescript.md): functional, immutable, named exports.
 - Docs pages follow [`apps/docs/WRITING.md`](apps/docs/WRITING.md), doc comments [`packages/chartist/DOC-COMMENTS.md`](packages/chartist/DOC-COMMENTS.md).
