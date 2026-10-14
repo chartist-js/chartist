@@ -37,9 +37,9 @@ export async function esmNames(build: BuildName, entry = 'index') {
   return sorted(Object.keys(await import(/* @vite-ignore */ file)));
 }
 
-export function cjsNames(build: BuildName) {
+export function cjsNames(build: BuildName, entry = 'index') {
   const require = createRequire(import.meta.url);
-  return sorted(Object.keys(require(path.join(BUILDS[build], 'index.cjs'))));
+  return sorted(Object.keys(require(path.join(BUILDS[build], `${entry}.cjs`))));
 }
 
 /** Runs the UMD file like a classic <script>: no module system, a global. */

@@ -2,6 +2,7 @@ import { LineChart, lineChart, type PhaseEvents } from 'chartist';
 import { compat, fromLegacyPlugin } from 'chartist/compat';
 import {
   COMPAT_LIST_FILE,
+  cjsNames,
   diffNames,
   esmNames,
   readList,
@@ -20,7 +21,20 @@ describe('chartist/compat entry', () => {
     expect(diffNames(list.runtime, await esmNames('local', 'compat'))).toEqual(
       none
     );
+    expect(diffNames(list.runtime, cjsNames('local', 'compat'))).toEqual(none);
     expect(diffNames(list.types, typeNames('local', 'compat'))).toEqual(none);
+  });
+
+  test('the 0.x names of the compat UMD build are not module exports', async () => {
+    const legacy = ['Bar', 'Line', 'Pie', 'getDataArray', 'plugins'];
+    for (const names of [
+      await esmNames('local'),
+      cjsNames('local'),
+      await esmNames('local', 'compat'),
+      cjsNames('local', 'compat')
+    ]) {
+      expect(names.filter(name => legacy.includes(name))).toEqual([]);
+    }
   });
 });
 

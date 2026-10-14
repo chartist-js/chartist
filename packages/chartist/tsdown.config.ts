@@ -11,7 +11,9 @@ import { defineConfig, type UserConfig } from 'tsdown';
  * dist/index.umd.js   minified UMD, global `Chartist` (1.x path)
  * dist/chartist.min.js  copy of the UMD build under the 0.x file name
  * dist/compat.*        the compat plugin (chartist/compat) in the same
- *                      formats; it imports the core instead of bundling it
+ *                      formats; it imports the core instead of bundling it.
+ *                      compat.umd.js also adds the 0.x names of plugin
+ *                      scripts to the global `Chartist`
  *
  * Styles are built by scripts/styles.cjs.
  */
@@ -126,8 +128,11 @@ export default defineConfig([
     outputOptions: toCore('./index.min.js')
   },
   {
-    // Adds compat's exports to the global `Chartist` of index.umd.js.
+    // Adds compat's exports to the global `Chartist` of index.umd.js, and
+    // the 0.x names plugin scripts use (src/compat/umd.ts). Only this build
+    // has them; the module builds of compat keep the 1.x and v2 names.
     ...compatBase,
+    entry: { compat: 'src/compat/umd.ts' },
     minify: true,
     format: 'umd',
     globalName: 'Chartist',

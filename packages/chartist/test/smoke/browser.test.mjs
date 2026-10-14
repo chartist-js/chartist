@@ -81,6 +81,32 @@ const inlinePages = {
       new Chartist.LineChart('#chart', { series: [[1, 2, 3]] }, { plugins: [Chartist.compat] })
         .on('draw', data => draws.push(data.type))
         .on('created', () => { window.draws = draws; });
+    </script>`,
+  // A 0.x plugin script after compat.umd.js; a plugin registered before
+  // compat loads stays.
+  'compat-umd-0x': `<!doctype html>
+    <div id="chart" style="width: 400px; height: 200px"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/index.umd.js"></script>
+    <script>Chartist.plugins = { early() {} };</script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/compat.umd.js"></script>
+    <script>
+      Chartist.plugins = Chartist.plugins || {};
+      Chartist.plugins.ctLate = function () {
+        return function (chart) {
+          chart.on('created', () => {
+            window.result = {
+              plugins: Object.keys(Chartist.plugins),
+              aliases: Chartist.Line === Chartist.LineChart &&
+                Chartist.Bar === Chartist.BarChart &&
+                Chartist.Pie === Chartist.PieChart,
+              data: Chartist.getDataArray(chart.data, true)
+            };
+          });
+        };
+      };
+      Chartist.lineChart('#chart', { series: [[1, 2, 3]] }, {
+        plugins: [Chartist.fromLegacyPlugin(Chartist.plugins.ctLate())]
+      });
     </script>`
 };
 
@@ -207,6 +233,18 @@ for (const name of ['compat-esm', 'compat-umd']) {
     await page.close();
   });
 }
+
+test('compat.umd.js adds the 0.x names for plugin scripts', async () => {
+  const { page, errors } = await openPage(`${ORIGIN}/inline/compat-umd-0x`);
+  await page.waitForFunction(() => window.result);
+  assert.deepEqual(await page.evaluate(() => window.result), {
+    plugins: ['early', 'ctLate'],
+    aliases: true,
+    data: [[3, 2, 1]]
+  });
+  assert.deepEqual(errors, []);
+  await page.close();
+});
 
 for (const name of ['chartist-min-js', 'bare-jsdelivr', 'bare-unpkg']) {
   test(`UMD global via ${name}`, async () => {
