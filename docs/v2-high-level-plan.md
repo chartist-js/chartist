@@ -118,10 +118,10 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
   - `next` = v2 development (pushed to `chartist-js/chartist`).
   - At release: create `1.x` from the v1.5.0 tag for maintenance, then fast-forward `main` to `next`.
   - Integrate with merge commits or rebase, **never squash**, because a squash merge collapses the move commit and loses the renames.
-- **npm.** Pre-releases are published as `2.0.0-alpha.x` / `-beta.x` under the `next` dist-tag. `npm i chartist` keeps installing v1 until the release.
+- **npm.** Pre-releases are release candidates, `2.0.0-rc.1`, `2.0.0-rc.2`, … (decided with the author 2026-10-14; `rc.1` with the dot, so `rc.10` sorts after `rc.9`), under the `next` dist-tag. `npm i chartist` keeps installing v1 until 2.0.0. The time between the first RC and 2.0.0 is the last chance for breaking changes (for example dropping `@experimental` from the functional API).
 - **Issues.** Use a `v2` milestone and labels for the most-wanted issues picked during scoping.
 - **Cleanup (separate, optional).** About 25 stale Renovate/dependabot branches and an old `master` (last commit 2019).
-- **Docs hosting.** Check how chartist.dev is deployed today (on `main`, `website/CNAME` says `chartist.js.org`) before replacing it. Plan versioned docs (v2 current, v1 and v0 archives).
+- **Docs hosting.** Check how chartist.dev is deployed today (on `main`, `website/CNAME` says `chartist.js.org`) before replacing it. Versioned docs: v2 current, the 1.x docs as static files under `/v1/`, the 0.x archive on GitHub Pages. The v2 site replaces chartist.dev with `2.0.0-rc.1` (decided with the author 2026-10-14), not only at 2.0.0; 1.x users keep the `/v1/` docs. Until 2.0.0, install instructions say `chartist@next` and CDN URLs pin the RC version (version ranges like `chartist@2` skip pre-releases); at 2.0.0 they go back to `chartist` and `chartist@2`.
 
 ## Phases (rough)
 
@@ -129,7 +129,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
 2. **Scope definition:** review the most-wanted issues (v0.x and v1.x), define the v2 feature set and breaking changes, and write the first OpenSpec specs.
 3. **Library core:** modernize the moved 1.x source in `packages/chartist`, set up the build pipeline (ESM/CJS/UMD), tests and visual regression.
 4. **Docs site:** Astro app, implement the Claude Design output, playground and example gallery.
-5. **Release** (last, decided 2026-10-13: only when the whole product, library and docs site, is ready)**:** v2 beta, migration guide, launch. Before the first push that can trigger the old workflows on `main`, rework GitHub Actions for the monorepo (deferred to this phase, decided 2026-10-13):
+5. **Release** (last, decided 2026-10-13: only when the whole product, library and docs site, is ready)**:** `2.0.0-rc.1` with the v2 docs live on chartist.dev, then RCs until `2.0.0` (the last chance for breaking changes), migration guide, launch. Before the first push that can trigger the old workflows on `main`, rework GitHub Actions for the monorepo (deferred to this phase, decided 2026-10-13):
    - Until then, the gate is local: `pnpm nx run-many -t typecheck check build test test:smoke test:size test:visual test:visual:v1 test:api test:api:v1 test:e2e e2e lint` and `pnpm nx format:check --all` must pass before merging into `next`.
    - The 1.x workflows (`ci.yml`, `checks.yml`, `release.yml`, `website.yml`) still call root scripts that no longer exist. They only trigger on `main` or on pull requests, so pushing `next` runs just `commit.yml` (commitlint, root `.commitlintrc.json`). Don't open pull requests against `next` until CI is reworked.
    - `website.yml` deploys chartist.dev from `main`. It must be replaced by the Astro docs deployment before `main` is fast-forwarded to `next`.
@@ -138,7 +138,7 @@ v2 is developed **in the existing `chartist-js/chartist` repository**. Stars, fo
      - `nx release` with conventional commits: version bump, workspace `CHANGELOG.md` (continuing the 1.x file), `v{version}` tags (same pattern as the 1.x tags), GitHub release, npm publish. Released project: `chartist` only.
      - The release workflow runs after green CI and waits for approval in a `release` environment; a manual run can pick the version, do a dry run or only re-publish a tagged version.
      - npm trusted publishing via OIDC (no stored token, provenance attached). Needs the trusted publisher configured on npmjs.com for `chartist` by an npm owner of the package.
-     - Adaptations for Chartist: pre-releases (`2.0.0-alpha.x`/`-beta.x`) from `next` under the npm `next` dist-tag; CI adds the visual regression and playground e2e tests (Playwright Chromium; WebKit/Firefox for the playground); the docs workflow builds and deploys the Astro site (chartist.dev domain) instead of `website.yml`.
+     - Adaptations for Chartist: release candidates (`2.0.0-rc.x`) from `next` under the npm `next` dist-tag, the docs deployed with the first one; CI adds the visual regression and playground e2e tests (Playwright Chromium; WebKit/Firefox for the playground); the docs workflow builds and deploys the Astro site (chartist.dev domain) instead of `website.yml`.
      - Revisit then whether `CHANGELOG.md` stays excluded from oxfmt (Nx writes it).
 
 ## Change roadmap (OpenSpec)
