@@ -1,6 +1,10 @@
 ---
+import { uniqueId } from '../lib/ids';
+
 /**
- * The Chartist Guy (docs/visual-design Mascot artboard), flat variant.
+ * The Chartist Guy (docs/visual-design Mascot artboard), flat variant with
+ * its texture: shading, a rosy cheek, the chin spiral, eye shine and ink
+ * lines. The logo stays flat.
  * Poses: hero (presenting the board), point, lost (404), celebrate. In the
  * hero and celebrate poses the board holds a live chart: pass it as the
  * default slot; it's placed over the board's chart area.
@@ -15,17 +19,26 @@ interface Props {
 }
 
 const { pose = 'hero', reaction = 'none', class: className } = Astro.props;
+// The landing page shows several mascots; each needs its own clip path.
+const vestClip = uniqueId('m-clip-vest');
 
 interface Arm {
   d: string;
   hand: string;
+  shade: string;
   cls?: string;
 }
 
 const arm = (d: string, hx: number, hy: number, angle: number, flip: number, cls?: string): Arm => ({
   d,
   cls,
-  hand: `translate(${hx} ${hy}) rotate(${angle}) scale(1.05 ${1.05 * flip})`
+  hand: `translate(${hx} ${hy}) rotate(${angle}) scale(1.05 ${1.05 * flip})`,
+  // Light comes from the left: the shade goes on whichever edge of the
+  // mitten ends up facing right.
+  shade:
+    -flip * Math.sin((angle * Math.PI) / 180) > 0
+      ? 'M-2,7 C6,9 17,8 17,0 C16,5 8,6.5 -2,4.2 Z'
+      : 'M-2,-7 C6,-9 17,-8 17,0 C16,-5 8,-6.5 -2,-4.2 Z'
 });
 
 const ARMS = {
@@ -108,6 +121,12 @@ const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile
 
 <div class:list={['mascot-stage', className]} data-reaction={reaction === 'none' ? undefined : reaction}>
   <svg class="mascot" viewBox={p.viewBox} role="img" aria-label={p.label}>
+    <defs>
+      <clipPath id={vestClip}>
+        <path d="M344,222 L358,222 L370,246 L370,318 L334,309 Q325,307 326,299 L333,232 Q334,222 344,222 Z" />
+        <path d="M386,222 L400,222 Q410,222 411,232 L418,299 Q419,307 410,309 L374,318 L374,246 Z" />
+      </clipPath>
+    </defs>
     {
       p.easel && (
         <g class="m-easel" transform={p.easelTransform}>
@@ -143,6 +162,7 @@ const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile
             <path d={a.d} stroke="var(--m-ink)" stroke-width="15" fill="none" stroke-linecap="round" stroke-linejoin="round" />
             <g transform={a.hand}>
               <path d="M-2,-7 C6,-9 16,-8 17,0 C17,8 6,9 -2,7 Z" fill="var(--m-skin)" />
+              <path d={a.shade} fill="var(--m-skin-2)" />
               <path d="M-1,-5.5 C-1,-11 3,-13.5 5.5,-11 C7,-9.5 5,-7 2,-5 Z" fill="var(--m-skin)" />
             </g>
           </g>
@@ -156,9 +176,16 @@ const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile
       <path d="M346.5,388 L346.5,397 L318.5,397 Q324.5,390 337.5,389 Z" fill="var(--m-ink)" />
       <path d="M397.5,388 L397.5,397 L425.5,397 Q419.5,390 406.5,389 Z" fill="var(--m-ink)" />
       <path d="M336,290 L408,290 L407,318 Q406,324 400,324 L344,324 Q338,324 337,318 Z" fill="var(--m-ink)" />
+      <path d="M336,312 L408,312 L407,318 Q406,324 400,324 L344,324 Q338,324 337,318 Z" fill="#000" opacity=".25" />
       <path d="M356,222 L388,222 L380,318 L364,318 Z" fill="var(--m-ink)" />
       <path d="M344,222 L358,222 L370,246 L370,318 L334,309 Q325,307 326,299 L333,232 Q334,222 344,222 Z" fill="var(--m-vest)" />
       <path d="M386,222 L400,222 Q410,222 411,232 L418,299 Q419,307 410,309 L374,318 L374,246 Z" fill="var(--m-vest)" />
+      <g clip-path={`url(#${vestClip})`}>
+        <path d="M404,222 Q414,226 412,240 L420,320 L405,320 Q411,280 404,222 Z" fill="var(--p-waistcoat-600)" />
+        <path d="M418,305 Q394,318 372,318 L372,330 L424,330 Z" fill="var(--p-waistcoat-600)" />
+        <ellipse cx="372" cy="226" rx="30" ry="8" fill="var(--m-ink)" opacity=".35" />
+      </g>
+      <path d="M338,272 L356,270" stroke="var(--p-waistcoat-600)" stroke-width="2.6" stroke-linecap="round" fill="none" />
       <circle cx="382" cy="262" r="3.3" fill="var(--m-ink)" />
       <circle cx="382" cy="280" r="3.3" fill="var(--m-ink)" />
       <circle cx="382" cy="298" r="3.3" fill="var(--m-ink)" />
@@ -176,10 +203,15 @@ const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile
         <circle cx="409" cy="150" r="10" fill="var(--m-skin)" />
         <path d="M409,146 q4,4 0,8" stroke="var(--m-skin-2)" stroke-width="2.5" fill="none" stroke-linecap="round" />
         <path d="M335,121 C342,96 402,96 408,124 L408,196 C408,224 388,232 366,232 C344,232 322,224 322,210 Q322,203 333,197 L337,176 L348,160 L321,158 Q312,157 316,149 Z" fill="var(--m-skin)" />
+        <path d="M408,158 L408,196 C408,224 388,232 366,232 C358,232 350,231 344,229 C368,229 398,224 402,196 C404,180 405,168 408,158 Z" fill="var(--m-skin-2)" opacity=".55" />
+        <ellipse cx="396" cy="162" rx="10" ry="6.5" fill="#E8735F" opacity=".55" />
+        <path d="M346,222.5 c1.5,-2.6 -1.4,-4.6 -3.6,-3 c-2.8,2 -1.2,6.4 2.4,6.6 c4.6,.2 6.6,-5.4 3.8,-8.8" stroke="var(--m-skin-2)" stroke-width="2.3" fill="none" stroke-linecap="round" />
         <g transform={`translate(${p.eyesDx} 0)`}>
           <g class="m-eyes">
             <ellipse cx="358" cy="136" rx="4.4" ry="6" fill="var(--m-ink)" />
             <ellipse cx="384" cy="136" rx="4.4" ry="6" fill="var(--m-ink)" />
+            <circle cx="356.4" cy="133.2" r="1.4" fill="#fff" />
+            <circle cx="382.4" cy="133.2" r="1.4" fill="#fff" />
           </g>
         </g>
         {
@@ -188,7 +220,10 @@ const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile
           ))
         }
         <path class="m-brow" d="M377,126 Q384,119 391,125" stroke="var(--m-ink)" stroke-width="3.2" fill="none" stroke-linecap="round" />
-        <path class="m-stache" d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="var(--m-ink)" />
+        <g class="m-stache">
+          <path d="M362,166 C354,155 340,155 332,165 C326,173 314,175 308,165 C306,183 334,189 362,177 C390,189 418,183 416,165 C410,175 398,173 392,165 C384,155 370,155 362,166 Z" fill="var(--m-ink)" />
+          <path d="M356,163 C348,159 340,161 334,168 M368,163 C376,159 386,161 392,168" stroke="#4A3F42" stroke-width="1.6" fill="none" stroke-linecap="round" />
+        </g>
       </g>
       <g transform={p.hatTransform}>
         <g class:list={['m-hat', { 'm-hat-fly': pose === 'celebrate' }]}>
@@ -197,6 +232,7 @@ const mouthName = pose === 'lost' ? 'o' : pose === 'celebrate' ? 'wide' : 'smile
             <path d="M340,120 L337,74 Q372,68 407,74 L404,120 Q372,126 340,120 Z" fill="var(--m-ink)" />
             <ellipse cx="372" cy="73" rx="35" ry="5" fill="#453B3E" />
             <path d="M338.9,104 Q372,110 405.1,104 L404.3,116 Q372,122 339.7,116 Z" fill="var(--m-vest)" />
+            <path d="M346,79 L348,101" stroke="#5E5154" stroke-width="4" stroke-linecap="round" />
           </g>
         </g>
       </g>
