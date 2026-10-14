@@ -12,8 +12,8 @@ import { defineConfig, type UserConfig } from 'tsdown';
  * dist/chartist.min.js  copy of the UMD build under the 0.x file name
  * dist/compat.*        the compat plugin (chartist/compat) in the same
  *                      formats; it imports the core instead of bundling it.
- *                      compat.umd.js also adds the 0.x names of plugin
- *                      scripts to the global `Chartist`
+ *                      Every build also sets up the global `Chartist` for
+ *                      plugin scripts (src/compat/global.ts)
  *
  * Styles are built by scripts/styles.cjs.
  */
@@ -48,7 +48,7 @@ const isCore = (id: string) =>
   id === CORE || /[\\/]src[\\/]index(\.ts)?$/.test(id);
 const compatBase: UserConfig = {
   ...base,
-  entry: { compat: 'src/compat/index.ts' },
+  entry: { compat: 'src/compat/entry.ts' },
   deps: { neverBundle: [CORE] }
 };
 const toCore =
@@ -128,11 +128,9 @@ export default defineConfig([
     outputOptions: toCore('./index.min.js')
   },
   {
-    // Adds compat's exports to the global `Chartist` of index.umd.js, and
-    // the 0.x names plugin scripts use (src/compat/umd.ts). Only this build
-    // has them; the module builds of compat keep the 1.x and v2 names.
+    // Adds compat to the global `Chartist` of index.umd.js; the entry also
+    // adds the 0.x names plugin scripts use, as in the module builds.
     ...compatBase,
-    entry: { compat: 'src/compat/umd.ts' },
     minify: true,
     format: 'umd',
     globalName: 'Chartist',

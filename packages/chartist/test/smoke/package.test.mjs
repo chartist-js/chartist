@@ -37,7 +37,9 @@ const V1_FIELDS = {
   style: './dist/index.css',
   unpkg: './dist/index.umd.js',
   jsdelivr: './dist/index.umd.js',
-  sideEffects: ['*.css', '*.scss']
+  // Checked separately: v2 adds the compat files, which set up the global
+  // `Chartist` for plugin scripts when imported.
+  sideEffects: undefined
 };
 
 /** Specifier → file, for `import` (ESM) resolution. */
@@ -98,8 +100,11 @@ after(async () => {
 
 test('1.x package fields are unchanged', () => {
   for (const [field, value] of Object.entries(V1_FIELDS)) {
-    assert.deepEqual(pkg[field], value, field);
+    if (value !== undefined) {
+      assert.deepEqual(pkg[field], value, field);
+    }
   }
+  assert.deepEqual(pkg.sideEffects, ['*.css', '*.scss', './dist/compat.*']);
   assert.equal(pkg.exports['./dist/*'], './dist/*');
 });
 

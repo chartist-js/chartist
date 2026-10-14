@@ -34,7 +34,8 @@
   },
   "sideEffects": [
     "*.css",
-    "*.scss"
+    "*.scss",
+    "./dist/compat.*"
   ],
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

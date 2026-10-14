@@ -1,20 +1,56 @@
 import { BarChart } from '../charts/BarChart/BarChart';
 import { LineChart } from '../charts/LineChart/LineChart';
 import { PieChart } from '../charts/PieChart/PieChart';
-import { Bar, Line, Pie, getDataArray, plugins } from './umd';
+import { fromLegacyPlugin } from '.';
+import { getDataArray, installGlobal } from './global';
 
-describe('compat UMD entry: the 0.x names', () => {
-  it('names the 1.x classes as 0.x did', () => {
-    expect(Line).toBe(LineChart);
-    expect(Bar).toBe(BarChart);
-    expect(Pie).toBe(PieChart);
+const compat = { fromLegacyPlugin };
+type Global = Record<string, unknown>;
+
+describe('installGlobal: the global Chartist for plugin scripts', () => {
+  it('creates the global with the core, compat and the 0.x names', () => {
+    const root: { Chartist?: Global; document: object } = { document: {} };
+    installGlobal(compat, root);
+    const global = root.Chartist!;
+    expect(global.LineChart).toBe(LineChart);
+    expect(global.fromLegacyPlugin).toBe(fromLegacyPlugin);
+    expect(global.Line).toBe(LineChart);
+    expect(global.Bar).toBe(BarChart);
+    expect(global.Pie).toBe(PieChart);
+    expect(global.getDataArray).toBe(getDataArray);
+    expect(global.plugins).toEqual({});
   });
 
-  it('has a plugins object to register on', () => {
-    expect(plugins).toEqual(expect.any(Object));
+  it('adds only what a global of the same Chartist lacks', () => {
+    const registered = { legend: () => undefined };
+    const existing: Global = { LineChart, plugins: registered, extend: 'own' };
+    const root = { Chartist: existing, document: {} };
+    installGlobal(compat, root);
+    expect(root.Chartist).toBe(existing);
+    expect(existing.plugins).toBe(registered);
+    expect(existing.extend).toBe('own');
+    expect(existing.Line).toBe(LineChart);
+    expect(existing.fromLegacyPlugin).toBe(fromLegacyPlugin);
+  });
+
+  it('leaves a global of another Chartist copy alone, with a warning', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    const other: Global = { LineChart: class {} };
+    const root = { Chartist: other, document: {} };
+    installGlobal(compat, root);
+    expect(Object.keys(other)).toEqual(['LineChart']);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('another copy of Chartist')
+    );
+    warn.mockRestore();
+  });
+
+  it('does nothing outside a browser', () => {
+    const root: { Chartist?: Global } = {};
+    installGlobal(compat, root);
+    expect(root.Chartist).toBeUndefined();
   });
 });
-
 describe('getDataArray', () => {
   it('gives the values of each series as numbers', () => {
     expect(
