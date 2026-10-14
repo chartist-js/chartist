@@ -121,6 +121,8 @@ interface CompatState {
   copy?: Data;
   layout?: Layout;
   svg?: Svg;
+  /** 1.x chart instances whose `svg` field follows the chart's. */
+  instances: { svg?: Svg }[];
 }
 
 const states = new WeakMap<ChartHandle, CompatState>();
@@ -486,7 +488,7 @@ function enable(handle: ChartHandle): CompatState {
   if (existing) {
     return existing;
   }
-  const state: CompatState = {};
+  const state: CompatState = { instances: [] };
   states.set(handle, state);
 
   handle.on('resolve', ({ config }) => {
@@ -520,6 +522,10 @@ function enable(handle: ChartHandle): CompatState {
       throw new Error('Chartist: the compat plugin requires the DOM renderer');
     }
     state.svg = new Svg(svg);
+    // Set before the draw events, so listeners can query the chart.
+    for (const instance of state.instances) {
+      instance.svg = state.svg;
+    }
     // Animations of the chart's elements emit animationBegin and
     // animationEnd on the chart, as 1.x did with the chart's emitter.
     (svg as { [ANIMATION_EMITTER]?: unknown })[ANIMATION_EMITTER] = {
@@ -618,9 +624,7 @@ function legacyPlugin(
       const state = enable(handle);
       if (chart) {
         // A 1.x chart instance: keep its `svg` field current, as 1.x did.
-        handle.on('mount', () => {
-          (chart as { svg?: Svg }).svg = state.svg;
-        });
+        state.instances.push(chart as { svg?: Svg });
         // The 1.x classes run on a preset and have no options provider;
         // plugins call it for the options in effect.
         const instance = chart as { optionsProvider?: unknown };

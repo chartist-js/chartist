@@ -442,3 +442,50 @@ describe('compat: the chart object of converted plugins', () => {
     expect(current).toMatchObject({ showArea: true, showPoint: true });
   });
 });
+
+describe('compat: chart.svg', () => {
+  const data = {
+    series: [
+      [1, 2],
+      [3, 4]
+    ]
+  };
+  interface SvgChart {
+    svg: Svg;
+    on(event: string, listener: () => void): unknown;
+  }
+  const seriesCount = (svg: Svg) =>
+    (svg.querySelectorAll('.ct-series') as unknown as { svgElements: Svg[] })
+      .svgElements.length;
+  /** A plugin that counts the series groups from `draw` and `created`. */
+  function counting() {
+    const counts = { draw: [] as number[], created: [] as number[] };
+    const plugin = (chartObject: SvgChart) => {
+      for (const event of ['draw', 'created'] as const) {
+        chartObject.on(event, () =>
+          counts[event].push(seriesCount(chartObject.svg))
+        );
+      }
+    };
+    return { counts, plugin };
+  }
+
+  it('is the root as Svg before the first draw event (functional API)', () => {
+    const { counts, plugin } = counting();
+    lineChart(sized(), data, { plugins: [fromLegacyPlugin(plugin)] });
+    expect(counts.draw.length).toBeGreaterThan(0);
+    expect(new Set(counts.draw)).toEqual(new Set([2]));
+    expect(counts.created).toEqual([2]);
+  });
+
+  it('is the root as Svg before the first draw event (1.x classes)', async () => {
+    const { counts, plugin } = counting();
+    const lineChartClass = new LineChart(sized(), data, {
+      plugins: [compat, plugin as never]
+    });
+    await created(lineChartClass);
+    expect(counts.draw.length).toBeGreaterThan(0);
+    expect(new Set(counts.draw)).toEqual(new Set([2]));
+    expect(counts.created).toEqual([2]);
+  });
+});
