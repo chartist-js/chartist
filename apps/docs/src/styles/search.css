@@ -1,0 +1,336 @@
+/*
+ * Site search (polish-docs-site, design D1): the header's search button and
+ * the dialog (components/search/). Stays CSS: the dialog's top-layer
+ * states (::backdrop, [open]) and the result markup search.ts writes.
+ */
+
+/* The header button: a field-like pill on wide screens, an icon button on
+   narrow ones. */
+.search-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 200px;
+  min-height: 38px;
+  padding: 6px 8px 6px 12px;
+  border: 1.5px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  color: var(--ink-2);
+  font: 600 var(--fs-sm) / 1 var(--font-body);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-1),
+    color var(--dur-1);
+}
+
+.search-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.search-btn-label {
+  flex: 1;
+  text-align: left;
+}
+
+.search-dialog kbd,
+.search-btn-kbd {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 22px;
+  padding: 2px 6px;
+  border: 1px solid var(--line-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  color: var(--ink-2);
+  font: 700 11.5px / 1 var(--font-code);
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+  .search-btn {
+    min-width: 0;
+  }
+  .search-btn-kbd {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .search-btn {
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--r-md);
+    background: transparent;
+    color: var(--ink);
+  }
+  .search-btn:hover {
+    background: var(--bg-sunken);
+  }
+  .search-btn-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* The dialog */
+.search-dialog {
+  width: min(680px, calc(100vw - 32px));
+  max-width: none;
+  max-height: min(640px, calc(100dvh - 20vh));
+  margin: 12vh auto auto;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-3);
+  overflow: hidden;
+}
+
+.search-dialog[open] {
+  display: flex;
+}
+
+[data-theme='dark'] .search-dialog {
+  border-color: var(--line-strong);
+  box-shadow: 4px 4px 0 #000;
+}
+
+.search-dialog::backdrop {
+  background: color-mix(in oklab, var(--p-ink-900) 45%, transparent);
+  backdrop-filter: blur(3px);
+}
+
+.search-panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px 10px 16px;
+  border-bottom: 1.5px solid var(--line);
+}
+
+.search-icon {
+  flex: none;
+  color: var(--brand);
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: 500 var(--fs-xl) / 1.2 var(--font-body);
+}
+
+.search-input::placeholder {
+  color: var(--ink-2);
+  opacity: 1;
+}
+
+/* The field is the focus indicator's place: its border, not an outline
+   inside the dialog's frame. */
+.search-input:focus-visible {
+  outline: none;
+}
+
+.search-field:has(.search-input:focus-visible) {
+  border-bottom-color: var(--brand);
+  box-shadow: inset 0 -1px 0 var(--brand);
+}
+
+.search-input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.search-close {
+  display: inline-grid;
+  place-items: center;
+  min-width: 36px;
+  min-height: 36px;
+  border: 0;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.search-close:hover {
+  background: var(--bg-sunken);
+}
+
+.search-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+}
+
+.search-intro,
+.search-status {
+  margin: 0;
+  padding: 20px 12px 24px;
+  color: var(--ink-2);
+}
+
+.search-intro p {
+  margin: 0;
+}
+
+.search-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px !important;
+}
+
+.search-suggestions .chip {
+  font-family: var(--font-code);
+  font-size: 13px;
+}
+
+.search-suggestions .chip:hover {
+  border-color: var(--ink);
+}
+
+.search-group + .search-group {
+  margin-top: 8px;
+}
+
+.search-group-label {
+  position: sticky;
+  top: -8px;
+  z-index: 1;
+  padding: 10px 12px 6px;
+  background: var(--surface);
+  font: 700 12px / 1 var(--font-code);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.search-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  color: var(--ink);
+  min-width: 0;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  scroll-margin-block: 36px 8px;
+}
+
+.search-option:hover {
+  color: var(--ink);
+}
+
+.search-option[aria-selected='true'] {
+  background: var(--bg-sunken);
+  box-shadow: inset 3px 0 0 var(--brand);
+}
+
+.search-option-title {
+  font: 700 var(--fs-lg) / var(--lh-snug) var(--font-display);
+}
+
+.search-option-heading {
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.search-option-excerpt {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.search-option mark {
+  padding-inline: 1px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--accent) 70%, transparent);
+  color: var(--ink);
+}
+
+[data-theme='dark'] .search-option mark {
+  background: color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+.search-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+}
+
+.search-footer span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Phones: the dialog takes the screen. */
+@media (max-width: 860px) {
+  .search-dialog {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  [data-theme='dark'] .search-dialog {
+    box-shadow: none;
+  }
+  .search-input {
+    font-size: var(--fs-lg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .search-dialog[open] {
+    animation: search-in var(--dur-2) var(--ease-out);
+  }
+}
+
+@keyframes search-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}

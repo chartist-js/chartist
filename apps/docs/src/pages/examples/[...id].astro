@@ -18,8 +18,8 @@ const typeTitle = TYPES.find(entry => entry.type === example.type)!.title;
 ---
 
 <BaseLayout title={example.title} description={example.description ?? `${example.title}, a Chartist example.`} section="examples">
-  <article class="wrap flex flex-col gap-6 py-[clamp(32px,5vw,56px)]">
-    <nav class="flex flex-wrap items-center gap-2 text-sm text-ink-2" aria-label="Breadcrumb">
+  <article class="wrap flex flex-col gap-6 py-[clamp(32px,5vw,56px)]" data-pagefind-body data-pagefind-filter="section:Examples">
+    <nav class="flex flex-wrap items-center gap-2 text-sm text-ink-2" aria-label="Breadcrumb" data-pagefind-ignore>
       <a href={href('examples/')}>Examples</a>
       <span aria-hidden="true">/</span>
       <a href={href(`examples/#${example.type}`)}>{typeTitle}</a>
@@ -31,12 +31,12 @@ const typeTitle = TYPES.find(entry => entry.type === example.type)!.title;
 
     <LiveExample id={example.id} files={example.files} classic={example.classicCode} title={example.title} label={example.title} codeHeight="min(520px, 65vh)" />
 
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3" data-pagefind-ignore>
       <a class="btn sm" href={href(`playground/#example=${example.id}`)}>Open in the playground</a>
       {example.classic && <span class="text-sm text-ink-2">Switch to 1.x above the code to see the same chart written with the Chartist 1.x classes.</span>}
     </div>
 
-    <nav class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-6" aria-label={`More ${typeTitle.toLowerCase()}`}>
+    <nav class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-6" aria-label={`More ${typeTitle.toLowerCase()}`} data-pagefind-ignore>
       {
         previous ? (
           <a class="card flat link flex flex-col gap-1 px-4 py-3" href={href(`examples/${previous.id}/`)}>

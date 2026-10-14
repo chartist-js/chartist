@@ -1,0 +1,68 @@
+---
+/**
+ * The search dialog (polish-docs-site, design D1). The header's
+ * `[data-search-open]` buttons open it; search.ts loads Pagefind on the
+ * first open and renders the results, grouped by section.
+ */
+const SUGGESTIONS = ['lineChart', 'showArea', 'container queries', 'animations'];
+---
+
+<dialog class="search-dialog" aria-labelledby="search-title" data-search-dialog>
+  <div class="search-panel">
+    <h2 class="sr-only" id="search-title">Search</h2>
+    <div class="search-field">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"
+        ><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg
+      >
+      <input
+        class="search-input"
+        type="search"
+        role="combobox"
+        aria-label="Search the docs, API and examples"
+        aria-expanded="false"
+        aria-controls="search-results"
+        aria-autocomplete="list"
+        placeholder="Search docs, API and examples"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        enterkeyhint="go"
+        data-search-input
+      />
+      <button class="search-close" type="button" aria-label="Close search" data-search-close>
+        <kbd class="max-md:hidden">Esc</kbd>
+        <svg class="hidden max-md:block" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"
+          ><path d="M6 6l12 12M18 6 6 18"></path></svg
+        >
+      </button>
+    </div>
+    <div class="search-body">
+      <div class="search-intro" data-search-intro>
+        <p>Find a guide, an API entry or an example.</p>
+        <p class="search-suggestions">
+          <span class="muted">Try</span>
+          {
+            SUGGESTIONS.map(term => (
+              <button class="chip" type="button" data-search-suggest>
+                {term}
+              </button>
+            ))
+          }
+        </p>
+      </div>
+      <div class="search-results" id="search-results" role="listbox" aria-label="Results" hidden data-search-results></div>
+      <p class="search-status" hidden data-search-status></p>
+      <p class="sr-only" aria-live="polite" data-search-live></p>
+    </div>
+    <footer class="search-footer max-md:hidden" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> to move</span>
+      <span><kbd>Enter</kbd> to open</span>
+      <span><kbd>Esc</kbd> to close</span>
+    </footer>
+  </div>
+</dialog>
+
+<script>
+  import { initSearch } from './search';
+  initSearch();
+</script>

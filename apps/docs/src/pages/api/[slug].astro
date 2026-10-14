@@ -35,7 +35,7 @@ const headings = entries.map(entry => ({ depth: 2, slug: entry.name, text: entry
       </p>
     )
   }
-  <div class="api-entries">
+  <div class="api-entries" data-pagefind-weight={legacy ? 0.5 : undefined}>
     {entries.map(entry => <Entry entry={entry} />)}
   </div>
 </DocsLayout>

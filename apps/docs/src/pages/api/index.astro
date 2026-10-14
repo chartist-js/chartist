@@ -31,7 +31,7 @@ const headings = [
           <a href={href(apiPath(page.slug))}>{page.title}</a>
         </h2>
         <p>{page.description}</p>
-        <p class="api-index">
+        <p class="api-index" data-pagefind-weight="0.3">
           {entriesOn(page.slug).map((entry, i) => (
             <>
               {i > 0 && ' '}

@@ -1,5 +1,6 @@
 ---
 import Logomark from './Logomark.astro';
+import SearchDialog from './search/SearchDialog.astro';
 import { NAV, REPO, href } from '../lib/site';
 
 interface Props {
@@ -32,6 +33,13 @@ const sideLink =
       }
     </nav>
     <span class="flex-1"></span>
+    <button class="search-btn" type="button" aria-label="Search" aria-keyshortcuts="Control+K Meta+K /" aria-haspopup="dialog" data-search-open>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"
+        ><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg
+      >
+      <span class="search-btn-label">Search</span>
+      <kbd class="search-btn-kbd"><span data-search-mod>Ctrl</span> K</kbd>
+    </button>
     <a class="icon-btn sm max-md:hidden" href={REPO} aria-label="Chartist on GitHub">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
         ><path
@@ -62,6 +70,7 @@ const sideLink =
     <a class={sideLink} href={REPO}>GitHub</a>
   </nav>
 </header>
+<SearchDialog />
 
 <script>
   import { initThemeToggle } from '../scripts/theme';

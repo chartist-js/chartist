@@ -62,8 +62,8 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
       }
     </aside>
 
-    <div class="flex min-w-0 max-w-[760px] flex-[999_1_560px] flex-col gap-6">
-      <nav class="flex gap-2 text-sm text-ink-2" aria-label="Breadcrumb">
+    <div class="flex min-w-0 max-w-[760px] flex-[999_1_560px] flex-col gap-6" data-pagefind-body data-pagefind-filter={`section:${page.section === 'api' ? 'API' : 'Docs'}`}>
+      <nav class="flex gap-2 text-sm text-ink-2" aria-label="Breadcrumb" data-pagefind-ignore>
         <a class="text-ink-2 hover:text-ink-2" href={href(pages[0].path)}>{page.section === 'api' ? 'API' : 'Docs'}</a><span aria-hidden="true">/</span><span>{page.group}</span>
       </nav>
       <header class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-6 max-md:grid-cols-[minmax(0,1fr)]">
@@ -71,7 +71,7 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
           <h1 class="mb-3.5 text-4xl">{page.title}</h1>
           <p class="lead">{page.description}</p>
         </div>
-        <div class="-mb-2 w-[130px] max-md:hidden"><Mascot pose="point" /></div>
+        <div class="-mb-2 w-[130px] max-md:hidden" data-pagefind-ignore><Mascot pose="point" /></div>
       </header>
 
       <article class="prose">
@@ -81,12 +81,12 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 
       {
         page.editUrl && (
-          <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-4 text-sm text-ink-2">
+          <div class="flex flex-wrap justify-between gap-3 border-t border-line pt-4 text-sm text-ink-2" data-pagefind-ignore>
             <a href={page.editUrl}>Edit this page on GitHub</a>
           </div>
         )
       }
-      <nav class="grid grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))] gap-4" aria-label="Previous and next">
+      <nav class="grid grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))] gap-4" aria-label="Previous and next" data-pagefind-ignore>
         {
           previous && (
             <a class={pagerLink} href={href(previous.path)}>
