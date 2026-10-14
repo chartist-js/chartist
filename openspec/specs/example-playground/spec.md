@@ -194,3 +194,12 @@ Nothing type-related SHALL load until the user focuses a TypeScript editor. The 
 
 - **WHEN** the declaration URL fails to load
 - **THEN** editing and running work, and `chartist` imports are treated as untyped
+
+### Requirement: Typing is reliable in every layout
+
+Text typed into the editor SHALL appear in the order typed, at the cursor, in the inline and full layouts, at any typing speed.
+
+#### Scenario: Fast typing in a live example
+
+- **WHEN** a reader types several lines quickly into a live example's editor
+- **THEN** the editor contains exactly the typed text

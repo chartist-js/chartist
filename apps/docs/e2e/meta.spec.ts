@@ -73,6 +73,27 @@ test('robots.txt allows crawling and points to the sitemap', async ({
   expect((await request.get(local(sitemap!, baseURL!))).status()).toBe(200);
 });
 
+test('the sitemap lists every page and nothing else', async ({
+  request,
+  baseURL
+}) => {
+  const index = await (await request.get('/sitemap-index.xml')).text();
+  const locs = (xml: string) =>
+    [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]);
+  const paths: string[] = [];
+  for (const chunk of locs(index)) {
+    paths.push(
+      ...locs(await (await request.get(local(chunk, baseURL!))).text()).map(
+        url => new URL(url).pathname
+      )
+    );
+  }
+  for (const { path } of PAGES.filter(page => page.name !== '404')) {
+    expect(paths, path).toContain(path);
+  }
+  expect(paths.filter(path => /^\/(v1|og)\/|\.md$|404/.test(path))).toEqual([]);
+});
+
 test('every built page has a card', async () => {
   const dist = new URL('../../../dist/apps/docs/', import.meta.url);
   const pages = (await readdir(dist, { recursive: true })).filter(

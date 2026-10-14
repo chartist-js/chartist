@@ -28,4 +28,4 @@
 ## 5. Proof
 
 - [x] 5.1 Screenshot review in both themes (header with search, dialog, a card image, example pages).
-- [ ] 5.2 Plan updated; full gate.
+- [x] 5.2 Plan updated; full gate.
