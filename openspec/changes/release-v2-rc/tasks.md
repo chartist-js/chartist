@@ -23,11 +23,11 @@
 
 - [x] 4.1 Add the 1.x redirects: an Astro integration that writes a redirect page at each 1.x page path the v2 build doesn't have, pointing to `/v1/…` and keeping the hash; a `docs:test` check that every 1.x page is a v2 page or redirected; redirects stay out of the sitemap and search. Verify: `pnpm nx build docs`, e2e tests open `/api/classes/LineChart` and land on `/v1/api/classes/LineChart`, and `/api/` stays the v2 reference
 - [x] 4.2 Add `src/lib/release.ts` and the install-text rewrite (rehype plugin for all rendered code, `markdown.ts`, StackBlitz version) for prerelease versions. Verify: unit tests for the rewrite; an e2e test of getting started with a prerelease version on disk shows `chartist@next` and the pinned CDN URL
-- [ ] 4.3 Update `docs/decisions.md` with the release decisions made while building this change. Verify: its Repository and Releases sections match the workflows and settings
+- [x] 4.3 Update `docs/decisions.md` with the release decisions made while building this change. Verify: its Repository and Releases sections match the workflows and settings
 
 ## 5. Local gate
 
-- [ ] 5.1 Run the whole gate locally (`run-many` of every target, `format:check`, docs and playground e2e, `test:visual:local`). Verify: all pass
+- [x] 5.1 Run the whole gate locally (`run-many` of every target, `format:check`, docs and playground e2e, `test:visual:local`). Verify: all pass
 
 ## 6. Settings (the author)
 

@@ -128,13 +128,13 @@ The deploy job runs for `main` (and by hand), only while the repository variable
 
 An Astro integration runs after the build. It walks `dist/v1/` for the 1.x pages (`.html` files and `index.html` folders). For each page whose path has no page in the v2 build, it writes a small HTML file at the old path. That file has a `<meta http-equiv="refresh">` to `/v1/<path>`, a `rel=canonical` link, a link for people, and a script that keeps the `#hash`.
 
-GitHub Pages serves `/api/classes/LineChart` from `api/classes/LineChart.html`, so the redirect files take the 1.x file names. Paths the v2 site has (`/`, `/api/`, `/docs/<slug>/` where they coincide) keep their v2 page. A check in `docs:test` lists every 1.x page and fails if one is neither a v2 page nor redirected. Redirect files don't enter the sitemap or the search index.
+GitHub Pages serves `/api/classes/LineChart` from `api/classes/LineChart.html`, so the redirect files take the 1.x file names. Paths the v2 site has (`/`, `/api/`, `/docs/<slug>/` where they coincide) keep their v2 page. An e2e check lists every 1.x page and fails if one is neither a v2 page nor redirected (it needs the built site, which `docs:test` doesn't). Redirect files don't enter the sitemap or the search index.
 
 ### Install instructions that follow the version
 
 `src/lib/release.ts` reads the version of `packages/chartist/package.json` at build time, and the site rewrites install text in one place:
 
-- **A rehype plugin over all rendered code:** MDX code blocks, inline code, and the `Code` components of `InstallTabs` and the plugins page.
+- **A Shiki transformer for MDX code blocks** (Astro 7's default Markdown processor ignores rehype plugins, and its own hast plugins run after Shiki has split the text), plus the rewrite function called by the components and libraries that hold install text (`InstallTabs`, the plugins page's setup snippets, the landing page). No guide has install text in inline code or prose; a guard test fails if one ever does.
 - **`markdown.ts`,** for the `.md` versions and `llms.txt`.
 - **The playground's StackBlitz export,** whose Chartist version becomes `next` instead of `latest`.
 

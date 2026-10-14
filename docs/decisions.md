@@ -47,10 +47,13 @@ Every 1.x import path keeps resolving.
 
 - **Versions:** release candidates `2.0.0-rc.N` (with the dot, so `rc.10` sorts after `rc.9`) under the npm `next` dist-tag; `npm i chartist` installs 1.x until `2.0.0`. The RC period is the last chance for breaking changes, for example dropping `@experimental` from the functional API.
 - **Tooling:** `nx release` with conventional commits: the version, the workspace `CHANGELOG.md` (continuing the 1.x one), `v{version}` tags as in 1.x, the GitHub release and the npm publish. Only `chartist` is released.
+- **Changelog:** it covers the package only. A renderer on top of Nx's default (`tools/changelog-renderer.cjs`) leaves out commits scoped `docs`, `playground`, `examples` and `openspec`, which ship with the site, and the authors section is off. `docs`, `test`, `build`, `chore`, `refactor`, `style` and `ci` commits neither bump the version nor appear. Commit subjects may start with a name (`LineChart wraps …`), so commitlint doesn't check their case.
+- **Version choice:** in order, the manual run's version, the next prerelease of the repository variable `RELEASE_PREID` (`rc` during RCs) when the current version is one, or the conventional commits. An automatic run on a final version while `RELEASE_PREID` is set stops instead of publishing `x.y.z-rc.0`. The logic is a tested script, `.github/scripts/release.mjs`.
 - **Approval:** the release workflow runs after green CI on `main` and waits for the author's approval in the `release` environment. A manual run can set the version, do a dry run, or re-publish a tagged version.
-- **npm:** trusted publishing via OIDC, so there is no stored token and provenance is attached.
+- **npm:** trusted publishing via OIDC, so there is no stored token and provenance is attached. Prereleases are published under `next`, final versions under `latest`. A local `nx release` is only ever a dry run: the configuration pushes.
 - **Pushing to protected `main`:** `main` keeps its protection (reviewed pull requests, no force pushes). The release pushes its commit and tag as a GitHub App ("Chartist Release") on the protection's bypass list, with its key stored as `release` environment secrets, because `GITHUB_TOKEN` can't bypass the protection and deploy keys aren't bypass actors.
 - **Install instructions:** while the package version is a prerelease, the site turns `npm install chartist` into `chartist@next` and pins CDN URLs to the exact version (ranges like `chartist@2` skip prereleases). The page sources keep the 2.0.0 wording.
+- **Docs deployment:** `docs.yml` deploys chartist.dev from `main` while the repository variable `DOCS_DEPLOY` is `true`, and waits until the built version is on npm, since the release commit is pushed just before the publish.
 
 The workflows and settings are specified in the release change (`openspec/changes/release-v2-rc/`) and, once it's archived, in the `release-process` and `continuous-integration` specs.
 
@@ -72,4 +75,3 @@ The workflows and settings are specified in the release change (`openspec/change
 Check these before each release and update the docs and the polyfill advice when they move.
 
 - **`Element.matchContainer()`** ([csswg-drafts#6205](https://github.com/w3c/csswg-drafts/issues/6205)), the `@container` counterpart of `matchMedia()`, used by container conditions in responsive options. Until browsers ship it, users load the [`match-container`](https://github.com/teetotum/match-container) polyfill, and container conditions are documented as experimental and polyfill-only; every container example shows the polyfill import and the `container-type` CSS. Chartist depends only on `matchContainer(query).matches` and an optional `change` event. Watch for the final name and semantics, a `change` event or observer, and browser releases.
-
