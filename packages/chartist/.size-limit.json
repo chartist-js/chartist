@@ -16,14 +16,14 @@
   {
     "name": "Compat browser ESM (dist/compat.min.js, without the core)",
     "path": "dist/compat.min.js",
-    "limit": "2.45 kB",
+    "limit": "2.57 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat UMD (dist/compat.umd.js, without the core)",
     "path": "dist/compat.umd.js",
-    "limit": "2.6 kB",
+    "limit": "2.76 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },

@@ -17,7 +17,7 @@
 - [x] 3.2 Make the `fromLegacyPlugin` chart object an instance of its preset's 1.x class (`Object.create` of the prototype), with `data`, resolved `options` (1.x defaults, `classNames`) and `optionsProvider.getCurrentOptions()` set at install; plain object for `chart()` compositions. Unit tests for each field and for `instanceof`. Verify: `pnpm nx test chartist`
 - [x] 3.3 Set `chart.svg` to the root wrapped in the 1.x `Svg` API before the first `draw` event, on the functional API and the 1.x classes, with tests calling `querySelectorAll` from `draw` and `created`. Verify: `pnpm nx test chartist`
 - [x] 3.4 Add 0.x `bounds` (`min`, `max`, `range`, `step`, `values`) of the value axis to the compat `created` payload, with a test. Verify: `pnpm nx test chartist`
-- [ ] 3.5 Run the 1.x contract suites and the size budgets after the compat changes; raise the compat budget to the new size plus about 1% if it grows. Verify: `pnpm nx run-many -t test,test:api,test:api:v1,test:size,test:visual:local -p chartist`
+- [x] 3.5 Run the 1.x contract suites and the size budgets after the compat changes; raise the compat budget to the new size plus about 1% if it grows. Verify: `pnpm nx run-many -t test,test:api,test:api:v1,test:size,test:visual:local -p chartist`
 
 ## 4. Plugin data
 
