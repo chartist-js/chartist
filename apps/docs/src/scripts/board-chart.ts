@@ -21,33 +21,33 @@ const boardDrawIn: ChartPlugin = {
   }
 };
 
+/** The board's data, also drawn on the share cards (lib/og-card.ts). */
+export const BOARD_DATA = {
+  labels: ['1st', '2nd', '3rd'],
+  series: [
+    // Claimed (dashed, marching) and counted: only the third was
+    // recounted.
+    [1280000, 3317752, 5706000],
+    [1280000, 3317752, 1975496]
+  ]
+};
+export const BOARD_HIGH = 6000000;
+
 export function mountBoardChart(element: HTMLElement): ChartHandle {
-  return lineChart(
-    element,
-    {
-      labels: ['1st', '2nd', '3rd'],
-      series: [
-        // Claimed (dashed, marching) and counted: only the third was
-        // recounted.
-        [1280000, 3317752, 5706000],
-        [1280000, 3317752, 1975496]
-      ]
+  return lineChart(element, BOARD_DATA, {
+    low: 0,
+    high: BOARD_HIGH,
+    fullWidth: true,
+    chartPadding: { top: 12, right: 22, bottom: 0, left: 0 },
+    axisX: { offset: 20 },
+    axisY: {
+      offset: 30,
+      scaleMinSpace: 16,
+      onlyInteger: true,
+      labelInterpolationFnc: millions
     },
-    {
-      low: 0,
-      high: 6000000,
-      fullWidth: true,
-      chartPadding: { top: 12, right: 22, bottom: 0, left: 0 },
-      axisX: { offset: 20 },
-      axisY: {
-        offset: 30,
-        scaleMinSpace: 16,
-        onlyInteger: true,
-        labelInterpolationFnc: millions
-      },
-      plugins: [boardDrawIn]
-    }
-  );
+    plugins: [boardDrawIn]
+  });
 }
 
 /** The hero's board chart(s): elements with data-board-chart. */

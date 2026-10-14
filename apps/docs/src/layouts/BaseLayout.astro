@@ -11,6 +11,7 @@ import zilla700 from '@fontsource/zilla-slab/files/zilla-slab-latin-700-normal.w
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { CARD_HEIGHT, CARD_WIDTH, cardPath } from '../lib/og';
 import { href } from '../lib/site';
 
 interface Props {
@@ -18,10 +19,17 @@ interface Props {
   description: string;
   /** Header section to mark as current. */
   section?: string;
+  /** The share card's site path, e.g. `og/docs/line-charts.png`; by default the page's own (lib/og.ts). */
+  image?: string;
 }
 
-const { title, description, section } = Astro.props;
+const { title, description, section, image } = Astro.props;
 const fullTitle = title === 'Chartist' ? title : `${title} · Chartist`;
+// Share previews (design D2, polish-docs-site): absolute URLs from the site.
+const site = Astro.site ?? Astro.url;
+const notFound = /\/404(\.html|\/)?$/.test(Astro.url.pathname);
+const canonical = notFound ? undefined : new URL(Astro.url.pathname, site).href;
+const card = new URL(href(image ?? cardPath(Astro.url.pathname, import.meta.env.BASE_URL)), site).href;
 ---
 
 <!doctype html>
@@ -31,6 +39,20 @@ const fullTitle = title === 'Chartist' ? title : `${title} · Chartist`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {notFound && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content={section === 'docs' ? 'article' : 'website'} />
+    <meta property="og:site_name" content="Chartist" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={card} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content={String(CARD_WIDTH)} />
+    <meta property="og:image:height" content={String(CARD_HEIGHT)} />
+    <meta property="og:image:alt" content={title} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={card} />
     <link rel="icon" href={href('favicon.svg')} type="image/svg+xml" />
     <link rel="preload" href={zilla700} as="font" type="font/woff2" crossorigin />
     <script is:inline>
