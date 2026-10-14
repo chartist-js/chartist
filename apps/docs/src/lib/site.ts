@@ -20,7 +20,8 @@ export const NAV = [
   { id: 'api', label: 'API', path: 'api/' },
   { id: 'examples', label: 'Examples', path: 'examples/' },
   { id: 'plugins', label: 'Plugins', path: 'plugins/' },
-  { id: 'playground', label: 'Playground', path: 'playground/' }
+  { id: 'playground', label: 'Playground', path: 'playground/' },
+  { id: 'credits', label: 'Credits', path: 'credits/' }
 ] as const;
 
 /** Joins a site path to the configured base. */
