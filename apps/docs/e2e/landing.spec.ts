@@ -144,13 +144,26 @@ test('reduced motion: nothing runs, the SMIL morph is static', async ({
   await page.locator('.smil.static-only').scrollIntoViewIfNeeded();
   await expect(page.locator('.smil.static-only')).toBeVisible();
   await expect(page.locator('.smil.motion-only')).toBeHidden();
-  const running = await page.evaluate(
-    () =>
+  // Reduced motion shortens transitions to 1ms rather than removing them
+  // (motion.css), so one may be mid-flight while the page settles: poll.
+  // Named, so a failure says which animation still runs.
+  const running = () =>
+    page.evaluate(() =>
       document
         .getAnimations()
-        .filter(animation => animation.playState === 'running').length
-  );
-  expect(running).toBe(0);
+        .filter(animation => animation.playState === 'running')
+        .map(animation => {
+          const target = (animation.effect as KeyframeEffect | null)?.target;
+          const name =
+            'animationName' in animation
+              ? animation.animationName
+              : 'transitionProperty' in animation
+                ? `transition ${animation.transitionProperty}`
+                : animation.id;
+          return `${target?.className ?? '?'}: ${String(name)}`;
+        })
+    );
+  await expect.poll(running).toEqual([]);
 });
 
 test('with motion: scroll timelines run, the SMIL morph animates', async ({
