@@ -23,10 +23,13 @@ A pie takes a flat series: one array of numbers, not an array of arrays. The lab
   title='A one-hour meeting'
   label='Pie chart of a one-hour meeting: agenda 10, small talk 25, decisions 5 and coffee 20 minutes'
   preview={{ type: 'pie', data: meeting }}
+  previewStyle='--ct-label-color: #fff;'
   example='pie-and-donut-charts/meeting'
 />
 
 Every value becomes its own series group, `ct-series-a`, `ct-series-b` and so on, so every slice gets its own color from the stylesheet. Leave out the labels and the slices show their values instead.
+
+The white labels are one line of CSS, `--ct-label-color: #fff` in `src/style.css`: the default label color is a translucent black, made for axes on a light background. Labels [outside the pie](#labels) keep it.
 
 ## Donuts
 
@@ -40,6 +43,7 @@ Set `donut: true` and the slices become arcs of a ring. `donutWidth` is the ring
     data: meeting,
     options: { donut: true, donutWidth: 40 }
   }}
+  previewStyle='--ct-label-color: #fff;'
   example='pie-and-donut-charts/donut'
 />
 

@@ -1,4 +1,5 @@
 import 'chartist/styles.css';
+import './style.css';
 import { pieChart } from 'chartist';
 
 // Where the minutes of a one-hour meeting go.

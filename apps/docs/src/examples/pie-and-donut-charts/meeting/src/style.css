@@ -1,0 +1,4 @@
+/* Labels on colored slices read best in white. */
+#chart {
+  --ct-label-color: #fff;
+}
