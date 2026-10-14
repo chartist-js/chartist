@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { distTag, releaseArgs } from './release.mjs';
 
-const BASE = ['--yes', '--skip-publish'];
+const BASE = ['--skip-publish'];
 
 test('an explicit version wins', () => {
   assert.deepEqual(

@@ -53,7 +53,7 @@ export function releaseArgs({
     }
     args.push('prerelease', '--preid', preid);
   }
-  args.push('--yes', '--skip-publish');
+  args.push('--skip-publish');
   if (dryRun) {
     args.push('--dry-run');
   }
