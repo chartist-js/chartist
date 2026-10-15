@@ -57,7 +57,8 @@ Slugs (file names) and sidebar order. Link between pages with these.
 | Guides      | 6     | `animations`           | Animations               |
 | Guides      | 7     | `events-and-plugins`   | Events and plugins       |
 | Guides      | 8     | `server-rendering`     | Server rendering         |
-| Guides      | 9     | `updating-charts`      | Updating charts          |
+| Guides      | 9     | `terminal-rendering`   | Terminal rendering       |
+| Guides      | 10    | `updating-charts`      | Updating charts          |
 
 ## Components
 

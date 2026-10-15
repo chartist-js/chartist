@@ -66,6 +66,23 @@ describe('rewriteInstallText', () => {
     ['npm install --save-dev chartist', 'npm install --save-dev chartist@next'],
     ['pnpm add chartist', 'pnpm add chartist@next'],
     ['yarn add chartist', 'yarn add chartist@next'],
+    [
+      'npm install @chartist-js/terminal',
+      'npm install @chartist-js/terminal@next'
+    ],
+    [
+      'npm install -g @chartist-js/terminal chartist',
+      'npm install -g @chartist-js/terminal@next chartist@next'
+    ],
+    ['npx @chartist-js/terminal demo', 'npx @chartist-js/terminal@next demo'],
+    [
+      'npm install @chartist-js/terminal@2.0.0',
+      'npm install @chartist-js/terminal@2.0.0'
+    ],
+    [
+      "import { lineChart } from '@chartist-js/terminal';",
+      "import { lineChart } from '@chartist-js/terminal';"
+    ],
     ['// npm install chartist', '// npm install chartist@next'],
     [
       'npm install chartist chartist-plugin-legend',

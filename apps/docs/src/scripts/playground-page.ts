@@ -112,9 +112,10 @@ export async function mountPlaygroundPage() {
   };
 
   // The UMD builds and the plugins load by names only this site's sandbox
-  // knows (see playground-env), so StackBlitz couldn't run such code.
+  // knows (see playground-env), so StackBlitz couldn't run such code. The
+  // polyfill and the @chartist-js packages are on npm, so they can.
   const siteNames = Object.keys(imports).filter(
-    name => name !== 'match-container'
+    name => name !== 'match-container' && !name.startsWith('@chartist-js/')
   );
   const siteOnly = (files: Record<string, string>) =>
     Object.values(files).some(code =>

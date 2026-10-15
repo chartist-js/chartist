@@ -59,6 +59,8 @@ const program = ts.createProgram([...files.keys(), shims], {
   moduleResolution: ts.ModuleResolutionKind.Bundler,
   moduleDetection: ts.ModuleDetectionKind.Force,
   lib: ['lib.es2022.d.ts', 'lib.dom.d.ts', 'lib.dom.iterable.d.ts'],
+  // Samples run in a browser or, like those for CLI tools, in Node.js.
+  types: ['node'],
   strict: true,
   noEmit: true,
   skipLibCheck: true

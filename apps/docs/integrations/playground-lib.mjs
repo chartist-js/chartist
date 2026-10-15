@@ -3,7 +3,9 @@
  * index.js, compat.js (it imports ./index.js), index.css and
  * themes/accessible.css (as in the package's dist), the declarations
  * index.d.ts and compat.d.ts (for type-aware editing), the
- * match-container polyfill that container query examples import, the UMD
+ * @chartist-js/terminal build under terminal/ (index.js, styles.css and
+ * index.d.ts), the match-container polyfill that container query examples
+ * import, the UMD
  * builds index.umd.js and compat.umd.js, and the community plugins of the
  * plugins page under plugins/<package>/ (src/data/plugin-files.json): each
  * one's script, module build and stylesheet when it has them, and its
@@ -21,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 import pluginFiles from '../src/data/plugin-files.json' with { type: 'json' };
 
 const DIST = new URL('../../../packages/chartist/dist/', import.meta.url);
+const TERMINAL = new URL('../../../packages/terminal/dist/', import.meta.url);
 const POLYFILL = new URL(
   '../node_modules/match-container/matchContainer.js',
   import.meta.url
@@ -50,6 +53,18 @@ const FILES = {
   'themes/accessible.css': {
     source: new URL('themes/accessible.css', DIST),
     type: 'text/css'
+  },
+  'terminal/index.js': {
+    source: new URL('index.js', TERMINAL),
+    type: 'text/javascript'
+  },
+  'terminal/styles.css': {
+    source: new URL('styles.css', TERMINAL),
+    type: 'text/css'
+  },
+  'terminal/index.d.ts': {
+    source: new URL('index.d.ts', TERMINAL),
+    type: 'text/plain'
   },
   'match-container.js': { source: POLYFILL, type: 'text/javascript' },
   'index.umd.js': {

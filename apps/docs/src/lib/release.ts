@@ -53,18 +53,24 @@ export const CHARTIST_VERSION: string =
 
 export const release: Release = releaseOf(CHARTIST_VERSION);
 
-/** An npm, pnpm or yarn command that adds packages, up to the line's end or a shell operator. */
+/**
+ * An npm, pnpm or yarn command that adds packages, or an `npx` run, up to
+ * the line's end or a shell operator.
+ */
 const INSTALL =
-  /\b(?:npm\s+(?:install|i|add)|pnpm\s+(?:add|install|i)|yarn\s+add)\b[^\n;&|]*/g;
+  /\b(?:npm\s+(?:install|i|add)|pnpm\s+(?:add|install|i)|yarn\s+add|npx)\b[^\n;&|]*/g;
 /** `chartist` as a package argument: not `chartist-plugin-…`, not `chartist@…`. */
 const PACKAGE = /(?<![\w@./-])chartist(?![\w@/-])/g;
+/** A `@chartist-js` package, released with `chartist`, without a version. */
+const SCOPED = /(?<![\w@./-])@chartist-js\/[\w.-]+(?![\w@/-])/g;
 const CDN = /\bcdn\.jsdelivr\.net\/npm\/chartist@2\//g;
 
 /**
  * Install text for the given release: unchanged for a final version; for a
- * prerelease, `npm install chartist` installs `chartist@next` and CDN URLs at
- * `chartist@2/` load the exact version. Other packages (plugins with their
- * own pinned CDN versions) are left alone.
+ * prerelease, `npm install chartist` installs `chartist@next` (and the
+ * `@chartist-js` packages, released with it, `@next` too, also for `npx`)
+ * and CDN URLs at `chartist@2/` load the exact version. Other packages
+ * (plugins with their own pinned CDN versions) are left alone.
  */
 export function rewriteInstallText(
   text: string,
@@ -74,7 +80,9 @@ export function rewriteInstallText(
     return text;
   }
   return text
-    .replace(INSTALL, command => command.replace(PACKAGE, 'chartist@next'))
+    .replace(INSTALL, command =>
+      command.replace(PACKAGE, 'chartist@next').replace(SCOPED, '$&@next')
+    )
     .replace(CDN, `cdn.jsdelivr.net/npm/chartist@${cdnVersion}/`);
 }
 

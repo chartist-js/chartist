@@ -53,7 +53,7 @@ export function weekChart(values: number[]): string {
 }
 ```
 
-`toScene()` takes a config, so it works with `chart()`'s building blocks: axes and layers. The presets (`lineChart()` and friends) draw into an element and have no string form. The [composed charts](../composed-charts/) page has more on axes and layers.
+`toScene()` takes a config, so it works with `chart()`'s building blocks: axes and layers. The presets (`lineChart()` and friends) draw into an element; for their charts as a string, `lineChartConfig()`, `barChartConfig()` and `pieChartConfig()` build the config a preset draws, from the same data and options: `toScene(lineChartConfig(data, options), size)`. The [composed charts](../composed-charts/) page has more on axes and layers.
 
 The browser can run the same code. This example builds the markup with `toScene()` and `renderToString()` and puts it into the page with `innerHTML`:
 

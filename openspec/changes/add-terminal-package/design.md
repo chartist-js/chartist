@@ -138,9 +138,11 @@ Alternative: separate groups with independent versions. The author chose lockste
 ### Docs and the live example
 
 - **Page.** A guide, `terminal-rendering.mdx` in the Guides group, after Server rendering. It covers the CLI, the API for CLI tools and HTML output.
-- **Example.** The live example is a new example project, `packages/examples/terminal/html`, with `renderToHtml` output in a page and the package's stylesheet. It is an ordinary example (manifest, type-checked, visual test).
-- **Import map.** `LiveExample` and the playground page pass `imports: { '@chartist-js/terminal': … }`, pointing to the package's `dist/index.js`, which the docs build copies next to `chartist`'s files. Its bare `chartist` import resolves through the same import map, so both share one `chartist` instance.
-- **Types.** The playground's types for `@chartist-js/terminal` come from its `dist/index.d.ts`, the way `chartist`'s do.
+- **Example.** Guide examples live with the docs, in `apps/docs/src/examples/<page>/<example>`, not in the gallery's `packages/examples`. The guide's example, `terminal-rendering/text-art`, draws the same data and options twice: as Chartist's SVG chart and, next to it, as text art (`format: 'html'` with the package's stylesheet). That shows the point of the package, and the per-guide e2e test, which waits for an SVG in each live example, holds as it is. It isn't a gallery example, so it has no visual baseline. (Planned first as a gallery example; changed while building, when it turned out guides take their examples from the docs.)
+- **Import map.** `playground-env.ts` adds `@chartist-js/terminal` and `@chartist-js/terminal/styles.css` to the `imports` every live example and the playground page pass, pointing to the package's `dist/index.js` and `dist/styles.css`, which `integrations/playground-lib.mjs` serves under `playground-lib/terminal/`. Its bare `chartist` import resolves through the same import map, so both share one `chartist` instance.
+- **CSS imports by name.** The playground compiler turns a static `.css` import into a `<link>` when the import map names it (`import '@chartist-js/terminal/styles.css'`), as it already does for `<link href>` in `index.html`.
+- **Types.** The playground's `types` option gets `packages` (bare name → `index.d.ts`, relative to `url`). The type worker fetches them and installs each under `node_modules/<name>/`; those names stop being declared untyped.
+- **StackBlitz.** An example that imports `@chartist-js/terminal` gets it in the exported `package.json`, at `chartist`'s version (they're released together), and the `@chartist-js` packages don't count as site-only names.
 - **Install text.** Install snippets for the package follow `chartist`'s prerelease rule (`@chartist-js/terminal@next` while the version is a prerelease), by extending the rewrite in `apps/docs/src/lib/release.ts` to the scoped name.
 
 ## Risks / Trade-offs
@@ -150,7 +152,7 @@ Alternative: separate groups with independent versions. The author chose lockste
 - [Two `chartist` copies when an app pins another 2.x version] → The range `^{version}` lets npm dedupe. The renderer only reads plain scene objects, so mixed copies still work.
 - [The first release with the package fails if npm trusted publishing isn't set up] → The package joins the release group last, and the tasks list the npmjs.com setup as the author's step before that.
 - [The 16-color mapping makes neighboring palette colors equal: the default `a` and `b` are both reds] → This is accepted; `--palette` and `palette` let users pick distinct colors.
-- [Visual baselines for the new example can't be recorded in the dev container] → The committed baseline is recorded on the author's WSL host or in CI, per `docs/decisions.md`. Locally, `test:visual:local`.
+- [StackBlitz can't install `@chartist-js/terminal` before its first release] → Only examples that import it are affected; they work once the package is on npm.
 
 ## Migration Plan
 

@@ -1,0 +1,16 @@
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  align-items: center;
+}
+
+#chart {
+  height: 220px;
+}
+
+/* Text art: one character per cell, so the font size sets the width. */
+#art .ct-terminal {
+  margin: 0;
+  font-size: 11px;
+}

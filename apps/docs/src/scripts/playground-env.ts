@@ -11,17 +11,27 @@ const LIB = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}playground-lib/`;
 /** Absolute URLs of the Chartist build and stylesheet for the sandbox. */
 export const chartistUrl = new URL(`${LIB}index.js`, location.href).href;
 export const stylesUrl = new URL(`${LIB}index.css`, location.href).href;
-/** Chartist's declarations, next to the build, for type-aware editing. */
-export const types = { url: LIB };
+/**
+ * Chartist's declarations, next to the build, for type-aware editing, and
+ * those of the @chartist-js packages under their folders.
+ */
+export const types = {
+  url: LIB,
+  packages: { '@chartist-js/terminal': 'terminal/index.d.ts' }
+};
 const lib = (path: string) => new URL(`${LIB}${path}`, location.href).href;
 
 /**
- * Bare names beyond `chartist`: the container query polyfill and the
- * plugins of the plugins page. A plugin's name maps to its
+ * Bare names beyond `chartist`: the @chartist-js packages and their
+ * stylesheets, the container query polyfill and the plugins of the plugins
+ * page. A plugin's name maps to its
  * module build when it has one (for `import`), else to its script (for a
  * classic `<script src>`); `<name>/style` maps to its stylesheet.
  */
 export const imports: Record<string, string> = {
+  // Its build imports `chartist`, which the same map resolves.
+  '@chartist-js/terminal': lib('terminal/index.js'),
+  '@chartist-js/terminal/styles.css': lib('terminal/styles.css'),
   'match-container': lib('match-container.js'),
   ...Object.fromEntries(
     Object.entries(pluginFiles).flatMap(([name, files]) => {

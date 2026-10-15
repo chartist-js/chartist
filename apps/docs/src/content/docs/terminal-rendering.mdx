@@ -1,0 +1,95 @@
+---
+title: Terminal rendering
+description: Draw Chartist charts in a terminal with braille dots and block characters, from the ct-cli command or from your own CLI tool, and as text art in HTML.
+group: Guides
+order: 9
+---
+
+import LiveExample from '../../components/LiveExample.astro';
+
+Chartist builds every chart as a scene first, and SVG is one way to draw it. `@chartist-js/terminal` draws the same scene with characters: lines, points and areas in braille dots, bars in block characters, slices filled with dots, and the grid in box-drawing lines, all in Chartist's series colors.
+
+The layout is Chartist's own, so the labels, the scale and the options you know carry over. Here's the same data and the same options, once as SVG and once as text art:
+
+<LiveExample
+  title='The same chart, twice'
+  label='A smoothed line chart with areas, drawn as SVG and as braille text art next to it'
+  example='terminal-rendering/text-art'
+/>
+
+## From the command line
+
+`ct-cli` draws a chart from numbers. Each argument is one series:
+
+```sh
+npx @chartist-js/terminal line 12,9,7,8,5 2,1,3.5,7,3 --labels Mon,Tue,Wed,Thu,Fri --area
+npx @chartist-js/terminal bar 5,4,3,7 3,2,9,5 --labels Q1,Q2,Q3,Q4 --stack
+npx @chartist-js/terminal pie 20,10,30 --labels Bananas,Apples,Kiwis --donut
+```
+
+Installed globally (`npm install -g @chartist-js/terminal`), the command is `ct-cli`. `ct-cli demo` shows one of each chart type.
+
+Without series arguments, it reads the data from a file (`--data`) or from a pipe. JSON works, and so do rows of numbers, one series per row, with optional labels in the first row and series names in the first column:
+
+```sh
+printf ',Mon,Tue,Wed\nVisitors,3,5,4\nSign-ups,1,2,3\n' | ct-cli bar --stack
+```
+
+`--width` and `--height` set the size in columns and rows, and `ct-cli --help` lists the rest. Colors follow your terminal: 24-bit or 256 colors in one, none when the output goes into a file or a pipe, or when `NO_COLOR` is set.
+
+## In your CLI tool
+
+Your tool has numbers and a terminal, so give it a chart. `lineChart()`, `barChart()` and `pieChart()` from `@chartist-js/terminal` take the data and options of Chartist's presets, plus a size in cells, and return a string:
+
+```ts
+import { detectColorMode, legend, lineChart } from '@chartist-js/terminal';
+
+const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [
+    { name: 'Visitors', data: [12, 9, 7, 8, 5] },
+    { name: 'Sign-ups', data: [2, 1, 3.5, 7, 3] }
+  ]
+};
+const color = detectColorMode(process.stdout, process.env);
+
+console.log(lineChart(data, { columns: 60, rows: 14, showArea: true, color }));
+console.log(legend(data, { columns: 60, color }));
+```
+
+Every preset option works: `stackBars`, `horizontalBars`, `low` and `high`, `axisY.labelInterpolationFnc` and so on. The terminal adds `columns` and `rows`, `color` (`truecolor`, `256`, `16` or `none`), `palette` for other series colors, and `format`.
+
+### Any scene
+
+The chart functions cover the presets. For a [composed chart](../composed-charts/), or a scene a plugin changed, lay it out with `terminalSize()` and render it with `renderToTerminal()`:
+
+```ts
+import { barChartConfig, toScene } from 'chartist';
+import { renderToTerminal, terminalSize } from '@chartist-js/terminal';
+
+const scene = toScene(
+  barChartConfig({ labels: ['Q1', 'Q2', 'Q3'], series: [[5, 4, 3]] }),
+  terminalSize(40, 10)
+);
+console.log(renderToTerminal(scene, { color: 'none' }));
+```
+
+`lineChartConfig()`, `barChartConfig()` and `pieChartConfig()` come from `chartist`: they build the config a preset draws, for any renderer. A terminal cell stands for 8 × 16 px of the scene, so a braille dot is 4 × 4 px and circles stay round. Labels are measured one cell per character, so they land on the character grid.
+
+## Text art in HTML
+
+`format: 'html'` (or `renderToHtml(scene)`) gives the text art as a `pre` element, with classes where the terminal has colors: `ct-series-a`, `ct-grid`, `ct-label` and so on. Its stylesheet colors them with [the custom properties](../styling-with-css/#custom-properties) your charts already use, so a theme colors the text art too:
+
+```ts
+import '@chartist-js/terminal/styles.css';
+```
+
+That's what the example above does. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
+
+## Fonts and limits
+
+Braille and box-drawing characters need a font that has them. Most terminal fonts do. If the dots look scattered or the grid has gaps, the font is missing some.
+
+Each character of a label is one cell, so wide characters (CJK, emoji) push the columns after them. And it's a printout: no tooltips, no animation.
+
+Next: draw the SVG without a browser in [server rendering](../server-rendering/), or build your own layers in [composed charts](../composed-charts/).

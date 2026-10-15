@@ -83,6 +83,9 @@ importers:
       '@astrojs/mdx':
         specifier: 8.0.2
         version: 8.0.2(@astrojs/markdown-satteri@0.4.3)(astro@7.3.6(@types/node@24.19.2)(jiti@2.7.0)(sass@1.105.1)(terser@5.51.2)(yaml@2.9.1))
+      '@chartist-js/terminal':
+        specifier: workspace:*
+        version: link:../../packages/terminal
       '@fontsource-variable/atkinson-hyperlegible-next':
         specifier: 5.3.0
         version: 5.3.0
@@ -271,6 +274,9 @@ importers:
 
   packages/playground:
     devDependencies:
+      '@chartist-js/terminal':
+        specifier: workspace:*
+        version: link:../terminal
       '@codemirror/autocomplete':
         specifier: 6.20.3
         version: 6.20.3
