@@ -1,6 +1,8 @@
-/* A terminal window around the text art, for the looks. */
+/* A terminal window around the text art, for the looks. It takes the
+   chart's size: more columns or rows make it bigger. */
 .window {
-  max-width: 560px;
+  width: fit-content;
+  max-width: 100%;
   margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
@@ -43,68 +45,24 @@
     sans-serif;
 }
 
-/* The chart's width sets the font size: 40 columns fill the screen. */
 .screen {
-  container-type: inline-size;
-  padding: 14px 16px 16px;
+  padding: 12px;
   color: #e6e4ec;
   /* Text art reads the same custom properties as SVG charts. */
   --ct-label-color: rgba(255, 255, 255, 0.7);
   --ct-grid-color: rgba(255, 255, 255, 0.16);
 }
 
-.screen .ct-terminal,
-.prompt {
-  margin: 0;
-  /* A cell is 0.6 em wide: 40 × 0.6 = 24. */
-  font-size: min(16px, 100cqi / 24.5);
-}
-
 .screen .ct-terminal {
-  margin: 0.5em 0;
+  margin: 0;
+  font-size: 13px;
+  /* Narrower than the chart, the window cuts it off. */
+  overflow: hidden;
   /* Bold labels; the dots and lines come from the stylesheet's own font. */
   font-weight: 700;
-  overflow: hidden;
-}
-
-.prompt {
-  font-family: 'JetBrains Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-  line-height: 1.4;
-  color: #c9c7d1;
-}
-
-/* Lines wrap between arguments, not inside them. */
-.arg {
-  white-space: nowrap;
 }
 
 /* On the dark screen, the area shading needs a little more. */
 .screen .ct-area {
   opacity: 0.75;
-}
-
-.sigil {
-  color: #28c840;
-  font-weight: 700;
-}
-
-.cursor {
-  display: inline-block;
-  width: 0.6em;
-  height: 1.1em;
-  vertical-align: text-bottom;
-  background: #e6e4ec;
-  animation: blink 1.1s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    animation: none;
-  }
 }

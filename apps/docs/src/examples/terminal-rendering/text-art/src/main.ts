@@ -18,7 +18,7 @@ if (art) {
     low: 0,
     showArea: true,
     lineSmooth: true,
-    columns: 40,
+    columns: 34,
     rows: 16,
     format: 'html'
   });
