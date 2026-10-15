@@ -52,7 +52,7 @@
   ],
   "analytics": false,
   "release": {
-    "projects": ["chartist"],
+    "projects": ["chartist", "terminal"],
     "projectsRelationship": "fixed",
     "releaseTag": {
       "pattern": "v{version}"

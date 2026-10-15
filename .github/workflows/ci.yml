@@ -38,7 +38,7 @@ jobs:
       - run: pnpm nx format:check --all
       - run: pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api test:api:v1
       - name: Release script tests
-        run: node --test .github/scripts/release.test.mjs
+        run: node --test .github/scripts/release.test.mjs tools/changelog-renderer.test.mjs
 
   visual:
     name: Visual regression

@@ -52,9 +52,9 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 
 ## 9. Release
 
-- [ ] 9.1 Check the release with both packages without publishing: add `terminal` to `release.projects` in `nx.json` and run `pnpm nx release <next rc> --dry-run --skip-publish` and `pnpm nx release publish --dry-run --tag next` after a build. Verify: both versions bump together, one changelog section and one `v{version}` tag, both packages in the publish dry run, and the packed `@chartist-js/terminal` depends on `chartist` `^{version}` (set `preserveLocalDependencyProtocols: false` if not)
-- [ ] 9.2 Check that `tools/changelog-renderer.cjs` keeps `terminal`-scoped commits. Verify: a renderer unit test with a `feat(terminal):` commit
-- [ ] 9.3 Update `docs/decisions.md`: the `@chartist-js` scope for maintained packages, lockstep releases, sharing through `chartist`'s public API, and "Only `chartist` is released" replaced. Verify: the Releases and Distribution sections match `nx.json` and the package
+- [x] 9.1 Check the release with both packages without publishing: add `terminal` to `release.projects` in `nx.json` and run `pnpm nx release <next rc> --dry-run --skip-publish` and `pnpm nx release publish --dry-run --tag next` after a build. Verify: both versions bump together, one changelog section and one `v{version}` tag, both packages in the publish dry run, and the packed `@chartist-js/terminal` depends on `chartist` `^{version}` (set `preserveLocalDependencyProtocols: false` if not)
+- [x] 9.2 Check that `tools/changelog-renderer.cjs` keeps `terminal`-scoped commits. Verify: a renderer unit test with a `feat(terminal):` commit
+- [x] 9.3 Update `docs/decisions.md`: the `@chartist-js` scope for maintained packages, lockstep releases, sharing through `chartist`'s public API, and "Only `chartist` is released" replaced. Verify: the Releases and Distribution sections match `nx.json` and the package
 - [ ] 9.4 Author: on npmjs.com, configure the trusted publisher for `@chartist-js/terminal` (repository `chartist-js/chartist`, workflow `release.yml`, environment `release`), with a first publish if npm requires the package to exist. Verify: npmjs.com shows the trusted publisher for the package
 
 ## 10. Integration
