@@ -18,6 +18,7 @@ import { isNumeric } from '../utils/utils';
 import { lineDefaults } from './lineDefaults';
 import {
   createPreset,
+  presetConfig,
   gridLayer,
   labelLayer,
   seriesGroup,
@@ -145,6 +146,32 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
     };
   }
 };
+
+/**
+ * Builds the chart config that `lineChart()` renders for the data and
+ * options, without a container: the line layer with its axes, grid and labels. Pass it to `toScene()` to render
+ * the preset chart with another renderer. Responsive options and the
+ * inline size style of the root svg are left out; both need a container.
+ * @example
+ * ```ts
+ * import { lineChartConfig, renderToString, toScene } from 'chartist';
+ *
+ * const config = lineChartConfig(
+ *   { labels: ['Mon', 'Tue', 'Wed'], series: [[5, 2, 4]] },
+ *   { showArea: true }
+ * );
+ * export const svg = renderToString(
+ *   toScene(config, { width: 600, height: 300 })
+ * );
+ * ```
+ * @experimental
+ */
+export function lineChartConfig(
+  data: LineChartData,
+  options: LineChartPresetOptions = {}
+): ChartConfig {
+  return presetConfig(lineSpec, data, options);
+}
 
 /** Internal: creates the line preset; used by `lineChart` and `LineChart`. */
 export function createLineChart(

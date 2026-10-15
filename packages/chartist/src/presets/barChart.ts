@@ -20,6 +20,7 @@ import { isLegacyAxisClass, legacyAxis } from '../scales/legacy';
 import { barDefaults } from './barDefaults';
 import {
   createPreset,
+  presetConfig,
   gridLayer,
   labelLayer,
   seriesGroup,
@@ -210,6 +211,20 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
     };
   }
 };
+
+/**
+ * Builds the chart config that `barChart()` renders for the data and
+ * options, without a container: the bar layer with its axes, grid and labels, horizontal or stacked as the options say. Pass it to `toScene()` to render
+ * the preset chart with another renderer. Responsive options and the
+ * inline size style of the root svg are left out; both need a container.
+ * @experimental
+ */
+export function barChartConfig(
+  data: BarChartData,
+  options: BarChartPresetOptions = {}
+): ChartConfig {
+  return presetConfig(barSpec, data, options);
+}
 
 /** Internal: creates the bar preset; used by `barChart` and `BarChart`. */
 export function createBarChart(

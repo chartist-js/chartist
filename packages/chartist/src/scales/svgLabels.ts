@@ -3,7 +3,7 @@
  * inside the label box the way the 1.x CSS aligns HTML labels (flexbox
  * rules per chart type), since CSS can't align SVG text in a box.
  */
-import type { MeasureText } from '../render/measure';
+import { textAscent, type MeasureText } from '../render/measure';
 import { node, withFields, type SceneNode } from '../scene/node';
 import type { AxisDimension } from './axis';
 
@@ -86,9 +86,6 @@ export function wrapText(
   return lines;
 }
 
-/** First baseline below the top of a line, in em (typical font ascent). */
-const ASCENT = 0.85;
-
 /**
  * Creates the SVG label builder for a chart: text measured with the
  * label's classes, lines one font size apart (the 1.x label CSS sets
@@ -134,7 +131,7 @@ export function svgLabels(
         'text',
         {
           x: round(x),
-          y: round(top + ASCENT * fontSize),
+          y: round(top + textAscent * fontSize),
           'text-anchor': align.horizontal
         },
         classes
@@ -143,7 +140,7 @@ export function svgLabels(
         children: lines.map((line, index) =>
           node('tspan', {
             x: round(x),
-            y: round(top + (index + ASCENT) * fontSize)
+            y: round(top + (index + textAscent) * fontSize)
           }).text(line)
         )
       }

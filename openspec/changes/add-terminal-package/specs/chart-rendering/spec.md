@@ -4,12 +4,12 @@
 
 ### Requirement: Preset configs without a container
 
-Chartist SHALL export functions that turn the data and options of the line, bar and pie presets into a chart config, without a container or DOM: the options over the preset defaults, as the presets merge them, without responsive options. Rendering that config SHALL give the same scene as the preset for the same size.
+Chartist SHALL export functions that turn the data and options of the line, bar and pie presets into a chart config, without a container or DOM: the options over the preset defaults, as the presets merge them, without responsive options. Rendering that config SHALL give the same scene as the preset for the same size, apart from the root's size, which the host sets.
 
 #### Scenario: Same scene as the preset
 
 - **WHEN** the line preset config for some data and options is passed to `toScene()` at 600 × 300 px
-- **THEN** the scene equals the one `lineChart()` renders for that data and those options at that size
+- **THEN** the scene has the same nodes, attributes and data as the one `lineChart()` renders for that data and those options at that size, apart from the root's size (`width`, `height` and the inline size style), which the host sets
 
 #### Scenario: Horizontal bars
 

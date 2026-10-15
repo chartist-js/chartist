@@ -4,10 +4,10 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 
 ## 1. Shared values and preset configs in chartist
 
-- [ ] 1.1 Add `lineChartConfig`, `barChartConfig` and `pieChartConfig` in `packages/chartist/src/presets` (options over the preset defaults with the presets' `extend`, then the existing spec's `config()`), exported from the root with doc comments per `DOC-COMMENTS.md`. Verify: unit tests that `toScene()` of each config equals the scene the preset renders for the same data, options and size, including `horizontalBars` and a donut
-- [ ] 1.2 Export `seriesColors` (the 15 default hex colors, `a` first) with a doc comment, and add a test that parses `$ct-series-colors` from `src/styles/_settings.scss` and compares. Verify: the test passes, and fails when one color in either place is changed
-- [ ] 1.3 Export `textAscent` and use it in `scales/svgLabels.ts` instead of the private `ASCENT`. Verify: the existing label tests and `test:visual:local` pass unchanged
-- [ ] 1.4 Add the new names to `test/api/exports/chartist.json` and public API tests for them. Verify: `pnpm nx run chartist:test:api` and `pnpm nx run-many -t test typecheck lint -p chartist --skip-nx-cache`
+- [x] 1.1 Add `lineChartConfig`, `barChartConfig` and `pieChartConfig` in `packages/chartist/src/presets` (options over the preset defaults with the presets' `extend`, then the existing spec's `config()`), exported from the root with doc comments per `DOC-COMMENTS.md`. Verify: unit tests that `toScene()` of each config equals the scene the preset renders for the same data, options and size, including `horizontalBars` and a donut
+- [x] 1.2 Export `seriesColors` (the 15 default hex colors, `a` first) with a doc comment, and add a test that parses `$ct-series-colors` from `src/styles/_settings.scss` and compares. Verify: the test passes, and fails when one color in either place is changed
+- [x] 1.3 Export `textAscent` and use it in `scales/svgLabels.ts` instead of the private `ASCENT`. Verify: the existing label tests and `test:visual:local` pass unchanged
+- [x] 1.4 Add the new names to `test/api/exports/chartist.json` and public API tests for them. Verify: `pnpm nx run chartist:test:api` and `pnpm nx run-many -t test typecheck lint -p chartist --skip-nx-cache`
 
 ## 2. Package scaffold
 
