@@ -100,7 +100,7 @@
   {
     "name": "CSS (dist/index.min.css)",
     "path": "dist/index.min.css",
-    "limit": "1.5 kB",
+    "limit": "1.8 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },

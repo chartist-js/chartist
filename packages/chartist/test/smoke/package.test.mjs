@@ -233,6 +233,41 @@ test('CSS: themable values read --ct-* properties with 1.x fallbacks', async () 
   );
 });
 
+test('CSS: series a to z, the colors repeating after o (#1456)', async () => {
+  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
+  const names = 'abcdefghijklmnopqrstuvwxyz';
+  for (const name of names.slice(15)) {
+    // p repeats a's color, q b's, and so on.
+    const repeated = names[names.indexOf(name) - 15];
+    assert.match(
+      css,
+      new RegExp(
+        `\\.ct-series-${name} \\{\\s*--ct-color: var\\(--ct-series-${name}, var\\(--ct-series-${repeated}, #[0-9a-f]{6}\\)\\);`
+      ),
+      `.ct-series-${name}`
+    );
+  }
+  assert.match(
+    css,
+    /--ct-color: var\(--ct-series-p, var\(--ct-series-a, #d70206\)\)/
+  );
+});
+
+test('Sass: fewer colors than series names repeat the colors', () => {
+  const importers = [new sass.NodePackageImporter(tmp)];
+  const css = sass.compileString(
+    '@use "pkg:chartist" with ($ct-series-names: (a, b, c), $ct-series-colors: (#111111, #222222));',
+    { ...SASS, importers }
+  ).css;
+  assert.match(css, /--ct-color: var\(--ct-series-a, #111111\)/);
+  assert.match(css, /--ct-color: var\(--ct-series-b, #222222\)/);
+  assert.match(
+    css,
+    /--ct-color: var\(--ct-series-c, var\(--ct-series-a, #111111\)\)/
+  );
+  assert.doesNotMatch(css, /ct-series-d/);
+});
+
 test('CSS: the accessible theme keeps light-dark()', async () => {
   for (const file of [
     'dist/themes/accessible.css',

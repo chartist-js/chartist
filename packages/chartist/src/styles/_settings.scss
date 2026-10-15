@@ -104,8 +104,38 @@ $ct-include-colored-series: $ct-include-classes !default;
 // If set to true this will include all responsive container variations using the scales defined at the top of the script
 $ct-include-alternative-responsive-containers: $ct-include-classes !default;
 
-// Series names and colors. This can be extended or customized as desired. Just add more series and colors.
-$ct-series-names: (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) !default;
+// Series names and colors. This can be extended or customized as desired. The names match the series classes
+// Chartist sets (`ct-series-a` to `ct-series-z`). With fewer colors than names, the colors repeat in order, and a
+// series whose color repeats falls back to the custom property of the series it repeats (`--ct-series-p` to
+// `--ct-series-a`).
+$ct-series-names: (
+  a,
+  b,
+  c,
+  d,
+  e,
+  f,
+  g,
+  h,
+  i,
+  j,
+  k,
+  l,
+  m,
+  n,
+  o,
+  p,
+  q,
+  r,
+  s,
+  t,
+  u,
+  v,
+  w,
+  x,
+  y,
+  z
+) !default;
 $ct-series-colors: (
   #d70206,
   #f05b4f,
