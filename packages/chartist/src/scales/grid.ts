@@ -2,7 +2,6 @@
  * Grid lines, grid background and HTML labels of an axis as scene nodes,
  * with the geometry and classes of 1.x `Axis.createGridAndLabels`.
  */
-import { namespaces } from '../core/constants';
 import type { AxisOptions, ChartPadding } from '../core/types';
 import type { Area } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
@@ -201,12 +200,7 @@ export function axisNodes(
       const style =
         `${units.len}: ${Math.round(attrs[units.len])}px; ` +
         `${units.counterLen}: ${Math.round(attrs[units.counterLen])}px;`;
-      const span = node(
-        'span',
-        // 1.x writes the xmlns namespace URI here; kept for identical DOM.
-        { style, xmlns: namespaces.xmlns },
-        classes
-      ).text(String(labelValue));
+      const span = node('span', { style }, classes).text(String(labelValue));
       labels.push(
         node('foreignObject', { style: 'overflow: visible;', ...attrs }, '', {
           role: 'label',

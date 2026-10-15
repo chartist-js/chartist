@@ -1,4 +1,5 @@
 import { pointContext } from '../../test/contexts';
+import { lineChart } from '../presets/lineChart';
 import { node } from '../scene/node';
 import { domRenderer } from './dom';
 import { estimateText } from './measure';
@@ -151,9 +152,7 @@ describe('render/dom', () => {
 describe('render/dom HTML in foreignObject', () => {
   const scene = node('svg').append(
     node('foreignObject', { width: 10 }).append(
-      node('span', { xmlns: 'http://www.w3.org/2000/xmlns/' }, 'label').text(
-        'Hi'
-      )
+      node('span', {}, 'label').text('Hi')
     )
   );
 
@@ -164,8 +163,24 @@ describe('render/dom HTML in foreignObject', () => {
       'http://www.w3.org/2000/svg'
     );
     expect(span.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
-    expect(span.getAttribute('xmlns')).toBe('http://www.w3.org/2000/xmlns/');
+    expect(span.hasAttribute('xmlns')).toBe(false);
     expect(span.textContent).toBe('Hi');
+  });
+
+  it('serializes to markup that parses as SVG (#1217)', () => {
+    const container = document.createElement('div');
+    lineChart(container, { labels: ['a', 'b'], series: [[1, 2]] });
+    const svg = container.querySelector('svg')!;
+    const span = svg.querySelector('foreignObject span')!;
+    expect(span.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+    expect(span.hasAttribute('xmlns')).toBe(false);
+
+    const markup = new XMLSerializer().serializeToString(svg);
+    const parsed = new DOMParser().parseFromString(markup, 'image/svg+xml');
+    expect(parsed.querySelector('parsererror')).toBeNull();
+    expect(parsed.getElementsByTagName('span')[0].namespaceURI).toBe(
+      'http://www.w3.org/1999/xhtml'
+    );
   });
 
   it('string output declares XHTML on the HTML root and parses', () => {
