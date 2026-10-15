@@ -11,37 +11,37 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 
 ## 2. Package scaffold
 
-- [ ] 2.1 Create `packages/terminal`: `package.json` (`@chartist-js/terminal`, `version` equal to chartist's, `chartist: workspace:^`, `exports` for `.`, `./styles.css`, `./package.json`, `bin.ct-cli`, `engines.node >=22`, `publishConfig.access: public`, `repository.directory`, `files`, Nx name `terminal`), `tsconfig*.json`, `vitest.config.ts`, the licenses. Verify: `pnpm install`, and `pnpm nx show project terminal` lists build, test, typecheck and lint
-- [ ] 2.2 Add `tsdown.config.ts`: ESM and CJS of `src/index.ts` with `.d.ts`/`.d.cts`, `chartist` external, and `src/cli/main.ts` as ESM `dist/cli.js` with a shebang; the build also runs `scripts/styles.ts`. Verify: `pnpm nx build terminal` writes `index.js`, `index.cjs`, `index.d.ts`, `index.d.cts`, `cli.js` and `styles.css`
+- [x] 2.1 Create `packages/terminal`: `package.json` (`@chartist-js/terminal`, `version` equal to chartist's, `chartist: workspace:^`, `exports` for `.`, `./styles.css`, `./package.json`, `bin.ct-cli`, `engines.node >=22`, `publishConfig.access: public`, `repository.directory`, `files`, Nx name `terminal`), `tsconfig*.json`, `vitest.config.ts`, the licenses. Verify: `pnpm install`, and `pnpm nx show project terminal` lists build, test, typecheck and lint
+- [x] 2.2 Add `tsdown.config.ts`: ESM and CJS of `src/index.ts` with `.d.ts`/`.d.cts`, `chartist` external, and `src/cli/main.ts` as ESM `dist/cli.js` with a shebang; the build also runs `scripts/styles.ts`. Verify: `pnpm nx build terminal` writes `index.js`, `index.cjs`, `index.d.ts`, `index.d.cts`, `cli.js` and `styles.css`
 
 ## 3. Canvas and drawing
 
-- [ ] 3.1 Port the canvas with semantic cells (kind, series, background series; braille masks; priorities; majority series per braille cell). Verify: unit tests for dot bits, priorities, majority series, and clipping
-- [ ] 3.2 Port drawing by role and element: grid, braille lines/points/areas (curves flattened), block bars with eighth blocks and stacked-cell backgrounds, slices by angle and donut ring, labels by line center using `textAscent` and pie `dx`/`dy`, plugin nodes by element; `terminalSize` and `measureCells`. Verify: unit tests for each scenario of the `terminal-rendering` spec's drawing requirements (Cell geometry through Nodes without a built-in role), on plain-text output
+- [x] 3.1 Port the canvas with semantic cells (kind, series, background series; braille masks; priorities; majority series per braille cell). Verify: unit tests for dot bits, priorities, majority series, and clipping
+- [x] 3.2 Port drawing by role and element: grid, braille lines/points/areas (curves flattened), block bars with eighth blocks and stacked-cell backgrounds, slices by angle and donut ring, labels by line center using `textAscent` and pie `dx`/`dy`, plugin nodes by element; `terminalSize` and `measureCells`. Verify: unit tests for each scenario of the `terminal-rendering` spec's drawing requirements (Cell geometry through Nodes without a built-in role), on plain-text output
 
 ## 4. ANSI output and colors
 
-- [ ] 4.1 Implement `renderToTerminal(scene, { color, palette })` with truecolor, 256, 16 and none, default palette `seriesColors`, dim grid/labels/areas, contrast text on colored cells. Verify: unit tests for each mode's escapes, the custom palette and that `none` has no escape codes
-- [ ] 4.2 Implement `detectColorMode(stream, env)`. Verify: unit tests for `NO_COLOR`, `TERM=dumb`, non-TTY, `FORCE_COLOR` 0–3, `COLORTERM`
-- [ ] 4.3 Check that the API entry imports no Node.js modules and reads no globals. Verify: a test that bundles `dist/index.js` for the browser platform (or scans its imports) and fails on `node:` imports or `process`
+- [x] 4.1 Implement `renderToTerminal(scene, { color, palette })` with truecolor, 256, 16 and none, default palette `seriesColors`, dim grid/labels/areas, contrast text on colored cells. Verify: unit tests for each mode's escapes, the custom palette and that `none` has no escape codes
+- [x] 4.2 Implement `detectColorMode(stream, env)`. Verify: unit tests for `NO_COLOR`, `TERM=dumb`, non-TTY, `FORCE_COLOR` 0–3, `COLORTERM`
+- [x] 4.3 Check that the API entry imports no Node.js modules and reads no globals. Verify: a test that bundles `dist/index.js` for the browser platform (or scans its imports) and fails on `node:` imports or `process`
 
 ## 5. HTML output and stylesheet
 
-- [ ] 5.1 Implement `renderToHtml(scene, options)`: `<pre class="ct-terminal">`, class runs (`ct-series-x`, `ct-bg-series-x`, `ct-grid`, `ct-label`, `ct-area`, …), escaped text, no `style` attributes. Verify: unit tests for the HTML output scenarios
-- [ ] 5.2 Write `scripts/styles.ts` that generates `dist/styles.css` from `seriesColors` (series colors and backgrounds via `--ct-series-*`, `--ct-terminal-on-series-*`, grid and label via `--ct-grid-color`/`--ct-label-color`, monospace stack, `line-height: 1`). Verify: a test on the generated CSS, and a Playwright screenshot (light, dark, 375 px wide) of rendered HTML with the stylesheet and with `--ct-series-a` overridden, checked by looking; delete the ad-hoc script afterwards
+- [x] 5.1 Implement `renderToHtml(scene, options)`: `<pre class="ct-terminal">`, class runs (`ct-series-x`, `ct-bg-series-x`, `ct-grid`, `ct-label`, `ct-area`, …), escaped text, no `style` attributes. Verify: unit tests for the HTML output scenarios
+- [x] 5.2 Write `scripts/styles.ts` that generates `dist/styles.css` from `seriesColors` (series colors and backgrounds via `--ct-series-*`, `--ct-terminal-on-series-*`, grid and label via `--ct-grid-color`/`--ct-label-color`, monospace stack, `line-height: 1`). Verify: a test on the generated CSS, and a Playwright screenshot (light, dark, 375 px wide) of rendered HTML with the stylesheet and with `--ct-series-a` overridden, checked by looking; delete the ad-hoc script afterwards
 
 ## 6. Chart functions and legend
 
-- [ ] 6.1 Implement `lineChart`, `barChart` and `pieChart` (data, 1.x options plus `columns`, `rows`, `color`, `palette`, `format: 'text' | 'html'`) on the chart config builders with the terminal defaults from the design. Verify: unit tests for the chart function scenarios (X labels below the axis, Y labels on grid lines, horizontal stacked bars, options override defaults)
-- [ ] 6.2 Implement `legend(data, { color, palette, width })`. Verify: unit tests for named, unnamed and wrapped legends
-- [ ] 6.3 Write `packages/terminal/README.md`: what it is, install, the API with a runnable example, HTML output and the stylesheet, color modes, fonts that work, limitations. Verify: the README's TypeScript example is type-checked by a test (or copied into a test file) and runs
+- [x] 6.1 Implement `lineChart`, `barChart` and `pieChart` (data, 1.x options plus `columns`, `rows`, `color`, `palette`, `format: 'text' | 'html'`) on the chart config builders with the terminal defaults from the design. Verify: unit tests for the chart function scenarios (X labels below the axis, Y labels on grid lines, horizontal stacked bars, options override defaults)
+- [x] 6.2 Implement `legend(data, { color, palette, width })`. Verify: unit tests for named, unnamed and wrapped legends
+- [x] 6.3 Write `packages/terminal/README.md`: what it is, install, the API with a runnable example, HTML output and the stylesheet, color modes, fonts that work, limitations. Verify: the README's TypeScript example is type-checked by a test (or copied into a test file) and runs
 
 ## 7. ct-cli
 
-- [ ] 7.1 Implement data parsing (series arguments with holes, JSON, delimited rows with header row and name column, number errors) as its own module. Verify: unit tests for each `terminal-cli` data scenario
-- [ ] 7.2 Implement the command: chart types and `demo`, flags, size defaults, legend, color detection and `--color`, `--html`/`--standalone`, `--help`, `--version`, errors with exit code 1, quiet EPIPE. Verify: tests that spawn `dist/cli.js` for each `terminal-cli` scenario
-- [ ] 7.3 Add a smoke test that packs `@chartist-js/terminal` and `chartist`, installs both into a temp directory and runs `ct-cli --version` and a chart, and checks the tarball file list and that the packed `package.json` has no `workspace:` ranges. Verify: the smoke target passes
-- [ ] 7.4 Add the CLI section to the README (commands, input formats, flags, examples). Verify: each example command in it runs against the build
+- [x] 7.1 Implement data parsing (series arguments with holes, JSON, delimited rows with header row and name column, number errors) as its own module. Verify: unit tests for each `terminal-cli` data scenario
+- [x] 7.2 Implement the command: chart types and `demo`, flags, size defaults, legend, color detection and `--color`, `--html`/`--standalone`, `--help`, `--version`, errors with exit code 1, quiet EPIPE. Verify: tests that spawn `dist/cli.js` for each `terminal-cli` scenario
+- [x] 7.3 Add a smoke test that packs `@chartist-js/terminal` and `chartist`, installs both into a temp directory and runs `ct-cli --version` and a chart, and checks the tarball file list and that the packed `package.json` has no `workspace:` ranges. Verify: the smoke target passes
+- [x] 7.4 Add the CLI section to the README (commands, input formats, flags, examples). Verify: each example command in it runs against the build
 
 ## 8. Docs
 
