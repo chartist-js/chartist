@@ -18,6 +18,7 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 
 - [x] 3.1 Port the canvas with semantic cells (kind, series, background series; braille masks; priorities; majority series per braille cell). Verify: unit tests for dot bits, priorities, majority series, and clipping
 - [x] 3.2 Port drawing by role and element: grid, braille lines/points/areas (curves flattened), block bars with eighth blocks and stacked-cell backgrounds, slices by angle and donut ring, labels by line center using `textAscent` and pie `dx`/`dy`, plugin nodes by element; `terminalSize` and `measureCells`. Verify: unit tests for each scenario of the `terminal-rendering` spec's drawing requirements (Cell geometry through Nodes without a built-in role), on plain-text output
+- [x] 3.3 Draw a node a plugin replaced while keeping its role (a `circle` with the role `point`, as in the core plugin guide) by its element, not by the role's attributes. Verify: unit test for the replaced point; the plugin guide's live example shows its circles
 
 ## 4. ANSI output and colors
 
@@ -49,6 +50,7 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 - [x] 8.2 Wire `@chartist-js/terminal` into the docs and playground: serve its `dist/index.js`, `styles.css` and `index.d.ts` next to chartist's files, add it to `imports`, link CSS imports the import map names, add `types.packages` to the type service, add it to StackBlitz exports. Verify: playground unit tests for the CSS link, the types and the StackBlitz package.json; the example runs in the guide's live example (e2e)
 - [x] 8.3 Write the guide `apps/docs/src/content/docs/terminal-rendering.mdx` (now in `src/content/packages/terminal/`, moved by `add-packages-site`) (CLI, API for CLI tools, HTML output, the live example) per `WRITING.md`, with install snippets following the prerelease rule in `src/lib/release.ts`. Verify: `pnpm nx run docs:samples`, `pnpm nx e2e docs` (including axe), and Playwright screenshots in light, dark and 375 px without horizontal scroll, checked by looking
 - [x] 8.4 Update the docs that the new `chartist` exports change: the Server rendering guide's note that the presets have no string form, and `WRITING.md`'s page table. Verify: `pnpm nx run docs:test` (doc comments of the new exports) and `docs:samples`
+- [x] 8.5 Write two more guides in the package subsite: Customizing charts (interpolation with a live `Interpolation.step()` example, options per series, axes and scales, bars and pies, what stays in the browser) and Plugins (a 2.x target-line plugin that adds a `line`, `text` and `circle`s as a live example, what the terminal draws of each element, plugins that need a page). Verify: `pnpm nx run docs:samples`, `pnpm nx e2e docs`, and Playwright screenshots in light, dark and 375 px without horizontal scroll, checked by looking
 
 ## 9. Release
 
@@ -59,7 +61,7 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 
 ## 10. Integration
 
-- [ ] 10.1 Run the whole gate locally: `pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api --skip-nx-cache`, `pnpm nx format:check --all`, docs and playground e2e, `test:visual:local`. Verify: all pass, and `ct-cli demo` looks right in a real terminal (checked by the author)
+- [x] 10.1 Run the whole gate locally: `pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api --skip-nx-cache`, `pnpm nx format:check --all`, docs and playground e2e, `test:visual:local`. Verify: all pass, and `ct-cli demo` looks right in a real terminal (checked by the author)
 
 ## Workflow follow-up
 

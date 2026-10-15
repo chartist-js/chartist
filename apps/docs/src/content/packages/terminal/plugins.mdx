@@ -1,0 +1,59 @@
+---
+title: Plugins
+description: Plugins change the scene, and the terminal draws the scene. A plugin that adds lines, circles and text works in the terminal as it does in SVG.
+order: 3
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+A Chartist plugin listens to the phases of a chart and changes its scene: it adds nodes, replaces them or drops them. The terminal draws that same scene, so a plugin needs no terminal version. Pass it in `plugins`, as you would on an SVG chart.
+
+## A target line
+
+This plugin draws a labeled line at a target value, keeps a circle on each value that reaches it, and drops the other points. It's an ordinary 2.x plugin, written with nothing but `chartist`:
+
+<LiveExample
+  title='A target line plugin'
+  label='A line chart from January to June with a labeled target line at 1000, and circles on April and June, the months above it'
+  example='terminal/target-line'
+  show='src/target-line.ts'
+/>
+
+How it works, step by step:
+
+- A grid line of the Y axis carries its axis in `ctx.axis`. `axis.project()` turns the target into px, measured from the same tick as the grid line.
+- The `scene` listener appends the line and its label to the root, so they're drawn on top of the series.
+- For points, the listener returns a `circle` with the point's `role`, `ctx` and `key`, or `null` to drop it. The circles stay in their series' group, so they take its color.
+
+On an SVG chart, the same plugin goes into the same option:
+
+```ts nocheck
+import { lineChart } from 'chartist';
+import { targetLine } from './target-line';
+
+lineChart('#chart', data, { low: 0, plugins: [targetLine(1000)] });
+```
+
+[Events and plugins](../../../docs/events-and-plugins/) covers the phases, the scene nodes and [writing a plugin](../../../docs/events-and-plugins/#writing-a-plugin).
+
+## What the terminal draws
+
+Nodes with one of Chartist's roles (`line`, `point`, `bar`, `slice` and the others) are drawn as the terminal draws that role. Every other node is drawn by its element:
+
+| Element                 | Drawn as                                        |
+| ----------------------- | ----------------------------------------------- |
+| `line`                  | a braille line between its two ends             |
+| `path`                  | its outline as a braille line, curves flattened |
+| `circle`                | a point at its center                           |
+| `text`, `foreignObject` | a label, one cell per character                 |
+| anything else           | nothing, but its children are drawn             |
+
+That goes for nodes a plugin replaced too. The circles above keep the role `point`, but they're circles now, so the terminal draws them as circles.
+
+A node in a series' group, or with a `ct-series-x` class, takes that series' color. Other lines and points use the text color, and text the label color. Sizes and styles (a circle's `r`, `stroke-width`, dashes) and the plugin's own classes don't show: a cell has a character and a color, and in HTML its classes are the kind of mark and the series.
+
+## Plugins that need a page
+
+A terminal chart is laid out and drawn, never mounted. Listeners of the `render` and `mount` phases don't run, and calling `update()` on the chart throws. So plugins that work with the page, such as tooltips, hover effects and zoom, have nothing to do here. Plugins that change the scene in `compose` or `scene` work.
+
+Next: Chartist's options in the terminal in [Customizing charts](../customizing-charts/), or every function on the [API page](../api/).

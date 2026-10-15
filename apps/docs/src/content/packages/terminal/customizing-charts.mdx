@@ -1,0 +1,122 @@
+---
+title: Customizing charts
+description: Interpolation, axes, options per series, stacked bars and gauges. Chartist's options change the text art the way they change the SVG.
+order: 2
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+The terminal's chart functions take the options of Chartist's presets, and the layout is Chartist's own. So an option changes the text art the way it changes the SVG chart, and what you know from the [Chartist guides](../../../docs/line-charts/) carries over. This page goes through the options you'll reach for first.
+
+## Line interpolation
+
+`lineSmooth` takes a function from `Interpolation`, as in the browser. `Interpolation.step()` turns each value into a step, which suits counts that change at a point in time:
+
+<LiveExample
+  title='A stepped line'
+  label='Two series as stepped lines with shaded areas, Monday to Friday, drawn in braille dots'
+  example='terminal/stepped-line'
+/>
+
+The other interpolations work the same way: `Interpolation.none()` for straight segments, `simple()` and `cardinal()` for curves, and `monotoneCubic()`, the default. A missing value (`null`) breaks the line, and `fillHoles: true` bridges it. [Smooth or straight](../../../docs/line-charts/#smooth-or-straight) and [Gaps in your data](../../../docs/line-charts/#gaps-in-your-data) show them in SVG.
+
+## Options per series
+
+Name your series, and `series` sets options for one of them. Here the signups are a stepped area next to the smooth visits:
+
+```ts
+import { Interpolation } from 'chartist';
+import { lineChart } from '@chartist-js/terminal';
+
+console.log(
+  lineChart(
+    {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      series: [
+        { name: 'visits', data: [5, 2, 4, 2, 7] },
+        { name: 'signups', data: [1, 3, 2, 5, 3] }
+      ]
+    },
+    {
+      series: {
+        signups: {
+          lineSmooth: Interpolation.step(),
+          showArea: true,
+          showPoint: false
+        }
+      }
+    }
+  )
+);
+```
+
+## Axes and scales
+
+`low` and `high`, `onlyInteger`, `labelInterpolationFnc` and the axis types work as in [Axes and scales](../../../docs/axes-and-scales/). With `autoScaleAxis()` on the X axis, a line chart becomes a scatter plot:
+
+```ts
+import { autoScaleAxis } from 'chartist';
+import { lineChart } from '@chartist-js/terminal';
+
+console.log(
+  lineChart(
+    {
+      series: [
+        [
+          { x: 1, y: 2 },
+          { x: 3, y: 7 },
+          { x: 6, y: 4 },
+          { x: 9, y: 8 }
+        ]
+      ]
+    },
+    {
+      showLine: false,
+      low: 0,
+      axisX: { type: autoScaleAxis(), onlyInteger: true },
+      axisY: { labelInterpolationFnc: value => `${value}k` }
+    }
+  )
+);
+```
+
+`fixedScaleAxis()` with `ticks` puts the ticks where you want them. The automatic scales keep their ticks at least two rows apart, so a short chart gets fewer of them, as a small SVG chart does.
+
+## Bars and pies
+
+Stacked and horizontal bars, `distributeSeries` and `reverseData` work as on [Bar charts](../../../docs/bar-charts/). Pies take `donut`, `startAngle`, `total` and `labelInterpolationFnc`, so a gauge is half a donut:
+
+```ts
+import { barChart, pieChart } from '@chartist-js/terminal';
+
+console.log(
+  barChart(
+    {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      series: [
+        [5, 4, 3, 7],
+        [3, 2, 5, 3]
+      ]
+    },
+    { stackBars: true, axisY: { onlyInteger: true } }
+  )
+);
+
+// Half a donut, starting on the left.
+console.log(
+  pieChart(
+    { series: [20, 10, 30, 40] },
+    { donut: true, startAngle: 270, total: 200 }
+  )
+);
+```
+
+Where two stacked bars meet inside a cell, the cell shows both: the upper series as a block on the lower one's background.
+
+## What stays in the browser
+
+- **Styling.** A cell has a character and a color. The terminal colors by series, from `palette` or, in HTML, from [the custom properties](../../../docs/styling-with-css/#custom-properties); line widths, dashes and your own classes don't reach it.
+- **Size.** There are no `responsiveOptions` and no container to measure: `columns` and `rows` set the size.
+- **Interaction.** No animation, no tooltips: the output is text.
+
+Next: [plugins](../plugins/) in the terminal, or every option of the chart functions on the [API page](../api/).
