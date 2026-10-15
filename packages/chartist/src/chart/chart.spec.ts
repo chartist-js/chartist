@@ -445,4 +445,59 @@ describe('chart/chart', () => {
     chart(element, { data, layers: [dots()], plugins: [detaching] });
     expect(resize.active()).toBe(0);
   });
+
+  describe('printing', () => {
+    const print = (element: Element, type: 'beforeprint' | 'afterprint') =>
+      element.ownerDocument.defaultView!.dispatchEvent(new Event(type));
+
+    it('gives the svg a viewBox of its layout size while printing', () => {
+      const { element } = sizedContainer(400, 200);
+      chart(element, { data, layers: [dots()], width: 400, height: 200 });
+      const svg = element.querySelector('svg')!;
+      expect(svg.hasAttribute('viewBox')).toBe(false);
+      print(element, 'beforeprint');
+      expect(svg.getAttribute('viewBox')).toBe('0 0 400 200');
+      print(element, 'afterprint');
+      expect(svg.hasAttribute('viewBox')).toBe(false);
+    });
+
+    it('keeps the viewBox on a render during printing', () => {
+      const { element } = sizedContainer(400, 200);
+      const handle = chart(element, {
+        data,
+        layers: [dots()],
+        width: 400,
+        height: 200
+      });
+      print(element, 'beforeprint');
+      handle.update({ width: 300 });
+      expect(element.querySelector('svg')!.getAttribute('viewBox')).toBe(
+        '0 0 300 200'
+      );
+      print(element, 'afterprint');
+      expect(element.querySelector('svg')!.hasAttribute('viewBox')).toBe(false);
+    });
+
+    it("leaves the config's viewBox alone", () => {
+      const { element } = sizedContainer(400, 200);
+      chart(element, {
+        data,
+        layers: [dots()],
+        viewBox: { width: 100, height: 50 }
+      });
+      const svg = element.querySelector('svg')!;
+      print(element, 'beforeprint');
+      expect(svg.getAttribute('viewBox')).toBe('0 0 100 50');
+      print(element, 'afterprint');
+      expect(svg.getAttribute('viewBox')).toBe('0 0 100 50');
+    });
+
+    it('a detached chart does not react', () => {
+      const { element } = sizedContainer(400, 200);
+      chart(element, { data, layers: [dots()] }).detach();
+      print(element, 'beforeprint');
+      expect(element.querySelector('svg')!.hasAttribute('viewBox')).toBe(false);
+      print(element, 'afterprint');
+    });
+  });
 });

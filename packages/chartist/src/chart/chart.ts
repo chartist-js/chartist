@@ -42,7 +42,9 @@ function resolveTarget(target: string | Element): Element {
  * The chart fills its container unless the config sets a size, and renders
  * again when the container resizes, web fonts finish loading or the
  * matching `responsive` entries change. Listeners in `config.on` and
- * plugins receive the events of the first render too.
+ * plugins receive the events of the first render too. While the page is
+ * printed, the SVG gets a `viewBox` of its layout size (unless the config
+ * sets one), so the drawing scales into the box it gets in the print.
  *
  * Without `className`, the SVG gets the chart type class of its layers,
  * so the stylesheet's chart type rules apply: `ct-chart-bar` if a layer
@@ -130,6 +132,33 @@ export function chart(
     }
   };
 
+  // While printing, the svg gets a viewBox of its layout size, so the
+  // drawing scales into the box print CSS gives it. Browsers don't reliably
+  // take a new layout at the print size into the print, but they do take
+  // changes made in `beforeprint`.
+  let printed: Element | undefined;
+  let printing = false;
+  function applyPrintViewBox() {
+    printed?.removeAttribute('viewBox');
+    printed = undefined;
+    if (!printing || effective.viewBox || !state || !output?.elementOf) {
+      return;
+    }
+    printed = output.elementOf(state.scene);
+    printed?.setAttribute(
+      'viewBox',
+      `0 0 ${state.layout.width} ${state.layout.height}`
+    );
+  }
+  const onBeforePrint = () => {
+    printing = true;
+    applyPrintViewBox();
+  };
+  const onAfterPrint = () => {
+    printing = false;
+    applyPrintViewBox();
+  };
+
   /**
    * Measures like 1.x: a probe svg with the chart's size attributes is
    * placed in the container and its size read, so percentages and CSS apply.
@@ -191,6 +220,9 @@ export function chart(
     );
     const { scene } = state;
     output = renderer.render(scene, container);
+    if (printing) {
+      applyPrintViewBox();
+    }
     emitter.notify('render', { scene, output });
     const elementOf = output.elementOf ?? (() => undefined);
     emitter.notify('mount', { scene, output, elementOf });
@@ -238,6 +270,9 @@ export function chart(
     },
     detach() {
       attached = false;
+      view?.removeEventListener('beforeprint', onBeforePrint);
+      view?.removeEventListener('afterprint', onAfterPrint);
+      onAfterPrint();
       observer?.disconnect();
       observer = undefined;
       fonts?.removeEventListener('loadingdone', onFontsLoaded);
@@ -260,6 +295,8 @@ export function chart(
   // Subscribed before the plugins install and the first render, so a
   // detach() from one of their listeners unsubscribes them.
   fonts?.addEventListener('loadingdone', onFontsLoaded);
+  view?.addEventListener('beforeprint', onBeforePrint);
+  view?.addEventListener('afterprint', onAfterPrint);
 
   const Observer = view?.ResizeObserver ?? globalThis.ResizeObserver;
   if (typeof Observer !== 'undefined') {
