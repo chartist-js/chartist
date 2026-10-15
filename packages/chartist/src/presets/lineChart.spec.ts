@@ -1,4 +1,4 @@
-import type { PhaseEvents } from '../pipeline/types';
+import type { Layer, PhaseEvents } from '../pipeline/types';
 import { findAll } from '../scene/tree';
 import { lineChart } from './lineChart';
 
@@ -92,6 +92,33 @@ describe('presets/lineChart', () => {
     chart.destroy();
     expect(media.count('(max-width: 600px)')).toBe(0);
     expect(element.querySelector('svg')).toBeNull();
+  });
+
+  it('responsive options change the extra layers, list by list', async () => {
+    const { node } = await import('../scene/node');
+    const marker = (className: string): Layer => ({
+      type: 'marker',
+      coordinates: ['cartesian'],
+      compose: () => [node('g', {}, className)]
+    });
+    const media = mockMedia();
+    const element = sized();
+    const children = () =>
+      Array.from(
+        element.querySelector('svg')!.children,
+        c => c.getAttribute('class') ?? ''
+      );
+    lineChart(
+      element,
+      { series: [[1, 2]] },
+      { layers: { below: [marker('band')] } },
+      [['(min-width: 600px)', { layers: { above: [marker('target')] } }]]
+    );
+    expect(children()).toEqual(['ct-grids', 'band', '', 'ct-labels']);
+    media.set('(min-width: 600px)', true);
+    expect(children()).toEqual(['ct-grids', 'band', '', 'target', 'ct-labels']);
+    media.set('(min-width: 600px)', false);
+    expect(children()).toEqual(['ct-grids', 'band', '', 'ct-labels']);
   });
 
   it('handle methods return the preset handle', () => {

@@ -3,6 +3,7 @@ export type { LineChartPresetOptions, LinePresetState } from './lineChart';
 export type {
   PresetAxisOptions,
   PresetHandle,
+  PresetLayers,
   PresetResponsiveOptions,
   PresetState
 } from './preset';

@@ -8,11 +8,13 @@ import {
   findAll,
   lineChart,
   node,
+  pieChart,
   responsive,
   targetLine,
   withOptions,
   type ChartPlugin,
   type Layer,
+  type PresetLayers,
   type ResponsiveWatcher,
   type RoleNode,
   type SceneNode,
@@ -156,6 +158,17 @@ describe('v2 type contract', () => {
     );
     // @ts-expect-error: only five options apply per series
     lineChart('#c', { series: [[1]] }, { series: { a: { low: 0 } } });
+  });
+
+  test('presets take extra layers below and above their series', () => {
+    lineChart('#c', { series: [[1]] }, { layers: { above: [layer] } });
+    barChart('#c', { series: [[1]] }, { layers: { below: [layer] } });
+    pieChart('#c', { series: [1] }, { layers: { below: [], above: [layer] } });
+    expectTypeOf<PresetLayers['above']>().toEqualTypeOf<
+      readonly Layer[] | undefined
+    >();
+    // @ts-expect-error: a layer list, not a single layer
+    lineChart('#c', { series: [[1]] }, { layers: { above: layer } });
   });
 
   test('compose listeners may return conditionally', () => {

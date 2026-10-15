@@ -109,6 +109,28 @@ export type PresetAxisOptions = Omit<AxisOptions, 'type'> & {
   readonly type?: AxisSetup['type'];
 };
 
+/**
+ * Extra layers of a preset chart, such as `targetLine()` or `band()`: they
+ * draw on the preset's axes and get all series.
+ * @example
+ * ```ts
+ * import { barChart, targetLine } from 'chartist';
+ *
+ * barChart(
+ *   '#chart',
+ *   { labels: ['Q1', 'Q2', 'Q3'], series: [[800, 1200, 950]] },
+ *   { layers: { above: [targetLine({ value: 1000 })] } }
+ * );
+ * ```
+ * @experimental
+ */
+export interface PresetLayers {
+  /** Layers drawn above the grid and below the chart's series. */
+  readonly below?: readonly Layer[];
+  /** Layers drawn above the chart's series and below the axis labels. */
+  readonly above?: readonly Layer[];
+}
+
 /** What a chart type contributes to `createPreset`. */
 export interface PresetSpec<TData, TOptions> {
   readonly kind: string;

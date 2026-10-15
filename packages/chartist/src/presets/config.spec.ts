@@ -1,7 +1,7 @@
 import { toScene } from '../chart/toScene';
-import type { PhaseEvents } from '../pipeline/types';
+import type { Layer, LayerContext, PhaseEvents } from '../pipeline/types';
 import { domRenderer } from '../render/dom';
-import type { SceneNode } from '../scene/node';
+import { node, type SceneNode } from '../scene/node';
 import { findAll } from '../scene/tree';
 import { barChart, barChartConfig } from './barChart';
 import { lineChart, lineChartConfig } from './lineChart';
@@ -124,5 +124,120 @@ describe('presets/config', () => {
     const scene = toScene(config, { width: WIDTH, height: HEIGHT });
     expect(install).toHaveBeenCalled();
     expect(scene.classes).toContain('seen');
+  });
+});
+
+describe('presets/layers', () => {
+  const labels = ['Mon', 'Tue', 'Wed'];
+  const series = [[5, 2, 4]];
+  const size = { width: WIDTH, height: HEIGHT };
+
+  /** A layer that draws one classed group, to find its place. */
+  const marker = (
+    className: string,
+    coordinates: Layer['coordinates'] = ['cartesian']
+  ): Layer => ({
+    type: 'marker',
+    coordinates,
+    compose: () => [node('g', {}, className)]
+  });
+
+  /** The classes of the root's children, in drawing order. */
+  const order = (scene: SceneNode) =>
+    scene.children.map(child => child.classes.join(' '));
+
+  it('draws below after the grid and above before the labels', () => {
+    const scene = toScene(
+      lineChartConfig(
+        { labels, series },
+        {
+          layers: {
+            below: [marker('below-1'), marker('below-2')],
+            above: [marker('above')]
+          }
+        }
+      ),
+      size
+    );
+    expect(order(scene)).toEqual([
+      'ct-grids',
+      'below-1',
+      'below-2',
+      '',
+      'above',
+      'ct-labels'
+    ]);
+  });
+
+  it('places the layers of a bar chart the same way', () => {
+    const scene = toScene(
+      barChartConfig(
+        { labels, series },
+        { layers: { below: [marker('below')], above: [marker('above')] } }
+      ),
+      size
+    );
+    expect(order(scene)).toEqual([
+      'ct-grids',
+      'below',
+      '',
+      'above',
+      'ct-labels'
+    ]);
+  });
+
+  it('gives the extra layers the preset axes and all series', () => {
+    const seen: LayerContext[] = [];
+    const probe: Layer = {
+      ...marker('probe'),
+      compose(context) {
+        seen.push(context);
+        return [];
+      }
+    };
+    toScene(
+      barChartConfig(
+        { labels, series: [...series, [1, 2, 3]] },
+        { layers: { above: [probe] } }
+      ),
+      size
+    );
+    expect(seen[0].data.series).toHaveLength(2);
+    expect(seen[0].axes.x).toBeDefined();
+    expect(seen[0].axes.y).toBeDefined();
+  });
+
+  it('draws polar layers below and above the pie', () => {
+    const scene = toScene(
+      pieChartConfig(
+        { series: [5, 3, 4] },
+        {
+          layers: {
+            below: [marker('below', ['polar'])],
+            above: [marker('above', ['polar'])]
+          }
+        }
+      ),
+      size
+    );
+    const children = order(scene);
+    expect(children[0]).toBe('below');
+    expect(children.at(-1)).toBe('above');
+    expect(findAll(scene, { role: 'slice' })).toHaveLength(3);
+  });
+
+  it('renders as before without layers or with empty lists', () => {
+    const data = { labels, series };
+    const scene = (config: ReturnType<typeof lineChartConfig>) =>
+      unsized(toScene(config, size));
+    expect(scene(lineChartConfig(data, { layers: {} }))).toEqual(
+      scene(lineChartConfig(data))
+    );
+    expect(
+      scene(barChartConfig(data, { layers: { below: [], above: [] } }))
+    ).toEqual(scene(barChartConfig(data)));
+    expect(
+      scene(pieChartConfig({ series: [5, 3, 4] }, { layers: {} }))
+    ).toEqual(scene(pieChartConfig({ series: [5, 3, 4] })));
   });
 });
