@@ -229,6 +229,26 @@ describe('composition: axes', () => {
     expect(other.context().axes.y!.range!.max).toBeLessThan(9);
   });
 
+  it('a layer without series widens an axis outside its binding only by its extent', () => {
+    const revenue = probe({ axes: { y: 'revenue' }, series: ['revenue'] });
+    const margin = probe({ axes: { y: 'margin' }, series: ['margin'] });
+    // Bound to the first Y axis (revenue), reporting on margin.
+    const reference: Layer = {
+      ...probe({ series: [] }).layer,
+      extent: () => ({ margin: { low: 0, high: 5 } })
+    };
+    run([revenue.layer, margin.layer]);
+    const before = revenue.context().axes.y!.range;
+    run([revenue.layer, margin.layer, reference]);
+    expect(margin.context().axes.y!.range!.max).toBeGreaterThanOrEqual(5);
+    expect(revenue.context().axes.y!.range).toEqual(before);
+
+    // Bound to margin without series, it doesn't bring revenue's values.
+    const unbound = probe({ axes: { y: 'margin' }, series: [] });
+    run([revenue.layer, margin.layer, unbound.layer]);
+    expect(margin.context().axes.y!.range!.max).toBeLessThan(1);
+  });
+
   it('layers get their series with chart-wide indexes', () => {
     const margin = probe({ series: ['margin'] });
     run([margin.layer]);
