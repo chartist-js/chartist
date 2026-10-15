@@ -200,6 +200,21 @@ describe('Charts', () => {
       });
     });
 
+    describe('Pie with an object chartPadding (#842)', () => {
+      it('should fill the other sides with the default padding', async () => {
+        data = { series: [1, 2] };
+        options = { width: 100, height: 100, chartPadding: { top: 20 } };
+        await createChart();
+
+        // A 90 x 75 area below a 20 px top: the centre moves down by 7.5.
+        const slices = fixture.wrapper.querySelectorAll('.ct-slice-pie');
+        expect(slices).toHaveLength(2);
+        slices.forEach(slice => {
+          expect(slice.getAttribute('d')).toMatch(/A37\.5,37\.5,.*L50,57\.5Z$/);
+        });
+      });
+    });
+
     describe('Pie with small slices', () => {
       beforeEach(() => {
         data = {

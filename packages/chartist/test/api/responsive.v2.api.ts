@@ -13,7 +13,7 @@ import {
 } from 'chartist';
 import { compat } from 'chartist/compat';
 import { JSDOM } from 'jsdom';
-import { created, container as element } from './fixture.ts';
+import { created, container as element, mockMedia } from './fixture.ts';
 
 const NARROW = '(width < 400px)';
 const data = { labels: ['a', 'b'], series: [[1, 2]] };
@@ -188,5 +188,27 @@ describe('media queries in the container window (v2)', () => {
     await created(legacy);
     expect(el.querySelector('.ct-line')).not.toBeNull();
     expect(el.querySelectorAll('.ct-point')).toHaveLength(0);
+  });
+});
+
+// chartist@1.5.0 throws "Cannot create property 'top' on number '10'".
+describe('a responsive object over a numeric option (#903)', () => {
+  test('replaces the number', () => {
+    const media = mockMedia(['screen']);
+    try {
+      const el = element();
+      lineChart(el, data, { width: 300, height: 200, chartPadding: 10 }, [
+        ['screen', { chartPadding: { top: 3 } }]
+      ]);
+      expect(el.querySelectorAll('.ct-line')).toHaveLength(1);
+      // The grid starts at the override's top.
+      const ys = Array.from(
+        el.querySelectorAll('line.ct-grid.ct-horizontal'),
+        l => Number(l.getAttribute('y1'))
+      );
+      expect(ys[0]).toBe(3);
+    } finally {
+      media.restore();
+    }
   });
 });

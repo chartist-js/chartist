@@ -1,6 +1,8 @@
 /**
  * Merges the sources into `target`, deeply, and returns `target`. Plain
- * objects merge key by key; arrays and other values replace what's there.
+ * objects merge key by key into an object already there, and replace any
+ * other value (an object over a number gives a copy of the object); arrays,
+ * from any realm, and other values replace what's there.
  * Keys of the target's prototype are skipped, against prototype pollution.
  * @param target The object the sources are merged into (changed in place).
  * @returns `target`, with the sources' properties.
@@ -21,9 +23,15 @@ export function extend(target: any = {}, ...sources: any[]) {
       if (
         typeof sourceProp === 'object' &&
         sourceProp !== null &&
-        !(sourceProp instanceof Array)
+        !Array.isArray(sourceProp)
       ) {
-        target[prop] = extend(target[prop], sourceProp);
+        const targetProp = target[prop];
+        target[prop] = extend(
+          typeof targetProp === 'object' && targetProp !== null
+            ? targetProp
+            : {},
+          sourceProp
+        );
       } else {
         target[prop] = sourceProp;
       }
