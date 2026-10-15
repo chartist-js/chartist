@@ -1,6 +1,6 @@
 ---
 title: Plugins
-description: Plugins change the scene, and the terminal draws the scene. A plugin that adds lines, circles and text works in the terminal as it does in SVG.
+description: Plugins and layers change the scene, and the terminal draws the scene. A plugin that adds lines, circles and text works in the terminal as it does in SVG.
 order: 3
 ---
 
@@ -8,37 +8,44 @@ import LiveExample from '../../../components/LiveExample.astro';
 
 A Chartist plugin listens to the phases of a chart and changes its scene: it adds nodes, replaces them or drops them. The terminal draws that same scene, so a plugin needs no terminal version. Pass it in `plugins`, as you would on an SVG chart.
 
-## A target line
+## Marking values
 
-This plugin draws a labeled line at a target value, keeps a circle on each value that reaches it, and drops the other points. It's an ordinary 2.x plugin, written with nothing but `chartist`:
+This plugin keeps a circle on each value that reaches a target and drops the other points. The target line itself is a layer from the core, `targetLine()`, added with the `layers` option. The plugin is an ordinary 2.x plugin, written with nothing but `chartist`:
 
 <LiveExample
-  title='A target line plugin'
+  title='A plugin that marks reached values'
   label='A line chart from January to June with a labeled target line at 1000, and circles on April and June, the months above it'
   example='terminal/target-line'
-  show='src/target-line.ts'
+  show='src/reached.ts'
 />
 
-How it works, step by step:
+How it works:
 
-- A grid line of the Y axis carries its axis in `ctx.axis`. `axis.project()` turns the target into px, measured from the same tick as the grid line.
-- The `scene` listener appends the line and its label to the root, so they're drawn on top of the series.
-- For points, the listener returns a `circle` with the point's `role`, `ctx` and `key`, or `null` to drop it. The circles stay in their series' group, so they take its color.
+- The `compose` listener sees every point with its value in `ctx.value`.
+- It returns a `circle` with the point's `role`, `ctx` and `key`, or `null` to drop the point. The circles stay in their series' group, so they take its color.
 
-On an SVG chart, the same plugin goes into the same option:
+On an SVG chart, the layer and the plugin go into the same options:
 
 ```ts nocheck
-import { lineChart } from 'chartist';
-import { targetLine } from './target-line';
+import { lineChart, targetLine } from 'chartist';
+import { reached } from './reached';
 
-lineChart('#chart', data, { low: 0, plugins: [targetLine(1000)] });
+lineChart('#chart', data, {
+  low: 0,
+  layers: {
+    above: [
+      targetLine({ value: 1000, label: 'target', labelPosition: 'start' })
+    ]
+  },
+  plugins: [reached(1000)]
+});
 ```
 
 [Events and plugins](../../../docs/events-and-plugins/) covers the phases, the scene nodes and [writing a plugin](../../../docs/events-and-plugins/#writing-a-plugin).
 
 ## What the terminal draws
 
-Nodes with one of Chartist's roles (`line`, `point`, `bar`, `slice` and the others) are drawn as the terminal draws that role. Every other node is drawn by its element:
+Nodes with one of Chartist's roles (`line`, `point`, `bar`, `slice`, `band` and the others) are drawn as the terminal draws that role. Every other node is drawn by its element:
 
 | Element                 | Drawn as                                        |
 | ----------------------- | ----------------------------------------------- |
