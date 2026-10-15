@@ -70,7 +70,11 @@ test.describe('a prerelease build', () => {
     const home = await text('index.html');
     expect(home).toContain('npm install chartist@next');
     expect(home).not.toContain('chartist@2/');
-    const plugins = await text('plugins/index.html');
+    expect(await text('plugins/index.html')).not.toContain('chartist@2/');
+    // The setup snippet is on each plugin's page.
+    const plugins = await text(
+      'plugins/chartist-plugin-pointlabels/index.html'
+    );
     expect(plugins).toContain(`chartist@${VERSION}/dist/compat.min.js`);
     expect(plugins).not.toContain('chartist@2/');
     // Plugins keep their own pinned versions.

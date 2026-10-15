@@ -1,0 +1,30 @@
+---
+/** A plugin's tags: the API it was written for, how it loads, server rendering. */
+import type { Plugin } from '../data/plugins';
+
+interface Props {
+  plugin: Plugin;
+}
+
+const { plugin } = Astro.props;
+---
+
+<span class="tag accent" title={`Written for the Chartist ${plugin.chartist} API`}>API v{plugin.chartist}</span>
+{
+  plugin.loads === 'module' ? (
+    <span class="tag" title="An ES module: it imports chartist">
+      ES module
+    </span>
+  ) : (
+    <span class="tag warn" title="Reads the global Chartist, which chartist/compat sets up for backwards compatibility">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3 2 20h20L12 3z" />
+        <path d="M12 10v4M12 17v.5" />
+      </svg>
+      Global<span class="sr-only">: reads the global Chartist, for backwards compatibility</span>
+    </span>
+  )
+}
+<span class="tag" title={plugin.ssr ? 'Draws its additions in server rendering (toScene)' : 'Needs a browser: it hooks into 1.x events, which only fire when the chart is drawn in the page'}>
+  {plugin.ssr ? 'SSR' : 'No SSR'}
+</span>

@@ -33,8 +33,12 @@ function mountFilter() {
   }
 }
 
-/** The page's preview theme, with the chart filling the card. */
+/**
+ * The page's preview theme, with the chart filling the card. A thumbnail is
+ * a picture: content taller than the frame is cut off, without a scrollbar.
+ */
 const thumbnailStyles = () => `${previewStyles()}${FILL_FRAME}
+html, body { overflow: hidden; }
 body { padding: 16px 20px; background: transparent; }`;
 
 async function runThumbnail(stage: HTMLElement) {
@@ -73,8 +77,11 @@ async function runThumbnail(stage: HTMLElement) {
   });
 }
 
-export function mountGallery() {
-  mountFilter();
+/**
+ * Runs the live thumbnails under a selector when they near the viewport.
+ * Each stage carries the example's files and title as JSON.
+ */
+export function mountThumbnails(selector = '[data-gallery-preview]') {
   const observer = new IntersectionObserver(
     entries => {
       for (const entry of entries) {
@@ -86,7 +93,12 @@ export function mountGallery() {
     },
     { rootMargin: '300px' }
   );
-  for (const stage of document.querySelectorAll('[data-gallery-preview]')) {
+  for (const stage of document.querySelectorAll(selector)) {
     observer.observe(stage);
   }
+}
+
+export function mountGallery() {
+  mountFilter();
+  mountThumbnails();
 }

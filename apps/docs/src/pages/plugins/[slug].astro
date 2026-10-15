@@ -1,0 +1,105 @@
+---
+/** One page per plugin: its facts, the live example and how to load it. */
+import type { GetStaticPaths } from 'astro';
+import { Code } from 'astro:components';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+import PluginTags from '../../components/PluginTags.astro';
+import { facts, formatDate } from '../../data/facts';
+import { pinnedVersion, pluginFacts, type Plugin } from '../../data/plugins';
+import { npmUrl, pluginNeighbors, pluginSlug, setupSnippet, sortedPlugins } from '../../lib/plugins';
+import { href } from '../../lib/site';
+
+export const getStaticPaths = (() => sortedPlugins().map(plugin => ({ params: { slug: pluginSlug(plugin) }, props: { plugin } }))) satisfies GetStaticPaths;
+
+const { plugin } = Astro.props as { plugin: Plugin };
+const slug = pluginSlug(plugin);
+const stats = pluginFacts(plugin.package);
+const setup = setupSnippet(plugin);
+const { previous, next } = pluginNeighbors(slug);
+const TYPE_LABEL = { line: 'Line', bar: 'Bar', pie: 'Pie' } as const;
+---
+
+<BaseLayout title={plugin.title} description={plugin.description} section="plugins" markdown={`plugins/${slug}.md`}>
+  <article class="wrap flex flex-col gap-8 py-[clamp(32px,5vw,56px)]" data-pagefind-body data-pagefind-filter="section:Plugins">
+    <nav class="flex flex-wrap items-center gap-2 text-sm text-ink-2" aria-label="Breadcrumb" data-pagefind-ignore>
+      <a href={href('plugins/')}>Plugins</a>
+      <span aria-hidden="true">/</span>
+      <span>{plugin.title}</span>
+    </nav>
+
+    <header class="flex flex-col gap-4">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h1 class="text-4xl">{plugin.title}</h1>
+        <PluginTags plugin={plugin} />
+      </div>
+      <code class="w-fit">{plugin.package}@{pinnedVersion(plugin.package)}</code>
+      <p class="lead max-w-[62ch]">{plugin.description}</p>
+      {plugin.note && <p class="muted max-w-[70ch]">{plugin.note}</p>}
+    </header>
+
+    <dl class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(170px,100%),1fr))] gap-x-6 gap-y-3 border-y border-line py-4 text-sm">
+      <div>
+        <dt class="eyebrow">Author</dt>
+        <dd class="m-0 font-bold">{plugin.author}</dd>
+      </div>
+      <div>
+        <dt class="eyebrow">Source</dt>
+        <dd class="m-0">{plugin.repository ? <a href={plugin.repository}>GitHub</a> : <span>Repository gone</span>} · <a href={npmUrl(plugin)}>npm</a></dd>
+      </div>
+      <div>
+        <dt class="eyebrow">License</dt>
+        <dd class="m-0">{plugin.license}</dd>
+      </div>
+      <div>
+        <dt class="eyebrow">Downloads</dt>
+        <dd class="m-0">{stats.monthlyDownloads.toLocaleString('en')} a month <span class="text-ink-2">({formatDate(facts.generatedAt)})</span></dd>
+      </div>
+      <div>
+        <dt class="eyebrow">Last release</dt>
+        <dd class="m-0">{new Date(`${stats.lastRelease}T00:00:00Z`).getUTCFullYear()}</dd>
+      </div>
+      <div>
+        <dt class="eyebrow">Charts</dt>
+        <dd class="m-0">{plugin.types.map(type => TYPE_LABEL[type]).join(', ')}</dd>
+      </div>
+    </dl>
+
+    <section class="flex flex-col gap-4" aria-labelledby="example-title">
+      <h2 id="example-title" class="text-2xl">See it run</h2>
+      {plugin.hint && <p class="m-0 font-bold">{plugin.hint}</p>}
+      <LiveExample example={plugin.example} title={plugin.title} label={`${plugin.title}: a chart with ${plugin.package}`} codeHeight="min(520px, 65vh)" />
+    </section>
+
+    <section class="flex flex-col gap-3" aria-labelledby="setup-title">
+      <h2 id="setup-title" class="text-2xl">Use it on your site</h2>
+      <p class="muted m-0 max-w-[70ch]">
+        Runs on v2 with <code>chartist/compat</code>.{' '}
+        {plugin.loads === 'module' ? 'An ES module: install it from npm and import it.' : 'A script: load it after importing chartist/compat, which sets up the global it reads.'}{' '}
+        <a href={href('docs/coming-from-1x/#community-plugins')}>With the UMD build or a bundler</a>
+      </p>
+      <Code code={setup.code} lang={setup.lang as 'ts' | 'html'} theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
+    </section>
+
+    <nav class="mt-4 grid grid-cols-2 gap-3 border-t border-line pt-6" aria-label="More plugins" data-pagefind-ignore>
+      {
+        previous ? (
+          <a class="card flat link flex flex-col gap-1 px-4 py-3" href={href(`plugins/${pluginSlug(previous)}/`)}>
+            <span class="eyebrow">Previous</span>
+            <strong>{previous.title}</strong>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a class="card flat link flex flex-col items-end gap-1 px-4 py-3 text-right" href={href(`plugins/${pluginSlug(next)}/`)}>
+            <span class="eyebrow">Next</span>
+            <strong>{next.title}</strong>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</BaseLayout>
