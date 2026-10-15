@@ -24,7 +24,7 @@
 
 - [ ] 4.1 Use the container's document and window: `Svg` node checks, responsive media queries, the `ResizeObserver`s, the 1.x classes' resize listener, `createLabel` (#1492). Verify: a Node-environment API test with JSDOM and no globals (`new Svg`, `lineChart` with compat emitting `draw`, `new LineChart` rendering and detaching), and a browser check of media queries in an iframe
 - [ ] 4.2 Make `detach()` during the first render stick in `chart()`, the presets and `PresetChart` (#929). Verify: `chart.spec.ts` (a detaching `mount` listener leaves no observer and ignores font events), a preset or compat spec (a converted plugin detaching in `created` doesn't throw), and an API test for the class (no render after window and container resize), branched for the v1 target
-- [ ] 4.3 Schedule the 1.x classes' first render after the target check (the new issue). Verify: in `test/api/charts.api.ts`, running the timers after the missing-target throw throws nothing on the local target
+- [x] 4.3 Schedule the 1.x classes' first render after the target check (the new issue). Verify: in `test/api/charts.api.ts`, running the timers after the missing-target throw throws nothing on the local target
 - [ ] 4.4 Give the SVG a `viewBox` of its layout size from `beforeprint` to `afterprint`, unless the config sets one; remove the listeners on detach (#118). Verify: `chart.spec.ts` dispatching the events (set, removed, left alone, detached), and a Playwright check that the SVG has the `viewBox` while `page.pdf()` prints. One manual print preview in Chrome, Firefox and Safari is listed for the author
 
 ## 5. SVG

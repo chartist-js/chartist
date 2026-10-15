@@ -8,6 +8,8 @@ import {
 import { classesOf, container, created, withCompat } from './fixture.ts';
 
 const CT_NS = 'http://gionkunz.github.com/chartist-js/ct';
+// chartist@1.5.0 has the lifecycle bugs some tests below check are fixed.
+const V1 = process.env.CHARTIST_API_TARGET === 'v1';
 
 describe('chart creation', () => {
   test('accepts a selector or an element as target', async () => {
@@ -29,14 +31,19 @@ describe('chart creation', () => {
     }
   });
 
-  test('throws when the selector matches nothing', () => {
-    // 1.5 schedules the first render before the constructor throws, and that
-    // render then fails without a container. Fake timers keep it from firing.
+  test('throws when the selector matches nothing, and nothing runs afterwards', () => {
     vi.useFakeTimers();
     try {
       expect(
         () => new LineChart('#nope', { series: [] }, withCompat())
       ).toThrow('Target element "#nope" is not found');
+      if (V1) {
+        // 1.5 schedules the first render before the constructor throws, and
+        // that render then fails without a container.
+        vi.clearAllTimers();
+      } else {
+        expect(() => vi.runAllTimers()).not.toThrow();
+      }
     } finally {
       vi.clearAllTimers();
       vi.useRealTimers();
