@@ -9,6 +9,7 @@ import {
   lineChart,
   node,
   responsive,
+  targetLine,
   withOptions,
   type ChartPlugin,
   type Layer,
@@ -219,5 +220,14 @@ describe('v2 type contract', () => {
       refine: () => null
     };
     void dropping;
+  });
+
+  test('a target line takes one line or lines, not both', () => {
+    targetLine({ value: 1000, label: 'Target', className: 'ct-series-b' });
+    targetLine({ axis: 'eur', lines: [{ value: 800 }, { value: 1000 }] });
+    // @ts-expect-error: one line's value and lines exclude each other
+    targetLine({ value: 1000, lines: [{ value: 800 }] });
+    // @ts-expect-error: a line needs a value
+    targetLine({ label: 'Target' });
   });
 });

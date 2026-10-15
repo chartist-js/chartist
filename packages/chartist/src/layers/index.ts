@@ -4,6 +4,14 @@ export { bar } from './bar';
 export type { BarLayerOptions } from './bar';
 export { pie } from './pie';
 export type { PieLayerOptions } from './pie';
+export { targetLine } from './targetLine';
+export type {
+  TargetLineListOptions,
+  TargetLineOptions,
+  TargetLineSharedOptions,
+  TargetLineSpec,
+  TargetLineValueOptions
+} from './targetLine';
 export { axisGrid, axisLabels } from './axes';
 export type {
   AxisLabelsOptions,
