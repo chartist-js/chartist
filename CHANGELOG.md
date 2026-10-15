@@ -1,3 +1,33 @@
+## 2.0.0-rc.2 (2026-10-15)
+
+### 🚀 Features
+
+- **chartist:** deprecate the 1.x API on the root entry ([dca2a58d](https://github.com/chartist-js/chartist/commit/dca2a58d))
+- **chartist:** preset configs, series colors and text ascent for renderers ([6a2f020c](https://github.com/chartist-js/chartist/commit/6a2f020c))
+- **terminal:** the @chartist-js/terminal package and ct-cli ([72e87afe](https://github.com/chartist-js/chartist/commit/72e87afe))
+
+### 🩹 Fixes
+
+- **chartist:** connect descending x values with monotone smoothing ([#1038](https://github.com/chartist-js/chartist/issues/1038))
+- **chartist:** treat { x, y: null } as a hole in step and simple ([#1040](https://github.com/chartist-js/chartist/issues/1040))
+- **chartist:** repair a value range that chart-level low or high empties ([#1057](https://github.com/chartist-js/chartist/issues/1057))
+- **chartist:** size labels by the next tick even at position 0 ([#1471](https://github.com/chartist-js/chartist/issues/1471))
+- **chartist:** apply a line chart's top-level referenceValue ([#1505](https://github.com/chartist-js/chartist/issues/1505))
+- **chartist:** make SvgPath round, split, join, parse and transform consistently ([#1491](https://github.com/chartist-js/chartist/issues/1491))
+- **chartist:** drop the stray xmlns attribute from HTML label spans ([#1217](https://github.com/chartist-js/chartist/issues/1217))
+- **chartist:** schedule the 1.x classes' first render after the target check ([#1504](https://github.com/chartist-js/chartist/issues/1504))
+- **chartist:** use the container's document and window ([#1492](https://github.com/chartist-js/chartist/issues/1492))
+- **chartist:** make a detach() during the first render stick ([#929](https://github.com/chartist-js/chartist/issues/929))
+- **chartist:** scale charts into the printed box ([#118](https://github.com/chartist-js/chartist/issues/118))
+- **chartist:** stop setting xmlns on Svg.foreignObject content ([4c053b22](https://github.com/chartist-js/chartist/commit/4c053b22))
+- **chartist:** merge an object option over a number ([#842](https://github.com/chartist-js/chartist/issues/842), [#903](https://github.com/chartist-js/chartist/issues/903), [#876](https://github.com/chartist-js/chartist/issues/876))
+- **chartist:** draw a full-circle slice around the centre ([#1302](https://github.com/chartist-js/chartist/issues/1302))
+- **chartist:** lay out a donut for the ring width the stylesheet draws ([#1493](https://github.com/chartist-js/chartist/issues/1493))
+- **chartist:** colour series p to z ([#1456](https://github.com/chartist-js/chartist/issues/1456))
+- **terminal:** keep the HTML columns in any font ([86c74b50](https://github.com/chartist-js/chartist/commit/86c74b50))
+- **terminal:** a font of its own for the HTML text art ([a88b8b5a](https://github.com/chartist-js/chartist/commit/a88b8b5a))
+- **terminal:** draw a replaced node by its element ([d696aaeb](https://github.com/chartist-js/chartist/commit/d696aaeb))
+
 ## 2.0.0-rc.1 (2026-10-14)
 
 ### 🚀 Features

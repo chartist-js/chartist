@@ -1,7 +1,7 @@
 {
   "name": "@chartist-js/terminal",
   "type": "module",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0-rc.2",
   "description": "Chartist charts in the terminal and as text-art HTML, with a CLI",
   "author": "Gion Kunz",
   "homepage": "https://chartist.dev/docs/terminal-rendering/",
