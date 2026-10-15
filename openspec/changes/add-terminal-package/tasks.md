@@ -45,9 +45,9 @@ The prototype on branch `feat/terminal-renderer` (`packages/terminal`) is the re
 
 ## 8. Docs
 
-- [x] 8.1 Add the guide's example project `apps/docs/src/examples/terminal-rendering/text-art`: the same data as an SVG chart and as text art (`format: 'html'`, the package's stylesheet). Verify: `pnpm nx run docs:check` type-checks it
+- [x] 8.1 Add the guide's example project `apps/docs/src/examples/terminal-rendering/text-art` (now `terminal/text-art`, moved by `add-packages-site`): the same data as an SVG chart and as text art (`format: 'html'`, the package's stylesheet). Verify: `pnpm nx run docs:check` type-checks it
 - [x] 8.2 Wire `@chartist-js/terminal` into the docs and playground: serve its `dist/index.js`, `styles.css` and `index.d.ts` next to chartist's files, add it to `imports`, link CSS imports the import map names, add `types.packages` to the type service, add it to StackBlitz exports. Verify: playground unit tests for the CSS link, the types and the StackBlitz package.json; the example runs in the guide's live example (e2e)
-- [x] 8.3 Write the guide `apps/docs/src/content/docs/terminal-rendering.mdx` (CLI, API for CLI tools, HTML output, the live example) per `WRITING.md`, with install snippets following the prerelease rule in `src/lib/release.ts`. Verify: `pnpm nx run docs:samples`, `pnpm nx e2e docs` (including axe), and Playwright screenshots in light, dark and 375 px without horizontal scroll, checked by looking
+- [x] 8.3 Write the guide `apps/docs/src/content/docs/terminal-rendering.mdx` (now in `src/content/packages/terminal/`, moved by `add-packages-site`) (CLI, API for CLI tools, HTML output, the live example) per `WRITING.md`, with install snippets following the prerelease rule in `src/lib/release.ts`. Verify: `pnpm nx run docs:samples`, `pnpm nx e2e docs` (including axe), and Playwright screenshots in light, dark and 375 px without horizontal scroll, checked by looking
 - [x] 8.4 Update the docs that the new `chartist` exports change: the Server rendering guide's note that the presets have no string form, and `WRITING.md`'s page table. Verify: `pnpm nx run docs:test` (doc comments of the new exports) and `docs:samples`
 
 ## 9. Release

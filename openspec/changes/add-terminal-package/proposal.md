@@ -16,7 +16,7 @@ Chartist's scene is renderer-independent, and a prototype (branch `feat/terminal
   - the default series colors as data (`seriesColors`), kept equal to `$ct-series-colors`;
   - the text metric SVG text labels are laid out with (`textAscent`), so renderers can place label lines.
 - **The `@chartist-js` scope** is where future maintained packages go (plugins, wrappers). Its packages are released in lockstep with `chartist`: same version, same `v{version}` tag, same changelog and GitHub release, published by the same workflow.
-- A **Terminal guide** on chartist.dev with the CLI, the API and a live HTML example.
+- **Docs on chartist.dev:** the package's overview and guide (the CLI, the API and a live HTML example), in the package subsite that `add-packages-site` adds (`/packages/terminal/`).
 
 No breaking changes vs 1.x: `chartist` only gains exports, and its output is unchanged.
 
@@ -41,13 +41,12 @@ No breaking changes vs 1.x: `chartist` only gains exports, and its output is unc
 ### Modified Capabilities
 
 - `chart-rendering`: adds preset config builders that work without a container, and the series colors and text metrics as public data for renderers.
-- `docs-site`: the guides include terminal rendering.
 
 ## Impact
 
 - **New:** `packages/terminal` (sources, tests, tsdown build, stylesheet, README), rebuilt from the prototype on `feat/terminal-renderer`.
 - **`chartist`:** new exports in `src/presets` and `src/render`/`src/styles`, doc comments, the export list in `test/api/exports/chartist.json`, public API tests, and a check that `seriesColors` matches `_settings.scss`.
 - **Release:** `nx.json` release group gains `@chartist-js/terminal`; the changelog renderer keeps `terminal` commits. The release workflow and `release.mjs` stay as they are, since the version is shared. On npmjs.com, the author creates the `@chartist-js/terminal` package's trusted publisher (and the first publish if npm requires it) before the first release.
-- **Docs:** a new guide page and the playground resolving `@chartist-js/terminal` for its live example.
+- **Docs:** the package's pages (in its subsite, see `add-packages-site`) and the playground resolving `@chartist-js/terminal` for their live examples.
 - **Decisions:** `docs/decisions.md` records the scope, lockstep releases and sharing through `chartist`'s public API; "Only `chartist` is released" changes.
 - **Coordination:** the active `release-v2-rc` change hard-codes `chartist` in its `release-process` spec. This change states the lockstep rule in `scoped-packages`, so either can be archived first; when both are archived, the `release-process` wording should name the release group instead of `chartist` alone.

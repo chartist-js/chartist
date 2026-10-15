@@ -51,18 +51,18 @@ The header's `NAV` gets `{ id: 'packages', label: 'Packages', path: 'packages/' 
 
 `docs:api` runs TypeDoc once more per registered package (an options file per package, `api/typedoc.<slug>.json`, entry point `packages/<slug>/src/index.ts`, the package's tsconfig), writing `src/generated/api/<slug>.json`. The target's inputs gain `packages/*/src/**`.
 
-`src/lib/api.ts` reads a model per source instead of one module-level project:
+`src/lib/api.ts` reads the packages' models next to the core one:
 
-- a `Model` holds its entries, locations and module names; `core` is today's model;
-- `linkTo(id)` resolves within the model the entry comes from;
-- a reference to an external type whose package is `chartist` (TypeDoc marks those as references without a target in the package's model) resolves by name in the core model, so `LineChartData` on the terminal page links to `/api/…#LineChartData`;
-- the entry rendering (signatures, members, examples, badges) is shared; only the page grouping differs: a package has one page with all its exports, in source order.
+- reflection ids count from 0 in every model, so each package's ids (and references to them) are moved past the others' when it's loaded, by a million per package; the existing maps of locations and reflections then hold all models, and `linkTo(id)` works across them (chosen over a model object per source, which would have touched every lookup for the same result);
+- package entries are kept apart from the core `ENTRIES` (`PACKAGE_ENTRIES`, by slug), so the core completeness check is unchanged, and they link to `/packages/<slug>/api/`;
+- a reference to an external type whose package is `chartist` (TypeDoc marks those as references with a symbol, not an id) resolves by name in the core model, so `LineChartData` on the terminal page links to `/api/…#LineChartData`. The same resolution links three 1.x types on the core layers page (`Dot`, `LabelDirection`, `AnchorPosition`) that TypeDoc records the same way and that had no link before;
+- the entry rendering (signatures, members, examples, badges) is shared; a package's page lists all its exports, functions first, in source order.
 
 Completeness for packages: the test takes the package's exports from its TypeDoc model's top-level children (the root entry's exports). There is no export snapshot like chartist's, because packages have no 1.x surface to protect; the package's own `test/entry.spec.ts` already checks what ships. Every export needs a doc comment summary and no dead links, with the same `problems()` and `deadLinks()` checks.
 
 ### Search, share cards, llms and checks
 
-- **Search:** package pages get the filter `section:Packages`, and the search dialog groups it after API.
+- **Search:** package pages get the filter `section:Packages`, and the search dialog shows them as a "Packages" group, ordered like the other groups by their best result.
 - **Share cards:** `og.ts` adds a card per package page, eyebrow "Packages", title "terminal: Terminal rendering" style.
 - **llms:** `llms.txt` gets a "Packages" section after "API reference" with each package's overview, guides and API page; `llms-full.txt` adds the package pages after the API reference. The note for agents names the packages in one line.
 - **Samples check:** `check-samples.ts` reads `src/content/packages` too.
