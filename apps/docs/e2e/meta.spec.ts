@@ -2,7 +2,7 @@
 import { existsSync } from 'node:fs';
 import { readFile, readdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { REDIRECT_MARKER } from '../integrations/v1-redirects.mjs';
+import { REDIRECT_MARKER } from '../integrations/redirects.mjs';
 import { PAGES } from './pages';
 
 /** A PNG's size, from its IHDR chunk. */
@@ -104,7 +104,7 @@ test('every built page has a card', async () => {
   const missing: string[] = [];
   for (const file of pages) {
     const html = await readFile(new URL(file, dist), 'utf8');
-    // Redirects for 1.x URLs aren't pages to share.
+    // Redirect pages aren't pages to share.
     if (html.includes(` ${REDIRECT_MARKER}>`)) {
       continue;
     }

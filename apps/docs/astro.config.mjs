@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { pagefind } from './integrations/pagefind.mjs';
 import { playgroundLib } from './integrations/playground-lib.mjs';
+import { movedPages } from './integrations/redirects.mjs';
 import { v1Redirects } from './integrations/v1-redirects.mjs';
 import { installTextTransformer } from './src/lib/release.ts';
 
@@ -22,7 +23,8 @@ export default defineConfig({
     // The archived 1.x docs (public/v1/) and the card images stay out.
     sitemap({ filter: page => !/\/(v1|og)\//.test(new URL(page).pathname) }),
     // After Pagefind, so the redirect pages aren't indexed for search.
-    v1Redirects()
+    v1Redirects(),
+    movedPages()
   ],
   // `nx dev docs` passes --port 4321 (nx-astro's default), which wins over
   // this; `astro dev` run directly uses 4322. The playground e2e uses 4331.
