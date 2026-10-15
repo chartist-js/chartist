@@ -233,6 +233,29 @@ test('CSS: themable values read --ct-* properties with 1.x fallbacks', async () 
   );
 });
 
+test('CSS: target lines and bands take a series color, else the text color', async () => {
+  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
+  for (const declaration of [
+    'stroke: var(--ct-color, var(--ct-target-line-color, currentColor))',
+    'stroke-width: var(--ct-target-line-width, 1px)',
+    'stroke-dasharray: var(--ct-target-line-dasharray, 4px 4px)',
+    'fill: var(--ct-color, var(--ct-target-line-color, currentColor))',
+    'fill: var(--ct-color, var(--ct-band-color, currentColor))',
+    'fill-opacity: var(--ct-band-opacity, 0.12)'
+  ]) {
+    assert.ok(css.includes(declaration), declaration);
+  }
+  // A series group around them sets their color too.
+  assert.match(
+    css,
+    /\.ct-series-c \.ct-target-line \{\s*stroke: var\(--ct-color\)/
+  );
+  assert.match(
+    css,
+    /\.ct-series-c \.ct-target-label,\s*\.ct-series-c \.ct-band-area \{\s*fill: var\(--ct-color\)/
+  );
+});
+
 test('CSS: series a to z, the colors repeating after o (#1456)', async () => {
   const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
   const names = 'abcdefghijklmnopqrstuvwxyz';

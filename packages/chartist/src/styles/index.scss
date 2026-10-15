@@ -106,6 +106,41 @@
   stroke-width: var(--ct-donut-width, #{$ct-donut-width});
 }
 
+// A series class on the element or a series group around it wins over the default color.
+@mixin ct-chart-target-line(
+  $ct-target-line-color: $ct-target-line-color,
+  $ct-target-line-width: $ct-target-line-width,
+  $ct-target-line-dasharray: $ct-target-line-dasharray
+) {
+  fill: none;
+  stroke: var(
+    --ct-color,
+    var(--ct-target-line-color, #{$ct-target-line-color})
+  );
+  stroke-width: var(--ct-target-line-width, #{$ct-target-line-width});
+  stroke-dasharray: var(
+    --ct-target-line-dasharray,
+    #{ct-or-none($ct-target-line-dasharray)}
+  );
+}
+
+@mixin ct-chart-target-label(
+  $ct-target-line-color: $ct-target-line-color,
+  $ct-text-size: $ct-text-size
+) {
+  fill: var(--ct-color, var(--ct-target-line-color, #{$ct-target-line-color}));
+  font-size: var(--ct-label-size, #{$ct-text-size});
+}
+
+@mixin ct-chart-band-area(
+  $ct-band-color: $ct-band-color,
+  $ct-band-opacity: $ct-band-opacity
+) {
+  stroke: none;
+  fill: var(--ct-color, var(--ct-band-color, #{$ct-band-color}));
+  fill-opacity: var(--ct-band-opacity, #{$ct-band-opacity});
+}
+
 // Sets the series color as `--ct-color`, which the series' elements use.
 @mixin ct-chart-series-color($color) {
   --ct-color: #{$color};
@@ -113,12 +148,15 @@
   .#{$ct-class-point},
   .#{$ct-class-line},
   .#{$ct-class-bar},
-  .#{$ct-class-slice-donut} {
+  .#{$ct-class-slice-donut},
+  .#{$ct-class-target-line} {
     stroke: var(--ct-color);
   }
 
   .#{$ct-class-slice-pie},
-  .#{$ct-class-area} {
+  .#{$ct-class-area},
+  .#{$ct-class-target-label},
+  .#{$ct-class-band-area} {
     fill: var(--ct-color);
   }
 }
@@ -226,6 +264,18 @@
 
   .#{$ct-class-slice-donut} {
     @include ct-chart-donut($ct-donut-width);
+  }
+
+  .#{$ct-class-target-line} {
+    @include ct-chart-target-line();
+  }
+
+  .#{$ct-class-target-label} {
+    @include ct-chart-target-label($ct-target-line-color, $ct-text-size);
+  }
+
+  .#{$ct-class-band-area} {
+    @include ct-chart-band-area();
   }
 
   @if $ct-include-colored-series {
