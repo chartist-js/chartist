@@ -168,7 +168,11 @@ export abstract class PresetChart<
       ]
     );
     this.installing = undefined;
-    window.addEventListener('resize', this.onWindowResize);
+    // The container's window, which may be an iframe's.
+    this.container.ownerDocument.defaultView?.addEventListener(
+      'resize',
+      this.onWindowResize
+    );
   }
 
   createChart() {
@@ -205,7 +209,10 @@ export abstract class PresetChart<
   /** Stops resize and media query handling; the chart stays rendered. */
   override detach() {
     super.detach();
-    window.removeEventListener('resize', this.onWindowResize);
+    this.container.ownerDocument.defaultView?.removeEventListener(
+      'resize',
+      this.onWindowResize
+    );
     this.controller?.handle.detach();
     return this;
   }

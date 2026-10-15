@@ -20,6 +20,8 @@ export interface ContainerCondition {
 /**
  * When a responsive entry applies: a window media query string, such as
  * `(max-width: 640px)` (as in 1.x), or a {@link container} condition.
+ * Media queries are matched in the window of the chart's container, so a
+ * chart in an iframe follows the iframe's viewport.
  * @experimental
  */
 export type ResponsiveCondition = string | ContainerCondition;
@@ -137,7 +139,10 @@ export function watchResponsive(
   onChange: () => void,
   observeResize = false
 ): ResponsiveWatcher {
-  const view = typeof window !== 'undefined' ? window : undefined;
+  // Media queries are the container's window's, which may be an iframe's.
+  const view =
+    host?.ownerDocument.defaultView ??
+    (typeof window !== 'undefined' ? window : undefined);
   let probe: HTMLElement | undefined;
   const lists: (QueryList | undefined)[] = entries.map(([condition]) => {
     if (!isContainerCondition(condition)) {
@@ -204,9 +209,10 @@ export function watchResponsive(
   }
 
   lists.forEach(list => list?.addEventListener?.('change', onEvent));
+  const Observer = view?.ResizeObserver ?? globalThis.ResizeObserver;
   const observer =
-    observeResize && probe && typeof ResizeObserver !== 'undefined'
-      ? new ResizeObserver(onEvent)
+    observeResize && probe && typeof Observer !== 'undefined'
+      ? new Observer(onEvent)
       : undefined;
   if (observer && host) {
     observer.observe(host);

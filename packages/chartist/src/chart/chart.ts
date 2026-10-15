@@ -117,6 +117,8 @@ export function chart(
   let observer: ResizeObserver | undefined;
   let destroyed = false;
   const provided = new Set<string>();
+  // The container's window, which may be an iframe's or jsdom's.
+  const view = container.ownerDocument.defaultView;
   const fonts = container.ownerDocument.fonts as FontFaceSet | undefined;
   // Layout that measured text depends on font metrics, so it runs again
   // when web fonts finish loading. HTML labels reflow by themselves.
@@ -259,8 +261,9 @@ export function chart(
 
   fonts?.addEventListener('loadingdone', onFontsLoaded);
 
-  if (typeof ResizeObserver !== 'undefined') {
-    observer = new ResizeObserver(() => {
+  const Observer = view?.ResizeObserver ?? globalThis.ResizeObserver;
+  if (typeof Observer !== 'undefined') {
+    observer = new Observer(() => {
       if (destroyed || !state) {
         return;
       }

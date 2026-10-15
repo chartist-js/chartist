@@ -272,7 +272,7 @@ export function createLabel(
   // 100% in all browsers
   const stepLength = Math.round(positionalData[axis.units.len]);
   const stepCounterLength = Math.round(positionalData[axis.counterUnits.len]);
-  const content = document.createElement('span');
+  const content = group.getNode().ownerDocument.createElement('span');
 
   content.className = classes.join(' ');
   content.style[axis.units.len] = stepLength + 'px';
