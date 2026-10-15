@@ -1,16 +1,13 @@
-.pair {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-  align-items: center;
+/* The chart's width decides the font size: 40 columns fill it. */
+#art {
+  container-type: inline-size;
 }
 
-#chart {
-  height: 220px;
-}
-
-/* Text art: one character per cell, so the font size sets the width. */
 #art .ct-terminal {
   margin: 0;
-  font-size: 11px;
+  /* A monospace glyph is about 0.6 em wide: 40 × 0.6 = 24. */
+  font-size: min(22px, 100cqi / 24.5);
+  /* Bold dots and lines read better at a glance. */
+  font-weight: 700;
+  overflow: hidden;
 }

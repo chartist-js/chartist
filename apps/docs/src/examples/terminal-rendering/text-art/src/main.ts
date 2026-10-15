@@ -1,8 +1,6 @@
-import 'chartist/styles.css';
 import '@chartist-js/terminal/styles.css';
 import './style.css';
-import { lineChart } from 'chartist';
-import { lineChart as textChart } from '@chartist-js/terminal';
+import { lineChart } from '@chartist-js/terminal';
 
 const data = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -11,18 +9,17 @@ const data = {
     [2, 1, 3.5, 7, 3]
   ]
 };
-const options = { low: 0, showArea: true, lineSmooth: true };
 
-// The SVG chart, as on every other page.
-lineChart('#chart', data, options);
-
-// The same data and options as text art: 44 columns, 14 rows, as HTML.
+// The options of Chartist's lineChart(), plus a size in characters, as
+// HTML instead of terminal escape codes.
 const art = document.querySelector('#art');
 if (art) {
-  art.innerHTML = textChart(data, {
-    ...options,
-    columns: 44,
-    rows: 14,
+  art.innerHTML = lineChart(data, {
+    low: 0,
+    showArea: true,
+    lineSmooth: true,
+    columns: 40,
+    rows: 16,
     format: 'html'
   });
 }

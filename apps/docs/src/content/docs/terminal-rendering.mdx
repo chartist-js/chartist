@@ -9,11 +9,11 @@ import LiveExample from '../../components/LiveExample.astro';
 
 Chartist builds every chart as a scene first, and SVG is one way to draw it. `@chartist-js/terminal` draws the same scene with characters: lines, points and areas in braille dots, bars in block characters, slices filled with dots, and the grid in box-drawing lines, all in Chartist's series colors.
 
-The layout is Chartist's own, so the labels, the scale and the options you know carry over. Here's the same data and the same options, once as SVG and once as text art:
+The layout is Chartist's own, so the labels, the scale and the options you know carry over. This is `lineChart()` with `showArea` and `lineSmooth`, 40 characters wide, as text art in the page:
 
 <LiveExample
-  title='The same chart, twice'
-  label='A smoothed line chart with areas, drawn as SVG and as braille text art next to it'
+  title='Text art'
+  label='A smoothed line chart with areas from Monday to Friday, drawn in braille dots and box-drawing characters'
   example='terminal-rendering/text-art'
 />
 
@@ -84,7 +84,7 @@ console.log(renderToTerminal(scene, { color: 'none' }));
 import '@chartist-js/terminal/styles.css';
 ```
 
-That's what the example above does. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
+That's what the example above does, in a bold font so the dots stand out. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
 
 ## Fonts and limits
 

@@ -192,8 +192,9 @@ for (const slug of DOCS) {
       await live.getByRole('button', { name: 'Edit' }).click();
       await expect(live).toHaveAttribute('data-ready', '');
       const frame = live.frameLocator('iframe');
-      // Any chart: chart() draws no ct-chart-* class unless given one.
-      await expect(frame.locator('svg').first()).toBeVisible({
+      // Any chart: chart() draws no ct-chart-* class unless given one, and
+      // the terminal renderer draws text art.
+      await expect(frame.locator('svg, pre.ct-terminal').first()).toBeVisible({
         timeout: 10_000
       });
       await expect(live.locator('.playground-errors li')).toHaveCount(0);
