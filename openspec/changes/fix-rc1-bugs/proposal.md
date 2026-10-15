@@ -7,12 +7,14 @@ All 206 open issues were checked against the published 2.0.0-rc.1 on 2026-10-15,
 ## What Changes
 
 **Pie and donut**
+
 - **#842 (and its duplicate #903):** an object `chartPadding` over a numeric default throws ("Cannot create property 'right' on number '5'"). It affects pies, and any chart whose responsive options or `setOptions()` put an object over a number. `extend` starts from an empty object when the target isn't one, and the pie default becomes an object of 5s.
 - **#1302:** a slice that fills the circle (one value) is drawn as one arc between points 0.02 px apart, so rounding moves its centre by up to 5.8 px. It's drawn as two half-circle arcs instead.
 - **#1493:** the donut ring is laid out for 60 px whatever `--ct-donut-width` says, although the spec says donut widths come from CSS. The DOM renderer measures the computed stroke width of a donut slice in the container, as it measures text. Server rendering keeps `donutWidth` or 60.
 - **#1456:** series p to z get no colour, because the stylesheet stops at o. The default styles cover a to z and cycle the 15 colours, with each extra series falling back to the property of the series whose colour it repeats.
 
 **Lines and axes**
+
 - **#1038 (and its duplicate #1075):** with the default smoothing, x values in descending order draw no line. Monotone cubic interpolation breaks the line only where x repeats or changes direction, not wherever it decreases.
 - **#1040:** `{ x, y: null }` holes give `NaN` in the path with `Interpolation.step()` and `simple()`. Both check the y value of a hole, like the other interpolations.
 - **#1057:** a stacked bar chart whose `low` equals its high loops forever in `gcd` (or draws at `NaN`). The empty-range repair runs again after the chart-level `low`/`high` are applied, and `rho`/`gcd` stop on non-finite input.
@@ -20,6 +22,7 @@ All 206 open issues were checked against the published 2.0.0-rc.1 on 2026-10-15,
 - **New issue:** `lineChart()` ignores the top-level `referenceValue` its options document. It's applied to the default Y axis, and the axis's own value wins, as for bars.
 
 **Lifecycle and environment**
+
 - **#876:** options arrays from another realm (iframe, `vm`) are turned into objects, and the charts throw. `extend` uses `Array.isArray`.
 - **#1492 (rest of #1424):** `Svg` checks `instanceof Element`, and responsive options and the 1.x classes' resize listener use the global `window`. So charts in another document fail, or follow the wrong window. Chartist uses the container's document and window.
 - **#929:** `detach()` called during the first render doesn't stick: from `created` on the 1.x classes, from a listener on `chart()`, and it even throws on the presets. All three subscribe before the first render or remember the detach.
@@ -27,6 +30,7 @@ All 206 open issues were checked against the published 2.0.0-rc.1 on 2026-10-15,
 - **New issue:** `new LineChart('#missing')` throws as it should, then crashes again on a timer. The first render is scheduled only after the target check.
 
 **SVG**
+
 - **#1491:** four `SvgPath` inconsistencies:
   - `accuracy: 0` doesn't round;
   - `splitByCommand` pieces lose `close` and `accuracy`;
@@ -34,14 +38,17 @@ All 206 open issues were checked against the published 2.0.0-rc.1 on 2026-10-15,
   - `parse` fails on H, V, Q, S, T, exponents, negative numbers without a separator and implicit repeats.
 
   A fifth bug, found while checking: `scale` and `translate` change an arc's radius, rotation and flags.
+
 - **#1217:** HTML label spans get an extra `xmlns="http://www.w3.org/2000/xmlns/"`, so serialized charts don't parse as SVG. The attribute is dropped.
 
 **Docs (new issue)**
+
 - "Coming from 1.x" says the classes redraw on window resize; they also follow their container.
 - The axes guide says `low`/`high` fix the scale's ends; the auto scale still rounds them out to a step.
 - The server rendering guide says the presets take `labels`; `pieChart()` and the 1.x classes don't.
 
 **GitHub, each step with the author's go**
+
 - Open the three new issues, drafted in the author's voice (`issues.md` in this change).
 - Close #903 as a duplicate of #842, #1075 as a duplicate of #1038, and #1424 as a duplicate of #1492.
 - Reference the issues in the commits, so they close when the fixes reach `main`.
@@ -49,6 +56,7 @@ All 206 open issues were checked against the published 2.0.0-rc.1 on 2026-10-15,
 ## Breaking changes vs 1.x
 
 None that break working code. These change what 1.x code gets, all of them corrections of 1.x bugs:
+
 - **Drawing changes:**
   - a full-circle slice is centred;
   - descending x values draw a line;

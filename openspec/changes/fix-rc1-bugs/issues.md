@@ -4,7 +4,7 @@ Drafts in Gion's voice (CLAUDE.local.md). Nothing here is posted without his go 
 
 ## New issues
 
-### [Bug]: Missing target element crashes again on a timer
+### [Bug]: Missing target element crashes again on a timer (#1504)
 
 **Title:** `[Bug]: LineChart with a missing target crashes again later`
 
@@ -12,7 +12,7 @@ Drafts in Gion's voice (CLAUDE.local.md). Nothing here is posted without his go 
 >
 > The timer is set in a field initializer of `BaseChart`, which runs before the constructor checks the target. We should only schedule the first render once the check passed.
 
-### [Bug]: lineChart() ignores the top-level referenceValue
+### [Bug]: lineChart() ignores the top-level referenceValue (#1505)
 
 **Title:** `[Bug]: lineChart() ignores the top-level referenceValue`
 
@@ -20,7 +20,7 @@ Drafts in Gion's voice (CLAUDE.local.md). Nothing here is posted without his go 
 >
 > In 1.x it only ever worked for bar charts. I think we should apply it to the default Y axis of line charts too, with `axisY.referenceValue` winning, like `low` and `high` do for bars.
 
-### Docs: three places that don't match what Chartist does
+### Docs: three places that don't match what Chartist does (#1506)
 
 **Title:** `Docs: three statements that don't match the code`
 

@@ -2,7 +2,7 @@
 
 ## 1. Issues on GitHub (each step with the author's go)
 
-- [ ] 1.1 Show the author the three new issue drafts in `issues.md`, and open them as he approves. Record their numbers in `issues.md`. Verify: `gh issue view <n>` shows each, posted under his account, with no AI traces
+- [x] 1.1 Show the author the three new issue drafts in `issues.md`, and open them as he approves. Record their numbers in `issues.md`. Verify: `gh issue view <n>` shows each, posted under his account, with no AI traces
 - [ ] 1.2 With his go, close #903, #1075 and #1424 as duplicates with the comments in `issues.md`. Verify: each is closed as a duplicate, linked to its issue
 
 ## 2. Pie and donut
