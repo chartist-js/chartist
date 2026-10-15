@@ -239,11 +239,6 @@ export class Svg {
       contentNode = content;
     }
 
-    if (contentNode.nodeType === 1) {
-      // Adding namespace to content element
-      (contentNode as Element).setAttribute('xmlns', namespaces.xmlns);
-    }
-
     // Creating the foreignObject without required extension attribute (as described here
     // http://www.w3.org/TR/SVG/extend.html#ForeignObjectElement)
     const fnObj = this.elem(
