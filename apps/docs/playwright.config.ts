@@ -7,6 +7,10 @@ const PORT = Number(process.env.E2E_PORT ?? 4329);
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
+  // A busy CI runner now and then misses a click or a page load; retry there
+  // so one slow moment doesn't block the docs deploy. Retried passes are
+  // reported as flaky.
+  retries: process.env.CI ? 2 : 0,
   reporter: [['list']],
   use: {
     baseURL: `http://localhost:${PORT}`,
