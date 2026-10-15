@@ -1,7 +1,10 @@
 /** Site-wide links and settings. */
 export const REPO = 'https://github.com/chartist-js/chartist';
-/** Docs sources live on the `next` branch until the v2 release. */
-export const EDIT_BASE = `${REPO}/edit/next/apps/docs/src/content/docs/`;
+/**
+ * Where the site's content is edited on GitHub (`docs/…` or `packages/…`
+ * below). Docs sources live on the `next` branch until the v2 release.
+ */
+export const EDIT_CONTENT = `${REPO}/edit/next/apps/docs/src/content/`;
 
 /**
  * Documentation versions, for the docs' version switcher and the footer. The
@@ -18,6 +21,7 @@ export const VERSIONS = [
 export const NAV = [
   { id: 'docs', label: 'Docs', path: 'docs/getting-started/' },
   { id: 'api', label: 'API', path: 'api/' },
+  { id: 'packages', label: 'Packages', path: 'packages/' },
   { id: 'examples', label: 'Examples', path: 'examples/' },
   { id: 'plugins', label: 'Plugins', path: 'plugins/' },
   { id: 'playground', label: 'Playground', path: 'playground/' },

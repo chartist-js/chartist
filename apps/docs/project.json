@@ -106,22 +106,27 @@
       }
     },
     "api": {
-      "command": "typedoc --options api/typedoc.json",
+      "command": "typedoc --options api/typedoc.json && typedoc --options api/typedoc.terminal.json",
       "options": {
         "cwd": "{projectRoot}"
       },
       "inputs": [
         "{workspaceRoot}/packages/chartist/src/**/*",
+        "{workspaceRoot}/packages/terminal/src/**/*",
         "{projectRoot}/api/*",
         {
           "externalDependencies": ["typedoc", "typescript"]
         }
       ],
-      "outputs": ["{projectRoot}/src/generated/api.json"],
+      "outputs": [
+        "{projectRoot}/src/generated/api.json",
+        "{projectRoot}/src/generated/api"
+      ],
       "cache": true,
       "metadata": {
-        "description": "Writes the API model of chartist and chartist/compat (TypeDoc JSON) for the reference pages"
-      }
+        "description": "Writes the API models of chartist and chartist/compat, and of each documented @chartist-js package (TypeDoc JSON), for the reference pages"
+      },
+      "dependsOn": ["^build"]
     },
     "test": {
       "dependsOn": ["api"]

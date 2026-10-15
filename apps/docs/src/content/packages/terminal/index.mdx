@@ -1,0 +1,64 @@
+---
+title: '@chartist-js/terminal'
+description: Chartist charts in the terminal and as text art in HTML, from the ct-cli command or from your own CLI tool.
+order: 0
+label: Overview
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+Chartist builds every chart as a scene first, and SVG is one way to draw it. `@chartist-js/terminal` draws the same scene with characters: lines, points and areas in braille dots, bars in block characters, slices filled with dots, and the grid in box-drawing lines, all in Chartist's series colors.
+
+The layout is Chartist's own, so the labels, the scale and the options you know carry over. This is `lineChart()` with `showArea` and `lineSmooth`, 34 characters wide, as text art in the page, framed as a terminal window with a bit of CSS:
+
+<LiveExample
+  title='Text art'
+  label='A smoothed line chart with areas from Monday to Friday, drawn in braille dots and box-drawing characters'
+  example='terminal/text-art'
+/>
+
+## Install
+
+```sh
+npm install @chartist-js/terminal
+```
+
+It brings `chartist` along. The command needs Node.js 22 or later; the API runs in any JavaScript runtime, browsers included. To try the command without installing it:
+
+```sh
+npx @chartist-js/terminal demo
+```
+
+## Quick start
+
+In a terminal, give `ct-cli` a chart type and a series per argument:
+
+```sh
+npx @chartist-js/terminal line 12,9,7,8,5 2,1,3.5,7,3 --labels Mon,Tue,Wed,Thu,Fri --area
+```
+
+In your own CLI tool, the chart functions take the data and options of Chartist's presets, plus a size in characters, and return the chart as a string:
+
+```ts
+import { barChart } from '@chartist-js/terminal';
+
+console.log(
+  barChart(
+    {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      series: [
+        [5, 4, 3, 7],
+        [3, 2, 9, 5]
+      ]
+    },
+    { stackBars: true, columns: 50, rows: 12 }
+  )
+);
+```
+
+## Next
+
+- [Terminal rendering](terminal-rendering/): the command's input and options, the API for CLI tools, and text art in HTML.
+- [API](api/): every function and option of the package.
+- [Server rendering](../../docs/server-rendering/): the same scene as SVG markup, without a browser.
+- [Rendering](../../api/rendering/) in the Chartist API: `toScene()`, the renderers and text measuring this package builds on.

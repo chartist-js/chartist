@@ -1,13 +1,15 @@
 /**
  * The API reference's model: TypeDoc's JSON
- * for chartist and chartist/compat (docs:api writes it), read at build time,
- * and what the reference pages need from it: entries per page, comments,
- * types as linked tokens, and the members of option types.
+ * for chartist and chartist/compat, and one per documented `@chartist-js`
+ * package (docs:api writes them), read at build time, and what the
+ * reference pages need from it: entries per page, comments, types as
+ * linked tokens, and the members of option types.
  *
  * This is the only module that reads TypeDoc's model.
  */
 import type { JSONOutput as J } from 'typedoc';
 import raw from '../generated/api.json?raw';
+import { packageBySlug } from '../data/packages';
 import { hasDefaults } from './api-defaults';
 import { API_PAGES, pageFor, type ApiPage } from './api-pages';
 import { href } from './site';
@@ -34,12 +36,59 @@ export const KIND = {
 
 const project = JSON.parse(raw) as J.ProjectReflection;
 
-export type ModuleName = 'chartist' | 'chartist/compat';
+/** The packages' models, by slug, from `src/generated/api/<slug>.json`. */
+const packageModels = Object.entries(
+  import.meta.glob<string>('../generated/api/*.json', {
+    query: '?raw',
+    import: 'default',
+    eager: true
+  })
+).map(([path, source], i) => ({
+  slug: /([^/]+)\.json$/.exec(path)![1],
+  // Reflection ids count from 0 in every model: each package's are moved
+  // past the others', so one map holds them all.
+  project: offsetIds(JSON.parse(source), (i + 1) * 1_000_000)
+}));
+
+/** A model with its reflection ids (and references to them) moved by `by`. */
+function offsetIds(value: unknown, by: number): J.ProjectReflection {
+  const walk = (node: unknown): unknown => {
+    if (Array.isArray(node)) {
+      return node.map(walk);
+    }
+    if (!node || typeof node !== 'object') {
+      return node;
+    }
+    return Object.fromEntries(
+      Object.entries(node).map(([key, child]) => {
+        if ((key === 'id' || key === 'target') && typeof child === 'number') {
+          return [key, child + by];
+        }
+        if (
+          key === 'children' &&
+          Array.isArray(child) &&
+          child.every(item => typeof item === 'number')
+        ) {
+          return [key, child.map(item => item + by)];
+        }
+        // symbolIdMap is keyed by id; nothing here reads it.
+        return [key, key === 'symbolIdMap' ? child : walk(child)];
+      })
+    );
+  };
+  return walk(value) as J.ProjectReflection;
+}
+
+/** `chartist`, `chartist/compat` or a package's npm name. */
+export type ModuleName = string;
 
 export interface ApiEntry {
   name: string;
   module: ModuleName;
+  /** The reference page's slug, or `packages/<slug>` for a package. */
   page: string;
+  /** The package's slug, for a package's exports. */
+  pkg?: string;
   reflection: Reflection;
   /** Source path under packages/chartist/src. */
   file: string;
@@ -47,8 +96,10 @@ export interface ApiEntry {
   sourceUrl?: string;
 }
 
-/** Every export, in source order per module (core first). */
+/** Every export of chartist and chartist/compat, in source order per module (core first). */
 export const ENTRIES: ApiEntry[] = [];
+/** Every export of each package, in source order, by the package's slug. */
+export const PACKAGE_ENTRIES = new Map<string, ApiEntry[]>();
 /** Reflection id → where it's documented: export and member path. */
 const LOCATIONS = new Map<number, { entry: ApiEntry; member?: string }>();
 
@@ -80,6 +131,24 @@ for (const module of project.children ?? []) {
   }
 }
 
+for (const { slug, project: model } of packageModels) {
+  const pkg = packageBySlug(slug);
+  const entries = (model.children ?? []).map((reflection): ApiEntry => {
+    const entry: ApiEntry = {
+      name: reflection.name,
+      module: pkg.name,
+      page: `packages/${slug}`,
+      pkg: slug,
+      reflection,
+      file: reflection.sources?.[0]?.fileName ?? '',
+      sourceUrl: reflection.sources?.[0]?.url
+    };
+    index(reflection, entry);
+    return entry;
+  });
+  PACKAGE_ENTRIES.set(slug, entries);
+}
+
 /** Records where a reflection and its members are documented. */
 function index(reflection: Reflection, entry: ApiEntry, member?: string) {
   LOCATIONS.set(reflection.id, { entry, member });
@@ -102,8 +171,24 @@ export const pageOf = (slug: string): ApiPage | undefined =>
 export const entriesOn = (slug: string): ApiEntry[] =>
   ENTRIES.filter(entry => entry.page === slug);
 
+/** A package's exports as its API page shows them. */
+export function packageApiEntries(slug: string): ApiEntry[] {
+  const entries = PACKAGE_ENTRIES.get(slug);
+  if (!entries) {
+    throw new Error(
+      `No API model for the package "${slug}": add api/typedoc.${slug}.json and run docs:api`
+    );
+  }
+  return sortByKind(entries, []);
+}
+
 /** Functions first, then classes, then types, in source order within each. */
 export function sortedEntries(slug: string): ApiEntry[] {
+  return sortByKind(entriesOn(slug), pageOf(slug)?.first ?? []);
+}
+
+/** Entries named in `first` lead; then functions, classes, types. */
+function sortByKind(entries: ApiEntry[], first: readonly string[]): ApiEntry[] {
   const rank = (entry: ApiEntry) => {
     const kind = entry.reflection.kind;
     if (
@@ -115,12 +200,11 @@ export function sortedEntries(slug: string): ApiEntry[] {
     }
     return kind === KIND.Class ? 1 : 2;
   };
-  const first = pageOf(slug)?.first ?? [];
   const lead = (entry: ApiEntry) => {
     const at = first.indexOf(entry.name);
     return at < 0 ? first.length : at;
   };
-  return entriesOn(slug)
+  return entries
     .map((entry, order) => ({ entry, order }))
     .sort(
       (a, b) =>
@@ -132,6 +216,10 @@ export function sortedEntries(slug: string): ApiEntry[] {
 }
 
 export const apiPath = (slug: string) => `api/${slug}/`;
+
+/** The site path of an entry's page: a reference page or a package's API page. */
+export const entryPagePath = (entry: ApiEntry) =>
+  entry.pkg ? `packages/${entry.pkg}/api/` : apiPath(entry.page);
 
 /** The anchor of an export or one of its members. */
 export const anchor = (name: string, member?: string) =>
@@ -167,7 +255,24 @@ export function linkTo(id: number | undefined): string | undefined {
   // Nested members are listed for the presets' options only, one level.
   const depth = !listsMembers(entry) ? 0 : hasDefaults(entry.name) ? 2 : 1;
   const member = path.slice(0, depth).join('.') || undefined;
-  return `${href(apiPath(entry.page))}#${anchor(entry.name, member)}`;
+  return `${href(entryPagePath(entry))}#${anchor(entry.name, member)}`;
+}
+
+/**
+ * Where a type of another package is documented: `chartist`'s types, as
+ * a package's model refers to them, link into the core reference.
+ */
+function externalLink(
+  target: unknown,
+  packageName?: string
+): string | undefined {
+  const symbol = target as
+    | { packageName?: string; qualifiedName?: string }
+    | undefined;
+  return (packageName ?? symbol?.packageName) === 'chartist' &&
+    symbol?.qualifiedName
+    ? linkToName(symbol.qualifiedName)
+    : undefined;
 }
 
 /** An export's URL by name (for guides). */
@@ -328,7 +433,9 @@ export function partHref(part: Part): string | undefined {
   if (typeof part.target === 'number') {
     return linkTo(part.target);
   }
-  return typeof part.target === 'string' ? part.target : undefined;
+  return typeof part.target === 'string'
+    ? part.target
+    : externalLink(part.target);
 }
 
 // Types as tokens ---------------------------------------------------------
@@ -397,7 +504,9 @@ export function typeTokens(type: SomeType | undefined, depth = 0): Token[] {
       ];
     case 'reference': {
       const link =
-        typeof type.target === 'number' ? linkTo(type.target) : undefined;
+        typeof type.target === 'number'
+          ? linkTo(type.target)
+          : externalLink(type.target, type.package);
       const tokens = [t(type.name, 'type', link)];
       if (type.typeArguments?.length) {
         tokens.push(t('<'));
@@ -704,7 +813,10 @@ const byId = new Map<number, Reflection>();
     byId.set(reflection.id, reflection);
     walk(reflection.children);
   }
-})(project.children);
+})([
+  ...(project.children ?? []),
+  ...packageModels.flatMap(model => model.project.children ?? [])
+]);
 
 const memberOf = (reflection: Reflection): Member => ({
   name: reflection.name,

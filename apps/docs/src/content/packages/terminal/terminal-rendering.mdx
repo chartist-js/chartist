@@ -1,21 +1,12 @@
 ---
 title: Terminal rendering
-description: Draw Chartist charts in a terminal with braille dots and block characters, from the ct-cli command or from your own CLI tool, and as text art in HTML.
-group: Guides
-order: 9
+description: Draw charts from the ct-cli command or from your own CLI tool, and as text art in HTML, with the data and options of Chartist's presets.
+order: 1
 ---
 
-import LiveExample from '../../components/LiveExample.astro';
+import LiveExample from '../../../components/LiveExample.astro';
 
-Chartist builds every chart as a scene first, and SVG is one way to draw it. `@chartist-js/terminal` draws the same scene with characters: lines, points and areas in braille dots, bars in block characters, slices filled with dots, and the grid in box-drawing lines, all in Chartist's series colors.
-
-The layout is Chartist's own, so the labels, the scale and the options you know carry over. This is `lineChart()` with `showArea` and `lineSmooth`, 34 characters wide, as text art in the page, framed as a terminal window with a bit of CSS:
-
-<LiveExample
-  title='Text art'
-  label='A smoothed line chart with areas from Monday to Friday, drawn in braille dots and box-drawing characters'
-  example='terminal-rendering/text-art'
-/>
+`@chartist-js/terminal` draws Chartist's charts with characters. This guide covers the three ways to use it: the `ct-cli` command, the API for your own CLI tools, and text art in HTML.
 
 ## From the command line
 
@@ -61,7 +52,7 @@ Every preset option works: `stackBars`, `horizontalBars`, `low` and `high`, `axi
 
 ### Any scene
 
-The chart functions cover the presets. For a [composed chart](../composed-charts/), or a scene a plugin changed, lay it out with `terminalSize()` and render it with `renderToTerminal()`:
+The chart functions cover the presets. For a [composed chart](../../../docs/composed-charts/), or a scene a plugin changed, lay it out with `terminalSize()` and render it with `renderToTerminal()`:
 
 ```ts
 import { barChartConfig, toScene } from 'chartist';
@@ -74,17 +65,25 @@ const scene = toScene(
 console.log(renderToTerminal(scene, { color: 'none' }));
 ```
 
-`lineChartConfig()`, `barChartConfig()` and `pieChartConfig()` come from `chartist`: they build the config a preset draws, for any renderer. A terminal cell stands for 8 × 16 px of the scene, so a braille dot is 4 × 4 px and circles stay round. Labels are measured one cell per character, so they land on the character grid.
+[`lineChartConfig()`](../../../api/charts/#lineChartConfig), `barChartConfig()` and `pieChartConfig()` come from `chartist`: they build the config a preset draws, for any renderer. [`toScene()`](../../../api/rendering/#toScene) and the other renderers are in the [Rendering](../../../api/rendering/) part of the API reference. A terminal cell stands for 8 × 16 px of the scene, so a braille dot is 4 × 4 px and circles stay round. Labels are measured one cell per character, so they land on the character grid.
 
 ## Text art in HTML
 
-`format: 'html'` (or `renderToHtml(scene)`) gives the text art as a `pre` element, with classes where the terminal has colors: `ct-series-a`, `ct-grid`, `ct-label` and so on. Its stylesheet colors them with [the custom properties](../styling-with-css/#custom-properties) your charts already use, so a theme colors the text art too:
+`format: 'html'` (or `renderToHtml(scene)`) gives the text art as a `pre` element, with classes where the terminal has colors: `ct-series-a`, `ct-grid`, `ct-label` and so on. Its stylesheet colors them with [the custom properties](../../../docs/styling-with-css/#custom-properties) your charts already use, so a theme colors the text art too:
 
 ```ts
 import '@chartist-js/terminal/styles.css';
 ```
 
-That's what the example above does. The stylesheet also brings a small font of its own for the dots, grid lines and bars, drawn to fill each character cell, so the text art looks the same in every browser. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
+The stylesheet also brings a small font of its own for the dots, grid lines and bars, drawn to fill each character cell, so the text art looks the same in every browser. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
+
+This example draws a donut as text art, framed as a terminal window:
+
+<LiveExample
+  title='A donut as text art'
+  label='A donut chart with three slices, Bananas, Apples and Kiwis, drawn in braille dots with its labels on the slices'
+  example='terminal/donut'
+/>
 
 ## Fonts and limits
 
@@ -92,4 +91,4 @@ In a terminal, braille and box-drawing characters need a font that has them. Mos
 
 Each character of a label is one cell, so wide characters (CJK, emoji) push the columns after them. And it's a printout: no tooltips, no animation.
 
-Next: draw the SVG without a browser in [server rendering](../server-rendering/), or build your own layers in [composed charts](../composed-charts/).
+Next: every function and option on the [API page](../api/), or the same scene as SVG markup in [server rendering](../../../docs/server-rendering/).

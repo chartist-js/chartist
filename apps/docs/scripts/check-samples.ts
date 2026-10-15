@@ -38,14 +38,31 @@ function samplesOf(page: string, source: string): Sample[] {
 const pages = (await readdir(pagesDir)).filter(file => file.endsWith('.mdx'));
 const samples: Sample[] = [];
 for (const page of pages) {
-  samples.push(...samplesOf(page, await readFile(pagesDir + page, 'utf8')));
+  samples.push(
+    ...samplesOf(`docs/${page}`, await readFile(pagesDir + page, 'utf8'))
+  );
+}
+// The package pages: src/content/packages/<slug>/*.mdx.
+const packagesDir = `${root}src/content/packages/`;
+for (const slug of await readdir(packagesDir)) {
+  for (const file of (await readdir(`${packagesDir}${slug}/`)).filter(name =>
+    name.endsWith('.mdx')
+  )) {
+    pages.push(`packages/${slug}/${file}`);
+    samples.push(
+      ...samplesOf(
+        `packages/${slug}/${file}`,
+        await readFile(`${packagesDir}${slug}/${file}`, 'utf8')
+      )
+    );
+  }
 }
 
 await rm(outDir, { recursive: true, force: true });
 await mkdir(outDir, { recursive: true });
 const files = new Map<string, Sample>();
 for (const [i, sample] of samples.entries()) {
-  const file = `${outDir}${sample.page.replace(/\.mdx$/, '')}-${i}.ts`;
+  const file = `${outDir}${sample.page.replace(/\.mdx$/, '').replaceAll('/', '-')}-${i}.ts`;
   files.set(file, sample);
   await writeFile(file, sample.code);
 }
@@ -78,7 +95,7 @@ for (const diagnostic of diagnostics) {
   );
   // +1 for the fence line, +1 because lines count from 1.
   console.error(
-    `src/content/docs/${sample.page}:${sample.line + line + 1}: ${message}`
+    `src/content/${sample.page}:${sample.line + line + 1}: ${message}`
   );
 }
 console.log(

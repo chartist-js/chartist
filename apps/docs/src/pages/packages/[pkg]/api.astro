@@ -1,0 +1,28 @@
+---
+/** A package's API page: every export, generated from its source. */
+import Entry from '../../../components/api/Entry.astro';
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { PACKAGES, packageBySlug } from '../../../data/packages';
+import { packageApiEntries } from '../../../lib/api';
+import { navPages } from '../../../lib/docs';
+import { href } from '../../../lib/site';
+
+export function getStaticPaths() {
+  return PACKAGES.map(pkg => ({ params: { pkg: pkg.slug } }));
+}
+
+const { pkg } = Astro.params;
+const info = packageBySlug(pkg);
+const page = (await navPages('packages', pkg)).find(candidate => candidate.key === `${pkg}/api`)!;
+const entries = packageApiEntries(pkg);
+const headings = entries.map(entry => ({ depth: 2, slug: entry.name, text: entry.name }));
+---
+
+<DocsLayout page={page} headings={headings}>
+  <p>
+    Everything is exported from <code>{info.name}</code>. Types from <code>chartist</code> link to the <a href={href('api/')}>Chartist API reference</a>, where <a href={href('api/rendering/')}>Rendering</a> covers the scene and the renderers.
+  </p>
+  <div class="api-entries">
+    {entries.map(entry => <Entry entry={entry} />)}
+  </div>
+</DocsLayout>

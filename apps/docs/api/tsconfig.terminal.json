@@ -1,0 +1,10 @@
+{
+  "//": "@chartist-js/terminal's compiler options for TypeDoc (docs:api); `chartist` resolves to its built declarations.",
+  "extends": "../../../packages/terminal/tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "../../../packages/terminal",
+    "noEmit": true
+  },
+  "include": ["../../../packages/terminal/src"],
+  "exclude": ["../../../packages/terminal/src/**/*.spec.ts"]
+}

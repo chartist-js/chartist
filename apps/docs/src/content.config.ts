@@ -17,4 +17,20 @@ const docs = defineCollection({
   })
 });
 
-export const collections = { docs };
+/**
+ * The pages of the package subsites: `src/content/packages/<slug>/`, with
+ * `index.mdx` as the package's overview and the other files as its guides,
+ * in `order`. `api` isn't a guide name: the package's API page has it.
+ */
+const packages = defineCollection({
+  loader: glob({ pattern: '*/*.mdx', base: './src/content/packages' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    order: z.number(),
+    /** Short sidebar label; defaults to the title. */
+    label: z.string().optional()
+  })
+});
+
+export const collections = { docs, packages };
