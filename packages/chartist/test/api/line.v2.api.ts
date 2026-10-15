@@ -126,3 +126,30 @@ describe('composing a line chart from parts', () => {
     expect(el.querySelector('.ct-grid')).toBeNull();
   });
 });
+
+// 1.5.0 applied a top-level referenceValue to bar charts only.
+describe("a line chart's top-level referenceValue", () => {
+  const data = { series: [[5, 8, 6]] };
+
+  test('lineChart() includes it on the Y axis', () => {
+    const el = container();
+    lineChart(el, data, { ...SIZE, referenceValue: 0 });
+    expect(labels(el, 'vertical')[0]).toBe('0');
+  });
+
+  test('LineChart includes it, and axisY.referenceValue wins', async () => {
+    const el = container();
+    await created(new LineChart(el, data, withCompat({ referenceValue: 0 })));
+    expect(labels(el, 'vertical')[0]).toBe('0');
+
+    const own = container();
+    await created(
+      new LineChart(
+        own,
+        data,
+        withCompat({ referenceValue: 0, axisY: { referenceValue: 4 } })
+      )
+    );
+    expect(labels(own, 'vertical')[0]).toBe('4');
+  });
+});

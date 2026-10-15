@@ -8,6 +8,7 @@ import { alphaNumerate, quantity } from '../core/lang';
 import { polarToCartesian } from '../core/math';
 import type { Data, Label } from '../core/types';
 import type { Layer } from '../pipeline/types';
+import type { MeasureStyle } from '../render/measure';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { SvgPath } from '../svg/SvgPath';
 import { sum } from '../utils/functional';
@@ -38,7 +39,10 @@ export interface PieLayerOptions {
   /**
    * Donut ring width in px, or a share of the radius (`'25%'`). Without
    * it, the stylesheet sets the width (`--ct-donut-width`, 60px by
-   * default), and the ring is laid out for 60 px.
+   * default), and in the browser the ring is laid out for the width the
+   * stylesheet gives a slice. Without a DOM (`toScene()`,
+   * `renderToString()`), it's laid out for 60 px, so set `donutWidth`
+   * there if the page's CSS draws another width.
    */
   readonly donutWidth?: number | string;
   /** Draws a label for each slice; on by default. */
@@ -124,6 +128,21 @@ export function moveLabel(
   }
 }
 
+/**
+ * The stroke width of a donut slice in px, as the renderer reads it from
+ * the stylesheet. Only px values count: anything else (an unresolved
+ * `var()`, a percentage) is left to the default.
+ */
+function cssWidth(
+  measureStyle: MeasureStyle | undefined,
+  sliceClass: string
+): number | undefined {
+  const width = measureStyle?.('stroke-width', {
+    classes: sliceClass.split(' ')
+  });
+  return width && /^[\d.]+px$/.test(width) ? parseFloat(width) : undefined;
+}
+
 const CLASS_NAMES = {
   series: 'ct-series',
   slicePie: 'ct-slice-pie',
@@ -162,7 +181,7 @@ export function pie(options: PieLayerOptions = {}): Layer {
     type: 'pie',
     chartType: options.donut ? 'donut' : 'pie',
     coordinates: ['polar'],
-    compose({ data, area }) {
+    compose({ data, area, measureStyle }) {
       // Values or `{ value, name, className, meta }` objects, as in 1.x.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const raw: any[] = data.flat
@@ -184,9 +203,16 @@ export function pie(options: PieLayerOptions = {}): Layer {
 
       let radius = Math.min(area.width / 2, area.height / 2);
       const totalDataSum = options.total || values.reduce(sum, 0);
-      // Without `donutWidth`, CSS draws the ring (`--ct-donut-width`); the
-      // layout assumes the stylesheet's default of 60px (see #1474).
-      const donutWidth = quantity(options.donutWidth ?? 60);
+      // Without `donutWidth`, CSS draws the ring (`--ct-donut-width`), and
+      // the layout fits the width the renderer reads from it; 60px, the
+      // stylesheet's default, when it can't (see #1474, #1493).
+      const donutWidth = quantity(
+        options.donutWidth ??
+          (options.donut
+            ? cssWidth(measureStyle, classNames.sliceDonut)
+            : undefined) ??
+          60
+      );
       if (donutWidth.unit === '%') {
         donutWidth.value *= radius / 100;
       }
@@ -239,6 +265,9 @@ export function pie(options: PieLayerOptions = {}): Layer {
           0,
           startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2)
         );
+        // A slice that fills the circle itself (one value, or one at least
+        // the total), not one that only reaches round with the overlap.
+        const fullCircle = endAngle - startAngle >= 359.99;
         if (endAngle - overlappingStartAngle >= 359.99) {
           endAngle = overlappingStartAngle + 359.99;
         }
@@ -248,18 +277,33 @@ export function pie(options: PieLayerOptions = {}): Layer {
           radius,
           overlappingStartAngle
         );
-        const end = polarToCartesian(center.x, center.y, radius, endAngle);
-        const path = new SvgPath(!options.donut)
-          .move(end.x, end.y)
-          .arc(
+        const path = new SvgPath(!options.donut);
+        if (fullCircle) {
+          // Two half circles through opposite points: their midpoint is the
+          // centre, so rounding the coordinates can't move the ring, as it
+          // does with one arc between points 0.01° apart (#1302).
+          const opposite = polarToCartesian(
+            center.x,
+            center.y,
             radius,
-            radius,
-            0,
-            Number(endAngle - startAngle > 180),
-            0,
-            start.x,
-            start.y
+            overlappingStartAngle + 180
           );
+          path
+            .move(start.x, start.y)
+            .arc(radius, radius, 0, 0, 0, opposite.x, opposite.y);
+        } else {
+          const end = polarToCartesian(center.x, center.y, radius, endAngle);
+          path.move(end.x, end.y);
+        }
+        path.arc(
+          radius,
+          radius,
+          0,
+          Number(!fullCircle && endAngle - startAngle > 180),
+          0,
+          start.x,
+          start.y
+        );
         if (!options.donut) {
           path.line(center.x, center.y);
         }

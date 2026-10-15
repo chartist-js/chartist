@@ -4,7 +4,7 @@ import { noop } from '../utils/functional';
 export const pieDefaults = {
   width: undefined,
   height: undefined,
-  chartPadding: 5,
+  chartPadding: { top: 5, right: 5, bottom: 5, left: 5 },
   classNames: {
     chartPie: 'ct-chart-pie',
     chartDonut: 'ct-chart-donut',

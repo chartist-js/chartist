@@ -45,19 +45,26 @@ export function roundWithPrecision(value: number, digits?: number) {
 /**
  * Pollard Rho Algorithm to find smallest factor of an integer value. There are more efficient algorithms for factorization, but this one is quite efficient and not so complex.
  * @param num An integer number where the smallest factor should be searched for
- * @returns The smallest integer factor of the parameter num.
+ * @returns The smallest integer factor of the parameter num, or num itself when it is not finite.
  */
 export function rho(num: number) {
-  if (num === 1) {
+  // A non-finite range (from an empty one) has no factor to find (#1057).
+  if (num === 1 || !Number.isFinite(num)) {
     return num;
   }
 
+  // Euclid's algorithm, bounded so that input it can't finish on (NaN,
+  // Infinity) gives NaN instead of running forever.
   function gcd(p: number, q: number): number {
-    if (p % q === 0) {
-      return q;
-    } else {
-      return gcd(q, p % q);
+    for (let i = 0; i < 1000 && Number.isFinite(p) && q !== 0; i++) {
+      const remainder = p % q;
+      if (remainder === 0) {
+        return q;
+      }
+      p = q;
+      q = remainder;
     }
+    return NaN;
   }
 
   function f(x: number) {

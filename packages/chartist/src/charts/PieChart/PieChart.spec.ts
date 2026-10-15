@@ -7,6 +7,7 @@ import {
   destroyMockDom,
   mockDom
 } from '../../../test/mock/dom';
+import { useDonutStylesheet } from '../../../test/donut-css';
 
 describe('Charts', () => {
   describe('PieChart', () => {
@@ -35,6 +36,7 @@ describe('Charts', () => {
     beforeEach(() => {
       mockDom();
     });
+    useDonutStylesheet();
     afterEach(() => {
       destroyMockDom();
       data = { series: [] };
@@ -164,15 +166,17 @@ describe('Charts', () => {
         );
       });
 
-      it('should draw complete circle with gap', async () => {
+      // 1.x drew one arc with a gap of 0.01°, which moved the circle off
+      // its centre once rounded (#1302); v2 draws two half circles.
+      it('should draw complete circle', async () => {
         data = {
           series: [1]
         };
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[0];
-        expect(slice?.getAttribute('d')).toEqual(
-          expect.stringMatching(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/)
+        expect(slice?.getAttribute('d')).toBe(
+          'M50,10A40,40,0,0,0,50,90A40,40,0,0,0,50,10L50,50Z'
         );
       });
 
@@ -182,8 +186,8 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[0];
-        expect(slice?.getAttribute('d')).toEqual(
-          expect.stringMatching(/^M90,49.9\d+A40,40,0,1,0,90,50L50,50Z/)
+        expect(slice?.getAttribute('d')).toBe(
+          'M90,50A40,40,0,0,0,10,50A40,40,0,0,0,90,50L50,50Z'
         );
       });
 
@@ -194,9 +198,24 @@ describe('Charts', () => {
         await createChart();
 
         const slice = fixture.wrapper.querySelectorAll('.ct-slice-pie')[1];
-        expect(slice?.getAttribute('d')).toEqual(
-          expect.stringMatching(/^M49.9\d+,10A40,40,0,1,0,50,10L50,50Z/)
+        expect(slice?.getAttribute('d')).toBe(
+          'M50,10A40,40,0,0,0,50,90A40,40,0,0,0,50,10L50,50Z'
         );
+      });
+    });
+
+    describe('Pie with an object chartPadding (#842)', () => {
+      it('should fill the other sides with the default padding', async () => {
+        data = { series: [1, 2] };
+        options = { width: 100, height: 100, chartPadding: { top: 20 } };
+        await createChart();
+
+        // A 90 x 75 area below a 20 px top: the centre moves down by 7.5.
+        const slices = fixture.wrapper.querySelectorAll('.ct-slice-pie');
+        expect(slices).toHaveLength(2);
+        slices.forEach(slice => {
+          expect(slice.getAttribute('d')).toMatch(/A37\.5,37\.5,.*L50,57\.5Z$/);
+        });
       });
     });
 

@@ -33,6 +33,7 @@ import {
   type SceneNode
 } from '../index';
 import { untyped } from '../chart/types';
+import { nonEmptyRange } from '../core/data/range';
 import type {
   AnimationEvent,
   AreaDrawEvent,
@@ -240,16 +241,15 @@ function barAxes(options: AnyOptions, data: Data, chartRect: ChartRect) {
     true
   );
   const series = normalized.series as NormalizedSeries[];
-  const highLow =
+  const found =
     options.stackBars && options.stackMode !== true && series.length
       ? getHighLow([serialSums(series)], options, valueDimension)
       : getHighLow(series, options, valueDimension);
-  if (typeof options.high === 'number') {
-    highLow.high = options.high;
-  }
-  if (typeof options.low === 'number') {
-    highLow.low = options.low;
-  }
+  // The chart-level bounds win, but can empty the range again (#1057).
+  const highLow = nonEmptyRange({
+    high: typeof options.high === 'number' ? options.high : found.high,
+    low: typeof options.low === 'number' ? options.low : found.low
+  });
   const valueOptions = horizontal ? options.axisX : options.axisY;
   const labelOptions = horizontal ? options.axisY : options.axisX;
   const ValueAxis = isLegacyAxisClass(valueOptions.type)

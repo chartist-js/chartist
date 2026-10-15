@@ -7,6 +7,7 @@ import { pie } from '../layers/pie';
 import { cartesianAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { findAll } from '../scene/tree';
+import { domRenderer } from '../render/dom';
 import { chart } from './chart';
 import type { ChartConfig, ChartPlugin } from './types';
 
@@ -116,6 +117,58 @@ describe('chart/chart', () => {
     });
     chart(element, { data, layers: [dots()], width: 300, height: '50%' });
     expect(styles).toEqual(['width: 300px; height: 50%;']);
+  });
+
+  describe('reads the donut width from CSS (#1493)', () => {
+    const donut = (renderer?: ChartConfig['renderer']) => {
+      const { element } = sizedContainer(300, 300);
+      chart(element, {
+        data: { series: [1, 2] },
+        coordinates: 'polar',
+        padding: 0,
+        layers: [pie({ donut: true, showLabel: false })],
+        renderer
+      });
+      return element;
+    };
+    const radius = (element: Element) =>
+      element
+        .querySelector('path.ct-slice-donut')!
+        .getAttribute('d')!
+        .match(/A([\d.]+),/)![1];
+
+    it("passes the renderer's measureStyle the container and classes", () => {
+      const measureStyle = vi.fn(() => '20px');
+      const element = donut({ ...domRenderer(), measureStyle });
+      expect(measureStyle).toHaveBeenCalledWith('stroke-width', {
+        container: element,
+        rootClass: 'ct-chart-donut',
+        classes: ['ct-slice-donut']
+      });
+      expect(radius(element)).toBe('140');
+    });
+
+    it('lays out for a px stroke width from the stylesheet', () => {
+      const style = document.createElement('style');
+      style.textContent = '.ct-slice-donut { stroke-width: 20px; }';
+      document.body.appendChild(style);
+      expect(radius(donut())).toBe('140');
+    });
+
+    it('falls back to 60px when the value is not in px', () => {
+      // jsdom leaves var() unresolved in computed values.
+      const style = document.createElement('style');
+      style.textContent =
+        '.ct-slice-donut { stroke-width: var(--ct-donut-width, 60px); }';
+      document.body.appendChild(style);
+      expect(radius(donut())).toBe('120');
+      expect(
+        radius(donut({ ...domRenderer(), measureStyle: () => '25%' }))
+      ).toBe('120');
+      expect(radius(donut({ ...domRenderer(), measureStyle: undefined }))).toBe(
+        '120'
+      );
+    });
   });
 
   it('a responsive chart fills its container (100%)', () => {
@@ -396,5 +449,108 @@ describe('chart/chart', () => {
     vi.stubGlobal('ResizeObserver', undefined);
     const { element } = sizedContainer();
     expect(() => chart(element, { data, layers: [dots()] })).not.toThrow();
+  });
+
+  it('a detach() during the first render sticks', () => {
+    const resize = stubResizeObserver();
+    const fonts = new EventTarget();
+    Object.defineProperty(document, 'fonts', {
+      value: fonts,
+      configurable: true
+    });
+    try {
+      const { element, size } = sizedContainer();
+      let scenes = 0;
+      chart(element, {
+        data: { labels: ['Mon', 'Tue'], series: [[1, 2]] },
+        axes: cartesianAxes([
+          { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['Mon', 'Tue'] },
+          { id: 'y', side: 'left', type: autoScaleAxis() }
+        ]),
+        // SVG labels measure text, so they'd react to font loading.
+        layers: [axisLabels()],
+        labels: 'svg',
+        on: { scene: () => void scenes++ },
+        plugins: [
+          {
+            name: 'detach-on-mount',
+            install: handle => void handle.on('mount', () => handle.detach())
+          }
+        ]
+      });
+      expect(resize.active()).toBe(0);
+      size.width = 120;
+      resize.trigger();
+      fonts.dispatchEvent(new Event('loadingdone'));
+      expect(scenes).toBe(1);
+    } finally {
+      delete (document as unknown as { fonts?: unknown }).fonts;
+    }
+  });
+
+  it('a detach() while plugins install sticks', () => {
+    const resize = stubResizeObserver();
+    const { element } = sizedContainer();
+    const detaching: ChartPlugin = {
+      name: 'detaching',
+      install: handle => void handle.detach()
+    };
+    chart(element, { data, layers: [dots()], plugins: [detaching] });
+    expect(resize.active()).toBe(0);
+  });
+
+  describe('printing', () => {
+    const print = (element: Element, type: 'beforeprint' | 'afterprint') =>
+      element.ownerDocument.defaultView!.dispatchEvent(new Event(type));
+
+    it('gives the svg a viewBox of its layout size while printing', () => {
+      const { element } = sizedContainer(400, 200);
+      chart(element, { data, layers: [dots()], width: 400, height: 200 });
+      const svg = element.querySelector('svg')!;
+      expect(svg.hasAttribute('viewBox')).toBe(false);
+      print(element, 'beforeprint');
+      expect(svg.getAttribute('viewBox')).toBe('0 0 400 200');
+      print(element, 'afterprint');
+      expect(svg.hasAttribute('viewBox')).toBe(false);
+    });
+
+    it('keeps the viewBox on a render during printing', () => {
+      const { element } = sizedContainer(400, 200);
+      const handle = chart(element, {
+        data,
+        layers: [dots()],
+        width: 400,
+        height: 200
+      });
+      print(element, 'beforeprint');
+      handle.update({ width: 300 });
+      expect(element.querySelector('svg')!.getAttribute('viewBox')).toBe(
+        '0 0 300 200'
+      );
+      print(element, 'afterprint');
+      expect(element.querySelector('svg')!.hasAttribute('viewBox')).toBe(false);
+    });
+
+    it("leaves the config's viewBox alone", () => {
+      const { element } = sizedContainer(400, 200);
+      chart(element, {
+        data,
+        layers: [dots()],
+        viewBox: { width: 100, height: 50 }
+      });
+      const svg = element.querySelector('svg')!;
+      print(element, 'beforeprint');
+      expect(svg.getAttribute('viewBox')).toBe('0 0 100 50');
+      print(element, 'afterprint');
+      expect(svg.getAttribute('viewBox')).toBe('0 0 100 50');
+    });
+
+    it('a detached chart does not react', () => {
+      const { element } = sizedContainer(400, 200);
+      chart(element, { data, layers: [dots()] }).detach();
+      print(element, 'beforeprint');
+      expect(element.querySelector('svg')!.hasAttribute('viewBox')).toBe(false);
+      print(element, 'afterprint');
+    });
   });
 });

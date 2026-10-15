@@ -8,8 +8,5 @@ pieChart(
     labels: ['Agenda', 'Small talk', 'Decisions', 'Coffee'],
     series: [10, 25, 5, 20]
   },
-  {
-    donut: true,
-    donutWidth: 40
-  }
+  { donut: true }
 );

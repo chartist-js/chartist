@@ -3,7 +3,7 @@ import type { BarPresetState } from '../presets/barChart';
 import type { PiePresetState } from '../presets/pieChart';
 import type { RenderOutput } from '../render/types';
 import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
-import type { LabelMode, MeasureText } from '../render/measure';
+import type { LabelMode, MeasureStyle, MeasureText } from '../render/measure';
 import type { AxisExtent, CartesianAxes, ChartAxes } from '../scales/axis';
 import type { SceneNode } from '../scene/node';
 
@@ -97,7 +97,7 @@ export interface NormalizedChartData {
 
 /**
  * What a layer's `compose` gets: the data it draws, the area to draw in,
- * the axes and a way to measure text.
+ * the axes and ways to measure text and styles.
  */
 export interface LayerContext {
   /** The prepared data; only the layer's series when it selects some. */
@@ -115,6 +115,12 @@ export interface LayerContext {
    * page's fonts and the chart's classes), for layers that lay out labels.
    */
   readonly measureText: MeasureText;
+  /**
+   * Reads computed styles with the renderer (in the browser, with the
+   * page's CSS and the chart's classes), for layout that depends on the
+   * stylesheet, such as a donut's ring width. Absent without a DOM.
+   */
+  readonly measureStyle?: MeasureStyle;
   /** Axes created after `layout`, when the chart has axes. */
   readonly axes: ChartAxes;
   /** The data as the axes see it, when the chart has axes. */

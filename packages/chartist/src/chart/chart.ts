@@ -1,7 +1,11 @@
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline, type PipelineState } from '../pipeline/phases';
 import { domRenderer } from '../render/dom';
-import { estimateText, type MeasureText } from '../render/measure';
+import {
+  estimateText,
+  type MeasureStyle,
+  type MeasureText
+} from '../render/measure';
 import type { RenderOutput } from '../render/types';
 import type { ResponsiveWatcher } from '../responsive/responsive';
 import { withChartTypeClass } from './className';
@@ -42,7 +46,9 @@ function resolveTarget(target: string | Element): Element {
  * The chart fills its container unless the config sets a size, and renders
  * again when the container resizes, web fonts finish loading or the
  * matching `responsive` entries change. Listeners in `config.on` and
- * plugins receive the events of the first render too.
+ * plugins receive the events of the first render too. While the page is
+ * printed, the SVG gets a `viewBox` of its layout size (unless the config
+ * sets one), so the drawing scales into the box it gets in the print.
  *
  * Without `className`, the SVG gets the chart type class of its layers,
  * so the stylesheet's chart type rules apply: `ct-chart-bar` if a layer
@@ -108,6 +114,11 @@ export function chart(
       ? rendererMeasure(text, { container, ...options })
       : estimateText(text, options);
   };
+  // Styles for layout (a donut's ring width), read in the container too.
+  const rendererStyle = renderer.measureStyle;
+  const measureStyle: MeasureStyle | undefined =
+    rendererStyle &&
+    ((property, options) => rendererStyle(property, { container, ...options }));
   // The config as given, and with the matching responsive overrides.
   let current = config;
   let effective = config;
@@ -116,7 +127,11 @@ export function chart(
   let output: RenderOutput | undefined;
   let observer: ResizeObserver | undefined;
   let destroyed = false;
+  // Cleared by detach(), also when it's called during the first render.
+  let attached = true;
   const provided = new Set<string>();
+  // The container's window, which may be an iframe's or jsdom's.
+  const view = container.ownerDocument.defaultView;
   const fonts = container.ownerDocument.fonts as FontFaceSet | undefined;
   // Layout that measured text depends on font metrics, so it runs again
   // when web fonts finish loading. HTML labels reflow by themselves.
@@ -124,6 +139,33 @@ export function chart(
     if (!destroyed && state && measuredText) {
       render('layout');
     }
+  };
+
+  // While printing, the svg gets a viewBox of its layout size, so the
+  // drawing scales into the box print CSS gives it. Browsers don't reliably
+  // take a new layout at the print size into the print, but they do take
+  // changes made in `beforeprint`.
+  let printed: Element | undefined;
+  let printing = false;
+  function applyPrintViewBox() {
+    printed?.removeAttribute('viewBox');
+    printed = undefined;
+    if (!printing || effective.viewBox || !state || !output?.elementOf) {
+      return;
+    }
+    printed = output.elementOf(state.scene);
+    printed?.setAttribute(
+      'viewBox',
+      `0 0 ${state.layout.width} ${state.layout.height}`
+    );
+  }
+  const onBeforePrint = () => {
+    printing = true;
+    applyPrintViewBox();
+  };
+  const onAfterPrint = () => {
+    printing = false;
+    applyPrintViewBox();
   };
 
   /**
@@ -176,6 +218,7 @@ export function chart(
         width,
         height,
         measureText,
+        measureStyle,
         labels: renderer.labels ?? 'html',
         rootSize: {
           width: effective.width ?? '100%',
@@ -187,6 +230,9 @@ export function chart(
     );
     const { scene } = state;
     output = renderer.render(scene, container);
+    if (printing) {
+      applyPrintViewBox();
+    }
     emitter.notify('render', { scene, output });
     const elementOf = output.elementOf ?? (() => undefined);
     emitter.notify('mount', { scene, output, elementOf });
@@ -233,6 +279,10 @@ export function chart(
       return handle;
     },
     detach() {
+      attached = false;
+      view?.removeEventListener('beforeprint', onBeforePrint);
+      view?.removeEventListener('afterprint', onAfterPrint);
+      onAfterPrint();
       observer?.disconnect();
       observer = undefined;
       fonts?.removeEventListener('loadingdone', onFontsLoaded);
@@ -252,15 +302,15 @@ export function chart(
     ...eventMethods(emitter, () => handle, provided, scope)
   };
 
-  installPlugins(handle, config.plugins, provided, scope);
-  registerListeners(handle, config.on);
-  watch();
-  render('resolve');
-
+  // Subscribed before the plugins install and the first render, so a
+  // detach() from one of their listeners unsubscribes them.
   fonts?.addEventListener('loadingdone', onFontsLoaded);
+  view?.addEventListener('beforeprint', onBeforePrint);
+  view?.addEventListener('afterprint', onAfterPrint);
 
-  if (typeof ResizeObserver !== 'undefined') {
-    observer = new ResizeObserver(() => {
+  const Observer = view?.ResizeObserver ?? globalThis.ResizeObserver;
+  if (typeof Observer !== 'undefined') {
+    observer = new Observer(() => {
       if (destroyed || !state) {
         return;
       }
@@ -276,6 +326,15 @@ export function chart(
     });
     observer.observe(container);
   }
+
+  installPlugins(handle, config.plugins, provided, scope);
+  registerListeners(handle, config.on);
+  if (attached) {
+    watch();
+  } else {
+    resolveResponsive();
+  }
+  render('resolve');
 
   return handle;
 }

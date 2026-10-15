@@ -1,4 +1,5 @@
 import {
+  BarChart,
   StepAxis,
   autoScaleAxis,
   bar,
@@ -7,7 +8,7 @@ import {
   chart,
   stepAxis
 } from 'chartist';
-import { container } from './fixture.ts';
+import { container, created, withCompat } from './fixture.ts';
 
 const SIZE = { width: 400, height: 200 };
 
@@ -85,5 +86,47 @@ describe('composing a bar chart from parts', () => {
       ...SIZE
     });
     expect(el.querySelectorAll('.ct-series-a line.ct-bar')).toHaveLength(2);
+  });
+
+  describe('a chart-level low that empties the value range (#1057)', () => {
+    // 1.5.0 loops until the stack overflows on these options.
+    const data = {
+      labels: ['Q1', 'Q2', 'Q3'],
+      series: [{ data: [0.627] }, { data: [0] }, { data: [0] }]
+    };
+    const options = {
+      stackBars: true,
+      horizontalBars: true,
+      axisX: { onlyInteger: true },
+      axisY: { offset: 100 },
+      low: 0.627
+    };
+    const finiteBars = (el: Element) => {
+      const bars = Array.from(el.querySelectorAll('line.ct-bar'));
+      return (
+        bars.length > 0 &&
+        bars.every(bar =>
+          ['x1', 'x2', 'y1', 'y2'].every(name =>
+            Number.isFinite(Number(bar.getAttribute(name)))
+          )
+        )
+      );
+    };
+
+    test('barChart()', () => {
+      const el = container();
+      barChart(el, data, { ...SIZE, ...options });
+      expect(finiteBars(el)).toBe(true);
+    });
+
+    test('BarChart with the 1.x events', async () => {
+      const el = container();
+      const events: unknown[] = [];
+      const chart = new BarChart(el, data, withCompat({ ...SIZE, ...options }));
+      chart.on('draw', (event: unknown) => events.push(event));
+      await created(chart);
+      expect(finiteBars(el)).toBe(true);
+      expect(events.length).toBeGreaterThan(0);
+    });
   });
 });

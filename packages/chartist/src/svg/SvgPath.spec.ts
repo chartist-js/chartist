@@ -101,7 +101,7 @@ describe('Svg', () => {
 
     it('should parse complex path correctly', () => {
       const path = new SvgPath(false, {
-        accuracy: 0
+        accuracy: false
       }).parse(
         'M7.566371681415929,313.5870318472049L15.132743362831858,322.1479887268699L22.699115044247787,292.49058976570063L30.265486725663717,284.9469379116152L37.83185840707964,277.62070141556273L45.39823008849557,285.4043086222666L52.9646017699115,295.16905806058617L60.530973451327434,288.5395967440654L68.09734513274336,282.3023155078293L75.66371681415929,276.9420221519757L83.23008849557522,271.31296300227655L90.79646017699115,273.1827546735411L98.36283185840708,282.72148250847295L105.929203539823,276.55760703185683L113.49557522123892,278.16318930715545L121.06194690265487,279.67913384762466L128.6283185840708,296.53529757775897L136.1946902654867,324.4003397770142L143.76106194690263,317.1376004332516L151.32743362831857,323.3390406432677L158.89380530973452,328.5597479599146L166.46017699115043,329.67851354926904L174.02654867256635,327.71837583373326L181.5929203539823,335.05972598190976L189.15929203539824,334.29372633331286L196.72566371681415,332.68724934321176L204.29203539823007,330.6752327006325L211.858407079646,325.971917329413L219.42477876106196,328.13057177790404L226.99115044247785,309.6546479835954L234.5575221238938,310.6637826993739L242.12389380530973,310.65221523366176L249.69026548672568,318.40285733188773L257.2566371681416,298.18154267575227L264.8230088495575,307.4788389000347L272.3893805309734,304.189264255087L279.95575221238937,289.0288876874009L287.52212389380526,300.20654714775424L295.0884955752212,298.0164127652739L302.65486725663715,287.69192345832175L310.2212389380531,293.1860711045035L317.78761061946904,300.4760502113585L325.3539823008849,297.94852206276937L332.92035398230087,305.6594311405378L340.4867256637168,306.7859423144216L348.0530973451327,275.68998851331963L355.61946902654864,286.5550640745874L363.1858407079646,288.4952543187362L370.75221238938053,290.1896066608983L378.3185840707965,277.8447927515142L385.88495575221236,282.46018876596827L393.4513274336283,261.617847596371L401.01769911504425,265.06101027918726L408.58407079646014,264.60492966286677L416.1504424778761,252.35288845280365L423.716814159292,239.29220756750195L431.283185840708,229.73170018586225L438.8495575221239,224.1580859168795L446.41592920353986,217.20551113129414L453.9823008849557,212.63435660265037L461.54867256637164,210.4425212857057L469.1150442477876,201.0077146146342L476.6814159292035,182.3934004122068L484.24778761061947,176.98732946386616L491.8141592920354,175.3660655079267L499.38053097345136,181.1589144624976L506.9469026548673,172.81581557677976L514.5132743362832,177.82343674256106L522.079646017699,183.5573714672562L529.646017699115,184.4980688436067L537.2123893805309,201.60789339862924L544.7787610619469,193.42268767053048L552.3451327433628,209.9219909677575L559.9115044247787,221.1318944868172L567.4778761061947,222.47350026973174L575.0442477876105,229.94061399967882L582.6106194690265,213.57676800697396L590.1769911504424,232.97280246785252L597.7433628318583,232.8915724787845L605.3097345132743,231.486089735319L612.8761061946902,234.26534000120475L620.4424778761062,219.90951817170736L628.0088495575221,214.36149678900725L635.5752212389381,204.7245641444236L643.1415929203539,205.04759319834227L650.7079646017698,178.61624621480792L658.2743362831858,174.30656351022486L665.8407079646017,194.06864637030463L673.4070796460177,191.38404795482728L680.9734513274336,188.88380371217903L688.5398230088496,182.47430260433697L696.1061946902654,192.70175438596493L703.6725663716813,182.37945067166908L711.2389380530973,163.80499447227572L718.8053097345132,157.4839718811134L726.3716814159292,149.57403342725343L733.9380530973451,142.6076734278762L741.5044247787611,144.9954413314636L749.070796460177,152.29112878815386L756.637168141593,150.02544379977235L764.2035398230088,139.40203164917125L771.7699115044247,149.22935357717972L779.3362831858407,155.78116263659354L786.9026548672566,145.09966219897575L794.4690265486726,157.52407467202426L802.0353982300885,147.01645902195105L809.6017699115044,141.8658056183404L817.1681415929203,134.36135158737966L824.7345132743362,127.49269525433283L832.3008849557522,120.25886939571154L839.8672566371681,118.26230310074709L847.433628318584,98.76959064327474'
       );
@@ -202,6 +202,160 @@ describe('Svg', () => {
       expect(paths.pathElements[0].y).toBe(10);
       expect(paths.pathElements[1].x).toBe(-100);
       expect(paths.pathElements[1].y).toBe(-100);
+    });
+
+    describe('accuracy (#1491)', () => {
+      it('rounds to integers with 0', () => {
+        expect(
+          new SvgPath(false, { accuracy: 0 }).move(0.4, 0.6).stringify()
+        ).toBe('M0,1');
+      });
+
+      it('keeps the decimals with false', () => {
+        expect(
+          new SvgPath(false, { accuracy: false }).move(0.4, 0.6).stringify()
+        ).toBe('M0.4,0.6');
+      });
+
+      it('rounds to 3 decimals by default', () => {
+        expect(new SvgPath().move(0.12345, 1).stringify()).toBe('M0.123,1');
+      });
+    });
+
+    describe('splitByCommand (#1491)', () => {
+      it('keeps the options and closes only the last piece', () => {
+        const source = new SvgPath(true, { accuracy: 1 }).parse(
+          'M0.123,0L1,1M2,2L3.456,3'
+        );
+        const pieces = source.splitByCommand('M');
+        expect(pieces.map(piece => piece.stringify())).toEqual([
+          'M0.1,0L1,1',
+          'M2,2L3.5,3Z'
+        ]);
+        expect(pieces.map(piece => piece.stringify()).join('')).toBe(
+          source.stringify()
+        );
+      });
+
+      it('copies the commands', () => {
+        const source = new SvgPath().parse('M0,0L1,1');
+        const [piece] = source.splitByCommand('M');
+        piece.pathElements[1].x = 42;
+        expect(source.stringify()).toBe('M0,0L1,1');
+      });
+
+      it('appends at the end of a piece', () => {
+        const [piece] = new SvgPath().parse('M0,0L1,1').splitByCommand('M');
+        expect(piece.position()).toBe(2);
+        expect(piece.line(2, 2).stringify()).toBe('M0,0L1,1L2,2');
+      });
+
+      it('splits at relative commands too', () => {
+        const pieces = new SvgPath()
+          .parse('m0,0l1,1m2,2l3,3')
+          .splitByCommand('m');
+        expect(pieces.map(piece => piece.stringify())).toEqual([
+          'm0,0l1,1',
+          'm2,2l3,3'
+        ]);
+      });
+    });
+
+    describe('join (#1491)', () => {
+      it('copies the commands', () => {
+        const source = new SvgPath().move(0, 0).line(1, 1);
+        const joined = SvgPath.join([source]);
+        joined.pathElements[1].x = 42;
+        expect(source.stringify()).toBe('M0,0L1,1');
+        expect(joined.stringify()).toBe('M0,0L42,1');
+      });
+
+      it('appends at the end of the joined path', () => {
+        const joined = SvgPath.join([
+          new SvgPath().move(0, 0),
+          new SvgPath().move(1, 1)
+        ]);
+        expect(joined.position()).toBe(2);
+        expect(joined.line(5, 5).stringify()).toBe('M0,0M1,1L5,5');
+      });
+    });
+
+    describe('parse (#1491)', () => {
+      it('round-trips H, V, Q, S and T', () => {
+        const d = 'M0,0H10V20h-5v-5Q1,2,3,4q1,2,3,4S5,6,7,8s5,6,7,8T9,10t9,10';
+        expect(new SvgPath().parse(d).stringify()).toBe(d);
+      });
+
+      it('keeps a Z inside the path and drops the one at the end', () => {
+        expect(new SvgPath().parse('M0,0L1,1ZM2,2L3,3z').stringify()).toBe(
+          'M0,0L1,1ZM2,2L3,3'
+        );
+      });
+
+      it('reads exponents, signs and numbers without separators', () => {
+        expect(
+          new SvgPath(false, { accuracy: false })
+            .parse('M1e-3,+2E2L1-2L.5.5l-.5-1.5e1')
+            .stringify()
+        ).toBe('M0.001,200L1,-2L0.5,0.5l-0.5,-15');
+      });
+
+      it('reads implicit repeats, as lines after a move', () => {
+        expect(new SvgPath().parse('M0,0 10,10 20,0').stringify()).toBe(
+          'M0,0L10,10L20,0'
+        );
+        expect(new SvgPath().parse('m0,0 10,10').stringify()).toBe(
+          'm0,0l10,10'
+        );
+        expect(
+          new SvgPath()
+            .parse('L1,1 2,2 C1,2,3,4,5,6 7,8,9,10,11,12')
+            .stringify()
+        ).toBe('L1,1L2,2C1,2,3,4,5,6C7,8,9,10,11,12');
+      });
+
+      it('reads arc flags written together', () => {
+        expect(new SvgPath().parse('M0,0A10,10,0,1120,0').stringify()).toBe(
+          'M0,0A10,10,0,1,1,20,0'
+        );
+      });
+
+      it('throws on invalid syntax', () => {
+        expect(() => new SvgPath().parse('M0,0L1')).toThrow(/Invalid SVG path/);
+        expect(() => new SvgPath().parse('X0,0')).toThrow(/Invalid SVG path/);
+        expect(() => new SvgPath().parse('M0,0L1,1x')).toThrow(
+          /Invalid SVG path/
+        );
+      });
+
+      it('parses an empty path to no commands', () => {
+        expect(new SvgPath().parse('').pathElements).toEqual([]);
+        expect(new SvgPath().parse('  ').pathElements).toEqual([]);
+      });
+    });
+
+    describe('arcs (#1491)', () => {
+      const arc = () => new SvgPath().move(0, 0).arc(10, 20, 30, 0, 1, 40, 0);
+
+      it('scales the radii along their axes and leaves rotation and flags', () => {
+        expect(arc().scale(2, 3).stringify()).toBe('M0,0A20,60,30,0,1,80,0');
+      });
+
+      it('translates the end point and leaves radii, rotation and flags', () => {
+        expect(arc().translate(5, 5).stringify()).toBe(
+          'M5,5A10,20,30,0,1,45,5'
+        );
+      });
+
+      it('scales and translates H and V along their axis', () => {
+        expect(
+          new SvgPath()
+            .parse('M0,0H10V20')
+            .scale(2, 3)
+            .translate(1, 1)
+            .stringify()
+        ).toBe('M1,1H21V61');
+      });
     });
   });
 });

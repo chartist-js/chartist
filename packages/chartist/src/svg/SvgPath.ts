@@ -2,22 +2,119 @@ import type { SegmentData } from '../core';
 import type { SvgPathOptions, PathCommand, PathParams } from './types';
 
 /**
- * Contains the descriptors of supported element types in a SVG path. Currently only move, line and curve are supported.
+ * The parameters of each SVG path command, in the order the `d` attribute
+ * lists them. `Z` has none.
  */
 const elementDescriptions: Record<string, string[]> = {
   m: ['x', 'y'],
   l: ['x', 'y'],
+  h: ['x'],
+  v: ['y'],
   c: ['x1', 'y1', 'x2', 'y2', 'x', 'y'],
-  a: ['rx', 'ry', 'xAr', 'lAf', 'sf', 'x', 'y']
+  s: ['x2', 'y2', 'x', 'y'],
+  q: ['x1', 'y1', 'x', 'y'],
+  t: ['x', 'y'],
+  a: ['rx', 'ry', 'xAr', 'lAf', 'sf', 'x', 'y'],
+  z: []
+};
+
+/**
+ * The axis each parameter is scaled along. An arc's rotation and flags
+ * aren't coordinates, so they're left out.
+ */
+const scaleAxes: Record<string, 'x' | 'y'> = {
+  x: 'x',
+  x1: 'x',
+  x2: 'x',
+  rx: 'x',
+  y: 'y',
+  y1: 'y',
+  y2: 'y',
+  ry: 'y'
+};
+
+/** The axis each parameter is translated along: the points, not an arc's radii. */
+const translateAxes: Record<string, 'x' | 'y'> = {
+  x: 'x',
+  x1: 'x',
+  x2: 'x',
+  y: 'y',
+  y1: 'y',
+  y2: 'y'
 };
 
 /**
  * Default options for newly created SVG path objects.
  */
-const defaultOptions = {
-  // The accuracy in digit count after the decimal point. This will be used to round numbers in the SVG path. If this option is set to false then no rounding will be performed.
+const defaultOptions: Required<SvgPathOptions> = {
+  // The decimals numbers are rounded to; `false` doesn't round.
   accuracy: 3
 };
+
+const commandPattern = /[MmZzLlHhVvCcSsQqTtAa]/y;
+const numberPattern = /[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?/y;
+const flagPattern = /[01]/y;
+const separatorPattern = /[\s,]*/y;
+
+/**
+ * Reads the commands of an SVG path's `d`: numbers with signs and exponents,
+ * numbers without separators (`.5.5`, `1-2`), arc flags written together, and
+ * implicit repeats of a command (after a move, as lines).
+ */
+function parseCommands(path: string): PathCommand[] {
+  let index = 0;
+  const read = (pattern: RegExp) => {
+    separatorPattern.lastIndex = index;
+    separatorPattern.exec(path);
+    pattern.lastIndex = separatorPattern.lastIndex;
+    const match = pattern.exec(path);
+    if (match) {
+      index = pattern.lastIndex;
+    }
+    return match?.[0];
+  };
+  const fail = (): never => {
+    throw new Error(
+      `Invalid SVG path at position ${index}: "${path.slice(index, index + 20)}"`
+    );
+  };
+
+  const commands: PathCommand[] = [];
+  let command = read(commandPattern) ?? (path.trim() ? fail() : undefined);
+  while (command) {
+    const names = elementDescriptions[command.toLowerCase()];
+    const params: Record<string, number> = {};
+    for (const name of names) {
+      const value = read(
+        name === 'lAf' || name === 'sf' ? flagPattern : numberPattern
+      );
+      params[name] = value === undefined ? fail() : +value;
+    }
+    commands.push({ command, ...params } as PathCommand);
+
+    const next = read(commandPattern);
+    if (next) {
+      command = next;
+      continue;
+    }
+    // A number without a command letter repeats the command; after a move it's a line.
+    separatorPattern.lastIndex = index;
+    separatorPattern.exec(path);
+    index = separatorPattern.lastIndex;
+    if (index >= path.length) {
+      break;
+    }
+    if (names.length === 0) {
+      fail();
+    }
+    numberPattern.lastIndex = index;
+    if (!numberPattern.test(path)) {
+      fail();
+    }
+    command = command === 'M' ? 'L' : command === 'm' ? 'l' : command;
+  }
+  return commands;
+}
 
 function element(
   command: string,
@@ -85,8 +182,8 @@ function forEachParam<T extends PathParams = PathParams>(
  */
 export class SvgPath {
   /**
-   * Joins paths into a new path, in the order given. The new path shares
-   * the commands of the paths (they aren't copied).
+   * Joins paths into a new path, in the order given. The new path gets
+   * copies of the commands, and its cursor is at the end.
    * @param paths A list of paths to be joined together. The order is important.
    * @param close If the newly created path should be a closed path
    * @param options Path options for the newly created path.
@@ -96,9 +193,10 @@ export class SvgPath {
     for (let i = 0; i < paths.length; i++) {
       const path = paths[i];
       for (let j = 0; j < path.pathElements.length; j++) {
-        joinedPath.pathElements.push(path.pathElements[j]);
+        joinedPath.pathElements.push({ ...path.pathElements[j] });
       }
     }
+    joinedPath.pos = joinedPath.pathElements.length;
     return joinedPath;
   }
 
@@ -278,50 +376,19 @@ export class SvgPath {
    * Parses the `d` of an SVG path and inserts its commands at the cursor. A
    * closing `Z` at the end is dropped: the `close` of the path object decides
    * that.
-   * @param path An SVG path of move (`M`), line (`L`), curve (`C`) and arc (`A`) commands, absolute or relative.
+   * @param path An SVG path of any commands (`M`, `L`, `H`, `V`, `C`, `S`, `Q`, `T`, `A`, `Z`), absolute or relative.
    * @return The current path object for easy call chaining.
+   * @throws An `Error` if the path isn't valid SVG path syntax.
    */
   parse(path: string) {
-    // Parsing the SVG path string into an array of arrays [['M', '10', '10'], ['L', '100', '100']]
-    const chunks = path
-      .replace(/([A-Za-z])(-?[0-9])/g, '$1 $2')
-      .replace(/([0-9])([A-Za-z])/g, '$1 $2')
-      .split(/[\s,]+/)
-      .reduce<string[][]>((result, pathElement) => {
-        if (pathElement.match(/[A-Za-z]/)) {
-          result.push([]);
-        }
+    const elements = parseCommands(path);
 
-        result[result.length - 1].push(pathElement);
-        return result;
-      }, []);
-
-    // If this is a closed path we remove the Z at the end because this is determined by the close option
-    if (chunks[chunks.length - 1][0].toUpperCase() === 'Z') {
-      chunks.pop();
+    // The path's own `close` decides about a closing Z at the end.
+    if (elements.at(-1)?.command.toUpperCase() === 'Z') {
+      elements.pop();
     }
 
-    // Using svgPathElementDescriptions to map raw path arrays into objects that contain the command and the parameters
-    // For example {command: 'M', x: '10', y: '10'}
-    const elements = chunks.map(chunk => {
-      const command = chunk.shift() as string;
-      const description = elementDescriptions[command.toLowerCase()];
-
-      return {
-        command,
-        ...description.reduce<Record<string, number>>(
-          (result, paramName, index) => {
-            result[paramName] = +chunk[index];
-            return result;
-          },
-          {}
-        )
-      } as PathCommand;
-    });
-
-    // Preparing a splice call with the elements array as var arg params and insert the parsed elements at the current position
     this.pathElements.splice(this.pos, 0, ...elements);
-    // Increase the internal position by the element count
     this.pos += elements.length;
 
     return this;
@@ -329,11 +396,12 @@ export class SvgPath {
 
   /**
    * Writes the path as a string for the `d` attribute of a `path` element.
-   * Numbers are rounded to the `accuracy` option's decimals (no rounding
-   * with `0`), and a closed path ends with `Z`.
+   * Numbers are rounded to the `accuracy` option's decimals (to integers
+   * with `0`, not at all with `false`), and a closed path ends with `Z`.
    */
   stringify() {
-    const accuracyMultiplier = Math.pow(10, this.options.accuracy);
+    const { accuracy } = this.options;
+    const accuracyMultiplier = Math.pow(10, accuracy || 0);
 
     return (
       this.pathElements.reduce((path, pathElement) => {
@@ -342,7 +410,7 @@ export class SvgPath {
         ].map(paramName => {
           const value = pathElement[paramName as keyof PathCommand] as number;
 
-          return this.options.accuracy
+          return typeof accuracy === 'number'
             ? Math.round(value * accuracyMultiplier) / accuracyMultiplier
             : value;
         });
@@ -353,27 +421,33 @@ export class SvgPath {
   }
 
   /**
-   * Scales all elements in the current SVG path object. There is an individual parameter for each coordinate. Scaling will also be done for control points of curves, affecting the given coordinate.
-   * @param x The number which will be used to scale the x, x1 and x2 of all path elements.
-   * @param y The number which will be used to scale the y, y1 and y2 of all path elements.
+   * Scales all elements in the current SVG path object. There is an individual parameter for each coordinate. Scaling will also be done for control points of curves and the radii of arcs, affecting the given coordinate; an arc's rotation and flags stay as they are.
+   * @param x The number which will be used to scale the x, x1, x2 and rx of all path elements.
+   * @param y The number which will be used to scale the y, y1, y2 and ry of all path elements.
    * @return The current path object for easy call chaining.
    */
   scale(x: number, y: number) {
     forEachParam(this.pathElements, (pathElement, paramName) => {
-      pathElement[paramName] *= paramName[0] === 'x' ? x : y;
+      const axis = scaleAxes[paramName as string];
+      if (axis) {
+        pathElement[paramName] *= axis === 'x' ? x : y;
+      }
     });
     return this;
   }
 
   /**
-   * Translates all elements in the current SVG path object. The translation is relative and there is an individual parameter for each coordinate. Translation will also be done for control points of curves, affecting the given coordinate.
+   * Translates all elements in the current SVG path object. The translation is relative and there is an individual parameter for each coordinate. Translation will also be done for control points of curves, affecting the given coordinate; an arc's radii, rotation and flags stay as they are.
    * @param x The number which will be used to translate the x, x1 and x2 of all path elements.
    * @param y The number which will be used to translate the y, y1 and y2 of all path elements.
    * @return The current path object for easy call chaining.
    */
   translate(x: number, y: number) {
     forEachParam(this.pathElements, (pathElement, paramName) => {
-      pathElement[paramName] += paramName[0] === 'x' ? x : y;
+      const axis = translateAxes[paramName as string];
+      if (axis) {
+        pathElement[paramName] += axis === 'x' ? x : y;
+      }
     });
     return this;
   }
@@ -431,24 +505,35 @@ export class SvgPath {
 
   /**
    * Splits the path into new paths, each starting at the given command,
-   * such as `'M'` to get the separate pieces of a line with holes. The new
-   * paths share the commands, are open and have the default options.
+   * such as `'M'` to get the separate pieces of a line with holes. The
+   * letter matches absolute and relative commands. The pieces get copies of
+   * the commands and the path's options, with their cursor at the end; the
+   * last piece is closed if the path is.
    * @param command The command letter to split at.
    */
   splitByCommand(command: string) {
-    const split = [new SvgPath()];
+    const letter = command.toUpperCase();
+    const pieces: PathCommand[][] = [[]];
 
     this.pathElements.forEach(pathElement => {
       if (
-        pathElement.command === command.toUpperCase() &&
-        split[split.length - 1].pathElements.length !== 0
+        pathElement.command.toUpperCase() === letter &&
+        pieces[pieces.length - 1].length !== 0
       ) {
-        split.push(new SvgPath());
+        pieces.push([]);
       }
 
-      split[split.length - 1].pathElements.push(pathElement);
+      pieces[pieces.length - 1].push({ ...pathElement });
     });
 
-    return split;
+    return pieces.map((pathElements, index) => {
+      const piece = new SvgPath(
+        this.close && index === pieces.length - 1,
+        this.options
+      );
+      piece.pathElements = pathElements;
+      piece.pos = pathElements.length;
+      return piece;
+    });
   }
 }

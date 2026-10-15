@@ -8,6 +8,8 @@ import {
 import { classesOf, container, created, withCompat } from './fixture.ts';
 
 const CT_NS = 'http://gionkunz.github.com/chartist-js/ct';
+// chartist@1.5.0 has the lifecycle bugs some tests below check are fixed.
+const V1 = process.env.CHARTIST_API_TARGET === 'v1';
 
 describe('chart creation', () => {
   test('accepts a selector or an element as target', async () => {
@@ -29,14 +31,19 @@ describe('chart creation', () => {
     }
   });
 
-  test('throws when the selector matches nothing', () => {
-    // 1.5 schedules the first render before the constructor throws, and that
-    // render then fails without a container. Fake timers keep it from firing.
+  test('throws when the selector matches nothing, and nothing runs afterwards', () => {
     vi.useFakeTimers();
     try {
       expect(
         () => new LineChart('#nope', { series: [] }, withCompat())
       ).toThrow('Target element "#nope" is not found');
+      if (V1) {
+        // 1.5 schedules the first render before the constructor throws, and
+        // that render then fails without a container.
+        vi.clearAllTimers();
+      } else {
+        expect(() => vi.runAllTimers()).not.toThrow();
+      }
     } finally {
       vi.clearAllTimers();
       vi.useRealTimers();
@@ -293,5 +300,38 @@ describe('update and detach', () => {
     chart.detach();
     window.dispatchEvent(new Event('resize'));
     expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  test('a detach() from the first created listener sticks (#929)', async () => {
+    // Container resizing: the observers still observing afterwards.
+    let observed = 0;
+    let observing = 0;
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe = () => {
+          observed++;
+          observing++;
+        };
+        unobserve = () => undefined;
+        disconnect = () => void observing--;
+      }
+    );
+    try {
+      const el = container();
+      const chart = new LineChart(el, { series: [[1]] }, withCompat());
+      const listener = vi.fn(() => chart.detach());
+      chart.on('created', listener);
+      await vi.waitFor(() => expect(listener).toHaveBeenCalledTimes(1));
+
+      window.dispatchEvent(new Event('resize'));
+      // 1.5 keeps its resize listener (#929).
+      expect(listener).toHaveBeenCalledTimes(V1 ? 2 : 1);
+      // 1.5 doesn't observe its container.
+      expect(observed).toBe(V1 ? 0 : 1);
+      expect(observing).toBe(0);
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

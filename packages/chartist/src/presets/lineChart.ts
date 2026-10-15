@@ -103,7 +103,9 @@ function axesConfig(options: Resolved): AxesConfig {
           ...axisY,
           type: autoScaleAxis(),
           high: isNumeric(options.high) ? options.high : axisY.high,
-          low: isNumeric(options.low) ? options.low : axisY.low
+          low: isNumeric(options.low) ? options.low : axisY.low,
+          // As for bars, the axis's own reference value wins.
+          referenceValue: axisY.referenceValue ?? options.referenceValue
         }
       : { ...axisY, type: axisY.type };
   return { x, y, reverseData: options.reverseData };

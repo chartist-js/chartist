@@ -5,12 +5,15 @@ import {
   chart,
   container,
   line,
+  LineChart,
   lineChart,
   responsive,
   stepAxis,
   toScene
 } from 'chartist';
-import { container as element } from './fixture.ts';
+import { compat } from 'chartist/compat';
+import { JSDOM } from 'jsdom';
+import { created, container as element, mockMedia } from './fixture.ts';
 
 const NARROW = '(width < 400px)';
 const data = { labels: ['a', 'b'], series: [[1, 2]] };
@@ -142,6 +145,70 @@ describe('container conditions (v2)', () => {
       expect(JSON.stringify(scene)).toContain('foreignObject');
     } finally {
       fake.uninstall();
+    }
+  });
+});
+
+describe('media queries in the container window (v2)', () => {
+  const QUERY = '(max-width: 640px)';
+
+  /**
+   * A container in another window (like an iframe's) whose media query
+   * matches, while the main window's doesn't (the setup's mock).
+   */
+  function frameContainer() {
+    const { window: frame } = new JSDOM('<div></div>');
+    frame.matchMedia = ((query: string) => ({
+      media: query,
+      matches: query === QUERY,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined
+    })) as unknown as typeof frame.matchMedia;
+    expect(window.matchMedia(QUERY).matches).toBe(false);
+    return frame.document.querySelector('div')!;
+  }
+
+  test('lineChart uses the override of the container window (#1492)', () => {
+    const el = frameContainer();
+    lineChart(el, data, { width: 300, height: 200 }, [
+      [QUERY, { showPoint: false }]
+    ]).detach();
+    expect(el.querySelector('.ct-line')).not.toBeNull();
+    expect(el.querySelectorAll('.ct-point')).toHaveLength(0);
+  });
+
+  test('a 1.x class uses the override of the container window (#1492)', async () => {
+    const el = frameContainer();
+    const legacy = new LineChart(
+      el,
+      data,
+      { width: 300, height: 200, plugins: [compat] },
+      [[QUERY, { showPoint: false }]]
+    );
+    await created(legacy);
+    expect(el.querySelector('.ct-line')).not.toBeNull();
+    expect(el.querySelectorAll('.ct-point')).toHaveLength(0);
+  });
+});
+
+// chartist@1.5.0 throws "Cannot create property 'top' on number '10'".
+describe('a responsive object over a numeric option (#903)', () => {
+  test('replaces the number', () => {
+    const media = mockMedia(['screen']);
+    try {
+      const el = element();
+      lineChart(el, data, { width: 300, height: 200, chartPadding: 10 }, [
+        ['screen', { chartPadding: { top: 3 } }]
+      ]);
+      expect(el.querySelectorAll('.ct-line')).toHaveLength(1);
+      // The grid starts at the override's top.
+      const ys = Array.from(
+        el.querySelectorAll('line.ct-grid.ct-horizontal'),
+        l => Number(l.getAttribute('y1'))
+      );
+      expect(ys[0]).toBe(3);
+    } finally {
+      media.restore();
     }
   });
 });

@@ -64,12 +64,14 @@ export class Svg {
     parent?: Svg,
     insertFirst = false
   ) {
-    // If Svg is getting called with an SVG element we just return the wrapper
-    if (name instanceof Element) {
+    // An element is wrapped. Tested by kind, not with `instanceof Element`,
+    // which fails for elements of another window and without DOM globals.
+    if (typeof name !== 'string') {
       this._node = name;
     } else {
       // In the parent's document, so elements can be added to an iframe's
-      // or a jsdom document's chart (see #1424).
+      // or a jsdom document's chart (see #1424). Without a parent, in the
+      // global document.
       this._node = (parent?._node.ownerDocument ?? document).createElementNS(
         namespaces.svg,
         name
@@ -160,8 +162,10 @@ export class Svg {
    * @returns The parent in a new `Svg`, or `null` if there is none or it isn't an SVG element.
    */
   parent() {
-    return this._node.parentNode instanceof SVGElement
-      ? new Svg(this._node.parentNode)
+    // What `instanceof SVGElement` tests, for elements of any window.
+    const parent = this._node.parentNode as Element | null;
+    return parent?.nodeType === 1 && parent.namespaceURI === namespaces.svg
+      ? new Svg(parent)
       : null;
   }
 
@@ -233,11 +237,6 @@ export class Svg {
       contentNode = container.firstChild as Node;
     } else {
       contentNode = content;
-    }
-
-    if (contentNode instanceof Element) {
-      // Adding namespace to content element
-      contentNode.setAttribute('xmlns', namespaces.xmlns);
     }
 
     // Creating the foreignObject without required extension attribute (as described here

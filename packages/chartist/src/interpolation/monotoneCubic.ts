@@ -1,4 +1,4 @@
-import type { SegmentData } from '../core';
+import type { Segment, SegmentData } from '../core';
 import { splitIntoSegments } from '../core';
 import { SvgPath } from '../svg';
 import { none } from './none';
@@ -13,13 +13,42 @@ export interface MonotoneCubicInterpolationOptions {
 }
 
 /**
+ * Splits a segment where x repeats or changes direction. The curve needs
+ * strictly monotonic x within a piece, in either direction: a decreasing
+ * piece gives the same curve as its points in increasing order.
+ */
+function splitByDirection(segment: Segment): Segment[] {
+  const { pathCoordinates, valueData } = segment;
+  const pieces: Segment[] = [];
+  let direction = 0;
+
+  for (let i = 0; i < pathCoordinates.length; i += 2) {
+    const dx = i >= 2 ? pathCoordinates[i] - pathCoordinates[i - 2] : 0;
+    const sign = Math.sign(dx);
+
+    if (i === 0 || sign === 0 || (direction !== 0 && sign !== direction)) {
+      pieces.push({ pathCoordinates: [], valueData: [] });
+      direction = 0;
+    } else {
+      direction = sign;
+    }
+
+    const piece = pieces[pieces.length - 1];
+    piece.pathCoordinates.push(pathCoordinates[i], pathCoordinates[i + 1]);
+    piece.valueData.push(valueData[i / 2]);
+  }
+
+  return pieces;
+}
+
+/**
  * Smooths a line with a monotone cubic spline: a smooth curve through
  * every point that never swings above or below the values around it. It's
  * what `lineSmooth: true` uses.
  *
- * The x values have to increase from point to point: where one doesn't,
- * the line breaks. With two points or fewer, the line is straight, as with
- * {@link Interpolation.none}.
+ * The x values have to keep one direction, increasing or decreasing:
+ * where an x value repeats or turns back, the line breaks. With two points
+ * or fewer, the line is straight, as with {@link Interpolation.none}.
  *
  * @example
  * ```ts
@@ -48,9 +77,8 @@ export function monotoneCubic(options?: MonotoneCubicInterpolationOptions) {
     // First we try to split the coordinates into segments
     // This is necessary to treat "holes" in line charts
     const segments = splitIntoSegments(pathCoordinates, valueData, {
-      fillHoles: finalOptions.fillHoles,
-      increasingX: true
-    });
+      fillHoles: finalOptions.fillHoles
+    }).flatMap(splitByDirection);
 
     if (!segments.length) {
       // If there were no segments return 'Chartist.Interpolation.none'

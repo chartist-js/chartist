@@ -131,5 +131,30 @@ describe('Axes', () => {
         (labelGroup.querySelectorAll('.ct-label') as any).svgElements.length
       ).toBe(2);
     });
+
+    it('sizes a label by a next tick at position 0 (#1471)', () => {
+      // Positions relative to the axis start: the first tick lies below the
+      // range, the next one at its start.
+      class OffsetAxis extends Axis {
+        projectValue(value: number) {
+          return (value - 10) * 20;
+        }
+      }
+      chartOptions.axisX.labelInterpolationFnc = (value: number) => value;
+      const axis = new OffsetAxis(axisUnits.x, chartRect, [0, 10, 20, 30]);
+
+      axis.createGridAndLabels(
+        gridGroup,
+        labelGroup,
+        chartOptions,
+        eventEmitter
+      );
+      const widths = Array.from(
+        labelGroup.getNode().querySelectorAll('foreignObject'),
+        label => Number(label.getAttribute('width'))
+      );
+      // The last label gets the rest of the axis, at least a quarter of it.
+      expect(widths).toEqual([200, 200, 200, 100]);
+    });
   });
 });

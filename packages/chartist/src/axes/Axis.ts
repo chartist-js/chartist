@@ -94,7 +94,7 @@ export abstract class Axis {
       // TODO: Find better solution for solving this problem
       // Calculate how much space we have available for the label
       let labelLength;
-      if (projectedValues[index + 1]) {
+      if (index + 1 < projectedValues.length) {
         // If we still have one label ahead, we can calculate the distance to the next tick / label
         labelLength = projectedValues[index + 1] - projectedValue;
       } else {

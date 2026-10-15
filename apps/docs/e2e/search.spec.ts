@@ -74,8 +74,11 @@ test('works with the keyboard alone', async ({ page }) => {
 
 test('says so when nothing matches', async ({ page }) => {
   await page.goto('/docs/getting-started/');
-  await search(page, 'qwqwqw');
-  await expect(page.getByText(/Nothing found for “qwqwqw”/)).toBeVisible();
+  // Pagefind matches a one-letter word in the index against a query that
+  // starts with it (the docs have "J", "Q" and other path command letters),
+  // so the query starts with a letter that never stands alone.
+  await search(page, 'fpfpfp');
+  await expect(page.getByText(/Nothing found for “fpfpfp”/)).toBeVisible();
   await expect(results(page)).toBeHidden();
 });
 

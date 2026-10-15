@@ -47,7 +47,7 @@ export type PathParams = MoveParams | LineParams | CurveParams | ArcParams;
 
 /** A command of an {@link SvgPath}: its letter, its parameters and the data of its point. */
 export type PathCommand<T extends PathParams = PathParams> = {
-  /** The command letter: `M`, `L`, `C` or `A` (lowercase when relative). */
+  /** The command letter: `M`, `L`, `C` or `A`, or from a parsed path also `H`, `V`, `S`, `Q`, `T` or `Z` (lowercase when relative). */
   command: string;
   /** The value of the chart point the command draws to, if any. */
   data?: SegmentData;
@@ -55,8 +55,11 @@ export type PathCommand<T extends PathParams = PathParams> = {
 
 /** The options of an {@link SvgPath}. */
 export interface SvgPathOptions {
-  /** The decimals numbers are rounded to when the path is stringified; `0` doesn't round. */
-  accuracy?: number;
+  /**
+   * The decimals numbers are rounded to when the path is stringified: `0`
+   * rounds to integers, `false` doesn't round.
+   */
+  accuracy?: number | false;
 }
 
 /**

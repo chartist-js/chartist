@@ -33,7 +33,7 @@ The classes are still there, imported the same way, with the same constructor ar
   example='coming-from-1x/class-api'
 />
 
-- **`LineChart`, `BarChart` and `PieChart`** from `chartist`, with `update(data, options, override)`, `detach()`, `on()` and `off()`. The first render still happens on the next tick, and charts still redraw when the window resizes.
+- **`LineChart`, `BarChart` and `PieChart`** from `chartist`, with `update(data, options, override)`, `detach()`, `on()` and `off()`. The first render still happens on the next tick, and charts still redraw when the window resizes, and now also when their container does.
 - **Every other 1.x export**, from `chartist` and from the UMD global: `Svg`, `SvgList`, `SvgPath`, `easings`, `Interpolation`, the axis classes, `EventEmitter`, the helpers and the types (`LineChartData`, `BarChartOptions` and the rest). None of them was removed. The classes and what only they use are [deprecated](#deprecated-in-2x-removed-in-30), and still work through all of 2.x.
 - **The look.** Same class names, same default styles. v2 is tested against screenshots of 1.5.0, and the default stylesheet matches them.
 - **Your stylesheet imports.** `chartist/dist/index.css` and the Sass entry `chartist/dist/index.scss` are still in the package. The new short path is `chartist/styles.css`:
@@ -133,15 +133,15 @@ The data, the options and the media query pairs in `responsiveOptions` stay as t
 
 `lineChart()` returns a small handle instead of a class instance:
 
-| 1.x class                                  | v2 function                                                                      |
-| ------------------------------------------ | -------------------------------------------------------------------------------- |
-| First render on the next tick              | Renders right away, before the call returns                                      |
-| Redraws when the window resizes            | Redraws when the container resizes (`ResizeObserver`)                            |
-| `chart.update(newData)`                    | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
-| `chart.update(undefined, options, true)`   | `chart.setOptions(options)`                                                      |
-| `chart.update(undefined, options)`         | `chart.setOptions(options, { replace: true })`                                   |
-| `chart.detach()`                           | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
-| `chart.on('draw', …)` and other 1.x events | Pipeline events like `compose`, see [Events and plugins](../events-and-plugins/) |
+| 1.x class                                        | v2 function                                                                      |
+| ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| First render on the next tick                    | Renders right away, before the call returns                                      |
+| Redraws when the window or its container resizes | Redraws when the container resizes (`ResizeObserver`)                            |
+| `chart.update(newData)`                          | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
+| `chart.update(undefined, options, true)`         | `chart.setOptions(options)`                                                      |
+| `chart.update(undefined, options)`               | `chart.setOptions(options, { replace: true })`                                   |
+| `chart.detach()`                                 | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
+| `chart.on('draw', …)` and other 1.x events       | Pipeline events like `compose`, see [Events and plugins](../events-and-plugins/) |
 
 ### 3. Rewrite draw handlers as plugins
 
@@ -389,12 +389,25 @@ A few 1.x behaviors were bugs, and v2 fixes them, on the classes too:
 
 - **An axis's own `low` and `high`** win over a bar chart's zero line: `axisY: { low: 10 }` starts the axis at 10. In 1.x, the axis always included zero.
 - **`fixedScaleAxis` with `divisor`** puts a tick at `high` too: `divisor: 4` gives five ticks. 1.x left out the last one.
-- **The donut ring width** comes from the stylesheet (`--ct-donut-width`, 60px) unless you set `donutWidth`. Without the Chartist stylesheet, set `donutWidth`, or the ring gets the browser's 1px stroke.
+- **The donut ring width** comes from the stylesheet (`--ct-donut-width`, 60px) unless you set `donutWidth`, and in the page the ring is laid out for it. Without the Chartist stylesheet, set `donutWidth`, or the ring gets the browser's 1px stroke. When rendering on the server, set `donutWidth` if your stylesheet changes the width.
 - **Donut labels** follow `labelPosition`, as pie labels do. In 1.x they always sat on the ring.
 - **`stackMode: 'accumulate-relative'`** fits the axis to the stacks below zero too, so you no longer need a `low` for them.
-- **`roundWithPrecision(value, 0)`** rounds to whole numbers. In 1.x, 0 digits fell back to 8.
+- **`roundWithPrecision(value, 0)`** and `SvgPath` with `accuracy: 0` round to whole numbers. In 1.x, 0 digits fell back to 8, or didn't round at all. `accuracy: false` turns rounding off.
 - **`animationBegin` and `animationEnd`** fire with `compat` when you call `data.element.animate()` in a `draw` listener. In 1.x they never reached your listeners.
 - **`off(name)`** without a listener removes only your listeners. In 1.x it also removed those of plugins.
+- **A slice that fills the circle**, like a single value, is drawn around the centre. In 1.x it could sit a few pixels off.
+- **x values in descending order** draw a line with the default smoothing. 1.x drew nothing.
+- **Holes written as `{ x, y: null }`** leave a gap with `Interpolation.step()` and `simple()` too. 1.x wrote `NaN` into the path.
+- **A chart-level `low` or `high` that leaves no range**, like a `low` equal to the stacked high, still gives an axis. 1.x ran until the stack overflowed.
+- **Labels next to a tick at the axis start** get their step's width. In 1.x, bar labels could land on top of each other.
+- **`referenceValue`** works on line charts too, for the default Y axis. In 1.x it only worked for bars.
+- **Series 16 to 26** (`ct-series-p` to `ct-series-z`) are coloured, repeating the first 15 colours. 1.x left them blank.
+- **Label spans** have no `xmlns` attribute, so a serialized chart parses as SVG.
+- **`SvgPath`** splits, joins, parses, scales and translates consistently.
+- **An object option over a number** works, like `chartPadding: { top: 20 }` on a pie. 1.x threw.
+- **Charts in an iframe or a JSDOM document** use that document's window, and options arrays made there stay arrays.
+- **`detach()` during the first render** sticks, and a missing target throws once, not again later.
+- **Printed charts** scale to the page instead of being cut off.
 
 In the API reference: [`chartist/compat`](../../api/compat/) and [the 1.x classes](../../api/classes/).
 

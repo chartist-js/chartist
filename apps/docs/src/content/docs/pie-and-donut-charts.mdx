@@ -33,7 +33,7 @@ The white labels are one line of CSS, `--ct-label-color: #fff` in `src/style.css
 
 ## Donuts
 
-Set `donut: true` and the slices become arcs of a ring, 60 px thick by default. `donutWidth` gives it another thickness: a number in px or a percentage of the radius as a string, like `'30%'`.
+Set `donut: true` and the slices become arcs of a ring. The stylesheet sets how thick it is, 60 px by default: change it with `--ct-donut-width` in CSS, for the page, a container or one chart. The chart lays the ring out for that width, so it still fits the chart's edge.
 
 <LiveExample
   title='Donut'
@@ -41,22 +41,26 @@ Set `donut: true` and the slices become arcs of a ring, 60 px thick by default. 
   preview={{
     type: 'pie',
     data: meeting,
-    options: { donut: true, donutWidth: 40 }
+    options: { donut: true }
   }}
-  previewStyle='--ct-label-color: #fff;'
+  previewStyle='--ct-label-color: #fff; --ct-donut-width: 40px;'
   example='pie-and-donut-charts/donut'
 />
 
 A donut's SVG gets `ct-chart-donut` instead of `ct-chart-pie`, and its slices are `ct-slice-donut` paths drawn with a stroke, not a fill. Labels sit in the middle of the ring; `labelPosition` and `labelOffset` move them as on a pie.
 
 <Callout>
-  **Without `donutWidth`, CSS sets the ring width.** The stylesheet draws the
-  stroke with `--ct-donut-width` (60px), while the ring is laid out for 60 px: a
-  thinner ring stays inside the chart's edge, a thicker one goes past it.
-  `donutWidth` lays the ring out for its width and writes it as an inline
-  `stroke-width` on each slice, which wins over the stylesheet. Without the
-  Chartist stylesheet, set `donutWidth`, or the ring gets the browser's 1px
-  stroke width.
+  **The width comes from CSS, or from `donutWidth`.** The chart reads the width
+  the stylesheet gives a slice on every render, so `--ct-donut-width: 30px` on a
+  container and a 1.x rule like `.ct-slice-donut { stroke-width: 30px }` both
+  work. Only px widths count: a percentage in CSS is laid out as 60 px. After a
+  CSS change that doesn't resize the chart, such as a theme switch, call
+  `update()`. Set `donutWidth` where there's no stylesheet to read: with
+  `renderToString()` the ring is laid out for 60 px, and without the Chartist
+  stylesheet it gets the browser's 1px stroke. `donutWidth` takes px or a
+  percentage of the radius, like `'30%'`, and is written as an inline
+  `stroke-width` that wins over the stylesheet. 1.x code that sets it keeps
+  working.
 </Callout>
 
 ## Gauges
@@ -73,12 +77,12 @@ Start at `270` (the left side) and make the total twice the sum, and the slices 
     data: { series: [12, 5, 3] },
     options: {
       donut: true,
-      donutWidth: 40,
       startAngle: 270,
       total: 40,
       showLabel: false
     }
   }}
+  previewStyle='--ct-donut-width: 40px;'
   example='pie-and-donut-charts/gauge'
 />
 

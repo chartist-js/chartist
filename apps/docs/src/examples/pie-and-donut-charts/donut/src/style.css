@@ -1,4 +1,5 @@
-/* Labels on colored slices read best in white. */
+/* Labels on colored slices read best in white, and the ring is 40 px. */
 #chart {
   --ct-label-color: #fff;
+  --ct-donut-width: 40px;
 }

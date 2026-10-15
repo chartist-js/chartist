@@ -19,10 +19,9 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
   protected readonly container: Element;
   protected readonly eventEmitter = new EventEmitter();
   private readonly resizeListener = () => this.update();
-  // Using event loop for first draw to make it possible to register event listeners in the same call stack where
-  // the chart was created.
-  private initializeTimeoutId: ReturnType<typeof setTimeout> | null =
-    setTimeout(() => this.initialize(), 0);
+  // Set at the end of the constructor, so a constructor that throws leaves
+  // no first render scheduled.
+  private initializeTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private optionsProvider?: OptionsProvider<Options>;
 
   constructor(
@@ -53,6 +52,10 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
     }
 
     instances.set(container, this);
+
+    // Using event loop for first draw to make it possible to register event listeners in the same call stack where
+    // the chart was created.
+    this.initializeTimeoutId = setTimeout(() => this.initialize(), 0);
   }
 
   abstract createChart(options: Options): void;
@@ -116,7 +119,10 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
     // Only detach if initialization already occurred on this chart. If this chart still hasn't initialized (therefore
     // the initializationTimeoutId is still a valid timeout reference, we will clear the timeout
     if (!this.initializeTimeoutId) {
-      window.removeEventListener('resize', this.resizeListener);
+      this.container.ownerDocument.defaultView?.removeEventListener(
+        'resize',
+        this.resizeListener
+      );
       this.optionsProvider?.removeMediaQueryListeners();
     } else {
       clearTimeout(this.initializeTimeoutId);
@@ -163,7 +169,10 @@ export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
 
   initialize() {
     // Add window resize listener that re-creates the chart
-    window.addEventListener('resize', this.resizeListener);
+    this.container.ownerDocument.defaultView?.addEventListener(
+      'resize',
+      this.resizeListener
+    );
 
     // Obtain current options based on matching media queries (if responsive options are given)
     // This will also register a listener that is re-creating the chart based on media changes

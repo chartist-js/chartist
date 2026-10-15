@@ -102,7 +102,7 @@ Chartist draws axis labels in one of two ways, set with the `labels` option:
 
 The renderer picks the default: `chart()` and the presets draw HTML labels in the page, and `toScene()` draws SVG labels, because string output often ends up in tools without HTML support. Set `labels` to choose for yourself, in the config (`labels: 'html'`) or in the size of `toScene()`. The config wins.
 
-`axisLabels()` takes `labels` too, for one layer, and the presets take it as an option. Pie and donut labels are always SVG text.
+`axisLabels()` takes `labels` too, for one layer, and so do `lineChart()` and `barChart()` as an option. The 1.x classes always draw HTML labels, and pie and donut labels are always SVG text.
 
 ## Where the markup goes
 

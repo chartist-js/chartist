@@ -77,4 +77,34 @@ describe('presets/pieChart', () => {
     );
     expect(element.querySelectorAll('.ct-label')).toHaveLength(0);
   });
+
+  it('takes an object chartPadding over its default (#842)', () => {
+    const element = sized();
+    pieChart(element, { series: [1, 2] }, { chartPadding: { top: 20 } });
+    // 20 px at the top and the pie's 5 px elsewhere: the 290 x 275 area
+    // has its centre 7.5 px below the chart's centre.
+    for (const slice of Array.from(
+      element.querySelectorAll('path.ct-slice-pie')
+    )) {
+      expect(slice.getAttribute('d')).toMatch(/L150,157\.5Z$/);
+    }
+  });
+
+  it('merges a responsive object chartPadding over a number (#903)', () => {
+    vi.stubGlobal('matchMedia', () => ({
+      matches: true,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined
+    }));
+    const element = sized();
+    pieChart(element, { series: [1, 2] }, { chartPadding: 10 }, [
+      ['screen', { chartPadding: { top: 20 } }]
+    ]);
+    // The object replaces the number, so only its top is taken from it.
+    for (const slice of Array.from(
+      element.querySelectorAll('path.ct-slice-pie')
+    )) {
+      expect(slice.getAttribute('d')).toMatch(/,157\.5Z$/);
+    }
+  });
 });

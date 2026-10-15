@@ -9,6 +9,7 @@ import type {
 import type { ChartConfig, PluginEntry } from '../chart/types';
 import type { PhaseListeners } from '../pipeline/types';
 import { getHighLow } from '../core/data/highLow';
+import { nonEmptyRange } from '../core/data/range';
 import type { Label, Options } from '../core/types';
 import { bar } from '../layers/bar';
 import type { AxisFactory, AxisSetup, AxesConfig } from '../scales/axis';
@@ -99,18 +100,17 @@ function valueAxis(
   return {
     kind: inner.kind,
     create(context) {
-      const highLow = getHighLow(
+      const found = getHighLow(
         context.series,
         options as Options,
         dimension,
         context.extent
       );
-      if (typeof options.high === 'number') {
-        highLow.high = options.high;
-      }
-      if (typeof options.low === 'number') {
-        highLow.low = options.low;
-      }
+      // The chart-level bounds win, but can empty the range again (#1057).
+      const highLow = nonEmptyRange({
+        high: typeof options.high === 'number' ? options.high : found.high,
+        low: typeof options.low === 'number' ? options.low : found.low
+      });
       return inner.create({
         ...context,
         options: { ...context.options, highLow, referenceValue: 0 }

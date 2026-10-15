@@ -35,7 +35,7 @@ The default stylesheet, `chartist/styles.css`, reads its values from custom prop
 
 | Property                          | Default               | What it sets                         |
 | --------------------------------- | --------------------- | ------------------------------------ |
-| `--ct-series-a` … `--ct-series-o` | the 15 classic colors | The color of each series, in order   |
+| `--ct-series-a` … `--ct-series-z` | the 15 classic colors | The color of each series, in order   |
 | `--ct-line-width`                 | `4px`                 | Line thickness                       |
 | `--ct-line-dasharray`             | `none`                | Dashed lines                         |
 | `--ct-point-size`                 | `10px`                | Point size                           |
@@ -50,7 +50,7 @@ The default stylesheet, `chartist/styles.css`, reads its values from custom prop
 | `--ct-label-color`                | `rgba(0, 0, 0, 0.4)`  | Axis and slice labels                |
 | `--ct-label-size`                 | `0.75rem`             | Label font size                      |
 
-A donut's `donutWidth` option wins over `--ct-donut-width`, and the ring is laid out for 60 px unless you set the option. More in [Pie and donut charts](../pie-and-donut-charts/#donuts).
+A donut's `donutWidth` option wins over `--ct-donut-width`. Without it, the chart lays the ring out for the width the stylesheet draws. A server render has no stylesheet to read and lays it out for 60 px, so set `donutWidth` there. More in [Pie and donut charts](../pie-and-donut-charts/#donuts).
 
 They're regular custom properties, so they cascade. Set them where they should apply:
 
@@ -73,7 +73,7 @@ They're regular custom properties, so they cascade. Set them where they should a
 
 ## One color per series
 
-Each series is a group with a letter class: the first is `ct-series-a`, the second `ct-series-b`, up to `ct-series-o`. The letter class sets `--ct-color`, and the series' lines, points, bars, areas and slices use it as their stroke or fill. That gives you two levels to work at:
+Each series is a group with a letter class: the first is `ct-series-a`, the second `ct-series-b`, up to `ct-series-z`, and the 27th starts again at `ct-series-a`. The letter class sets `--ct-color`, and the series' lines, points, bars, areas and slices use it as their stroke or fill. There are 15 colors, so from the 16th series they repeat: `ct-series-p` gets the first series' color and follows `--ct-series-a`, unless you set `--ct-series-p`. That gives you two levels to work at:
 
 ```css
 /* Recolor the second series everywhere */
@@ -193,7 +193,7 @@ If your build already uses Sass, configure the stylesheet at its source instead 
 );
 ```
 
-Keep `$ct-series-names` and `$ct-series-colors` the same length. The custom properties still work on top of the compiled CSS. Set `$ct-include-classes: false` to emit nothing and use the `ct-chart-*` mixins in your own selectors.
+With fewer colors than names, the colors repeat in order, as in the default stylesheet. The custom properties still work on top of the compiled CSS. Set `$ct-include-classes: false` to emit nothing and use the `ct-chart-*` mixins in your own selectors.
 
 In the API reference: [`classNames`](../../api/charts/#LineChartPresetOptions.classNames), to use class names of your own.
 

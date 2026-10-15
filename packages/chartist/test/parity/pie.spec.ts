@@ -9,10 +9,13 @@ import type {
 } from '../../src/charts/PieChart/PieChart.types';
 import { pieChart } from '../../src/presets/pieChart';
 import { markup } from '../markup';
+import { useDonutStylesheet } from '../donut-css';
 import { container, useBrowserSizes } from './helpers';
+import { fullCircles1x, fullCirclesV2, hasFullSlice } from './pie-circle';
 import { PIE_FIXTURES } from './pie-fixtures';
 
 useBrowserSizes();
+useDonutStylesheet();
 
 async function render1x(data: PieChartData, options?: PieChartOptions) {
   const element = container();
@@ -43,11 +46,14 @@ function renderV2(data: PieChartData, options?: PieChartOptions) {
   return element.querySelector('svg')!;
 }
 
+// A slice that fills the circle is compared in a shared form: v2 draws it
+// as two half circles, so the ring stays centred (see `pie-circle.ts`).
 describe('pieChart renders like 1.x PieChart', () => {
   it.each(PIE_FIXTURES)('%s', async (_name, data, options) => {
-    const expected = markup(
-      withoutDefaultDonutWidth(await render1x(data, options), options)
+    const expected = fullCircles1x(
+      markup(withoutDefaultDonutWidth(await render1x(data, options), options)),
+      hasFullSlice(data, options)
     );
-    expect(markup(renderV2(data, options))).toBe(expected);
+    expect(fullCirclesV2(markup(renderV2(data, options)))).toBe(expected);
   });
 });

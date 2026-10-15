@@ -183,6 +183,21 @@ describe('presets/lineChart handle', () => {
     expect(element.querySelectorAll('.ct-point')).toHaveLength(4);
   });
 
+  it('applies a top-level referenceValue to the default Y axis', () => {
+    const lowestLabel = (options: Parameters<typeof lineChart>[2]) => {
+      const element = sized();
+      lineChart(element, { series: [[5, 8, 6]] }, options);
+      return Number(
+        element.querySelectorAll('.ct-label.ct-vertical')[0].textContent
+      );
+    };
+    expect(lowestLabel({})).toBe(5);
+    expect(lowestLabel({ referenceValue: 0 })).toBe(0);
+    expect(
+      lowestLabel({ referenceValue: 0, axisY: { referenceValue: 4 } })
+    ).toBe(4);
+  });
+
   it('on in the options sees the first render', () => {
     const element = sized();
     const mount = vi.fn();

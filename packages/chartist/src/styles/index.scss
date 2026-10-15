@@ -229,12 +229,20 @@
   }
 
   @if $ct-include-colored-series {
+    $colors: length($ct-series-colors);
+
     @for $i from 0 to length($ct-series-names) {
       $name: nth($ct-series-names, $i + 1);
+      // The colors repeat when there are more names than colors.
+      $index: $i % $colors + 1;
+      $color: nth($ct-series-colors, $index);
+
+      // A repeated color follows the property of the series it repeats.
+      @if $i >= $colors {
+        $color: var(--ct-series-#{nth($ct-series-names, $index)}, #{$color});
+      }
 
       .#{$ct-class-series}-#{$name} {
-        $color: nth($ct-series-colors, $i + 1);
-
         @include ct-chart-series-color(var(--ct-series-#{$name}, #{$color}));
       }
     }
