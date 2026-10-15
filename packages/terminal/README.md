@@ -150,11 +150,11 @@ A cell stands for 8 × 16 px, so a braille dot is 4 × 4 px and circles stay rou
 import '@chartist-js/terminal/styles.css';
 ```
 
-Braille and box-drawing characters each sit in a cell one column wide, so the columns line up in any monospace font, even one that lacks those characters. It reads Chartist's custom properties (`--ct-series-a` to `--ct-series-o`, `--ct-grid-color`, `--ct-label-color`), so your Chartist theme colors the text art too. `terminalStyles()` returns the same CSS as a string, for a page you build yourself. `ct-cli --html --standalone` writes a complete page.
+Every character sits in a cell 0.6 × 1 em, and the stylesheet brings a small font of its own (embedded, under 5 kB) for the braille dots, the grid and the bar blocks, drawn to fill a cell edge to edge. Fonts on the reader's system rarely have all of those, so the text art looks the same in every browser. Letters and digits use a monospace font: JetBrains Mono when the page loads it, else the system's. The stylesheet reads Chartist's custom properties (`--ct-series-a` to `--ct-series-o`, `--ct-grid-color`, `--ct-label-color`), so your Chartist theme colors the text art too. `ct-cli --html --standalone` writes a complete page.
 
 ## Fonts
 
-In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; on Windows, Cascadia Mono works. If the dots look scattered or the grid has gaps, your font is missing them. In HTML output the columns line up in any font; a font with braille only makes the dots look crisper.
+In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; on Windows, Cascadia Mono works. If the dots look scattered or the grid has gaps, your font is missing them. HTML output brings its own font for them, so it doesn't depend on the reader's fonts.
 
 ## Limits
 

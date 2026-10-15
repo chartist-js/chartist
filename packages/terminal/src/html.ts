@@ -10,18 +10,13 @@ const escapes: Readonly<Record<string, string>> = {
 const escape = (text: string) => text.replace(/[&<>]/g, char => escapes[char]);
 
 /**
- * Text for a run of cells. Characters beyond ASCII (braille, blocks, box
- * drawing, accented letters) often come from a fallback font whose glyphs
- * are wider or narrower than the monospace font's, which would shift the
- * columns after them. Each goes into an `i` element that the stylesheet
- * makes exactly one column (`1ch`) wide, so the grid holds in any font.
+ * Text for a run of cells: each character in an `i` element, which the
+ * stylesheet makes one cell (0.6 × 1 em). The grid then holds whatever
+ * fonts draw the characters: the stylesheet's own for braille, blocks and
+ * grid lines, a monospace font for the rest.
  */
 const cellText = (text: string) =>
-  [...text]
-    .map(char =>
-      char >= ' ' && char <= '~' ? escape(char) : `<i>${escape(char)}</i>`
-    )
-    .join('');
+  [...text].map(char => `<i>${escape(char)}</i>`).join('');
 
 /** The series letter of a series index, as in `ct-series-a`. */
 const letter = (series: number) => String.fromCharCode(97 + (series % 26));
@@ -45,10 +40,10 @@ function classesOf(cell: Cell): string {
  * the series behind a cell, and the kind (`ct-grid`, `ct-label`,
  * `ct-area`, `ct-bar`, `ct-line`, `ct-point`, `ct-slice`). Load
  * `@chartist-js/terminal/styles.css` to color it; it reads Chartist's
- * `--ct-series-a` and other custom properties, so themes apply. Each
- * character beyond ASCII sits in an `i` element one column wide, so the
- * columns line up even where the font lacks braille or box drawing. Lay
- * the scene out with {@link terminalSize}.
+ * `--ct-series-a` and other custom properties, so themes apply, and
+ * draws braille, blocks and grid lines with a font of its own that fills
+ * each cell. Each character is an `i` element: one cell. Lay the scene
+ * out with {@link terminalSize}.
  *
  * @example
  * ```ts

@@ -128,8 +128,8 @@ A scene SHALL also render as HTML: a `pre` element with one line per row, where 
 
 #### Scenario: Columns in any font
 
-- **WHEN** HTML output with the stylesheet is shown in a monospace font that has no braille or box-drawing characters, so the browser draws them with a fallback font
-- **THEN** every character still starts at a multiple of one column (`1ch`), and the grid lines run straight through all rows
+- **WHEN** HTML output with the stylesheet is shown on a system whose fonts have no braille or box-drawing characters
+- **THEN** every character still sits on a grid of cells 0.6 em wide and 1 em high, the braille dots, grid lines and bars come from the stylesheet's own font and fill their cells, and the grid lines run unbroken through all rows
 
 ### Requirement: Stylesheet for HTML output
 
@@ -139,6 +139,15 @@ The package SHALL ship a stylesheet that colors HTML output with Chartist's cust
 
 - **WHEN** a page with the stylesheet sets `--ct-series-a: green` on the chart's container
 - **THEN** the first series in the HTML output is green
+
+### Requirement: Cell font for HTML output
+
+The stylesheet SHALL embed a font with the characters the renderer draws besides text (the braille patterns, the grid's box-drawing characters, the block characters and the legend marker), each glyph filling a cell of 0.6 × 1 em, so HTML output looks the same whatever fonts the reader's system has. The stylesheet SHALL need no other file.
+
+#### Scenario: Every graphic character
+
+- **WHEN** the font embedded in the built stylesheet is read
+- **THEN** it has a glyph 0.6 em wide for each of the 256 braille patterns, `┈`, `┊`, `┼`, the block characters and `■`, and its ascent and descent add up to 1 em
 
 ### Requirement: Chart functions for CLI tools
 

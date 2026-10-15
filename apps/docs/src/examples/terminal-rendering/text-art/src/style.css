@@ -7,7 +7,7 @@
   margin: 0;
   /* A monospace glyph is about 0.6 em wide: 40 × 0.6 = 24. */
   font-size: min(22px, 100cqi / 24.5);
-  /* Bold dots and lines read better at a glance. */
+  /* Bold labels; the dots and lines come from the stylesheet's own font. */
   font-weight: 700;
   overflow: hidden;
 }

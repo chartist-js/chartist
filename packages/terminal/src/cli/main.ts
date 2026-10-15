@@ -17,7 +17,6 @@ import {
 } from '../charts.ts';
 import { detectColorMode, parseHex, type ColorMode } from '../color.ts';
 import { legend } from '../legend.ts';
-import { terminalStyles } from '../styles.ts';
 import {
   InputError,
   parseData,
@@ -381,7 +380,7 @@ body { margin: 2rem 1rem; background: #fff; color: #222; font-family: system-ui,
 @media (prefers-color-scheme: dark) {
   body { background: #16161a; color: #e8e8ea; --ct-grid-color: rgba(255, 255, 255, 0.25); --ct-label-color: rgba(255, 255, 255, 0.6); }
 }
-${terminalStyles()}</style>
+${readFileSync(new URL('./styles.css', import.meta.url), 'utf8')}</style>
 </head>
 <body>
 ${body}

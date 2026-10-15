@@ -353,6 +353,9 @@ importers:
       del-cli:
         specifier: ^5.0.0
         version: 5.1.0
+      opentype.js:
+        specifier: 2.0.0
+        version: 2.0.0
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3)
@@ -5370,6 +5373,10 @@ packages:
   open@10.1.0:
     resolution: {integrity: sha512-mnkeQ1qP5Ue2wd+aivTD3NHd/lZ96Lu0jgf0pwktLPtx6cTZiH7tyeGRRHs0zX0rbrahXPnXlUnbeXyaBBuIaw==}
     engines: {node: '>=18'}
+
+  opentype.js@2.0.0:
+    resolution: {integrity: sha512-kCyjv6xdDY1W/jLWZ/L3QhhTlKUqDZMQ5+Jdlw12b3dXkKNpYBqqlMMj0YDQPShWFTMwgZI1hG14kN3XUDSg/A==}
+    hasBin: true
 
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
@@ -12229,6 +12236,8 @@ snapshots:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       is-wsl: 3.1.0
+
+  opentype.js@2.0.0: {}
 
   optionator@0.9.4:
     dependencies:

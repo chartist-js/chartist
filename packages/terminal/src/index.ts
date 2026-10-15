@@ -15,7 +15,6 @@ export type { LegendOptions } from './legend.ts';
 export { renderToTerminal } from './ansi.ts';
 export type { TerminalRenderOptions } from './ansi.ts';
 export { renderToHtml } from './html.ts';
-export { terminalStyles } from './styles.ts';
 export { CELL_HEIGHT, CELL_WIDTH, measureCells, terminalSize } from './draw.ts';
 export { detectColorMode } from './color.ts';
 export type { ColorMode, ColorStream } from './color.ts';

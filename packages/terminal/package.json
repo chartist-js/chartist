@@ -70,6 +70,7 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "del-cli": "^5.0.0",
+    "opentype.js": "2.0.0",
     "tsdown": "0.23.0",
     "typescript": "6.0.3",
     "vitest": "5.0.2"
@@ -87,6 +88,7 @@
         "{projectRoot}/tsconfig.build.json",
         {
           "externalDependencies": [
+            "opentype.js",
             "tsdown",
             "typescript"
           ]

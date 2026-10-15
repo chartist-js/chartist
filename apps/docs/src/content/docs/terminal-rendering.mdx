@@ -84,11 +84,11 @@ console.log(renderToTerminal(scene, { color: 'none' }));
 import '@chartist-js/terminal/styles.css';
 ```
 
-That's what the example above does, in a bold font so the dots stand out. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
+That's what the example above does. The stylesheet also brings a small font of its own for the dots, grid lines and bars, drawn to fill each character cell, so the text art looks the same in every browser. `ct-cli pie 3,2,1 --html --standalone` writes a whole page.
 
 ## Fonts and limits
 
-In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; if the dots look scattered or the grid has gaps, the font is missing some. In HTML, each of those characters sits in a cell one column wide, so the columns line up in any font.
+In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; if the dots look scattered or the grid has gaps, the font is missing some. HTML output doesn't depend on the reader's fonts: the stylesheet brings its own for those characters.
 
 Each character of a label is one cell, so wide characters (CJK, emoji) push the columns after them. And it's a printout: no tooltips, no animation.
 

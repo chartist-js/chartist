@@ -1,7 +1,7 @@
 import { barChartConfig, lineChartConfig, node, toScene } from 'chartist';
 import { renderToHtml } from './html.ts';
 import { terminalSize } from './draw.ts';
-import { terminalStyles } from './styles.ts';
+import { stylesheetRules } from './styles.ts';
 
 describe('renderToHtml', () => {
   const bars = renderToHtml(
@@ -32,7 +32,7 @@ describe('renderToHtml', () => {
 
   it('marks the grid, labels and the series behind a cell', () => {
     expect(bars).toMatch(/<span class="ct-grid">(<i>[┈┊┼]<\/i>)+<\/span>/);
-    expect(bars).toMatch(/<span class="ct-label">A<\/span>/);
+    expect(bars).toMatch(/<span class="ct-label"><i>A<\/i><\/span>/);
     // Stacked bars meet inside a cell somewhere in this chart.
     expect(bars).toMatch(/ct-bar ct-series-b ct-bg-series-a/);
   });
@@ -55,21 +55,23 @@ describe('renderToHtml', () => {
       )
     );
     expect(html).toBe(
-      '<pre class="ct-terminal"><span class="ct-label">&lt;b&gt;&amp;</span></pre>'
+      '<pre class="ct-terminal"><span class="ct-label"><i>&lt;</i><i>b</i><i>&gt;</i><i>&amp;</i></span></pre>'
     );
   });
 
-  it('puts each character beyond ASCII in a cell of its own', () => {
-    // Outside the cells: tags, ASCII and line breaks only.
-    expect(bars.replace(/<i>[^<]<\/i>/g, '').replace(/<[^>]+>/g, '')).toMatch(
-      /^[\x20-\x7e\n]*$/
-    );
+  it('puts each character in a cell of its own', () => {
+    // Outside the cells: tags and line breaks only.
+    expect(
+      bars.replace(/<i>(?:[^<&]|&[a-z]+;)<\/i>/g, '').replace(/<[^>]+>/g, '')
+    ).toMatch(/^\n*$/);
     const html = renderToHtml(
       node('svg', { width: 80, height: 16 }).append(
         node('text', { x: 0, y: 13.6 }).text('Zürich')
       )
     );
-    expect(html).toContain('<span class="ct-label">Z<i>ü</i>rich</span>');
+    expect(html).toContain(
+      '<span class="ct-label"><i>Z</i><i>ü</i><i>r</i><i>i</i><i>c</i><i>h</i></span>'
+    );
   });
 
   it('keeps the rows of the text output', () => {
@@ -83,8 +85,8 @@ describe('renderToHtml', () => {
   });
 });
 
-describe('terminalStyles', () => {
-  const css = terminalStyles();
+describe('stylesheetRules', () => {
+  const css = stylesheetRules();
 
   it('colors series from the custom properties, with the default colors', () => {
     expect(css).toContain(
@@ -108,8 +110,13 @@ describe('terminalStyles', () => {
     expect(css).toContain('var(--ct-grid-color, rgba(0, 0, 0, 0.2))');
     expect(css).toContain('var(--ct-label-color, rgba(0, 0, 0, 0.4))');
     expect(css).toContain('.ct-terminal span { font: inherit; }');
-    expect(css).toContain(
-      '.ct-terminal i { display: inline-block; width: 1ch; font: inherit; font-style: normal; vertical-align: top; }'
-    );
+  });
+
+  it('makes every character a cell of 0.6 × 1 em, in the cell font first', () => {
+    const cell = /\.ct-terminal i \{([^}]*)\}/.exec(css)?.[1] ?? '';
+    expect(cell).toContain('display: inline-block;');
+    expect(cell).toContain('width: 0.6em;');
+    expect(cell).toContain('height: 1em;');
+    expect(cell).toMatch(/font-family: 'Chartist Terminal', /);
   });
 });
