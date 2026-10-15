@@ -254,6 +254,16 @@ describe('nodes without a built-in role', () => {
     expect(lines(output)[1]).toMatch(BRAILLE);
   });
 
+  it('draws a node a plugin replaced, keeping its role, by its element', () => {
+    // As in the circles plugin of the plugin guide: a point becomes a circle.
+    const output = plain(
+      scene(4, 2, [
+        series('b', withRole('circle', { cx: 12, cy: 16, r: 5 }, 'point'))
+      ])
+    );
+    expect(output).toMatch(BRAILLE);
+  });
+
   it('skips other elements and draws their children', () => {
     const group = node('g', {}, 'plugin').append(
       node('rect', { x: 0, y: 0, width: 8, height: 8 })

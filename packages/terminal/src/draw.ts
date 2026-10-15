@@ -76,35 +76,43 @@ export function drawScene(scene: SceneNode): Canvas {
 
   const visit = (current: SceneNode, inherited: number | undefined) => {
     const series = seriesOf(current) ?? inherited;
-    switch (current.role) {
-      case 'gridBackground':
-        return;
-      case 'grid':
-        drawGrid(canvas, grid, current.attrs);
-        return;
-      case 'bar':
-        drawBar(canvas, current.attrs, series);
-        return;
-      case 'point':
-        drawPoint(canvas, current.attrs.x1, current.attrs.y1, series);
-        return;
-      case 'line':
-        strokePath(canvas, current.attrs.d, { kind: 'line', series });
-        return;
-      case 'area':
-        fillPolygons(
-          canvas,
-          flatten(current.attrs.d),
-          { kind: 'area', series },
-          (x, y) => (x + y) % 2 === 0
-        );
-        return;
-      case 'slice':
-        fillSlice(canvas, current, series);
-        return;
-      case 'label':
-        labels.push(current);
-        return;
+    // A plugin may replace a node and keep its role (a circle for a point):
+    // then it's drawn by its element, like any node a plugin adds.
+    const replaced =
+      current.role !== undefined &&
+      current.role in ROLE_ELEMENTS &&
+      ROLE_ELEMENTS[current.role] !== current.name;
+    if (!replaced) {
+      switch (current.role) {
+        case 'gridBackground':
+          return;
+        case 'grid':
+          drawGrid(canvas, grid, current.attrs);
+          return;
+        case 'bar':
+          drawBar(canvas, current.attrs, series);
+          return;
+        case 'point':
+          drawPoint(canvas, current.attrs.x1, current.attrs.y1, series);
+          return;
+        case 'line':
+          strokePath(canvas, current.attrs.d, { kind: 'line', series });
+          return;
+        case 'area':
+          fillPolygons(
+            canvas,
+            flatten(current.attrs.d),
+            { kind: 'area', series },
+            (x, y) => (x + y) % 2 === 0
+          );
+          return;
+        case 'slice':
+          fillSlice(canvas, current, series);
+          return;
+        case 'label':
+          labels.push(current);
+          return;
+      }
     }
     switch (current.name) {
       case 'text':
@@ -139,6 +147,16 @@ export function drawScene(scene: SceneNode): Canvas {
   }
   return canvas;
 }
+
+/** The element Chartist draws for each role the terminal draws by role. */
+const ROLE_ELEMENTS: Readonly<Record<string, string>> = {
+  grid: 'line',
+  bar: 'line',
+  point: 'line',
+  line: 'path',
+  area: 'path',
+  slice: 'path'
+};
 
 /** The series index of a `ct-series-x` class (`a` is 0). */
 function seriesOf(current: SceneNode): number | undefined {

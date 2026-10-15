@@ -105,12 +105,17 @@ Text output SHALL support four color modes: 24-bit, 256 colors, 16 colors (each 
 
 ### Requirement: Nodes without a built-in role
 
-Nodes that plugins add SHALL be drawn by their element: `line` and `path` as lines, `circle` as a point, `text` as a label. Other elements without a role SHALL be skipped, and their children drawn.
+Nodes that plugins add SHALL be drawn by their element: `line` and `path` as lines, `circle` as a point, `text` as a label. Other elements without a role SHALL be skipped, and their children drawn. A node a plugin replaced while keeping its role, whose element differs from the one Chartist draws for that role (a `circle` with the role `point`), SHALL be drawn by its element too. A node in a series group, or with a `ct-series-x` class, SHALL take that series' color.
 
 #### Scenario: A plugin's line
 
 - **WHEN** a scene gets a plain `line` element across the chart
 - **THEN** the output shows it as a braille line
+
+#### Scenario: A point replaced by a circle
+
+- **WHEN** a plugin replaces each point with a `circle` and keeps its role, context and key
+- **THEN** the output shows each circle as a point in its series' color
 
 ### Requirement: HTML output
 
