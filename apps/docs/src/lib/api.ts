@@ -57,12 +57,16 @@ for (const module of project.children ?? []) {
     module.name === 'compat' ? 'chartist/compat' : 'chartist';
   for (const reflection of module.children ?? []) {
     const file = reflection.sources?.[0]?.fileName ?? '';
-    const page = pageFor(
+    const assigned = pageFor(
       reflection.name,
       moduleName === 'chartist/compat'
         ? `compat/${file.replace(/^compat\//, '')}`
         : file
     );
+    // The 1.x event and plugin types are documented where compat exports
+    // them; the core's copies, deprecated on chartist, go with the classes.
+    const page =
+      assigned === 'compat' && moduleName === 'chartist' ? 'classes' : assigned;
     const entry: ApiEntry = {
       name: reflection.name,
       module: moduleName,

@@ -236,3 +236,19 @@ test('links into the API reference land on an entry', async ({
   expect(targets.size).toBeGreaterThan(100);
   expect(missing).toEqual([]);
 });
+
+test('the 1.x API is marked deprecated, compat event types are not', async ({
+  page
+}) => {
+  await page.goto('/api/classes/');
+  const lineChart = page.locator('[data-api-entry="LineChart"]');
+  await expect(lineChart.locator('.api-badge-deprecated')).toHaveText(
+    'deprecated'
+  );
+  await expect(lineChart).toContainText('Use lineChart(). Removed in 3.0.');
+
+  await page.goto('/api/compat/');
+  const pointDraw = page.locator('[data-api-entry="PointDrawEvent"]');
+  await expect(pointDraw).toBeVisible();
+  await expect(pointDraw.locator('.api-badge-deprecated')).toHaveCount(0);
+});

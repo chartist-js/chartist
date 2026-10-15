@@ -14,14 +14,14 @@
 
 ## 3. Docs and decisions
 
-- [ ] 3.1 API reference: the deprecated names show the "deprecated" badge and their message; the 1.x pages say the names are deprecated and removed in 3.0. Verify: `pnpm nx build docs`; an e2e check of the `LineChart` entry's badge
-- [ ] 3.2 "Coming from 1.x": a section on the deprecation (what's deprecated and why, what replaces each part, removal in 3.0, the event and plugin types from `chartist/compat`); the package README's 1.x paragraph and the `llms.txt` notes say the 1.x names are deprecated. Verify: `pnpm nx run docs:samples` type-checks the snippets; the llms e2e test passes; screenshots of the section in light, dark and at phone width
-- [ ] 3.3 Update `docs/decisions.md` (1.x compatibility: the deprecation rule, type-level only, removal in 3.0 with the 3.0 shape still open, UMD unchanged). Verify: the section reads as the standing decision, without references to this change
+- [x] 3.1 API reference: the deprecated names show the "deprecated" badge and their message; the 1.x pages say the names are deprecated and removed in 3.0. Verify: `pnpm nx build docs`; an e2e check of the `LineChart` entry's badge
+- [x] 3.2 "Coming from 1.x": a section on the deprecation (what's deprecated and why, what replaces each part, removal in 3.0, the event and plugin types from `chartist/compat`); the package README's 1.x paragraph and the `llms.txt` notes say the 1.x names are deprecated. Verify: `pnpm nx run docs:samples` type-checks the snippets; the llms e2e test passes; screenshots of the section in light, dark and at phone width
+- [x] 3.3 Update `docs/decisions.md` (1.x compatibility: the deprecation rule, type-level only, removal in 3.0 with the 3.0 shape still open, UMD unchanged). Verify: the section reads as the standing decision, without references to this change
 
 ## 4. Integration
 
-- [ ] 4.1 Run the full gate: `pnpm nx run-many -t lint check test build --skip-nx-cache`, `pnpm nx format:check --all`, the docs and playground e2e suites, the visual local check, and the 1.x contract tests against `chartist@1.5.0`. Verify: all pass, and the visual check shows no diffs
-- [ ] 4.2 Repeat the sandbox test that found the problem, against a packed tarball: a React component typed with `LineChartOptions` shows the deprecation with the hint to `LineChartPresetOptions`, and the corrected component has no hint. Verify: the language-service output
+- [x] 4.1 Run the full gate: `pnpm nx run-many -t lint check test build --skip-nx-cache`, `pnpm nx format:check --all`, the docs and playground e2e suites, the visual local check, and the 1.x contract tests against `chartist@1.5.0`. Verify: all pass, and the visual check shows no diffs
+- [x] 4.2 Repeat the sandbox test that found the problem, against a packed tarball: a React component typed with `LineChartOptions` shows the deprecation with the hint to `LineChartPresetOptions`, and the corrected component has no hint. Verify: the language-service output
 
 ## Workflow follow-up
 
