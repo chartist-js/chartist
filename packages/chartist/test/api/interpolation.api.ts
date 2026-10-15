@@ -96,4 +96,25 @@ describe('Interpolation', () => {
     expect(d.match(/M/g)).toHaveLength(v1 ? 4 : 1);
     expect(d.match(/C/g) ?? []).toHaveLength(v1 ? 0 : 3);
   });
+
+  test.each(['step', 'simple'] as const)(
+    '{ x, y: null } is a hole with %s (#1040)',
+    async name => {
+      const d = await lineOf(
+        [
+          { x: 1, y: 1 },
+          { x: 2, y: 3 },
+          { x: 3, y: null },
+          { x: 4, y: 2 },
+          { x: 5, y: 3 }
+        ],
+        { lineSmooth: Interpolation[name]() }
+      );
+      // 1.x drew to a NaN y at the hole.
+      expect(d.includes('NaN')).toBe(v1);
+      if (!v1) {
+        expect(d.match(/M/g)).toHaveLength(2);
+      }
+    }
+  );
 });

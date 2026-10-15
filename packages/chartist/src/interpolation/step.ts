@@ -1,4 +1,5 @@
 import type { SegmentData } from '../core';
+import { getMultiValue } from '../core';
 import { SvgPath } from '../svg';
 
 /** The options of {@link Interpolation.step}. */
@@ -58,7 +59,7 @@ export function step(options?: StepInterpolationOptions) {
       const currData = valueData[i / 2];
 
       // If the current point is also not a hole we can draw the step lines
-      if (currData.value !== undefined) {
+      if (getMultiValue(currData.value) !== undefined) {
         if (prevData === undefined) {
           path.move(currX, currY, false, currData);
         } else {

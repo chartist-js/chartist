@@ -1,4 +1,5 @@
 import type { SegmentData } from '../core/types';
+import { getMultiValue } from '../core';
 import { SvgPath } from '../svg';
 
 /** The options of {@link Interpolation.simple}. */
@@ -59,7 +60,7 @@ export function simple(options?: SimpleInteractionOptions) {
       const length = (currX - prevX) * d;
       const currData = valueData[i / 2];
 
-      if (currData.value !== undefined) {
+      if (getMultiValue(currData.value) !== undefined) {
         if (prevData === undefined) {
           path.move(currX, currY, false, currData);
         } else {
