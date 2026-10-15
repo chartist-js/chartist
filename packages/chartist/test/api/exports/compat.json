@@ -1,4 +1,25 @@
 {
   "runtime": ["compat", "fromLegacyPlugin"],
-  "types": ["compat", "fromLegacyPlugin"]
+  "types": [
+    "AreaDrawEvent",
+    "AxesDrawEvent",
+    "BarChartCreatedEvent",
+    "BarDrawEvent",
+    "CreatedEvent",
+    "DataEvent",
+    "DrawEvent",
+    "GridBackgroundDrawEvent",
+    "GridDrawEvent",
+    "LabelDrawEvent",
+    "LineChartCreatedEvent",
+    "LineDrawEvent",
+    "OptionsChangedEvent",
+    "PieChartCreatedEvent",
+    "Plugin",
+    "PointDrawEvent",
+    "SliceDrawEvent",
+    "SliceLabelDrawEvent",
+    "compat",
+    "fromLegacyPlugin"
+  ]
 }

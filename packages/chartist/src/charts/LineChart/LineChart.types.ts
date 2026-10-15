@@ -24,7 +24,11 @@ export type LineInterpolation = (
 /** The data of a line chart: series of values, and labels for the X axis. */
 export type LineChartData = Data<(Series | SeriesObject)[]>;
 
-/** The options of a line chart (1.x `LineChart`, and `lineChart`). */
+/**
+ * The options of a line chart (1.x `LineChart`, and `lineChart`).
+ *
+ * @deprecated For `lineChart()`, the options type is `LineChartPresetOptions`. Removed in 3.0.
+ */
 export interface LineChartOptions<
   TXAxisOptions = AxisOptions,
   TYAxisOptions = TXAxisOptions
@@ -94,7 +98,11 @@ export interface LineChartOptions<
   >;
 }
 
-/** {@link LineChartOptions} after the defaults are applied: the 1.x `LineChart` works with these. */
+/**
+ * {@link LineChartOptions} after the defaults are applied: the 1.x `LineChart` works with these.
+ *
+ * @deprecated The resolved options of the 1.x `LineChart`. Removed in 3.0.
+ */
 export type LineChartOptionsWithDefaults = RequiredKeys<
   LineChartOptions<
     RequiredKeys<
@@ -127,12 +135,18 @@ export type LineChartOptionsWithDefaults = RequiredKeys<
   'classNames'
 >;
 
-/** The payload of a line chart's 1.x `created` event. */
+/**
+ * The payload of a line chart's 1.x `created` event.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
+ */
 export type LineChartCreatedEvent = CreatedEvent<LineChartOptions>;
 
 /**
  * The 1.x `draw` event of a line chart's point, one per value. The point is a
  * very short `line` element at `x`, `y` (CSS gives it a round cap).
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface PointDrawEvent extends DrawEvent {
   /** Always `'point'`. */
@@ -148,6 +162,8 @@ export interface PointDrawEvent extends DrawEvent {
 /**
  * The 1.x `draw` event of a line, one per series. `index` is the series'
  * index and `meta` the series' meta.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface LineDrawEvent extends DrawEvent {
   /** Always `'line'`. */
@@ -161,6 +177,8 @@ export interface LineDrawEvent extends DrawEvent {
 /**
  * The 1.x `draw` event of an area (with `showArea`), one per series and
  * segment. `index` is the series' index and `meta` the series' meta.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface AreaDrawEvent extends DrawEvent {
   /** Always `'area'`. */
@@ -171,7 +189,11 @@ export interface AreaDrawEvent extends DrawEvent {
   path: SvgPath;
 }
 
-/** The 1.x events of a {@link LineChart} and their payloads, by event name. */
+/**
+ * The 1.x events of a {@link LineChart} and their payloads, by event name.
+ *
+ * @deprecated The 1.x events of a `LineChart`. On `lineChart()`, the handle's `on()` knows its events. Removed in 3.0.
+ */
 export type LineChartEventsTypes = BaseChartEventsTypes<
   LineChartCreatedEvent,
   AxesDrawEvent | PointDrawEvent | LineDrawEvent | AreaDrawEvent

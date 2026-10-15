@@ -41,6 +41,8 @@ export interface ChartRect {
  * and registers listeners with `chart.on('draw', …)`. It runs with the
  * `compat` plugin from `chartist/compat`, whose `fromLegacyPlugin()` also
  * turns it into a v2 plugin.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Plugin = (chart: any, options?: any) => void;
@@ -65,6 +67,8 @@ export interface ViewBox {
  * The options all 1.x charts share: size, value range, padding, axes, class
  * names and plugins. {@link LineChartOptions}, {@link BarChartOptions} and
  * {@link PieChartOptions} build on them.
+ *
+ * @deprecated The base options of the 1.x chart classes. Use the options type of the chart function. Removed in 3.0.
  */
 export interface Options<
   TXAxisOptions = AxisOptions,
@@ -193,7 +197,11 @@ export interface AxisOptions {
   };
 }
 
-/** {@link Options} after the defaults are applied: the axes and class names are set. */
+/**
+ * {@link Options} after the defaults are applied: the axes and class names are set.
+ *
+ * @deprecated The resolved options of the 1.x chart classes. Removed in 3.0.
+ */
 export type OptionsWithDefaults = RequiredKeys<
   Options<
     RequiredKeys<
@@ -211,6 +219,8 @@ export type OptionsWithDefaults = RequiredKeys<
 /**
  * The 1.x responsive options: `[mediaQuery, options]` pairs, applied over
  * the chart's options while the media query matches.
+ *
+ * @deprecated For the chart functions, the type is `PresetResponsiveOptions`. Removed in 3.0.
  */
 export type ResponsiveOptions<T = Options> = [string, T][];
 
@@ -450,6 +460,8 @@ export type NormalizedFlatSeries = number[];
 /**
  * The payload of the 1.x `created` event, emitted once a chart is drawn:
  * its SVG, drawing area, axes and options.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface CreatedEvent<TOptions = Options> {
   /** The drawing area, in px. */
@@ -467,6 +479,8 @@ export interface CreatedEvent<TOptions = Options> {
 /**
  * The fields every 1.x `draw` event shares. A `draw` listener gets one per
  * element drawn; check `type` to tell them apart.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface DrawEvent {
   /** What was drawn: `'point'`, `'line'`, `'bar'`, `'grid'`, … */
@@ -494,6 +508,8 @@ export interface DrawEvent {
 /**
  * The payload of the 1.x `data` event, emitted before a chart draws new
  * data. Listeners may change `data` in place to transform it.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface DataEvent {
   /** `'initial'` for the first data, `'update'` for data set later. */
@@ -505,6 +521,8 @@ export interface DataEvent {
 /**
  * The payload of the 1.x `optionsChanged` event, emitted when a responsive
  * option starts or stops applying.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface OptionsChangedEvent<T = Options> {
   /** The options before the change. */
@@ -516,6 +534,8 @@ export interface OptionsChangedEvent<T = Options> {
 /**
  * The 1.x `draw` event of a grid line, one per tick of each axis. `x1`,
  * `y1`, `x2`, `y2` are the line's ends in px.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface GridDrawEvent extends Omit<
   DrawEvent,
@@ -538,6 +558,8 @@ export interface GridDrawEvent extends Omit<
 /**
  * The 1.x `draw` event of the grid background, the `rect` behind the
  * drawing area (with `showGridBackground`).
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface GridBackgroundDrawEvent {
   /** Always `'gridBackground'`. */
@@ -551,6 +573,8 @@ export interface GridBackgroundDrawEvent {
 /**
  * The 1.x `draw` event of an axis label, one per tick. The label is a
  * `foreignObject` with a `span`, placed at `x`, `y` with the given size.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface LabelDrawEvent extends Omit<
   DrawEvent,
@@ -572,7 +596,11 @@ export interface LabelDrawEvent extends Omit<
   height: number;
 }
 
-/** The 1.x `draw` events of the axes: grid lines, the grid background and labels. */
+/**
+ * The 1.x `draw` events of the axes: grid lines, the grid background and labels.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
+ */
 export type AxesDrawEvent =
   | GridDrawEvent
   | GridBackgroundDrawEvent

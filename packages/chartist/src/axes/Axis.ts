@@ -40,6 +40,8 @@ export type AxisUnits = XAxisUnits | YAxisUnits;
 /**
  * The base class of the 1.x axes: projects values to px along the drawing
  * area and draws its grid lines and labels.
+ *
+ * @deprecated Use the scale functions `autoScaleAxis()`, `fixedScaleAxis()` and `stepAxis()`. Removed in 3.0.
  */
 export abstract class Axis {
   public readonly counterUnits: AxisUnits;

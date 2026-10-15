@@ -19,6 +19,8 @@ import { PresetChart } from '../PresetChart';
  * Reads a line chart option for a series: the per-series value from
  * `options.series[name]` if the series has a name and sets it, the chart's
  * value otherwise.
+ *
+ * @deprecated Part of the 1.x chart classes, with no functional counterpart. Removed in 3.0.
  */
 export function getSeriesOption<
   T extends keyof Omit<LineChartOptionsWithDefaults, 'series'>
@@ -47,6 +49,8 @@ export function getSeriesOption<
  * 1.x API. 1.x events and 1.x plugin functions need the compat plugin
  * (`chartist/compat`).
  * @see {@link lineChart} for the v2 functional API.
+ *
+ * @deprecated Use `lineChart()`. Removed in 3.0.
  */
 export class LineChart extends PresetChart<
   LineChartEventsTypes,
