@@ -75,6 +75,8 @@ export abstract class PresetChart<
   private installing?: ChartHandle;
   private readonly queued: [string, EventListener | AllEventsListener][] = [];
   private readonly onWindowResize = () => this.update();
+  /** Set by detach(), also when a listener of the first render calls it. */
+  private detached = false;
   private readonly wildcards = new Map<AllEventsListener, AllEventsListener>();
 
   constructor(
@@ -153,6 +155,12 @@ export abstract class PresetChart<
             }
           })
     };
+    // Added before the first render (as 1.x does), so a detach() from one of
+    // its listeners removes it. The container's window may be an iframe's.
+    this.container.ownerDocument.defaultView?.addEventListener(
+      'resize',
+      this.onWindowResize
+    );
     this.controller = this.createController(
       this.container,
       this.data,
@@ -168,11 +176,9 @@ export abstract class PresetChart<
       ]
     );
     this.installing = undefined;
-    // The container's window, which may be an iframe's.
-    this.container.ownerDocument.defaultView?.addEventListener(
-      'resize',
-      this.onWindowResize
-    );
+    if (this.detached) {
+      this.controller.handle.detach();
+    }
   }
 
   createChart() {
@@ -209,6 +215,7 @@ export abstract class PresetChart<
   /** Stops resize and media query handling; the chart stays rendered. */
   override detach() {
     super.detach();
+    this.detached = true;
     this.container.ownerDocument.defaultView?.removeEventListener(
       'resize',
       this.onWindowResize

@@ -301,4 +301,37 @@ describe('update and detach', () => {
     window.dispatchEvent(new Event('resize'));
     expect(listener).toHaveBeenCalledTimes(1);
   });
+
+  test('a detach() from the first created listener sticks (#929)', async () => {
+    // Container resizing: the observers still observing afterwards.
+    let observed = 0;
+    let observing = 0;
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe = () => {
+          observed++;
+          observing++;
+        };
+        unobserve = () => undefined;
+        disconnect = () => void observing--;
+      }
+    );
+    try {
+      const el = container();
+      const chart = new LineChart(el, { series: [[1]] }, withCompat());
+      const listener = vi.fn(() => chart.detach());
+      chart.on('created', listener);
+      await vi.waitFor(() => expect(listener).toHaveBeenCalledTimes(1));
+
+      window.dispatchEvent(new Event('resize'));
+      // 1.5 keeps its resize listener (#929).
+      expect(listener).toHaveBeenCalledTimes(V1 ? 2 : 1);
+      // 1.5 doesn't observe its container.
+      expect(observed).toBe(V1 ? 0 : 1);
+      expect(observing).toBe(0);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
 });

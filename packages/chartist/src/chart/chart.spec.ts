@@ -397,4 +397,52 @@ describe('chart/chart', () => {
     const { element } = sizedContainer();
     expect(() => chart(element, { data, layers: [dots()] })).not.toThrow();
   });
+
+  it('a detach() during the first render sticks', () => {
+    const resize = stubResizeObserver();
+    const fonts = new EventTarget();
+    Object.defineProperty(document, 'fonts', {
+      value: fonts,
+      configurable: true
+    });
+    try {
+      const { element, size } = sizedContainer();
+      let scenes = 0;
+      chart(element, {
+        data: { labels: ['Mon', 'Tue'], series: [[1, 2]] },
+        axes: cartesianAxes([
+          { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['Mon', 'Tue'] },
+          { id: 'y', side: 'left', type: autoScaleAxis() }
+        ]),
+        // SVG labels measure text, so they'd react to font loading.
+        layers: [axisLabels()],
+        labels: 'svg',
+        on: { scene: () => void scenes++ },
+        plugins: [
+          {
+            name: 'detach-on-mount',
+            install: handle => void handle.on('mount', () => handle.detach())
+          }
+        ]
+      });
+      expect(resize.active()).toBe(0);
+      size.width = 120;
+      resize.trigger();
+      fonts.dispatchEvent(new Event('loadingdone'));
+      expect(scenes).toBe(1);
+    } finally {
+      delete (document as unknown as { fonts?: unknown }).fonts;
+    }
+  });
+
+  it('a detach() while plugins install sticks', () => {
+    const resize = stubResizeObserver();
+    const { element } = sizedContainer();
+    const detaching: ChartPlugin = {
+      name: 'detaching',
+      install: handle => void handle.detach()
+    };
+    chart(element, { data, layers: [dots()], plugins: [detaching] });
+    expect(resize.active()).toBe(0);
+  });
 });

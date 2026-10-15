@@ -329,8 +329,18 @@ export function createPreset<
       }
       controller.render();
     },
-    detach: () => handle.detach()
+    // A detach() during the first render (from a listener or a 1.x plugin)
+    // runs before the handle exists, so it's applied once it does.
+    detach: () => {
+      if (ready) {
+        handle.detach();
+      } else {
+        detachedEarly = true;
+      }
+    }
   };
+  let ready = false;
+  let detachedEarly = false;
 
   const inner = chart(target, {
     ...withState(spec.config(data, current)),
@@ -381,5 +391,9 @@ export function createPreset<
       return handle;
     }) as PresetHandle<TOptions>['off']
   };
+  ready = true;
+  if (detachedEarly) {
+    handle.detach();
+  }
   return controller;
 }

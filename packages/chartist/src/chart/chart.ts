@@ -116,6 +116,8 @@ export function chart(
   let output: RenderOutput | undefined;
   let observer: ResizeObserver | undefined;
   let destroyed = false;
+  // Cleared by detach(), also when it's called during the first render.
+  let attached = true;
   const provided = new Set<string>();
   // The container's window, which may be an iframe's or jsdom's.
   const view = container.ownerDocument.defaultView;
@@ -235,6 +237,7 @@ export function chart(
       return handle;
     },
     detach() {
+      attached = false;
       observer?.disconnect();
       observer = undefined;
       fonts?.removeEventListener('loadingdone', onFontsLoaded);
@@ -254,11 +257,8 @@ export function chart(
     ...eventMethods(emitter, () => handle, provided, scope)
   };
 
-  installPlugins(handle, config.plugins, provided, scope);
-  registerListeners(handle, config.on);
-  watch();
-  render('resolve');
-
+  // Subscribed before the plugins install and the first render, so a
+  // detach() from one of their listeners unsubscribes them.
   fonts?.addEventListener('loadingdone', onFontsLoaded);
 
   const Observer = view?.ResizeObserver ?? globalThis.ResizeObserver;
@@ -279,6 +279,15 @@ export function chart(
     });
     observer.observe(container);
   }
+
+  installPlugins(handle, config.plugins, provided, scope);
+  registerListeners(handle, config.on);
+  if (attached) {
+    watch();
+  } else {
+    resolveResponsive();
+  }
+  render('resolve');
 
   return handle;
 }
