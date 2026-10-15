@@ -3,7 +3,7 @@
 ## 1. Issues on GitHub (each step with the author's go)
 
 - [x] 1.1 Show the author the three new issue drafts in `issues.md`, and open them as he approves. Record their numbers in `issues.md`. Verify: `gh issue view <n>` shows each, posted under his account, with no AI traces
-- [ ] 1.2 With his go, close #903, #1075 and #1424 as duplicates with the comments in `issues.md`. Verify: each is closed as a duplicate, linked to its issue
+- [x] 1.2 With his go, close #903, #1075 and #1424 as duplicates with the comments in `issues.md`. Verify: each is closed as a duplicate, linked to its issue
 
 ## 2. Pie and donut
 
@@ -39,8 +39,8 @@
 
 ## 7. Integration
 
-- [ ] 7.1 Run the full gate: `pnpm nx run-many -t lint check test build --skip-nx-cache`, `pnpm nx format:check --all`, `chartist:test:api:v1`, the docs and playground e2e suites, and the visual local check. Verify: all pass, with only the two known `line/timeseries` diffs in the visual check
-- [ ] 7.2 Reproduce each issue's original report against a packed tarball of the branch, as in the triage. Verify: each reproduction from the triage notes now gives the corrected result
+- [x] 7.1 Run the full gate: `pnpm nx run-many -t lint check test build --skip-nx-cache`, `pnpm nx format:check --all`, `chartist:test:api:v1`, the docs and playground e2e suites, and the visual local check. Verify: all pass, with only the two known `line/timeseries` diffs in the visual check
+- [x] 7.2 Reproduce each issue's original report against a packed tarball of the branch, as in the triage. Verify: each reproduction from the triage notes now gives the corrected result
 
 ## Workflow follow-up
 
