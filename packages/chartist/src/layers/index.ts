@@ -1,5 +1,7 @@
 export { line } from './line';
 export type { LineLayerOptions, LineSeriesOptions } from './line';
+export { band } from './band';
+export type { BandEdgeOption, BandOptions } from './band';
 export { bar } from './bar';
 export type { BarLayerOptions } from './bar';
 export { pie } from './pie';
