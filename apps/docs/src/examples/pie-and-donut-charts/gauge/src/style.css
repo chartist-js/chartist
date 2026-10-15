@@ -1,0 +1,4 @@
+/* A 40 px ring. */
+#chart {
+  --ct-donut-width: 40px;
+}
