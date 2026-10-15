@@ -186,6 +186,81 @@ export interface PieLabelContext extends SeriesContext, Point {
 }
 
 /**
+ * The context of a `targetLine` node: one line of a `targetLine()` layer,
+ * across the chart area at a value on an axis. Its ends are in px in the
+ * SVG.
+ */
+export interface TargetLineContext extends NoSeries {
+  /** The axis the value is on; `axis.dimension` is `x` or `y`. */
+  readonly axis: ScaleAxis;
+  /** The value the line is drawn at. */
+  readonly value: number;
+  /** The line's index in its layer, from 0. */
+  readonly index: number;
+  /** The line's label, if it has one. */
+  readonly label?: string;
+  /** The X of the line's start, in px. */
+  readonly x1: number;
+  /** The Y of the line's start, in px. */
+  readonly y1: number;
+  /** The X of the line's end, in px. */
+  readonly x2: number;
+  /** The Y of the line's end, in px. */
+  readonly y2: number;
+}
+
+/**
+ * The context of a `targetLabel` node: the label of a target line, and
+ * where it's anchored, in px in the SVG.
+ */
+export interface TargetLabelContext extends NoSeries, Point {
+  /** The axis of the line's value. */
+  readonly axis: ScaleAxis;
+  /** The value of the line. */
+  readonly value: number;
+  /** The line's index in its layer, from 0. */
+  readonly index: number;
+  /** The label as drawn. */
+  readonly text: string;
+}
+
+/**
+ * An edge of a band: a constant value, or the chart-wide index of the
+ * series it follows.
+ */
+export type BandEdge =
+  | { readonly value: number }
+  | { readonly seriesIndex: number };
+
+/**
+ * The context of a `band` node: one filled piece of a `band()` layer
+ * (the band breaks at holes), and the edges it was drawn from.
+ */
+export interface BandContext extends NoSeries {
+  /** The low edge, when the band has edges. */
+  readonly low?: BandEdge;
+  /** The high edge, when the band has edges. */
+  readonly high?: BandEdge;
+  /**
+   * The chart-wide indexes of the series whose minimum and maximum the
+   * band covers, when it's drawn from a group.
+   */
+  readonly series?: readonly number[];
+  /** The piece's outline as drawn (a copy, safe to change). */
+  readonly path: SvgPath;
+}
+
+/** The attributes of a target label's SVG `text` element. */
+export interface TextAttrs {
+  /** The X of the anchor, in px. */
+  readonly x: number;
+  /** The Y of the text's baseline, in px. */
+  readonly y: number;
+  /** `start` or `end`: which end of the text sits at the anchor. */
+  readonly 'text-anchor': 'start' | 'end';
+}
+
+/**
  * The attributes of a `line` element: points, bars and grid lines. A point
  * is a line of 0.01 px, which the CSS draws as a dot with a round cap.
  */
@@ -306,6 +381,15 @@ export interface NodeRoles {
    * pie label (SVG `text`). Check `ctx.kind` to tell them apart.
    */
   label: { ctx: AxisLabelContext | PieLabelContext; attrs: object };
+  /**
+   * A line of a `targetLine()` layer: a `line` across the chart area
+   * (class `ct-target-line`).
+   */
+  targetLine: { ctx: TargetLineContext; attrs: LineAttrs };
+  /** A target line's label: SVG `text` (class `ct-target-label`). */
+  targetLabel: { ctx: TargetLabelContext; attrs: TextAttrs };
+  /** A filled piece of a `band()` layer: a `path` (class `ct-band-area`). */
+  band: { ctx: BandContext; attrs: PathAttrs };
 }
 
 /** A role name, such as `point` or `bar`: a key of {@link NodeRoles}. */

@@ -2,14 +2,14 @@
 
 ## 1. Shared path code and roles
 
-- [ ] 1.1 Move the projection and interpolation of `layers/line.ts` into an internal helper (`layers/path.ts`) that returns a series' interpolated path, and use it in the line layer. Verify: `pnpm nx test chartist --skip-nx-cache` and `pnpm nx run chartist:test:visual:local` pass unchanged
-- [ ] 1.2 Add a path reversal for the band's lower edge (reverse the elements, swap cubic control points). Verify: unit tests that a reversed path traces the same points backward for `none()`, `simple()`, `monotoneCubic()`, `cardinal()` and `step()`
-- [ ] 1.3 Add the `targetLine`, `targetLabel` and `band` roles with their context and attribute types to `scene/roles.ts`, with doc comments per `DOC-COMMENTS.md`. Verify: type tests that `node.role === 'band'` narrows `ctx` to the band context, in the v2 type contract tests
+- [x] 1.1 Move the projection and interpolation of `layers/line.ts` into an internal helper (`layers/path.ts`) that returns a series' interpolated path, and use it in the line layer. Verify: `pnpm nx test chartist --skip-nx-cache` and `pnpm nx run chartist:test:visual:local` pass unchanged
+- [x] 1.2 Add a path reversal for the band's lower edge (reverse the elements, swap cubic control points). Verify: unit tests that a reversed path traces the same points backward for `none()`, `simple()`, `monotoneCubic()`, `cardinal()` and `step()`
+- [x] 1.3 Add the `targetLine`, `targetLabel` and `band` roles with their context and attribute types to `scene/roles.ts`, with doc comments per `DOC-COMMENTS.md`. Verify: type tests that `node.role === 'band'` narrows `ctx` to the band context, in the v2 type contract tests
 
 ## 2. Layer refinement
 
-- [ ] 2.1 Restructure `compose()` in `pipeline/phases.ts`: compose and key all layers first, then one walk that runs the refiners and fires the `compose` events. Verify: a test pinning the event order (layer by layer, children first), and `pnpm nx test chartist --skip-nx-cache` plus `pnpm nx run chartist:test:visual:local` unchanged
-- [ ] 2.2 Add the optional `refine(node, context)` to `Layer` with a doc comment and an example: called per node with a role from all layers, in list order, with the refining layer's own context; return value merged via the node mapping, no dropping. Skip the refiner calls when no layer has `refine`. Verify: unit tests for each scenario of the "Layer refinement" requirement and the "Listeners see refined nodes" scenario, plus a type test that returning `null` from `refine` is a type error
+- [x] 2.1 Restructure `compose()` in `pipeline/phases.ts`: compose and key all layers first, then one walk that runs the refiners and fires the `compose` events. Verify: a test pinning the event order (layer by layer, children first), and `pnpm nx test chartist --skip-nx-cache` plus `pnpm nx run chartist:test:visual:local` unchanged
+- [x] 2.2 Add the optional `refine(node, context)` to `Layer` with a doc comment and an example: called per node with a role from all layers, in list order, with the refining layer's own context; return value merged via the node mapping, no dropping. Skip the refiner calls when no layer has `refine`. Verify: unit tests for each scenario of the "Layer refinement" requirement and the "Listeners see refined nodes" scenario, plus a type test that returning `null` from `refine` is a type error
 
 ## 3. `targetLine()` layer
 

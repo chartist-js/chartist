@@ -31,27 +31,30 @@
 targetLine({ value: 1000, label: 'Target' });
 targetLine({
   axis: 'eur',
-  lines: [{ value: 800, label: 'Min' }, { value: 1000, label: 'Goal', className: 'ct-series-b' }],
+  lines: [
+    { value: 800, label: 'Min' },
+    { value: 1000, label: 'Goal', className: 'ct-series-b' }
+  ],
   labelPosition: 'start'
 });
 ```
 
 - **One line or `lines`.** `TargetLineOptions` is the shared options (`axis`, `labelPosition`, `classNames`) plus either one line's fields (`value`, `label`, `className`) or `lines: readonly TargetLineSpec[]`. The one-line form covers the common case without an array. A union of both shapes is checked by TypeScript, and giving both throws.
-  - *Alternative:* `values: [800, 1000]` and `labels: [...]` side by side. Rejected: parallel arrays drift apart, and a class per line has no place.
+  - _Alternative:_ `values: [800, 1000]` and `labels: [...]` side by side. Rejected: parallel arrays drift apart, and a class per line has no place.
 - **`axis` is an id, not `x`/`y`.** A target line sits on one axis, and its dimension follows from that axis: horizontal on a Y axis, vertical on an X axis. Default: the first Y axis. The layer finds the axis in `axes.all` and throws for an unknown id, with the message the binding uses (`unknown axis "<id>" in layer "targetLine"`).
 - **`series: []`.** The layer draws no series, so it mustn't shape any axis's range from the data. It reports its values through `extent`, keyed by its axis id (`axes.y` from the extent context when `axis` is left out). Extents are merged by axis id whatever the layer's binding (`layerExtents` in `scales/cartesian.ts`), so an id outside the binding works. An axis's own `low` and `high` still win, so a line outside them is skipped rather than drawn outside the area.
 - **Labels are SVG `text`, always.** Like pie labels, they don't take part in the axis label mode. They sit just above a horizontal line (or right of a vertical one), inside the chart area: at the end by default (`text-anchor: end`), or the start. The line's value isn't written as a label automatically. `label` is the text, and a number-formatting function stays in user code.
-  - *Alternative:* follow the chart's `labels` mode (HTML in `foreignObject`). Rejected: a single short label doesn't need wrapping, and SVG text works in server rendering and the terminal without a measure step.
+  - _Alternative:_ follow the chart's `labels` mode (HTML in `foreignObject`). Rejected: a single short label doesn't need wrapping, and SVG text works in server rendering and the terminal without a measure step.
 - **Markup:** `g.ct-target-lines` > per line `line.ct-target-line` and `text.ct-target-label`, with the line's `className` on both. Roles `targetLine` and `targetLabel`. Contexts: `{ axis, value, index, label, x1, y1, x2, y2 }` and `{ axis, value, index, text, x, y }`.
 
 ### `band()` options
 
 ```ts
-band({ series: ['a', 'b', 'c'] });          // min to max of a group
-band({ low: 'p10', high: 'p90' });          // two series
-band({ low: 40, high: 60 });                // constant
+band({ series: ['a', 'b', 'c'] }); // min to max of a group
+band({ low: 'p10', high: 'p90' }); // two series
+band({ low: 40, high: 60 }); // constant
 band({ low: 0, high: 'forecast', align: 'center', lineSmooth: false });
-band({ low: 40, high: 60, mark: true });     // ct-in-band / ct-out-band on points and bars
+band({ low: 40, high: 60, mark: true }); // ct-in-band / ct-out-band on points and bars
 ```
 
 - **Edges as `low`/`high` or a group as `series`.** `low` and `high` each take a number or a series selector (a name or an index). `series` and `low`/`high` are exclusive, and a band without one of them throws. Reusing the layers' `series` option for the group keeps the meaning "these are my series", and the axis binding then counts them towards the range without extra code.
@@ -75,7 +78,7 @@ A layer that changes what other layers draw (the band's `mark`) mixes two concer
 
 **Decision: separate them by step, not by sorting.** Every layer composes independently, from the data and axes in its context, and never sees other layers' nodes. Then the refining layers see the finished nodes of all layers. List order stays the draw order, and a refiner can mark the nodes of layers listed after it.
 
-- *Alternative: layers declare dependencies (`after: ['line']`) and the pipeline sorts them.* Rejected:
+- _Alternative: layers declare dependencies (`after: ['line']`) and the pipeline sorts them._ Rejected:
   - Compose order doesn't decide draw order (the scene is built from the composed nodes afterwards), so sorting would only change when code runs. That leaks into the order plugins see `compose` events in.
   - It's unclear what to depend on. Layer `type`s are strings, two line layers or a custom point layer don't fit, a missing dependency needs a rule, and cycles need detection and errors.
   - Layers don't depend on each other's data, only on each other's finished nodes, which a later step gives them.
@@ -116,12 +119,18 @@ Order matters for the events: they still come layer by layer and children first,
 New Sass settings and classes in `_settings.scss` and `index.scss`, as for areas:
 
 ```scss
-.ct-target-line  { stroke: var(--ct-color, var(--ct-target-line-color, currentColor));
-                   stroke-width: var(--ct-target-line-width, 1px);
-                   stroke-dasharray: var(--ct-target-line-dasharray, 4px 4px); }
-.ct-target-label { fill: var(--ct-color, var(--ct-target-line-color, currentColor)); }
-.ct-band-area    { fill: var(--ct-color, var(--ct-band-color, currentColor));
-                   fill-opacity: var(--ct-band-opacity, 0.12); }
+.ct-target-line {
+  stroke: var(--ct-color, var(--ct-target-line-color, currentColor));
+  stroke-width: var(--ct-target-line-width, 1px);
+  stroke-dasharray: var(--ct-target-line-dasharray, 4px 4px);
+}
+.ct-target-label {
+  fill: var(--ct-color, var(--ct-target-line-color, currentColor));
+}
+.ct-band-area {
+  fill: var(--ct-color, var(--ct-band-color, currentColor));
+  fill-opacity: var(--ct-band-opacity, 0.12);
+}
 ```
 
 - `currentColor` follows the chart's text color, so dark mode works where the text color does. `ct-chart-series-color` adds the three classes, so a `ct-series-<letter>` class on the line or band (or a series group around it) colors it. The exact defaults (dash, opacity) are tuned on screenshots in both themes.

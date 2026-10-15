@@ -54,6 +54,21 @@ describe('v2 type contract', () => {
     if (scene.role === 'label' && scene.ctx.kind === 'axis') {
       expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
     }
+    if (scene.role === 'targetLine') {
+      expectTypeOf(scene.ctx.value).toEqualTypeOf<number>();
+      expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
+      expectTypeOf(scene.attrs.y1).toEqualTypeOf<number>();
+    }
+    if (scene.role === 'targetLabel') {
+      expectTypeOf(scene.ctx.text).toEqualTypeOf<string>();
+    }
+    if (scene.role === 'band') {
+      expectTypeOf(scene.ctx.path).toEqualTypeOf<SvgPath>();
+      expectTypeOf(scene.ctx.series).toEqualTypeOf<
+        readonly number[] | undefined
+      >();
+      expectTypeOf(scene.attrs.d).toEqualTypeOf<string>();
+    }
     if (scene.role === 'marker') {
       expectTypeOf(scene.ctx.label).toEqualTypeOf<string>();
     }
@@ -185,5 +200,24 @@ describe('v2 type contract', () => {
     expectTypeOf<ResponsiveWatcher['matching']>().toEqualTypeOf<
       readonly number[]
     >();
+  });
+
+  test('refine changes nodes but cannot drop them', () => {
+    const marking: Layer = {
+      type: 'marking',
+      coordinates: ['cartesian'],
+      compose: () => [],
+      refine: current =>
+        current.role === 'point' ? current.addClass('ct-marked') : undefined
+    };
+    void marking;
+    const dropping: Layer = {
+      type: 'dropping',
+      coordinates: ['cartesian'],
+      compose: () => [],
+      // @ts-expect-error: only compose listeners drop nodes
+      refine: () => null
+    };
+    void dropping;
   });
 });

@@ -196,6 +196,40 @@ export interface Layer {
    * node with a role through the `compose` listeners.
    */
   compose(context: LayerContext): readonly SceneNode[];
+  /**
+   * Refines what the layers drew: once every layer has composed, called
+   * for each node with a role, from all layers (children before their
+   * parents), before the `compose` events, so listeners see the result.
+   * Return a changed node, such as one with a class added, or `undefined`
+   * to leave it. The node keeps its key and its children whatever you
+   * return, and refining can't drop a node. With several refining layers,
+   * a node passes through them in the order of `layers`. Leave it out when
+   * the layer only draws its own nodes: charts without a refining layer
+   * skip this step.
+   *
+   * @param node The node, possibly refined by layers listed earlier.
+   * @param context The context this layer's `compose` got.
+   *
+   * @example
+   * ```ts
+   * import type { Layer } from 'chartist';
+   *
+   * // Marks the points of every layer that are above a limit.
+   * const markAbove = (limit: number): Layer => ({
+   *   type: 'markAbove',
+   *   coordinates: ['cartesian'],
+   *   series: [],
+   *   compose: () => [],
+   *   refine: node =>
+   *     node.role === 'point' &&
+   *     typeof node.ctx.value === 'object' &&
+   *     (node.ctx.value.y ?? -Infinity) > limit
+   *       ? node.addClass('ct-above')
+   *       : undefined
+   * });
+   * ```
+   */
+  refine?(node: SceneNode, context: LayerContext): SceneNode | undefined;
 }
 
 /** Options after the `resolve` phase: defaults applied, listeners removed. */

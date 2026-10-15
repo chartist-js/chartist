@@ -9,6 +9,7 @@ import type {
   ChartData,
   Coordinates,
   Layer,
+  LayerContext,
   Layout,
   NormalizedChartData,
   PreparedData,
@@ -231,9 +232,10 @@ export function compose(
   labels: LabelMode = 'html',
   measureStyle?: MeasureStyle
 ): SceneNode[] {
-  const composed: SceneNode[] = [];
   const byId = new Map((axes.all ?? []).map(axis => [axis.id, axis]));
-  config.layers.forEach((layer, layerIndex) => {
+  // Every layer composes before any node is refined or emitted, so a
+  // layer's refine sees the nodes of the layers listed after it too.
+  const layers = config.layers.map((layer, layerIndex) => {
     const binding = bindings[layerIndex] ?? {};
     const selection = data.flat ? undefined : binding.series;
     const layerData = selection
@@ -246,7 +248,7 @@ export function compose(
             series: selection.map(i => normalized.series[i])
           }
         : normalized;
-    const nodes = layer.compose({
+    const context: LayerContext = {
       data: layerData,
       area,
       padding,
@@ -262,18 +264,42 @@ export function compose(
       seriesIndexes: selection,
       labels,
       measureStyle
-    });
+    };
+    const nodes = layer
+      .compose(context)
+      .map(top => assignKeys(top, layerIndex));
+    return { layer, context, nodes };
+  });
+  const refiners = layers.flatMap(({ layer, context }) =>
+    layer.refine ? [{ refine: layer.refine.bind(layer), context }] : []
+  );
+  const refine = (current: SceneNode) =>
+    refiners.reduce((refined, { refine: refineNode, context }) => {
+      const result = refineNode(refined, context);
+      // A refiner changes the node, never its key or the tree around it.
+      return result
+        ? withFields(result, {
+            key: refined.key,
+            children: refined.children
+          })
+        : refined;
+    }, current);
+  const composed: SceneNode[] = [];
+  for (const { nodes } of layers) {
     for (const top of nodes) {
-      const result = mapNodes(assignKeys(top, layerIndex), current =>
+      const result = mapNodes(top, current =>
         current.role === undefined
           ? undefined
-          : emitter.transform('compose', current)
+          : emitter.transform(
+              'compose',
+              refiners.length > 0 ? refine(current) : current
+            )
       );
       if (result) {
         composed.push(result);
       }
     }
-  });
+  }
   return composed;
 }
 
