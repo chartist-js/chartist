@@ -126,6 +126,11 @@ A scene SHALL also render as HTML: a `pre` element with one line per row, where 
 - **WHEN** a chart with the label `<b>` is rendered as HTML
 - **THEN** the markup contains `&lt;b&gt;`
 
+#### Scenario: Columns in any font
+
+- **WHEN** HTML output with the stylesheet is shown in a monospace font that has no braille or box-drawing characters, so the browser draws them with a fallback font
+- **THEN** every character still starts at a multiple of one column (`1ch`), and the grid lines run straight through all rows
+
 ### Requirement: Stylesheet for HTML output
 
 The package SHALL ship a stylesheet that colors HTML output with Chartist's custom properties (`--ct-series-a` to `--ct-series-o`, `--ct-grid-color`, `--ct-label-color`), falling back to the default colors, so themes that set them apply to HTML output too.

@@ -26,11 +26,15 @@ export function terminalStyles(): string {
     '.ct-terminal {',
     "  font-family: 'DejaVu Sans Mono', Menlo, Consolas, 'Liberation Mono', monospace;",
     '  line-height: 1;',
+    '  font-variant-ligatures: none;',
     '  white-space: pre;',
     '  overflow-x: auto;',
     '}',
     // Chartist's styles size `.ct-label`; the cells must keep one size.
     '.ct-terminal span { font: inherit; }',
+    // Braille, blocks and box drawing may come from a fallback font with
+    // other widths: each sits in a cell exactly one column wide.
+    '.ct-terminal i { display: inline-block; width: 1ch; font: inherit; font-style: normal; vertical-align: top; }',
     '.ct-terminal .ct-grid { color: var(--ct-grid-color, rgba(0, 0, 0, 0.2)); }',
     '.ct-terminal .ct-label { color: var(--ct-label-color, rgba(0, 0, 0, 0.4)); }',
     '.ct-terminal .ct-area { opacity: 0.5; }',

@@ -22,14 +22,16 @@ describe('renderToHtml', () => {
 
   it('wraps the lines in a pre with classes, without styles or escape codes', () => {
     expect(bars).toMatch(/^<pre class="ct-terminal">[\s\S]*<\/pre>$/);
-    expect(bars).toMatch(/<span class="ct-bar ct-series-a">█+<\/span>/);
+    expect(bars).toMatch(
+      /<span class="ct-bar ct-series-a">(<i>█<\/i>)+<\/span>/
+    );
     expect(bars).toContain('ct-series-b');
     expect(bars).not.toContain('style=');
     expect(bars).not.toContain('\x1b');
   });
 
   it('marks the grid, labels and the series behind a cell', () => {
-    expect(bars).toMatch(/<span class="ct-grid">[┈┊┼]+<\/span>/);
+    expect(bars).toMatch(/<span class="ct-grid">(<i>[┈┊┼]<\/i>)+<\/span>/);
     expect(bars).toMatch(/<span class="ct-label">A<\/span>/);
     // Stacked bars meet inside a cell somewhere in this chart.
     expect(bars).toMatch(/ct-bar ct-series-b ct-bg-series-a/);
@@ -55,6 +57,19 @@ describe('renderToHtml', () => {
     expect(html).toBe(
       '<pre class="ct-terminal"><span class="ct-label">&lt;b&gt;&amp;</span></pre>'
     );
+  });
+
+  it('puts each character beyond ASCII in a cell of its own', () => {
+    // Outside the cells: tags, ASCII and line breaks only.
+    expect(bars.replace(/<i>[^<]<\/i>/g, '').replace(/<[^>]+>/g, '')).toMatch(
+      /^[\x20-\x7e\n]*$/
+    );
+    const html = renderToHtml(
+      node('svg', { width: 80, height: 16 }).append(
+        node('text', { x: 0, y: 13.6 }).text('Zürich')
+      )
+    );
+    expect(html).toContain('<span class="ct-label">Z<i>ü</i>rich</span>');
   });
 
   it('keeps the rows of the text output', () => {
@@ -93,5 +108,8 @@ describe('terminalStyles', () => {
     expect(css).toContain('var(--ct-grid-color, rgba(0, 0, 0, 0.2))');
     expect(css).toContain('var(--ct-label-color, rgba(0, 0, 0, 0.4))');
     expect(css).toContain('.ct-terminal span { font: inherit; }');
+    expect(css).toContain(
+      '.ct-terminal i { display: inline-block; width: 1ch; font: inherit; font-style: normal; vertical-align: top; }'
+    );
   });
 });

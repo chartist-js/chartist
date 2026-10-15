@@ -150,11 +150,11 @@ A cell stands for 8 × 16 px, so a braille dot is 4 × 4 px and circles stay rou
 import '@chartist-js/terminal/styles.css';
 ```
 
-It reads Chartist's custom properties (`--ct-series-a` to `--ct-series-o`, `--ct-grid-color`, `--ct-label-color`), so your Chartist theme colors the text art too. `terminalStyles()` returns the same CSS as a string, for a page you build yourself. `ct-cli --html --standalone` writes a complete page.
+Braille and box-drawing characters each sit in a cell one column wide, so the columns line up in any monospace font, even one that lacks those characters. It reads Chartist's custom properties (`--ct-series-a` to `--ct-series-o`, `--ct-grid-color`, `--ct-label-color`), so your Chartist theme colors the text art too. `terminalStyles()` returns the same CSS as a string, for a page you build yourself. `ct-cli --html --standalone` writes a complete page.
 
 ## Fonts
 
-Braille and box-drawing characters need a font that has them. Most terminal fonts do; on Windows, Cascadia Mono or DejaVu Sans Mono work. If the dots look scattered or the grid has gaps, your font is missing them.
+In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; on Windows, Cascadia Mono works. If the dots look scattered or the grid has gaps, your font is missing them. In HTML output the columns line up in any font; a font with braille only makes the dots look crisper.
 
 ## Limits
 
