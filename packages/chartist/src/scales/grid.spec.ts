@@ -13,7 +13,7 @@ import { domRenderer } from '../render/dom';
 import { node } from '../scene/node';
 import { Svg } from '../svg/Svg';
 import type { NormalizedSeries } from '../core/types';
-import { autoScaleAxis, stepAxis } from './factories';
+import { autoScaleAxis, fixedScaleAxis, stepAxis } from './factories';
 import { axisNodes, gridBackground, type DrawnAxisOptions } from './grid';
 
 const CLASS_NAMES = {
@@ -183,6 +183,49 @@ describe('scales/grid matches 1.x createGridAndLabels', () => {
     ).toEqual([
       ['label', 'a'],
       ['label', 'b']
+    ]);
+  });
+
+  it('a next tick at position 0 sizes the label before it (#1471)', () => {
+    const axisX = axisOptions({ ticks: [0, 10, 20, 30] });
+    const data = normalizeData(
+      {
+        series: [
+          [
+            { x: 10, y: 1 },
+            { x: 30, y: 2 }
+          ]
+        ]
+      },
+      false,
+      true
+    ).series as NormalizedSeries[];
+    const frame = {
+      area,
+      padding,
+      axisX,
+      axisY: axisOptions({}),
+      classNames: CLASS_NAMES
+    };
+    const axis = fixedScaleAxis().create({
+      dimension: 'x',
+      series: data,
+      labels: [],
+      area,
+      options: axisX
+    });
+    expect(axis.ticks.map((tick, i) => axis.project(tick, i))).toEqual([
+      -area.width / 2,
+      0,
+      area.width / 2,
+      area.width
+    ]);
+    const { labels } = axisNodes(axis, frame);
+    const widths = labels.map(label => label.attrs?.width);
+    expect(widths.slice(0, 3)).toEqual([
+      area.width / 2,
+      area.width / 2,
+      area.width / 2
     ]);
   });
 

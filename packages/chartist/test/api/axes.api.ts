@@ -83,6 +83,37 @@ describe('axis classes as options', () => {
     );
   });
 
+  test('a next tick at the axis start sizes the label before it (#1471)', async () => {
+    const el = container();
+    await created(
+      new LineChart(
+        el,
+        {
+          series: [
+            [
+              { x: 10, y: 1 },
+              { x: 20, y: 3 },
+              { x: 30, y: 2 }
+            ]
+          ]
+        },
+        withCompat({ axisX: { type: FixedScaleAxis, ticks: [0, 10, 20, 30] } })
+      )
+    );
+    const widths = Array.from(
+      el.querySelectorAll('.ct-label.ct-horizontal'),
+      label => Number(label.closest('foreignObject')!.getAttribute('width'))
+    );
+    expect(widths).toHaveLength(4);
+    // 1.x took the next tick at position 0 for a missing one, and gave the
+    // label "0" the rest of the axis.
+    if (process.env.CHARTIST_API_TARGET === 'v1') {
+      expect(widths[0]).toBeGreaterThan(widths[1]);
+    } else {
+      expect(widths[0]).toBeCloseTo(widths[1]);
+    }
+  });
+
   test('chart-level low and high apply to the default Y axis', async () => {
     const el = container();
     await created(

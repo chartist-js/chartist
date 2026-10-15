@@ -17,7 +17,7 @@
 - [x] 3.1 Monotone cubic interpolation breaks only where x repeats or changes direction (#1038, #1075); update its doc comment. Verify: interpolation spec cases for descending x (one connected path, same curve as the sorted data) and a zigzag (breaks), plus an API test with `reverseData` on an auto X axis
 - [x] 3.2 `step()` and `simple()` test holes with `getMultiValue` (#1040). Verify: both interpolation specs with `{ x, y: null }` holes give gaps and no `NaN`, on an auto scale X axis too
 - [x] 3.3 Run the empty-range repair again after chart-level `low`/`high`, in `barChart` and compat; harden `rho`/`gcd` against non-finite input (#1057). Verify: the issue's options render with both APIs; math spec cases for `rho(NaN)` and `gcd` with non-finite input
-- [ ] 3.4 Test the next tick by index in `Axis.ts` and `grid.ts` (#1471). Verify: grid and Axis spec cases with `ticks: [0, 10, 20, 30]` over data from 10 to 30 give the label "0" its step's width
+- [x] 3.4 Test the next tick by index in `Axis.ts` and `grid.ts` (#1471). Verify: grid and Axis spec cases with `ticks: [0, 10, 20, 30]` over data from 10 to 30 give the label "0" its step's width
 - [ ] 3.5 Apply a line chart's top-level `referenceValue` to its default Y axis, with `axisY.referenceValue` winning (the new issue). Verify: `lineChart.spec.ts` and an API test (v2-only; 1.5.0 ignores it)
 
 ## 4. Lifecycle and environment

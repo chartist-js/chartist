@@ -110,9 +110,10 @@ export function axisNodes(
   projected.forEach((relative, index) => {
     const labelValue = labelValues[index];
     // 1.x: the distance to the next tick, or the rest of the axis.
-    const labelLength = projected[index + 1]
-      ? projected[index + 1] - relative
-      : Math.max(axis.length - relative, axis.length / axis.ticks.length);
+    const labelLength =
+      index + 1 < projected.length
+        ? projected[index + 1] - relative
+        : Math.max(axis.length - relative, axis.length / axis.ticks.length);
 
     if (labelValue !== '' && isFalseyButZero(labelValue)) {
       return;
