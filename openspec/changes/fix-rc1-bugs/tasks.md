@@ -35,7 +35,7 @@
 ## 6. Docs and records
 
 - [x] 6.1 Fix the three docs statements (the new docs issue): "Coming from 1.x" and the class doc comment on resizing, the axes guide on `low`/`high`, the server rendering guide on `labels`. Verify: `pnpm nx run docs:samples`; the pages read correctly
-- [ ] 6.2 Add the corrections to "Coming from 1.x" (the list of 1.x behaviors v2 corrects), and to `docs/decisions.md` where a decision changed (the CSS budget). Verify: the list matches the `v1-compatibility` requirement; docs e2e passes
+- [x] 6.2 Add the corrections to "Coming from 1.x" (the list of 1.x behaviors v2 corrects), and to `docs/decisions.md` where a decision changed (the CSS budget). Verify: the list matches the `v1-compatibility` requirement; docs e2e passes
 
 ## 7. Integration
 

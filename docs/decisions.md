@@ -12,7 +12,7 @@ Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, cont
 - **TypeScript-native.** The library is written in TypeScript and its types are part of the API. Docs examples are small HTML + TypeScript + CSS projects in the shape of an `npm create vite` vanilla TypeScript app (`index.html`, `src/main.ts`, `src/style.css`), so they open in StackBlitz or a fresh Vite app unchanged. They use only erasable TypeScript syntax and `import type`, so the browser playground can strip types with sucrase.
 - **No bundler required.** `<script type="module">` with ESM from a CDN is the primary no-bundler path, shown in Getting started next to npm. UMD ships for backwards compatibility only (documented in "Coming from 1.x", never in examples); CJS for older Node tooling.
 - **Functional API first.** `chart()`, `lineChart()`, `barChart()`, `pieChart()` and layers; the core is pure from config to scene (`toScene()`, `renderToString()`), side effects stay at the edges. Event payloads are read-only: handlers transform by returning a new value. Docs, examples and doc comments use the functional API; the 1.x classes appear only where the text is about 1.x.
-- **Small.** Stay the smallest charting library: everything tree-shakes, per-entry size budgets are checked (`test:size`).
+- **Small.** Stay the smallest charting library: everything tree-shakes, per-entry size budgets are checked (`test:size`). A budget is raised only on purpose, with the reason in the commit. The bugs found in 2.0.0-rc.1 were fixed even though it costs about 1 kB gzipped across the entries (decided 2026-10-15): fixed behavior beats the bytes.
 
 ## 1.x compatibility
 
