@@ -33,7 +33,7 @@ The classes are still there, imported the same way, with the same constructor ar
   example='coming-from-1x/class-api'
 />
 
-- **`LineChart`, `BarChart` and `PieChart`** from `chartist`, with `update(data, options, override)`, `detach()`, `on()` and `off()`. The first render still happens on the next tick, and charts still redraw when the window resizes.
+- **`LineChart`, `BarChart` and `PieChart`** from `chartist`, with `update(data, options, override)`, `detach()`, `on()` and `off()`. The first render still happens on the next tick, and charts still redraw when the window resizes, and now also when their container does.
 - **Every other 1.x export**, from `chartist` and from the UMD global: `Svg`, `SvgList`, `SvgPath`, `easings`, `Interpolation`, the axis classes, `EventEmitter`, the helpers and the types (`LineChartData`, `BarChartOptions` and the rest). None of them was removed. The classes and what only they use are [deprecated](#deprecated-in-2x-removed-in-30), and still work through all of 2.x.
 - **The look.** Same class names, same default styles. v2 is tested against screenshots of 1.5.0, and the default stylesheet matches them.
 - **Your stylesheet imports.** `chartist/dist/index.css` and the Sass entry `chartist/dist/index.scss` are still in the package. The new short path is `chartist/styles.css`:
@@ -133,15 +133,15 @@ The data, the options and the media query pairs in `responsiveOptions` stay as t
 
 `lineChart()` returns a small handle instead of a class instance:
 
-| 1.x class                                  | v2 function                                                                      |
-| ------------------------------------------ | -------------------------------------------------------------------------------- |
-| First render on the next tick              | Renders right away, before the call returns                                      |
-| Redraws when the window resizes            | Redraws when the container resizes (`ResizeObserver`)                            |
-| `chart.update(newData)`                    | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
-| `chart.update(undefined, options, true)`   | `chart.setOptions(options)`                                                      |
-| `chart.update(undefined, options)`         | `chart.setOptions(options, { replace: true })`                                   |
-| `chart.detach()`                           | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
-| `chart.on('draw', …)` and other 1.x events | Pipeline events like `compose`, see [Events and plugins](../events-and-plugins/) |
+| 1.x class                                        | v2 function                                                                      |
+| ------------------------------------------------ | -------------------------------------------------------------------------------- |
+| First render on the next tick                    | Renders right away, before the call returns                                      |
+| Redraws when the window or its container resizes | Redraws when the container resizes (`ResizeObserver`)                            |
+| `chart.update(newData)`                          | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
+| `chart.update(undefined, options, true)`         | `chart.setOptions(options)`                                                      |
+| `chart.update(undefined, options)`               | `chart.setOptions(options, { replace: true })`                                   |
+| `chart.detach()`                                 | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
+| `chart.on('draw', …)` and other 1.x events       | Pipeline events like `compose`, see [Events and plugins](../events-and-plugins/) |
 
 ### 3. Rewrite draw handlers as plugins
 

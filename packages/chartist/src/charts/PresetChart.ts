@@ -62,8 +62,9 @@ function v2Plugins(plugins: readonly unknown[], chart: object) {
 /**
  * Base of the 1.x chart classes that wrap a v2 preset. Keeps the 1.x API:
  * deferred first render, `update(data, options, override)`, `detach()`,
- * `on`/`off`, and re-rendering on window resize. 1.x events and 1.x plugin
- * functions need the compat plugin (`chartist/compat`).
+ * `on`/`off`, and re-rendering when the window resizes (and, like the chart
+ * functions, when the container does). 1.x events and 1.x plugin functions
+ * need the compat plugin (`chartist/compat`).
  */
 export abstract class PresetChart<
   TEventsTypes,

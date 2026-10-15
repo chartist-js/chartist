@@ -65,12 +65,12 @@ The labels in your data only become ticks through that default step axis. Give `
 
 The auto scale fits the data and picks round steps. These axis options steer it:
 
-| Option           | What it does                                                                  |
-| ---------------- | ----------------------------------------------------------------------------- |
-| `low`, `high`    | Fix the ends of the scale instead of taking them from the data                |
-| `onlyInteger`    | Steps of whole numbers only                                                   |
-| `scaleMinSpace`  | The smallest distance between two ticks in px; larger values give fewer ticks |
-| `referenceValue` | A value the scale includes, like a zero line; `low` and `high` win over it    |
+| Option           | What it does                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| `low`, `high`    | The range of the scale; an auto scale rounds its ends out to a step, `fixedScaleAxis()` keeps them |
+| `onlyInteger`    | Steps of whole numbers only                                                                        |
+| `scaleMinSpace`  | The smallest distance between two ticks in px; larger values give fewer ticks                      |
+| `referenceValue` | A value the scale includes, like a zero line; `low` and `high` win over it                         |
 
 Small counts are where `onlyInteger` shines. Without it, this chart would put ticks between the whole numbers:
 
