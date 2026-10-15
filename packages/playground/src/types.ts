@@ -25,7 +25,11 @@ export interface CompileOptions {
   baseUrl?: string;
   /** Type stripper. Defaults to `sucrase`. */
   transformer?: TransformerName;
-  /** Extra bare specifier → URL entries for the import map. */
+  /**
+   * Extra bare specifier → URL entries for the import map. A static import
+   * of a `.css` name among them (`import 'pkg/styles.css'`) links that URL
+   * as a stylesheet.
+   */
   imports?: Record<string, string>;
   /** Identifies this render in messages from the preview. */
   runId?: string;

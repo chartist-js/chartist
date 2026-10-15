@@ -30,9 +30,11 @@ export interface PlaygroundOptions extends Omit<
    * Type-aware editing of TypeScript files: the URL of the directory with
    * Chartist's `index.d.ts` and `compat.d.ts` (relative to the page), for
    * the build `chartistUrl` points to. The type service loads when a
-   * TypeScript editor first gets focus. Off without it.
+   * TypeScript editor first gets focus. Off without it. `packages` adds
+   * other packages' declarations: bare name → `index.d.ts`, relative to
+   * `url`; they need an `imports` entry too.
    */
-  types?: { url: string } | false;
+  types?: { url: string; packages?: Record<string, string> } | false;
   /** Re-render delay after the last edit, in ms. Defaults to 300. */
   debounce?: number;
   /**
@@ -219,11 +221,16 @@ export async function createPlayground(
     ]);
     // One per playground: it outlives editors remounted by reset and
     // setFiles, and reads the current files.
+    const typed = (options.types && options.types.packages) || {};
     types ??= options.types
       ? createTypeClient(
           {
             url: options.types.url,
-            untyped: Object.keys(options.imports ?? {})
+            packages: typed,
+            // Imports with declarations of their own aren't untyped.
+            untyped: Object.keys(options.imports ?? {}).filter(
+              name => !Object.hasOwn(typed, name)
+            )
           },
           () => files
         )

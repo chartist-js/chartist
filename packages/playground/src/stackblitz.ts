@@ -3,7 +3,10 @@ import type { PlaygroundFiles } from './types.ts';
 
 export interface StackblitzOptions {
   title: string;
-  /** npm version range of `chartist` in the generated package.json. */
+  /**
+   * npm version range of `chartist` in the generated package.json, and of
+   * `@chartist-js/terminal` when the example imports it.
+   */
   chartistVersion: string;
   description?: string;
 }
@@ -17,6 +20,9 @@ export function stackblitzProject(
   files: PlaygroundFiles,
   options: StackblitzOptions
 ): Project {
+  const usesTerminal = Object.values(files).some(code =>
+    /['"]@chartist-js\/terminal(?:\/[^'"]*)?['"]/.test(code)
+  );
   const packageJson = {
     name: 'chartist-example',
     private: true,
@@ -28,7 +34,11 @@ export function stackblitzProject(
       preview: 'vite preview'
     },
     dependencies: {
-      chartist: options.chartistVersion
+      chartist: options.chartistVersion,
+      // Released together with chartist, so at the same version.
+      ...(usesTerminal
+        ? { '@chartist-js/terminal': options.chartistVersion }
+        : {})
     },
     devDependencies: {
       typescript: '~6.0.3',
