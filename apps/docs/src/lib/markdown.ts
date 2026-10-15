@@ -31,8 +31,8 @@ import { API_PAGES } from './api-pages';
 import type { DocEntry } from './docs';
 import { exampleFiles } from './examples';
 import { TYPES, gallery, type GalleryExample } from './gallery';
-import { pluginFacts } from '../data/plugins';
-import { npmUrl, setupSnippet, sortedPlugins } from './plugins';
+import { pluginFacts, type Plugin } from '../data/plugins';
+import { npmUrl, pluginSlug, setupSnippet, sortedPlugins } from './plugins';
 import { rewriteInstallText } from './release';
 import { VERSIONS, href } from './site';
 
@@ -342,29 +342,37 @@ export function exampleMarkdown(example: GalleryExample): string {
 
 // Plugins ------------------------------------------------------------------
 
+/** One plugin's page as Markdown: facts, setup and the example's code. */
+export function pluginMarkdown(plugin: Plugin): string {
+  const stats = pluginFacts(plugin.package);
+  const setup = setupSnippet(plugin);
+  const main = exampleFiles(plugin.example)['src/main.ts'];
+  return `${[
+    `# ${plugin.title} (\`${plugin.package}\`, Chartist plugin)`,
+    `> ${plugin.description}`,
+    ...(plugin.note ? [plugin.note] : []),
+    [
+      `- Author: ${plugin.author}`,
+      `- Source: ${plugin.repository ?? 'repository gone'}, npm: ${npmUrl(plugin)}`,
+      `- License: ${plugin.license}`,
+      `- Written for the Chartist ${plugin.chartist} API; runs on v2 with \`chartist/compat\` (${plugin.loads === 'module' ? 'an ES module' : 'a script that reads the global `Chartist`, for backwards compatibility'})`,
+      `- Charts: ${plugin.types.join(', ')}`,
+      `- Server rendering: ${plugin.ssr ? 'yes' : 'no, it needs a browser'}`,
+      `- Downloads: ${stats.monthlyDownloads} a month, last release ${stats.lastRelease}`
+    ].join('\n'),
+    `Setup:\n\n${fence(setup.code, setup.lang)}`,
+    `Example (\`src/main.ts\`):\n\n${fence(main, 'ts')}`,
+    `All plugins: ${absolute(markdownPath('plugins/'))}`
+  ].join('\n\n')}\n`;
+}
+
+/** The plugins overview as Markdown: each plugin with a link to its page. */
 export function pluginsMarkdown(): string {
-  const entries = sortedPlugins().map(plugin => {
-    const stats = pluginFacts(plugin.package);
-    const setup = setupSnippet(plugin);
-    const main = exampleFiles(plugin.example)['src/main.ts'];
-    return [
-      `## ${plugin.title} (\`${plugin.package}\`)`,
-      plugin.description,
-      ...(plugin.note ? [plugin.note] : []),
-      [
-        `- Author: ${plugin.author}`,
-        `- Source: ${plugin.repository ?? 'repository gone'}, npm: ${npmUrl(plugin)}`,
-        `- License: ${plugin.license}`,
-        `- Written for the Chartist ${plugin.chartist} API; runs on v2 with \`chartist/compat\` (${plugin.loads === 'module' ? 'an ES module' : 'a script that reads the global `Chartist`, for backwards compatibility'})`,
-        `- Charts: ${plugin.types.join(', ')}`,
-        `- Server rendering: ${plugin.ssr ? 'yes' : 'no, it needs a browser'}`,
-        `- Downloads: ${stats.monthlyDownloads} a month, last release ${stats.lastRelease}`
-      ].join('\n'),
-      `Setup:\n\n${fence(setup.code, setup.lang)}`,
-      `Example (\`src/main.ts\`):\n\n${fence(main, 'ts')}`
-    ].join('\n\n');
-  });
-  return `# Plugins (Chartist)\n\n> Community plugins for Chartist, sorted by npm downloads in the last month. Script plugins load after Chartist's UMD builds and \`compat.umd.js\`, which give them the global \`Chartist\` they were written for; wrap them with \`fromLegacyPlugin\` on the v2 API.\n\n${entries.join('\n\n')}\n`;
+  const entries = sortedPlugins().map(
+    plugin =>
+      `- [${plugin.title}](${absolute(markdownPath(`plugins/${pluginSlug(plugin)}/`))}) (\`${plugin.package}\`): ${plugin.description}`
+  );
+  return `# Plugins (Chartist)\n\n> Community plugins for Chartist, sorted by npm downloads in the last month. Script plugins load after Chartist's UMD builds and \`compat.umd.js\`, which give them the global \`Chartist\` they were written for; wrap them with \`fromLegacyPlugin\` on the v2 API. Each page has the plugin's facts, setup and a v2 example.\n\n${entries.join('\n')}\n`;
 }
 
 // llms.txt -----------------------------------------------------------------
@@ -386,7 +394,7 @@ export async function llmsTxt(guides: DocEntry[]): Promise<string> {
   const sections = [
     `## Docs\n\n${guides.map(guide => link(guide.data.title, `docs/${guide.id}/`, guide.data.description)).join('\n')}`,
     `## API reference\n\n- [The whole reference and guides in one file](${absolute('llms-full.txt')})\n${API_PAGES.map(page => link(page.title, apiPath(page.slug), page.description)).join('\n')}`,
-    `## Plugins\n\n${link('Plugins', 'plugins/', 'Community plugins: tooltips, axis titles, legends, labels, zoom and more, with setup and a v2 example each')}`,
+    `## Plugins\n\n${[link('Plugins', 'plugins/', 'Community plugins: tooltips, axis titles, legends, labels, zoom and more'), ...sortedPlugins().map(plugin => link(plugin.title, `plugins/${pluginSlug(plugin)}/`, plugin.description))].join('\n')}`,
     `## Examples\n\n${TYPES.map(({ type, title }) => [`### ${title}`, ...gallery.filter(example => example.type === type).map(example => link(example.title, `examples/${example.id}/`, example.description))].join('\n\n')).join('\n\n')}`,
     `## Optional\n\n${VERSIONS.filter(version => version.href)
       .map(

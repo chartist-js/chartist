@@ -8,6 +8,7 @@
  */
 import { navPages } from './docs';
 import { TYPES, gallery } from './gallery';
+import { pluginSlug, sortedPlugins } from './plugins';
 
 export const CARD_WIDTH = 1200;
 export const CARD_HEIGHT = 630;
@@ -85,6 +86,13 @@ export async function cards(): Promise<Card[]> {
         'Community plugins for Chartist: tooltips, axis titles, legends, labels, zoom and more, each running live on v2.',
       pose: 'point'
     },
+    ...sortedPlugins().map((plugin): Card => ({
+      key: `plugins/${pluginSlug(plugin)}`,
+      eyebrow: ['Plugins'],
+      title: plugin.title,
+      description: plugin.description,
+      pose: 'point'
+    })),
     {
       key: 'playground',
       eyebrow: ['Playground'],

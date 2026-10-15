@@ -25,6 +25,23 @@ export const sortedPlugins = (): Plugin[] =>
 export const pluginSlug = (plugin: Plugin) =>
   plugin.package.replace(/^@/, '').replace(/\//g, '-');
 
+/** The plugin with that slug, if one is listed. */
+export const pluginBySlug = (slug: string): Plugin | undefined =>
+  PLUGINS.find(plugin => pluginSlug(plugin) === slug);
+
+/** The plugins before and after one in the overview's order. */
+export function pluginNeighbors(slug: string): {
+  previous?: Plugin;
+  next?: Plugin;
+} {
+  const sorted = sortedPlugins();
+  const index = sorted.findIndex(plugin => pluginSlug(plugin) === slug);
+  return {
+    previous: index > 0 ? sorted[index - 1] : undefined,
+    next: index >= 0 ? sorted[index + 1] : undefined
+  };
+}
+
 export const npmUrl = (plugin: Plugin) =>
   `https://www.npmjs.com/package/${plugin.package}`;
 
