@@ -57,7 +57,7 @@ band({ low: 0, high: 'forecast', align: 'center', lineSmooth: false });
 band({ low: 40, high: 60, mark: true }); // ct-in-band / ct-out-band on points and bars
 ```
 
-- **Edges as `low`/`high` or a group as `series`.** `low` and `high` each take a number or a series selector (a name or an index). `series` and `low`/`high` are exclusive, and a band without one of them throws. Reusing the layers' `series` option for the group keeps the meaning "these are my series", and the axis binding then counts them towards the range without extra code.
+- **Edges as `low`/`high` or a group as `series`.** `low` and `high` each take a number (a constant) or a series: a name, or `{ series: 2 }` for an index (or a name), since a bare number already means a constant. `series` and `low`/`high` are exclusive, and a band without one of them throws. Reusing the layers' `series` option for the group keeps the meaning "these are my series", and the axis binding then counts them towards the range without extra code.
 - **The layer's `series` selection:** the group, or the series edges (`[low]`, `[high]` or both). With only constant edges, it's `[]` and the band widens its Y axis through `extent`.
 - **Shared path code.** The projection-and-interpolation part of `line.ts` moves into a small internal helper (`layers/path.ts`): it projects a series' values and returns the interpolated path. The line layer and the band both use it. The band builds the upper edge path, then the lower edge path, splits both at holes, and closes each segment that both edges have into one polygon: the upper edge forward, the lower edge backward.
   - **Tracing the lower edge backward** needs a reversed path. `SvgPath` has no `reverse()` today. For straight edges it's reversing the points. For a cubic interpolation, the reversed curve is the same curve with each segment's control points swapped, so the helper reverses the path elements and swaps `x1/y1` with `x2/y2`. If this turns out messier than it sounds, the fallback is to interpolate the reversed coordinates, which gives the same shape for `none()` and `monotoneCubic()`, both of which are direction-independent.
@@ -108,7 +108,7 @@ Order matters for the events: they still come layer by layer and children first,
 
 ### Preset `layers: { below, above }`
 
-- Each preset spec builds `[grid, ...below, series, ...above, labels]` (pie: `[...below, pie, ...above]`). `layers` is part of the preset options, so responsive entries merge it like any option, as a whole object.
+- Each preset spec builds `[grid, ...below, series, ...above, labels]` (pie: `[...below, pie, ...above]`). `layers` is part of the preset options, so responsive entries merge it like any option: preset options merge deeply (`extend()`), so an entry's `above` replaces the base `above` and keeps `below`.
 - **Why two lists, not one:** a band belongs behind the data and a target line in front of it, and a single list would make one of them wrong. Letting the layer declare its own place (a band defaults to below) was considered. Rejected: it hides the order, and a custom layer would need the same concept.
 - **Why not a function `(layers) => layers`:** it can do everything, but it also exposes the preset's internal layers (the wrapped series layer, the label layer's options) as a contract. Two lists keep the preset's own layers private.
 - The type is shared: `PresetLayers { below?: readonly Layer[]; above?: readonly Layer[] }`, added to the three preset option types. It's not added to the 1.x class options.
@@ -160,7 +160,7 @@ New Sass settings and classes in `_settings.scss` and `index.scss`, as for areas
 - [Refiners as a new extension point invite misuse] → A refiner can't drop nodes or change the structure, and gets no shared state. Anything beyond classes and attributes on single nodes stays plugin work.
 - [Experimental API naming] → `targetLine` and `band` are marked `@experimental` like the other layers, so names can change before 2.0.
 - [Removing a listed plugin breaks someone's bookmark] → The redirect covers the page URL. The plugin itself stays on npm and keeps working with `fromLegacyPlugin`.
-- [Preset `layers` and responsive merging] → Overrides merge shallowly, so a responsive entry replaces the whole `layers` object. That matches how other object options merge, and the docs say so.
+- [Preset `layers` and responsive merging] → Preset options merge deeply and arrays replace, so a responsive entry replaces one list of `layers` and keeps the other. That matches how `axisX` and the other options merge, and the guide says so.
 
 ## Migration Plan
 
