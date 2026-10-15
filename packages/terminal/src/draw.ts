@@ -13,8 +13,16 @@ import {
   type Ink
 } from './canvas.ts';
 
-/** The px a terminal cell stands for: a glyph, twice as high as wide. */
+/**
+ * The width in px a terminal cell stands for in a scene: a glyph is half
+ * as wide as high.
+ * @experimental
+ */
 export const CELL_WIDTH = 8;
+/**
+ * The height in px a terminal cell stands for in a scene: one line.
+ * @experimental
+ */
 export const CELL_HEIGHT = 16;
 
 /** The px a braille dot stands for: 4 × 4, so circles stay round. */
