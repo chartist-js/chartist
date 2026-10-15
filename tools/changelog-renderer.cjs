@@ -1,7 +1,9 @@
 /**
- * The changelog of the chartist package: Nx's default renderer, without
- * the commits of the docs site, the playground, the examples and the specs.
- * Their scopes say so; they ship with the site, not in the package.
+ * The changelog of the released packages (`chartist` and the
+ * `@chartist-js` packages, released together): Nx's default renderer,
+ * without the commits of the docs site, the playground, the examples and
+ * the specs. Their scopes say so; they ship with the site, not in a
+ * package.
  */
 const DefaultChangelogRenderer =
   require('nx/release/changelog-renderer').default;

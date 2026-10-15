@@ -1,6 +1,6 @@
 /** A guide as Markdown. */
 import type { APIRoute, GetStaticPaths } from 'astro';
-import { sortedDocs, type DocEntry } from '../../lib/docs';
+import { docPath, sortedDocs, type DocEntry } from '../../lib/docs';
 import { guideMarkdown } from '../../lib/markdown';
 
 export const getStaticPaths = (async () =>
@@ -10,6 +10,6 @@ export const getStaticPaths = (async () =>
   }))) satisfies GetStaticPaths;
 
 export const GET: APIRoute<{ entry: DocEntry }> = ({ props }) =>
-  new Response(guideMarkdown(props.entry), {
+  new Response(guideMarkdown(props.entry, docPath(props.entry)), {
     headers: { 'Content-Type': 'text/markdown; charset=utf-8' }
   });

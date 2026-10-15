@@ -59,6 +59,16 @@ Slugs (file names) and sidebar order. Link between pages with these.
 | Guides      | 8     | `server-rendering`     | Server rendering         |
 | Guides      | 9     | `updating-charts`      | Updating charts          |
 
+## Package pages
+
+The `@chartist-js` packages each have a subsite under `/packages/<slug>/`, listed in `src/data/packages.ts`. Their pages are in `src/content/packages/<slug>/`:
+
+- `index.mdx` is the overview (`order: 0`, `label: Overview`): what the package does, with a live example, then Install, a Quick start and links on.
+- Every other file is a guide, ordered by `order`. Guides follow the rest of this guide: a live example each, checked samples, relative links (`../../../docs/<page>/` to a core guide, `../api/` to the package's API page).
+- `api` isn't a page name: the package's API page uses it.
+
+Live examples of package pages live in `src/examples/<slug>/<example>/`.
+
 ## Components
 
 ```mdx

@@ -6,14 +6,18 @@
  */
 import { readFileSync } from 'node:fs';
 import { describe, expect, test } from 'vitest';
+import { PACKAGES } from '../data/packages';
 import {
   ENTRIES,
   KIND,
+  PACKAGE_ENTRIES,
   commentOf,
   entryMembers,
+  linkToName,
   membersOf,
   pageOf,
   plainText,
+  typeTokens,
   type ApiEntry
 } from './api';
 import { hasDefaults } from './api-defaults';
@@ -97,6 +101,17 @@ function deadLinks(entry: ApiEntry): string[] {
     ) {
       found.push(`${path}: type ${String(node.name)} isn't exported`);
     }
+    // A package's reference to a chartist type links into the reference.
+    // (The core model's own references to internal types stay plain text.)
+    if (
+      entry.pkg &&
+      node.type === 'reference' &&
+      node.package === 'chartist' &&
+      typeof node.target === 'object' &&
+      !linkToName(String(node.name))
+    ) {
+      found.push(`${path}: chartist type ${String(node.name)} has no entry`);
+    }
     for (const [key, child] of Object.entries(node)) {
       // Where TypeDoc says a member comes from isn't a link readers see.
       if (
@@ -134,7 +149,9 @@ function contains(reflection: unknown, id: number): boolean {
         Object.values(node).forEach(walk);
       }
     };
-    ENTRIES.forEach(entry => walk(entry.reflection));
+    [...ENTRIES, ...[...PACKAGE_ENTRIES.values()].flat()].forEach(entry =>
+      walk(entry.reflection)
+    );
   }
   void reflection;
   return ids.has(id);
@@ -170,4 +187,80 @@ describe('API reference', () => {
       expect(entries.flatMap(deadLinks)).toEqual([]);
     });
   }
+});
+
+/** The names a package's built declarations export. */
+function packageExports(slug: string): string[] {
+  const declarations = readFileSync(
+    new URL(`../../../../packages/${slug}/dist/index.d.ts`, import.meta.url),
+    'utf8'
+  );
+  const declared = [
+    ...declarations.matchAll(
+      /^export declare (?:function|const|let|class|interface|type|enum) (\w+)/gm
+    )
+  ].map(match => match[1]);
+  const listed = [
+    ...declarations.matchAll(/^export (?:type )?\{([^}]*)\}/gm)
+  ].flatMap(match =>
+    match[1]
+      .split(',')
+      .map(name =>
+        name
+          .trim()
+          .split(/\s+as\s+/)
+          .pop()!
+          .replace(/^type /, '')
+      )
+      .filter(Boolean)
+  );
+  return [...new Set([...declared, ...listed])].sort();
+}
+
+describe('package API pages', () => {
+  for (const pkg of PACKAGES) {
+    describe(pkg.name, () => {
+      const entries = PACKAGE_ENTRIES.get(pkg.slug) ?? [];
+
+      test('every export has exactly one entry', () => {
+        const names = entries.map(entry => entry.name);
+        expect(names.length).toBe(new Set(names).size);
+        expect([...names].sort()).toEqual(packageExports(pkg.slug));
+      });
+
+      test('every export described, no dead links', () => {
+        expect(entries.flatMap(problems)).toEqual([]);
+        expect(entries.flatMap(deadLinks)).toEqual([]);
+      });
+    });
+  }
+
+  test('chartist types in a package signature link into the reference', () => {
+    const lineChart = PACKAGE_ENTRIES.get('terminal')?.find(
+      entry => entry.name === 'lineChart'
+    );
+    const data = lineChart?.reflection.signatures?.[0].parameters?.[0];
+    const [token] = typeTokens(data?.type);
+    expect(token.text).toBe('LineChartData');
+    expect(token.href).toMatch(/\/api\/[a-z-]+\/#LineChartData$/);
+  });
+
+  test('an export without a doc comment fails the check', () => {
+    const undocumented = {
+      name: 'undocumented',
+      module: '@chartist-js/terminal',
+      page: 'packages/terminal',
+      pkg: 'terminal',
+      file: 'src/index.ts',
+      reflection: {
+        id: -1,
+        name: 'undocumented',
+        variant: 'declaration',
+        kind: KIND.Function,
+        flags: {},
+        signatures: []
+      }
+    } as unknown as ApiEntry;
+    expect(problems(undocumented)).toEqual(['undocumented: no description']);
+  });
 });

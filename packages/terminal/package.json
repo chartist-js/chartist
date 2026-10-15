@@ -1,0 +1,139 @@
+{
+  "name": "@chartist-js/terminal",
+  "type": "module",
+  "version": "2.0.0-rc.1",
+  "description": "Chartist charts in the terminal and as text-art HTML, with a CLI",
+  "author": "Gion Kunz",
+  "homepage": "https://chartist.dev/docs/terminal-rendering/",
+  "license": "MIT OR WTFPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chartist-js/chartist.git",
+    "directory": "packages/terminal"
+  },
+  "bugs": {
+    "url": "https://github.com/chartist-js/chartist/issues"
+  },
+  "keywords": [
+    "chartist",
+    "charts",
+    "terminal",
+    "cli",
+    "ansi",
+    "braille"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "ct-cli": "./dist/cli.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE-WTFPL",
+    "LICENSE-MIT"
+  ],
+  "scripts": {
+    "build": "del-cli ./dist && tsdown && node scripts/styles.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:smoke": "node --test \"test/smoke/*.test.mjs\""
+  },
+  "dependencies": {
+    "chartist": "workspace:^"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "del-cli": "^5.0.0",
+    "opentype.js": "2.0.0",
+    "tsdown": "0.23.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.2"
+  },
+  "nx": {
+    "name": "terminal",
+    "namedInputs": {
+      "build": [
+        "{projectRoot}/src/**/*",
+        "!{projectRoot}/src/**/*.spec.ts",
+        "{projectRoot}/scripts/**/*",
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsdown.config.ts",
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/tsconfig.build.json",
+        {
+          "externalDependencies": [
+            "opentype.js",
+            "tsdown",
+            "typescript"
+          ]
+        }
+      ]
+    },
+    "targets": {
+      "build": {
+        "cache": true,
+        "dependsOn": [
+          "^build"
+        ],
+        "inputs": [
+          "build",
+          "^build"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
+      },
+      "typecheck": {
+        "cache": true,
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "test": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ]
+      },
+      "test:smoke": {
+        "cache": true,
+        "dependsOn": [
+          "build",
+          "^build"
+        ],
+        "inputs": [
+          "build",
+          "^build",
+          "{projectRoot}/README.md",
+          "{projectRoot}/test/smoke/**/*"
+        ]
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { API_PAGES } from '../src/lib/api-pages';
-import { DOCS, PAGES } from './pages';
+import { DOCS, PACKAGE_GUIDES, PACKAGE_PAGES, PAGES } from './pages';
 
 /** Scrolls through the page so every lazily rendered chart mounts. */
 async function renderAllCharts(page: Page) {
@@ -168,6 +168,28 @@ test('the Getting started file works as copied', async ({ page }) => {
   );
 });
 
+test('the Packages header item leads to the packages and stays current', async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/docs/getting-started/');
+  const main = page.getByRole('navigation', { name: 'Main' });
+  await main.getByRole('link', { name: 'Packages' }).click();
+  await expect(page).toHaveURL(/\/packages\/$/);
+  for (const path of [
+    '/packages/',
+    '/packages/terminal/',
+    '/packages/terminal/api/'
+  ]) {
+    await page.goto(path);
+    await expect(
+      page
+        .getByRole('navigation', { name: 'Main' })
+        .getByRole('link', { name: 'Packages' })
+    ).toHaveAttribute('aria-current', 'page');
+  }
+});
+
 test('keyboard: skip link and mobile menu', async ({ page }) => {
   await page.goto('/docs/getting-started/');
   await page.keyboard.press('Tab');
@@ -182,18 +204,19 @@ test('keyboard: skip link and mobile menu', async ({ page }) => {
   await expect(page.getByRole('navigation', { name: 'Mobile' })).toBeVisible();
 });
 
-for (const slug of DOCS) {
-  test(`docs/${slug}: every live example runs without errors`, async ({
+for (const path of [...DOCS.map(slug => `/docs/${slug}/`), ...PACKAGE_GUIDES]) {
+  test(`${path.slice(1, -1)}: every live example runs without errors`, async ({
     page
   }) => {
-    await page.goto(`/docs/${slug}/`);
+    await page.goto(path);
     for (const live of await page.locator('[data-live-example]').all()) {
       await live.scrollIntoViewIfNeeded();
       await live.getByRole('button', { name: 'Edit' }).click();
       await expect(live).toHaveAttribute('data-ready', '');
       const frame = live.frameLocator('iframe');
-      // Any chart: chart() draws no ct-chart-* class unless given one.
-      await expect(frame.locator('svg').first()).toBeVisible({
+      // Any chart: chart() draws no ct-chart-* class unless given one, and
+      // the terminal renderer draws text art.
+      await expect(frame.locator('svg, pre.ct-terminal').first()).toBeVisible({
         timeout: 10_000
       });
       await expect(live.locator('.playground-errors li')).toHaveCount(0);
@@ -209,7 +232,8 @@ test('links into the API reference land on an entry', async ({
   for (const path of [
     ...DOCS.map(slug => `/docs/${slug}/`),
     '/api/',
-    ...API_PAGES.map(api => `/api/${api.slug}/`)
+    ...API_PAGES.map(api => `/api/${api.slug}/`),
+    ...PACKAGE_PAGES
   ]) {
     await page.goto(path);
     for (const link of await page

@@ -1,0 +1,40 @@
+---
+import { Code } from 'astro:components';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PACKAGES, installCommand } from '../../data/packages';
+import { rewriteInstallText } from '../../lib/release';
+import { href } from '../../lib/site';
+---
+
+<BaseLayout title="Packages" description="Packages made next to Chartist: renderers, plugins and wrappers, released with it under @chartist-js." section="packages">
+  <div class="wrap flex flex-col gap-10 pt-[clamp(32px,6vw,64px)] pb-[clamp(56px,8vw,104px)]" data-pagefind-body data-pagefind-filter="section:Packages">
+    <header class="flex flex-col gap-4">
+      <span class="eyebrow">Packages</span>
+      <h1 class="display">More than SVG</h1>
+      <p class="lead max-w-[62ch]">
+        Packages made next to Chartist, released with it under <code>@chartist-js</code>. They take the charts you know somewhere else. For the community's plugins, see <a href={href('plugins/')}>Plugins</a>.
+      </p>
+    </header>
+
+    <ul class="m-0 flex list-none flex-col gap-10 p-0">
+      {
+        PACKAGES.map(pkg => (
+          <li class="flex flex-col gap-4">
+            <h2 class="text-3xl">
+              <a class="text-ink no-underline hover:underline" href={href(`packages/${pkg.slug}/`)}>
+                {pkg.name}
+              </a>
+            </h2>
+            <p class="max-w-[70ch]">{pkg.description}</p>
+            <div class="max-w-[560px]">
+              <Code code={rewriteInstallText(installCommand(pkg))} lang="sh" theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
+            </div>
+            <a class="w-fit font-bold" href={href(`packages/${pkg.slug}/`)}>
+              Read the docs <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

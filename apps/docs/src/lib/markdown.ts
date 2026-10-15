@@ -19,6 +19,7 @@ import {
   pageOf,
   partHref,
   signatureTokens,
+  packageApiEntries,
   sortedEntries,
   tagsOf,
   typeTokens,
@@ -28,9 +29,16 @@ import {
 } from './api';
 import { defaultFor, hasDefaults } from './api-defaults';
 import { API_PAGES } from './api-pages';
-import type { DocEntry } from './docs';
+import {
+  navPages,
+  packageEntries,
+  packagePagePath,
+  packagePageParam,
+  type DocEntry
+} from './docs';
 import { exampleFiles } from './examples';
 import { TYPES, gallery, type GalleryExample } from './gallery';
+import { PACKAGES, packageBySlug } from '../data/packages';
 import { pluginFacts, type Plugin } from '../data/plugins';
 import { npmUrl, pluginSlug, setupSnippet, sortedPlugins } from './plugins';
 import { rewriteInstallText } from './release';
@@ -100,7 +108,12 @@ function liveExample(tag: string): string {
  * `LiveExample` replaced by its files, `Callout` as a blockquote, `Step`
  * unwrapped. Code blocks stay as they are.
  */
-export function guideMarkdown(entry: DocEntry): string {
+export function guideMarkdown(
+  entry: Pick<DocEntry, 'body'> & {
+    readonly data: { readonly title: string; readonly description: string };
+  },
+  path: string
+): string {
   const lines = (entry.body ?? '').split('\n');
   const out: string[] = [];
   let inFence = false;
@@ -167,9 +180,7 @@ export function guideMarkdown(entry: DocEntry): string {
     .replace(/\n{3,}/g, '\n\n')
     .trim();
   const head = `# ${entry.data.title}\n\n> ${entry.data.description}`;
-  return rewriteInstallText(
-    `${absoluteLinks(`${head}\n\n${body}`, `docs/${entry.id}/`)}\n`
-  );
+  return rewriteInstallText(`${absoluteLinks(`${head}\n\n${body}`, path)}\n`);
 }
 
 // API reference -------------------------------------------------------------
@@ -322,6 +333,15 @@ export function apiMarkdown(slug: string): string {
   );
 }
 
+/** A package's API page as Markdown: every export. */
+export function packageApiMarkdown(slug: string): string {
+  const pkg = packageBySlug(slug);
+  const entries = packageApiEntries(slug).map(entryMarkdown);
+  return rewriteInstallText(
+    `# ${pkg.name} API\n\n> Every function and type ${pkg.name} exports. Types from \`chartist\` link to the Chartist API reference.\n\n${entries.join('\n\n')}\n`
+  );
+}
+
 // Examples -----------------------------------------------------------------
 
 export function exampleMarkdown(example: GalleryExample): string {
@@ -377,6 +397,15 @@ export function pluginsMarkdown(): string {
 
 // llms.txt -----------------------------------------------------------------
 
+/** Each package with its subsite pages: overview, guides, API page. */
+const packagePages = () =>
+  Promise.all(
+    PACKAGES.map(async pkg => ({
+      pkg,
+      pages: await navPages('packages', pkg.slug)
+    }))
+  );
+
 /** Notes that keep generated code on the v2 API. */
 const NOTES = `Chartist draws responsive SVG charts and leaves their look to CSS. This is Chartist v2, a TypeScript library with no dependencies, available from npm (\`chartist\`) or as ES modules from a CDN, without a build step.
 
@@ -386,7 +415,8 @@ When writing Chartist code:
 - Don't write \`new Chartist.Line(…)\`, \`new LineChart(…)\` or \`Chartist.Interpolation\`: that's the 1.x and 0.x API. The 1.x classes are deprecated and leave \`chartist\` in 3.0; they still work, for compatibility only.
 - Style charts with CSS and custom properties (\`--ct-series-a\`, \`--ct-line-width\`, …), not with options.
 - Change what a chart draws with plugins: listeners on the pipeline's phase events (\`compose\` for scene nodes, \`mount\` for the DOM). 1.x \`draw\` events need the \`compat\` plugin from \`chartist/compat\`.
-- Size charts with their container (CSS), and use responsive options for what changes with the size.`;
+- Size charts with their container (CSS), and use responsive options for what changes with the size.
+- Packages under \`@chartist-js\` (listed below) take the same data and options: \`@chartist-js/terminal\` draws charts as terminal text or HTML text art.`;
 
 export async function llmsTxt(guides: DocEntry[]): Promise<string> {
   const link = (title: string, path: string, description?: string) =>
@@ -394,6 +424,7 @@ export async function llmsTxt(guides: DocEntry[]): Promise<string> {
   const sections = [
     `## Docs\n\n${guides.map(guide => link(guide.data.title, `docs/${guide.id}/`, guide.data.description)).join('\n')}`,
     `## API reference\n\n- [The whole reference and guides in one file](${absolute('llms-full.txt')})\n${API_PAGES.map(page => link(page.title, apiPath(page.slug), page.description)).join('\n')}`,
+    `## Packages\n\n${(await packagePages()).map(({ pkg, pages }) => [`### ${pkg.name}`, ...pages.map(page => link(page.title, page.path, page.description))].join('\n\n')).join('\n\n')}`,
     `## Plugins\n\n${[link('Plugins', 'plugins/', 'Community plugins: tooltips, axis titles, legends, labels, zoom and more'), ...sortedPlugins().map(plugin => link(plugin.title, `plugins/${pluginSlug(plugin)}/`, plugin.description))].join('\n')}`,
     `## Examples\n\n${TYPES.map(({ type, title }) => [`### ${title}`, ...gallery.filter(example => example.type === type).map(example => link(example.title, `examples/${example.id}/`, example.description))].join('\n\n')).join('\n\n')}`,
     `## Optional\n\n${VERSIONS.filter(version => version.href)
@@ -421,10 +452,22 @@ function demote(markdown: string): string {
 }
 
 export async function llmsFullTxt(guides: DocEntry[]): Promise<string> {
+  const packages = await Promise.all(
+    PACKAGES.map(async pkg => [
+      ...(await packageEntries(pkg.slug)).map(entry =>
+        guideMarkdown(
+          entry,
+          packagePagePath(pkg.slug, packagePageParam(entry) ?? 'index')
+        )
+      ),
+      packageApiMarkdown(pkg.slug)
+    ])
+  );
   const parts = [
-    `# Chartist v2: guides and API reference\n\n${NOTES}`,
-    ...guides.map(guideMarkdown),
-    ...API_PAGES.map(page => apiMarkdown(page.slug))
+    `# Chartist v2: guides, API reference and packages\n\n${NOTES}`,
+    ...guides.map(guide => guideMarkdown(guide, `docs/${guide.id}/`)),
+    ...API_PAGES.map(page => apiMarkdown(page.slug)),
+    ...packages.flat()
   ];
   // One level down, so each guide's and page's title is a section.
   return `${parts.map((part, i) => (i === 0 ? part : demote(part))).join('\n\n')}\n`;

@@ -89,6 +89,15 @@ export type MeasureStyle = (
 export const DEFAULT_FONT_SIZE = 12;
 
 /**
+ * Where SVG text labels put a line's baseline: this share of the font size
+ * below the top of the line (a typical font's ascent). Lines are one font
+ * size apart, so a renderer finds a line's vertical center at
+ * `y - (textAscent - 0.5) * fontSize` from its `y`.
+ * @experimental
+ */
+export const textAscent = 0.85;
+
+/**
  * Estimates text size without a DOM: an average glyph is 0.6 em wide, and a
  * line is 1.2 em high, at `fontSize` or else 12 px. `toScene()` measures
  * with it unless you pass your own, which can build on it.

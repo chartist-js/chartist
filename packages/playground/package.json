@@ -34,6 +34,7 @@
     "@lezer/lr": "1.4.10",
     "@playwright/test": "1.63.0",
     "@stackblitz/sdk": "1.11.1",
+    "@chartist-js/terminal": "workspace:*",
     "chartist": "workspace:*",
     "es-module-lexer": "3.0.2",
     "sucrase": "3.35.1",
@@ -77,6 +78,11 @@
       "measure": {
         "dependsOn": [
           "build"
+        ]
+      },
+      "test": {
+        "dependsOn": [
+          "^build"
         ]
       }
     }

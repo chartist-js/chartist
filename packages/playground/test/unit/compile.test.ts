@@ -222,6 +222,22 @@ test('stackblitz project adds package.json and keeps the files', () => {
   expect(pkg.devDependencies.vite).toBeTruthy();
   expect(pkg.devDependencies.typescript).toBeTruthy();
   expect(project.files['tsconfig.json']).toBeTruthy();
+  expect(pkg.dependencies['@chartist-js/terminal']).toBeUndefined();
+});
+
+test('stackblitz project adds @chartist-js/terminal when the example imports it', () => {
+  const project = stackblitzProject(
+    {
+      'index.html': html,
+      'src/main.ts': "import { lineChart } from '@chartist-js/terminal';"
+    },
+    { title: 'Terminal', chartistVersion: '2.0.0-rc.2' }
+  );
+  const pkg = JSON.parse(project.files['package.json']);
+  expect(pkg.dependencies).toEqual({
+    chartist: '2.0.0-rc.2',
+    '@chartist-js/terminal': '2.0.0-rc.2'
+  });
 });
 
 describe('classic scripts by bare name', () => {
@@ -274,6 +290,30 @@ describe('classic scripts by bare name', () => {
     );
     expect(doc).toContain(
       `<link rel="stylesheet" href="${BASE}lib/plugins/tooltip.css" />`
+    );
+  });
+
+  test('links a stylesheet imported by a name the import map has', async () => {
+    const { html: doc, diagnostics } = await compile(
+      project(
+        "import '@chartist-js/terminal/styles.css';\nimport '@chartist-js/terminal/styles.css';\nimport { lineChart } from '@chartist-js/terminal';\nlineChart({ series: [[1]] });"
+      ),
+      {
+        ...options,
+        imports: {
+          '@chartist-js/terminal': 'lib/terminal/index.js',
+          '@chartist-js/terminal/styles.css': 'lib/terminal/styles.css'
+        }
+      }
+    );
+    expect(diagnostics).toEqual([]);
+    expect(
+      doc!.split(
+        `<link rel="stylesheet" href="${BASE}lib/terminal/styles.css">`
+      )
+    ).toHaveLength(2);
+    expect(doc).toContain(
+      `"@chartist-js/terminal":"${BASE}lib/terminal/index.js"`
     );
   });
 

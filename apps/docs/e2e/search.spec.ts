@@ -25,6 +25,15 @@ test('lineChart finds its API entry', async ({ page }) => {
   await expect(first.locator('mark').first()).toHaveText(/lineChart/i);
 });
 
+test('a package export finds its package API entry', async ({ page }) => {
+  await page.goto('/docs/getting-started/');
+  await search(page, 'renderToTerminal');
+  const packages = results(page).getByRole('group', { name: 'Packages' });
+  await expect(
+    packages.getByRole('option', { name: /renderToTerminal/ }).first()
+  ).toHaveAttribute('href', '/packages/terminal/api/#renderToTerminal');
+});
+
 test('a guide term finds its guide', async ({ page }) => {
   await page.goto('/');
   await search(page, 'container queries');

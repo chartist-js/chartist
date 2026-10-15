@@ -2,7 +2,8 @@
 import type { MarkdownHeading } from 'astro';
 import BaseLayout from './BaseLayout.astro';
 import Mascot from '../components/Mascot.astro';
-import { navPages, sidebar, type NavPage } from '../lib/docs';
+import { packageBySlug } from '../data/packages';
+import { SECTION_LABELS, navPages, sidebar, type NavPage } from '../lib/docs';
 import { markdownPath } from '../lib/markdown';
 import { VERSIONS, href } from '../lib/site';
 
@@ -12,7 +13,13 @@ interface Props {
 }
 
 const { page, headings } = Astro.props;
-const pages = await navPages(page.section);
+const pages = await navPages(page.section, page.pkg);
+const label = SECTION_LABELS[page.section];
+// Package pages: "Packages / <package>"; others: "<section> / <group>".
+const crumbs =
+  page.section === 'packages' && page.pkg
+    ? [{ text: label, path: 'packages/' }, { text: packageBySlug(page.pkg).name, path: pages[0].path }]
+    : [{ text: label, path: pages[0].path }, { text: page.group }];
 const groups = sidebar(pages);
 const index = pages.findIndex(candidate => candidate.key === page.key);
 const previous = pages[index - 1];
@@ -32,8 +39,8 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 <BaseLayout title={page.title} description={page.description} section={page.section} markdown={markdown}>
   <div class="wrap flex flex-wrap items-start gap-10 pt-8 pb-20 max-md:gap-6 max-md:pt-4 max-md:pb-14">
     <details class="hidden w-full flex-col gap-2 max-md:flex">
-      <summary class="btn sm w-fit">{page.section === 'api' ? 'API menu' : 'Docs menu'}</summary>
-      <nav class="mt-2 flex flex-col gap-0.5 rounded-lg border border-line bg-surface p-3" aria-label={page.section === 'api' ? 'API (mobile)' : 'Docs (mobile)'}>
+      <summary class="btn sm w-fit">{label} menu</summary>
+      <nav class="mt-2 flex flex-col gap-0.5 rounded-lg border border-line bg-surface p-3" aria-label={`${label} (mobile)`}>
         {
           pages.map(item => (
             <a class={sideLink} href={href(item.path)} aria-current={item.key === page.key ? 'page' : undefined}>
@@ -44,7 +51,7 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
       </nav>
     </details>
 
-    <aside class={`${column} max-w-[260px] flex-[1_1_220px] gap-5`} aria-label={page.section === 'api' ? 'API' : 'Docs'}>
+    <aside class={`${column} max-w-[260px] flex-[1_1_220px] gap-5`} aria-label={label}>
       <label class="flex flex-col gap-1.5 px-3">
         <span class="eyebrow">Version</span>
         <select class="version min-h-9 appearance-none rounded-pill border-[1.5px] border-line-strong bg-surface py-2 pr-7 pl-2.5 font-mono text-xs leading-none font-bold text-ink" data-version-switch>
@@ -65,9 +72,22 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
       }
     </aside>
 
-    <div class="flex min-w-0 max-w-[760px] flex-[999_1_560px] flex-col gap-6" data-pagefind-body data-pagefind-filter={`section:${page.section === 'api' ? 'API' : 'Docs'}`}>
+    <div class="flex min-w-0 max-w-[760px] flex-[999_1_560px] flex-col gap-6" data-pagefind-body data-pagefind-filter={`section:${label}`}>
       <nav class="flex gap-2 text-sm text-ink-2" aria-label="Breadcrumb" data-pagefind-ignore>
-        <a class="text-ink-2 hover:text-ink-2" href={href(pages[0].path)}>{page.section === 'api' ? 'API' : 'Docs'}</a><span aria-hidden="true">/</span><span>{page.group}</span>
+        {
+          crumbs.map((crumb, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true">/</span>}
+              {crumb.path ? (
+                <a class="text-ink-2 hover:text-ink-2" href={href(crumb.path)}>
+                  {crumb.text}
+                </a>
+              ) : (
+                <span>{crumb.text}</span>
+              )}
+            </>
+          ))
+        }
       </nav>
       <header class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-6 max-md:grid-cols-[minmax(0,1fr)]">
         <div>

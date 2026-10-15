@@ -13,6 +13,7 @@ import { pie } from '../layers/pie';
 import { pieDefaults } from './pieDefaults';
 import {
   createPreset,
+  presetConfig,
   type PresetController,
   type PresetHandle,
   type PresetSpec,
@@ -84,6 +85,20 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
     };
   }
 };
+
+/**
+ * Builds the chart config that `pieChart()` renders for the data and
+ * options, without a container: the pie layer with its labels. Pass it to `toScene()` to render
+ * the preset chart with another renderer. Responsive options and the
+ * inline size style of the root svg are left out; both need a container.
+ * @experimental
+ */
+export function pieChartConfig(
+  data: PieChartData,
+  options: PieChartPresetOptions = {}
+): ChartConfig {
+  return presetConfig(pieSpec, data, options);
+}
 
 /** Internal: creates the pie preset; used by `pieChart` and `PieChart`. */
 export function createPieChart(

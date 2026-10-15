@@ -3,9 +3,11 @@
  * says, and where it lives. A card's path follows its page's path:
  * `docs/line-charts/` has `og/docs/line-charts.png`, the landing page
  * `og/index.png`. The cards are listed from the same sources as the pages
- * (the docs collection, the API pages, the examples gallery), so a new page
+ * (the docs collection, the API pages, the package pages, the examples
+ * gallery), so a new page
  * gets its card without extra work. Rendering: lib/og-card.ts.
  */
+import { PACKAGES } from '../data/packages';
 import { navPages } from './docs';
 import { TYPES, gallery } from './gallery';
 import { pluginSlug, sortedPlugins } from './plugins';
@@ -61,6 +63,23 @@ export async function cards(): Promise<Card[]> {
         pose: 'point'
       })
     ),
+    {
+      key: 'packages',
+      eyebrow: ['Packages'],
+      title: 'More than SVG',
+      description:
+        'Packages made next to Chartist: renderers, plugins and wrappers, released with it under @chartist-js.',
+      pose: 'hero'
+    },
+    ...(await Promise.all(PACKAGES.map(pkg => navPages('packages', pkg.slug))))
+      .flat()
+      .map((page): Card => ({
+        key: page.path.replace(/\/$/, ''),
+        eyebrow: ['Packages', page.pkg ?? ''].filter(Boolean),
+        title: page.title,
+        description: page.description,
+        pose: 'point'
+      })),
     {
       key: 'examples',
       eyebrow: ['Examples'],

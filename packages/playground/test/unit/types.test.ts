@@ -158,6 +158,30 @@ const n: number = 'x';
     expect(diagnostics.map(d => main.slice(d.from, d.to))).toEqual(['n']);
   });
 
+  test('other packages get their declarations, which import chartist', async () => {
+    const terminal = await readFile(
+      new URL('../../../terminal/dist/index.d.ts', import.meta.url),
+      'utf8'
+    );
+    const service = createProject({
+      ts,
+      libs: LIBS,
+      declarations: {
+        ...declarations,
+        packages: { '@chartist-js/terminal': terminal }
+      },
+      registry
+    });
+    const main = `import { lineChart } from '@chartist-js/terminal';
+const text: string = lineChart({ series: [[1, 2]] }, { columns: 40, showArea: true });
+const n: number = lineChart({ series: [[1]] });
+console.log(text, n);
+`;
+    service.update({ 'index.html': '', 'src/main.ts': main });
+    const diagnostics = service.diagnostics('src/main.ts');
+    expect(diagnostics.map(d => main.slice(d.from, d.to))).toEqual(['n']);
+  });
+
   test('updates replace and remove files', () => {
     const service = project(`import { a } from './a.ts';\nconsole.log(a);\n`, {
       'src/a.ts': 'export const a = 1;\n'

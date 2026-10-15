@@ -246,6 +246,36 @@ function rootStyle(
 }
 
 /**
+ * Internal: a preset's chart config for data and options, without a
+ * container. The options extend the preset's defaults as in
+ * `createPreset`; the root gets no inline size style, which only sizes the
+ * svg in a container.
+ */
+export function presetConfig<
+  TData extends { labels?: unknown[]; series?: unknown[] },
+  TOptions
+>(
+  spec: PresetSpec<TData, TOptions>,
+  data: TData,
+  options?: TOptions
+): ChartConfig {
+  const resolved = extend({}, spec.defaults, options) as TOptions;
+  const { plugins, on } = (options ?? {}) as Pick<
+    ChartConfig,
+    'plugins' | 'on'
+  >;
+  return {
+    // As 1.x: missing labels and series are empty.
+    ...spec.config(
+      { ...data, labels: data.labels || [], series: data.series || [] },
+      resolved
+    ),
+    plugins,
+    on
+  };
+}
+
+/**
  * Responsive options of presets: the 1.x media query pairs, plus container
  * conditions (`container()`). Matching entries extend the options in order.
  * @experimental

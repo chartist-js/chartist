@@ -20,22 +20,39 @@ const fetchText = async (url: string) => {
   }
 };
 
-/** Chartist's declarations by URL, fetched once per page. */
-function declarationsAt(typesUrl: string): Promise<Declarations> {
-  let loaded = declarations.get(typesUrl);
+/** Chartist's declarations and other packages' by URL, fetched once per page. */
+function declarationsAt(
+  typesUrl: string,
+  packageUrls: Record<string, string> = {}
+): Promise<Declarations> {
+  const key = JSON.stringify([typesUrl, packageUrls]);
+  let loaded = declarations.get(key);
   if (!loaded) {
     loaded = Promise.all([
       fetchText(new URL('index.d.ts', typesUrl).href),
-      fetchText(new URL('compat.d.ts', typesUrl).href)
-    ]).then(([index, compat]) => ({ index, compat }));
-    declarations.set(typesUrl, loaded);
+      fetchText(new URL('compat.d.ts', typesUrl).href),
+      Promise.all(
+        Object.entries(packageUrls).map(
+          async ([name, url]) => [name, await fetchText(url)] as const
+        )
+      )
+    ]).then(([index, compat, found]) => ({
+      index,
+      compat,
+      packages: Object.fromEntries(
+        found.filter(
+          (entry): entry is readonly [string, string] => entry[1] !== undefined
+        )
+      )
+    }));
+    declarations.set(key, loaded);
   }
   return loaded;
 }
 
 async function handle(request: TypeRequest): Promise<unknown> {
   if (request.type === 'open') {
-    const found = await declarationsAt(request.typesUrl);
+    const found = await declarationsAt(request.typesUrl, request.packages);
     projects.set(
       request.project,
       createProject({

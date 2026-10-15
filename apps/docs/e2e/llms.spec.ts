@@ -5,7 +5,7 @@
  */
 import { expect, test } from '@playwright/test';
 import { API_PAGES } from '../src/lib/api-pages';
-import { DOCS } from './pages';
+import { DOCS, PACKAGE_PAGES } from './pages';
 
 /** Links in the files are absolute to the configured site: same paths here. */
 const local = (url: string, baseURL: string) => {
@@ -36,6 +36,10 @@ test('llms.txt steers to v2 and every link resolves', async ({
   );
   expect(links.filter(link => /\/api\/[^/]+\.md$/.test(link))).toHaveLength(
     API_PAGES.length
+  );
+  // And every package page: overview, guides, API page.
+  expect(links.filter(link => /\/packages\/.+\.md$/.test(link))).toHaveLength(
+    PACKAGE_PAGES.length
   );
   expect(
     links.filter(link => /\/examples\/.+\.md$/.test(link)).length
@@ -96,13 +100,21 @@ test('API Markdown has every entry, and llms-full.txt every page', async ({
   for (const page of API_PAGES) {
     expect(full, page.slug).toContain(`## ${page.title} (Chartist API)\n`);
   }
+  // A package's API page has every export, and llms-full.txt has it too.
+  const terminal = await (
+    await request.get('/packages/terminal/api.md')
+  ).text();
+  expect(terminal).toContain('## renderToTerminal\n');
+  expect(full).toContain('## renderToTerminal\n');
 });
 
 test('pages point to their Markdown', async ({ page, request }) => {
   for (const [path, markdown] of [
     ['/docs/getting-started/', '/docs/getting-started.md'],
     ['/api/scene/', '/api/scene.md'],
-    ['/examples/line/area/', '/examples/line/area.md']
+    ['/examples/line/area/', '/examples/line/area.md'],
+    ['/packages/terminal/', '/packages/terminal.md'],
+    ['/packages/terminal/api/', '/packages/terminal/api.md']
   ]) {
     await page.goto(path);
     await expect(

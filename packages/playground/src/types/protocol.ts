@@ -46,6 +46,8 @@ export type TypeRequest =
       /** Absolute URL of the directory with `index.d.ts` and `compat.d.ts`. */
       typesUrl: string;
       untyped: string[];
+      /** Other typed packages: bare name → absolute URL of its `index.d.ts`. */
+      packages?: Record<string, string>;
     }
   | { type: 'update'; project: number; files: Record<string, string> }
   | { type: 'diagnostics'; project: number; file: string }

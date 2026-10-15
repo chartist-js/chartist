@@ -19,6 +19,11 @@ export interface TypeClientOptions {
   url: string;
   /** Bare imports without types (the host's extra `imports`). */
   untyped?: string[];
+  /**
+   * Other packages with types: bare name → its `index.d.ts`, relative to
+   * `url` (e.g. `{ '@chartist-js/terminal': 'terminal/index.d.ts' }`).
+   */
+  packages?: Record<string, string>;
 }
 
 export interface TypeClient {
@@ -171,7 +176,19 @@ export function createTypeClient(
         options.url.replace(/\/?$/, '/'),
         document.baseURI
       ).href;
-      send({ type: 'open', project, typesUrl, untyped: options.untyped ?? [] })
+      const packages = Object.fromEntries(
+        Object.entries(options.packages ?? {}).map(([name, path]) => [
+          name,
+          new URL(path, typesUrl).href
+        ])
+      );
+      send({
+        type: 'open',
+        project,
+        typesUrl,
+        untyped: options.untyped ?? [],
+        packages
+      })
         .then(() => {
           sent = undefined;
         })

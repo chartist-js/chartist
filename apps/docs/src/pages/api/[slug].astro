@@ -35,6 +35,14 @@ const headings = entries.map(entry => ({ depth: 2, slug: entry.name, text: entry
       </p>
     )
   }
+  {
+    slug === 'rendering' && (
+      <p>
+        Chartist renders a scene as SVG in the page or as a string on the server. <a href={href('packages/terminal/')}>@chartist-js/terminal</a> renders the
+        same scene as text for terminals and as text art in HTML.
+      </p>
+    )
+  }
   <div class="api-entries" data-pagefind-weight={legacy ? 0.5 : undefined}>
     {entries.map(entry => <Entry entry={entry} />)}
   </div>

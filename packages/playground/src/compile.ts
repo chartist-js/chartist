@@ -23,8 +23,16 @@ interface Module {
 interface State {
   files: PlaygroundFiles;
   modules: Map<string, Module>;
-  /** Stylesheets in import order: `{ href }` or `{ file, css }`. */
-  styles: Array<{ href: string } | { file: string; css: string }>;
+  /**
+   * Stylesheets in import order: a `chartist/…` stylesheet (`{ href }`), a
+   * bare name from `imports` (`{ href, mapped }`, its URL) or a project file
+   * (`{ file, css }`).
+   */
+  styles: Array<
+    { href: string; mapped?: boolean } | { file: string; css: string }
+  >;
+  /** The extra import map entries, for stylesheets imported by name. */
+  imports: Record<string, string>;
   seenStyles: Set<string>;
   diagnostics: Diagnostic[];
 }
@@ -46,6 +54,7 @@ export async function compile(
     modules: new Map(),
     styles: [],
     seenStyles: new Set(),
+    imports: options.imports ?? {},
     diagnostics: []
   };
   const html = files['index.html'];
@@ -112,7 +121,9 @@ export async function compile(
     .map(style =>
       'href' in style
         ? `<link rel="stylesheet" href="${escapeAttr(
-            chartistStylesheet(style.href, absolute(options.stylesUrl))
+            style.mapped
+              ? absolute(style.href)
+              : chartistStylesheet(style.href, absolute(options.stylesUrl))
           )}">`
         : `<style data-file="${escapeAttr(style.file)}">\n${style.css.replace(
             /<\/style/gi,
@@ -216,6 +227,14 @@ function chartistStylesheet(specifier: string, stylesUrl: string) {
 }
 
 function addStyle(specifier: string, from: string, state: State, at: number) {
+  // A package's stylesheet the import map names, e.g. a renderer's.
+  if (Object.hasOwn(state.imports, specifier)) {
+    if (!state.seenStyles.has(specifier)) {
+      state.seenStyles.add(specifier);
+      state.styles.push({ href: state.imports[specifier], mapped: true });
+    }
+    return;
+  }
   if (specifier.startsWith('chartist/')) {
     if (!state.seenStyles.has(specifier)) {
       state.seenStyles.add(specifier);
