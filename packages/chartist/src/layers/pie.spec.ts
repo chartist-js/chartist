@@ -1,4 +1,4 @@
-import { estimateText } from '../render/measure';
+import { estimateText, type MeasureStyle } from '../render/measure';
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline } from '../pipeline/phases';
 import { findAll } from '../scene/tree';
@@ -12,7 +12,8 @@ import {
 function scene(
   series: unknown[],
   options: PieLayerOptions = {},
-  labels?: string[]
+  labels?: string[],
+  measureStyle?: MeasureStyle
 ) {
   return runPipeline(
     createPhaseEmitter(),
@@ -22,7 +23,7 @@ function scene(
       padding: 0,
       layers: [pie(options)]
     },
-    { width: 200, height: 200, measureText: estimateText }
+    { width: 200, height: 200, measureText: estimateText, measureStyle }
   ).scene;
 }
 
@@ -142,6 +143,72 @@ describe('layers/pie', () => {
         role: 'slice'
       })[0].attrs.style
     ).toBe('stroke-width: 60px');
+  });
+
+  describe('lays out a donut for the stylesheet width (#1493)', () => {
+    const slice = (options: PieLayerOptions, measureStyle?: MeasureStyle) =>
+      findAll(scene([1, 2], options, undefined, measureStyle), {
+        role: 'slice'
+      })[0];
+
+    it('reads the stroke width of a donut slice', () => {
+      const measureStyle = vi.fn(() => '20px');
+      const ring = slice({ donut: true }, measureStyle);
+      expect(measureStyle).toHaveBeenCalledWith('stroke-width', {
+        classes: ['ct-slice-donut']
+      });
+      expect(ring.ctx?.radius).toBe(90);
+      // Still drawn by CSS.
+      expect(ring.attrs.style).toBeUndefined();
+    });
+
+    it('puts outside labels on the outer edge of the measured ring', () => {
+      const [label] = findAll(
+        scene(
+          [1, 1],
+          { donut: true, labelPosition: 'outside' },
+          undefined,
+          () => '20px'
+        ),
+        { role: 'label' }
+      );
+      expect(Math.hypot(label.ctx!.x - 100, label.ctx!.y - 100)).toBeCloseTo(
+        100
+      );
+    });
+
+    it('reads the slice class from classNames', () => {
+      const measureStyle = vi.fn(() => '20px');
+      slice(
+        { donut: true, classNames: { sliceDonut: 'ring wide' } },
+        measureStyle
+      );
+      expect(measureStyle).toHaveBeenCalledWith('stroke-width', {
+        classes: ['ring', 'wide']
+      });
+    });
+
+    it('uses donutWidth when set, and 60px for values not in px', () => {
+      const measureStyle = vi.fn(() => '20px');
+      expect(
+        slice({ donut: true, donutWidth: 40 }, measureStyle).ctx?.radius
+      ).toBe(80);
+      expect(measureStyle).not.toHaveBeenCalled();
+      for (const value of [
+        'var(--ct-donut-width, 60px)',
+        '10%',
+        '',
+        undefined
+      ]) {
+        expect(slice({ donut: true }, () => value).ctx?.radius).toBe(70);
+      }
+    });
+
+    it("doesn't measure for a pie", () => {
+      const measureStyle = vi.fn(() => '20px');
+      expect(slice({}, measureStyle).ctx?.radius).toBe(100);
+      expect(measureStyle).not.toHaveBeenCalled();
+    });
   });
 
   describe('donut labels follow labelPosition', () => {

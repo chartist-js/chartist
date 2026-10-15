@@ -7,6 +7,7 @@ import {
   destroyMockDom,
   mockDom
 } from '../../../test/mock/dom';
+import { useDonutStylesheet } from '../../../test/donut-css';
 
 describe('Charts', () => {
   describe('PieChart', () => {
@@ -35,6 +36,7 @@ describe('Charts', () => {
     beforeEach(() => {
       mockDom();
     });
+    useDonutStylesheet();
     afterEach(() => {
       destroyMockDom();
       data = { series: [] };

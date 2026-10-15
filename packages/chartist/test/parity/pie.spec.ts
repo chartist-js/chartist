@@ -9,11 +9,13 @@ import type {
 } from '../../src/charts/PieChart/PieChart.types';
 import { pieChart } from '../../src/presets/pieChart';
 import { markup } from '../markup';
+import { useDonutStylesheet } from '../donut-css';
 import { container, useBrowserSizes } from './helpers';
 import { fullCircles1x, fullCirclesV2, hasFullSlice } from './pie-circle';
 import { PIE_FIXTURES } from './pie-fixtures';
 
 useBrowserSizes();
+useDonutStylesheet();
 
 async function render1x(data: PieChartData, options?: PieChartOptions) {
   const element = container();

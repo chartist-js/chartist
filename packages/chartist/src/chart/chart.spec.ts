@@ -7,6 +7,7 @@ import { pie } from '../layers/pie';
 import { cartesianAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { findAll } from '../scene/tree';
+import { domRenderer } from '../render/dom';
 import { chart } from './chart';
 import type { ChartConfig, ChartPlugin } from './types';
 
@@ -116,6 +117,58 @@ describe('chart/chart', () => {
     });
     chart(element, { data, layers: [dots()], width: 300, height: '50%' });
     expect(styles).toEqual(['width: 300px; height: 50%;']);
+  });
+
+  describe('reads the donut width from CSS (#1493)', () => {
+    const donut = (renderer?: ChartConfig['renderer']) => {
+      const { element } = sizedContainer(300, 300);
+      chart(element, {
+        data: { series: [1, 2] },
+        coordinates: 'polar',
+        padding: 0,
+        layers: [pie({ donut: true, showLabel: false })],
+        renderer
+      });
+      return element;
+    };
+    const radius = (element: Element) =>
+      element
+        .querySelector('path.ct-slice-donut')!
+        .getAttribute('d')!
+        .match(/A([\d.]+),/)![1];
+
+    it("passes the renderer's measureStyle the container and classes", () => {
+      const measureStyle = vi.fn(() => '20px');
+      const element = donut({ ...domRenderer(), measureStyle });
+      expect(measureStyle).toHaveBeenCalledWith('stroke-width', {
+        container: element,
+        rootClass: 'ct-chart-donut',
+        classes: ['ct-slice-donut']
+      });
+      expect(radius(element)).toBe('140');
+    });
+
+    it('lays out for a px stroke width from the stylesheet', () => {
+      const style = document.createElement('style');
+      style.textContent = '.ct-slice-donut { stroke-width: 20px; }';
+      document.body.appendChild(style);
+      expect(radius(donut())).toBe('140');
+    });
+
+    it('falls back to 60px when the value is not in px', () => {
+      // jsdom leaves var() unresolved in computed values.
+      const style = document.createElement('style');
+      style.textContent =
+        '.ct-slice-donut { stroke-width: var(--ct-donut-width, 60px); }';
+      document.body.appendChild(style);
+      expect(radius(donut())).toBe('120');
+      expect(
+        radius(donut({ ...domRenderer(), measureStyle: () => '25%' }))
+      ).toBe('120');
+      expect(radius(donut({ ...domRenderer(), measureStyle: undefined }))).toBe(
+        '120'
+      );
+    });
   });
 
   it('a responsive chart fills its container (100%)', () => {

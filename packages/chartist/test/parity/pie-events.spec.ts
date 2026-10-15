@@ -10,11 +10,13 @@ import type {
 } from '../../src/charts/PieChart/PieChart.types';
 import { compat } from '../../src/compat';
 import { record, type Recorded } from './events';
+import { useDonutStylesheet } from '../donut-css';
 import { container, useBrowserSizes } from './helpers';
 import { fullCircles1x, fullCirclesV2, hasFullSlice } from './pie-circle';
 import { PIE_FIXTURES } from './pie-fixtures';
 
 useBrowserSizes();
+useDonutStylesheet();
 
 async function events1x(data: PieChartData, options?: PieChartOptions) {
   const chart = new PieChartV1(

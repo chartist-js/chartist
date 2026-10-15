@@ -1,5 +1,5 @@
 import type { ChartPadding } from '../core/types';
-import type { LabelMode, MeasureText } from '../render/measure';
+import type { LabelMode, MeasureStyle, MeasureText } from '../render/measure';
 import type { CartesianAxes, ChartAxes, LayerBinding } from '../scales/axis';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { assignKeys, mapNodes } from '../scene/tree';
@@ -71,6 +71,8 @@ export interface PipelineEnvironment {
   readonly width: number;
   readonly height: number;
   readonly measureText: MeasureText;
+  /** Reads computed styles for layout; absent without a DOM. */
+  readonly measureStyle?: MeasureStyle;
   /** The renderer's default label mode; `html` if omitted. */
   readonly labels?: LabelMode;
   /** Size attributes of the root svg; defaults to the layout size. */
@@ -226,7 +228,8 @@ export function compose(
   normalized?: NormalizedChartData,
   padding: ChartPadding = config.padding,
   bindings: readonly LayerBinding[] = [],
-  labels: LabelMode = 'html'
+  labels: LabelMode = 'html',
+  measureStyle?: MeasureStyle
 ): SceneNode[] {
   const composed: SceneNode[] = [];
   const byId = new Map((axes.all ?? []).map(axis => [axis.id, axis]));
@@ -257,7 +260,8 @@ export function compose(
       },
       normalized: layerNormalized,
       seriesIndexes: selection,
-      labels
+      labels,
+      measureStyle
     });
     for (const top of nodes) {
       const result = mapNodes(assignKeys(top, layerIndex), current =>
@@ -321,13 +325,15 @@ export function runPipeline(
     config.axes?.create(data, laidOut.area, bindings, config.layers) ?? {};
   // Measure with the root classes, so chart-type CSS applies.
   const { className } = config;
-  const measureText: MeasureText = className
-    ? (text, measureOptions) =>
-        environment.measureText(text, {
-          rootClass: className,
-          ...measureOptions
-        })
-    : environment.measureText;
+  const withRootClass = <T extends MeasureText | MeasureStyle | undefined>(
+    measure: T
+  ): T =>
+    (className && measure
+      ? (value: string, measureOptions?: object) =>
+          measure(value, { rootClass: className, ...measureOptions })
+      : measure) as T;
+  const measureText = withRootClass(environment.measureText);
+  const measureStyle = withRootClass(environment.measureStyle);
   const children = compose(
     emitter,
     config,
@@ -338,7 +344,8 @@ export function runPipeline(
     normalized,
     laidOut.padding,
     bindings,
-    config.labels ?? environment.labels ?? 'html'
+    config.labels ?? environment.labels ?? 'html',
+    measureStyle
   );
   const built = scene(
     emitter,

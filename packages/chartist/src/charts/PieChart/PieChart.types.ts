@@ -67,8 +67,9 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   /**
    * The width of a donut's ring: px as a number, or a share of the radius as
    * a string (`'30%'`). Without it, the stylesheet sets the width
-   * (`--ct-donut-width`, 60px by default), and the ring is laid out for
-   * 60 px.
+   * (`--ct-donut-width`, 60px by default), and in the browser the ring is
+   * laid out for the width the stylesheet gives a slice. Without a DOM
+   * (`renderToString()`), it's laid out for 60 px.
    */
   donutWidth?: number | string;
   /** Draws a label for each slice. */

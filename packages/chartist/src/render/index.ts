@@ -4,6 +4,8 @@ export { estimateText } from './measure';
 export { renderToString } from './string';
 export type {
   LabelMode,
+  MeasureStyle,
+  MeasureStyleOptions,
   MeasureText,
   MeasureTextOptions,
   TextMetrics

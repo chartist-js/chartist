@@ -186,6 +186,8 @@
     "LineParams",
     "LinePresetState",
     "LineSeriesOptions",
+    "MeasureStyle",
+    "MeasureStyleOptions",
     "MeasureText",
     "MeasureTextOptions",
     "Meta",

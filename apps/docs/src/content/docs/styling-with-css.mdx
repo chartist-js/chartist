@@ -50,7 +50,7 @@ The default stylesheet, `chartist/styles.css`, reads its values from custom prop
 | `--ct-label-color`                | `rgba(0, 0, 0, 0.4)`  | Axis and slice labels                |
 | `--ct-label-size`                 | `0.75rem`             | Label font size                      |
 
-A donut's `donutWidth` option wins over `--ct-donut-width`, and the ring is laid out for 60 px unless you set the option. More in [Pie and donut charts](../pie-and-donut-charts/#donuts).
+A donut's `donutWidth` option wins over `--ct-donut-width`. Without it, the chart lays the ring out for the width the stylesheet draws. A server render has no stylesheet to read and lays it out for 60 px, so set `donutWidth` there. More in [Pie and donut charts](../pie-and-donut-charts/#donuts).
 
 They're regular custom properties, so they cascade. Set them where they should apply:
 

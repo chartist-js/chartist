@@ -1,5 +1,5 @@
 import type { SceneNode } from '../scene/node';
-import type { LabelMode, MeasureText } from './measure';
+import type { LabelMode, MeasureStyle, MeasureText } from './measure';
 
 /**
  * What a renderer returns from `render()`. The `render` and `mount` phase
@@ -32,6 +32,12 @@ export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
    * without it, Chartist estimates text sizes.
    */
   readonly measureText?: MeasureText;
+  /**
+   * Reads computed styles for layout, in the container so its CSS
+   * applies; without it, layout uses its defaults (a donut's ring is
+   * laid out for 60 px).
+   */
+  readonly measureStyle?: MeasureStyle;
   /** The default label mode of this renderer; `html` if omitted. */
   readonly labels?: LabelMode;
 }

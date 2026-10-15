@@ -51,6 +51,41 @@ export type MeasureText = (
   options?: MeasureTextOptions
 ) => TextMetrics;
 
+/** What a {@link MeasureStyle} function gets with the property to read. */
+export interface MeasureStyleOptions {
+  /** Class names of the element whose style is read. */
+  readonly classes?: readonly string[];
+  /** Classes of the chart's root svg, so chart-type CSS applies. */
+  readonly rootClass?: string;
+  /** Where to measure (the chart container), so its CSS applies. */
+  readonly container?: Element;
+}
+
+/**
+ * Reads a computed CSS property of an SVG `path` with the given classes,
+ * for values that the stylesheet decides and layout needs: the pie layer
+ * reads the `stroke-width` of a donut slice to fit the ring. Returns
+ * `undefined` when it can't tell. In the browser, Chartist reads it in
+ * the chart's container; `toScene()` has no stylesheet, so layout uses
+ * its defaults there.
+ *
+ * @example
+ * ```ts
+ * import { domRenderer, type Renderer } from 'chartist';
+ *
+ * // The DOM renderer, but donuts are laid out for 30px rings, whatever
+ * // the stylesheet says. Pass it as `renderer` to `chart()`.
+ * export const renderer: Renderer = {
+ *   ...domRenderer(),
+ *   measureStyle: property => (property === 'stroke-width' ? '30px' : undefined)
+ * };
+ * ```
+ */
+export type MeasureStyle = (
+  property: string,
+  options?: MeasureStyleOptions
+) => string | undefined;
+
 export const DEFAULT_FONT_SIZE = 12;
 
 /**

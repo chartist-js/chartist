@@ -1,7 +1,11 @@
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline, type PipelineState } from '../pipeline/phases';
 import { domRenderer } from '../render/dom';
-import { estimateText, type MeasureText } from '../render/measure';
+import {
+  estimateText,
+  type MeasureStyle,
+  type MeasureText
+} from '../render/measure';
 import type { RenderOutput } from '../render/types';
 import type { ResponsiveWatcher } from '../responsive/responsive';
 import { withChartTypeClass } from './className';
@@ -110,6 +114,11 @@ export function chart(
       ? rendererMeasure(text, { container, ...options })
       : estimateText(text, options);
   };
+  // Styles for layout (a donut's ring width), read in the container too.
+  const rendererStyle = renderer.measureStyle;
+  const measureStyle: MeasureStyle | undefined =
+    rendererStyle &&
+    ((property, options) => rendererStyle(property, { container, ...options }));
   // The config as given, and with the matching responsive overrides.
   let current = config;
   let effective = config;
@@ -209,6 +218,7 @@ export function chart(
         width,
         height,
         measureText,
+        measureStyle,
         labels: renderer.labels ?? 'html',
         rootSize: {
           width: effective.width ?? '100%',

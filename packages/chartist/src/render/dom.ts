@@ -1,6 +1,11 @@
 import { namespaces } from '../core/constants';
 import type { SceneNode } from '../scene/node';
-import { estimateText, type MeasureText } from './measure';
+import {
+  estimateText,
+  type MeasureStyleOptions,
+  type MeasureText,
+  type MeasureTextOptions
+} from './measure';
 import type { Renderer, RenderOutput } from './types';
 
 /**
@@ -67,34 +72,52 @@ function removePrevious(container: Element) {
 }
 
 /**
+ * Adds a hidden probe svg (with the chart's root class) holding one element
+ * with the given classes to the container, or else the document's body, so
+ * the page's CSS applies; reads it and removes the probe again.
+ */
+function probe<T>(
+  document: Document,
+  name: 'text' | 'path',
+  options: MeasureTextOptions | MeasureStyleOptions,
+  read: (node: SVGGraphicsElement) => T
+): T {
+  const svg = document.createElementNS(namespaces.svg, 'svg');
+  svg.setAttribute(
+    'style',
+    'position: absolute; visibility: hidden; width: 0; height: 0;'
+  );
+  if (options.rootClass) {
+    svg.setAttribute('class', options.rootClass);
+  }
+  const node = document.createElementNS(
+    namespaces.svg,
+    name
+  ) as SVGGraphicsElement;
+  if (options.classes?.length) {
+    node.setAttribute('class', options.classes.join(' '));
+  }
+  svg.appendChild(node);
+  (options.container ?? document.body).appendChild(svg);
+  try {
+    return read(node);
+  } finally {
+    svg.remove();
+  }
+}
+
+/**
  * Measures text with an offscreen SVG `<text>` in the given document (in
  * the container, if there is one), so CSS fonts apply. Falls back to the
  * estimate where SVG metrics are missing.
  */
 function measureInDocument(document: Document): MeasureText {
-  return (text, options = {}) => {
-    const svg = document.createElementNS(namespaces.svg, 'svg');
-    svg.setAttribute(
-      'style',
-      'position: absolute; visibility: hidden; width: 0; height: 0;'
-    );
-    if (options.rootClass) {
-      svg.setAttribute('class', options.rootClass);
-    }
-    const node = document.createElementNS(
-      namespaces.svg,
-      'text'
-    ) as SVGTextElement;
-    if (options.classes?.length) {
-      node.setAttribute('class', options.classes.join(' '));
-    }
-    if (options.fontSize) {
-      node.setAttribute('font-size', String(options.fontSize));
-    }
-    node.textContent = text;
-    svg.appendChild(node);
-    (options.container ?? document.body).appendChild(svg);
-    try {
+  return (text, options = {}) =>
+    probe(document, 'text', options, node => {
+      if (options.fontSize) {
+        node.setAttribute('font-size', String(options.fontSize));
+      }
+      node.textContent = text;
       if (typeof node.getBBox !== 'function') {
         return estimateText(text, options);
       }
@@ -109,16 +132,14 @@ function measureInDocument(document: Document): MeasureText {
             ...(fontSize > 0 && { fontSize })
           }
         : estimateText(text, options);
-    } finally {
-      svg.remove();
-    }
-  };
+    });
 }
 
 /**
  * Creates the renderer `chart()` uses by default: it renders scenes as
  * inline SVG into the container, replacing an earlier Chartist SVG there
- * (as 1.x does), and measures text in the container, so its CSS applies.
+ * (as 1.x does), and measures text and reads styles for layout in the
+ * container, so its CSS applies.
  * Wrap it to change what every render puts on the page.
  *
  * @example
@@ -169,6 +190,15 @@ export function domRenderer(): Renderer<DomRenderOutput> {
       return document
         ? measureInDocument(document)(text, options)
         : estimateText(text, options);
+    },
+    measureStyle(property, options = {}) {
+      const document = options.container?.ownerDocument ?? globalThis.document;
+      const view = document?.defaultView;
+      return view
+        ? probe(document, 'path', options, node =>
+            view.getComputedStyle(node).getPropertyValue(property)
+          ) || undefined
+        : undefined;
     }
   };
 }
