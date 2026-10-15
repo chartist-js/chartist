@@ -1,4 +1,9 @@
-import { Interpolation, LineChart, type SegmentData } from 'chartist';
+import {
+  AutoScaleAxis,
+  Interpolation,
+  LineChart,
+  type SegmentData
+} from 'chartist';
 import { container, created, withCompat } from './fixture.ts';
 
 const COORDINATES = [0, 10, 10, 0, 20, 10, 30, 5];
@@ -48,5 +53,47 @@ describe('Interpolation', () => {
     const d = el.querySelector('.ct-line')!.getAttribute('d')!;
     expect(d).toMatch(/^M[\d.,]+(L[\d.,]+)+$/);
     expect(d.match(/L/g)).toHaveLength(4);
+  });
+
+  // 1.x broke the smoothed line at every point whose x didn't increase,
+  // which left only move commands.
+  const v1 = process.env.CHARTIST_API_TARGET === 'v1';
+  const lineOf = async (
+    series: unknown[],
+    options: Record<string, unknown> = {}
+  ) => {
+    const el = container();
+    await created(
+      new LineChart(
+        el,
+        { series: [series] } as never,
+        withCompat({ axisX: { type: AutoScaleAxis }, ...options })
+      )
+    );
+    return el.querySelector('.ct-line')!.getAttribute('d')!;
+  };
+
+  test('smoothed lines connect descending x values (#1038)', async () => {
+    const d = await lineOf([
+      { x: 3, y: 1 },
+      { x: 2, y: 4 },
+      { x: 1, y: 2 }
+    ]);
+    expect(d.match(/M/g)).toHaveLength(v1 ? 3 : 1);
+    expect(d.match(/C/g) ?? []).toHaveLength(v1 ? 0 : 2);
+  });
+
+  test('smoothed lines stay connected with reverseData on an auto X axis (#1075)', async () => {
+    const d = await lineOf(
+      [
+        { x: 1, y: 1 },
+        { x: 2, y: 4 },
+        { x: 3, y: 2 },
+        { x: 4, y: 3 }
+      ],
+      { reverseData: true }
+    );
+    expect(d.match(/M/g)).toHaveLength(v1 ? 4 : 1);
+    expect(d.match(/C/g) ?? []).toHaveLength(v1 ? 0 : 3);
   });
 });
