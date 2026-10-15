@@ -66,6 +66,72 @@ describe('layers/pie', () => {
     ).toBe('stroke-width: 20px');
   });
 
+  describe('a slice that fills the circle (#1302)', () => {
+    /**
+     * The centre of each arc of a path, as a renderer finds it from the
+     * arc's endpoints (the SVG endpoint-to-centre conversion, rx = ry).
+     */
+    function arcCentres(d: string) {
+      const numbers = '(-?[\\d.]+)';
+      const start = d.match(new RegExp(`^M${numbers},${numbers}`))!;
+      let x = Number(start[1]);
+      let y = Number(start[2]);
+      const arcs = d.matchAll(
+        new RegExp(
+          `A${numbers},${numbers},0,([01]),([01]),${numbers},${numbers}`,
+          'g'
+        )
+      );
+      return Array.from(arcs, ([, r, , large, sweep, ex, ey]) => {
+        const [x2, y2] = [Number(ex), Number(ey)];
+        const half = Math.hypot(x2 - x, y2 - y) / 2;
+        const h = Math.sqrt(Math.max(0, Number(r) ** 2 - half ** 2));
+        const sign = large === sweep ? -1 : 1;
+        const centre = {
+          x: (x + x2) / 2 + (sign * h * -(y2 - y)) / (2 * half),
+          y: (y + y2) / 2 + (sign * h * (x2 - x)) / (2 * half)
+        };
+        [x, y] = [x2, y2];
+        return centre;
+      });
+    }
+
+    it.each([34, 120, 150])(
+      'is drawn around the centre from %s°',
+      startAngle => {
+        for (const donut of [false, true]) {
+          const [slice] = findAll(scene([5], { donut, startAngle }), {
+            role: 'slice'
+          });
+          const centres = arcCentres(String(slice.attrs.d));
+          expect(centres).toHaveLength(2);
+          for (const centre of centres) {
+            expect(Math.abs(centre.x - 100)).toBeLessThan(0.01);
+            expect(Math.abs(centre.y - 100)).toBeLessThan(0.01);
+          }
+        }
+      }
+    );
+
+    it('starts at the start angle, and a pie closes at the centre', () => {
+      const [, slice] = findAll(scene([0, 5, 0], { startAngle: 90 }), {
+        role: 'slice'
+      });
+      expect(slice.attrs.d).toBe(
+        'M200,100A100,100,0,0,0,0,100A100,100,0,0,0,200,100L100,100Z'
+      );
+    });
+
+    it('a value above the total fills the circle too', () => {
+      const [slice] = findAll(scene([150], { donut: true, total: 100 }), {
+        role: 'slice'
+      });
+      expect(slice.attrs.d).toBe(
+        'M100,30A70,70,0,0,0,100,170A70,70,0,0,0,100,30'
+      );
+    });
+  });
+
   it('leaves the donut width to CSS unless donutWidth is given', () => {
     const [slice] = findAll(scene([1, 2], { donut: true }), { role: 'slice' });
     expect(slice.attrs.style).toBeUndefined();

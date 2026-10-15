@@ -239,6 +239,9 @@ export function pie(options: PieLayerOptions = {}): Layer {
           0,
           startAngle - (index === 0 || hasSingleValInSeries ? 0 : 0.2)
         );
+        // A slice that fills the circle itself (one value, or one at least
+        // the total), not one that only reaches round with the overlap.
+        const fullCircle = endAngle - startAngle >= 359.99;
         if (endAngle - overlappingStartAngle >= 359.99) {
           endAngle = overlappingStartAngle + 359.99;
         }
@@ -248,18 +251,35 @@ export function pie(options: PieLayerOptions = {}): Layer {
           radius,
           overlappingStartAngle
         );
-        const end = polarToCartesian(center.x, center.y, radius, endAngle);
-        const path = new SvgPath(!options.donut)
-          .move(end.x, end.y)
-          .arc(
+        const path = new SvgPath(!options.donut);
+        if (fullCircle) {
+          // Two half circles through opposite points: their midpoint is the
+          // centre, so rounding the coordinates can't move the ring, as it
+          // does with one arc between points 0.01° apart (#1302).
+          const opposite = polarToCartesian(
+            center.x,
+            center.y,
             radius,
-            radius,
-            0,
-            Number(endAngle - startAngle > 180),
-            0,
-            start.x,
-            start.y
+            overlappingStartAngle + 180
           );
+          path
+            .move(start.x, start.y)
+            .arc(radius, radius, 0, 0, 0, opposite.x, opposite.y)
+            .arc(radius, radius, 0, 0, 0, start.x, start.y);
+        } else {
+          const end = polarToCartesian(center.x, center.y, radius, endAngle);
+          path
+            .move(end.x, end.y)
+            .arc(
+              radius,
+              radius,
+              0,
+              Number(endAngle - startAngle > 180),
+              0,
+              start.x,
+              start.y
+            );
+        }
         if (!options.donut) {
           path.line(center.x, center.y);
         }

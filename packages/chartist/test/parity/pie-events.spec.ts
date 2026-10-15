@@ -11,6 +11,7 @@ import type {
 import { compat } from '../../src/compat';
 import { record, type Recorded } from './events';
 import { container, useBrowserSizes } from './helpers';
+import { fullCircles1x, fullCirclesV2, hasFullSlice } from './pie-circle';
 import { PIE_FIXTURES } from './pie-fixtures';
 
 useBrowserSizes();
@@ -24,7 +25,14 @@ async function events1x(data: PieChartData, options?: PieChartOptions) {
   const events = record(chart as never);
   await new Promise(resolve => chart.on('created', resolve));
   chart.detach();
-  return withoutDefaultDonutWidth(events, options);
+  return withoutDefaultDonutWidth(events, options).map(event =>
+    event.element
+      ? {
+          ...event,
+          element: fullCircles1x(event.element, hasFullSlice(data, options))
+        }
+      : event
+  );
 }
 
 /**
@@ -57,7 +65,9 @@ async function eventsV2(data: PieChartData, options?: PieChartOptions) {
   const events = record(chart as never);
   await new Promise(resolve => chart.on('created', resolve));
   chart.detach();
-  return events;
+  return events.map(event =>
+    event.element ? { ...event, element: fullCirclesV2(event.element) } : event
+  );
 }
 
 describe('PieChart with compat emits the 1.x events of 1.5.0', () => {
