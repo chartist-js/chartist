@@ -55,18 +55,31 @@ export interface BandOptions {
   /** A class added to the band's group, such as `ct-series-c` for a color. */
   readonly className?: string;
   /**
-   * Replaces the classes of what the layer draws: `band` (`ct-band`) and
-   * `area` (`ct-band-area`).
+   * Gives the points and bars of every layer `ct-in-band` when their value
+   * at their value index lies between the band's edges (edges included),
+   * else `ct-out-band`. The value is `y`, or `x` when a value has no `y`
+   * (the bars of a horizontal bar chart). Nodes at an index where the band
+   * has a hole are left alone.
+   */
+  readonly mark?: boolean;
+  /**
+   * Replaces the classes of what the layer draws and marks: `band`
+   * (`ct-band`), `area` (`ct-band-area`), `inBand` (`ct-in-band`) and
+   * `outBand` (`ct-out-band`).
    */
   readonly classNames?: {
     readonly band?: string;
     readonly area?: string;
+    readonly inBand?: string;
+    readonly outBand?: string;
   };
 }
 
 const CLASS_NAMES = {
   band: 'ct-band',
-  area: 'ct-band-area'
+  area: 'ct-band-area',
+  inBand: 'ct-in-band',
+  outBand: 'ct-out-band'
 };
 
 /** The band's edges at one value index, and the X of its values. */
@@ -196,6 +209,15 @@ function bandEdges(
   };
 }
 
+/** The value a mark compares with the band: `y`, else `x`. */
+function markValue(value: NormalizedSeriesValue): number | undefined {
+  if (value !== null && typeof value === 'object') {
+    const { x, y } = value as { x?: unknown; y?: unknown };
+    return isNumeric(y) ? Number(y) : isNumeric(x) ? Number(x) : undefined;
+  }
+  return isNumeric(value) ? Number(value) : undefined;
+}
+
 function edgeContext(
   option: BandEdgeOption | undefined,
   context: LayerContext
@@ -244,7 +266,7 @@ function edgeContext(
  *   ]),
  *   layers: [
  *     axisGrid(),
- *     band({ low: 6, high: 10 }),
+ *     band({ low: 6, high: 10, mark: true }),
  *     line(),
  *     axisLabels()
  *   ]
@@ -278,7 +300,7 @@ export function band(options: BandOptions): Layer {
         (edge): edge is number => typeof edge === 'number'
       );
 
-  return {
+  const layer: Layer = {
     type: 'band',
     coordinates: ['cartesian'],
     axes: { x: options.x, y: options.y },
@@ -366,6 +388,27 @@ export function band(options: BandOptions): Layer {
         ? `${classNames.band} ${options.className}`
         : classNames.band;
       return [withFields(node('g', {}, className), { children })];
+    }
+  };
+
+  if (!options.mark) {
+    return layer;
+  }
+  return {
+    ...layer,
+    refine(current, context) {
+      if (current.role !== 'point' && current.role !== 'bar') {
+        return undefined;
+      }
+      const value = markValue(current.ctx.value);
+      const at = bandEdges(options, context).at(current.ctx.valueIndex);
+      if (value === undefined || !at) {
+        return undefined;
+      }
+      const inBand =
+        value >= Math.min(at.low, at.high) &&
+        value <= Math.max(at.low, at.high);
+      return current.addClass(inBand ? classNames.inBand : classNames.outBand);
     }
   };
 }

@@ -11,6 +11,7 @@ import { none } from '../interpolation/none';
 import { simple } from '../interpolation/simple';
 import { step } from '../interpolation/step';
 import { band } from './band';
+import { bar } from './bar';
 import { line } from './line';
 
 const LABELS = ['a', 'b', 'c', 'd', 'e'];
@@ -344,5 +345,146 @@ describe('layers/band', () => {
     expect(layer.chartType).toBeUndefined();
     expect(layer.coordinates).toEqual(['cartesian']);
     expect(layer.series).toEqual([]);
+  });
+
+  describe('mark', () => {
+    const classesOf = (scene: SceneNode, role: 'point' | 'bar') =>
+      findAll(scene, { role }).map(n =>
+        n.classes.filter(c => c.endsWith('-band'))
+      );
+
+    it('has no refine without mark', () => {
+      expect('refine' in band({ low: 40, high: 60 })).toBe(false);
+      expect(band({ low: 40, high: 60, mark: true }).refine).toBeTypeOf(
+        'function'
+      );
+    });
+
+    it.each([
+      ['before', true],
+      ['after', false]
+    ])('marks points with the band listed %s the line', (_name, first) => {
+      const marking = band({ low: 40, high: 60, mark: true });
+      const layers = first ? [marking, line()] : [line(), marking];
+      const { scene } = run([[30, 50, 70, 40, 60]], layers);
+      expect(classesOf(scene, 'point')).toEqual([
+        ['ct-out-band'],
+        ['ct-in-band'],
+        ['ct-out-band'],
+        ['ct-in-band'],
+        ['ct-in-band']
+      ]);
+    });
+
+    it('marks bars, and horizontal bars by their value', () => {
+      for (const horizontalBars of [false, true]) {
+        const step = { type: stepAxis(), ticks: ['a', 'b', 'c'] };
+        const auto = { type: autoScaleAxis() };
+        const { scene } = runPipeline(
+          createPhaseEmitter(),
+          {
+            data: { labels: ['a', 'b', 'c'], series: [[30, 50, 70]] },
+            axes: cartesianAxes({
+              x: horizontalBars ? auto : step,
+              y: horizontalBars ? step : auto,
+              normalize: {
+                multi: horizontalBars ? 'x' : 'y',
+                distributed: true
+              }
+            }),
+            layers: [
+              bar({ horizontalBars }),
+              band({ low: 40, high: 60, mark: true })
+            ]
+          },
+          { width: 400, height: 200, measureText: estimateText }
+        );
+        expect(classesOf(scene, 'bar')).toEqual([
+          ['ct-out-band'],
+          ['ct-in-band'],
+          ['ct-out-band']
+        ]);
+      }
+    });
+
+    it('marks by the edges at each value index', () => {
+      const { scene } = run(
+        [
+          { name: 'lo', data: [0, 5, 0] },
+          { name: 'hi', data: [2, 6, 2] },
+          { name: 'values', data: [1, 1, 3] }
+        ],
+        [
+          band({ low: 'lo', high: 'hi', mark: true }),
+          line({ series: ['values'] })
+        ]
+      );
+      expect(classesOf(scene, 'point')).toEqual([
+        ['ct-in-band'],
+        ['ct-out-band'],
+        ['ct-out-band']
+      ]);
+    });
+
+    it('leaves nodes at a hole of the band alone', () => {
+      const { scene } = run(
+        [
+          { name: 'lo', data: [0, null, 0] },
+          { name: 'values', data: [1, 1, 1] }
+        ],
+        [band({ low: 'lo', high: 2, mark: true }), line({ series: [1] })]
+      );
+      expect(classesOf(scene, 'point')).toEqual([
+        ['ct-in-band'],
+        [],
+        ['ct-in-band']
+      ]);
+    });
+
+    it('marks nothing without mark', () => {
+      const { scene } = run(
+        [[30, 50, 70]],
+        [band({ low: 40, high: 60 }), line()]
+      );
+      expect(classesOf(scene, 'point')).toEqual([[], [], []]);
+    });
+
+    it('takes class names for the marks', () => {
+      const { scene } = run(
+        [[30, 50]],
+        [
+          band({
+            low: 40,
+            high: 60,
+            mark: true,
+            classNames: { inBand: 'in', outBand: 'out' }
+          }),
+          line()
+        ]
+      );
+      expect(findAll(scene, { role: 'point' }).map(p => p.classes)).toEqual([
+        ['ct-point', 'out'],
+        ['ct-point', 'in']
+      ]);
+    });
+
+    it('marks before compose listeners see the nodes', () => {
+      const seen: string[][] = [];
+      const { scene } = run(
+        [[30, 50, 70]],
+        [band({ low: 40, high: 60, mark: true }), line()],
+        emitter =>
+          emitter.on('compose', (current: SceneNode) => {
+            if (current.role !== 'point') {
+              return undefined;
+            }
+            seen.push(current.classes.filter(c => c.endsWith('-band')));
+            // A listener still has the last word.
+            return current.ctx.valueIndex === 2 ? null : undefined;
+          })
+      );
+      expect(seen).toEqual([['ct-out-band'], ['ct-in-band'], ['ct-out-band']]);
+      expect(findAll(scene, { role: 'point' })).toHaveLength(2);
+    });
   });
 });
