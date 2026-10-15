@@ -29,7 +29,7 @@
 
 ## 5. SVG
 
-- [ ] 5.1 Fix `SvgPath`: rounding with `accuracy: 0` and `false`, `splitByCommand`, `join`, `parse` (tokenizer, H/V/Q/S/T), arc `scale`/`translate` (#1491). Update the ported spec that relied on `accuracy: 0` not rounding. Verify: `SvgPath.spec.ts` cases for each, and the line and area paths of the examples unchanged (`pnpm nx run chartist:test:visual:local` shows no new diffs)
+- [x] 5.1 Fix `SvgPath`: rounding with `accuracy: 0` and `false`, `splitByCommand`, `join`, `parse` (tokenizer, H/V/Q/S/T), arc `scale`/`translate` (#1491). Update the ported spec that relied on `accuracy: 0` not rounding. Verify: `SvgPath.spec.ts` cases for each, and the line and area paths of the examples unchanged (`pnpm nx run chartist:test:visual:local` shows no new diffs)
 - [ ] 5.2 Stop setting `xmlns` on HTML label spans in `grid.ts` and `Svg.foreignObject`; the DOM parity comparison ignores `xmlns` attributes (#1217). Update `dom.spec.ts`. Verify: a test that a DOM-rendered chart serialized with `XMLSerializer` parses as SVG, for the class and the function
 
 ## 6. Docs and records
