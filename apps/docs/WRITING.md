@@ -40,24 +40,25 @@ Prose, then something the reader can run or copy: a LiveExample or a code block.
 
 Slugs (file names) and sidebar order. Link between pages with these.
 
-| Group       | Order | Slug                   | Title                    |
-| ----------- | ----- | ---------------------- | ------------------------ |
-| Start here  | 1     | `getting-started`      | Getting started          |
-| Start here  | 2     | `why-chartist`         | Why Chartist?            |
-| Start here  | 3     | `coming-from-1x`       | Coming from 1.x          |
-| Chart types | 1     | `line-charts`          | Line charts              |
-| Chart types | 2     | `bar-charts`           | Bar charts               |
-| Chart types | 3     | `pie-and-donut-charts` | Pie and donut charts     |
-| Chart types | 4     | `composed-charts`      | Composed charts          |
-| Guides      | 1     | `data-and-options`     | Data and options         |
-| Guides      | 2     | `sizing-charts`        | Sizing charts            |
-| Guides      | 3     | `styling-with-css`     | Styling with CSS         |
-| Guides      | 4     | `responsive`           | Responsive sugar topping |
-| Guides      | 5     | `axes-and-scales`      | Axes and scales          |
-| Guides      | 6     | `animations`           | Animations               |
-| Guides      | 7     | `events-and-plugins`   | Events and plugins       |
-| Guides      | 8     | `server-rendering`     | Server rendering         |
-| Guides      | 9     | `updating-charts`      | Updating charts          |
+| Group       | Order | Slug                     | Title                    |
+| ----------- | ----- | ------------------------ | ------------------------ |
+| Start here  | 1     | `getting-started`        | Getting started          |
+| Start here  | 2     | `why-chartist`           | Why Chartist?            |
+| Start here  | 3     | `coming-from-1x`         | Coming from 1.x          |
+| Chart types | 1     | `line-charts`            | Line charts              |
+| Chart types | 2     | `bar-charts`             | Bar charts               |
+| Chart types | 3     | `pie-and-donut-charts`   | Pie and donut charts     |
+| Chart types | 4     | `composed-charts`        | Composed charts          |
+| Guides      | 1     | `data-and-options`       | Data and options         |
+| Guides      | 2     | `sizing-charts`          | Sizing charts            |
+| Guides      | 3     | `styling-with-css`       | Styling with CSS         |
+| Guides      | 4     | `responsive`             | Responsive sugar topping |
+| Guides      | 5     | `axes-and-scales`        | Axes and scales          |
+| Guides      | 6     | `target-lines-and-bands` | Target lines and bands   |
+| Guides      | 7     | `animations`             | Animations               |
+| Guides      | 8     | `events-and-plugins`     | Events and plugins       |
+| Guides      | 9     | `server-rendering`       | Server rendering         |
+| Guides      | 10    | `updating-charts`        | Updating charts          |
 
 ## Package pages
 

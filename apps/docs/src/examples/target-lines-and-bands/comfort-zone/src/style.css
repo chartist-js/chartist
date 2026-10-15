@@ -1,0 +1,8 @@
+/* Green inside the band; outside, larger and in the series color. */
+#chart .ct-point.ct-in-band {
+  stroke: var(--ct-series-f);
+}
+
+#chart .ct-point.ct-out-band {
+  stroke-width: 14px;
+}
