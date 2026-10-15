@@ -34,7 +34,7 @@ The classes are still there, imported the same way, with the same constructor ar
 />
 
 - **`LineChart`, `BarChart` and `PieChart`** from `chartist`, with `update(data, options, override)`, `detach()`, `on()` and `off()`. The first render still happens on the next tick, and charts still redraw when the window resizes.
-- **Every other 1.x export**, from `chartist` and from the UMD global: `Svg`, `SvgList`, `SvgPath`, `easings`, `Interpolation`, the axis classes, `EventEmitter`, the helpers and the types (`LineChartData`, `BarChartOptions` and the rest). None of them was removed.
+- **Every other 1.x export**, from `chartist` and from the UMD global: `Svg`, `SvgList`, `SvgPath`, `easings`, `Interpolation`, the axis classes, `EventEmitter`, the helpers and the types (`LineChartData`, `BarChartOptions` and the rest). None of them was removed. The classes and what only they use are [deprecated](#deprecated-in-2x-removed-in-30), and still work through all of 2.x.
 - **The look.** Same class names, same default styles. v2 is tested against screenshots of 1.5.0, and the default stylesheet matches them.
 - **Your stylesheet imports.** `chartist/dist/index.css` and the Sass entry `chartist/dist/index.scss` are still in the package. The new short path is `chartist/styles.css`:
 
@@ -80,8 +80,8 @@ A 1.x plugin is a function that gets the chart (and its options). On the classes
 
 ```ts
 import 'chartist/styles.css';
-import { LineChart, type Plugin } from 'chartist';
-import { compat } from 'chartist/compat';
+import { LineChart } from 'chartist';
+import { compat, type Plugin } from 'chartist/compat';
 
 // A 1.x plugin: a function that gets the chart and its options.
 const caption: Plugin = (chart, options) => {
@@ -98,6 +98,20 @@ new LineChart(
 ```
 
 Without `compat`, Chartist skips the plugin and logs a warning that explains how to turn it on.
+
+## Deprecated in 2.x, removed in 3.0
+
+The classes, and everything that exists only for them, are deprecated. They keep working through all of 2.x, and 3.0 removes them from `chartist`. Nothing changes at runtime and nothing is logged: your editor strikes the names through and its hint says what replaces them.
+
+- **`LineChart`, `BarChart`, `PieChart`:** use `lineChart()`, `barChart()` and `pieChart()`, or `chart()` for the rest.
+- **`LineChartOptions`, `BarChartOptions`, `PieChartOptions`:** the options of the functions are `LineChartPresetOptions`, `BarChartPresetOptions` and `PieChartPresetOptions`.
+- **`AutoScaleAxis`, `FixedScaleAxis`, `StepAxis`:** use `autoScaleAxis()`, `fixedScaleAxis()` and `stepAxis()`.
+- **`EventEmitter` and the classes' events types:** the handle a chart function returns has `on()` and `off()`.
+- **`DrawEvent`, `CreatedEvent`, `Plugin` and the other 1.x event types:** import the same types from `chartist/compat`.
+
+The data types, `Svg`, `SvgPath`, `easings`, `Interpolation` and the helpers aren't deprecated: the functions use them too.
+
+If your linter treats deprecations as errors (for example `@typescript-eslint/no-deprecated`), this is where it shows up. Move one chart at a time, as the next section shows.
 
 ## Moving to the functions
 
@@ -176,8 +190,8 @@ The functions accept only v2 plugins, and throw if you pass a plain function. Wr
 
 ```ts
 import 'chartist/styles.css';
-import { lineChart, type Plugin } from 'chartist';
-import { fromLegacyPlugin } from 'chartist/compat';
+import { lineChart } from 'chartist';
+import { fromLegacyPlugin, type Plugin } from 'chartist/compat';
 
 const caption: Plugin = (chart, options) => {
   chart.on('created', () => {

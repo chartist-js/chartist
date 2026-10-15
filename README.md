@@ -70,7 +70,7 @@ No bundler? Chartist is a native ES module:
 
 ## Coming from 1.x
 
-Your 1.x code keeps working: the chart classes draw what they drew before. 1.x events and plugins work with `chartist/compat`. [Coming from 1.x](https://chartist.dev/docs/coming-from-1x/) explains what changed and how to move to the functions.
+Your 1.x code keeps working: the chart classes draw what they drew before. 1.x events and plugins work with `chartist/compat`. The classes are deprecated, and 3.0 removes them from `chartist`. [Coming from 1.x](https://chartist.dev/docs/coming-from-1x/) explains what changed and how to move to the functions.
 
 ## Supported by
 

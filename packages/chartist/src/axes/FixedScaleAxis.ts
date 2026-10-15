@@ -8,7 +8,11 @@ import { getMultiValue, getHighLow } from '../core/data';
 import { times } from '../utils';
 import { AxisUnits, Axis } from './Axis';
 
-/** The 1.x axis with fixed ticks: the `ticks` option, or `divisor` equal steps from low to high, with a tick at both ends. */
+/**
+ * The 1.x axis with fixed ticks: the `ticks` option, or `divisor` equal steps from low to high, with a tick at both ends.
+ *
+ * @deprecated Use `fixedScaleAxis()`. Removed in 3.0.
+ */
 export class FixedScaleAxis extends Axis {
   public override readonly range: {
     min: number;

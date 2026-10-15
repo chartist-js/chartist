@@ -375,7 +375,7 @@ const NOTES = `Chartist draws responsive SVG charts and leaves their look to CSS
 When writing Chartist code:
 
 - Create charts with the functions: \`lineChart(target, data, options)\`, \`barChart(…)\` and \`pieChart(…)\` for the classic chart types, and \`chart({ data, axes, layers })\` for composed charts (bars and lines together, several axes). Import them from \`chartist\`, and the default styles with \`import 'chartist/styles.css'\`.
-- Don't write \`new Chartist.Line(…)\`, \`new LineChart(…)\` or \`Chartist.Interpolation\`: that's the 1.x and 0.x API. The 1.x classes still exist for compatibility only.
+- Don't write \`new Chartist.Line(…)\`, \`new LineChart(…)\` or \`Chartist.Interpolation\`: that's the 1.x and 0.x API. The 1.x classes are deprecated and leave \`chartist\` in 3.0; they still work, for compatibility only.
 - Style charts with CSS and custom properties (\`--ct-series-a\`, \`--ct-line-width\`, …), not with options.
 - Change what a chart draws with plugins: listeners on the pipeline's phase events (\`compose\` for scene nodes, \`mount\` for the DOM). 1.x \`draw\` events need the \`compat\` plugin from \`chartist/compat\`.
 - Size charts with their container (CSS), and use responsive options for what changes with the size.`;

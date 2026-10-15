@@ -22,6 +22,8 @@ export { determineAnchorPosition } from '../../layers/pie';
  * 1.x API. 1.x events and 1.x plugin functions need the compat plugin
  * (`chartist/compat`).
  * @see {@link pieChart} for the v2 functional API.
+ *
+ * @deprecated Use `pieChart()`. Removed in 3.0.
  */
 export class PieChart extends PresetChart<
   PieChartEventsTypes,

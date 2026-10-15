@@ -734,3 +734,6 @@ export function fromLegacyPlugin(
 ): ChartPlugin {
   return legacyPlugin(plugin, options);
 }
+
+// The types of the 1.x events and plugins this plugin turns on.
+export type * from './types';

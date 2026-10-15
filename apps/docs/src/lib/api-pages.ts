@@ -98,7 +98,7 @@ export const API_PAGES: ApiPage[] = [
     slug: 'classes',
     title: '1.x classes',
     description:
-      'LineChart, BarChart and PieChart as in 1.x, with their options, axis classes, events and drawing helpers. New code uses the chart functions.',
+      'LineChart, BarChart and PieChart as in 1.x, with their options, axis classes, events and drawing helpers. Deprecated, and removed from chartist in 3.0: new code uses the chart functions.',
     legacy: 'classes',
     first: ['LineChart', 'BarChart', 'PieChart', 'BaseChart']
   },
@@ -129,7 +129,8 @@ const BY_NAME: Record<string, string> = {
   LineChartData: 'charts',
   BarChartData: 'charts',
   PieChartData: 'charts',
-  // The 1.x events and the 1.x plugin shape, which compat brings back.
+  // The 1.x events and the 1.x plugin shape, which compat brings back and
+  // exports; chartist's deprecated copies go to the 1.x classes page.
   Plugin: 'compat',
   CreatedEvent: 'compat',
   DrawEvent: 'compat',

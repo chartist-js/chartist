@@ -2,7 +2,11 @@ import type { EventEmitter } from '../event';
 import type { OptionsChangedEvent, ResponsiveOptions } from './types';
 import { extend } from '../utils';
 
-/** What {@link optionsProvider} returns: the current options, and a way to stop listening to media queries. */
+/**
+ * What {@link optionsProvider} returns: the current options, and a way to stop listening to media queries.
+ *
+ * @deprecated Part of the 1.x chart classes. Responsive options are an argument of the chart functions. Removed in 3.0.
+ */
 export interface OptionsProvider<T = unknown> {
   removeMediaQueryListeners(): void;
   getCurrentOptions(): T;
@@ -14,6 +18,8 @@ export interface OptionsProvider<T = unknown> {
  * @param responsiveOptions Optional functions to add responsive behavior to chart
  * @param eventEmitter The event emitter that will be used to emit the options changed events
  * @return The consolidated options object from the defaults, base and matching responsive options
+ *
+ * @deprecated Part of the 1.x chart classes. Responsive options are an argument of the chart functions. Removed in 3.0.
  */
 export function optionsProvider<T = unknown>(
   options: T,

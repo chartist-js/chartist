@@ -11,6 +11,8 @@ const instances = new WeakMap<Element, BaseChart<unknown>>();
  * The base class of the 1.x chart classes ({@link LineChart},
  * {@link BarChart}, {@link PieChart}): the container, `update`, `detach`,
  * `on` and `off`.
+ *
+ * @deprecated Use the chart functions: `lineChart()`, `barChart()`, `pieChart()` and `chart()`. Removed in 3.0.
  */
 export abstract class BaseChart<TEventsTypes = BaseChartEventsTypes> {
   protected svg?: Svg;

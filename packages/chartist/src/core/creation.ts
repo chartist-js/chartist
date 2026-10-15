@@ -21,6 +21,8 @@ import { quantity } from './lang';
  * @param height Set the height of the SVG element. Default is 100%
  * @param className Specify a class to be added to the SVG element
  * @return The created/reinitialized SVG element
+ *
+ * @deprecated Part of the 1.x chart classes. The functional API builds a scene instead. Removed in 3.0.
  */
 export function createSvg(
   container: Element,
@@ -179,6 +181,8 @@ export function createChartRect(svg: Svg, options: Options) {
 
 /**
  * Creates a grid line based on a projected value.
+ *
+ * @deprecated Use the `axisGrid()` layer. Removed in 3.0.
  */
 export function createGrid(
   position: number,
@@ -212,6 +216,8 @@ export function createGrid(
 
 /**
  * Creates a grid background rect and emits the draw event.
+ *
+ * @deprecated Use the `axisGrid()` layer. Removed in 3.0.
  */
 export function createGridBackground(
   gridGroup: Svg,
@@ -241,6 +247,8 @@ export function createGridBackground(
 
 /**
  * Creates a label based on a projected value and an axis.
+ *
+ * @deprecated Use the `axisLabels()` layer. Removed in 3.0.
  */
 export function createLabel(
   position: number,

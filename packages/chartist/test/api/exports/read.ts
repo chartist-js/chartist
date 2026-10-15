@@ -28,6 +28,7 @@ export interface ExportList {
 
 export const LIST_FILE = path.join(exportsDir, 'chartist.json');
 export const COMPAT_LIST_FILE = path.join(exportsDir, 'compat.json');
+export const DEPRECATED_FILE = path.join(exportsDir, 'deprecated.json');
 
 const sorted = (names: Iterable<string>) =>
   [...names].filter(name => name !== 'default').sort();
@@ -65,6 +66,34 @@ export function typeNames(build: BuildName, entry = 'index') {
     throw new Error(`${build}: ${file} is not a module`);
   }
   return sorted(checker.getExportsOfModule(module).map(symbol => symbol.name));
+}
+
+/**
+ * The exports a declaration file marks as deprecated, with their messages:
+ * what an editor shows for an import of the name from that entry.
+ */
+export function deprecatedNames(build: BuildName, file: string) {
+  const full = path.join(BUILDS[build], file);
+  const program = ts.createProgram([full], { skipLibCheck: true });
+  const checker = program.getTypeChecker();
+  const module = checker.getSymbolAtLocation(program.getSourceFile(full)!);
+  if (!module) {
+    throw new Error(`${build}: ${full} is not a module`);
+  }
+  const deprecated: Record<string, string> = {};
+  for (const symbol of checker.getExportsOfModule(module)) {
+    const target =
+      symbol.flags & ts.SymbolFlags.Alias
+        ? checker.getAliasedSymbol(symbol)
+        : symbol;
+    const tag = target
+      .getJsDocTags(checker)
+      .find(({ name }) => name === 'deprecated');
+    if (tag) {
+      deprecated[symbol.name] = ts.displayPartsToString(tag.text).trim();
+    }
+  }
+  return deprecated;
 }
 
 export function readList(file = LIST_FILE): ExportList {

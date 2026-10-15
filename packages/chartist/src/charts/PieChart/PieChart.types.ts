@@ -31,7 +31,11 @@ export interface Dot {
   y: number;
 }
 
-/** The options of a pie or donut chart (1.x `PieChart`, and `pieChart`). */
+/**
+ * The options of a pie or donut chart (1.x `PieChart`, and `pieChart`).
+ *
+ * @deprecated For `pieChart()`, the options type is `PieChartPresetOptions`. Removed in 3.0.
+ */
 export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   /**
    * The class names of the chart's elements. Change them to style the
@@ -100,7 +104,11 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   preventOverlappingLabelOffset?: number;
 }
 
-/** {@link PieChartOptions} after the defaults are applied: the 1.x `PieChart` works with these. */
+/**
+ * {@link PieChartOptions} after the defaults are applied: the 1.x `PieChart` works with these.
+ *
+ * @deprecated The resolved options of the 1.x `PieChart`. Removed in 3.0.
+ */
 export type PieChartOptionsWithDefaults = RequiredKeys<
   PieChartOptions,
   | 'chartPadding'
@@ -114,7 +122,11 @@ export type PieChartOptionsWithDefaults = RequiredKeys<
   'classNames'
 >;
 
-/** The payload of a pie chart's 1.x `created` event: as for other charts, without axes. */
+/**
+ * The payload of a pie chart's 1.x `created` event: as for other charts, without axes.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
+ */
 export type PieChartCreatedEvent = Omit<
   CreatedEvent<PieChartOptions>,
   'axisX' | 'axisY'
@@ -123,6 +135,8 @@ export type PieChartCreatedEvent = Omit<
 /**
  * The 1.x `draw` event of a pie or donut slice, one per value. `index` is
  * the slice's index and `series` its value as given in the data.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface SliceDrawEvent extends Omit<
   DrawEvent,
@@ -149,6 +163,8 @@ export interface SliceDrawEvent extends Omit<
 /**
  * The 1.x `draw` event of a pie slice's label. `index` is the slice's
  * index; the label is a `text` element anchored at `x`, `y`.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface SliceLabelDrawEvent extends Omit<
   DrawEvent,
@@ -164,7 +180,11 @@ export interface SliceLabelDrawEvent extends Omit<
   y: number;
 }
 
-/** The 1.x events of a {@link PieChart} and their payloads, by event name. */
+/**
+ * The 1.x events of a {@link PieChart} and their payloads, by event name.
+ *
+ * @deprecated The 1.x events of a `PieChart`. On `pieChart()`, the handle's `on()` knows its events. Removed in 3.0.
+ */
 export type PieChartEventsTypes = BaseChartEventsTypes<
   PieChartCreatedEvent,
   SliceDrawEvent | SliceLabelDrawEvent

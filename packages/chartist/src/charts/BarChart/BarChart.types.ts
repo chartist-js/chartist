@@ -13,7 +13,11 @@ import type { BaseChartEventsTypes } from '../types';
 /** The data of a bar chart: series of values, and labels for the bar groups. */
 export type BarChartData = Data;
 
-/** The options of a bar chart (1.x `BarChart`, and `barChart`). */
+/**
+ * The options of a bar chart (1.x `BarChart`, and `barChart`).
+ *
+ * @deprecated For `barChart()`, the options type is `BarChartPresetOptions`. Removed in 3.0.
+ */
 export interface BarChartOptions<
   TXAxisOptions = AxisOptions,
   TYAxisOptions = TXAxisOptions
@@ -77,7 +81,11 @@ export interface BarChartOptions<
   showGridBackground?: boolean;
 }
 
-/** {@link BarChartOptions} after the defaults are applied: the 1.x `BarChart` works with these. */
+/**
+ * {@link BarChartOptions} after the defaults are applied: the 1.x `BarChart` works with these.
+ *
+ * @deprecated The resolved options of the 1.x `BarChart`. Removed in 3.0.
+ */
 export type BarChartOptionsWithDefaults = RequiredKeys<
   BarChartOptions<
     RequiredKeys<
@@ -110,12 +118,18 @@ export type BarChartOptionsWithDefaults = RequiredKeys<
   'classNames'
 >;
 
-/** The payload of a bar chart's 1.x `created` event. */
+/**
+ * The payload of a bar chart's 1.x `created` event.
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
+ */
 export type BarChartCreatedEvent = CreatedEvent<BarChartOptions>;
 
 /**
  * The 1.x `draw` event of a bar, one per value. The bar is a `line` element
  * from its base (`x1`, `y1`) to its value (`x2`, `y2`).
+ *
+ * @deprecated Import it from `chartist/compat`, which turns on the 1.x events and plugins. Removed in 3.0.
  */
 export interface BarDrawEvent extends DrawEvent {
   /** Always `'bar'`. */
@@ -132,7 +146,11 @@ export interface BarDrawEvent extends DrawEvent {
   y2: number;
 }
 
-/** The 1.x events of a {@link BarChart} and their payloads, by event name. */
+/**
+ * The 1.x events of a {@link BarChart} and their payloads, by event name.
+ *
+ * @deprecated The 1.x events of a `BarChart`. On `barChart()`, the handle's `on()` knows its events. Removed in 3.0.
+ */
 export type BarChartEventsTypes = BaseChartEventsTypes<
   BarChartCreatedEvent,
   AxesDrawEvent | BarDrawEvent
