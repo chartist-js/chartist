@@ -4,6 +4,12 @@ import { roundWithPrecision } from '../math';
 describe('Core', () => {
   describe('Data', () => {
     describe('Bounds', () => {
+      it('returns for an empty range with onlyInteger instead of looping (#1057)', () => {
+        expect(() =>
+          getBounds(100, { high: 0.627, low: 0.627 }, 20, true)
+        ).not.toThrow();
+      });
+
       it('should return 10 steps', () => {
         const bounds = getBounds(100, { high: 10, low: 1 }, 10, false);
         expect(bounds.min).toBe(1);

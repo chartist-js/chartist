@@ -367,9 +367,9 @@ test('compat uses the same core instance as chartist', async () => {
   for (const [file, core] of Object.entries(sources)) {
     const code = await readFile(path.join(pkgDir, file), 'utf8');
     assert.ok(code.includes(`"${core}"`), `${file} imports ${core}`);
-    // The core build is ~140 kB unminified; compat alone is a few kB.
+    // The core build is ~140 kB unminified; compat alone is about 20 kB.
     assert.ok(
-      code.length < 20_000,
+      code.length < 25_000,
       `${file} has no core copy (${code.length} bytes)`
     );
   }

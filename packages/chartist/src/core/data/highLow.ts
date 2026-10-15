@@ -6,6 +6,7 @@ import type {
 } from '../types';
 import { safeHasProperty } from '../../utils';
 import { isDataHoleValue } from './data';
+import { nonEmptyRange } from './range';
 
 /**
  * Get highest and lowest value of data array. This Array contains the data that will be visualized in the chart.
@@ -88,24 +89,7 @@ export function getHighLow(
     }
   }
 
-  // If high and low are the same because of misconfiguration or flat data (only the same value) we need
-  // to set the high or low to 0 depending on the polarity
-  if (highLow.high <= highLow.low) {
-    // If both values are 0 we set high to 1
-    if (highLow.low === 0) {
-      highLow.high = 1;
-    } else if (highLow.low < 0) {
-      // If we have the same negative value for the bounds we set bounds.high to 0
-      highLow.high = 0;
-    } else if (highLow.high > 0) {
-      // If we have the same positive value for the bounds we set bounds.low to 0
-      highLow.low = 0;
-    } else {
-      // If data array was empty, values are Number.MAX_VALUE and -Number.MAX_VALUE. Set bounds to prevent errors
-      highLow.high = 1;
-      highLow.low = 0;
-    }
-  }
-
-  return highLow;
+  // Flat data (only the same value) or a misconfigured high or low leave
+  // the range empty.
+  return nonEmptyRange(highLow);
 }

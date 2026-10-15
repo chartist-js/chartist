@@ -47,6 +47,37 @@ describe('presets/barChart', () => {
     expect(grids.at(-1)).toBe('ct-grid ct-horizontal');
   });
 
+  it('repairs a chart-level low that empties the range (#1057)', () => {
+    const element = sized();
+    barChart(
+      element,
+      {
+        labels: ['Q1', 'Q2', 'Q3'],
+        series: [{ data: [0.627] }, { data: [0] }, { data: [0] }]
+      },
+      {
+        stackBars: true,
+        horizontalBars: true,
+        axisX: { onlyInteger: true },
+        axisY: { offset: 100 },
+        low: 0.627
+      }
+    );
+    const bars = Array.from(element.querySelectorAll('line.ct-bar'));
+    expect(bars.length).toBeGreaterThan(0);
+    for (const bar of bars) {
+      for (const name of ['x1', 'x2', 'y1', 'y2']) {
+        expect(Number.isFinite(Number(bar.getAttribute(name)))).toBe(true);
+      }
+    }
+    expect(
+      Array.from(
+        element.querySelectorAll('.ct-label.ct-horizontal'),
+        label => label.textContent
+      )
+    ).toContain('0');
+  });
+
   it("the value axis's own low and high win over the reference value (#1476)", () => {
     const valueLabels = (options: Parameters<typeof barChart>[2]) => {
       const element = sized();
