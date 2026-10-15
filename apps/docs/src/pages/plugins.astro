@@ -1,10 +1,11 @@
 ---
 import { Code } from 'astro:components';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import LiveExample from '../components/LiveExample.astro';
+import PluginTags from '../components/PluginTags.astro';
 import { facts, formatDate } from '../data/facts';
-import { CHART_TYPES, pinnedVersion, pluginFacts } from '../data/plugins';
-import { npmUrl, pluginSlug, setupSnippet, sortedPlugins } from '../lib/plugins';
+import { CHART_TYPES, pluginFacts } from '../data/plugins';
+import { exampleFiles } from '../lib/examples';
+import { pluginSlug, sortedPlugins } from '../lib/plugins';
 import { href } from '../lib/site';
 
 const plugins = sortedPlugins().map(plugin => {
@@ -12,10 +13,9 @@ const plugins = sortedPlugins().map(plugin => {
   return {
     ...plugin,
     slug: pluginSlug(plugin),
-    version: pinnedVersion(plugin.package),
     downloads: stats.monthlyDownloads.toLocaleString('en'),
-    lastRelease: new Date(`${stats.lastRelease}T00:00:00Z`).getUTCFullYear(),
-    setup: setupSnippet(plugin),
+    // The tile's live thumbnail runs the plugin's example.
+    preview: JSON.stringify({ files: exampleFiles(plugin.example), title: plugin.title }),
     // What the filter's text field searches.
     search: [plugin.title, plugin.package, plugin.author, plugin.description].join(' ').toLowerCase()
   };
@@ -52,6 +52,14 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
 ---
 
 <BaseLayout title="Plugins" description="Community plugins for Chartist: tooltips, axis titles, legends, labels, zoom and more, each running live on v2." section="plugins" markdown="plugins.md">
+  <script is:inline define:vars={{ slugs: plugins.map(plugin => plugin.slug), base: href('plugins/') }}>
+    // A link to an entry of the former single-page list (#<slug>) opens the
+    // plugin's own page.
+    const slug = decodeURIComponent(location.hash.slice(1));
+    if (slugs.includes(slug)) {
+      location.replace(`${base}${slug}/`);
+    }
+  </script>
   <div class="wrap flex flex-col gap-10 pt-[clamp(32px,6vw,64px)] pb-[clamp(56px,8vw,104px)]">
     <header class="flex flex-col gap-4">
       <span class="eyebrow">Plugins</span>
@@ -82,82 +90,23 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
       <p class="muted text-sm" aria-live="polite" data-plugin-count></p>
     </div>
 
-    <ol class="m-0 flex list-none flex-col gap-14 p-0" data-plugin-list>
+    <ol class="m-0 grid list-none grid-cols-[repeat(auto-fill,minmax(min(440px,100%),1fr))] gap-8 p-0" data-plugin-list>
       {
         plugins.map(plugin => (
-          <li id={plugin.slug} class="flex scroll-mt-24 flex-col gap-5 [&[hidden]]:hidden" data-plugin data-types={plugin.types.join(' ')} data-search={plugin.search}>
-            <div class="flex flex-col gap-2">
-              <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
-                <h2 class="text-3xl">
-                  <a class="text-ink no-underline hover:underline" href={`#${plugin.slug}`}>
-                    {plugin.title}
-                  </a>
-                </h2>
-                <span class="tag accent" title={`Written for the Chartist ${plugin.chartist} API`}>
-                  API v{plugin.chartist}
-                </span>
-                {
-                  plugin.loads === 'module' ? (
-                    <span class="tag" title="An ES module: it imports chartist">
-                      ES module
-                    </span>
-                  ) : (
-                    <span class="tag warn" title="Reads the global Chartist, which chartist/compat sets up for backwards compatibility">
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 3 2 20h20L12 3z"></path>
-                        <path d="M12 10v4M12 17v.5"></path>
-                      </svg>
-                      Global<span class="sr-only">: reads the global Chartist, for backwards compatibility</span>
-                    </span>
-                  )
-                }
-                <span class="tag" title={plugin.ssr ? 'Draws its additions in server rendering (toScene)' : 'Needs a browser: it hooks into 1.x events, which only fire when the chart is drawn in the page'}>
-                  {plugin.ssr ? 'SSR' : 'No SSR'}
-                </span>
+          <li id={plugin.slug} class="scroll-mt-24 [&[hidden]]:hidden" data-plugin data-types={plugin.types.join(' ')} data-search={plugin.search}>
+            <a class="card link flex h-full flex-col overflow-hidden text-ink no-underline" href={href(`plugins/${plugin.slug}/`)}>
+              <div class="dot-grid relative aspect-[16/10] border-b border-line" data-gallery-preview={plugin.preview} />
+              <div class="flex flex-1 flex-col gap-3 p-6">
+                <strong class="font-slab text-2xl leading-tight">{plugin.title}</strong>
+                <p class="m-0 text-ink-2">{plugin.description}</p>
+                <div class="mt-auto flex flex-wrap items-center gap-2 pt-1">
+                  <PluginTags plugin={plugin} />
+                </div>
+                <p class="m-0 text-sm text-ink-2">
+                  {plugin.types.map(type => TYPE_LABEL[type]).join(', ')} · {plugin.downloads} downloads a month
+                </p>
               </div>
-              <code class="w-fit">
-                {plugin.package}@{plugin.version}
-              </code>
-              <p class="max-w-[70ch]">{plugin.description}</p>
-              {plugin.note && <p class="muted max-w-[70ch] text-sm">{plugin.note}</p>}
-            </div>
-            <dl class="m-0 grid grid-cols-[repeat(auto-fit,minmax(min(170px,100%),1fr))] gap-x-6 gap-y-3 border-y border-line py-3.5 text-sm">
-              <div>
-                <dt class="eyebrow">Author</dt>
-                <dd class="m-0 font-bold">{plugin.author}</dd>
-              </div>
-              <div>
-                <dt class="eyebrow">Source</dt>
-                <dd class="m-0">{plugin.repository ? <a href={plugin.repository}>GitHub</a> : <span>Repository gone</span>} · <a href={npmUrl(plugin)}>npm</a></dd>
-              </div>
-              <div>
-                <dt class="eyebrow">License</dt>
-                <dd class="m-0">{plugin.license}</dd>
-              </div>
-              <div>
-                <dt class="eyebrow">Downloads</dt>
-                <dd class="m-0">{plugin.downloads} a month</dd>
-              </div>
-              <div>
-                <dt class="eyebrow">Last release</dt>
-                <dd class="m-0">{plugin.lastRelease}</dd>
-              </div>
-              <div>
-                <dt class="eyebrow">Charts</dt>
-                <dd class="m-0">{plugin.types.map(type => TYPE_LABEL[type]).join(', ')}</dd>
-              </div>
-            </dl>
-            {plugin.hint && <p class="m-0 text-sm font-bold">{plugin.hint}</p>}
-            <LiveExample example={plugin.example} title={plugin.title} label={`${plugin.title}: a chart with ${plugin.package}`} codeHeight="360px" />
-            <div class="flex flex-col gap-2">
-              <h3 class="text-lg">Use it on your site</h3>
-              <p class="muted m-0 text-sm">
-                Runs on v2 with <code>chartist/compat</code>.{' '}
-                {plugin.loads === 'module' ? 'An ES module: install it from npm and import it.' : 'A script: load it after importing chartist/compat, which sets up the global it reads.'}{' '}
-                <a href={href('docs/coming-from-1x/#community-plugins')}>With the UMD build or a bundler</a>
-              </p>
-              <Code code={plugin.setup.code} lang={plugin.setup.lang as 'ts' | 'html'} theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
-            </div>
+            </a>
           </li>
         ))
       }
@@ -186,6 +135,9 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
 </BaseLayout>
 
 <script>
+  import { mountThumbnails } from '../scripts/gallery';
+  mountThumbnails();
+
   // The filter: text and chart type. Without JavaScript the controls stay
   // hidden and every plugin shows.
   const controls = document.querySelector<HTMLElement>('[data-plugin-filter]');

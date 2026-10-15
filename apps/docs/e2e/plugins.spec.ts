@@ -20,33 +20,88 @@ test('the header leads to the plugins, most downloaded first', async ({
   expect(ids).toEqual(byDownloads);
 });
 
-test('an entry credits its author and links its sources', async ({ page }) => {
+test('a tile shows the plugin at a glance and opens its page', async ({
+  page
+}) => {
   await page.goto('/plugins/');
-  const entry = page.locator('#chartist-plugin-axistitle');
-  await expect(entry.getByRole('heading', { level: 2 })).toHaveText(
+  const tile = page.locator('#chartist-plugin-axistitle');
+  await expect(tile).toContainText('Axis title');
+  await expect(tile).toContainText('Adds a title to the X and Y axes');
+  await expect(tile.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
+  await expect(tile.locator('.tag.warn', { hasText: 'Global' })).toBeVisible();
+  await expect(tile.locator('.tag', { hasText: 'No SSR' })).toBeVisible();
+  await expect(tile).toContainText('downloads a month');
+  await tile.getByRole('link').click();
+  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-axistitle\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
     'Axis title'
   );
-  await expect(entry).toContainText('Alex Stanbury');
-  await expect(entry).toContainText('MIT');
-  await expect(entry.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
-  await expect(entry.locator('.tag', { hasText: 'No SSR' })).toBeVisible();
-  await expect(entry.locator('.tag.warn', { hasText: 'Global' })).toBeVisible();
-  await expect(entry.getByRole('link', { name: 'npm' })).toHaveAttribute(
+  await page
+    .getByRole('navigation', { name: 'Breadcrumb' })
+    .getByRole('link', { name: 'Plugins' })
+    .click();
+  await expect(page).toHaveURL(/\/plugins\/$/);
+});
+
+test('the tile previews run the plugins', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', error => errors.push(String(error)));
+  await page.goto('/plugins/');
+  const preview = page.locator(
+    '#chartist-plugin-pointlabels [data-gallery-preview]'
+  );
+  await preview.scrollIntoViewIfNeeded();
+  // The plugin's labels, drawn by its published code in the thumbnail.
+  await expect(
+    preview.frameLocator('iframe').locator('text.ct-label').first()
+  ).toBeAttached({ timeout: 10_000 });
+  expect(errors).toEqual([]);
+});
+
+test('a plugin page credits its author and links its sources', async ({
+  page
+}) => {
+  await page.goto('/plugins/chartist-plugin-axistitle/');
+  const main = page.locator('article');
+  await expect(main).toContainText('Alex Stanbury');
+  await expect(main).toContainText('MIT');
+  await expect(main).toContainText('a month');
+  await expect(main.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
+  await expect(main.getByRole('link', { name: 'npm' })).toHaveAttribute(
     'href',
     'https://www.npmjs.com/package/chartist-plugin-axistitle'
   );
   await expect(
-    page.locator('#stklcode-chartist-plugin-tooltips .tag', {
-      hasText: 'API v1.x'
-    })
+    main.getByRole('heading', { name: 'Use it on your site' })
+  ).toBeVisible();
+  await page.goto('/plugins/stklcode-chartist-plugin-tooltips/');
+  await expect(
+    page.locator('article .tag', { hasText: 'API v1.x' })
   ).toBeVisible();
   // A plugin whose repository is gone links to npm and says so.
-  await expect(page.locator('#chartist-plugin-tooltips')).toContainText(
-    'Repository gone'
+  await page.goto('/plugins/chartist-plugin-tooltips/');
+  await expect(page.locator('article')).toContainText('Repository gone');
+});
+
+test('plugin pages link to their neighbors in the overview order', async ({
+  page
+}) => {
+  await page.goto(`/plugins/${byDownloads[0]}/`);
+  const more = page.getByRole('navigation', { name: 'More plugins' });
+  await more.getByRole('link', { name: /Next/ }).click();
+  await expect(page).toHaveURL(new RegExp(`/plugins/${byDownloads[1]}/$`));
+});
+
+test('an old link to an entry opens the plugin page', async ({ page }) => {
+  await page.goto('/plugins/#stklcode-chartist-plugin-tooltips');
+  await expect(page).toHaveURL(
+    /\/plugins\/stklcode-chartist-plugin-tooltips\/$/
   );
 });
 
-test('the filter narrows the list by text and chart type', async ({ page }) => {
+test('the filter narrows the tiles by text and chart type', async ({
+  page
+}) => {
   await page.goto('/plugins/');
   const total = byDownloads.length;
   const visible = page.locator('[data-plugin]:visible');
@@ -107,10 +162,10 @@ for (const plugin of examples) {
   }) => {
     const errors: string[] = [];
     page.on('pageerror', error => errors.push(String(error)));
-    await page.goto('/plugins/');
-    const live = page.locator(
-      `#${plugin.package.replace(/^@/, '').replace(/\//g, '-')} [data-live-example]`
+    await page.goto(
+      `/plugins/${plugin.package.replace(/^@/, '').replace(/\//g, '-')}/`
     );
+    const live = page.locator('[data-live-example]');
     await live.scrollIntoViewIfNeeded();
     await live.getByRole('button', { name: 'Edit' }).click();
     await expect(live).toHaveAttribute('data-ready', '');
@@ -130,8 +185,8 @@ for (const plugin of examples) {
 test('a plugin example runs in the full playground from its link', async ({
   page
 }) => {
-  await page.goto('/plugins/');
-  const live = page.locator('#chartist-plugin-pointlabels [data-live-example]');
+  await page.goto('/plugins/chartist-plugin-pointlabels/');
+  const live = page.locator('[data-live-example]');
   await live.scrollIntoViewIfNeeded();
   await live.getByRole('button', { name: 'Edit' }).click();
   await expect(live).toHaveAttribute('data-ready', '');
