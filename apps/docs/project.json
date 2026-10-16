@@ -67,7 +67,13 @@
         "cwd": "{projectRoot}"
       },
       "dependsOn": ["build"],
-      "inputs": ["default", "^production"],
+      "inputs": [
+        "default",
+        "^production",
+        {
+          "env": "E2E_A11Y"
+        }
+      ],
       "cache": true
     },
     "facts": {

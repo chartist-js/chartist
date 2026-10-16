@@ -63,8 +63,10 @@ export default defineConfig({
   webServer: {
     command: `pnpm exec vite --config test/visual/vite.config.ts --port ${port} --strictPort`,
     cwd: fileURLToPath(new URL('../..', import.meta.url)),
-    url: `http://localhost:${port}/line/simple/`,
-    reuseExistingServer: false,
+    // Ready when the server says so: polling a port before it listens can
+    // hang for minutes where localhost drops connections to closed ports
+    // instead of refusing them (seen on WSL).
+    wait: { stdout: /visual server listening/ },
     env: { CHARTIST_LIB: lib }
   }
 });

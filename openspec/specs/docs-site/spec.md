@@ -81,7 +81,7 @@ Every page SHALL pass automated WCAG AA checks, be fully usable with the keyboar
 
 #### Scenario: Automated checks
 
-- **WHEN** the e2e suite runs axe on every page in light and dark mode
+- **WHEN** the e2e suite runs axe in light and dark mode, on one page per template (and the pages with components of their own) on every push, and on every page before a release
 - **THEN** it reports no violations
 
 ### Requirement: Not found page

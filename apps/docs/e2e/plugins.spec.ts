@@ -1,12 +1,10 @@
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
+import { pluginNeighbors, pluginSlug, sortedPlugins } from '../src/lib/plugins';
 
-const facts = JSON.parse(
-  await readFile(new URL('../src/data/facts.json', import.meta.url), 'utf8')
-) as { plugins: Record<string, { monthlyDownloads: number }> };
-const byDownloads = Object.entries(facts.plugins)
-  .sort(([, a], [, b]) => b.monthlyDownloads - a.monthlyDownloads)
-  .map(([name]) => name.replace(/^@/, '').replace(/\//g, '-'));
+// The order and the neighbors come from the plugins data, unit tested
+// there; the pages follow it.
+const slugs = sortedPlugins().map(pluginSlug);
 
 test('the header leads to the plugins, most downloaded first', async ({
   page
@@ -17,7 +15,7 @@ test('the header leads to the plugins, most downloaded first', async ({
   const ids = await page
     .locator('[data-plugin]')
     .evaluateAll(items => items.map(item => item.id));
-  expect(ids).toEqual(byDownloads);
+  expect(ids).toEqual(slugs);
 });
 
 test('a tile shows the plugin at a glance and opens its page', async ({
@@ -86,10 +84,11 @@ test('a plugin page credits its author and links its sources', async ({
 test('plugin pages link to their neighbors in the overview order', async ({
   page
 }) => {
-  await page.goto(`/plugins/${byDownloads[0]}/`);
+  await page.goto(`/plugins/${slugs[0]}/`);
   const more = page.getByRole('navigation', { name: 'More plugins' });
   await more.getByRole('link', { name: /Next/ }).click();
-  await expect(page).toHaveURL(new RegExp(`/plugins/${byDownloads[1]}/$`));
+  const { next } = pluginNeighbors(slugs[0]);
+  await expect(page).toHaveURL(new RegExp(`/plugins/${pluginSlug(next!)}/$`));
 });
 
 test('an old link to an entry opens the plugin page', async ({ page }) => {
@@ -103,7 +102,7 @@ test('the filter narrows the tiles by text and chart type', async ({
   page
 }) => {
   await page.goto('/plugins/');
-  const total = byDownloads.length;
+  const total = slugs.length;
   const visible = page.locator('[data-plugin]:visible');
   const count = page.locator('[data-plugin-count]');
   await expect(count).toHaveText(`${total} plugins`);
@@ -140,9 +139,7 @@ test('without JavaScript every plugin shows and the filter stays hidden', async 
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto('/plugins/');
-  await expect(page.locator('[data-plugin]:visible')).toHaveCount(
-    byDownloads.length
-  );
+  await expect(page.locator('[data-plugin]:visible')).toHaveCount(slugs.length);
   await expect(page.locator('[data-plugin-filter]')).toBeHidden();
   await context.close();
 });

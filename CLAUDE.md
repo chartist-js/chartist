@@ -56,6 +56,16 @@ Triage labels say where a change belongs and how big it is. An open feature requ
 
 When triaging, check the issue against the current code and chartist.dev before calling it open: many old requests are solved by v2 (layers, multiple axes, `toScene()`, custom properties). Propose labels, closes and comments to the author first; nothing is labeled, closed or commented without the author's go for that batch.
 
+## Test strategy
+
+The standing decision is in `docs/decisions.md` ("Test strategy"). Test where a break would hurt users, and keep the docs tests lean.
+
+- **Library and packages: rigorous.** Behavior goes into unit tests next to the code, the public surface into `test/api/` (recorded export lists, type tests), rendering into the visual tests. A change to drawing gets a visual example or a unit test of the scene, and 1.x behavior a parity or 1.5.0 API test.
+- **Docs site: happy paths.** New pages and examples are covered by the loops that already exist (every page loads cleanly, every live example runs). Add a docs e2e test only for an interactive feature, a published URL or a bug that slipped through, not for copy, ordering or per-page details.
+- **Don't repeat a check per page.** Pages of one template share their components: test one of them (`A11Y_PAGES` in `apps/docs/e2e/pages.ts` for axe; `E2E_A11Y=all` scans every page, as the release does). Check static output by reading `dist`, not by opening each page in a browser.
+- **Logic belongs in unit tests**, not in an e2e test that reads it off a page: data scripts, generators and helpers have `*.test.ts` next to them. An e2e spec that needs an order or a list imports it from `src/lib` instead of computing it again. Modules that specs or unit tests import load outside Astro: JSON imports need `with { type: 'json' }`, and nothing from `astro:*` (keep such logic in its own module, as `guide-markdown.ts` is).
+- **Playwright web servers** are ready when their command prints a line (`webServer.wait.stdout`), not by polling a URL: on WSL, a connection to a port nobody listens on yet hangs for minutes instead of failing.
+
 ## Working in this repo
 
 Lessons from earlier sessions; each one cost time once.

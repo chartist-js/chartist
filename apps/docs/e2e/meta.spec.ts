@@ -20,45 +20,58 @@ function pngSize(body: Buffer) {
 const local = (url: string, baseURL: string) =>
   new URL(new URL(url).pathname, baseURL).href;
 
-for (const { name, path } of PAGES) {
-  test(`${name}: share tags and card`, async ({ page, request, baseURL }) => {
-    await page.goto(path);
+const dist = new URL('../../../dist/apps/docs/', import.meta.url);
+
+/** The attributes of each tag of a kind in an HTML document. */
+function tags(html: string, name: string) {
+  return [...html.matchAll(new RegExp(`<${name}\\s([^>]*)>`, 'g'))].map(
+    ([, attributes]) =>
+      Object.fromEntries(
+        [...attributes.matchAll(/([\w:-]+)="([^"]*)"/g)].map(([, k, v]) => [
+          k,
+          v
+        ])
+      )
+  );
+}
+
+// The built HTML, not the browser: the tags are static, so one test reads
+// every page in a moment.
+test('every page has its share tags and a card', async () => {
+  for (const { name, path } of PAGES) {
+    const file = name === '404' ? '404.html' : `.${path}index.html`;
+    const html = await readFile(new URL(file, dist), 'utf8');
+    const metas = tags(html.slice(0, html.indexOf('</head>')), 'meta');
     const meta = (key: string) =>
-      page
-        .locator(`head meta[property="${key}"], head meta[name="${key}"]`)
-        .getAttribute('content');
+      metas.find(m => m.property === key || m.name === key)?.content;
 
-    expect(await meta('og:title')).toBeTruthy();
-    expect(await meta('og:description')).toBeTruthy();
-    expect(await meta('og:site_name')).toBe('Chartist');
-    expect(['website', 'article']).toContain(await meta('og:type'));
-    expect(await meta('twitter:card')).toBe('summary_large_image');
-    expect(await meta('og:image:width')).toBe('1200');
-    expect(await meta('og:image:height')).toBe('630');
+    expect(meta('og:title'), name).toBeTruthy();
+    expect(meta('og:description'), name).toBeTruthy();
+    expect(meta('og:site_name'), name).toBe('Chartist');
+    expect(['website', 'article'], name).toContain(meta('og:type'));
+    expect(meta('twitter:card'), name).toBe('summary_large_image');
+    expect(meta('og:image:width'), name).toBe('1200');
+    expect(meta('og:image:height'), name).toBe('630');
 
-    const image = (await meta('og:image'))!;
-    expect(image).toMatch(/^https?:\/\/.+\/og\/.+\.png$/);
-    expect(await meta('twitter:image')).toBe(image);
+    const image = meta('og:image')!;
+    expect(image, name).toMatch(/^https?:\/\/.+\/og\/.+\.png$/);
+    expect(meta('twitter:image'), name).toBe(image);
 
-    const canonical = page.locator('head link[rel="canonical"]');
+    const canonical = tags(html, 'link').find(l => l.rel === 'canonical');
     if (name === '404') {
-      await expect(canonical).toHaveCount(0);
-      expect(await meta('robots')).toBe('noindex');
+      expect(canonical, name).toBeUndefined();
+      expect(meta('robots'), name).toBe('noindex');
     } else {
-      const href = (await canonical.getAttribute('href'))!;
-      expect(new URL(href).pathname).toBe(path);
-      expect(await meta('og:url')).toBe(href);
-      expect(new URL(image).origin).toBe(new URL(href).origin);
+      const href = canonical!.href;
+      expect(new URL(href).pathname, name).toBe(path);
+      expect(meta('og:url'), name).toBe(href);
+      expect(new URL(image).origin, name).toBe(new URL(href).origin);
     }
 
-    const response = await request.get(local(image, baseURL!));
-    expect(response.status()).toBe(200);
-    expect(pngSize(await response.body())).toEqual({
-      width: 1200,
-      height: 630
-    });
-  });
-}
+    const card = await readFile(new URL(`.${new URL(image).pathname}`, dist));
+    expect(pngSize(card), name).toEqual({ width: 1200, height: 630 });
+  }
+});
 
 test('robots.txt allows crawling and points to the sitemap', async ({
   request,
@@ -96,7 +109,6 @@ test('the sitemap lists every page and nothing else', async ({
 });
 
 test('every built page has a card', async () => {
-  const dist = new URL('../../../dist/apps/docs/', import.meta.url);
   const pages = (await readdir(dist, { recursive: true })).filter(
     file => file.endsWith('.html') && !file.startsWith('v1/')
   );
