@@ -392,6 +392,8 @@ describe('live/random updates', () => {
         const failure = run(type, mode, SEED + index, steps);
         expect(failure, `key: ${mode.name}`).toBeUndefined();
       }
-    });
+      // Two renders per step in jsdom: under a second here, but several
+      // times that on a busy CI runner.
+    }, 30_000);
   }
 });
