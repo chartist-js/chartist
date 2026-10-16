@@ -141,6 +141,19 @@ pieChart(
 );
 ```
 
+A `\n` in a label starts a new line, centered on the label's place, for a name with its share below:
+
+```ts
+import 'chartist/styles.css';
+import { pieChart } from 'chartist';
+
+pieChart(
+  '#chart',
+  { labels: ['Apples\n60%', 'Pears\n40%'], series: [60, 40] },
+  { donut: true, donutWidth: 50 }
+);
+```
+
 Small slices crowd their labels. `preventOverlappingLabelOffset` is a px step: when a label would overlap one drawn before it, it moves up and to the left by that step until it doesn't.
 
 ## Slices with names and colors

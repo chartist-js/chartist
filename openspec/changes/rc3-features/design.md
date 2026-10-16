@@ -51,6 +51,8 @@ trendLine({ series: ['sales'], x: 'month', y: 'eur', align: 'center' });
 - **Role and context:** `trendLine` with `{ seriesIndex, slope, intercept, x1, y1, x2, y2 }`, declared in `NodeRoles`.
 - **Styles:** `.ct-trend-line { fill: none; stroke: var(--ct-color); stroke-width: var(--ct-trend-line-width, 2px); stroke-dasharray: var(--ct-trend-line-dasharray, 6px 4px); }`, and the class joins `ct-chart-series-color`.
 - Name `trendLine` next to `targetLine`; both are reference lines over the data.
+- **Extent without the axis kind.** `extent` runs before the axes exist and only knows their ids, so there a series whose values all have a numeric `x` is fitted on `x`, any other by index; `compose` uses the axis's real kind. They differ only for `{ x, y }` data on a step axis, where the axis may be widened by the `x` fit. Giving `ExtentContext` the axis kinds would change a public type, so it isn't done here.
+- The line's group carries the series' classes but no `ct:series-name`, so a query by series name finds the line layer's group once. The line isn't clipped when an axis's own `low` or `high` cuts it.
 
 ### `labelAlign` per axis (#1487)
 

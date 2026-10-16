@@ -71,6 +71,18 @@ They're regular custom properties, so they cascade. Set them where they should a
 }
 ```
 
+### Dark pages
+
+Labels and grid lines follow the page's color scheme: where `color-scheme: dark` applies, they turn light. Declare it on the page or on the chart's container; the OS setting alone doesn't change anything, since a light page should keep its colors in dark mode:
+
+```css
+:root {
+  color-scheme: light dark;
+}
+```
+
+`--ct-label-color` and `--ct-grid-color` still win. The series colors stay as they are; for colors that are clear on both, use the [accessible theme](#colors-for-everyone).
+
 ## One color per series
 
 Each series is a group with a letter class: the first is `ct-series-a`, the second `ct-series-b`, up to `ct-series-z`, and the 27th starts again at `ct-series-a`. The letter class sets `--ct-color`, and the series' lines, points, bars, areas and slices use it as their stroke or fill. There are 15 colors, so from the 16th series they repeat: `ct-series-p` gets the first series' color and follows `--ct-series-a`, unless you set `--ct-series-p`. That gives you two levels to work at:
