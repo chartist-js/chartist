@@ -26,9 +26,9 @@ The default stylesheet, `chartist/styles.css`, reads its values from custom prop
 
 <LiveExample
   title='Custom properties'
-  label='A line chart in blue and green with thin lines and no grid dashes'
+  label='A line chart in brown and mustard yellow with thin lines and no grid dashes'
   show='src/style.css'
-  previewStyle='--ct-series-a: #0544d3; --ct-series-b: #59922b; --ct-line-width: 2px; --ct-point-size: 8px; --ct-grid-dasharray: none;'
+  previewStyle='--ct-series-a: #9a6a45; --ct-series-b: #f4c63d; --ct-line-width: 2px; --ct-point-size: 8px; --ct-grid-dasharray: none;'
   preview={{ type: 'line', data }}
   example='styling-with-css/custom-properties'
 />
@@ -83,7 +83,7 @@ Each series is a group with a letter class: the first is `ct-series-a`, the seco
 
 /* Or recolor one series in one chart */
 #sales .ct-series-a {
-  --ct-color: #0544d3;
+  --ct-color: #9a6a45;
 }
 ```
 
@@ -104,7 +104,7 @@ lineChart('#chart', {
 
 ```css
 .revenue {
-  --ct-color: #59922b;
+  --ct-color: #b07800;
 }
 .costs {
   --ct-color: #d70206;
@@ -184,9 +184,9 @@ If your build already uses Sass, configure the stylesheet at its source instead 
     c
   ),
   $ct-series-colors: (
-    #0544d3,
-    #59922b,
-    #f4c63d
+    #9a6a45,
+    #f4c63d,
+    #c8102e
   ),
   $ct-line-width: 2px,
   $ct-grid-dasharray: false

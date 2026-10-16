@@ -107,7 +107,10 @@ A band shows a range: from the lowest to the highest value of a group, between t
     type: 'chart',
     data: {
       labels: weeks,
-      series: [...stores, { name: 'average', data: average }]
+      series: [
+        ...stores,
+        { name: 'average', className: 'ct-series-e', data: average }
+      ]
     },
     options: {
       axes: {
@@ -179,7 +182,7 @@ With `mark: true`, the band marks the points and bars of the other layers: `ct-i
 
 <LiveExample
   title='A comfort zone'
-  label='Line chart of room temperature over a day with a shaded band from 19 to 24 degrees; the points within the band are green, the ones below and above it larger and red'
+  label='Line chart of room temperature over a day with a shaded band from 19 to 24 degrees; the points within the band are mustard yellow, the ones below and above it larger and red'
   preview={{
     type: 'line',
     data: temperatures,
@@ -202,10 +205,10 @@ Both layers draw in the text color by default: a dashed target line and a light 
 
 ```css
 .ct-chart {
-  --ct-target-line-color: #d70206;
+  --ct-target-line-color: #c8102e;
   --ct-target-line-width: 2px;
   --ct-target-line-dasharray: none;
-  --ct-band-color: #0544d3;
+  --ct-band-color: #b07800;
   --ct-band-opacity: 0.2;
 }
 ```

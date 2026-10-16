@@ -1,6 +1,6 @@
-/* Green inside the band; outside, larger and in the series color. */
+/* Mustard yellow inside the band; outside, larger and in the series color. */
 #chart .ct-point.ct-in-band {
-  stroke: var(--ct-series-f);
+  stroke: #f4c63d;
 }
 
 #chart .ct-point.ct-out-band {

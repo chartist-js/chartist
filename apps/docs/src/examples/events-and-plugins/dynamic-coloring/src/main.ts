@@ -5,7 +5,7 @@ const values = [3, 6, 9, 12, 9, 6, 3, 6, 9, 12, 9, 6];
 const min = Math.min(...values);
 const max = Math.max(...values);
 
-// Colors each bar by its value: red for low, green for high.
+// Colors each bar by its value: mustard yellow for low, red for high.
 const heat: ChartPlugin = {
   name: 'heat',
   install(chart) {
@@ -18,8 +18,10 @@ const heat: ChartPlugin = {
       const y =
         value && typeof value === 'object' && 'y' in value ? value.y : min;
       const share = (y - min) / (max - min);
-      const hue = Math.round(share * 120);
-      return node.attr({ style: `stroke: hsl(${hue} 70% 45%)` });
+      const red = Math.round(share * 100);
+      return node.attr({
+        style: `stroke: color-mix(in oklab, #c8102e ${red}%, #f4c63d)`
+      });
     });
   }
 };

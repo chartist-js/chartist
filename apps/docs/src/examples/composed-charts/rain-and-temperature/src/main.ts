@@ -20,7 +20,7 @@ chart('#chart', {
       // A palette color that stands apart from the bars.
       {
         name: 'temperature',
-        className: 'ct-series-g',
+        className: 'ct-series-e',
         data: [1, 3, 8, 12, 16, 20]
       }
     ]

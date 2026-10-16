@@ -29,7 +29,10 @@ const average = weeks.map(
 chart('#chart', {
   data: {
     labels: weeks,
-    series: [...stores, { name: 'average', data: average }]
+    series: [
+      ...stores,
+      { name: 'average', className: 'ct-series-e', data: average }
+    ]
   },
   axes: cartesianAxes({
     x: { type: stepAxis() },
