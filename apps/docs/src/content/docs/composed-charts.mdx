@@ -79,7 +79,7 @@ Layers draw in the order you list them, each on top of the ones before. Put the 
 | `bar()`        | Bars                                                | `series`, `x`, `y`, `horizontalBars`, `stackBars`, `stackMode`, `seriesBarDistance`, `distributeSeries` |
 | `axisGrid()`   | Grid lines (`g.ct-grids`)                           | `axes` (default: all), `background`                                                                     |
 | `axisLabels()` | Axis labels (`g.ct-labels`)                         | `axes` (default: all), `labels` (`'html'` or `'svg'`)                                                   |
-| `targetLine()` | Target lines and their labels (`g.ct-target-lines`) | `value`, `label`, `lines`, `axis`, `labelPosition`                                                      |
+| `targetLine()` | A target line and its label (`line.ct-target-line`) | `value`, `label`, `className`, `axis`, `labelPosition`                                                  |
 | `band()`       | A band between two edges (`g.ct-band`)              | `series`, `low`, `high`, `x`, `y`, `align`, `lineSmooth`, `mark`                                        |
 
 `series` picks series by `name` or by index; leave it out and the layer draws all of them. `x` and `y` are axis ids; leave them out and the layer uses the first X and the first Y axis. An unknown name or id throws an error that names the layer. Grid and label layers draw for every axis unless you name some: the example draws the grid of `month` and `mm` only, so the right axis doesn't add a second set of lines.

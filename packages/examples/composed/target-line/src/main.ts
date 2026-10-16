@@ -10,14 +10,11 @@ barChart(
   },
   {
     low: 0,
+    // One layer per line.
     layers: {
       above: [
-        targetLine({
-          lines: [
-            { value: 1000, label: 'Goal' },
-            { value: 800, label: 'Minimum', className: 'ct-series-b' }
-          ]
-        })
+        targetLine({ value: 1000, label: 'Goal' }),
+        targetLine({ value: 800, label: 'Minimum', className: 'ct-series-b' })
       ]
     }
   }

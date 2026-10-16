@@ -78,23 +78,20 @@ The Y axis makes room for the line: a goal above all the bars still shows. A `lo
 | `value`         | Where the line goes, on the axis                                          |
 | `label`         | Text next to the line (optional)                                          |
 | `className`     | Extra class for the line and its label, such as `ct-series-b` for a color |
-| `lines`         | Several lines, each with its own `value`, `label` and `className`         |
-| `axis`          | The id of the axis the values are on; by default the first Y axis         |
+| `axis`          | The id of the axis the value is on; by default the first Y axis           |
 | `labelPosition` | `'end'` (default) or `'start'` of the line                                |
 
 ### Several lines, and vertical ones
 
-`lines` draws a minimum and a goal with one layer:
+One layer draws one line. For a minimum and a goal, add two:
 
 ```ts
 import { targetLine } from 'chartist';
 
-export const limits = targetLine({
-  lines: [
-    { value: 1000, label: 'Goal' },
-    { value: 800, label: 'Minimum', className: 'ct-series-b' }
-  ]
-});
+export const limits = [
+  targetLine({ value: 1000, label: 'Goal' }),
+  targetLine({ value: 800, label: 'Minimum', className: 'ct-series-b' })
+];
 ```
 
 On an X axis, the lines are vertical. That's where the values are on horizontal bars: the presets call their axes `x` and `y`, so use `targetLine({ axis: 'x', value: 1000 })`. In a [composed chart](../composed-charts/), use your own axis ids.
@@ -144,17 +141,18 @@ A band shows a range: from the lowest to the highest value of a group, between t
 
 The edges of a band can be:
 
-- **two series:** `band({ low: 'p10', high: 'p90' })`,
-- **two values:** `band({ low: 40, high: 60 })`, a target zone across the whole chart,
-- **one of each:** `band({ low: 0, high: 'forecast' })`.
+- **values of their own:** `band({ low: [3, 4, 3, 5], high: [9, 11, 10, 12] })`, one per label, like a series that isn't in your data,
+- **two numbers:** `band({ low: 40, high: 60 })`, a target zone across the whole chart,
+- **two series** from your data: `band({ low: 'p10', high: 'p90' })`,
+- **a mix:** `band({ low: 0, high: forecast })`.
 
-A number is a value; pick a series by index with `{ series: 2 }`.
+A number is a constant, an array holds values, and a string names a series; pick a series by index with `{ series: 2 }`.
 
 Edges follow `lineSmooth` like lines do, smooth by default, and `align: 'center'` lines a band up with bars, as for [lines](../composed-charts/#lining-up-with-bars). Where an edge has no value, the band breaks.
 
 ### On a preset
 
-A preset draws every series as a line, the band's edges too. Hide the edges with the per-series options:
+Give a preset's band its own values. The edges then stay out of your data, so the preset doesn't draw them as lines and the series keep their colors:
 
 ```ts
 import { band, lineChart } from 'chartist';
@@ -163,21 +161,17 @@ lineChart(
   '#chart',
   {
     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-    series: [
-      { name: 'p10', data: [3, 4, 3, 5, 4] },
-      { name: 'p90', data: [9, 11, 10, 12, 11] },
-      { name: 'today', data: [5, 8, 6, 9, 7] }
-    ]
+    series: [[5, 8, 6, 9, 7]]
   },
   {
-    series: {
-      p10: { showLine: false, showPoint: false },
-      p90: { showLine: false, showPoint: false }
-    },
-    layers: { below: [band({ low: 'p10', high: 'p90' })] }
+    layers: {
+      below: [band({ low: [3, 4, 3, 5, 4], high: [9, 11, 10, 12, 11] })]
+    }
   }
 );
 ```
+
+On a scale X axis (an XY chart), give the values as `{ x, y }`, like the data.
 
 ## In or out of the band
 
@@ -216,7 +210,7 @@ Both layers draw in the text color by default: a dashed target line and a light 
 }
 ```
 
-The markup: a `g.ct-target-lines` group with a `line.ct-target-line` and a `text.ct-target-label` per line, and a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the roles `targetLine`, `targetLabel` and `band`, as in [events and plugins](../events-and-plugins/).
+The markup: a `line.ct-target-line` and a `text.ct-target-label` per target line, and a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the roles `targetLine`, `targetLabel` and `band`, as in [events and plugins](../events-and-plugins/).
 
 <Callout>
   **Coming from the target line plugin?** `chartist-plugin-targetline` with
