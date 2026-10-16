@@ -57,7 +57,6 @@ function classesOf(cell: Cell): string {
  * );
  * document.querySelector('#chart')!.innerHTML = renderToHtml(scene);
  * ```
- * @experimental
  */
 export function renderToHtml(scene: SceneNode): string {
   const lines = rowsOf(scene).map(runs =>
@@ -74,7 +73,6 @@ export function renderToHtml(scene: SceneNode): string {
 
 /**
  * Options of {@link renderToElement}.
- * @experimental
  */
 export interface ElementOptions {
   /**
@@ -103,7 +101,6 @@ export interface ElementOptions {
  * );
  * document.querySelector('#chart')!.replaceChildren(renderToElement(scene));
  * ```
- * @experimental
  */
 export function renderToElement(
   scene: SceneNode,

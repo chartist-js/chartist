@@ -52,7 +52,6 @@ interface AsString {
 /**
  * Options of the terminal {@link lineChart}: the options of Chartist's
  * `lineChart` and the terminal options.
- * @experimental
  */
 export type TerminalLineChartOptions = Omit<
   LineChartPresetOptions,
@@ -63,7 +62,6 @@ export type TerminalLineChartOptions = Omit<
 /**
  * Options of the terminal {@link barChart}: the options of Chartist's
  * `barChart` and the terminal options.
- * @experimental
  */
 export type TerminalBarChartOptions = Omit<
   BarChartPresetOptions,
@@ -74,7 +72,6 @@ export type TerminalBarChartOptions = Omit<
 /**
  * Options of the terminal {@link pieChart}: the options of Chartist's
  * `pieChart` and the terminal options.
- * @experimental
  */
 export type TerminalPieChartOptions = Omit<
   PieChartPresetOptions,
@@ -119,7 +116,6 @@ const cartesianDefaults = {
  *   )
  * );
  * ```
- * @experimental
  */
 export function lineChart(
   data: LineChartData,
@@ -162,7 +158,6 @@ export function lineChart(
  *   )
  * );
  * ```
- * @experimental
  */
 export function barChart(
   data: BarChartData,
@@ -221,7 +216,6 @@ export function barChart(
  *   )
  * );
  * ```
- * @experimental
  */
 export function pieChart(
   data: PieChartData,

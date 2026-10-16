@@ -12,7 +12,7 @@
 ## 2. Stable core
 
 - [x] 2.1 Remove the `@experimental` tags from `packages/chartist/src`, except in `src/live/` and on `container()` and `ContainerCondition`; drop the "until v2.0" module notes in `scene/node.ts` and `scene/roles.ts` and the "experimental until v2.0" comment in `src/index.ts`; reword `src/live/index.ts` to "may change in a 2.x minor". Verify: `grep -rn "@experimental" packages/chartist/src` lists only `src/live/` and the two container names, `pnpm nx run chartist:test:api --skip-nx-cache` passes after `test:api:update-exports` with `experimental.json` holding only those names, and the "Stable core" and "Live updates stay experimental" scenarios hold
-- [ ] 2.2 Remove the `@experimental` tags from `packages/terminal/src`, and add a test to the terminal package that its declarations mark no export experimental. Verify: `pnpm nx test terminal --skip-nx-cache` passes, and the test fails when a tag is added back
+- [x] 2.2 Remove the `@experimental` tags from `packages/terminal/src`, and add a test to the terminal package that its declarations mark no export experimental. Verify: `pnpm nx test terminal --skip-nx-cache` passes, and the test fails when a tag is added back
 
 ## 3. Docs
 
