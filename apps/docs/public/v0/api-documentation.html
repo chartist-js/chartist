@@ -3,58 +3,6 @@
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
 <html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - API Documentation</title><meta name="description" content="Detailed documentation of the Chartist.js code and API"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css">
 
-<style>
-  .version-notice {
-    display: flex;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    margin: 20px;
-    box-shadow: 3px 3px 0 rgb(0 0 0 / 10%);
-    padding: 20px;
-    background: white;
-    animation: bounce 2s ease;
-    animation-delay: 1s;
-  }
-
-  .version-notice button {
-    margin: 0 0 0 20px;
-    padding: 12px 12px 24px;
-    font-size: 30px;
-    line-height: 0;
-  }
-
-  .version-notice--hidden {
-    display: none;
-  }
-
-  @keyframes bounce {
-      60% { transform:translateY(0%); }
-      70% { transform:translateY(-20%); }
-      80% { transform:translateY(0%); }
-      90% { transform:translateY(-20%); }
-      100% { transform:translateY(0); }
-  }
-</style>
-<section id="versionNotice" class="version-notice version-notice--hidden">
-  <div>
-    This is the documentation of Chartist v0.11<br>
-    We now recommend using <a href="https://github.com/chartist-js/chartist#readme">Chartist v1</a> instead!
-  </div>
-  <button id="closeVersionNoticeButton" aria-label="Close">⨯</button>
-</section>
-<script>
-  if (!localStorage.getItem('version-notice-closed')) {
-    document.all.versionNotice.classList.remove('version-notice--hidden')
-    document.all.closeVersionNoticeButton.onclick = () => {
-      document.all.versionNotice.classList.add('version-notice--hidden')
-      localStorage.setItem('version-notice-closed', true)
-    }
-  }
-</script>
-
 <section class="page-content api-documentation"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1><li class="toggle-topbar menu-icon"><a href="#">Menu</a></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></ul><ul class="left"><li><a href="getting-started.html">Getting started</a><li><a href="api-documentation.html">API Documentation</a><li><a href="examples.html">Examples</a><li><a href="plugins.html">Plugins</a><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - API Documentation</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Chartist.AutoScaleAxis<li class="heading">Chartist.FixedScaleAxis<li class="heading">Chartist.StepAxis<li class="heading">Chartist.Base<li><a class="text-clipping" href="#chartistbase-function-update">update()</a><li><a class="text-clipping" href="#chartistbase-function-detach">detach()</a><li><a class="text-clipping" href="#chartistbase-function-on">on()</a><li><a class="text-clipping" href="#chartistbase-function-off">off()</a><li class="heading">Chartist.Bar<li><a class="text-clipping" href="#chartistbar-declaration-defaultoptions">defaultOptions</a><li><a class="text-clipping" href="#chartistbar-function-bar">Bar()</a><li class="heading">Chartist.Line<li><a class="text-clipping" href="#chartistline-declaration-defaultoptions">defaultOptions</a><li><a class="text-clipping" href="#chartistline-function-line">Line()</a><li class="heading">Chartist.Pie<li><a class="text-clipping" href="#chartistpie-declaration-defaultoptions">defaultOptions</a><li><a class="text-clipping" href="#chartistpie-function-pie">Pie()</a><li class="heading">Chartist.Class<li><a class="text-clipping" href="#chartistclass-function-extend">extend()</a><li class="heading">Chartist.Core<li><a class="text-clipping" href="#chartistcore-property-namespaces">Chartist.namespaces</a><li><a class="text-clipping" href="#chartistcore-method-times">Chartist.times()</a><li><a class="text-clipping" href="#chartistcore-method-sum">Chartist.sum()</a><li><a class="text-clipping" href="#chartistcore-method-mapmultiply">Chartist.mapMultiply()</a><li><a class="text-clipping" href="#chartistcore-method-mapadd">Chartist.mapAdd()</a><li><a class="text-clipping" href="#chartistcore-method-serialmap">Chartist.serialMap()</a><li><a class="text-clipping" href="#chartistcore-method-roundwithprecision">Chartist.roundWithPrecision()</a><li><a class="text-clipping" href="#chartistcore-property-precision">Chartist.precision</a><li><a class="text-clipping" href="#chartistcore-property-escapingmap">Chartist.escapingMap</a><li><a class="text-clipping" href="#chartistcore-method-serialize">Chartist.serialize()</a><li><a class="text-clipping" href="#chartistcore-method-deserialize">Chartist.deserialize()</a><li><a class="text-clipping" href="#chartistcore-method-createsvg">Chartist.createSvg()</a><li><a class="text-clipping" href="#chartistcore-method-reversedata">Chartist.reverseData()</a><li><a class="text-clipping" href="#chartistcore-method-getdataarray">Chartist.getDataArray()</a><li><a class="text-clipping" href="#chartistcore-method-normalizepadding">Chartist.normalizePadding()</a><li><a class="text-clipping" href="#chartistcore-method-orderofmagnitude">Chartist.orderOfMagnitude()</a><li><a class="text-clipping" href="#chartistcore-method-projectlength">Chartist.projectLength()</a><li><a class="text-clipping" href="#chartistcore-method-getavailableheight">Chartist.getAvailableHeight()</a><li><a class="text-clipping" href="#chartistcore-method-gethighlow">Chartist.getHighLow()</a><li><a class="text-clipping" href="#chartistcore-method-isnumeric">Chartist.isNumeric()</a><li><a class="text-clipping" href="#chartistcore-method-isfalseybutzero">Chartist.isFalseyButZero()</a><li><a class="text-clipping" href="#chartistcore-method-getnumberorundefined">Chartist.getNumberOrUndefined()</a><li><a class="text-clipping" href="#chartistcore-method-ismultivalue">Chartist.isMultiValue()</a><li><a class="text-clipping" href="#chartistcore-method-getmultivalue">Chartist.getMultiValue()</a><li><a class="text-clipping" href="#chartistcore-method-rho">Chartist.rho()</a><li><a class="text-clipping" href="#chartistcore-method-getbounds">Chartist.getBounds()</a><li><a class="text-clipping" href="#chartistcore-method-polartocartesian">Chartist.polarToCartesian()</a><li><a class="text-clipping" href="#chartistcore-method-createchartrect">Chartist.createChartRect()</a><li><a class="text-clipping" href="#chartistcore-method-creategrid">Chartist.createGrid()</a><li><a class="text-clipping" href="#chartistcore-method-creategridbackground">Chartist.createGridBackground()</a><li><a class="text-clipping" href="#chartistcore-method-createlabel">Chartist.createLabel()</a><li><a class="text-clipping" href="#chartistcore-method-optionsprovider">Chartist.optionsProvider()</a><li class="heading">Chartist.Event<li><a class="text-clipping" href="#chartistevent-function-addeventhandler">addEventHandler()</a><li><a class="text-clipping" href="#chartistevent-function-removeeventhandler">removeEventHandler()</a><li><a class="text-clipping" href="#chartistevent-function-emit">emit()</a><li class="heading">Chartist.Interpolation<li><a class="text-clipping" href="#chartistinterpolation-method-none">Chartist.Interpolation.none()</a><li><a class="text-clipping" href="#chartistinterpolation-method-simple">Chartist.Interpolation.simple()</a><li><a class="text-clipping" href="#chartistinterpolation-method-cardinal">Chartist.Interpolation.cardinal()</a><li><a class="text-clipping" href="#chartistinterpolation-method-monotonecubic">Chartist.Interpolation.monotoneCubic()</a><li><a class="text-clipping" href="#chartistinterpolation-method-step">Chartist.Interpolation.step()</a><li class="heading">Chartist.Svg.Path<li><a class="text-clipping" href="#chartistsvgpath-declaration-elementdescriptions">elementDescriptions</a><li><a class="text-clipping" href="#chartistsvgpath-declaration-defaultoptions">defaultOptions</a><li><a class="text-clipping" href="#chartistsvgpath-constructor-svgpath">SvgPath()</a><li><a class="text-clipping" href="#chartistsvgpath-function-position">position()</a><li><a class="text-clipping" href="#chartistsvgpath-function-remove">remove()</a><li><a class="text-clipping" href="#chartistsvgpath-function-move">move()</a><li><a class="text-clipping" href="#chartistsvgpath-function-line">line()</a><li><a class="text-clipping" href="#chartistsvgpath-function-curve">curve()</a><li><a class="text-clipping" href="#chartistsvgpath-function-arc">arc()</a><li><a class="text-clipping" href="#chartistsvgpath-function-parse">parse()</a><li><a class="text-clipping" href="#chartistsvgpath-function-stringify">stringify()</a><li><a class="text-clipping" href="#chartistsvgpath-function-scale">scale()</a><li><a class="text-clipping" href="#chartistsvgpath-function-translate">translate()</a><li><a class="text-clipping" href="#chartistsvgpath-function-transform">transform()</a><li><a class="text-clipping" href="#chartistsvgpath-function-clone">clone()</a><li><a class="text-clipping" href="#chartistsvgpath-function-splitbycommand">splitByCommand()</a><li><a class="text-clipping" href="#chartistsvgpath-function-join">join()</a><li class="heading">Chartist.Svg<li><a class="text-clipping" href="#chartistsvg-constructor-svg">Svg()</a><li><a class="text-clipping" href="#chartistsvg-function-attr">attr()</a><li><a class="text-clipping" href="#chartistsvg-function-elem">elem()</a><li><a class="text-clipping" href="#chartistsvg-function-parent">parent()</a><li><a class="text-clipping" href="#chartistsvg-function-root">root()</a><li><a class="text-clipping" href="#chartistsvg-function-queryselector">querySelector()</a><li><a class="text-clipping" href="#chartistsvg-function-queryselectorall">querySelectorAll()</a><li><a class="text-clipping" href="#chartistsvg-function-getnode">getNode()</a><li><a class="text-clipping" href="#chartistsvg-function-foreignobject">foreignObject()</a><li><a class="text-clipping" href="#chartistsvg-function-text">text()</a><li><a class="text-clipping" href="#chartistsvg-function-empty">empty()</a><li><a class="text-clipping" href="#chartistsvg-function-remove">remove()</a><li><a class="text-clipping" href="#chartistsvg-function-replace">replace()</a><li><a class="text-clipping" href="#chartistsvg-function-append">append()</a><li><a class="text-clipping" href="#chartistsvg-function-classes">classes()</a><li><a class="text-clipping" href="#chartistsvg-function-addclass">addClass()</a><li><a class="text-clipping" href="#chartistsvg-function-removeclass">removeClass()</a><li><a class="text-clipping" href="#chartistsvg-function-removeallclasses">removeAllClasses()</a><li><a class="text-clipping" href="#chartistsvg-function-height">height()</a><li><a class="text-clipping" href="#chartistsvg-function-animate">animate()</a><li><a class="text-clipping" href="#chartistsvg-method-issupported">Chartist.Svg.isSupported()</a></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3>auto-scale-axis.js</h3></header><div class="content"><section class="sub-section"><header><h4 id="module-chartistautoscaleaxis">Module Chartist.AutoScaleAxis</h4><div class="module-description"><p>The auto scale axis uses standard linear scale projection of values along an axis. It uses order of magnitude to find a scale automatically and evaluates the available space in order to find the perfect amount of ticks for your chart.<br><strong>Options</strong><br>The following options are used by this axis in addition to the default axis options outlined in the axis configuration of the chart default settings.<pre><code class="language-javascript">var options = {
   // If high is specified then the axis will display values explicitly up to this value and the computed maximum from the data is ignored
   high: 100,
@@ -2509,14 +2457,7 @@ Chartist.Svg.List = Chartist.Class.extend({
   constructor: SvgList
 });
 }(this, Chartist));</code>
-  </pre><div class="member-content"><div class="description"><p>This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check <a href="http://www.w3.org/TR/SVG11/feature">http://www.w3.org/TR/SVG11/feature</a> for a detailed list.</div><h6>Parameters</h6><div class="param"><code>feature</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The SVG 1.1 feature that should be checked for support.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">True of false if the feature is supported or not</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-53685926-1', 'auto');
-  ga('require', 'displayfeatures');
-  ga('send', 'pageview');</script><script async src="scripts/all.js"></script><!-- Take web fonts off the critical path but risk FOUT --><script type="text/javascript">WebFontConfig = {
+  </pre><div class="member-content"><div class="description"><p>This method checks for support of a given SVG feature like Extensibility, SVG-animation or the like. Check <a href="http://www.w3.org/TR/SVG11/feature">http://www.w3.org/TR/SVG11/feature</a> for a detailed list.</div><h6>Parameters</h6><div class="param"><code>feature</code> ( <span class="param-type"><code>String</code></span> )<div class="param-description">The SVG 1.1 feature that should be checked for support.</div></div><h6>Returns</h6><div class="return">( <span class="param-type"><code>Boolean</code></span> )<div class="param-description">True of false if the feature is supported or not</div></div></div></article></div></header></section></div><aside class="side-notes"></aside></section></div></article></section><script async src="scripts/all.js"></script><!-- Take web fonts off the critical path but risk FOUT --><script type="text/javascript">WebFontConfig = {
     google: { families: ['Oxygen:400,300,700', 'Source+Code+Pro:400,700'] },
     custom: {
       families: [ 'FontAwesome' ],

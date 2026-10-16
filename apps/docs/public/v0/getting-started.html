@@ -3,58 +3,6 @@
 <html class="no-js lt-ie9 lt-ie8"> <![endif]--><!--[if IE 8]>
 <html class="no-js lt-ie9"> <![endif]--><!--[if gt IE 8]><!--><html class="no-js"><!--<![endif]--><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><title>Chartist - Getting started</title><meta name="description" content="Learn how to use Chartist.js"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><link rel="stylesheet" href="styles/vendor.css"><link rel="stylesheet" href="styles/main.css">
 
-<style>
-  .version-notice {
-    display: flex;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    margin: 20px;
-    box-shadow: 3px 3px 0 rgb(0 0 0 / 10%);
-    padding: 20px;
-    background: white;
-    animation: bounce 2s ease;
-    animation-delay: 1s;
-  }
-
-  .version-notice button {
-    margin: 0 0 0 20px;
-    padding: 12px 12px 24px;
-    font-size: 30px;
-    line-height: 0;
-  }
-
-  .version-notice--hidden {
-    display: none;
-  }
-
-  @keyframes bounce {
-      60% { transform:translateY(0%); }
-      70% { transform:translateY(-20%); }
-      80% { transform:translateY(0%); }
-      90% { transform:translateY(-20%); }
-      100% { transform:translateY(0); }
-  }
-</style>
-<section id="versionNotice" class="version-notice version-notice--hidden">
-  <div>
-    This is the documentation of Chartist v0.11<br>
-    We now recommend using <a href="https://github.com/chartist-js/chartist#readme">Chartist v1</a> instead!
-  </div>
-  <button id="closeVersionNoticeButton" aria-label="Close">⨯</button>
-</section>
-<script>
-  if (!localStorage.getItem('version-notice-closed')) {
-    document.all.versionNotice.classList.remove('version-notice--hidden')
-    document.all.closeVersionNoticeButton.onclick = () => {
-      document.all.versionNotice.classList.add('version-notice--hidden')
-      localStorage.setItem('version-notice-closed', true)
-    }
-  }
-</script>
-
 <section class="page-content getting-started"><div class="contain-to-grid sticky"><nav class="top-bar" data-topbar data-options="sticky_on: large"><ul class="title-area"><li class="name"><h1><a href="index.html">Chartist.js</a></h1><li class="toggle-topbar menu-icon"><a href="#">Menu</a></ul><section class="top-bar-section"><ul class="right"><li><a href="//github.com/gionkunz/chartist-js/tree/master/dist" target="_blank">Download</a></ul><ul class="left"><li><a href="getting-started.html">Getting started</a><li><a href="api-documentation.html">API Documentation</a><li><a href="examples.html">Examples</a><li><a href="plugins.html">Plugins</a><li><a href="//github.com/gionkunz/chartist-js" target="_blank">Contribute</a></ul></section></nav></div><article class="main" role="main"><header><h2>Chartist - Getting started</h2></header><aside class="side-navigation"><nav><ul class="side-nav"><li class="heading">Download and set-up<li><a class="text-clipping" href="#bower">Bower</a><li><a class="text-clipping" href="#one-two-three-css">One, two, three, CSS!</a><li><a class="text-clipping" href="#the-sass-way">The Sass way</a><li class="heading">Create your first chart<li><a class="text-clipping" href="#as-simple-as-it-can-get">As simple as it can get</a><li><a class="text-clipping" href="#the-configuration-of-your-chart">The configuration of your chart</a><li><a class="text-clipping" href="#responsive-sugar-topping">Responsive sugar topping</a><li><a class="text-clipping" href="#different-configuration-for-different-series">Different configuration for different series</a><li class="heading">Styling your chart<li><a class="text-clipping" href="#customizing-the-default-css">Customizing the default CSS</a><li><a class="text-clipping" href="#colour-up-your-charts">Colour up your charts</a><li class="heading">Advanced<li><a class="text-clipping" href="#animations-using-chartistsvg">Animations using Chartist.Svg</a><li><a class="text-clipping" href="#switching-axis-type">Switching axis type</a></ul></nav></aside><div class="content"><section class="documentation-section full"><header><h3 id="download-and-setup">Download and set-up</h3></header><div class="content"><div class="sub-section"><h4 id="bower">Bower</h4><p>The easiest way to get started with Chartist.js is by using <a href="http://bower.io/" target="_blank">bower</a>:<pre><code class="bash">bower install chartist --save</code></pre><p>The bower package contains the JavaScript library, CSS as well as the Sass (SCSS) files. You can then integrate the desired dependencies in your project and start using them immediately.</div><div class="sub-section"><h4 id="one-two-three-css">One, two, three, CSS!</h4><p>The quickest way to get things up and running is by using the Chartist.js CSS files. The CSS is compiled from the Sass files with the default class names which are also configured in the JavaScript library. You can then override the default styles or modify the CSS file, however, for customization it's recommended to use the Sass version of Chartist.js.<pre id="simple-start"><code class="html">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
@@ -398,14 +346,7 @@ new Chartist.Bar(&#x27;.ct-chart&#x27;, data, options, responsiveOptions);</code
     {x: undefined, y: 14}
   ]]
 };
-</code></pre><p>You can see that Chartist will automatically convert one dimensional data into two dimensional values where the previous value is assigned to <code>y</code> and <code>x</code> will be set to <code>undefined</code>. As the default axis for projecting the <code>x</code> value is a <code>Chartist.StepAxis</code> that relies on the value index rather than the value, this is perfectly fine for the default setup.</div><div class="sub-section"><h5 id="creating-an-xyplot-chart">Creating an XY-plot chart</h5><p>In order to plot on the X-Axis too, we'd need to switch the standard axis type <code>Chartist.StepAxis</code> to something more continuous. Let's create a full fledged auto scale chart that scales both the Y- and X-Axis automatically using the <code>Chartist.AutoScaleAxis</code>!<section class="live-example" id="example-axis-auto" data-live-example="bmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBzZXJpZXM6IFtbCiAgICB7eDogMSwgeTogMTAwfSwKICAgIHt4OiAyLCB5OiA1MH0sCiAgICB7eDogMywgeTogMjV9LAogICAge3g6IDUsIHk6IDEyLjV9LAogICAge3g6IDgsIHk6IDYuMjV9CiAgXV0KfSwgewogIGF4aXNYOiB7CiAgICB0eXBlOiBDaGFydGlzdC5BdXRvU2NhbGVBeGlzLAogICAgb25seUludGVnZXI6IHRydWUKICB9Cn0pOwo="><header class="live-example-header"><h6>Configure your axis type</h6></header><div class="chart"><div class="ct-chart ct-golden-section"></div></div><aside class="live-code"><div class="introduction"><p class="text">Note that we have just specified the X-Axis because the Y-Axis is configured to <code>Chartist.AutoScaleAxis</code> by default.</p><button class="edit-button">Edit Example</button></div><div class="editor-area"><textarea class="code-editor"></textarea><button class="close-edit-button">Close Editor</button></div></aside></section><p>A few things are different in this chart. Because the <code>labels</code> array of our data is just used to be mapped as <code>ticks</code> option for the default <code>Chartist.StepAxis</code> X-Axis, we can completely remove the labels from our data, once we use a different axis than the step based one. Also you can see now from the data series is that we are specifying 2-dimensional values directly.</div><div class="sub-section"><h5 id="fixed-stuff-can-be-sweet-too">Fixed stuff can be sweet too!</h5><p>The following example shows how to create an axis with some fixed ticks. The <code>Chartist.FixedScaleAxis</code> can be used to create a more rudimentary continuous linear scale, where ticks can be fixed either with an array of values or with a divisor. For the detailed options please check the <a href="api-documentation.html">API documentation</a>.<section class="live-example" id="example-axis-fixed-and-auto" data-live-example="bmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBzZXJpZXM6IFtbCiAgICB7eDogMSwgeTogMTAwfSwKICAgIHt4OiAyLCB5OiA1MH0sCiAgICB7eDogMywgeTogMjV9LAogICAge3g6IDUsIHk6IDEyLjV9LAogICAge3g6IDgsIHk6IDYuMjV9CiAgXV0KfSwgewogIGF4aXNYOiB7CiAgICB0eXBlOiBDaGFydGlzdC5BdXRvU2NhbGVBeGlzLAogICAgb25seUludGVnZXI6IHRydWUKICB9LAogIGF4aXNZOiB7CiAgICB0eXBlOiBDaGFydGlzdC5GaXhlZFNjYWxlQXhpcywKICAgIHRpY2tzOiBbMCwgNTAsIDc1LCA4Ny41LCAxMDBdLAogICAgbG93OiAwCiAgfSwKICBsaW5lU21vb3RoOiBDaGFydGlzdC5JbnRlcnBvbGF0aW9uLnN0ZXAoKSwKICBzaG93UG9pbnQ6IGZhbHNlCn0pOwo="><header class="live-example-header"><h6>Unleash your creativity...</h6></header><div class="chart"><div class="ct-chart ct-golden-section"></div></div><aside class="live-code"><div class="introduction"><p class="text">Let's say we'd like to fix a few ticks on the Y-Axis on our chart as those are the only ones we're interested in. The X-Axis should be continuous too, but let's make that axis a <code>Chartist.AutoScaleAxis</code>.</p><button class="edit-button">Edit Example</button></div><div class="editor-area"><textarea class="code-editor"></textarea><button class="close-edit-button">Close Editor</button></div></aside></section></div></div></div></section></div></article></section><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-53685926-1', 'auto');
-  ga('require', 'displayfeatures');
-  ga('send', 'pageview');</script><script async src="scripts/all.js"></script><!-- Take web fonts off the critical path but risk FOUT --><script type="text/javascript">WebFontConfig = {
+</code></pre><p>You can see that Chartist will automatically convert one dimensional data into two dimensional values where the previous value is assigned to <code>y</code> and <code>x</code> will be set to <code>undefined</code>. As the default axis for projecting the <code>x</code> value is a <code>Chartist.StepAxis</code> that relies on the value index rather than the value, this is perfectly fine for the default setup.</div><div class="sub-section"><h5 id="creating-an-xyplot-chart">Creating an XY-plot chart</h5><p>In order to plot on the X-Axis too, we'd need to switch the standard axis type <code>Chartist.StepAxis</code> to something more continuous. Let's create a full fledged auto scale chart that scales both the Y- and X-Axis automatically using the <code>Chartist.AutoScaleAxis</code>!<section class="live-example" id="example-axis-auto" data-live-example="bmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBzZXJpZXM6IFtbCiAgICB7eDogMSwgeTogMTAwfSwKICAgIHt4OiAyLCB5OiA1MH0sCiAgICB7eDogMywgeTogMjV9LAogICAge3g6IDUsIHk6IDEyLjV9LAogICAge3g6IDgsIHk6IDYuMjV9CiAgXV0KfSwgewogIGF4aXNYOiB7CiAgICB0eXBlOiBDaGFydGlzdC5BdXRvU2NhbGVBeGlzLAogICAgb25seUludGVnZXI6IHRydWUKICB9Cn0pOwo="><header class="live-example-header"><h6>Configure your axis type</h6></header><div class="chart"><div class="ct-chart ct-golden-section"></div></div><aside class="live-code"><div class="introduction"><p class="text">Note that we have just specified the X-Axis because the Y-Axis is configured to <code>Chartist.AutoScaleAxis</code> by default.</p><button class="edit-button">Edit Example</button></div><div class="editor-area"><textarea class="code-editor"></textarea><button class="close-edit-button">Close Editor</button></div></aside></section><p>A few things are different in this chart. Because the <code>labels</code> array of our data is just used to be mapped as <code>ticks</code> option for the default <code>Chartist.StepAxis</code> X-Axis, we can completely remove the labels from our data, once we use a different axis than the step based one. Also you can see now from the data series is that we are specifying 2-dimensional values directly.</div><div class="sub-section"><h5 id="fixed-stuff-can-be-sweet-too">Fixed stuff can be sweet too!</h5><p>The following example shows how to create an axis with some fixed ticks. The <code>Chartist.FixedScaleAxis</code> can be used to create a more rudimentary continuous linear scale, where ticks can be fixed either with an array of values or with a divisor. For the detailed options please check the <a href="api-documentation.html">API documentation</a>.<section class="live-example" id="example-axis-fixed-and-auto" data-live-example="bmV3IENoYXJ0aXN0LkxpbmUoJy5jdC1jaGFydCcsIHsKICBzZXJpZXM6IFtbCiAgICB7eDogMSwgeTogMTAwfSwKICAgIHt4OiAyLCB5OiA1MH0sCiAgICB7eDogMywgeTogMjV9LAogICAge3g6IDUsIHk6IDEyLjV9LAogICAge3g6IDgsIHk6IDYuMjV9CiAgXV0KfSwgewogIGF4aXNYOiB7CiAgICB0eXBlOiBDaGFydGlzdC5BdXRvU2NhbGVBeGlzLAogICAgb25seUludGVnZXI6IHRydWUKICB9LAogIGF4aXNZOiB7CiAgICB0eXBlOiBDaGFydGlzdC5GaXhlZFNjYWxlQXhpcywKICAgIHRpY2tzOiBbMCwgNTAsIDc1LCA4Ny41LCAxMDBdLAogICAgbG93OiAwCiAgfSwKICBsaW5lU21vb3RoOiBDaGFydGlzdC5JbnRlcnBvbGF0aW9uLnN0ZXAoKSwKICBzaG93UG9pbnQ6IGZhbHNlCn0pOwo="><header class="live-example-header"><h6>Unleash your creativity...</h6></header><div class="chart"><div class="ct-chart ct-golden-section"></div></div><aside class="live-code"><div class="introduction"><p class="text">Let's say we'd like to fix a few ticks on the Y-Axis on our chart as those are the only ones we're interested in. The X-Axis should be continuous too, but let's make that axis a <code>Chartist.AutoScaleAxis</code>.</p><button class="edit-button">Edit Example</button></div><div class="editor-area"><textarea class="code-editor"></textarea><button class="close-edit-button">Close Editor</button></div></aside></section></div></div></div></section></div></article></section><script async src="scripts/all.js"></script><!-- Take web fonts off the critical path but risk FOUT --><script type="text/javascript">WebFontConfig = {
     google: { families: ['Oxygen:400,300,700', 'Source+Code+Pro:400,700'] },
     custom: {
       families: [ 'FontAwesome' ],
