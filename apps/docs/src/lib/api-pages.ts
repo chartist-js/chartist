@@ -95,6 +95,12 @@ export const API_PAGES: ApiPage[] = [
       'The 1.x events (data, draw, created, …) and 1.x plugins on the functional API.'
   },
   {
+    slug: 'live',
+    title: 'chartist/live',
+    description:
+      'Live updates: the renderer that changes a chart’s SVG in place, the keyed diff, and SMIL update animations.'
+  },
+  {
     slug: 'classes',
     title: '1.x classes',
     description:
@@ -198,6 +204,7 @@ const BY_NAME: Record<string, string> = {
 /** Source path prefixes (under packages/chartist/src) → page, first match. */
 const BY_FILE: Array<[string, string]> = [
   ['compat/', 'compat'],
+  ['live/', 'live'],
   ['presets/', 'charts'],
   ['chart/toScene', 'rendering'],
   ['chart/', 'chart'],

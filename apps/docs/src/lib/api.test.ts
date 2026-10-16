@@ -169,6 +169,9 @@ describe('API reference', () => {
         [...exportsOf('compat').runtime, ...exportsOf('compat').types].map(
           name => `chartist/compat:${name}`
         )
+      ),
+      ...declaredExports('chartist/dist/live.d.ts').map(
+        name => `chartist/live:${name}`
       )
     ].sort();
     const documented = ENTRIES.map(
@@ -190,9 +193,13 @@ describe('API reference', () => {
 });
 
 /** The names a package's built declarations export. */
-function packageExports(slug: string): string[] {
+const packageExports = (slug: string) =>
+  declaredExports(`${slug}/dist/index.d.ts`);
+
+/** The names a built declaration file under packages/ exports. */
+function declaredExports(path: string): string[] {
   const declarations = readFileSync(
-    new URL(`../../../../packages/${slug}/dist/index.d.ts`, import.meta.url),
+    new URL(`../../../../packages/${path}`, import.meta.url),
     'utf8'
   );
   const declared = [

@@ -23,7 +23,10 @@ const headings = [
     <li><span class="tag api-badge api-badge-1x">1.x</span> Kept so 1.x code runs unchanged. New code doesn’t need it.</li>
     <li>Signatures link their types: click a type to see it.</li>
   </ul>
-  <p>Everything is exported from <code>chartist</code>, except the 1.x events, which come from <code>chartist/compat</code>.</p>
+  <p>
+    Everything is exported from <code>chartist</code>, except the 1.x events, which come from <code>chartist/compat</code>, and live updates, which come from
+    <code>chartist/live</code>.
+  </p>
   {
     API_PAGES.map(page => (
       <section class="api-overview-page">
