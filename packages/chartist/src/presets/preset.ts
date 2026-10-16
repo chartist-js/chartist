@@ -78,8 +78,8 @@ export interface PresetHandle<TOptions> extends ChartHandle {
   /**
    * Changes the options and redraws: they extend the current options, or
    * with `{ replace: true }`, the defaults, dropping the options given
-   * before. Matching responsive options still apply on top. `plugins` and
-   * `on` can't change. Coming from 1.x, `setOptions(options)` is
+   * before. Matching responsive options still apply on top. `plugins`,
+   * `on` and `renderer` can't change. Coming from 1.x, `setOptions(options)` is
    * `update(undefined, options, true)` and
    * `setOptions(options, { replace: true })` is `update(undefined, options)`.
    * @param options The options to change.
@@ -87,7 +87,7 @@ export interface PresetHandle<TOptions> extends ChartHandle {
    * current options.
    */
   setOptions(
-    options: Omit<TOptions, 'plugins' | 'on'>,
+    options: Omit<TOptions, 'plugins' | 'on' | 'renderer'>,
     how?: { readonly replace?: boolean }
   ): this;
 }
@@ -294,9 +294,9 @@ export function presetConfig<
   options?: TOptions
 ): ChartConfig {
   const resolved = extend({}, spec.defaults, options) as TOptions;
-  const { plugins, on } = (options ?? {}) as Pick<
+  const { plugins, on, renderer } = (options ?? {}) as Pick<
     ChartConfig,
-    'plugins' | 'on'
+    'plugins' | 'on' | 'renderer'
   >;
   return {
     // As 1.x: missing labels and series are empty.
@@ -305,7 +305,8 @@ export function presetConfig<
       resolved
     ),
     plugins,
-    on
+    on,
+    ...(renderer && { renderer })
   };
 }
 
@@ -409,7 +410,8 @@ export function createPreset<
   const inner = chart(target, {
     ...withState(spec.config(data, current)),
     plugins: [rootStyle(() => current, state), ...(plugins ?? [])],
-    on: (options as { on?: PhaseListeners }).on
+    on: (options as { on?: PhaseListeners }).on,
+    renderer: (options as { renderer?: ChartConfig['renderer'] }).renderer
   });
 
   function onResponsiveChange() {

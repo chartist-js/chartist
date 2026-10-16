@@ -1,7 +1,8 @@
 import { pointContext } from '../../test/contexts';
 import { lineChart } from '../presets/lineChart';
 import { node } from '../scene/node';
-import { domRenderer } from './dom';
+import { spyOnStyleAttributes } from '../../test/style-spy';
+import { applyAttribute, domRenderer, renderElement } from './dom';
 import { estimateText } from './measure';
 import { renderToString } from './string';
 
@@ -193,5 +194,52 @@ describe('render/dom HTML in foreignObject', () => {
     expect(parsed.getElementsByTagName('span')[0].namespaceURI).toBe(
       'http://www.w3.org/1999/xhtml'
     );
+  });
+});
+
+describe('renderElement', () => {
+  it('creates HTML label content in the XHTML namespace, styled through the CSSOM', () => {
+    const label = node('foreignObject', {
+      style: 'overflow: visible;',
+      x: 4
+    }).append(
+      node('span', { style: 'width: 30px; height: 20px;' }, 'ct-label').text(
+        'Mon'
+      )
+    );
+    const spy = spyOnStyleAttributes();
+    const created: string[] = [];
+    try {
+      const element = renderElement(label, document, {
+        created: current => created.push(current.name)
+      });
+      const span = element.firstElementChild as HTMLElement;
+      expect(element.namespaceURI).toBe('http://www.w3.org/2000/svg');
+      expect(span.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+      expect(span.style.width).toBe('30px');
+      expect(span.textContent).toBe('Mon');
+      expect(created).toEqual(['span', 'foreignObject']);
+      expect(spy.calls).toEqual([]);
+    } finally {
+      spy.restore();
+    }
+  });
+});
+
+describe('applyAttribute', () => {
+  it('sets ct: names in their namespace and style through the CSSOM', () => {
+    const point = renderElement(node('line', { x1: 1 }, 'ct-point'), document);
+    const spy = spyOnStyleAttributes();
+    try {
+      applyAttribute(point, 'ct:value', 12);
+      applyAttribute(point, 'style', 'stroke-width: 12px;');
+      applyAttribute(point, 'x1', 3);
+    } finally {
+      spy.restore();
+    }
+    expect(point.getAttributeNS(CT, 'value')).toBe('12');
+    expect((point as SVGElement).style.strokeWidth).toBe('12px');
+    expect(point.getAttribute('x1')).toBe('3');
+    expect(spy.calls).toEqual([]);
   });
 });

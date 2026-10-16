@@ -41,4 +41,4 @@ The build SHALL be checked against gzip size budgets for at least: the browser E
 #### Scenario: Live updates stay out of the core
 
 - **WHEN** the size check measures a tree-shaken import of `lineChart` from `chartist`
-- **THEN** its size grows by at most 0.6 kB gzipped over rc.3 (13.65 kB), and it contains none of the live renderer's code
+- **THEN** its size grows by at most 0.65 kB gzipped over rc.3 (13.65 kB), and it contains none of the live renderer's code

@@ -26,7 +26,7 @@ From a chart's second render on, a renderer's `render()` SHALL receive, after th
 
 ### Requirement: Easing sampling
 
-Chartist SHALL export `sampleEasing(easing, duration)`, which turns a CSS easing (the keywords, `cubic-bezier()` including overshooting curves, `linear()`, `steps()`) into the eased progress points of an animation of that duration: at least 12 evenly spaced in time, and one per 50 ms above 600 ms, at most 40. An easing it doesn't understand SHALL be sampled as `ease`.
+Chartist SHALL export `sampleEasing(easing, duration)`, which turns a CSS easing (the keywords, `cubic-bezier()` including overshooting curves, `linear()`, `steps()`) into the eased progress points of an animation of that duration: at least 12 evenly spaced in time, and one per 50 ms above 600 ms, at most 40. An easing it doesn't understand SHALL be sampled as `ease`. Chartist SHALL also export `keySplinesOf(easing)`, the SMIL `keySplines` of an easing SMIL can express (a cubic Bézier curve within 0 to 1), and nothing for other easings.
 
 #### Scenario: Overshoot
 

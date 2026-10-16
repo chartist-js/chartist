@@ -76,10 +76,16 @@ export interface AnimationDefinition {
   /** The `id` of the `<animate>` element, to start other animations relative to it. */
   id?: string;
   /**
-   * The easing: a name from {@link easings} or four numbers of a cubic
-   * Bézier curve. Sets `calcMode`, `keySplines` and `keyTimes` for you.
+   * The easing: a name from {@link easings}, four numbers of a cubic
+   * Bézier curve, or a CSS easing such as `'ease-out'`,
+   * `'cubic-bezier(0.34, 1.56, 0.64, 1)'`, `linear()` or `steps()`. Sets
+   * `calcMode`, `keySplines` and `keyTimes` for you, or, for easings SMIL
+   * can't express (ones that overshoot, `linear()`, `steps()`), `values`
+   * sampled between `from` and `to`.
    */
-  easing?: number[] | keyof typeof easings;
+  // `string & {}` keeps the names of `easings` in autocompletion.
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  easing?: number[] | keyof typeof easings | (string & {});
   /** How values are interpolated (SMIL `calcMode`); an `easing` sets `'spline'`. */
   calcMode?: 'discrete' | 'linear' | 'paced' | 'spline';
   /** Whether the animation can restart while it's running (SMIL `restart`). */
@@ -92,6 +98,8 @@ export interface AnimationDefinition {
   keySplines?: string;
   /** The times of the key values, from `0` to `1` (SMIL `keyTimes`); an `easing` sets them. */
   keyTimes?: string;
+  /** The values in between, `;`-separated (SMIL `values`); an easing that overshoots sets them. */
+  values?: string;
   /** `'freeze'` keeps the last value after the animation, `'remove'` resets it. Guided mode sets `'freeze'`. */
   fill?: string;
   /** The minimum active duration (SMIL `min`). */

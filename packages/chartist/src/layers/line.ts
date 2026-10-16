@@ -197,12 +197,15 @@ export function line(options: LineLayerOptions = {}): Layer {
           ? series.meta
           : undefined;
 
+        const smoothing = interpolationOf(
+          seriesOption(series, options, 'lineSmooth')
+        );
         const path = seriesPath(
           values,
           { x: axisX, y: axisY },
           area,
           shift,
-          interpolationOf(seriesOption(series, options, 'lineSmooth')),
+          smoothing,
           valueIndex => getMetaData(series, valueIndex)
         );
         const seriesContext = { series, seriesIndex, meta: seriesMeta };
@@ -249,7 +252,7 @@ export function line(options: LineLayerOptions = {}): Layer {
           children = [
             node('path', { d: path.stringify() }, classNames.line, {
               role: 'line',
-              ctx: { ...seriesContext, values, path: path.clone() }
+              ctx: { ...seriesContext, values, path: path.clone(), smoothing }
             }),
             ...children
           ];
@@ -284,7 +287,12 @@ export function line(options: LineLayerOptions = {}): Layer {
               children = [
                 node('path', { d: areaPath.stringify() }, classNames.area, {
                   role: 'area',
-                  ctx: { ...seriesContext, values, path: areaPath.clone() }
+                  ctx: {
+                    ...seriesContext,
+                    values,
+                    path: areaPath.clone(),
+                    smoothing
+                  }
                 }),
                 ...children
               ];

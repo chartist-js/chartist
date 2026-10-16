@@ -373,6 +373,7 @@ export function band(options: BandOptions): Layer {
       const edges = bandEdges(options, context, clamp);
 
       let pieces: SvgPath[];
+      const interpolation = interpolationOf(options.lineSmooth ?? true);
       if (edges.constant) {
         const { low, high } = edges.at(0) as EdgesAt;
         const lowY = area.y1 - axisY.project(low);
@@ -394,7 +395,6 @@ export function band(options: BandOptions): Layer {
           lower.push(at && ({ x: at.x, y: at.low } as NormalizedSeriesValue));
         }
         const shift = centerShift(axisX, options.align);
-        const interpolation = interpolationOf(options.lineSmooth ?? true);
         const pathOf = (values: NormalizedSeries) =>
           seriesPath(values, { x: axisX, y: axisY }, area, shift, interpolation)
             .splitByCommand('M')
@@ -425,7 +425,7 @@ export function band(options: BandOptions): Layer {
       const children = pieces.map(path =>
         node('path', { d: path.stringify() }, classNames.area, {
           role: 'band',
-          ctx: { ...edgesContext, path: path.clone() }
+          ctx: { ...edgesContext, path: path.clone(), smoothing: interpolation }
         })
       );
       const className = options.className

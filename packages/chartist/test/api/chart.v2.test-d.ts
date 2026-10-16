@@ -8,11 +8,18 @@ import {
   type ChartConfig,
   type ChartHandle,
   type ChartPlugin,
+  type DomRenderOutput,
+  type Keyframes,
   type Layer,
+  type RenderCause,
+  type Renderer,
+  type SceneChange,
   type PhaseEvents,
   type PlainNode,
   type RoleNode,
-  type SceneNode
+  type SceneNode,
+  lineChart,
+  domRenderer
 } from 'chartist';
 
 declare const layer: Layer;
@@ -101,5 +108,52 @@ describe('v2 types', () => {
     expectTypeOf(scene).toEqualTypeOf<SceneNode>();
     expectTypeOf(renderToString(scene)).toEqualTypeOf<string>();
     expectTypeOf<PhaseEvents['compose']>().toEqualTypeOf<SceneNode>();
+  });
+});
+
+describe('render lifecycle types (v2)', () => {
+  test('mount listeners may return a cleanup, or anything else', () => {
+    const handle = chart('#c', { data: { series: [] }, layers: [layer] });
+    handle.on('mount', ({ cause, changes, previous, animation }) => {
+      expectTypeOf(cause).toEqualTypeOf<RenderCause>();
+      expectTypeOf(changes).toEqualTypeOf<readonly SceneChange[]>();
+      expectTypeOf(previous).toEqualTypeOf<SceneNode | undefined>();
+      expectTypeOf(animation?.duration).toEqualTypeOf<number | undefined>();
+      return () => undefined;
+    });
+    handle.on('mount', () => handle.detach());
+  });
+
+  test('plugins may return a cleanup from install and give keyframes', () => {
+    const plugin: ChartPlugin = {
+      name: 'needle',
+      install: () => () => undefined,
+      keyframes: (_previous, _next, progress) =>
+        progress.map(at => ({ transform: `rotate(${at * 90})` }))
+    };
+    expectTypeOf(plugin.keyframes).toEqualTypeOf<
+      | ((
+          previous: SceneNode,
+          next: SceneNode,
+          progress: readonly number[]
+        ) => Keyframes | undefined)
+      | undefined
+    >();
+  });
+
+  test('renderers take the previous render as a third argument', () => {
+    const dom = domRenderer();
+    // A wrapper that passes the update on has the DOM renderer's output.
+    const renderer: Renderer<DomRenderOutput> = {
+      ...dom,
+      render: (scene, target, update) => {
+        expectTypeOf(update?.cause).toEqualTypeOf<RenderCause | undefined>();
+        return dom.render(scene, target, update);
+      }
+    };
+    lineChart('#c', { series: [[1]] }, { renderer });
+    // The renderer can't change after the chart is created.
+    // @ts-expect-error renderer isn't an option of setOptions
+    lineChart('#c', { series: [[1]] }).setOptions({ renderer });
   });
 });

@@ -102,11 +102,11 @@ interface RenderOutput {
   - When `output.patched` is `true`, it emits `output.changes`; otherwise it builds the replacement changes (`remove` for every previous node, `add` for every new one; a short tree walk).
   - `output.animation` goes into `mount` as `animation`.
 - **The keyframes lookup** is built by `chart()`.
-  - `compose()` records which layer drew which top-level node; the lookup finds a node's layer through that map, falling back to the key's layer index.
+  - `compose()` records each layer's top-level nodes and context in the pipeline state (`drawn`). The first time a renderer asks, the lookup builds a node → layer map from them, once per render, so `toScene()` doesn't pay for it. A node a `scene` listener replaced belongs to no layer and only gets keyframes from plugins.
   - It asks the plugins that have `keyframes`, in order, then the layer (with its `LayerContext` from the last run).
   - It's a function, so nothing runs unless a renderer animates.
 - **`domRenderer()`** ignores `update`, so its output never has `patched`.
-- **Exported from the core for renderers:** `RenderUpdate`, `SceneChange`, `RenderCause`, `UpdateAnimation`, `sampleEasing()`, `renderElement(node, document)` and `applyAttribute(element, name, value)`.
+- **Exported from the core for renderers:** `RenderUpdate`, `SceneChange`, `RenderCause`, `UpdateAnimation`, `sampleEasing()`, `keySplinesOf()`, `renderElement(node, document)` and `applyAttribute(element, name, value)`.
   - `renderElement()` is `build()` made public: it's what `domRenderer()` uses, and what `liveDomRenderer()` needs to create added nodes without a second copy (HTML namespace inside `foreignObject`, `style` through `style.cssText` for CSP).
   - `applyAttribute()` is the private `setAttribute()` of `render/dom.ts` made public, for changing kept elements under the same rules.
   - Each of them is something a third-party renderer needs too.
@@ -117,12 +117,12 @@ interface RenderOutput {
 
 - **`render()` in `chart()` takes the cause:** `create` for the first render; `update` from `handle.update()` (which the presets' `update()` and `setOptions()` call); `responsive` from `onResponsiveChange()`; `resize` from the resize observer; `fonts` from `onFontsLoaded()`.
 - **The payloads.** `render` and `mount` get `cause`, `previous` (the previous scene) and `changes`. In `mount`, `elementOf(node)` covers removed nodes too: the chart asks the previous output's `elementOf` for nodes of the previous scene.
-- **`mount` cleanups.** The emitter gets `collect(name, payload)`, which runs the listeners like `notify()` and returns their results.
+- **`mount` cleanups.** The emitter's `notify()` returns what the listeners returned.
   - `chart()` keeps the functions among them. It calls them in registration order right before the next `renderer.render()`, and in `destroy()` before `output.remove()`.
   - A cleanup that throws doesn't stop the others; the first error is rethrown after all ran.
 - **`install` cleanups.** `installPlugins()` collects what `install` returns. `destroy()` calls the cleanups in reverse order after removing the output, then clears the emitter.
 - **`detach()`** runs neither: a detached chart keeps its output and listeners.
-- **Types.** `PhaseResult<'mount'>` becomes `void | (() => void)`, and `install` returns `void | (() => void)`. Both are additive.
+- **Types.** `PhaseResult<'mount'>` and `install`'s return type become `unknown`: a returned function is the cleanup, anything else is ignored. `void | (() => void)` would reject `on('mount', () => chart.detach())` and `install: chart => chart.on(…)`, which return the handle, so it would break code that compiles today.
 - **1.x replacing.** The compat plugin and `PresetChart` set an internal flag on the handle (a global symbol, like `chartist.presetState`). `chart()` then never passes `update`, so even `liveDomRenderer()` builds a new SVG.
 - **Presets.** `renderer` joins the preset options and is passed to `chart()`. It's left out of what `setOptions()` and responsive options can change, like `plugins` and `on`.
 
@@ -165,7 +165,7 @@ interface RenderOutput {
   - For numbers and morphable paths, each frame is `previous + (next − previous) × progress`. For keyframes, the renderer calls `update.keyframes(previous, next, progress)`, then the built-in keyframes.
   - Frames go into `values` with uniform `keyTimes` and `calcMode="linear"` (`"discrete"` for `steps()`).
   - Frames that all have the new value's shape (numbers, lines, areas, bands) are written as additive offsets (`frame − next`), so interruptions stay smooth. Other frames (pie slices) are written as they are.
-- **`sampleEasing(easing, duration)`** lives in the core (`svg/animation.ts`), next to `easings`.
+- **`sampleEasing(easing, duration)` and `keySplinesOf(easing)`** live in the core (`svg/animation.ts`), next to `easings`. `keySplinesOf()` gives the `keySplines` of an easing SMIL can express, so `chartist/live` can choose between the two techniques through the public API.
   - `Svg#animate()` uses it for out-of-range `keySplines`, which fixes `easeInBack`, `easeOutBack` and `easeInOutBack`, and for CSS easing strings. A name of `easings` wins, since none of them is CSS.
   - Plugins can use it for their own frames.
   - It's tree-shaken out of charts that use neither `Svg` nor `chartist/live`.

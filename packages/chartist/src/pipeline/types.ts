@@ -1,7 +1,13 @@
 import type { LinePresetState } from '../presets/lineChart';
 import type { BarPresetState } from '../presets/barChart';
 import type { PiePresetState } from '../presets/pieChart';
-import type { RenderOutput } from '../render/types';
+import type {
+  Keyframes,
+  RenderCause,
+  RenderOutput,
+  SceneChange,
+  UpdateAnimation
+} from '../render/types';
 import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
 import type { LabelMode, MeasureStyle, MeasureText } from '../render/measure';
 import type { AxisExtent, CartesianAxes, ChartAxes } from '../scales/axis';
@@ -232,6 +238,47 @@ export interface Layer {
    * ```
    */
   refine?(node: SceneNode, context: LayerContext): SceneNode | undefined;
+  /**
+   * Gives the keyframes of an update animation for one of the layer's
+   * nodes, for attributes that don't move well number by number, such as
+   * an arc that should turn around its center. A renderer that animates
+   * updates (`smilAnimations()` from `chartist/live`) asks once per update,
+   * never per frame, with the progress points of the chart's easing: 0 is
+   * the previous node, 1 the new one, and points beyond them come from an
+   * easing that overshoots. Plugins with `keyframes` are asked first.
+   * Leave it out to animate the layer's nodes number by number.
+   *
+   * @param previous The node in the previous scene
+   * @param next The node in the new scene
+   * @param context The context this layer's `compose` got for `next`
+   * @param progress The progress points to give attributes for
+   * @returns One set of attributes per progress point, or nothing.
+   *
+   * @example
+   * ```ts
+   * import type { Layer } from 'chartist';
+   *
+   * // A gauge whose needle turns to its new angle on an update.
+   * declare const gauge: Layer;
+   * const turningGauge: Layer = {
+   *   ...gauge,
+   *   keyframes: (previous, next, context, progress) => {
+   *     const from = Number(previous.ctx?.angle);
+   *     const to = Number(next.ctx?.angle);
+   *     const { x1, y1, width, height } = context.area;
+   *     return progress.map(p => ({
+   *       transform: `rotate(${from + (to - from) * p} ${x1 + width / 2} ${y1 - height / 2})`
+   *     }));
+   *   }
+   * };
+   * ```
+   */
+  keyframes?(
+    previous: SceneNode,
+    next: SceneNode,
+    context: LayerContext,
+    progress: readonly number[]
+  ): Keyframes | undefined;
 }
 
 /** Options after the `resolve` phase: defaults applied, listeners removed. */
@@ -321,15 +368,51 @@ export interface PhaseEvents {
   compose: SceneNode;
   /** The whole scene, its root the `svg`. */
   scene: { readonly scene: SceneNode };
-  /** The renderer has written the scene; `output` is what it returned. */
-  render: { readonly scene: SceneNode; readonly output: RenderOutput };
-  /** The rendered SVG is in the page; touch elements only here. */
-  mount: {
-    readonly scene: SceneNode;
-    readonly output: RenderOutput;
-    /** The rendered element of a scene node, if the renderer has one. */
+  /**
+   * The renderer has applied the scene: created, replaced or changed the
+   * output in place. `output` is what it returned.
+   */
+  render: RenderEvent;
+  /**
+   * The output is in the page; touch elements only here. Return a function
+   * to undo what the listener did: it runs before the next render changes
+   * the output, and on `destroy()`.
+   */
+  mount: RenderEvent & {
+    /**
+     * The rendered element of a scene node, if the renderer has one; for a
+     * node of a `remove` change, the element just taken out of the page.
+     */
     readonly elementOf: (node: SceneNode) => Element | undefined;
+    /**
+     * The timing of the update animation the renderer started, if it
+     * animated this render. Animate what your plugin draws with it, so it
+     * moves in step with the chart.
+     */
+    readonly animation?: UpdateAnimation;
   };
+}
+
+/**
+ * What the `render` and `mount` events carry about a render: the scene, the
+ * renderer's output, why the chart rendered and what changed.
+ */
+export interface RenderEvent {
+  /** The scene the renderer applied. */
+  readonly scene: SceneNode;
+  /** What the renderer returned. */
+  readonly output: RenderOutput;
+  /** Why the chart rendered, e.g. `update` or `resize`. */
+  readonly cause: RenderCause;
+  /** The previous render's scene; absent on the first render. */
+  readonly previous?: SceneNode;
+  /**
+   * What the render did to the output, in document order. When the
+   * renderer changed its output in place (`liveDomRenderer()` from
+   * `chartist/live`), these are its changes; otherwise every node of the
+   * previous scene is removed and every node of the new one added.
+   */
+  readonly changes: readonly SceneChange[];
 }
 
 /** The name of a pipeline phase, such as `compose`: a key of {@link PhaseEvents}. */
@@ -338,11 +421,15 @@ export type PhaseName = keyof PhaseEvents;
 /**
  * What a phase listener returns: a new payload to transform the phase, or
  * nothing to keep it. `compose` listeners may return `null` to drop the
- * node. `render` and `mount` listeners return nothing (they observe).
+ * node. `render` listeners return nothing (they observe). A function a
+ * `mount` listener returns is its cleanup; other values are ignored, so
+ * `() => chart.detach()` stays a valid listener.
  */
-export type PhaseResult<K extends PhaseName> = K extends 'render' | 'mount'
+export type PhaseResult<K extends PhaseName> = K extends 'render'
   ? void
-  : PhaseEvents[K] | (K extends 'compose' ? null : never) | undefined | void;
+  : K extends 'mount'
+    ? unknown
+    : PhaseEvents[K] | (K extends 'compose' ? null : never) | undefined | void;
 
 /**
  * A listener of one phase: gets the phase's payload and may return a new

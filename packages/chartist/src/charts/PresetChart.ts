@@ -1,6 +1,7 @@
 import type { ChartHandle, ChartPlugin, PluginEntry } from '../chart/types';
 import { untyped } from '../chart/types';
 import { asUserListeners } from '../chart/plugins';
+import { REPLACES_OUTPUT } from '../chart/changes';
 import type { Data, Options, ResponsiveOptions } from '../core';
 import type { AllEventsListener, EventListener } from '../event';
 import type { PresetController } from '../presets/preset';
@@ -126,6 +127,8 @@ export abstract class PresetChart<
       install: handle => {
         // 1.x plugins call chart.on() while they install.
         this.installing = handle;
+        // 1.x code expects new elements on every render.
+        (handle as { [REPLACES_OUTPUT]?: boolean })[REPLACES_OUTPUT] = true;
         // The queued listeners are the user's, though added from a plugin,
         // so off(name) removes them.
         asUserListeners(handle, () =>

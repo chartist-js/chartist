@@ -88,6 +88,17 @@ export interface PipelineState {
   readonly axes: ChartAxes;
   readonly normalized?: NormalizedChartData;
   readonly scene: SceneNode;
+  /**
+   * What each layer drew, by layer index: its top-level nodes after the
+   * `compose` listeners, and the context its `compose` got.
+   */
+  readonly drawn: readonly LayerDrawing[];
+}
+
+/** What one layer drew in a run of the pipeline. */
+export interface LayerDrawing {
+  readonly nodes: SceneNode[];
+  readonly context: LayerContext;
 }
 
 function normalizePadding(
@@ -230,7 +241,8 @@ export function compose(
   padding: ChartPadding = config.padding,
   bindings: readonly LayerBinding[] = [],
   labels: LabelMode = 'html',
-  measureStyle?: MeasureStyle
+  measureStyle?: MeasureStyle,
+  drawn: LayerDrawing[] = []
 ): SceneNode[] {
   const byId = new Map((axes.all ?? []).map(axis => [axis.id, axis]));
   // Every layer composes before any node is refined or emitted, so a
@@ -268,7 +280,8 @@ export function compose(
     const nodes = layer
       .compose(context)
       .map(top => assignKeys(top, layerIndex));
-    return { layer, context, nodes };
+    drawn.push({ nodes: [], context });
+    return { layer, context, nodes, layerIndex };
   });
   const refiners = layers.flatMap(({ layer, context }) =>
     layer.refine ? [{ refine: layer.refine.bind(layer), context }] : []
@@ -285,7 +298,7 @@ export function compose(
         : refined;
     }, current);
   const composed: SceneNode[] = [];
-  for (const { nodes } of layers) {
+  for (const { nodes, layerIndex } of layers) {
     for (const top of nodes) {
       const result = mapNodes(top, current =>
         current.role === undefined
@@ -296,6 +309,7 @@ export function compose(
             )
       );
       if (result) {
+        drawn[layerIndex].nodes.push(result);
         composed.push(result);
       }
     }
@@ -358,6 +372,7 @@ export function runPipeline(
       ? (value: string, measureOptions?: object) =>
           measure(value, { rootClass: className, ...measureOptions })
       : measure) as T;
+  const drawn: LayerDrawing[] = [];
   const measureText = withRootClass(environment.measureText);
   const measureStyle = withRootClass(environment.measureStyle);
   const children = compose(
@@ -371,7 +386,8 @@ export function runPipeline(
     laidOut.padding,
     bindings,
     config.labels ?? environment.labels ?? 'html',
-    measureStyle
+    measureStyle,
+    drawn
   );
   const built = scene(
     emitter,
@@ -382,5 +398,13 @@ export function runPipeline(
       height: config.height ?? laidOut.height
     }
   );
-  return { config, data, layout: laidOut, axes, normalized, scene: built };
+  return {
+    config,
+    data,
+    layout: laidOut,
+    axes,
+    normalized,
+    scene: built,
+    drawn
+  };
 }
