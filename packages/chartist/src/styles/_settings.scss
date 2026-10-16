@@ -71,6 +71,8 @@ $ct-container-ratio: math.div(1, 1.618) !default;
 
 // Text styles for labels
 $ct-text-color: rgba(0, 0, 0, 0.4) !default;
+// The label color where the chart's `color-scheme` is dark, in browsers with light-dark(). false: always $ct-text-color
+$ct-text-color-dark: rgba(255, 255, 255, 0.6) !default;
 $ct-text-size: 0.75rem !default;
 $ct-text-align: flex-start !default;
 $ct-text-justify: flex-start !default;
@@ -78,6 +80,8 @@ $ct-text-line-height: 1 !default;
 
 // Grid styles
 $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
+// The grid color where the chart's `color-scheme` is dark, in browsers with light-dark(). false: always $ct-grid-color
+$ct-grid-color-dark: rgba(255, 255, 255, 0.2) !default;
 $ct-grid-dasharray: 2px !default;
 $ct-grid-width: 1px !default;
 $ct-grid-background-fill: none !default;

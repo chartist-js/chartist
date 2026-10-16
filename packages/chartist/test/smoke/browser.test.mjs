@@ -108,6 +108,22 @@ const inlinePages = {
       Chartist.lineChart('#chart', { series: [[1, 2, 3]] }, {
         plugins: [Chartist.fromLegacyPlugin(Chartist.plugins.ctLate())]
       });
+    </script>`,
+  // The default stylesheet on a light page, a dark one, and a dark one that
+  // sets its own label color.
+  'color-scheme': `<!doctype html>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist/dist/index.css">
+    <div id="light" style="width: 400px; height: 200px"></div>
+    <div style="color-scheme: dark">
+      <div id="dark" style="width: 400px; height: 200px"></div>
+      <div id="custom" style="width: 400px; height: 200px; --ct-label-color: orange"></div>
+    </div>
+    <script type="module">
+      import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js';
+      for (const id of ['light', 'dark', 'custom']) {
+        lineChart('#' + id, { labels: ['a', 'b'], series: [[1, 2]] });
+      }
+      window.drawn = true;
     </script>`
 };
 
@@ -259,3 +275,32 @@ for (const name of ['chartist-min-js', 'bare-jsdelivr', 'bare-unpkg']) {
     await page.close();
   });
 }
+
+test('label and grid defaults follow the color scheme', async () => {
+  const { page, errors } = await openPage(`${ORIGIN}/inline/color-scheme`);
+  await page.waitForFunction(() => window.drawn);
+  await page.waitForSelector('#custom .ct-label', attached);
+  const colors = await page.evaluate(() =>
+    Object.fromEntries(
+      ['light', 'dark', 'custom'].map(id => [
+        id,
+        {
+          label: getComputedStyle(document.querySelector(`#${id} .ct-label`))
+            .color,
+          grid: getComputedStyle(document.querySelector(`#${id} .ct-grid`))
+            .stroke
+        }
+      ])
+    )
+  );
+  assert.deepEqual(colors, {
+    light: { label: 'rgba(0, 0, 0, 0.4)', grid: 'rgba(0, 0, 0, 0.2)' },
+    dark: {
+      label: 'rgba(255, 255, 255, 0.6)',
+      grid: 'rgba(255, 255, 255, 0.2)'
+    },
+    custom: { label: 'rgb(255, 165, 0)', grid: 'rgba(255, 255, 255, 0.2)' }
+  });
+  assert.deepEqual(errors, []);
+  await page.close();
+});
