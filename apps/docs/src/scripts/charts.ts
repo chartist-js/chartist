@@ -54,7 +54,7 @@ function composedChart(
       labels: data.labels,
       series: [
         { name: 'bars', data: data.series[0] },
-        { name: 'line', className: 'ct-series-g', data: data.series[1] }
+        { name: 'line', className: 'ct-series-e', data: data.series[1] }
       ]
     },
     axes: cartesianAxes([

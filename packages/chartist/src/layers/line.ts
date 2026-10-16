@@ -5,18 +5,12 @@
 import { getMetaData } from '../core/data/data';
 import { alphaNumerate } from '../core/lang';
 import { serialize } from '../core/data/serialize';
-import type {
-  NormalizedSeries,
-  SegmentData,
-  Series,
-  SeriesObject
-} from '../core/types';
-import { monotoneCubic } from '../interpolation/monotoneCubic';
-import { none } from '../interpolation/none';
+import type { NormalizedSeries, Series, SeriesObject } from '../core/types';
 import type { LineInterpolation } from '../charts/LineChart/LineChart.types';
 import type { Layer, PreparedSeries } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { isNumeric, safeHasProperty } from '../utils/utils';
+import { centerShift, interpolationOf, seriesPath } from './path';
 
 /**
  * The line options you can set per series: in the `overrides` of
@@ -185,10 +179,7 @@ export function line(options: LineLayerOptions = {}): Layer {
         );
       }
       // Centered points sit where bars are centered on a step axis.
-      const shift =
-        options.align === 'center' && axisX.kind === 'step' && !axisX.stretch
-          ? (axisX.step ?? 0) / 2
-          : 0;
+      const shift = centerShift(axisX, options.align);
       const order = data.series.map((_, i) => i);
       if (options.reverseData) {
         order.reverse();
@@ -206,28 +197,14 @@ export function line(options: LineLayerOptions = {}): Layer {
           ? series.meta
           : undefined;
 
-        const pathCoordinates: number[] = [];
-        const pathData: SegmentData[] = [];
-        values.forEach((value, valueIndex) => {
-          pathCoordinates.push(
-            area.x1 + shift + axisX.project(value, valueIndex, values),
-            area.y1 - axisY.project(value, valueIndex, values)
-          );
-          pathData.push({
-            value,
-            valueIndex,
-            meta: getMetaData(series, valueIndex)
-          });
-        });
-
-        const lineSmooth = seriesOption(series, options, 'lineSmooth');
-        const smoothing =
-          typeof lineSmooth === 'function'
-            ? lineSmooth
-            : lineSmooth
-              ? monotoneCubic()
-              : none();
-        const path = smoothing(pathCoordinates, pathData);
+        const path = seriesPath(
+          values,
+          { x: axisX, y: axisY },
+          area,
+          shift,
+          interpolationOf(seriesOption(series, options, 'lineSmooth')),
+          valueIndex => getMetaData(series, valueIndex)
+        );
         const seriesContext = { series, seriesIndex, meta: seriesMeta };
 
         let children: SceneNode[] = [];

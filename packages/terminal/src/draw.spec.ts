@@ -108,6 +108,77 @@ describe('lines, points and areas', () => {
   });
 });
 
+describe('target lines and bands', () => {
+  /** A node with a role and classes, as the layers draw them. */
+  const classed = (
+    name: string,
+    attrs: Record<string, AttrValue>,
+    role: NodeRole,
+    className?: string
+  ): SceneNode => node(name, attrs, className, { role, ctx: {} } as never);
+  const band = (d: string, className?: string) =>
+    classed('path', { d }, 'band', className);
+
+  it('shades a band below the grid and draws the line over it', () => {
+    const canvas = drawScene(
+      scene(10, 3, [
+        withRole('line', { x1: 0, y1: 8, x2: 80, y2: 8 }, 'grid'),
+        band('M0,0L80,0L80,32L0,32Z', 'ct-band-area'),
+        series('a', withRole('path', { d: 'M0,40L80,40' }, 'line'))
+      ])
+    );
+    const output = lines(toPlainText(canvas));
+    expect(output[0]).toBe('┈'.repeat(10));
+    expect(output[1]).toMatch(/^[⠁-⣿]{10}$/);
+    expect(canvas.cellAt(0, 1)?.ink).toEqual({ kind: 'area' });
+    expect(canvas.cellAt(0, 2)?.ink).toEqual({ kind: 'line', series: 0 });
+  });
+
+  it('gives a band the color of its series class or group', () => {
+    const canvas = drawScene(
+      scene(10, 2, [
+        band('M0,0L40,0L40,32L0,32Z', 'ct-band-area ct-series-c'),
+        series('b', band('M40,0L80,0L80,32L40,32Z', 'ct-band-area'))
+      ])
+    );
+    expect(canvas.cellAt(0, 0)?.ink).toEqual({ kind: 'area', series: 2 });
+    expect(canvas.cellAt(9, 0)?.ink).toEqual({ kind: 'area', series: 1 });
+  });
+
+  it('draws a target line in braille with its label next to it', () => {
+    const canvas = drawScene(
+      scene(16, 3, [
+        withRole('line', { x1: 0, y1: 24, x2: 79, y2: 24 }, 'grid'),
+        withRole('line', { x1: 0, y1: 24, x2: 79, y2: 24 }, 'targetLine'),
+        classed(
+          'text',
+          { x: 80, y: 16 + 0.85 * 16, 'text-anchor': 'start' },
+          'targetLabel',
+          'ct-target-label'
+        ).text('target')
+      ])
+    );
+    const output = lines(toPlainText(canvas));
+    expect(output[1]).toMatch(/^[⠁-⣿]{10}target$/);
+    expect(canvas.cellAt(0, 1)?.ink).toEqual({ kind: 'line' });
+    expect(canvas.cellAt(11, 1)?.ink).toEqual({ kind: 'label' });
+  });
+
+  it('gives a target line with a series class that series color', () => {
+    const canvas = drawScene(
+      scene(10, 1, [
+        classed(
+          'line',
+          { x1: 0, y1: 8, x2: 79, y2: 8 },
+          'targetLine',
+          'ct-target-line ct-series-b'
+        )
+      ])
+    );
+    expect(canvas.cellAt(0, 0)?.ink).toEqual({ kind: 'line', series: 1 });
+  });
+});
+
 describe('bars', () => {
   it('ends a vertical bar with an eighth block', () => {
     const output = plain(

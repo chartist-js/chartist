@@ -2,7 +2,7 @@
 title: Events and plugins
 description: Every chart is built in phases, and each phase is an event you can listen to and change. Plugins package those listeners so you can share them.
 group: Guides
-order: 7
+order: 8
 ---
 
 import Callout from '../../components/docs/Callout.astro';
@@ -110,11 +110,11 @@ Nodes are immutable. Their methods (`attr()`, `addClass()`, `removeClass()`, `ap
 
 ### Dynamic coloring
 
-Color isn't only for stylesheets. Here a plugin reads each bar's value and gives it a hue from red to green:
+Color isn't only for stylesheets. Here a plugin reads each bar's value and gives it a color from mustard yellow to red:
 
 <LiveExample
   title='Dynamic coloring'
-  label='A bar chart whose bars go from red for low values to green for high values'
+  label='A bar chart whose bars go from mustard yellow for low values to red for high values'
   preview={{
     type: 'bar',
     data: heatData,

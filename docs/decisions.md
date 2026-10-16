@@ -24,6 +24,15 @@ Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, cont
 - **Plugins:** the functional API takes v2 plugins (`{ name, install }`) only; the classes take 1.x plugin functions with `compat`. Official plugins, when there are any, are limited to the ones the author maintained in 0.x (accessibility, point labels, threshold); community plugins work through compat and are listed on `/plugins/`.
 - **Framework support,** when it comes, is a web component in a separate wrapper package rather than one wrapper per framework.
 
+## Layers
+
+- **Reference lines and bands are core layers** (decided 2026-10-16): `targetLine()` and `band()`, the most common additions to line and bar charts, which 1.x left to plugins. They're ordinary layers, so they tree-shake, render on the server and in the terminal, and are styled with classes and `--ct-target-line-*` / `--ct-band-*` properties only. The size budgets were raised for them on purpose.
+- **One target line per layer.** A first version took one line or `lines: [...]` as a union of two option shapes; TypeScript then reported a missing `value` as a wrong `label` type. Several lines are several layers, with plain options.
+- **A band edge is a constant, values of its own, or a series.** Own values (an array, one per label) keep edges that aren't data out of `data`, so presets don't draw them as lines and the series keep their colors. A bare number is a constant; a series by index is `{ series: 2 }`.
+- **Layers that change other layers' output use `refine`,** an optional layer method in the `compose` phase (decided 2026-10-16): every layer composes independently first, then each node with a role passes through the refining layers in list order, before the `compose` events. List order stays the draw order. A dependency order between layers was rejected: compose order doesn't decide draw order, and layers depend on each other's finished nodes, not their data. A refiner sees one node at a time and can't drop nodes or change the tree; charts without a refining layer skip the step. The band's `mark` option is built on it.
+- **Presets take extra layers** with `layers: { below, above }`: below the series (after the grid) or above them (before the axis labels). Two lists, because a band belongs behind the data and a target line in front; the preset's own layers stay private. Responsive entries merge into it like other options, list by list.
+- **A listed plugin whose use case the core covers leaves the plugins page,** and its published page redirects to the docs that cover it (`chartist-plugin-targetline` → "Target lines and bands"). `chartist-plugin-threshold` stays: the core doesn't split lines and bars at a value.
+
 ## Repository
 
 - This is `chartist-js/chartist`, with its stars, issues and history back to 2014. `main` is the development branch. A `1.x` branch, created from the `v1.5.0` tag, holds 1.x maintenance.

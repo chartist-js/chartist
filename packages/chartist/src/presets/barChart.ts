@@ -27,6 +27,7 @@ import {
   type AxisPresetOptions,
   type PresetAxisOptions,
   type PresetController,
+  type PresetLayers,
   type PresetHandle,
   type PresetSpec,
   type PresetState,
@@ -50,6 +51,8 @@ export type BarChartPresetOptions = Omit<
    * so they see it too.
    */
   readonly on?: PhaseListeners;
+  /** Extra layers below or above the chart's bars. */
+  readonly layers?: PresetLayers;
   /**
    * How stacked bars stack: `accumulate` (default), `accumulate-relative`
    * (positives up, negatives down), or `overlap` (also `true`): every bar
@@ -186,6 +189,7 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
           })
         : layer;
     const bars = { ...seriesGroup(layer), extent: extentOf.extent };
+    const { below = [], above = [] } = options.layers ?? {};
     return {
       data,
       axes: presetAxes(axesConfig(options)),
@@ -199,7 +203,9 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
       labels: options.labels,
       layers: [
         gridLayer(axisOptions, order),
+        ...below,
         bars,
+        ...above,
         labelLayer(
           {
             ...axisOptions,

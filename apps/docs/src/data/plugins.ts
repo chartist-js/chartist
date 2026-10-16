@@ -211,21 +211,6 @@ export const PLUGINS = schema.parse([
     example: 'plugins/threshold'
   },
   {
-    package: 'chartist-plugin-targetline',
-    registers: 'ctTargetLine',
-    title: 'Target line',
-    description: 'Draws a horizontal line at a target value.',
-    author: 'Harry Twyford',
-    repository: 'https://github.com/htwyford/chartist-plugin-targetline',
-    license: 'ISC',
-    types: ['line', 'bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/targetline',
-    note: 'It places the line by the axis maximum, so the axis should start at zero.'
-  },
-  {
     package: '@stklcode/chartist-plugin-tooltips',
     title: 'Tooltips (maintained)',
     description:

@@ -10,19 +10,18 @@
  * redirect for `/api/classes/LineChart` is `api/classes/LineChart.html`,
  * which GitHub Pages serves for that URL.
  *
- * Redirect pages stay out of the sitemap (it lists Astro's pages only) and
- * out of search: they have no `data-pagefind-body`, and this integration
- * runs after the Pagefind one, so they don't exist yet when it indexes.
+ * The pages are made by redirects.mjs, which says how they stay out of the
+ * sitemap and search.
  */
-import { mkdir, readdir, stat, writeFile } from 'node:fs/promises';
+import { mkdir, readdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { exists, redirectHtml, withBase } from './redirects.mjs';
 
 /** The 1.x 404 page isn't a page anyone links to. */
 const SKIPPED = new Set(['404']);
 
-/** Marks a redirect page, so tests can tell it from a v2 page. */
-export const REDIRECT_MARKER = 'data-v1-redirect';
+export { REDIRECT_MARKER } from './redirects.mjs';
 
 /**
  * The 1.x pages under `root` as paths without `.html` (`api/basics`), and
@@ -67,35 +66,11 @@ export const v2Files = page =>
  * @param {{ base: string, site?: string }} options
  */
 export function redirectPage(page, { base, site }) {
-  const target = `${base.replace(/\/?$/, '/')}v1/${page}`;
-  const canonical = site ? new URL(target, site).href : target;
-  const json = JSON.stringify(target).replace(/</g, '\\u003c');
-  return `<!doctype html>
-<html lang="en" ${REDIRECT_MARKER}>
-<head>
-<meta charset="utf-8">
-<title>Moved to the 1.x docs</title>
-<meta name="robots" content="noindex">
-<link rel="canonical" href="${canonical}">
-<script>location.replace(${json} + location.search + location.hash);</script>
-<meta http-equiv="refresh" content="0; url=${target}">
-</head>
-<body>
-<p>This page of the Chartist 1.x docs moved to <a href="${target}">${canonical}</a>.</p>
-</body>
-</html>
-`;
-}
-
-/**
- * @param {string} file
- */
-async function exists(file) {
-  try {
-    return (await stat(file)).isFile();
-  } catch {
-    return false;
-  }
+  return redirectHtml(withBase(base, `v1/${page}`), {
+    site,
+    title: 'Moved to the 1.x docs',
+    text: 'This page of the Chartist 1.x docs moved to'
+  });
 }
 
 /** @returns {import('astro').AstroIntegration} */

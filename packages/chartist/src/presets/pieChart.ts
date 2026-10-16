@@ -15,6 +15,7 @@ import {
   createPreset,
   presetConfig,
   type PresetController,
+  type PresetLayers,
   type PresetHandle,
   type PresetSpec,
   type PresetState,
@@ -35,6 +36,8 @@ export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
    * so they see it too.
    */
   readonly on?: PhaseListeners;
+  /** Extra layers below or above the pie's slices, in polar coordinates. */
+  readonly layers?: PresetLayers;
 };
 
 type Resolved = typeof pieDefaults & PieChartOptions;
@@ -56,6 +59,7 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
   defaults: pieDefaults,
   config(data, preset): ChartConfig {
     const options = preset as Resolved;
+    const { below = [], above = [] } = preset.layers ?? {};
     return {
       data,
       coordinates: 'polar',
@@ -67,6 +71,7 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
         ? options.classNames.chartDonut
         : options.classNames.chartPie,
       layers: [
+        ...below,
         pie({
           startAngle: options.startAngle,
           total: options.total,
@@ -80,7 +85,8 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
           ignoreEmptyValues: options.ignoreEmptyValues,
           preventOverlappingLabelOffset: options.preventOverlappingLabelOffset,
           classNames: options.classNames
-        })
+        }),
+        ...above
       ]
     };
   }

@@ -153,9 +153,6 @@ importers:
       chartist-plugin-pointlabels:
         specifier: 0.0.6
         version: 0.0.6
-      chartist-plugin-targetline:
-        specifier: 1.0.1
-        version: 1.0.1
       chartist-plugin-threshold:
         specifier: 0.0.2
         version: 0.0.2
@@ -3561,9 +3558,6 @@ packages:
   chartist-plugin-pointlabels@0.0.6:
     resolution: {integrity: sha512-DUemVUBWAN0qAHBUMXKKLrDCsUL1qWWwN+EfxN8gpftgXSheMiYeq83uHoHyp4X+W5Pz/aUWBf3N/HJwj+eRFw==}
     engines: {node: '>=0.8.0'}
-
-  chartist-plugin-targetline@1.0.1:
-    resolution: {integrity: sha512-fjOGeVROcUAMp+hRAGRyv4qgcXmuCKyMTB2bUzpRF0jw51brIa1m8keYclSjqKvJmtPfT8+FbtEhPI18zl/EIA==}
 
   chartist-plugin-threshold@0.0.2:
     resolution: {integrity: sha512-PkT5ll2ezoMx8iSLVySF2UoxXUVg0hsklyqOmRmUil4m85ipIKW+SSPqLgbV6KI03O40be5Za8Ai1gd8TuPN2w==}
@@ -10311,8 +10305,6 @@ snapshots:
   chartist-plugin-legend@0.6.2: {}
 
   chartist-plugin-pointlabels@0.0.6: {}
-
-  chartist-plugin-targetline@1.0.1: {}
 
   chartist-plugin-threshold@0.0.2: {}
 

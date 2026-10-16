@@ -10,13 +10,13 @@
 
 /* Custom properties restyle one chart; the other keeps the defaults. */
 .themed {
-  --ct-series-a: #0544d3;
-  --ct-series-b: #59922b;
+  --ct-series-a: #9a6a45;
+  --ct-series-b: #f4c63d;
   --ct-line-width: 2px;
   --ct-point-size: 6px;
   --ct-grid-dasharray: none;
-  --ct-grid-color: rgb(5 68 211 / 0.15);
-  --ct-label-color: #0544d3;
+  --ct-grid-color: rgb(154 106 69 / 0.2);
+  --ct-label-color: #9a6a45;
   --ct-area-opacity: 0.25;
 }
 

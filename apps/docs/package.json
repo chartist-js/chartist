@@ -31,7 +31,6 @@
     "chartist-plugin-fill-donut": "0.1.4",
     "chartist-plugin-legend": "0.6.2",
     "chartist-plugin-pointlabels": "0.0.6",
-    "chartist-plugin-targetline": "1.0.1",
     "chartist-plugin-threshold": "0.0.2",
     "chartist-plugin-tooltips": "0.0.17",
     "chartist-plugin-zoom": "0.6.0",

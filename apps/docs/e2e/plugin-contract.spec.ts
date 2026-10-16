@@ -143,13 +143,6 @@ const CASES: Case[] = [
     }
   },
   {
-    package: 'chartist-plugin-targetline',
-    kind: 'line',
-    plugin: 'Chartist.plugins.ctTargetLine({ value: 4 })',
-    options: 'low: 0',
-    check: page => expect(page.locator('#chart .ct-target-line')).toHaveCount(1)
-  },
-  {
     package: '@stklcode/chartist-plugin-tooltips',
     kind: 'line',
     plugin: 'window.ChartistPluginTooltip',
@@ -171,7 +164,6 @@ const SCRIPTS: Record<string, string> = {
   'chartist-plugin-barlabels': 'chartist-plugin-barlabels.js',
   'chartist-plugin-accessibility': 'chartist-plugin-accessibility.js',
   'chartist-plugin-threshold': 'chartist-plugin-threshold.js',
-  'chartist-plugin-targetline': 'chartist-plugin-targetline.js',
   '@stklcode/chartist-plugin-tooltips': 'chartist-plugin-tooltip.umd.js'
 };
 

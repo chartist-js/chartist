@@ -37,10 +37,6 @@
     "script": "dist/chartist-plugin-threshold.js",
     "license": "LICENSE"
   },
-  "chartist-plugin-targetline": {
-    "script": "chartist-plugin-targetline.js",
-    "license": "LICENSE"
-  },
   "@stklcode/chartist-plugin-tooltips": {
     "script": "dist/chartist-plugin-tooltip.umd.js",
     "module": "dist/chartist-plugin-tooltip.js",

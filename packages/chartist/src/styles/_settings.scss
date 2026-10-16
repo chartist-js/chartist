@@ -61,6 +61,10 @@ $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
 $ct-class-start: ct-start !default;
 $ct-class-end: ct-end !default;
+$ct-class-target-line: ct-target-line !default;
+$ct-class-target-label: ct-target-label !default;
+$ct-class-band: ct-band !default;
+$ct-class-band-area: ct-band-area !default;
 
 // Container ratio
 $ct-container-ratio: math.div(1, 1.618) !default;
@@ -89,6 +93,15 @@ $ct-area-opacity: 0.1 !default;
 
 // Bar chart bar width
 $ct-bar-width: 10px !default;
+
+// Target lines: a dashed line in the text color by default, so it reads as a reference behind the data
+$ct-target-line-color: currentColor !default;
+$ct-target-line-width: 1px !default;
+$ct-target-line-dasharray: 4px 4px !default;
+
+// Bands: a light fill in the text color by default. Fill transparency between 0 and 1
+$ct-band-color: currentColor !default;
+$ct-band-opacity: 0.12 !default;
 
 // Donut width (If donut width is to big it can cause issues where the shape gets distorted)
 $ct-donut-width: 60px !default;

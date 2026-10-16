@@ -583,6 +583,20 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'composed/target-line',
+    title: 'Target lines on a bar chart',
+    description:
+      'Monthly sales against a goal and a minimum, added to the bar chart preset as extra layers.',
+    v2: true
+  }),
+  example({
+    id: 'composed/band-chart',
+    title: 'Band chart',
+    description:
+      'The range of six stores as a band, with their average and one store drawn on top.',
+    v2: true
+  }),
+  example({
     id: 'composed/two-y-axes',
     title: 'Two Y axes with different units',
     description:

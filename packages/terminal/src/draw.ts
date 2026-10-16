@@ -98,7 +98,9 @@ export function drawScene(scene: SceneNode): Canvas {
         case 'line':
           strokePath(canvas, current.attrs.d, { kind: 'line', series });
           return;
+        // Bands are shaded like areas, below the grid.
         case 'area':
+        case 'band':
           fillPolygons(
             canvas,
             flatten(current.attrs.d),
@@ -155,6 +157,7 @@ const ROLE_ELEMENTS: Readonly<Record<string, string>> = {
   point: 'line',
   line: 'path',
   area: 'path',
+  band: 'path',
   slice: 'path'
 };
 

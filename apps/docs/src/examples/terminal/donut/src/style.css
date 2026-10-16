@@ -6,7 +6,7 @@
   margin: 0 auto;
   border-radius: 10px;
   overflow: hidden;
-  background: #17161c;
+  background: #1c1718;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.06) inset,
     0 12px 32px rgba(0, 0, 0, 0.35);
@@ -17,7 +17,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  background: #2a2830;
+  background: #2b2426;
 }
 
 .dot {
@@ -39,7 +39,7 @@
   flex: 1;
   margin-right: 52px;
   text-align: center;
-  color: #a8a6b0;
+  color: #a99a92;
   font:
     600 12px system-ui,
     sans-serif;
@@ -47,10 +47,10 @@
 
 .screen {
   padding: 12px;
-  color: #e6e4ec;
+  color: #f3eadb;
   /* Text art reads the same custom properties as SVG charts. */
-  --ct-label-color: rgba(255, 255, 255, 0.7);
-  --ct-grid-color: rgba(255, 255, 255, 0.16);
+  --ct-label-color: rgb(243 234 219 / 0.7);
+  --ct-grid-color: rgb(243 234 219 / 0.16);
 }
 
 .screen .ct-terminal {

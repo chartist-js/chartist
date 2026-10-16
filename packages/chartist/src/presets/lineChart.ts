@@ -25,6 +25,7 @@ import {
   type AxisPresetOptions,
   type PresetAxisOptions,
   type PresetController,
+  type PresetLayers,
   type PresetHandle,
   type PresetSpec,
   type PresetState,
@@ -48,6 +49,8 @@ export type LineChartPresetOptions = Omit<
    * so they see it too.
    */
   readonly on?: PhaseListeners;
+  /** Extra layers below or above the chart's lines. */
+  readonly layers?: PresetLayers;
   /** Options per series name: only these five apply per series. */
   readonly series?: Readonly<Record<string, LineSeriesOptions>>;
   /** Options of the X axis; its `type` may also be a v2 axis factory. */
@@ -118,6 +121,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
   config(data, preset): ChartConfig {
     const options = preset as Resolved;
     const axisOptions = options as unknown as AxisPresetOptions;
+    const { below = [], above = [] } = options.layers ?? {};
     return {
       data,
       axes: presetAxes(axesConfig(options)),
@@ -129,6 +133,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
       labels: options.labels,
       layers: [
         gridLayer(axisOptions),
+        ...below,
         seriesGroup(
           line({
             lineSmooth: options.lineSmooth,
@@ -141,6 +146,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
             classNames: options.classNames
           })
         ),
+        ...above,
         labelLayer(axisOptions)
       ]
     };

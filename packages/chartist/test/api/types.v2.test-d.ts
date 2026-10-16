@@ -3,15 +3,19 @@
  * builders keep their types, events and plugins are checked.
  */
 import {
+  band,
   barChart,
   chart,
   findAll,
   lineChart,
   node,
+  pieChart,
   responsive,
+  targetLine,
   withOptions,
   type ChartPlugin,
   type Layer,
+  type PresetLayers,
   type ResponsiveWatcher,
   type RoleNode,
   type SceneNode,
@@ -53,6 +57,21 @@ describe('v2 type contract', () => {
     }
     if (scene.role === 'label' && scene.ctx.kind === 'axis') {
       expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
+    }
+    if (scene.role === 'targetLine') {
+      expectTypeOf(scene.ctx.value).toEqualTypeOf<number>();
+      expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
+      expectTypeOf(scene.attrs.y1).toEqualTypeOf<number>();
+    }
+    if (scene.role === 'targetLabel') {
+      expectTypeOf(scene.ctx.text).toEqualTypeOf<string>();
+    }
+    if (scene.role === 'band') {
+      expectTypeOf(scene.ctx.path).toEqualTypeOf<SvgPath>();
+      expectTypeOf(scene.ctx.series).toEqualTypeOf<
+        readonly number[] | undefined
+      >();
+      expectTypeOf(scene.attrs.d).toEqualTypeOf<string>();
     }
     if (scene.role === 'marker') {
       expectTypeOf(scene.ctx.label).toEqualTypeOf<string>();
@@ -142,6 +161,17 @@ describe('v2 type contract', () => {
     lineChart('#c', { series: [[1]] }, { series: { a: { low: 0 } } });
   });
 
+  test('presets take extra layers below and above their series', () => {
+    lineChart('#c', { series: [[1]] }, { layers: { above: [layer] } });
+    barChart('#c', { series: [[1]] }, { layers: { below: [layer] } });
+    pieChart('#c', { series: [1] }, { layers: { below: [], above: [layer] } });
+    expectTypeOf<PresetLayers['above']>().toEqualTypeOf<
+      readonly Layer[] | undefined
+    >();
+    // @ts-expect-error: a layer list, not a single layer
+    lineChart('#c', { series: [[1]] }, { layers: { above: layer } });
+  });
+
   test('compose listeners may return conditionally', () => {
     lineChart('#c', { series: [[1, 2]] }).on('compose', current => {
       if (current.role !== 'point') {
@@ -185,5 +215,41 @@ describe('v2 type contract', () => {
     expectTypeOf<ResponsiveWatcher['matching']>().toEqualTypeOf<
       readonly number[]
     >();
+  });
+
+  test('refine changes nodes but cannot drop them', () => {
+    const marking: Layer = {
+      type: 'marking',
+      coordinates: ['cartesian'],
+      compose: () => [],
+      refine: current =>
+        current.role === 'point' ? current.addClass('ct-marked') : undefined
+    };
+    void marking;
+    const dropping: Layer = {
+      type: 'dropping',
+      coordinates: ['cartesian'],
+      compose: () => [],
+      // @ts-expect-error: only compose listeners drop nodes
+      refine: () => null
+    };
+    void dropping;
+  });
+
+  test('a target line takes one value and an optional label', () => {
+    targetLine({ value: 1000, label: 'Target', className: 'ct-series-b' });
+    targetLine({ axis: 'eur', value: 800, labelPosition: 'start' });
+    // @ts-expect-error: a line needs a value
+    targetLine({ label: 'Target' });
+    // @ts-expect-error: a label is text
+    targetLine({ value: 1000, label: 1000 });
+  });
+
+  test('a band edge is a constant, values or a series', () => {
+    band({ low: 40, high: 60 });
+    band({ low: [1, null, 3], high: [{ x: 0, y: 5 }] });
+    band({ low: 'p10', high: { series: 2 } });
+    // @ts-expect-error: values are numbers, { x, y } or null
+    band({ low: ['1'], high: 2 });
   });
 });

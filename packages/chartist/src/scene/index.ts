@@ -12,6 +12,8 @@ export type {
 } from './node';
 export type {
   AxisLabelContext,
+  BandContext,
+  BandEdge,
   BarContext,
   GridContext,
   LineAttrs,
@@ -28,6 +30,9 @@ export type {
   SeriesGroupContext,
   NoSeries,
   SliceContext,
+  TargetLabelContext,
+  TargetLineContext,
+  TextAttrs,
   ValueContext
 } from './roles';
 export { findAll, mapNodes } from './tree';
