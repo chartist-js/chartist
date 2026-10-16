@@ -258,13 +258,13 @@ export interface Layer {
    * ```ts
    * import type { Layer } from 'chartist';
    *
-   * // A gauge whose needle turns to its new angle on an update.
+   * // A gauge whose needle (its angle in `ct:angle`) turns on an update.
    * declare const gauge: Layer;
    * const turningGauge: Layer = {
    *   ...gauge,
    *   keyframes: (previous, next, context, progress) => {
-   *     const from = Number(previous.ctx?.angle);
-   *     const to = Number(next.ctx?.angle);
+   *     const from = Number(previous.attrs['ct:angle']);
+   *     const to = Number(next.attrs['ct:angle']);
    *     const { x1, y1, width, height } = context.area;
    *     return progress.map(p => ({
    *       transform: `rotate(${from + (to - from) * p} ${x1 + width / 2} ${y1 - height / 2})`

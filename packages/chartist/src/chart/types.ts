@@ -123,7 +123,8 @@ export interface ChartPlugin<TOptions = unknown> {
    * ```ts
    * import type { ChartPlugin } from 'chartist';
    *
-   * // Turns the gauge needle the plugin draws, instead of morphing its path.
+   * // Turns the gauge needle the plugin draws (its angle in `ct:angle`),
+   * // instead of morphing its path.
    * const needle: ChartPlugin = {
    *   name: 'needle',
    *   install() {},
@@ -131,8 +132,8 @@ export interface ChartPlugin<TOptions = unknown> {
    *     if (!next.classes.includes('needle')) {
    *       return undefined;
    *     }
-   *     const from = Number(previous.ctx?.angle);
-   *     const to = Number(next.ctx?.angle);
+   *     const from = Number(previous.attrs['ct:angle']);
+   *     const to = Number(next.attrs['ct:angle']);
    *     return progress.map(p => ({
    *       transform: `rotate(${from + (to - from) * p} 100 100)`
    *     }));
