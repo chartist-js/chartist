@@ -27,8 +27,8 @@
 
 ## 5. Browser CSP tests
 
-- [ ] 5.1 Add `packages/chartist/test/smoke/csp.test.mjs`, reusing the smoke test's origin routing: a page with `default-src 'self'; style-src 'self'` that draws the cases of the "No violations" scenario and records `securitypolicyviolation` events, a label box and donut stroke width compared with the same page without the policy, and a page with `require-trusted-types-for 'script'` drawing an HTML-label chart and a 1.x chart. Add it to the `test:smoke` inputs if needed. Verify: `pnpm nx run chartist:test:smoke --skip-nx-cache` passes, and fails when 1.2 is reverted
-- [ ] 5.2 Add `playwright` (the version `packages/chartist` pins) as a dev dependency of `packages/terminal` and `packages/terminal/test/smoke/csp.test.mjs`: HTML and element output under `default-src 'self'; style-src 'self'; font-src data:` with no violations and the cell font loaded, and element output under Trusted Types. Wire it into the terminal's `test:smoke` target and its inputs. Verify: `pnpm nx run terminal:test:smoke --skip-nx-cache` passes
+- [x] 5.1 Add `packages/chartist/test/smoke/csp.test.mjs`, reusing the smoke test's origin routing: a page with `default-src 'self'; style-src 'self'` that draws the cases of the "No violations" scenario and records `securitypolicyviolation` events, a label box and donut stroke width compared with the same page without the policy, and a page with `require-trusted-types-for 'script'` drawing an HTML-label chart and a 1.x chart. Add it to the `test:smoke` inputs if needed. Verify: `pnpm nx run chartist:test:smoke --skip-nx-cache` passes, and fails when 1.2 is reverted
+- [x] 5.2 Add `playwright` (the version `packages/chartist` pins) as a dev dependency of `packages/terminal` and `packages/terminal/test/smoke/csp.test.mjs`: HTML and element output under `default-src 'self'; style-src 'self'; font-src data:` with no violations and the cell font loaded, and element output under Trusted Types. Wire it into the terminal's `test:smoke` target and its inputs. Verify: `pnpm nx run terminal:test:smoke --skip-nx-cache` passes
 
 ## 6. Docs
 
