@@ -118,7 +118,7 @@
     "postcss-preset-env": "^6.7.1",
     "sass": "^1.50.1",
     "size-limit": "14.1.0",
-    "tsdown": "0.23.0",
+    "tsdown": "0.23.1",
     "typescript": "^5.9.3",
     "vite": "8.3.1"
   },
