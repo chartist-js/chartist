@@ -9,6 +9,7 @@ import { polarToCartesian } from '../core/math';
 import type { Data, Label } from '../core/types';
 import type { Layer } from '../pipeline/types';
 import type { MeasureStyle } from '../render/measure';
+import type { PieLabelContext } from '../scene/roles';
 import { labelTransformOf } from './label';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { SvgPath } from '../svg/SvgPath';
@@ -162,6 +163,52 @@ const CLASS_NAMES = {
   sliceDonut: 'ct-slice-donut',
   label: 'ct-label'
 };
+
+/** The line height of a pie label with line breaks, in `em`. */
+const LINE_HEIGHT = 1.2;
+
+/**
+ * A pie label's `text` at its anchor. One line is placed with `dx`/`dy`,
+ * as in 1.x. A label with line breaks gets one `tspan` per line, one line
+ * height apart, the block centered on the anchor (see #546).
+ */
+function labelText(
+  text: string,
+  position: Dot,
+  anchor: AnchorPosition,
+  className: string,
+  ctx: PieLabelContext
+): SceneNode {
+  const lines = text.split('\n');
+  const meta = { role: 'label', ctx } as const;
+  if (lines.length === 1) {
+    return node(
+      'text',
+      { dx: position.x, dy: position.y, 'text-anchor': anchor },
+      className,
+      meta
+    ).text(text);
+  }
+  // The `text` holds the anchor in `x`/`y`: a `dx`/`dy` on it would add
+  // to the first line's own `x` and replace its `dy`.
+  const shift = Math.round(-(lines.length - 1) * LINE_HEIGHT * 50) / 100;
+  return withFields(
+    node(
+      'text',
+      { x: position.x, y: position.y, 'text-anchor': anchor },
+      className,
+      meta
+    ),
+    {
+      children: lines.map((line, index) =>
+        node('tspan', {
+          x: position.x,
+          dy: `${index ? LINE_HEIGHT : shift}em`
+        }).text(line)
+      )
+    }
+  );
+}
 
 /**
  * Creates a layer that draws a flat series as pie or donut slices with
@@ -400,33 +447,27 @@ export function pie(options: PieLayerOptions = {}): Layer {
               labelPositions.push(labelPosition);
             }
             labelNodes.push(
-              node(
-                'text',
-                {
-                  dx: labelPosition.x,
-                  dy: labelPosition.y,
-                  'text-anchor': determineAnchorPosition(
-                    center,
-                    labelPosition,
-                    options.labelDirection ?? 'neutral'
-                  )
-                },
+              labelText(
+                text,
+                labelPosition,
+                determineAnchorPosition(
+                  center,
+                  labelPosition,
+                  options.labelDirection ?? 'neutral'
+                ),
                 classNames.label,
                 {
-                  role: 'label',
-                  ctx: {
-                    kind: 'pie',
-                    index,
-                    seriesIndex: index,
-                    valueIndex: 0,
-                    text,
-                    series,
-                    meta: seriesMeta,
-                    x: labelPosition.x,
-                    y: labelPosition.y
-                  }
+                  kind: 'pie',
+                  index,
+                  seriesIndex: index,
+                  valueIndex: 0,
+                  text,
+                  series,
+                  meta: seriesMeta,
+                  x: labelPosition.x,
+                  y: labelPosition.y
                 }
-              ).text(text)
+              )
             );
           }
         }

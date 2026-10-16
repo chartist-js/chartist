@@ -499,15 +499,19 @@ function labelLines(current: SceneNode): LabelLine[] {
     const anchor =
       (current.attrs['text-anchor'] as LabelLine['anchor'] | undefined) ??
       'start';
-    // Pie labels are placed with `dx` and `dy` at their center, as in 1.x;
-    // other text at its baseline, `textAscent` of a line below its top.
-    const centered = current.attrs.dy !== undefined;
+    // Pie labels are centered on their anchor: `dx` and `dy` as in 1.x,
+    // or `x` and `y` with a line per `tspan`, one row apart. Other text
+    // sits at its baseline, `textAscent` of a line below its top.
+    const centered =
+      current.attrs.dy !== undefined ||
+      (current.role === 'label' && current.ctx.kind === 'pie');
     const spans = current.children.filter(child => child.name === 'tspan');
-    return (spans.length ? spans : [current]).map(source => ({
+    return (spans.length ? spans : [current]).map((source, index, all) => ({
       text: source.content ?? '',
       x: Number(source.attrs.x ?? current.attrs.x ?? current.attrs.dx),
       y: centered
-        ? Number(current.attrs.dy)
+        ? Number(current.attrs.dy ?? current.attrs.y) +
+          (index - (all.length - 1) / 2) * CELL_HEIGHT
         : Number(source.attrs.y ?? current.attrs.y) -
           (textAscent - 0.5) * CELL_HEIGHT,
       anchor

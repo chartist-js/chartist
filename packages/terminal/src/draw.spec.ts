@@ -258,6 +258,22 @@ describe('slices', () => {
       background: 0
     });
   });
+
+  it('draws a label with a line break on two rows', () => {
+    const text = toPlainText(
+      drawScene(
+        toScene(
+          pieChartConfig({ labels: ['Ab\n60%', 'Cd\n40%'], series: [3, 2] }),
+          terminalSize(30, 12)
+        )
+      )
+    );
+    const rows = lines(text);
+    const first = rows.findIndex(line => line.includes('Ab'));
+    expect(rows[first + 1]).toContain('60%');
+    const second = rows.findIndex(line => line.includes('Cd'));
+    expect(rows[second + 1]).toContain('40%');
+  });
 });
 
 describe('grid', () => {
