@@ -76,6 +76,14 @@
       ],
       "cache": true
     },
+    "v0-redirects": {
+      "command": "node scripts/v0-redirects.ts",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["build"],
+      "cache": false
+    },
     "facts": {
       "command": "node scripts/facts.ts",
       "options": {

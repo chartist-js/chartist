@@ -45,9 +45,7 @@ test('llms.txt steers to v2 and every link resolves', async ({
     links.filter(link => /\/examples\/.+\.md$/.test(link)).length
   ).toBeGreaterThan(30);
   const broken: string[] = [];
-  for (const link of links.filter(
-    link => !link.includes('gionkunz.github.io')
-  )) {
+  for (const link of links) {
     const target = await request.get(local(link, baseURL!));
     if (!target.ok()) {
       broken.push(`${link}: ${target.status()}`);

@@ -36,23 +36,59 @@ export const MOVED_PAGES = {
  */
 export const withBase = (base, path) => `${base.replace(/\/?$/, '/')}${path}`;
 
+/** A value as a JavaScript literal that is safe inside `<script>`. */
+const scriptLiteral = value => JSON.stringify(value).replace(/</g, '\\u003c');
+
 /**
- * A redirect page to `target`, a path from the root.
+ * The redirect script for a page with an anchor table: a `#hash` in the
+ * table goes to its own target, any other `#hash` to `fallback` with the
+ * hash, no hash to `target`; the query is kept. A hash ending in `-code`
+ * (a code block) counts as the hash it belongs to.
  * @param {string} target
- * @param {{ site?: string, title: string, text: string }} options `text`
- * comes before the link to the target.
+ * @param {{ table: Readonly<Record<string, string>>, fallback: string }} anchors
  */
-export function redirectHtml(target, { site, title, text }) {
+const anchorScript = (target, { table, fallback }) =>
+  `(function () {
+  var table = ${scriptLiteral(table)};
+  var has = function (key) { return Object.prototype.hasOwnProperty.call(table, key); };
+  var hash = location.hash.slice(1);
+  var key = has(hash) ? hash : hash.replace(/-code$/, '');
+  var to = !hash ? ${scriptLiteral(target)} : has(key) ? table[key] : ${scriptLiteral(fallback)} + location.hash;
+  var url = new URL(to, location.href);
+  url.search = location.search;
+  location.replace(url.href);
+})();`;
+
+/**
+ * A redirect page to `target`, a path from the root or a full URL.
+ * @param {string} target
+ * @param {{
+ *   site?: string,
+ *   title: string,
+ *   text: string,
+ *   anchors?: { table: Readonly<Record<string, string>>, fallback: string },
+ *   noindex?: boolean
+ * }} options `text` comes before the link to the target. With `anchors`,
+ * the script picks the target by the `#hash` (see `anchorScript`); without,
+ * it keeps the hash. `noindex: false` leaves out the robots tag, for pages
+ * on another host whose redirect search engines should follow.
+ */
+export function redirectHtml(
+  target,
+  { site, title, text, anchors, noindex = true }
+) {
   const canonical = site ? new URL(target, site).href : target;
-  const json = JSON.stringify(target).replace(/</g, '\\u003c');
+  const script = anchors
+    ? anchorScript(target, anchors)
+    : `location.replace(${scriptLiteral(target)} + location.search + location.hash);`;
+  const robots = noindex ? '\n<meta name="robots" content="noindex">' : '';
   return `<!doctype html>
 <html lang="en" ${REDIRECT_MARKER}>
 <head>
 <meta charset="utf-8">
-<title>${title}</title>
-<meta name="robots" content="noindex">
+<title>${title}</title>${robots}
 <link rel="canonical" href="${canonical}">
-<script>location.replace(${json} + location.search + location.hash);</script>
+<script>${script}</script>
 <meta http-equiv="refresh" content="0; url=${target}">
 </head>
 <body>

@@ -4,7 +4,7 @@ The standing decisions behind Chartist: what holds today and why. Detailed behav
 
 ## History
 
-Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, control with JS", and a hand-crafted docs site with the Chartist Guy and live examples (archived at https://gionkunz.github.io/chartist-js/; reference clone `tmp/chartist-v0`). In 2022, Cube sponsored the move to TypeScript, Rollup and pnpm (1.x) with a Docusaurus site at chartist.dev (reference clone `tmp/chartist-v1`). v2 rebuilt the library on a functional, composable core, brought back the 0.x site's personality with a new brand, and kept 1.x code working. The rebuild happened in the same repository, so the history back to 2014 is intact; the archived OpenSpec changes in `openspec/changes/archive/` are the detailed record of how and why.
+Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, control with JS", and a hand-crafted docs site with the Chartist Guy and live examples (archived under `/v0/` of chartist.dev; reference clone `tmp/chartist-v0`). In 2022, Cube sponsored the move to TypeScript, Rollup and pnpm (1.x) with a Docusaurus site at chartist.dev (reference clone `tmp/chartist-v1`). v2 rebuilt the library on a functional, composable core, brought back the 0.x site's personality with a new brand, and kept 1.x code working. The rebuild happened in the same repository, so the history back to 2014 is intact; the archived OpenSpec changes in `openspec/changes/archive/` are the detailed record of how and why.
 
 ## Principles
 
@@ -81,7 +81,8 @@ The workflows and settings are specified in the release change (`openspec/change
 
 - **chartist.dev** serves the v2 site, from `2.0.0-rc.1` on, deployed to GitHub Pages from `main`.
 - **`/v1/`** holds the 1.x docs as the static output of their last Docusaurus build; no Docusaurus stack is kept. Old 1.x URLs that v2 doesn't have redirect there.
-- **0.x** stays archived at https://gionkunz.github.io/chartist-js/; the version switcher and footer link both archives.
+- **`/v0/`** holds the 0.x docs, copied from the last build on the `gh-pages` branch of `gionkunz/chartist-js` without the affiliate block, the analytics and the version pop-up, and with self-hosted fonts, so they make no requests to other hosts. The version switcher and the footer link both archives.
+- **The old 0.x site** (https://gionkunz.github.io/chartist-js/) redirects to chartist.dev with a page per old page: canonical link, script and instant meta refresh, since GitHub Pages can't send HTTP redirects. A page without a `#hash` goes to its v2 counterpart, an anchor v2 covers to that page, any other anchor to the same place under `/v0/`. `docs:v0-redirects` checks the targets against the build and writes the pages; a renamed v2 page or heading means running it again and pushing the result to that `gh-pages` branch.
 - **Visitor counting:** GoatCounter (`chartist.goatcounter.com`), cookieless, so no consent banner. It loads only on chartist.dev, so dev, tests, previews and forks never request it, and it's the one exception to "no third-party requests" (fonts and assets are self-hosted). The `/v1/` archive isn't counted.
 
 ## Test strategy

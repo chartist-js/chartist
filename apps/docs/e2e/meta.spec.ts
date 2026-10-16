@@ -105,12 +105,17 @@ test('the sitemap lists every page and nothing else', async ({
   for (const { path } of PAGES.filter(page => page.name !== '404')) {
     expect(paths, path).toContain(path);
   }
-  expect(paths.filter(path => /^\/(v1|og)\/|\.md$|404/.test(path))).toEqual([]);
+  expect(paths.filter(path => /^\/(v1|v0|og)\/|\.md$|404/.test(path))).toEqual(
+    []
+  );
 });
 
 test('every built page has a card', async () => {
   const pages = (await readdir(dist, { recursive: true })).filter(
-    file => file.endsWith('.html') && !file.startsWith('v1/')
+    file =>
+      file.endsWith('.html') &&
+      !file.startsWith('v1/') &&
+      !file.startsWith('v0/')
   );
   expect(pages.length).toBeGreaterThan(PAGES.length);
   const missing: string[] = [];

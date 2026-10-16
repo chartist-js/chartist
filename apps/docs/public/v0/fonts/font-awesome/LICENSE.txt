@@ -1,0 +1,7 @@
+Font Awesome 4.1.0 by Dave Gandy, http://fontawesome.io
+
+- The Font Awesome font is licensed under the SIL OFL 1.1: http://scripts.sil.org/OFL
+- The Font Awesome CSS is licensed under the MIT License: http://opensource.org/licenses/mit-license.html
+
+Only the CSS and the woff font are kept: the CSS lists woff before the
+ttf and svg fonts, so browsers that read woff never request the others.
