@@ -5,7 +5,7 @@
 - [x] 1.3 Self-host the fonts: add `fonts/` with Oxygen 300/400/700 and Source Code Pro 400/700 (woff2), Font Awesome 4.1.0's CSS and fonts, a `fonts.css` and the licenses, and replace the WebFont loader snippet with a `<link>` to it; verify the pages request no other host (Playwright, recording requests on all six pages)
 - [x] 1.4 Add the static archive note linking to chartist.dev at the top of each page, styled with the page's own CSS; verify by screenshots in light mode (the 0.x site has no dark mode) and at 375 px
 - [x] 1.5 Write `public/v0/README.md`: where the files came from (`gh-pages` at `c1e49e1`), each removal and change, and that the files aren't edited otherwise; verify it lists every edit from 1.2–1.4
-- [ ] 1.6 Check the live examples and the code editors on `examples.html` and `getting-started.html` under `/v0/` with the built site served by `e2e/serve.mjs`: the charts draw and editing the code updates them, with no console errors
+- [x] 1.6 Check the live examples and the code editors on `examples.html` and `getting-started.html` under `/v0/` with the built site served by `e2e/serve.mjs`: the charts draw and editing the code updates them, with no console errors
 
 ## 2. Site wiring
 
@@ -14,9 +14,9 @@
 
 ## 3. The redirect mapping
 
-- [ ] 3.1 Add `src/lib/v0-redirects.ts` with `V0_PAGES` (page targets and anchor tables from design D4) and `v0Target(page, hash)`; verify with unit tests in `src/lib/v0-redirects.test.ts`: page targets, a mapped anchor per page, an unmapped anchor falling back to `/v0/<page>.html#<hash>`, the home page as `''`
-- [ ] 3.2 Fill the anchor tables from the ids in the archived pages and the v2 examples, guides and plugin pages; add a unit test that every mapped id exists in its page under `public/v0/`, so a typo in the table fails
-- [ ] 3.3 Extend `redirectHtml()` in `integrations/redirects.mjs` with an anchor table for the script and an option to leave out `noindex`, keeping its current output for the existing callers; verify `src/lib/redirects.test.ts` and `src/lib/v1-redirects.test.ts` still pass unchanged, and new tests cover both options
+- [x] 3.1 Add `src/lib/v0-redirects.ts` with `V0_PAGES` (page targets and anchor tables from design D4) and `v0Target(page, hash)`; verify with unit tests in `src/lib/v0-redirects.test.ts`: page targets, a mapped anchor per page, an unmapped anchor falling back to `/v0/<page>.html#<hash>`, the home page as `''`
+- [x] 3.2 Fill the anchor tables from the ids in the archived pages and the v2 examples, guides and plugin pages; add a unit test that every mapped id exists in its page under `public/v0/`, so a typo in the table fails
+- [x] 3.3 Extend `redirectHtml()` in `integrations/redirects.mjs` with an anchor table for the script and an option to leave out `noindex`, keeping its current output for the existing callers; verify `src/lib/redirects.test.ts` and `src/lib/v1-redirects.test.ts` still pass unchanged, and new tests cover both options
 
 ## 4. The redirect generator
 

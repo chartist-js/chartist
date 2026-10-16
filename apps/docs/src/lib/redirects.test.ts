@@ -8,7 +8,8 @@ import {
   MOVED_PAGES,
   REDIRECT_MARKER,
   movedFile,
-  movedPage
+  movedPage,
+  redirectHtml
 } from '../../integrations/redirects.mjs';
 
 describe('moved pages', () => {
@@ -46,5 +47,45 @@ describe('moved pages', () => {
     expect(page).toContain(
       'href="https://example.org/chartist/docs/target-lines-and-bands/"'
     );
+  });
+});
+
+describe('redirectHtml options', () => {
+  const options = { title: 'Moved', text: 'Moved to' };
+
+  test('stays out of search engines by default', () => {
+    expect(redirectHtml('/docs/', options)).toContain(
+      '<meta name="robots" content="noindex">'
+    );
+    expect(
+      redirectHtml('https://chartist.dev/', { ...options, noindex: false })
+    ).not.toContain('noindex');
+  });
+
+  test('picks the target by the hash with an anchor table', () => {
+    const page = redirectHtml('https://chartist.dev/examples/', {
+      ...options,
+      anchors: {
+        table: { 'stacked-bar': 'https://chartist.dev/examples/bar/stacked/' },
+        fallback: 'https://chartist.dev/v0/examples.html'
+      }
+    });
+    expect(page).toContain(
+      '{"stacked-bar":"https://chartist.dev/examples/bar/stacked/"}'
+    );
+    expect(page).toContain(
+      '"https://chartist.dev/v0/examples.html" + location.hash'
+    );
+    expect(page).not.toContain(
+      'location.replace("https://chartist.dev/examples/" +'
+    );
+  });
+
+  test('keeps script-breaking text out of the script', () => {
+    const page = redirectHtml('/a/', {
+      ...options,
+      anchors: { table: { x: '</script><b>' }, fallback: '/v0/' }
+    });
+    expect(page).not.toContain('</script><b>');
   });
 });
