@@ -64,6 +64,16 @@ The `@chartist-js` packages ship ESM and CommonJS builds with declarations for b
 - **Package docs live on chartist.dev** under `/packages/<name>/` (decided 2026-10-15): an overview, the package's guides and one API page generated from its types, with a "Packages" item in the header. Their sources stay with the site, in `apps/docs/src/content/packages/<slug>/`, and `apps/docs/src/data/packages.ts` registers each package. Docs inside each package's folder were considered and left for later: guides import site components, and the site's checks assume its folders.
 - **Packages use only `chartist`'s published entry points** and are tested from their build: unit tests, a test of their README's examples, and a smoke test that packs and installs them.
 
+## Security
+
+Decided 2026-10-16 (#1516).
+
+- **Charts work under a strict Content Security Policy:** `style-src 'self'` without `'unsafe-inline'`, no `'unsafe-eval'`, and Trusted Types. Styles are set through the CSSOM (`element.style.cssText`), which a policy allows, and the markup keeps its `style` attributes, so 1.x output is unchanged. The library needs nothing beyond `'self'`; the terminal stylesheet needs `font-src data:` for its embedded font.
+- **Chart data stays data in every output.** Text and attribute values are escaped, and `renderToString()` throws on an element or attribute name that isn't a valid XML name, as the DOM renderer does, rather than skipping it.
+- **Plugins are the page's own code.** Chartist doesn't filter what they set (event handler attributes, `javascript:` URLs), and the 1.x `Svg#foreignObject()` keeps taking a string as HTML. The Security and CSP guide says so.
+- **Rendering without `innerHTML`:** `chart()` and the DOM renderer build elements, and the terminal has `format: 'element'` (`renderToElement()`) for pages that forbid HTML strings. The string outputs stay for servers and Node.js.
+- **Later, if asked for:** a named Trusted Types policy, so the string outputs can return `TrustedHTML`.
+
 ## Road to 2.0 final
 
 Decided 2026-10-16. The functional API's names and surface are final as they are. What remains is which open issues land before 2.0: after 2.0 final, only additive changes go into 2.x minors, and anything that changes existing defaults, output or a documented promise waits for 3.0.
@@ -75,6 +85,7 @@ Decided 2026-10-16. The functional API's names and surface are final as they are
   - #1209 a trend line layer;
   - #1487 label alignment per axis on the presets;
   - #546 line breaks in pie labels, on by default.
+  - #1516 security and CSP: charts under a strict policy and Trusted Types, and string output that data can't break.
 
   It ships soon after, so target lines, bands and layer refinement reach npm.
 
