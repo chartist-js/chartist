@@ -59,7 +59,8 @@ Slugs (file names) and sidebar order. Link between pages with these.
 | Guides      | 8     | `events-and-plugins`     | Events and plugins       |
 | Guides      | 9     | `custom-layers`          | Custom layers            |
 | Guides      | 10    | `server-rendering`       | Server rendering         |
-| Guides      | 11    | `updating-charts`        | Updating charts          |
+| Guides      | 11    | `security-and-csp`       | Security and CSP         |
+| Guides      | 12    | `updating-charts`        | Updating charts          |
 
 ## Package pages
 

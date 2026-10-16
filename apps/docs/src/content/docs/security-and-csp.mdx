@@ -1,0 +1,91 @@
+---
+title: Security and CSP
+description: Run Chartist on pages with a strict Content Security Policy or Trusted Types, and keep the data in your charts from injecting markup.
+group: Guides
+order: 11
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const products = {
+  labels: [
+    'Tea & biscuits',
+    '<b>Bold</b> coffee',
+    '<img src=x onerror=alert(1)>'
+  ],
+  series: [[42, 31, 18]]
+};
+
+Charts often show what people typed: names, product titles, comments. Chartist keeps that text as text, and it runs on pages that lock down what scripts may do. This page covers what your policy needs to allow and what is up to you.
+
+## The policy Chartist needs
+
+Nothing beyond your own origin. A policy like this one works:
+
+```html
+<meta
+  http-equiv="Content-Security-Policy"
+  content="default-src 'self'; style-src 'self'"
+/>
+```
+
+Chartist sets the few inline styles it needs (the chart's size, the boxes of HTML labels, a donut's width) through `element.style`, which a policy allows. It never sets a `style` attribute from a script, which `style-src` without `'unsafe-inline'` blocks. It also evaluates no strings as code and adds no style sheets, so `script-src` needs no `'unsafe-eval'` either.
+
+Loading Chartist from a CDN? Add the CDN to `script-src` and `style-src`, for example `https://cdn.jsdelivr.net`.
+
+The [terminal package](../../packages/terminal/)'s stylesheet brings its own font as a `data:` URL, so a page that shows text art also needs `font-src data:`. Without it, the browser falls back to the reader's fonts, and the braille dots and grid lines may show gaps.
+
+<Callout kind='warn'>
+  **Inline styles in your own markup** are blocked too. The examples on this
+  site size their containers with `style="height: 50vh"` for brevity; under a
+  strict policy, move such sizes into your stylesheet.
+</Callout>
+
+## Your data stays data
+
+Labels, series names, class names, meta and what your label functions return: Chartist writes all of it as text or as escaped attribute values, in the page, in `renderToString()` output and in the terminal's text art. A label that contains markup shows its characters:
+
+<LiveExample
+  title='Markup in labels'
+  label='A bar chart of three products, whose labels show markup as plain characters'
+  preview={{ type: 'bar', data: products }}
+  example='security-and-csp/escaped-labels'
+/>
+
+## Without innerHTML
+
+Pages that require [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) (`require-trusted-types-for 'script'`) can't assign strings to `innerHTML`. Chartist's DOM renderer creates elements instead, so `chart()` and the presets need nothing.
+
+Two outputs are strings on purpose. SVG markup from `renderToString()` is for servers and files (see [Server rendering](../server-rendering/)). In the browser, draw the same scene with `domRenderer()`:
+
+```ts
+import { domRenderer, lineChartConfig, toScene } from 'chartist';
+
+const scene = toScene(lineChartConfig({ series: [[1, 3, 2]] }), {
+  width: 400,
+  height: 200
+});
+const container = document.querySelector('#chart');
+if (container) {
+  domRenderer().render(scene, container);
+}
+```
+
+And text art from the terminal package comes as an element with `format: 'element'`:
+
+```ts
+import { lineChart } from '@chartist-js/terminal';
+
+document
+  .querySelector('#chart')
+  ?.replaceChildren(lineChart({ series: [[1, 3, 2]] }, { format: 'element' }));
+```
+
+## What's up to you
+
+- **1.x `Svg#foreignObject()`** takes a string as HTML, as it did in 1.x. Give it text you trust, or a DOM node (under Trusted Types, only a node works).
+- **Plugins and listeners** are your page's code. What they add to a chart, such as an `onclick` attribute or a link, is theirs, and they follow your policy like any other script.
+- **Strings you insert yourself:** if you put `renderToString()` output into a page with `innerHTML`, it's escaped, but Trusted Types still ask for a policy of your own.
+
+Next: render charts on a server in [Server rendering](../server-rendering/), or write plugins in [Events and plugins](../events-and-plugins/).

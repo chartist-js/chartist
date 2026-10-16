@@ -10,16 +10,18 @@ const data = {
   ]
 };
 
-// The options of Chartist's lineChart(), plus a size in characters, as
-// HTML instead of terminal escape codes.
+// The options of Chartist's lineChart(), plus a size in characters, as an
+// element of text art instead of terminal escape codes.
 const art = document.querySelector('#art');
 if (art) {
-  art.innerHTML = lineChart(data, {
-    low: 0,
-    showArea: true,
-    lineSmooth: true,
-    columns: 34,
-    rows: 16,
-    format: 'html'
-  });
+  art.replaceChildren(
+    lineChart(data, {
+      low: 0,
+      showArea: true,
+      lineSmooth: true,
+      columns: 34,
+      rows: 16,
+      format: 'element'
+    })
+  );
 }
