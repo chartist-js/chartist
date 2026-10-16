@@ -65,6 +65,8 @@ export interface RenderUpdate<TOutput extends RenderOutput = RenderOutput> {
   readonly cause: RenderCause;
   /** The data's labels, for keys from labels. */
   readonly labels: readonly unknown[];
+  /** The previous render's labels, for keys from labels in the previous scene. */
+  readonly previousLabels: readonly unknown[];
   /**
    * Asks the chart's plugins, then the layer that drew the node, for the
    * keyframes of a node's update at the given progress points (0 is the

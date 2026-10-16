@@ -48,6 +48,7 @@ describe('render lifecycle (v2)', () => {
     expect(updates[0]).toBeUndefined();
     expect(updates[1]?.cause).toBe('update');
     expect(updates[1]?.labels).toEqual(['a', 'b']);
+    expect(updates[1]?.previousLabels).toEqual(['a', 'b']);
     expect(events.map(event => event.cause)).toEqual(['create', 'update']);
     // The DOM renderer replaces its SVG, so the update is a replacement.
     expect(events[1].previous).toBe(events[0].scene);

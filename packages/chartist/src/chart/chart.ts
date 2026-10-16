@@ -299,6 +299,7 @@ export function chart(
             previousScene: previous.scene,
             cause,
             labels: state.data.labels,
+            previousLabels: previous.data.labels,
             keyframes
           }
         : undefined;

@@ -164,6 +164,7 @@ describe('render causes and changes', () => {
     expect(update.previous.svg.isConnected).toBe(false);
     expect(update.cause).toBe('update');
     expect(update.labels).toEqual(['x', 'y', 'z']);
+    expect(update.previousLabels).toEqual(['a', 'b', 'c']);
   });
 
   it('passes on the changes of a renderer that patched', () => {

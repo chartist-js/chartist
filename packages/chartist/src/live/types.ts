@@ -43,8 +43,10 @@ export type ValueKey =
 export interface DiffOptions {
   /** What identifies a value across updates; `'index'` by default. */
   readonly key?: ValueKey;
-  /** The data's labels, for `key: 'label'`. */
+  /** The new scene's labels, for `key: 'label'`. */
   readonly labels?: readonly unknown[];
+  /** The previous scene's labels, for `key: 'label'`; `labels` if omitted. */
+  readonly previousLabels?: readonly unknown[];
 }
 
 /**
@@ -68,9 +70,13 @@ export interface LiveAnimationContext {
   /**
    * The key that identifies a value across updates, as the renderer's
    * `key` option says: for the value at `valueIndex` of series
-   * `seriesIndex`, with its value and meta.
+   * `seriesIndex`, with its value and meta, in the previous scene or the
+   * new one (labels differ between them).
    */
-  readonly valueKey: (context: Omit<ValueKeyContext, 'label'>) => string;
+  readonly valueKey: (
+    context: Omit<ValueKeyContext, 'label'>,
+    scene: 'previous' | 'next'
+  ) => string;
 }
 
 /**
