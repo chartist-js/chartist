@@ -10,7 +10,7 @@
 
 ## 2. Checked names in `renderToString()`
 
-- [ ] 2.1 Add the XML name check to `render/string.ts` for element and attribute names, throwing `Chartist: "<name>" is not a valid element name` (or attribute name). Verify: unit tests for the "Checked names in string output" scenarios, plus that `ct:value`, `ct:meta`, `xmlns:ct`, `foreignObject` with HTML label children and every preset's output still serialize unchanged (existing string tests pass)
+- [x] 2.1 Add the XML name check to `render/string.ts` for element and attribute names, throwing `Chartist: "<name>" is not a valid element name` (or attribute name). Verify: unit tests for the "Checked names in string output" scenarios, plus that `ct:value`, `ct:meta`, `xmlns:ct`, `foreignObject` with HTML label children and every preset's output still serialize unchanged (existing string tests pass)
 
 ## 3. Payload tests
 
