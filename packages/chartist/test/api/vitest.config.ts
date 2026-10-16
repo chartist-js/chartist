@@ -13,11 +13,14 @@ const TARGETS = {
   local: {
     entry: '../../dist/index.js',
     compat: '../../dist/compat.js',
+    live: '../../dist/live.js',
     tsconfig: 'tsconfig.json'
   },
   v1: {
     entry: '../../node_modules/chartist-v1/dist/index.js',
     compat: './compat-v1.ts',
+    // chartist@1.5.0 has no live updates; only the v2 tests import them.
+    live: '../../dist/live.js',
     tsconfig: 'tsconfig.v1.json'
   }
 } as const;
@@ -36,7 +39,8 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: /^chartist$/, replacement: resolve(target.entry) },
-      { find: /^chartist\/compat$/, replacement: resolve(target.compat) }
+      { find: /^chartist\/compat$/, replacement: resolve(target.compat) },
+      { find: /^chartist\/live$/, replacement: resolve(target.live) }
     ]
   },
   test: {

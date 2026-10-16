@@ -28,6 +28,7 @@ export interface ExportList {
 
 export const LIST_FILE = path.join(exportsDir, 'chartist.json');
 export const COMPAT_LIST_FILE = path.join(exportsDir, 'compat.json');
+export const LIVE_LIST_FILE = path.join(exportsDir, 'live.json');
 export const DEPRECATED_FILE = path.join(exportsDir, 'deprecated.json');
 
 const sorted = (names: Iterable<string>) =>
@@ -43,14 +44,19 @@ export function cjsNames(build: BuildName, entry = 'index') {
   return sorted(Object.keys(require(path.join(BUILDS[build], `${entry}.cjs`))));
 }
 
-/** Runs the UMD file like a classic <script>: no module system, a global. */
-export function umdNames(build: BuildName) {
+/**
+ * Runs UMD files like classic <script>s, in order: no module system, a
+ * global. Returns the names on the global `Chartist` after the last one.
+ */
+export function umdNames(build: BuildName, entries = ['index']) {
   const context: { Chartist?: object } = {};
   vm.createContext(context);
-  vm.runInContext(
-    readFileSync(path.join(BUILDS[build], 'index.umd.js'), 'utf8'),
-    context
-  );
+  for (const entry of entries) {
+    vm.runInContext(
+      readFileSync(path.join(BUILDS[build], `${entry}.umd.js`), 'utf8'),
+      context
+    );
+  }
   if (!context.Chartist) {
     throw new Error(`${build}: the UMD build defines no global Chartist`);
   }

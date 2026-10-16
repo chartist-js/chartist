@@ -11,7 +11,8 @@
     "verbatimModuleSyntax": true,
     "paths": {
       "chartist": ["../../dist/index.d.ts"],
-      "chartist/compat": ["../../dist/compat.d.ts"]
+      "chartist/compat": ["../../dist/compat.d.ts"],
+      "chartist/live": ["../../dist/live.d.ts"]
     },
     "allowImportingTsExtensions": true
   },

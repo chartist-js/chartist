@@ -1,5 +1,5 @@
 /**
- * Rewrites chartist.json from the local build. Review the diff: every added
+ * Rewrites chartist.json, compat.json and live.json from the local build. Review the diff: every added
  * or removed name is an API change.
  *
  * Run: pnpm nx run chartist:test:api:update-exports (builds first).
@@ -9,6 +9,7 @@ import {
   COMPAT_LIST_FILE,
   esmNames,
   LIST_FILE,
+  LIVE_LIST_FILE,
   typeNames,
   type ExportList
 } from './read.ts';
@@ -28,3 +29,10 @@ const compatList: ExportList = {
 };
 writeFileSync(COMPAT_LIST_FILE, JSON.stringify(compatList, null, 2) + '\n');
 console.log(`Wrote the chartist/compat names to ${COMPAT_LIST_FILE}`);
+
+const liveList: ExportList = {
+  runtime: await esmNames('local', 'live'),
+  types: typeNames('local', 'live')
+};
+writeFileSync(LIVE_LIST_FILE, JSON.stringify(liveList, null, 2) + '\n');
+console.log(`Wrote the chartist/live names to ${LIVE_LIST_FILE}`);

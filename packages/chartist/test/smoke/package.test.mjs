@@ -67,14 +67,18 @@ const IMPORTS = {
   'chartist/dist/chartist.min.css': 'dist/chartist.min.css',
   'chartist/compat': 'dist/compat.js',
   'chartist/dist/compat.min.js': 'dist/compat.min.js',
-  'chartist/dist/compat.umd.js': 'dist/compat.umd.js'
+  'chartist/dist/compat.umd.js': 'dist/compat.umd.js',
+  'chartist/live': 'dist/live.js',
+  'chartist/dist/live.min.js': 'dist/live.min.js',
+  'chartist/dist/live.umd.js': 'dist/live.umd.js'
 };
 
 /** Same for `require`; only the root entry differs. */
 const REQUIRES = {
   ...IMPORTS,
   chartist: 'dist/index.cjs',
-  'chartist/compat': 'dist/compat.cjs'
+  'chartist/compat': 'dist/compat.cjs',
+  'chartist/live': 'dist/live.cjs'
 };
 
 let tmp;
@@ -455,6 +459,32 @@ test('npm package contains the built files', async () => {
     [],
     'only dist/, package.json, the README and the licenses are packed'
   );
+});
+
+test('live uses the same core instance as chartist', async () => {
+  const esm = await import(resolveImport('chartist/live'));
+  const cjs = require('chartist/live');
+  for (const live of [esm, cjs]) {
+    assert.equal(typeof live.liveDomRenderer, 'function');
+    assert.equal(typeof live.smilAnimations, 'function');
+    assert.equal(typeof live.diffScenes, 'function');
+  }
+  // The live builds import the core build next to them, never a copy.
+  const sources = {
+    'dist/live.js': './index.js',
+    'dist/live.cjs': './index.cjs',
+    'dist/live.min.js': './index.min.js',
+    'dist/live.umd.js': './index.umd.js'
+  };
+  for (const [file, core] of Object.entries(sources)) {
+    const code = await readFile(path.join(pkgDir, file), 'utf8');
+    assert.ok(code.includes(`"${core}"`), `${file} imports ${core}`);
+    // The core build is ~140 kB unminified; live alone is far smaller.
+    assert.ok(
+      code.length < 40_000,
+      `${file} has no core copy (${code.length} bytes)`
+    );
+  }
 });
 
 test('compat uses the same core instance as chartist', async () => {
