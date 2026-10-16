@@ -127,7 +127,7 @@ const scene = toScene(
 console.log(renderToTerminal(scene, { color: 'none' }));
 ```
 
-A cell stands for 8 × 16 px, so a braille dot is 4 × 4 px and circles stay round; `terminalSize()` measures text one cell per character, so labels land on the character grid. Nodes a plugin adds are drawn by their element: `line` and `path` as lines, `circle` as a point, `text` as a label.
+A cell stands for 8 × 16 px, so a braille dot is 4 × 4 px and circles stay round; `terminalSize()` measures text one cell per character, so labels land on the character grid. Nodes a plugin adds are drawn by their element: `line` and `path` as lines, `circle` as a filled disc of its radius (a point when it's tiny), `text` as a label.
 
 ## HTML output
 
