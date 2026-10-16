@@ -38,7 +38,6 @@ import {
 /**
  * Options of `barChart`: the 1.x `BarChart` options; axis types may also be
  * v2 axis factories.
- * @experimental
  */
 export type BarChartPresetOptions = Omit<
   BarChartOptions,
@@ -231,7 +230,6 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
  * options, without a container: the bar layer with its axes, grid and labels, horizontal or stacked as the options say. Pass it to `toScene()` to render
  * the preset chart with another renderer. Responsive options and the
  * inline size style of the root svg are left out; both need a container.
- * @experimental
  */
 export function barChartConfig(
   data: BarChartData,
@@ -262,7 +260,6 @@ export function createBarChart(
  * Creates a bar chart with the 1.x options and output, rendered
  * synchronously. Plugins must be v2 plugins; convert 1.x plugins with
  * `fromLegacyPlugin` from `chartist/compat`.
- * @experimental
  */
 export function barChart(
   target: string | Element,

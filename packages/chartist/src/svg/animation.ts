@@ -179,7 +179,6 @@ function easingFunction(easing: string | readonly number[]) {
  * ```
  * @param easing A CSS easing, a name of {@link easings}, or four numbers
  * @returns The `keySplines` value, or nothing
- * @experimental
  */
 export function keySplinesOf(
   easing: string | readonly number[]
@@ -210,7 +209,6 @@ export function keySplinesOf(
  * @param easing The easing
  * @param duration The animation's duration in ms
  * @returns The progress at each point, from 0 to 1
- * @experimental
  */
 export function sampleEasing(
   easing: string | readonly number[],

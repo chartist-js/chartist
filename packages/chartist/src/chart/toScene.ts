@@ -96,7 +96,6 @@ function unavailable(method: string): never {
  *
  * export const markup = renderToString(scene);
  * ```
- * @experimental
  */
 export function toScene(config: ChartConfig, size: SceneSize): SceneNode {
   const emitter = createPhaseEmitter();

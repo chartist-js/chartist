@@ -36,7 +36,6 @@ import {
 /**
  * Options of `lineChart`: the 1.x `LineChart` options; axis types may also
  * be v2 axis factories.
- * @experimental
  */
 export type LineChartPresetOptions = Omit<
   LineChartOptions,
@@ -178,7 +177,6 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
  *   toScene(config, { width: 600, height: 300 })
  * );
  * ```
- * @experimental
  */
 export function lineChartConfig(
   data: LineChartData,
@@ -209,7 +207,6 @@ export function createLineChart(
  * Creates a line chart with the 1.x options and output, rendered
  * synchronously. Plugins must be v2 plugins; convert 1.x plugins with
  * `fromLegacyPlugin` from `chartist/compat`.
- * @experimental
  */
 export function lineChart(
   target: string | Element,

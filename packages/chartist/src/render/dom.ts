@@ -12,7 +12,6 @@ import type { Renderer, RenderOutput } from './types';
 /**
  * What {@link domRenderer} returns from `render()`: the inline SVG it
  * added to the container.
- * @experimental
  */
 export interface DomRenderOutput extends RenderOutput {
   /** The chart's `svg` element, in the container. */
@@ -42,7 +41,6 @@ export interface DomRenderOutput extends RenderOutput {
  * @param element The element to change
  * @param name The attribute's name, as in a scene node's `attrs`
  * @param value The attribute's value
- * @experimental
  */
 export function applyAttribute(
   element: Element,
@@ -84,7 +82,6 @@ export interface RenderElementOptions {
  * @param document The document to create the elements in
  * @param options The namespace, and a callback for each created element
  * @returns The node's element, with its children
- * @experimental
  */
 export function renderElement(
   current: SceneNode,
@@ -217,7 +214,6 @@ function measureInDocument(document: Document): MeasureText {
  *   renderer
  * });
  * ```
- * @experimental
  */
 export function domRenderer(): Renderer<DomRenderOutput> {
   return {

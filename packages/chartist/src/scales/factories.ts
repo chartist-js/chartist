@@ -40,7 +40,6 @@ const valueOf = (value: unknown, dimension: 'x' | 'y') =>
  *   layers: [axisGrid(), line(), axisLabels()]
  * });
  * ```
- * @experimental
  */
 export function stepAxis(): AxisFactory {
   return {
@@ -101,7 +100,6 @@ export function stepAxis(): AxisFactory {
  *   layers: [axisGrid(), line(), axisLabels()]
  * });
  * ```
- * @experimental
  */
 export function autoScaleAxis(): AxisFactory {
   return {
@@ -168,7 +166,6 @@ export function autoScaleAxis(): AxisFactory {
  *   layers: [axisGrid(), line({ showLine: false }), axisLabels()]
  * });
  * ```
- * @experimental
  */
 export function fixedScaleAxis(): AxisFactory {
   return {

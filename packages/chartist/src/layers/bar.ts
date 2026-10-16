@@ -14,7 +14,6 @@ import { isNumeric, safeHasProperty } from '../utils/utils';
 /**
  * The options of the {@link bar} layer. Without them, it draws the bars of
  * each label side by side, 15 px apart, on the first X and Y axis.
- * @experimental
  */
 export interface BarLayerOptions {
   /** Series to draw, by index or name; default: all series. */
@@ -148,7 +147,6 @@ function rawSeries(series: PreparedSeries): Series | SeriesObject {
  *   className: 'ct-chart-bar'
  * });
  * ```
- * @experimental
  */
 export function bar(options: BarLayerOptions = {}): Layer {
   const classNames = {

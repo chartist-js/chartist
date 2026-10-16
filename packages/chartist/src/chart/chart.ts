@@ -104,7 +104,6 @@ function resolveTarget(target: string | Element): Element {
  * @param target The container element, or a CSS selector for it.
  * @param config The data, axes, layers and the rest of the chart.
  * @returns A handle to update the chart, listen to it or remove it.
- * @experimental
  */
 export function chart(
   target: string | Element,

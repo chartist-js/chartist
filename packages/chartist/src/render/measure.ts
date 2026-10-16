@@ -10,7 +10,6 @@ export interface TextMetrics {
 
 /**
  * How labels are drawn: HTML in a `foreignObject` (1.x) or SVG `text`.
- * @experimental
  */
 export type LabelMode = 'html' | 'svg';
 
@@ -93,7 +92,6 @@ export const DEFAULT_FONT_SIZE = 12;
  * below the top of the line (a typical font's ascent). Lines are one font
  * size apart, so a renderer finds a line's vertical center at
  * `y - (textAscent - 0.5) * fontSize` from its `y`.
- * @experimental
  */
 export const textAscent = 0.85;
 
@@ -112,7 +110,6 @@ export const textAscent = 0.85;
  *   return { ...size, width: size.width * 1.1 };
  * };
  * ```
- * @experimental
  */
 export const estimateText: MeasureText = (text, options = {}) => {
   const fontSize = options.fontSize ?? DEFAULT_FONT_SIZE;

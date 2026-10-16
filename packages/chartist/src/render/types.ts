@@ -6,7 +6,6 @@ import type { LabelMode, MeasureStyle, MeasureText } from './measure';
  * `update()` (and the presets' `setOptions()`), `resize` when its
  * container's size changed, `responsive` when its matching `responsive`
  * entries changed, `fonts` when web fonts finished loading.
- * @experimental
  */
 export type RenderCause =
   | 'create'
@@ -20,7 +19,6 @@ export type RenderCause =
  * previous scene didn't have, `update` for a node whose attributes,
  * classes or text changed (with its `previous` node), `remove` for a node
  * of the previous scene that's gone.
- * @experimental
  */
 export interface SceneChange {
   /** What happened to the node. */
@@ -34,14 +32,12 @@ export interface SceneChange {
 /**
  * The keyframes of a node's update animation: one set of attributes per
  * progress point, in the order of the points.
- * @experimental
  */
 export type Keyframes = readonly Readonly<Record<string, AttrValue>>[];
 
 /**
  * The timing of a render's update animation: its duration in ms and its
  * easing as a CSS easing, such as `ease-out`.
- * @experimental
  */
 export interface UpdateAnimation {
   /** The duration in ms. */
@@ -54,7 +50,6 @@ export interface UpdateAnimation {
  * What a renderer gets about the previous render, from a chart's second
  * render on. A renderer can change its previous output in place with it,
  * instead of replacing it; renderers keep no state themselves.
- * @experimental
  */
 export interface RenderUpdate<TOutput extends RenderOutput = RenderOutput> {
   /** What this renderer returned for the previous render. */
@@ -93,19 +88,16 @@ export interface RenderOutput {
    * `true` when the renderer changed its previous output in place with
    * the `update` it got, instead of replacing it. Then `changes` says what
    * it did.
-   * @experimental
    */
   readonly patched?: boolean;
   /**
    * What the renderer did to each changed node, with `patched`. Without
    * them, the chart describes the render as a replacement.
-   * @experimental
    */
   readonly changes?: readonly SceneChange[];
   /**
    * The timing of the update animation the renderer started, if any. The
    * `mount` event passes it on as `animation`.
-   * @experimental
    */
   readonly animation?: UpdateAnimation;
 }
@@ -115,7 +107,6 @@ export interface RenderOutput {
  * container with the DOM renderer, unless its config sets a `renderer`.
  * To get markup instead, without a DOM, use `toScene()` and
  * {@link renderToString}.
- * @experimental
  */
 export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   /**

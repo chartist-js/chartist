@@ -72,7 +72,6 @@ export interface PresetState<
  * // Areas from now on; the other options stay.
  * chart.setOptions({ showArea: true });
  * ```
- * @experimental
  */
 export interface PresetHandle<TOptions> extends ChartHandle {
   /**
@@ -123,7 +122,6 @@ export type PresetAxisOptions = Omit<AxisOptions, 'type'> & {
  *   { layers: { above: [targetLine({ value: 1000 })] } }
  * );
  * ```
- * @experimental
  */
 export interface PresetLayers {
   /** Layers drawn above the grid and below the chart's series. */
@@ -313,7 +311,6 @@ export function presetConfig<
 /**
  * Responsive options of presets: the 1.x media query pairs, plus container
  * conditions (`container()`). Matching entries extend the options in order.
- * @experimental
  */
 export type PresetResponsiveOptions<T> = readonly ResponsiveEntry<T>[];
 

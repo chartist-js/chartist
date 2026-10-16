@@ -6,7 +6,8 @@
  * This entry imports only the package root (`../index`), so its builds
  * use the core instead of bundling a copy.
  *
- * @experimental The v2 API may change until v2.0.
+ * @experimental New with 2.0: the live API may still change in a 2.x
+ *   minor before it becomes stable.
  */
 export { smilAnimations } from './animations';
 export { diffScenes } from './diff';

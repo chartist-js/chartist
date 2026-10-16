@@ -26,7 +26,6 @@ import {
 /**
  * Options of `pieChart`: the 1.x `PieChart` options, with v2 plugins and
  * phase listeners.
- * @experimental
  */
 export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
@@ -106,7 +105,6 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
  * options, without a container: the pie layer with its labels. Pass it to `toScene()` to render
  * the preset chart with another renderer. Responsive options and the
  * inline size style of the root svg are left out; both need a container.
- * @experimental
  */
 export function pieChartConfig(
   data: PieChartData,
@@ -137,7 +135,6 @@ export function createPieChart(
  * Creates a pie or donut chart with the 1.x options and output, rendered
  * synchronously. Plugins must be v2 plugins; convert 1.x plugins with
  * `fromLegacyPlugin` from `chartist/compat`.
- * @experimental
  */
 export function pieChart(
   target: string | Element,

@@ -36,7 +36,6 @@ export type BandEdgeOption =
 /**
  * The options of the {@link band} layer: `low` and `high` edges, or a
  * `series` group.
- * @experimental
  */
 export interface BandOptions {
   /** The low edge: a constant value, values or a series. */
@@ -307,7 +306,6 @@ function edgeContext(
  *   ]
  * });
  * ```
- * @experimental
  */
 export function band(options: BandOptions): Layer {
   const hasEdges = options.low !== undefined || options.high !== undefined;

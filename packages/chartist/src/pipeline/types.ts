@@ -143,7 +143,6 @@ export interface LayerContext {
 /**
  * What a layer's `extent` gets: its series as the axes see them, and the
  * ids of the axes it draws on.
- * @experimental
  */
 export interface ExtentContext {
   /**
@@ -160,7 +159,6 @@ export interface ExtentContext {
  * use the same contract: the "Custom layers" guide explains each field
  * and how to write and share a layer.
  * @see https://chartist.dev/docs/custom-layers/
- * @experimental
  */
 export interface Layer {
   /** Name used in error messages, e.g. `line`. */

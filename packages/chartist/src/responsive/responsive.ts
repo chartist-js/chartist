@@ -8,7 +8,9 @@
 /**
  * A container query condition for a responsive entry, created with
  * {@link container}.
- * @experimental
+ * @experimental It rests on `Element.matchContainer()`, a draft standard
+ *   (w3c/csswg-drafts#6205), through a polyfill: it may still change in a
+ *   2.x minor.
  */
 export interface ContainerCondition {
   /** Always `container`: tells the condition from a media query string. */
@@ -22,7 +24,6 @@ export interface ContainerCondition {
  * `(max-width: 640px)` (as in 1.x), or a {@link container} condition.
  * Media queries are matched in the window of the chart's container, so a
  * chart in an iframe follows the iframe's viewport.
- * @experimental
  */
 export type ResponsiveCondition = string | ContainerCondition;
 
@@ -30,7 +31,6 @@ export type ResponsiveCondition = string | ContainerCondition;
  * A responsive entry: a condition and the overrides that apply while it
  * matches, e.g. `['(max-width: 640px)', { showPoint: false }]`. Matching
  * entries apply in order, so later ones win.
- * @experimental
  */
 export type ResponsiveEntry<T> = readonly [ResponsiveCondition, T];
 
@@ -67,7 +67,9 @@ export type ResponsiveEntry<T> = readonly [ResponsiveCondition, T];
  *   ]
  * );
  * ```
- * @experimental
+ * @experimental It rests on `Element.matchContainer()`, a draft standard
+ *   (w3c/csswg-drafts#6205), through a polyfill: it may still change in a
+ *   2.x minor.
  */
 export function container(query: string): ContainerCondition {
   return Object.freeze({ type: 'container', query });
@@ -113,7 +115,6 @@ export function resetResponsiveWarning() {
 /**
  * Watches the conditions of a {@link ResponsiveSet}'s entries, as its
  * `watch()` returns it: which entries match, and when that changes.
- * @experimental
  */
 export interface ResponsiveWatcher {
   /** Indexes of the matching entries, as of the last `check()`. */
@@ -224,7 +225,6 @@ export function watchResponsive(
  * Responsive entries for `chart()`, with the watcher that evaluates them.
  * Created by `responsive()`, so charts without responsive entries don't
  * bundle the watcher.
- * @experimental
  */
 export interface ResponsiveSet<T> {
   /** The entries as given to `responsive()`. */
@@ -282,7 +282,6 @@ export interface ResponsiveSet<T> {
  *   ])
  * });
  * ```
- * @experimental
  */
 export function responsive<T>(
   entries: readonly ResponsiveEntry<T>[]

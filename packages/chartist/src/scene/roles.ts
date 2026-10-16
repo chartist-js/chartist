@@ -3,8 +3,6 @@
  * (`ctx`) and its attributes. Checking `node.role` narrows a node to its
  * role, e.g. `node.role === 'point'` gives `node.ctx.x` as a number.
  * Plugins declare their own roles in `NodeRoles`.
- *
- * @experimental The v2 API may change until v2.0.
  */
 import type { Label, NormalizedSeries, NormalizedSeriesValue } from '../core';
 import type { ScaleAxis } from '../scales/axis';

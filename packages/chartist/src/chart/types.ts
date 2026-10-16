@@ -24,7 +24,6 @@ import type { ResponsiveSet } from '../responsive/responsive';
  * ```
  *
  * `chartist/compat` declares the 1.x events (`draw`, `created`, …).
- * @experimental
  */
 export interface ChartEvents {
   /**
@@ -83,7 +82,6 @@ export type CustomEventName = keyof ChartEvents & string;
  *
  * barChart('#chart', { series: [[5, 4, 3, 7]] }, { plugins: [threshold(5)] });
  * ```
- * @experimental
  */
 export interface ChartPlugin<TOptions = unknown> {
   /** Names the plugin. Prefix your custom events with it to keep them apart. */
@@ -178,7 +176,6 @@ export type PluginEntry =
  *
  * Without `axes`, layers draw into the whole chart area; the pie layer
  * needs `coordinates: 'polar'`. {@link toScene} takes the same config.
- * @experimental
  */
 export interface ChartConfig extends PipelineOptions {
   /**
@@ -206,7 +203,6 @@ export interface ChartConfig extends PipelineOptions {
  * The part of a {@link ChartConfig} that responsive entries can override:
  * everything but `responsive`, `plugins`, `on` and `renderer`. The
  * matching entries merge over the config in order, shallowly.
- * @experimental
  */
 export type ChartOverrides = Partial<
   Omit<ChartConfig, 'responsive' | 'plugins' | 'on' | 'renderer'>
@@ -216,7 +212,6 @@ export type ChartOverrides = Partial<
  * The handle {@link chart} returns: update or remove the chart, and listen
  * to its events. Plugins get the same handle in `install`. The methods
  * other than `destroy` and `emit` return the handle, so calls chain.
- * @experimental
  */
 export interface ChartHandle {
   /** The element the chart renders into (undefined in `toScene`). */
@@ -302,7 +297,6 @@ export interface ChartHandle {
  *   { plugins: [withOptions(lastPoint, { className: 'ct-last' })] }
  * );
  * ```
- * @experimental
  */
 export function withOptions<TOptions>(
   plugin: ChartPlugin<TOptions>,
