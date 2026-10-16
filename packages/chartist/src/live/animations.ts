@@ -180,8 +180,16 @@ function write(
   element.appendChild(animate);
   try {
     animate.beginElement();
+    // Throws when the animation didn't start: Firefox doesn't run
+    // animations inside a `foreignObject` (HTML labels), which would
+    // never end.
+    animate.getStartTime();
   } catch {
-    // No SMIL timing (jsdom): the attribute holds the new value anyway.
+    // Without SMIL timing (jsdom), the attribute holds the new value
+    // anyway.
+    if (typeof animate.getStartTime === 'function') {
+      animate.remove();
+    }
   }
 }
 
