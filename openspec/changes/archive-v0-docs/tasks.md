@@ -4,7 +4,7 @@
 - [x] 1.2 Remove the Creative Tim section and its `.affiliate-project*` CSS from `index.html`, the Google Analytics snippet and the version notice from every page, and the html5shiv script from `apidoc/index.html`; verify by grepping `public/v0` for `creative-tim`, `google-analytics`, `versionNotice` and `googlecode` (no matches)
 - [x] 1.3 Self-host the fonts: add `fonts/` with Oxygen 300/400/700 and Source Code Pro 400/700 (woff2), Font Awesome 4.1.0's CSS and fonts, a `fonts.css` and the licenses, and replace the WebFont loader snippet with a `<link>` to it; verify the pages request no other host (Playwright, recording requests on all six pages)
 - [x] 1.4 Add the static archive note linking to chartist.dev at the top of each page, styled with the page's own CSS; verify by screenshots in light mode (the 0.x site has no dark mode) and at 375 px
-- [ ] 1.5 Write `public/v0/README.md`: where the files came from (`gh-pages` at `c1e49e1`), each removal and change, and that the files aren't edited otherwise; verify it lists every edit from 1.2–1.4
+- [x] 1.5 Write `public/v0/README.md`: where the files came from (`gh-pages` at `c1e49e1`), each removal and change, and that the files aren't edited otherwise; verify it lists every edit from 1.2–1.4
 - [ ] 1.6 Check the live examples and the code editors on `examples.html` and `getting-started.html` under `/v0/` with the built site served by `e2e/serve.mjs`: the charts draw and editing the code updates them, with no console errors
 
 ## 2. Site wiring
