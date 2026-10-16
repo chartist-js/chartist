@@ -2,20 +2,7 @@
 
 Chartist charts in the terminal. Line, bar and pie charts with Chartist's own layout, labels and series colors, drawn in braille dots and block characters:
 
-```
-   15 ┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈
-      ┊         ┊         ┊          ┊         ┊
-     ⠐⠗⠤⣀⡀      ┊         ┊          ┊         ┊
-   10 ┼┈┈⠉⠒⠤⣄⡀┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈
-      ┊⢕⢕⢕⢕⢕⢕⠈⠑⠠⡦⣄⡀       ┊          ┊         ┊
-      ┊⢕⢕⢕⢕⢕⢕⢕⢕⢕┊⢕⠈⠙⠒⠤⢄⣀⡀ ⢀  ⢀⣀⣀⡤⠤⠔⠒⠐⡗⠒⠤⢄⡀     ┊
-    5 ┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈⢀⡤⠒⠁┈┈┈┈┼┈┈┈⠈⠓⢄⡀⠉⠲⢴⠄┈┈┈┈┈┈┈┈┈
-     ⢀⣄⢕⢕⢕⢕⢕⢕⢕⢕⢕┊⢕⢕⢕⢕⢕⣀⠴⠒⠉⠈⢕⢕⢕⢕⢕⢕⢕⢕⢕⢕┊⢕⢕⢕⢕⢕⢕⢕⢕⢕⠙⠁
-      ⠁⠉⠉⠓⠒⠲⠤⠤⠤⠠⡦⠤⠤⠖⠚⠉⢕⢕⢕⢕┊⢕⢕⢕⢕⢕⢕⢕⢕⢕⢕┊⢕⢕⢕⢕⢕⢕⢕⢕⢕┊
-    0 ┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┼┈┈┈┈┈┈┈┈┈┈
-      Mon       Tue        Wed       Thu        Fri
-■ Visitors  ■ Sign-ups
-```
+<img width="634" alt="A terminal window with a chart of response times over a day: the median as a line, the 10th to 90th percentile as a band around it, a dotted target line labeled SLO at 200 ms, and the points over the target marked in yellow, all in braille dots, with a legend below." src="https://raw.githubusercontent.com/chartist-js/chartist/main/packages/terminal/assets/readme.png">
 
 It renders the scene Chartist builds for any chart (`toScene()`), the same one the SVG renderers get. So a terminal chart takes the options you know from `lineChart()`, `barChart()` and `pieChart()`, and the same chart can also come out as text-art HTML.
 
