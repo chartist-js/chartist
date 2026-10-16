@@ -23,7 +23,9 @@ export default defineConfig({
   ],
   webServer: {
     command: `node test/e2e/serve.mjs ${PORT}`,
-    url: `http://localhost:${PORT}/chartist/`,
-    reuseExistingServer: !process.env.CI
+    // Ready when the server says so: polling a port before it listens can
+    // hang for minutes where localhost drops connections to closed ports
+    // instead of refusing them (seen on WSL).
+    wait: { stdout: /Serving / }
   }
 });

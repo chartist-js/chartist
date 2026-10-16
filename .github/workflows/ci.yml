@@ -36,7 +36,8 @@ jobs:
       # The smoke tests open the builds in Chromium.
       - run: pnpm --dir packages/chartist exec playwright install --with-deps chromium
       - run: pnpm nx format:check --all
-      - run: pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api test:api:v1
+      # The docs site has its own workflow, and only runs on one Node version.
+      - run: pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api test:api:v1 --exclude docs
       - name: Release script tests
         run: node --test .github/scripts/release.test.mjs tools/changelog-renderer.test.mjs
 

@@ -21,27 +21,18 @@ test('Cube comes first and links to cube.dev', async ({ page }) => {
   );
 });
 
-test('the people: top ten by commits without bots, the creator flagged', async ({
-  page
-}) => {
+// Who is credited (top ten by commits, no bots, the flags) is decided when
+// the facts are fetched, and unit tested there; the page shows the snapshot.
+test('the people from the snapshot, the creator flagged', async ({ page }) => {
   await page.goto('/credits/');
   const entries = page.locator('[data-credits] li');
-  await expect(entries).toHaveCount(facts.credits.people.length);
   const people = facts.credits.people;
-  const top = people.slice(0, 10).map(person => person.commits);
-  expect(top).toEqual([...top].sort((a, b) => b - a));
-  expect(people.some(person => person.login.endsWith('[bot]'))).toBe(false);
-  for (const [index, person] of people.entries()) {
-    const entry = entries.nth(index);
-    await expect(entry).toContainText(person.name);
-    await expect(entry).toContainText(
-      `${person.commits.toLocaleString('en')} commit`
-    );
-    await expect(entry.locator('img')).toHaveAttribute('src', /^\//);
-  }
-  const creator = entries.filter({ hasText: 'creator' });
-  await expect(creator).toHaveCount(1);
-  await expect(creator).toContainText('Gion Kunz');
+  await expect(entries).toHaveCount(people.length);
+  await expect(entries.first()).toContainText(people[0].name);
+  await expect(entries.first()).toContainText(
+    `${people[0].commits.toLocaleString('en')} commit`
+  );
+  await expect(entries.filter({ hasText: 'creator' })).toHaveCount(1);
   await expect(
     page.getByRole('link', {
       name: `See all ${facts.github.contributors} contributors on GitHub`

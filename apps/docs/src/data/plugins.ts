@@ -8,8 +8,8 @@
  * replaced it.
  */
 import { z } from 'astro/zod';
-import pkg from '../../package.json';
-import files from './plugin-files.json';
+import pkg from '../../package.json' with { type: 'json' };
+import files from './plugin-files.json' with { type: 'json' };
 import { facts } from './facts';
 
 export const CHART_TYPES = ['line', 'bar', 'pie'] as const;

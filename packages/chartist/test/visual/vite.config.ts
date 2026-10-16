@@ -68,6 +68,13 @@ function visualHarness(): Plugin {
 
   return {
     name: 'chartist-visual-harness',
+    // The log level hides Vite's own start message; the test runner waits
+    // for this one.
+    configureServer(server) {
+      server.httpServer?.once('listening', () =>
+        console.log('visual server listening')
+      );
+    },
     transformIndexHtml: {
       order: 'pre',
       handler(html, { path: urlPath, originalUrl }) {

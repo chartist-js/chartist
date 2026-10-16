@@ -47,3 +47,32 @@ export const PAGES = [
   { name: 'credits', path: '/credits/' },
   { name: '404', path: '/no-such-page/' }
 ];
+
+/**
+ * The pages the accessibility scan opens on every run: one per template,
+ * plus pages with components of their own. Pages of one template share
+ * their components and color tokens, so one of them finds what all of
+ * them would. E2E_A11Y=all scans every page, as the release does.
+ */
+const A11Y_TEMPLATES = new Set([
+  'home',
+  'docs/getting-started',
+  'docs/composed-charts',
+  'packages',
+  'packages/terminal',
+  'packages/terminal/api',
+  'examples',
+  'example page',
+  'plugins',
+  'plugin page',
+  'playground',
+  'api',
+  'api/layers',
+  'credits',
+  '404'
+]);
+
+export const A11Y_PAGES =
+  process.env.E2E_A11Y === 'all'
+    ? PAGES
+    : PAGES.filter(page => A11Y_TEMPLATES.has(page.name));

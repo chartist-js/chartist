@@ -100,6 +100,16 @@ jobs:
           git config user.name "${APP_SLUG}[bot]"
           git config user.email "${id}+${APP_SLUG}[bot]@users.noreply.github.com"
 
+      # Pushes and pull requests scan one docs page per template; a release
+      # scans every page in both themes first.
+      - name: Accessibility of every docs page
+        if: ${{ !inputs.publish-only && !inputs.dry-run }}
+        env:
+          E2E_A11Y: all
+        run: |
+          pnpm --dir apps/docs exec playwright install --with-deps chromium
+          pnpm nx run docs:e2e --grep "no accessibility violations"
+
       - name: Version, changelog, tag and GitHub release
         if: ${{ !inputs.publish-only }}
         env:
