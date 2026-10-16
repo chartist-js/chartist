@@ -36,6 +36,7 @@ function contextOf(
       previousScene,
       cause: 'update',
       labels: [],
+      previousLabels: [],
       keyframes: () => undefined
     },
     container: document.body,

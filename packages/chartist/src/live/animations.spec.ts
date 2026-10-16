@@ -54,6 +54,7 @@ function animate(
       previousScene: scenes.previous,
       cause,
       labels: [],
+      previousLabels: [],
       keyframes
     },
     container: document.body,

@@ -191,18 +191,22 @@ function seriesIndexOf(node: PathNode): number {
 function keysOf(
   node: PathNode,
   { edges }: Outline,
-  context: LiveAnimationContext
+  context: LiveAnimationContext,
+  scene: 'previous' | 'next'
 ): string[][] {
   const seriesIndex = seriesIndexOf(node);
   return edges.map(edge => {
     const seen = new Map<string, number>();
     return edge.map(({ data }) => {
-      const key = context.valueKey({
-        seriesIndex,
-        valueIndex: data.valueIndex,
-        value: data.value,
-        meta: data.meta
-      });
+      const key = context.valueKey(
+        {
+          seriesIndex,
+          valueIndex: data.valueIndex,
+          value: data.value,
+          meta: data.meta
+        },
+        scene
+      );
       const count = (seen.get(key) ?? 0) + 1;
       seen.set(key, count);
       return count > 1 ? `${key}#${count}` : key;
@@ -246,8 +250,8 @@ function pathKeyframes(
   let fromKeys: string[][];
   let toKeys: string[][];
   try {
-    fromKeys = keysOf(previous, from, context);
-    toKeys = keysOf(next, to, context);
+    fromKeys = keysOf(previous, from, context, 'previous');
+    toKeys = keysOf(next, to, context, 'next');
   } catch {
     // A key function that can't key these values.
     return undefined;
