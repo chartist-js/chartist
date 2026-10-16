@@ -122,6 +122,11 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
           A v2 plugin is an object with a <code>name</code> and an <code>install</code> function that listens to the chart's events. A dozen lines go a long way.
         </p>
         <p>
+          The plugins above were written for 1.x and run through <code>fromLegacyPlugin</code>. A chart that uses one draws a new SVG on every render, even
+          with <code>liveDomRenderer()</code>. For a chart that updates live, write a v2 plugin:{' '}
+          <a href={href('docs/events-and-plugins/#plugins-for-live-updates')}>Plugins for live updates</a>.
+        </p>
+        <p>
           Published one? Open a pull request that adds it to this page. Plugins with a few hundred downloads a month that need nothing but Chartist are welcome.
         </p>
         <div class="flex flex-wrap gap-2.5">

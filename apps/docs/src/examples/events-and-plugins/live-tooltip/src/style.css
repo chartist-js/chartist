@@ -1,0 +1,26 @@
+#chart {
+  position: relative;
+  --ct-update-duration: 300ms;
+  --ct-update-easing: ease-out;
+}
+
+#chart .ct-point {
+  stroke-width: 14px;
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: -2.6em 0 0 -1.5em;
+  min-width: 3em;
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  background: #222;
+  color: #fff;
+  font:
+    600 0.8rem/1.4 system-ui,
+    sans-serif;
+  text-align: center;
+  pointer-events: none;
+}

@@ -1,6 +1,6 @@
 import 'chartist/styles.css';
 import './style.css';
-import { barChart, findAll, type ChartPlugin } from 'chartist';
+import { barChart, type ChartEvents, type ChartPlugin } from 'chartist';
 
 // The event and its payload, declared so `emit` and `on` are typed.
 declare module 'chartist' {
@@ -14,21 +14,34 @@ const selectBars: ChartPlugin = {
   name: 'select-bars',
   provides: ['bar:select'],
   install(chart) {
-    chart.on('mount', ({ scene, elementOf }) => {
-      for (const bar of findAll(scene, { role: 'bar' })) {
-        elementOf(bar)?.addEventListener('click', () =>
-          chart.emit('bar:select', {
-            series: bar.ctx.seriesIndex,
-            index: bar.ctx.valueIndex,
-            // Bar values are { x, y } (or a hole).
-            value:
-              bar.ctx.value &&
-              typeof bar.ctx.value === 'object' &&
-              'y' in bar.ctx.value
-                ? bar.ctx.value.y
-                : undefined
-          })
-        );
+    // What each bar element stands for in the latest render.
+    const bars = new WeakMap<Element, ChartEvents['bar:select']>();
+    chart.on('mount', ({ changes, elementOf }) => {
+      for (const { op, node: bar } of changes) {
+        const element = elementOf(bar);
+        if (op === 'remove' || bar.role !== 'bar' || !element) {
+          continue;
+        }
+        bars.set(element, {
+          series: bar.ctx.seriesIndex,
+          index: bar.ctx.valueIndex,
+          // Bar values are { x, y } (or a hole).
+          value:
+            bar.ctx.value &&
+            typeof bar.ctx.value === 'object' &&
+            'y' in bar.ctx.value
+              ? bar.ctx.value.y
+              : undefined
+        });
+        // New elements only: an element the renderer kept has its handler.
+        if (op === 'add') {
+          element.addEventListener('click', () => {
+            const selected = bars.get(element);
+            if (selected) {
+              chart.emit('bar:select', selected);
+            }
+          });
+        }
       }
     });
   }

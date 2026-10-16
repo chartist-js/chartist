@@ -86,7 +86,7 @@ function entryMarkdown(entry: ApiEntry): string {
   const badges = [
     comment?.modifiers.includes('@experimental') && 'experimental',
     page?.legacy && '1.x',
-    entry.module === 'chartist/compat' && 'from `chartist/compat`'
+    entry.module !== 'chartist' && !entry.pkg && `from \`${entry.module}\``
   ].filter(Boolean);
   if (badges.length) {
     out.push(`*${badges.join(' · ')}*`);
@@ -259,7 +259,7 @@ export function pluginsMarkdown(): string {
     plugin =>
       `- [${plugin.title}](${absolute(markdownPath(`plugins/${pluginSlug(plugin)}/`))}) (\`${plugin.package}\`): ${plugin.description}`
   );
-  return `# Plugins (Chartist)\n\n> Community plugins for Chartist, sorted by npm downloads in the last month. Script plugins load after Chartist's UMD builds and \`compat.umd.js\`, which give them the global \`Chartist\` they were written for; wrap them with \`fromLegacyPlugin\` on the v2 API. Each page has the plugin's facts, setup and a v2 example.\n\n${entries.join('\n')}\n`;
+  return `# Plugins (Chartist)\n\n> Community plugins for Chartist, sorted by npm downloads in the last month. Script plugins load after Chartist's UMD builds and \`compat.umd.js\`, which give them the global \`Chartist\` they were written for; wrap them with \`fromLegacyPlugin\` on the v2 API. Each page has the plugin's facts, setup and a v2 example. A chart with a converted 1.x plugin draws a new SVG on every render, even with \`liveDomRenderer()\` from \`chartist/live\`; for live updates, write a v2 plugin (${absolute(markdownPath('docs/events-and-plugins/'))}).\n\n${entries.join('\n')}\n`;
 }
 
 // llms.txt -----------------------------------------------------------------
@@ -283,6 +283,7 @@ When writing Chartist code:
 - Style charts with CSS and custom properties (\`--ct-series-a\`, \`--ct-line-width\`, …), not with options.
 - Change what a chart draws with plugins: listeners on the pipeline's phase events (\`compose\` for scene nodes, \`mount\` for the DOM). 1.x \`draw\` events need the \`compat\` plugin from \`chartist/compat\`.
 - Size charts with their container (CSS), and use responsive options for what changes with the size.
+- For charts that update while people look at them, pass \`renderer: liveDomRenderer()\` from \`chartist/live\`: the chart keeps its SVG and changes it in place. Set up elements on the \`add\` changes in \`mount\`, not on every render.
 - Packages under \`@chartist-js\` (listed below) take the same data and options: \`@chartist-js/terminal\` draws charts as terminal text or HTML text art.`;
 
 export async function llmsTxt(guides: DocEntry[]): Promise<string> {

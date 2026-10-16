@@ -1,6 +1,6 @@
 ---
 title: Animations
-description: Draw lines in, grow bars and reveal charts on scroll with CSS, reach for SMIL where CSS can't go, and respect people who prefer less motion.
+description: Draw lines in, grow bars and reveal charts on scroll with CSS, reach for SMIL where CSS can't go, animate updates, and respect people who prefer less motion.
 group: Guides
 order: 7
 ---
@@ -26,7 +26,7 @@ export const barData = {
 
 Chartist has no animation option. Charts are SVG elements with classes, and CSS animates SVG well: keyframes, transitions, delays and scroll timelines all work on `.ct-line` like on any other element. Animations stay in your stylesheet, next to the rest of the chart's look.
 
-CSS covers most of it. For the few SVG attributes CSS can't reach, there's SMIL, and for everyone who'd rather not see things move, there's `prefers-reduced-motion`.
+CSS covers most of it. For the few SVG attributes CSS can't reach, there's SMIL, for charts that change while people watch, there are update animations, and for everyone who'd rather not see things move, there's `prefers-reduced-motion`.
 
 ## Draw lines in
 
@@ -45,9 +45,11 @@ The classic trick: give a line a dash as long as the line itself, push the dash 
 The same works for bars (each bar is an SVG `line`) and donut slices (`ct-slice-donut`, a stroked path): give them `pathLength: 1` too and animate their dash offset.
 
 <Callout kind='tip'>
-  **Each render draws a new SVG.** When the chart updates or its container
-  resizes, Chartist replaces the SVG, and your animations play again. See
-  [Updating charts](../updating-charts/).
+  **Each render draws a new SVG, by default.** When the chart updates or its
+  container resizes, Chartist replaces the SVG, and your animations play again.
+  A chart drawn with `liveDomRenderer()` keeps its elements instead, so CSS
+  animations play once, when an element is added. See [Live
+  updates](../live-updates/#keep-the-svg).
 </Callout>
 
 ## Stagger
@@ -123,7 +125,7 @@ The plugin waits for the `mount` event, when the chart's elements exist, wraps e
   example='animations/smil'
 />
 
-`animate()` takes one SMIL definition per attribute: `dur` and `begin` (numbers are milliseconds), `from`, `to`, and an `easing`, either a name from `easings` (exported by `chartist`, from `easeInSine` to `easeInOutBack`) or four numbers of a cubic Bézier curve. By default it runs in guided mode: the attribute starts at `from` before the animation begins, the animation starts after `begin`, and when it ends the attribute keeps `to` and the `<animate>` element is removed. Pass `false` as the second argument to write the `<animate>` element as given.
+`animate()` takes one SMIL definition per attribute: `dur` and `begin` (numbers are milliseconds), `from`, `to`, and an `easing`: a name from `easings` (exported by `chartist`, from `easeInSine` to `easeInOutBack`), four numbers of a cubic Bézier curve, or a CSS easing such as `'ease-out'`, `'cubic-bezier(0.34, 1.56, 0.64, 1)'`, `linear()` or `steps()`. Easings that overshoot, like `easeOutBack`, run as sampled values, since browsers ignore SMIL curves that leave 0 to 1 (in 1.x, such animations never ran). By default it runs in guided mode: the attribute starts at `from` before the animation begins, the animation starts after `begin`, and when it ends the attribute keeps `to` and the `<animate>` element is removed. Pass `false` as the second argument to write the `<animate>` element as given.
 
 Charts [rendered to a string](../server-rendering/) have no elements to wrap. There, add the `<animate>` element to the scene yourself, and it travels with the markup. Tools that don't run SMIL, like most image converters, show the line without the fade:
 
@@ -150,6 +152,32 @@ export const fadeIn: ChartPlugin = {
 };
 ```
 
+## Update animations
+
+Charts drawn with `liveDomRenderer()` from `chartist/live` can animate their updates: give the renderer `smilAnimations()`, and bars, points, lines, areas and pie slices move from their old values to the new ones. How long that takes and how it eases is the chart's look, so it lives in CSS:
+
+```ts
+import { barChart } from 'chartist';
+import { liveDomRenderer, smilAnimations } from 'chartist/live';
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7]] },
+  { renderer: liveDomRenderer({ animations: smilAnimations() }) }
+);
+```
+
+```css
+#chart {
+  --ct-update-duration: 400ms;
+  --ct-update-easing: ease-out;
+}
+```
+
+`--ct-update-duration` turns them on; without it, nothing animates. `--ct-update-easing` takes any CSS easing, `ease` by default, also curves that overshoot, `linear()` and `steps()`. Only updates and responsive changes animate, never the first render or a resize, and never for people who ask for less motion.
+
+The [live updates guide](../live-updates/#animate-updates) has a running example and advice for streaming data. Plugins get the same timing in `mount`, to [animate what they draw](../events-and-plugins/#animate-in-step) in step with the chart.
+
 ## Less motion
 
 Some people get dizzy or distracted from things moving on screen and ask their system for reduced motion. Respect it. For CSS, put the animations behind the media query, or turn them off inside it, as the examples above do:
@@ -175,8 +203,10 @@ if (!reducedMotion.matches) {
 }
 ```
 
+Update animations from `smilAnimations()` check it themselves, and so does the `animation` timing plugins get in `mount`: it's absent when the chart doesn't animate.
+
 Make sure the end state is the one people see without motion: lines drawn, bars at full height.
 
-In the API reference: [`Svg`](../../api/svg/#Svg), [`easings`](../../api/svg/#easings) and [the scene](../../api/scene/).
+In the API reference: [`Svg`](../../api/svg/#Svg), [`easings`](../../api/svg/#easings), [`smilAnimations()`](../../api/live/#smilAnimations) and [the scene](../../api/scene/).
 
-Next: [write your own plugins](../events-and-plugins/), or [update charts with new data](../updating-charts/).
+Next: [write your own plugins](../events-and-plugins/), or [update charts with new data](../live-updates/).

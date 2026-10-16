@@ -55,7 +55,7 @@ Labels, series names, class names, meta and what your label functions return: Ch
 
 ## Without innerHTML
 
-Pages that require [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) (`require-trusted-types-for 'script'`) can't assign strings to `innerHTML`. Chartist's DOM renderer creates elements instead, so `chart()` and the presets need nothing.
+Pages that require [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API) (`require-trusted-types-for 'script'`) can't assign strings to `innerHTML`. Chartist's DOM renderer creates elements instead, so `chart()` and the presets need nothing. The same goes for `liveDomRenderer()` from `chartist/live`: it creates and changes elements the way the DOM renderer does, `style` through `element.style` included, and its update animations are SMIL elements, not style sheets.
 
 Two outputs are strings on purpose. SVG markup from `renderToString()` is for servers and files (see [Server rendering](../server-rendering/)). In the browser, draw the same scene with `domRenderer()`:
 
