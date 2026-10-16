@@ -14,6 +14,8 @@ import { defineConfig, type UserConfig } from 'tsdown';
  *                      formats; it imports the core instead of bundling it.
  *                      Every build also sets up the global `Chartist` for
  *                      plugin scripts (src/compat/global.ts)
+ * dist/live.*          live updates (chartist/live) in the same formats,
+ *                      importing the core the same way
  *
  * Styles are built by scripts/styles.cjs.
  */
@@ -49,6 +51,11 @@ const isCore = (id: string) =>
 const compatBase: UserConfig = {
   ...base,
   entry: { compat: 'src/compat/entry.ts' },
+  deps: { neverBundle: [CORE] }
+};
+const liveBase: UserConfig = {
+  ...base,
+  entry: { live: 'src/live/index.ts' },
   deps: { neverBundle: [CORE] }
 };
 const toCore =
@@ -137,6 +144,40 @@ export default defineConfig([
     outputOptions: options => ({
       ...options,
       // Classic scripts: the global; CommonJS/AMD loaders: the core UMD file.
+      globals: (id: string) => (isCore(id) ? 'Chartist' : id),
+      paths: (id: string) => (isCore(id) ? './index.umd.js' : id),
+      extend: true
+    })
+  },
+  { ...liveBase, format: 'esm', outputOptions: toCore('./index.js') },
+  {
+    ...liveBase,
+    format: 'cjs',
+    dts,
+    outputOptions: toCore('./index.cjs')
+  },
+  {
+    ...liveBase,
+    format: 'esm',
+    sourcemap: false,
+    dts: { ...dts, emitDtsOnly: true },
+    outputOptions: toCore('./index.js')
+  },
+  {
+    ...liveBase,
+    minify: true,
+    format: 'esm',
+    outExtensions: () => ({ js: '.min.js' }),
+    outputOptions: toCore('./index.min.js')
+  },
+  {
+    // Adds the live exports to the global `Chartist` of index.umd.js.
+    ...liveBase,
+    minify: true,
+    format: 'umd',
+    globalName: 'Chartist',
+    outputOptions: options => ({
+      ...options,
       globals: (id: string) => (isCore(id) ? 'Chartist' : id),
       paths: (id: string) => (isCore(id) ? './index.umd.js' : id),
       extend: true
