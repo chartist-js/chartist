@@ -1,0 +1,144 @@
+---
+title: Custom layers
+description: 'Write your own layers for chart() and the presets, from drawing to binding axes and series, widening axes and refining what other layers drew.'
+group: Guides
+order: 9
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+Every chart in Chartist is drawn by layers: `line()`, `bar()`, `pie()`, the grid and the labels. They're plain objects with a few functions, and yours work exactly like the built-in ones. A layer is a good way to add a new kind of mark to a chart, and to share it: it's a function that returns an object, with no setup and nothing to install.
+
+Layers and [plugins](../events-and-plugins/) do different jobs. A **layer draws** something of its own: lollipops, a heat strip, error bars. A **plugin changes** what's drawn and reacts to the chart's events: tooltips, legends, animations. If your idea is "a new kind of chart", it's a layer.
+
+## A first layer
+
+A lollipop chart: a stem from zero and a dot for each value. The layer is in `src/lollipop.ts`; the chart uses it next to the grid and the labels.
+
+<LiveExample
+  title='A lollipop layer'
+  label='A lollipop chart of visits from Monday to Friday: a red stem from zero and a red dot for each value'
+  example='custom-layers/lollipop'
+  show='src/lollipop.ts'
+  codeHeight='440px'
+/>
+
+Use it like any layer: in `layers` of [`chart()`](../composed-charts/), or on a preset with `layers: { below: [...], above: [...] }`.
+
+## What a layer is made of
+
+| Field         | What it does                                                                                        |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `type`        | A name for error messages, such as `lollipop`                                                       |
+| `coordinates` | Where it can draw: `['cartesian']`, `['polar']` or both. Using it elsewhere throws                  |
+| `compose`     | Draws the layer: gets the data, axes and chart area, returns scene nodes                            |
+| `axes`        | The ids of the X and Y axis to draw on; by default the first of each                                |
+| `series`      | The series to draw, by name or index; by default all of them                                        |
+| `extent`      | Widens the axes beyond the layer's values, such as to include zero                                  |
+| `refine`      | Changes nodes that any layer drew, after all of them have drawn                                     |
+| `chartType`   | The chart class it gives `chart()` without a `className`: `'bar'` centers the X labels, for example |
+
+Only `type`, `coordinates` and `compose` are required. A layer is data: create it with a function that takes options, and keep no state in it. The same layer object may draw several charts, and every resize draws again.
+
+## compose: drawing
+
+`compose(context)` runs on every render, after the axes are created. It returns the layer's top-level nodes, usually one group per series. Its context has:
+
+| Field           | What it is                                                                                     |
+| --------------- | ---------------------------------------------------------------------------------------------- |
+| `area`          | The drawing area in px: `x1`, `x2` (left, right), `y1` (bottom), `y2` (top), `width`, `height` |
+| `axes`          | The bound `x` and `y` axes, and `all` axes of the chart                                        |
+| `normalized`    | The layer's series as the axes see them: `{ x, y }` values, `undefined` for holes              |
+| `data`          | The layer's series as given, with names, classes and meta                                      |
+| `seriesIndexes` | Each series' index in the whole chart, when the layer selects some                             |
+| `layerIndex`    | The layer's position in `layers`                                                               |
+| `measureText`   | Measures text with the page's fonts, for layers that lay out labels                            |
+
+**From values to px.** `axis.project(value, index, series)` gives the distance in px from the start of the axis. Y grows upward and SVG downward, so a Y position is `area.y1 - y.project(value)`, and an X position `area.x1 + x.project(value)`. A step axis places by index instead of value; its `step` is the width of one step.
+
+**Nodes.** Create them with `node(element, attributes, classes, { role, ctx })` and nest them with `append()`. A node with a `role` and a `ctx` (its data context) is what plugins and listeners see: they find it by role and read its values. Declare your roles in `NodeRoles`, as the example does, and `node()` and the listeners check their context.
+
+**Colors.** Put the series' nodes in a group with `ct-series ct-series-<letter>` (`alphaNumerate(seriesIndex)` gives the letter): the default stylesheet sets `--ct-color` on it, and your CSS reads it. Use the chart-wide index from `seriesIndexes`, so a series keeps its color whichever layer draws it.
+
+Keys come for free: nodes with a series and value index get one from the layer index, so the scene stays stable between renders.
+
+## Axes and series
+
+A layer draws on one X and one Y axis. Give it `x` and `y` options and pass them on as `axes`, as the built-in layers do, so users can bind it to any axis by id. The `series` option works the same way: pass it on as `series`, and `compose` gets only those series, with their chart-wide indexes in `seriesIndexes`.
+
+The selection also decides what the axes fit: **each axis covers the series of the layers bound to it.** A layer that draws no series (a reference line, an annotation) sets `series: []`, so it doesn't shape any axis.
+
+**extent** adds to that. It runs before the axes are created and returns, by axis id, the range the layer needs:
+
+```ts
+import type { Layer } from 'chartist';
+
+export const withZero = (layer: Layer): Layer => ({
+  ...layer,
+  // Keep zero on the layer's Y axis, wherever its values are.
+  extent: ({ axes }) => (axes.y ? { [axes.y]: { low: 0, high: 0 } } : {})
+});
+```
+
+The axis covers every layer's extent and the data together. An axis's own `low` and `high` still win.
+
+## refine: changing what others drew
+
+Some layers need to change other layers' nodes: the [band](../target-lines-and-bands/#in-or-out-of-the-band) marks the points inside it. That's `refine(node, context)`. Once every layer has composed, it's called for each node with a role, from all layers, before the `compose` events reach plugins:
+
+```ts
+import type { Layer } from 'chartist';
+
+/** Marks the highest point of every line with ct-max. */
+export const highlightMax = (): Layer => ({
+  type: 'highlightMax',
+  coordinates: ['cartesian'],
+  // Draws nothing of its own.
+  compose: () => [],
+  refine(current, { normalized }) {
+    if (current.role !== 'point' || !normalized) {
+      return undefined;
+    }
+    const ys = normalized.series
+      .flat()
+      .flatMap(value =>
+        value && typeof value === 'object' && 'y' in value ? [value.y] : []
+      );
+    const { value } = current.ctx;
+    const y =
+      value && typeof value === 'object' && 'y' in value ? value.y : undefined;
+    return y === Math.max(...ys) ? current.addClass('ct-max') : undefined;
+  }
+});
+```
+
+Refining has rules, so layers can't break each other:
+
+- **One node at a time.** `refine` gets the node it's called for, not the scene. To compare with other values, work from the data in the context, as above.
+- **No structural changes.** Return the node with changed attributes, classes or context, or `undefined` to leave it. Whatever you return keeps the node's key and children, and refining can't drop a node. Removing and rearranging nodes is a plugin's job.
+- **Your own context.** The context is the one your `compose` got: your layer's data and axes. A layer with `series: []` sees no data here either; leave `series` out, as above, to see all of it.
+- **Order.** Every layer composes first, so a layer can refine the nodes of layers listed after it. Refining layers run in the order of `layers`, and plugins see the result in their `compose` events, where they can still change it.
+- **No state.** Don't count or remember between calls: the same layer object may refine several charts.
+
+Leave `refine` out when you don't need it: charts without a refining layer skip the step.
+
+## Sharing a layer
+
+A layer is a function, so a package of layers is a module of functions. Depend on `chartist` as a peer dependency, export a function per layer with typed options, and ship a small stylesheet with your classes, using `--ct-color` and the other `--ct-*` properties so the user's theme applies.
+
+What you get for free:
+
+- **Presets:** users add your layer to `lineChart()` and `barChart()` with `layers`, no `chart()` needed.
+- **Server rendering:** layers are pure, so they work in [`toScene()` and `renderToString()`](../server-rendering/).
+- **The terminal:** `@chartist-js/terminal` draws nodes of unknown roles by their element (lines, paths, circles, text).
+- **Plugins:** your nodes go through the `compose` events like the built-in ones.
+
+<Callout kind='warn'>
+  **Experimental until 2.0.** The layer contract is new in v2. Its fields may
+  still change before the 2.0 release.
+</Callout>
+
+In the API reference: [`Layer`](../../api/layers/#Layer), [`LayerContext`](../../api/layers/#LayerContext) and [`node`](../../api/scene/#node).
+
+Next: [events and plugins](../events-and-plugins/), to change charts instead of drawing on them, or the [target line and band layers](../target-lines-and-bands/).

@@ -1,5 +1,5 @@
 ---
-/** Inline comment parts: text, `code`, and {@link} links. */
+/** Inline comment parts: text with its URLs as links, `code`, and {@link} links. */
 import type { JSONOutput as J } from 'typedoc';
 import { partHref } from '../../lib/api';
 
@@ -9,6 +9,8 @@ interface Props {
 
 const { parts } = Astro.props;
 const code = (text: string) => text.replace(/^`+|`+$/g, '');
+// Bare URLs, such as a guide in @see; a trailing period ends the sentence.
+const URL = /(https?:\/\/[^\s<>()]+[^\s<>().,;:])/;
 ---
 
 {
@@ -27,6 +29,6 @@ const code = (text: string) => text.replace(/^`+|`+$/g, '');
         <code>{label}</code>
       );
     }
-    return part.text;
+    return part.text.split(URL).map((piece, i) => (i % 2 === 1 ? <a href={piece}>{piece}</a> : piece));
   })
 }

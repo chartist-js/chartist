@@ -151,7 +151,9 @@ export interface ExtentContext {
 
 /**
  * A layer renders series into the chart area. Built-in and custom layers
- * use the same contract.
+ * use the same contract: the "Custom layers" guide explains each field
+ * and how to write and share a layer.
+ * @see https://chartist.dev/docs/custom-layers/
  * @experimental
  */
 export interface Layer {
