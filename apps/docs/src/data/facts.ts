@@ -3,7 +3,7 @@
  * validated at build time: a missing or malformed value fails the build.
  */
 import { z } from 'astro/zod';
-import raw from './facts.json';
+import raw from './facts.json' with { type: 'json' };
 
 const size = z.object({
   minified: z.number().positive(),

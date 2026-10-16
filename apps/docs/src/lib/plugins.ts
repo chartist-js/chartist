@@ -2,7 +2,7 @@
  * The plugins page's data, sorted, and the setup snippets the page and its
  * Markdown version show for each plugin.
  */
-import files from '../data/plugin-files.json';
+import files from '../data/plugin-files.json' with { type: 'json' };
 import {
   PLUGINS,
   pinnedVersion,
