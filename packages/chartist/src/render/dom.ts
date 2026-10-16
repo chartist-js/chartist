@@ -6,6 +6,7 @@ import {
   type MeasureText,
   type MeasureTextOptions
 } from './measure';
+import { setStyle } from './style';
 import type { Renderer, RenderOutput } from './types';
 
 /**
@@ -25,7 +26,9 @@ export interface DomRenderOutput extends RenderOutput {
 function setAttribute(element: Element, name: string, value: string | number) {
   const separator = name.indexOf(':');
   const prefix = separator > 0 ? name.slice(0, separator) : '';
-  if (prefix && prefix !== 'xmlns' && namespaces[prefix]) {
+  if (name === 'style') {
+    setStyle(element, String(value));
+  } else if (prefix && prefix !== 'xmlns' && namespaces[prefix]) {
     element.setAttributeNS(namespaces[prefix], name, String(value));
   } else {
     element.setAttribute(name, String(value));
@@ -83,10 +86,7 @@ function probe<T>(
   read: (node: SVGGraphicsElement) => T
 ): T {
   const svg = document.createElementNS(namespaces.svg, 'svg');
-  svg.setAttribute(
-    'style',
-    'position: absolute; visibility: hidden; width: 0; height: 0;'
-  );
+  setStyle(svg, 'position: absolute; visibility: hidden; width: 0; height: 0;');
   if (options.rootClass) {
     svg.setAttribute('class', options.rootClass);
   }

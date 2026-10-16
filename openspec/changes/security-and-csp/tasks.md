@@ -2,11 +2,11 @@
 
 ## 1. Styles through the CSSOM in `chartist`
 
-- [ ] 1.1 Add a unit test helper that spies on `Element.prototype.setAttribute` (and `setAttributeNS`) in jsdom and records `style` calls, and a first test that fails today: a line chart with HTML labels, a donut with `donutWidth` and an updated chart set no `style` attribute. Verify: the test runs and fails on the current code
-- [ ] 1.2 In `render/dom.ts`, apply the `style` attribute in `build()` with `element.style.cssText`, falling back to `setAttribute` for elements without `style`; set the probe's styles in `probe()` the same way. Verify: the test from 1.1 passes for the DOM renderer, and a test that the rendered `svg`, label `foreignObject`, label `span` and donut slice still carry their declarations in `getAttribute('style')`
-- [ ] 1.3 In `chart/chart.ts`, set the size probe's width and height in `measureSvg()` through `style`. Verify: the size measurement tests still pass, and the spy sees no `style` call while a chart without fixed size measures its container
-- [ ] 1.4 In `svg/Svg.ts`, route a `style` key in `attr()` through `style.cssText` (getter unchanged); this covers `createSvg()` and `createLabel()` in `core/creation.ts`. Verify: a 1.x `LineChart` with a draw listener calling `element.attr({ style: 'opacity: 0.5' })` sets no `style` attribute through the spy and ends with `opacity: 0.5` in the element's style
-- [ ] 1.5 Run the parity and markup suites and the visual tests. Verify: `pnpm nx test chartist --skip-nx-cache`, `pnpm nx run chartist:test:api --skip-nx-cache` and `pnpm nx run chartist:test:visual:local` pass with no snapshot changes
+- [x] 1.1 Add a unit test helper that spies on `Element.prototype.setAttribute` (and `setAttributeNS`) in jsdom and records `style` calls, and a first test that fails today: a line chart with HTML labels, a donut with `donutWidth` and an updated chart set no `style` attribute. Verify: the test runs and fails on the current code
+- [x] 1.2 In `render/dom.ts`, apply the `style` attribute in `build()` with `element.style.cssText`, falling back to `setAttribute` for elements without `style`; set the probe's styles in `probe()` the same way. Verify: the test from 1.1 passes for the DOM renderer, and a test that the rendered `svg`, label `foreignObject`, label `span` and donut slice still carry their declarations in `getAttribute('style')`
+- [x] 1.3 In `chart/chart.ts`, set the size probe's width and height in `measureSvg()` through `style`. Verify: the size measurement tests still pass, and the spy sees no `style` call while a chart without fixed size measures its container
+- [x] 1.4 In `svg/Svg.ts`, route a `style` key in `attr()` through `style.cssText` (getter unchanged); this covers `createSvg()` and `createLabel()` in `core/creation.ts`. Verify: a 1.x `LineChart` with a draw listener calling `element.attr({ style: 'opacity: 0.5' })` sets no `style` attribute through the spy and ends with `opacity: 0.5` in the element's style
+- [x] 1.5 Run the parity and markup suites and the visual tests. Verify: `pnpm nx test chartist --skip-nx-cache`, `pnpm nx run chartist:test:api --skip-nx-cache` and `pnpm nx run chartist:test:visual:local` pass with no snapshot changes
 
 ## 2. Checked names in `renderToString()`
 
