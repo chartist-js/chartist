@@ -29,23 +29,17 @@
 
 ```ts
 targetLine({ value: 1000, label: 'Target' });
-targetLine({
-  axis: 'eur',
-  lines: [
-    { value: 800, label: 'Min' },
-    { value: 1000, label: 'Goal', className: 'ct-series-b' }
-  ],
-  labelPosition: 'start'
-});
+targetLine({ axis: 'eur', value: 800, label: 'Min', labelPosition: 'start' });
 ```
 
-- **One line or `lines`.** `TargetLineOptions` is the shared options (`axis`, `labelPosition`, `classNames`) plus either one line's fields (`value`, `label`, `className`) or `lines: readonly TargetLineSpec[]`. The one-line form covers the common case without an array. A union of both shapes is checked by TypeScript, and giving both throws.
-  - _Alternative:_ `values: [800, 1000]` and `labels: [...]` side by side. Rejected: parallel arrays drift apart, and a class per line has no place.
+- **One line per layer.** `TargetLineOptions` is flat: `value`, `label`, `className`, `axis`, `labelPosition`, `classNames`. Several lines are several layers.
+  - _Alternative, first built:_ one line's fields or `lines: [...]` in one layer, as a union of two shapes. Dropped after trying it in the editor (decided 2026-10-16): when an object matches neither shape yet (`{ label }` before `value`), TypeScript reports the error against the `lines` member, so `label` showed as type `undefined`, and completions mixed both shapes. Layers are cheap, and one shape gives plain types and plain errors.
+  - _Alternative:_ always `lines: [...]`. Plain types too, but the common single line needs an array.
 - **`axis` is an id, not `x`/`y`.** A target line sits on one axis, and its dimension follows from that axis: horizontal on a Y axis, vertical on an X axis. Default: the first Y axis. The layer finds the axis in `axes.all` and throws for an unknown id, with the message the binding uses (`unknown axis "<id>" in layer "targetLine"`).
-- **`series: []`.** The layer draws no series, so it mustn't shape any axis's range from the data. It reports its values through `extent`, keyed by its axis id (`axes.y` from the extent context when `axis` is left out). Extents are merged by axis id whatever the layer's binding (`layerExtents` in `scales/cartesian.ts`), so an id outside the binding works. An axis's own `low` and `high` still win, so a line outside them is skipped rather than drawn outside the area.
+- **`series: []`.** The layer draws no series, so it mustn't shape any axis's range from the data. It reports its value through `extent`, keyed by its axis id (`axes.y` from the extent context when `axis` is left out). Extents are merged by axis id whatever the layer's binding (`layerExtents` in `scales/cartesian.ts`), so an id outside the binding works. An axis's own `low` and `high` still win, so a line outside them is skipped rather than drawn outside the area.
 - **Labels are SVG `text`, always.** Like pie labels, they don't take part in the axis label mode. They sit just above a horizontal line (or right of a vertical one), inside the chart area: at the end by default (`text-anchor: end`), or the start. The line's value isn't written as a label automatically. `label` is the text, and a number-formatting function stays in user code.
   - _Alternative:_ follow the chart's `labels` mode (HTML in `foreignObject`). Rejected: a single short label doesn't need wrapping, and SVG text works in server rendering and the terminal without a measure step.
-- **Markup:** `g.ct-target-lines` > per line `line.ct-target-line` and `text.ct-target-label`, with the line's `className` on both. Roles `targetLine` and `targetLabel`. Contexts: `{ axis, value, index, label, x1, y1, x2, y2 }` and `{ axis, value, index, text, x, y }`.
+- **Markup:** a `line.ct-target-line` and, with a label, a `text.ct-target-label`, with `className` on both and no group around them. Roles `targetLine` and `targetLabel`. Contexts: `{ axis, value, label, x1, y1, x2, y2 }` and `{ axis, value, text, x, y }`.
 
 ### `band()` options
 
@@ -54,16 +48,18 @@ band({ series: ['a', 'b', 'c'] }); // min to max of a group
 band({ low: 'p10', high: 'p90' }); // two series
 band({ low: 40, high: 60 }); // constant
 band({ low: 0, high: 'forecast', align: 'center', lineSmooth: false });
-band({ low: 40, high: 60, mark: true }); // ct-in-band / ct-out-band on points and bars
+band({ low: 40, high: 60, mark: true });
+band({ low: [3, 4, 3, 5], high: [9, 11, 10, 12] }); // values of its own // ct-in-band / ct-out-band on points and bars
 ```
 
+- **Values of its own.** An edge can be an array, one value per label (a number, `{ x, y }` on a scale X axis, or `null` for a hole), normalized like a series' values. It draws exactly like the same values given as a series, but stays out of the chart's data. Added after the first version (decided 2026-10-16), because edges that had to be series in `data` were drawn as lines by the presets (hidden only with per-series options), took series letters and colors, and showed up in legends and data tables.
 - **Edges as `low`/`high` or a group as `series`.** `low` and `high` each take a number (a constant) or a series: a name, or `{ series: 2 }` for an index (or a name), since a bare number already means a constant. `series` and `low`/`high` are exclusive, and a band without one of them throws. Reusing the layers' `series` option for the group keeps the meaning "these are my series", and the axis binding then counts them towards the range without extra code.
-- **The layer's `series` selection:** the group, or the series edges (`[low]`, `[high]` or both). With only constant edges, it's `[]` and the band widens its Y axis through `extent`.
+- **The layer's `series` selection:** the group, or the series edges (`[low]`, `[high]` or both). Constants and values of its own aren't in the data, so with only those it's `[]`, and the band reports their min and max for its Y axis through `extent`.
 - **Shared path code.** The projection-and-interpolation part of `line.ts` moves into a small internal helper (`layers/path.ts`): it projects a series' values and returns the interpolated path. The line layer and the band both use it. The band builds the upper edge path, then the lower edge path, splits both at holes, and closes each segment that both edges have into one polygon: the upper edge forward, the lower edge backward.
   - **Tracing the lower edge backward** needs a reversed path. `SvgPath` has no `reverse()` today. For straight edges it's reversing the points. For a cubic interpolation, the reversed curve is the same curve with each segment's control points swapped, so the helper reverses the path elements and swaps `x1/y1` with `x2/y2`. If this turns out messier than it sounds, the fallback is to interpolate the reversed coordinates, which gives the same shape for `none()` and `monotoneCubic()`, both of which are direction-independent.
 - **Group min/max** is computed per value index over the group's values that aren't holes. At an index where none has a value, both edges get a hole there and the band breaks. For `{ x, y }` values, the X of the first defined value at that index is used. The docs say a group should share its X positions.
 - **Defaults follow the line layer:** `lineSmooth: true`, `align: 'start'`. A band under smooth lines then has matching edges.
-- **Markup:** `g.ct-band` (with `className` if given) > `path.ct-band-area` per segment. Role `band`, context `{ low, high, series, path }`: `low` and `high` are the given edges (a number or the series index), `series` is the group's indexes, and `path` is a copy as for areas.
+- **Markup:** `g.ct-band` (with `className` if given) > `path.ct-band-area` per segment. Role `band`, context `{ low, high, series, path }`: `low` and `high` are the given edges (a number, the own values, or the series index), `series` is the group's indexes, and `path` is a copy as for areas.
 - **`mark: true`** defines the band's `refine` (see "Layer refinement"). For each `point` and `bar` node, it reads the value (`ctx.value`, `y` of an `{ x, y }` value, or `x` for horizontal bars, by the band's value dimension), works out the band's edges at `ctx.valueIndex` from the band's own compose context, and adds `ct-in-band` (between the edges, edges included) or `ct-out-band`. A node at an index where the band has a hole, or without a value, is left alone. The edges come from the data, not from the band's drawn path, so it doesn't matter whether the band is listed before or after the layers it marks.
   - **No default styles for the two classes.** What "out of band" should look like (a color, a larger point, a faded bar) is the page's choice. The guide shows one rule for each.
   - **Classes on whole nodes only.** Splitting a line where it crosses an edge is geometry, which `chartist-plugin-threshold` does and which stays out of scope.
@@ -112,7 +108,7 @@ Order matters for the events: they still come layer by layer and children first,
 - **Why two lists, not one:** a band belongs behind the data and a target line in front of it, and a single list would make one of them wrong. Letting the layer declare its own place (a band defaults to below) was considered. Rejected: it hides the order, and a custom layer would need the same concept.
 - **Why not a function `(layers) => layers`:** it can do everything, but it also exposes the preset's internal layers (the wrapped series layer, the label layer's options) as a contract. Two lists keep the preset's own layers private.
 - The type is shared: `PresetLayers { below?: readonly Layer[]; above?: readonly Layer[] }`, added to the three preset option types. It's not added to the 1.x class options.
-- **Series still drawn by the preset:** a preset's series layer draws all series, so `band({ low: 'p10', high: 'p90' })` on `lineChart` also draws `p10` and `p90` as lines. Hide them with the per-series options (`series: { p10: { showLine: false, showPoint: false } }`). The guide shows this. Filtering them out automatically would change what the preset draws based on a layer's options, which is surprising.
+- **Series still drawn by the preset:** a preset's series layer draws all series, so `band({ low: 'p10', high: 'p90' })` on `lineChart` also draws `p10` and `p90` as lines. On a preset, give the band values of its own instead; the guide shows this. Filtering edge series out automatically would change what the preset draws based on a layer's options, which is surprising.
 
 ### Styles
 

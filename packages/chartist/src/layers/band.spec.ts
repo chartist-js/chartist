@@ -265,6 +265,84 @@ describe('layers/band', () => {
     expect(state.axes.y!.range!.min).toBeLessThanOrEqual(0);
   });
 
+  it('draws edges given as values like the same values as series', () => {
+    const low = [2, 3, null, 2, 4];
+    const high = [6, 8, null, 7, 9];
+    const fromSeries = run(
+      [
+        { name: 'low', data: low },
+        { name: 'high', data: high }
+      ],
+      [band({ low: 'low', high: 'high' })]
+    );
+    const fromValues = run([[]], [band({ low, high })]);
+    expect(points(fromValues.scene)).toEqual(points(fromSeries.scene));
+    expect(bands(fromValues.scene)).toHaveLength(2);
+    expect(fromValues.axes.y!.range).toEqual(fromSeries.axes.y!.range);
+    expect(bands(fromValues.scene)[0].ctx.low).toEqual({
+      values: [2, 3, undefined, 2, 4]
+    });
+  });
+
+  it('draws no series and widens the axis for its own values', () => {
+    const layer = band({ low: [1, 2], high: 20 });
+    expect(layer.series).toEqual([]);
+    const { axes, scene } = run([[5, 6, 7, 8, 9]], [layer, line()]);
+    expect(axes.y!.range!.min).toBeLessThanOrEqual(1);
+    expect(axes.y!.range!.max).toBeGreaterThanOrEqual(20);
+    expect(bands(scene)).toHaveLength(1);
+  });
+
+  it('marks values against its own values', () => {
+    const { scene } = run(
+      [[1, 5, 9]],
+      [band({ low: [0, 6, 8], high: [2, 7, 10], mark: true }), line()]
+    );
+    const marks = findAll(scene, { role: 'point' }).map(point =>
+      point.classes.find(c => c.endsWith('-band'))
+    );
+    expect(marks).toEqual(['ct-in-band', 'ct-out-band', 'ct-in-band']);
+  });
+
+  it('takes { x, y } values on a scale X axis', () => {
+    const result = runPipeline(
+      createPhaseEmitter(),
+      {
+        data: {
+          series: [
+            [
+              { x: 0, y: 1 },
+              { x: 10, y: 3 }
+            ]
+          ]
+        },
+        axes: cartesianAxes({
+          x: { type: autoScaleAxis() },
+          y: { type: autoScaleAxis() }
+        }),
+        layers: [
+          band({
+            low: [
+              { x: 0, y: 0 },
+              { x: 10, y: 1 }
+            ],
+            high: [
+              { x: 0, y: 2 },
+              { x: 10, y: 4 }
+            ],
+            lineSmooth: false
+          }),
+          line()
+        ]
+      },
+      { width: 400, height: 200, measureText: estimateText }
+    );
+    const [piece] = bands(result.scene);
+    const xs = piece.ctx.path.pathElements.map(e => e.x);
+    expect(Math.min(...xs)).toBeCloseTo(result.layout.area.x1);
+    expect(Math.max(...xs)).toBeCloseTo(result.layout.area.x2);
+  });
+
   it('takes a series edge by index', () => {
     const { scene } = run(
       [

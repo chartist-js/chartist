@@ -3,6 +3,7 @@
  * builders keep their types, events and plugins are checked.
  */
 import {
+  band,
   barChart,
   chart,
   findAll,
@@ -235,12 +236,20 @@ describe('v2 type contract', () => {
     void dropping;
   });
 
-  test('a target line takes one line or lines, not both', () => {
+  test('a target line takes one value and an optional label', () => {
     targetLine({ value: 1000, label: 'Target', className: 'ct-series-b' });
-    targetLine({ axis: 'eur', lines: [{ value: 800 }, { value: 1000 }] });
-    // @ts-expect-error: one line's value and lines exclude each other
-    targetLine({ value: 1000, lines: [{ value: 800 }] });
+    targetLine({ axis: 'eur', value: 800, labelPosition: 'start' });
     // @ts-expect-error: a line needs a value
     targetLine({ label: 'Target' });
+    // @ts-expect-error: a label is text
+    targetLine({ value: 1000, label: 1000 });
+  });
+
+  test('a band edge is a constant, values or a series', () => {
+    band({ low: 40, high: 60 });
+    band({ low: [1, null, 3], high: [{ x: 0, y: 5 }] });
+    band({ low: 'p10', high: { series: 2 } });
+    // @ts-expect-error: values are numbers, { x, y } or null
+    band({ low: ['1'], high: 2 });
   });
 });

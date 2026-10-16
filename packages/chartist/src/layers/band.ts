@@ -1,7 +1,7 @@
 /**
  * Band layer: fills the area between a low and a high edge, each a
- * constant or a series, or between the minimum and maximum of a group of
- * series.
+ * constant, values of its own or a series, or between the minimum and
+ * maximum of a group of series.
  */
 import type { NormalizedSeries, NormalizedSeriesValue } from '../core/types';
 import type { LineInterpolation } from '../charts/LineChart/LineChart.types';
@@ -13,11 +13,23 @@ import { isNumeric } from '../utils/utils';
 import { centerShift, interpolationOf, reversePath, seriesPath } from './path';
 
 /**
- * An edge of a {@link band}: a constant value, a series by name, or a
+ * A value of a {@link band} edge given as values: a number, `{ x, y }`
+ * on a scale X axis, or `null` for a hole.
+ */
+export type BandEdgeValue =
+  | number
+  | { readonly x: number; readonly y: number }
+  | null
+  | undefined;
+
+/**
+ * An edge of a {@link band}: a constant value, values of its own (one per
+ * label, like a series that isn't in the data), a series by name, or a
  * series by index or name as `{ series }`.
  */
 export type BandEdgeOption =
   | number
+  | readonly BandEdgeValue[]
   | string
   | { readonly series: number | string };
 
@@ -27,9 +39,9 @@ export type BandEdgeOption =
  * @experimental
  */
 export interface BandOptions {
-  /** The low edge: a constant value or a series. */
+  /** The low edge: a constant value, values or a series. */
   readonly low?: BandEdgeOption;
-  /** The high edge: a constant value or a series. */
+  /** The high edge: a constant value, values or a series. */
   readonly high?: BandEdgeOption;
   /**
    * A group of series, by index or name: the band covers their minimum to
@@ -99,12 +111,28 @@ interface Edges {
   at(valueIndex: number): EdgesAt | undefined;
 }
 
+/** The series an edge follows, if it's a series. */
 function selectorOf(edge: BandEdgeOption): number | string | undefined {
-  return typeof edge === 'number'
+  return typeof edge === 'number' || isValues(edge)
     ? undefined
     : typeof edge === 'string'
       ? edge
       : edge.series;
+}
+
+function isValues(edge: BandEdgeOption): edge is readonly BandEdgeValue[] {
+  return Array.isArray(edge);
+}
+
+/** An edge's own values, normalized like a series' values. */
+function normalizedValues(values: readonly BandEdgeValue[]): NormalizedSeries {
+  return values.map(value =>
+    isNumeric(value)
+      ? ({ y: Number(value) } as NormalizedSeriesValue)
+      : value && typeof value === 'object'
+        ? (value as NormalizedSeriesValue)
+        : undefined
+  );
 }
 
 /** The value of a normalized value along Y, or `undefined` for a hole. */
@@ -178,6 +206,9 @@ function bandEdges(
   const edge = (
     option: BandEdgeOption | undefined
   ): { readonly value: number } | { readonly values: NormalizedSeries } => {
+    if (option !== undefined && isValues(option)) {
+      return { values: normalizedValues(option) };
+    }
     const selector = option === undefined ? undefined : selectorOf(option);
     return selector === undefined
       ? { value: constant(option as number) }
@@ -225,6 +256,9 @@ function edgeContext(
   if (option === undefined) {
     return undefined;
   }
+  if (isValues(option)) {
+    return { values: normalizedValues(option).map(yOf) };
+  }
   const selector = selectorOf(option);
   return selector === undefined
     ? { value: option as number }
@@ -234,9 +268,10 @@ function edgeContext(
 /**
  * Creates a layer that fills the area between a low and a high edge
  * (`g.ct-band` with a `path.ct-band-area` per piece; the band breaks at
- * holes). Each edge is a constant value or a series, or `series` names a
- * group and the band covers their minimum to their maximum at each value
- * index. Constant edges widen the Y axis to include them. List the band
+ * holes). Each edge is a constant value, values of its own (one per
+ * label) or a series, or `series` names a group and the band covers their
+ * minimum to their maximum at each value index. Constants and own values
+ * widen the Y axis to include them. List the band
  * before the series layers to draw it behind them. It needs an X and a Y
  * axis, from {@link cartesianAxes}.
  *
@@ -294,10 +329,19 @@ export function band(options: BandOptions): Layer {
         const selector = edge === undefined ? undefined : selectorOf(edge);
         return selector === undefined ? [] : [selector];
       });
-  const constants = options.series
+  // Constants and an edge's own values aren't in the data, so the band
+  // reports them for its Y axis.
+  const ownValues = options.series
     ? []
-    : [options.low, options.high].filter(
-        (edge): edge is number => typeof edge === 'number'
+    : [options.low, options.high].flatMap(edge =>
+        typeof edge === 'number'
+          ? [edge]
+          : edge !== undefined && isValues(edge)
+            ? normalizedValues(edge).flatMap(value => {
+                const y = yOf(value);
+                return y === undefined ? [] : [y];
+              })
+            : []
       );
 
   const layer: Layer = {
@@ -307,11 +351,11 @@ export function band(options: BandOptions): Layer {
     // The series the band draws from count towards its axes' range.
     series: options.series ?? edgeSelectors,
     extent({ axes }) {
-      return axes.y !== undefined && constants.length > 0
+      return axes.y !== undefined && ownValues.length > 0
         ? {
             [axes.y]: {
-              low: Math.min(...constants),
-              high: Math.max(...constants)
+              low: Math.min(...ownValues),
+              high: Math.max(...ownValues)
             }
           }
         : {};

@@ -1,19 +1,13 @@
 export { line } from './line';
 export type { LineLayerOptions, LineSeriesOptions } from './line';
 export { band } from './band';
-export type { BandEdgeOption, BandOptions } from './band';
+export type { BandEdgeOption, BandEdgeValue, BandOptions } from './band';
 export { bar } from './bar';
 export type { BarLayerOptions } from './bar';
 export { pie } from './pie';
 export type { PieLayerOptions } from './pie';
 export { targetLine } from './targetLine';
-export type {
-  TargetLineListOptions,
-  TargetLineOptions,
-  TargetLineSharedOptions,
-  TargetLineSpec,
-  TargetLineValueOptions
-} from './targetLine';
+export type { TargetLineOptions } from './targetLine';
 export { axisGrid, axisLabels } from './axes';
 export type {
   AxisLabelsOptions,

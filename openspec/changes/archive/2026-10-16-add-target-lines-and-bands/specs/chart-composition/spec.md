@@ -2,7 +2,7 @@
 
 ### Requirement: Target line layer
 
-The `targetLine()` layer SHALL draw one or several lines across the chart area at constant values on one axis: an axis id, by default the first Y axis. On a Y axis the lines SHALL be horizontal; on an X axis, vertical. On a step axis a value SHALL be a position by index, as for the axis's ticks. Each line SHALL accept an optional label and an optional class. A label SHALL be drawn as SVG text next to its line, inside the chart area, at the line's end by default or at its start. The layer SHALL report its values as its extent, so the axis includes them (an axis's own `low` and `high` still win). A value outside the axis's range SHALL draw nothing. The layer SHALL support only `cartesian` coordinates.
+The `targetLine()` layer SHALL draw one line across the chart area at a constant value on one axis: an axis id, by default the first Y axis. Several lines SHALL be several layers. On a Y axis the line SHALL be horizontal; on an X axis, vertical. On a step axis the value SHALL be a position by index, as for the axis's ticks. The line SHALL accept an optional label and an optional class. A label SHALL be drawn as SVG text next to the line, inside the chart area, at the line's end by default or at its start. The layer SHALL report its value as its extent, so the axis includes it (an axis's own `low` and `high` still win). A value outside the axis's range SHALL draw nothing. A layer without a value SHALL throw when it's created. The layer SHALL support only `cartesian` coordinates.
 
 #### Scenario: One labeled line
 
@@ -11,8 +11,8 @@ The `targetLine()` layer SHALL draw one or several lines across the chart area a
 
 #### Scenario: Several lines
 
-- **WHEN** `targetLine({ lines: [{ value: 20, label: 'Min' }, { value: 80, label: 'Max', className: 'ct-series-b' }] })` is a layer
-- **THEN** the output has two target lines in a `g.ct-target-lines` group, in that order, and the second line and its label carry the class `ct-series-b`
+- **WHEN** `targetLine({ value: 20, label: 'Min' })` and `targetLine({ value: 80, label: 'Max', className: 'ct-series-b' })` are two layers of a chart
+- **THEN** the output has two target lines in that order, and the second line and its label carry the class `ct-series-b`
 
 #### Scenario: A vertical line
 
@@ -26,7 +26,7 @@ The `targetLine()` layer SHALL draw one or several lines across the chart area a
 
 ### Requirement: Band layer
 
-The `band()` layer SHALL fill the area between a low and a high edge, on one X and one Y axis like the line layer. Each edge SHALL be a constant value (a number) or a series: its name, or `{ series }` with a name or an index, since a bare number is a constant. Alternatively, `series` SHALL select a group of series, and the band SHALL cover the minimum to the maximum of their values at each value index. Series the band uses SHALL stay visible to the other layers: a layer without a series selection still draws them. The edges SHALL follow the same interpolation option as the line layer (`lineSmooth`, smooth by default), and `align: 'center'` SHALL line the band up with bars on a step axis as it does for lines. Where an edge has a hole, or no series of a group has a value, the band SHALL break, like a line's area. With `mark: true`, the band SHALL give every `point` and `bar` node of the chart whose value at its value index lies between the band's edges (edges included) the class `ct-in-band`, and every other one with a value the class `ct-out-band`; nodes at an index where the band has a hole SHALL get neither. Without `mark`, the band SHALL change no other layer's nodes. The band's values SHALL count towards its axes' range. The layer SHALL support only `cartesian` coordinates.
+The `band()` layer SHALL fill the area between a low and a high edge, on one X and one Y axis like the line layer. Each edge SHALL be a constant value (a number), values of its own (an array with one value per label, a number, `{ x, y }` or `null` for a hole), or a series: its name, or `{ series }` with a name or an index, since a bare number is a constant. Values of its own SHALL draw like the same values given as a series, without being part of the chart's data, and SHALL count towards the Y axis's range. Alternatively, `series` SHALL select a group of series, and the band SHALL cover the minimum to the maximum of their values at each value index. Series the band uses SHALL stay visible to the other layers: a layer without a series selection still draws them. The edges SHALL follow the same interpolation option as the line layer (`lineSmooth`, smooth by default), and `align: 'center'` SHALL line the band up with bars on a step axis as it does for lines. Where an edge has a hole, or no series of a group has a value, the band SHALL break, like a line's area. With `mark: true`, the band SHALL give every `point` and `bar` node of the chart whose value at its value index lies between the band's edges (edges included) the class `ct-in-band`, and every other one with a value the class `ct-out-band`; nodes at an index where the band has a hole SHALL get neither. Without `mark`, the band SHALL change no other layer's nodes. The band's values SHALL count towards its axes' range. The layer SHALL support only `cartesian` coordinates.
 
 #### Scenario: Between two series
 
@@ -37,6 +37,11 @@ The `band()` layer SHALL fill the area between a low and a high edge, on one X a
 
 - **WHEN** a chart has three team series and `band({ series: ['a', 'b', 'c'] })` is a layer
 - **THEN** at each value index the band's upper edge is at the largest of the three values and its lower edge at the smallest
+
+#### Scenario: Edges as values
+
+- **WHEN** `lineChart` gets one series and `layers: { below: [band({ low: [3, 4, 3, 5], high: [9, 11, 10, 12] })] }`
+- **THEN** the band follows those values, the Y axis includes them, and the chart still draws only its one series as a line
 
 #### Scenario: Constant edges
 

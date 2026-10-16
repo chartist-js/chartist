@@ -5,7 +5,6 @@ import type { Layer } from '../pipeline/types';
 import type { AxisDefinition } from '../scales/axis';
 import { cartesianAxes } from '../scales/cartesian';
 import { autoScaleAxis, stepAxis } from '../scales/factories';
-import type { SceneNode } from '../scene/node';
 import { findAll } from '../scene/tree';
 import { bar } from './bar';
 import { line } from './line';
@@ -33,11 +32,14 @@ function run(
   );
 }
 
-const withClass = (scene: SceneNode, className: string) =>
-  findAll(scene).filter(n => n.classes.includes(className));
-
-function draw(options: TargetLineOptions, definitions = lineAxes) {
-  const result = run([line(), targetLine(options)], definitions);
+function draw(
+  options: TargetLineOptions | TargetLineOptions[],
+  definitions = lineAxes
+) {
+  const targets = (Array.isArray(options) ? options : [options]).map(
+    targetLine
+  );
+  const result = run([line(), ...targets], definitions);
   return {
     ...result,
     lines: findAll(result.scene, { role: 'targetLine' }),
@@ -62,7 +64,6 @@ describe('layers/targetLine', () => {
     expect(target.ctx).toMatchObject({
       axis: axes.y,
       value: 1000,
-      index: 0,
       label: 'Target',
       x1: area.x1,
       y1: y
@@ -81,7 +82,6 @@ describe('layers/targetLine', () => {
     expect(label.attrs.y).toBeGreaterThan(y - 10);
     expect(label.ctx).toMatchObject({
       value: 1000,
-      index: 0,
       text: 'Target',
       x: label.attrs.x,
       y: label.attrs.y
@@ -99,23 +99,12 @@ describe('layers/targetLine', () => {
     expect(labels[0].attrs.x).toBeLessThan(layout.area.x1 + 10);
   });
 
-  it('draws several lines in a group, in order, with their classes', () => {
-    const { scene, lines, labels } = draw({
-      lines: [
-        { value: 20, label: 'Min' },
-        { value: 80, label: 'Max', className: 'ct-series-b' }
-      ]
-    });
-    const [group] = withClass(scene, 'ct-target-lines');
-    expect(group.name).toBe('g');
-    expect(group.children.map(child => child.role)).toEqual([
-      'targetLine',
-      'targetLabel',
-      'targetLine',
-      'targetLabel'
+  it('draws several lines as several layers, in order, with their classes', () => {
+    const { lines, labels } = draw([
+      { value: 20, label: 'Min' },
+      { value: 80, label: 'Max', className: 'ct-series-b' }
     ]);
     expect(lines.map(l => l.ctx.value)).toEqual([20, 80]);
-    expect(lines.map(l => l.ctx.index)).toEqual([0, 1]);
     expect(lines[1].classes).toEqual(['ct-target-line', 'ct-series-b']);
     expect(labels.map(l => l.content)).toEqual(['Min', 'Max']);
     expect(labels[1].classes).toEqual(['ct-target-label', 'ct-series-b']);
@@ -195,12 +184,10 @@ describe('layers/targetLine', () => {
       { id: 'y', side: 'left', type: autoScaleAxis(), low: 0, high: 900 }
     ];
     const { lines, labels, axes } = draw(
-      {
-        lines: [
-          { value: 500, label: 'In' },
-          { value: 1000, label: 'Out' }
-        ]
-      },
+      [
+        { value: 500, label: 'In' },
+        { value: 1000, label: 'Out' }
+      ],
       capped
     );
     expect(axes.y!.range!.max).toBe(900);
@@ -216,12 +203,11 @@ describe('layers/targetLine', () => {
   });
 
   it('replaces its classes with classNames', () => {
-    const { scene, lines, labels } = draw({
+    const { lines, labels } = draw({
       value: 300,
       label: 'L',
-      classNames: { group: 'goals', line: 'goal', label: 'goal-label' }
+      classNames: { line: 'goal', label: 'goal-label' }
     });
-    expect(withClass(scene, 'goals')).toHaveLength(1);
     expect(lines[0].classes).toEqual(['goal']);
     expect(labels[0].classes).toEqual(['goal-label']);
   });
@@ -232,10 +218,10 @@ describe('layers/targetLine', () => {
     );
   });
 
-  it('throws when given both one line and lines', () => {
-    expect(() =>
-      targetLine({ value: 1, lines: [{ value: 2 }] } as never)
-    ).toThrow('not both');
+  it('throws without a value', () => {
+    expect(() => targetLine({} as never)).toThrow(
+      'Layer "targetLine" needs a value'
+    );
   });
 
   it('supports only cartesian coordinates and draws no series', () => {

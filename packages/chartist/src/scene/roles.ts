@@ -186,7 +186,7 @@ export interface PieLabelContext extends SeriesContext, Point {
 }
 
 /**
- * The context of a `targetLine` node: one line of a `targetLine()` layer,
+ * The context of a `targetLine` node: the line of a `targetLine()` layer,
  * across the chart area at a value on an axis. Its ends are in px in the
  * SVG.
  */
@@ -195,8 +195,6 @@ export interface TargetLineContext extends NoSeries {
   readonly axis: ScaleAxis;
   /** The value the line is drawn at. */
   readonly value: number;
-  /** The line's index in its layer, from 0. */
-  readonly index: number;
   /** The line's label, if it has one. */
   readonly label?: string;
   /** The X of the line's start, in px. */
@@ -218,18 +216,17 @@ export interface TargetLabelContext extends NoSeries, Point {
   readonly axis: ScaleAxis;
   /** The value of the line. */
   readonly value: number;
-  /** The line's index in its layer, from 0. */
-  readonly index: number;
   /** The label as drawn. */
   readonly text: string;
 }
 
 /**
- * An edge of a band: a constant value, or the chart-wide index of the
- * series it follows.
+ * An edge of a band: a constant value, the edge's own values (`undefined`
+ * for a hole), or the chart-wide index of the series it follows.
  */
 export type BandEdge =
   | { readonly value: number }
+  | { readonly values: readonly (number | undefined)[] }
   | { readonly seriesIndex: number };
 
 /**
