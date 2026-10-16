@@ -63,6 +63,35 @@ The `@chartist-js` packages ship ESM and CommonJS builds with declarations for b
 - **Package docs live on chartist.dev** under `/packages/<name>/` (decided 2026-10-15): an overview, the package's guides and one API page generated from its types, with a "Packages" item in the header. Their sources stay with the site, in `apps/docs/src/content/packages/<slug>/`, and `apps/docs/src/data/packages.ts` registers each package. Docs inside each package's folder were considered and left for later: guides import site components, and the site's checks assume its folders.
 - **Packages use only `chartist`'s published entry points** and are tested from their build: unit tests, a test of their README's examples, and a smoke test that packs and installs them.
 
+## Road to 2.0 final
+
+Decided 2026-10-16. The functional API's names and surface are final as they are. What remains is which open issues land before 2.0: after 2.0 final, only additive changes go into 2.x minors, and anything that changes existing defaults, output or a documented promise waits for 3.0.
+
+- **rc.3:**
+  - #215 `labelTransform`, the new name of `labelInterpolationFnc`;
+  - #1463 label and grid defaults that follow a dark `color-scheme`;
+  - #262 an offset for `bar()`, for grouped stacks;
+  - #1209 a trend line layer;
+  - #1487 label alignment per axis on the presets;
+  - #546 line breaks in pie labels, on by default.
+
+  It ships soon after, so target lines, bands and layer refinement reach npm.
+
+- **rc.4, the update RC:**
+  - #3 progressive updates: a renderer that patches the existing SVG by node key instead of drawing a new one;
+  - #961 a cleanup hook for plugins;
+  - the wording of the render lifecycle.
+
+  These go together because patching changes when `render` and `mount` run and what a plugin has to undo. Designing the cleanup hook before the renderer would mean changing the plugin contract twice.
+
+- **2.0 final:** no new features after rc.4, only fixes. The `@experimental` tags come off and the API is recorded as final.
+- **2.1 and later (additive):**
+  - #64 log axis, #116 time axis;
+  - #940 series class names without letters, once its API is designed;
+  - opt-in options for behavior that would break as a default: #921 closing grid line, #304 axes sized to their labels, #1271 dropping overlapping labels;
+  - the other open feature requests.
+- **Bars stay lines** (#522): the presets keep the 1.x `<line>` markup, and so does `bar()`. Bars with a fill and a stroke are a plugin's job, not a later core change.
+
 ## Releases
 
 - **Versions:** release candidates `2.0.0-rc.N` (with the dot, so `rc.10` sorts after `rc.9`) under the npm `next` dist-tag; `npm i chartist` installs 1.x until `2.0.0`. The RC period is the last chance for breaking changes, for example dropping `@experimental` from the functional API.
