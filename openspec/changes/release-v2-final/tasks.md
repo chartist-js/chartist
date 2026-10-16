@@ -7,7 +7,7 @@
 
 ## 1. Recorded experimental names
 
-- [ ] 1.1 Add `experimentalNames(build, file)` to `test/api/exports/read.ts` (exports whose JSDoc has `@experimental`), an `experimental.json` written by `exports/update.ts` per entry (`chartist`, `chartist/compat`, `chartist/live`), and an API test comparing them with the built declarations, naming each difference. Verify: the test passes with today's list, and fails naming the export when a tag is added without updating the list
+- [x] 1.1 Add `experimentalNames(build, file)` to `test/api/exports/read.ts` (exports whose JSDoc has `@experimental`), an `experimental.json` written by `exports/update.ts` per entry (`chartist`, `chartist/compat`, `chartist/live`), and an API test comparing them with the built declarations, naming each difference. Verify: the test passes with today's list, and fails naming the export when a tag is added without updating the list
 
 ## 2. Stable core
 
