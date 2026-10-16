@@ -60,35 +60,122 @@ function classesOf(cell: Cell): string {
  * @experimental
  */
 export function renderToHtml(scene: SceneNode): string {
-  const lines = drawScene(scene)
+  const lines = rowsOf(scene).map(runs =>
+    runs
+      .map(({ classes, text }) =>
+        classes
+          ? `<span class="${classes}">${cellText(text)}</span>`
+          : cellText(text)
+      )
+      .join('')
+  );
+  return `<pre class="ct-terminal">${lines.join('\n')}</pre>`;
+}
+
+/**
+ * Options of {@link renderToElement}.
+ * @experimental
+ */
+export interface ElementOptions {
+  /**
+   * The document to create the element in; the global `document` by
+   * default.
+   */
+  readonly document?: Document;
+}
+
+/**
+ * Renders a scene as HTML text art like {@link renderToHtml}, but as a
+ * `pre` element built with DOM methods instead of a string. The markup is
+ * the same; a page appends the element and needs no `innerHTML`, so it
+ * works with a Content Security Policy that requires Trusted Types. Throws
+ * where there is no document, as in Node.js.
+ *
+ * @example
+ * ```ts
+ * import { pieChartConfig, toScene } from 'chartist';
+ * import { renderToElement, terminalSize } from '@chartist-js/terminal';
+ * import '@chartist-js/terminal/styles.css';
+ *
+ * const scene = toScene(
+ *   pieChartConfig({ labels: ['A', 'B'], series: [3, 2] }),
+ *   terminalSize(30, 12)
+ * );
+ * document.querySelector('#chart')!.replaceChildren(renderToElement(scene));
+ * ```
+ * @experimental
+ */
+export function renderToElement(
+  scene: SceneNode,
+  options: ElementOptions = {}
+): HTMLPreElement {
+  const document = documentOf(options);
+  const pre = document.createElement('pre');
+  pre.className = 'ct-terminal';
+  rowsOf(scene).forEach((runs, index) => {
+    if (index) {
+      pre.append('\n');
+    }
+    for (const { classes, text } of runs) {
+      const parent = classes ? document.createElement('span') : pre;
+      if (classes) {
+        parent.className = classes;
+        pre.append(parent);
+      }
+      for (const char of text) {
+        const cell = document.createElement('i');
+        cell.textContent = char;
+        parent.append(cell);
+      }
+    }
+  });
+  return pre;
+}
+
+/** The given document, else the global one; throws without either. */
+export function documentOf(options: ElementOptions): Document {
+  const document = options.document ?? globalThis.document;
+  if (!document) {
+    throw new Error(
+      "Chartist terminal: format 'element' needs a document. Pass one with the document option, or use format 'html'."
+    );
+  }
+  return document;
+}
+
+/** Cells next to each other with the same classes (none for plain text). */
+export interface Run {
+  readonly classes: string;
+  readonly text: string;
+}
+
+/**
+ * The drawn scene as rows of runs, without trailing empty cells and rows:
+ * what the HTML and the element output write, each in its own way.
+ */
+export function rowsOf(scene: SceneNode): Run[][] {
+  const rows = drawScene(scene)
     .cells()
     .map(row => {
       let last = row.length - 1;
       while (last >= 0 && !row[last]) {
         last--;
       }
-      let line = '';
-      let open = '';
-      let run = '';
-      const flush = () => {
-        line += open
-          ? `<span class="${open}">${cellText(run)}</span>`
-          : cellText(run);
-        run = '';
-      };
+      const runs: Run[] = [];
       for (const cell of row.slice(0, last + 1)) {
         const classes = cell ? classesOf(cell) : '';
-        if (classes !== open) {
-          flush();
-          open = classes;
+        const char = cell?.char ?? ' ';
+        const previous = runs[runs.length - 1];
+        if (previous?.classes === classes) {
+          runs[runs.length - 1] = { classes, text: previous.text + char };
+        } else {
+          runs.push({ classes, text: char });
         }
-        run += cell?.char ?? ' ';
       }
-      flush();
-      return line;
+      return runs;
     });
-  while (lines.length && lines[lines.length - 1] === '') {
-    lines.pop();
+  while (rows.length && !rows[rows.length - 1].length) {
+    rows.pop();
   }
-  return `<pre class="ct-terminal">${lines.join('\n')}</pre>`;
+  return rows;
 }

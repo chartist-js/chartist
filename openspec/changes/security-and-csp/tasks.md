@@ -18,12 +18,12 @@
 
 ## 4. Terminal element output
 
-- [ ] 4.1 Add the `dom` lib to `packages/terminal/tsconfig.json`. Verify: `pnpm nx typecheck terminal` passes
-- [ ] 4.2 Split `html.ts` into a step that turns drawn cells into rows of runs and a string writer, with no change to `renderToHtml()` output. Verify: the existing HTML tests pass unchanged
-- [ ] 4.3 Add the element writer and `renderToElement(scene, { document })`, building `pre`, `span`, `i` and text nodes with DOM methods and throwing `Chartist terminal: format 'element' needs a document` without one. Verify: tests (jsdom) that for a line, a stacked bar and a donut chart `renderToElement(scene).outerHTML` equals `renderToHtml(scene)`, that a `<b>` label is text, and that a call without a document in Node.js throws
-- [ ] 4.4 Add `format: 'element'` and `document` to the chart functions and `legend()`, with overloads returning `HTMLPreElement` for `element` and `string` otherwise, and doc comments with an example per `DOC-COMMENTS.md`. Verify: type tests for the overloads, and unit tests for the "Element format" and "Legend as an element" scenarios
-- [ ] 4.5 Export `renderToElement` and its option type from `src/index.ts` and update the recorded API surface. Verify: `pnpm nx test terminal --skip-nx-cache` passes, including the entry and API tests
-- [ ] 4.6 Add the terminal payloads test: the shared payload list through HTML, element and legend output (labels, series names, pie labels). Verify: the test passes
+- [x] 4.1 Add the `dom` lib to `packages/terminal/tsconfig.json`. Verify: `pnpm nx typecheck terminal` passes
+- [x] 4.2 Split `html.ts` into a step that turns drawn cells into rows of runs and a string writer, with no change to `renderToHtml()` output. Verify: the existing HTML tests pass unchanged
+- [x] 4.3 Add the element writer and `renderToElement(scene, { document })`, building `pre`, `span`, `i` and text nodes with DOM methods and throwing `Chartist terminal: format 'element' needs a document` without one. Verify: tests (jsdom) that for a line, a stacked bar and a donut chart `renderToElement(scene).outerHTML` equals `renderToHtml(scene)`, that a `<b>` label is text, and that a call without a document in Node.js throws
+- [x] 4.4 Add `format: 'element'` and `document` to the chart functions and `legend()`, with overloads returning `HTMLPreElement` for `element` and `string` otherwise, and doc comments with an example per `DOC-COMMENTS.md`. Verify: type tests for the overloads, and unit tests for the "Element format" and "Legend as an element" scenarios
+- [x] 4.5 Export `renderToElement` and its option type from `src/index.ts` and update the recorded API surface. Verify: `pnpm nx test terminal --skip-nx-cache` passes, including the entry and API tests
+- [x] 4.6 Add the terminal payloads test: the shared payload list through HTML, element and legend output (labels, series names, pie labels). Verify: the test passes
 
 ## 5. Browser CSP tests
 

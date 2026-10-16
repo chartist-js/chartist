@@ -8,7 +8,7 @@
     "noImplicitOverride": true,
 
     "target": "es2022",
-    "lib": ["es2023"],
+    "lib": ["es2023", "dom"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "types": ["node", "vitest/globals"],
