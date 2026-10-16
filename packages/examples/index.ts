@@ -611,6 +611,13 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'composed/scatter-regression',
+    title: 'Scatter plot with a regression line',
+    description:
+      'Ice cream sales against the temperature as points, with the least-squares line through them.',
+    v2: true
+  }),
+  example({
     id: 'composed/two-y-axes',
     title: 'Two Y axes with different units',
     description:
