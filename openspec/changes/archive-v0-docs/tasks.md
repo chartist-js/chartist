@@ -21,12 +21,12 @@
 ## 4. The redirect generator
 
 - [x] 4.1 Add `scripts/v0-redirects.ts` and the Nx target `docs:v0-redirects` (depends on `docs:build`, not cached) writing `tmp/v0-redirects/`: a page per old page, `404.html`, `.nojekyll` and an allow-all `robots.txt`; verify the folder's file list matches design D5
-- [x] 4.2 Check every target against `apps/docs/dist` before writing (the file exists; a `#hash` is an `id` in it) and fail with the list of misses; verify by mapping one anchor to a missing heading and seeing the target fail, then reverting
-- [ ] 4.3 Test the generated pages in a browser against a local copy: serve `tmp/v0-redirects/` under `/chartist-js/` on one port and `dist` on another, with the generator pointed at the local site, and check each scenario of "Old 0.x URLs redirect" (home, an example anchor, an unmapped anchor, an unknown path, scripts off); delete the ad-hoc script afterwards
+- [x] 4.2 Check every target against `dist/apps/docs` before writing (the file exists; a `#hash` is an `id` in it) and fail with the list of misses; verify by mapping one anchor to a missing heading and seeing the target fail, then reverting
+- [x] 4.3 Test the generated pages in a browser against a local copy: serve `tmp/v0-redirects/` under `/chartist-js/` on one port and `dist` on another, with the generator pointed at the local site, and check each scenario of "Old 0.x URLs redirect" (home, an example anchor, an unmapped anchor, an unknown path, scripts off); delete the ad-hoc script afterwards
 
 ## 5. Records and gate
 
-- [ ] 5.1 Update "Docs hosting" in `docs/decisions.md`: 0.x lives under `/v0/` without third-party requests, the old GitHub Pages site redirects there and to v2, and a renamed v2 page or heading means running `docs:v0-redirects` and redeploying `gh-pages`; also the 0.x link in the history paragraph
+- [x] 5.1 Update "Docs hosting" in `docs/decisions.md`: 0.x lives under `/v0/` without third-party requests, the old GitHub Pages site redirects there and to v2, and a renamed v2 page or heading means running `docs:v0-redirects` and redeploying `gh-pages`; also the 0.x link in the history paragraph
 - [ ] 5.2 Run the gate: `pnpm nx run-many -t check test --skip-nx-cache`, `pnpm nx format:check --all` and `pnpm nx e2e docs --skip-nx-cache`; all pass
 
 ## 6. Deploy (each push needs the author's go)
