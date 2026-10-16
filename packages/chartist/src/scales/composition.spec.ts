@@ -321,7 +321,7 @@ describe('composition: layers', () => {
       labelOffset: { x: 0, y: 0 },
       showLabel: true,
       showGrid: true,
-      labelInterpolationFnc: (v: unknown) => v as never
+      labelTransform: (v: unknown) => v as never
     };
     const classNames = {
       grid: 'g',

@@ -80,6 +80,7 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
           showLabel: options.showLabel,
           labelOffset: options.labelOffset,
           labelPosition: options.labelPosition,
+          labelTransform: options.labelTransform,
           labelInterpolationFnc: options.labelInterpolationFnc,
           labelDirection: options.labelDirection,
           ignoreEmptyValues: options.ignoreEmptyValues,

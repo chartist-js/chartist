@@ -32,9 +32,8 @@ export interface DrawnAxisOptions extends AxisOptions {
   readonly labelOffset: { x: number; y: number };
   readonly showLabel: boolean;
   readonly showGrid: boolean;
-  readonly labelInterpolationFnc: NonNullable<
-    AxisOptions['labelInterpolationFnc']
-  >;
+  /** The label function: `labelTransform`, else `labelInterpolationFnc`. */
+  readonly labelTransform: NonNullable<AxisOptions['labelTransform']>;
 }
 
 export interface AxisFrame {
@@ -100,7 +99,7 @@ export function axisNodes(
     (axis.dimension === 'x' ? frame.axisX : frame.axisY))!;
   const place = frame.place;
   const projected = axis.ticks.map((tick, i) => axis.project(tick, i));
-  const labelValues = axis.ticks.map(options.labelInterpolationFnc);
+  const labelValues = axis.ticks.map(options.labelTransform);
   const gridOffset = axis.dimension === 'x' ? area.y2 : area.x1;
   const gridLength = axis.dimension === 'x' ? area.height : area.width;
   const grids: SceneNode[] = [];

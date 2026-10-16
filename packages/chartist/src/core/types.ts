@@ -162,7 +162,15 @@ export interface AxisOptions {
   showGrid?: boolean;
   /**
    * Turns each label (and its index) into the text to show. Return `null`
-   * or `undefined` to leave a label out.
+   * or `undefined` to leave a label out. Wins over `labelInterpolationFnc`
+   * when both are set.
+   */
+  labelTransform?(value: Label, index: number): Label | null | undefined;
+  /**
+   * The 1.x name of {@link AxisOptions.labelTransform}, which wins when
+   * both are set.
+   *
+   * @deprecated Use `labelTransform`. Removed in 3.0.
    */
   labelInterpolationFnc?(value: Label, index: number): Label | null | undefined;
   /**
@@ -584,7 +592,7 @@ export interface LabelDrawEvent extends Omit<
   type: 'label';
   /** The axis the label belongs to. */
   axis: Axis;
-  /** The label as shown, after `labelInterpolationFnc`. */
+  /** The label as shown, after `labelTransform`. */
   text: Label;
   /** The x of the label's box, in px. */
   x: number;

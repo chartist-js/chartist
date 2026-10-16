@@ -3,14 +3,18 @@
  * builders keep their types, events and plugins are checked.
  */
 import {
+  autoScaleAxis,
   band,
   barChart,
+  cartesianAxes,
   chart,
   findAll,
   lineChart,
   node,
+  pie,
   pieChart,
   responsive,
+  stepAxis,
   targetLine,
   withOptions,
   type ChartPlugin,
@@ -251,5 +255,31 @@ describe('v2 type contract', () => {
     band({ low: 'p10', high: { series: 2 } });
     // @ts-expect-error: values are numbers, { x, y } or null
     band({ low: ['1'], high: 2 });
+  });
+
+  test('labels take labelTransform everywhere they take a label function', () => {
+    const label = (value: unknown) => `${String(value)} °C`;
+    lineChart(
+      '#chart',
+      { series: [[1]] },
+      { axisY: { labelTransform: label } }
+    );
+    barChart('#chart', { series: [[1]] }, { axisX: { labelTransform: label } });
+    pieChart('#chart', { series: [1] }, { labelTransform: label });
+    cartesianAxes({
+      x: { type: stepAxis(), labelTransform: label },
+      y: { type: autoScaleAxis() }
+    });
+    pie({ labelTransform: label });
+    lineChart(
+      '#chart',
+      { series: [[1]] },
+      {
+        axisY: {
+          // @ts-expect-error: a label function returns a label
+          labelTransform: () => 1n
+        }
+      }
+    );
   });
 });
