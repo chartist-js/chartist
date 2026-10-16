@@ -121,11 +121,21 @@ The live renderer SHALL return the changes between the previous scene and the ne
 
 ### Requirement: Update animations
 
-When the live renderer gets `animations: smilAnimations()` and the chart's CSS sets `--ct-update-duration` to a time greater than zero, it SHALL animate a render with cause `update` or `responsive`: each updated node's changed numeric attributes and path data move from their previous value to their new one over that duration, with SMIL. The element's attributes SHALL hold the new values from the start, so the output after the animation is the output without it. Renders with cause `create`, `resize` or `fonts` SHALL NOT animate, and nothing SHALL animate while `prefers-reduced-motion: reduce` matches. Without `smilAnimations()` or without `--ct-update-duration`, updates SHALL NOT animate.
+When the live renderer gets `animations: smilAnimations()`, it SHALL animate a render with cause `update` or `responsive`: each updated node's changed numeric attributes and path data move from their previous value to their new one, with SMIL, over the duration the chart's CSS sets in `--ct-update-duration`, 300 ms when it sets none. The element's attributes SHALL hold the new values from the start, so the output after the animation is the output without it. Renders with cause `create`, `resize` or `fonts` SHALL NOT animate, and nothing SHALL animate while `prefers-reduced-motion: reduce` matches. Without `smilAnimations()`, or with `--ct-update-duration: 0s`, updates SHALL NOT animate.
 
-`--ct-update-easing` SHALL set the timing function, `ease` by default: the CSS keywords `linear`, `ease`, `ease-in`, `ease-out` and `ease-in-out`, any `cubic-bezier()` including curves that go below 0 or above 1 (overshoot), the `linear()` function and `steps()`. A value it doesn't understand SHALL fall back to `ease`.
+`--ct-update-easing` SHALL set the timing function, `ease-out` by default: the CSS keywords `linear`, `ease`, `ease-in`, `ease-out` and `ease-in-out`, any `cubic-bezier()` including curves that go below 0 or above 1 (overshoot), the `linear()` function and `steps()`. A value it doesn't understand SHALL fall back to `ease-out`.
 
 A path whose previous and new data have different commands (a vertex more or fewer, a line that became a curve) and that has no keyframes SHALL take its new shape at once, without an animation, because browsers can't interpolate between such paths and some draw nothing while they try.
+
+#### Scenario: Animations by default
+
+- **WHEN** a bar chart drawn with `liveDomRenderer({ animations: smilAnimations() })` and no `--ct-update-*` in its CSS updates
+- **THEN** its bars move to their new values over 300 ms with `ease-out`
+
+#### Scenario: Turned off in CSS
+
+- **WHEN** the same chart's container sets `--ct-update-duration: 0s`
+- **THEN** its updates don't animate
 
 #### Scenario: Bars grow
 

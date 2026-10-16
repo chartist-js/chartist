@@ -174,7 +174,7 @@ barChart(
 }
 ```
 
-`--ct-update-duration` turns them on; without it, nothing animates. `--ct-update-easing` takes any CSS easing, `ease` by default, also curves that overshoot, `linear()` and `steps()`. Only updates and responsive changes animate, never the first render or a resize, and never for people who ask for less motion.
+Without either property, updates take 300 ms with `ease-out`; `--ct-update-duration: 0s` turns them off. `--ct-update-easing` takes any CSS easing, also curves that overshoot, `linear()` and `steps()`. Only updates and responsive changes animate, never the first render or a resize, and never for people who ask for less motion.
 
 The [live updates guide](../live-updates/#animate-updates) has a running example and advice for streaming data. Plugins get the same timing in `mount`, to [animate what they draw](../events-and-plugins/#animate-in-step) in step with the chart.
 

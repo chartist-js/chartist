@@ -247,7 +247,7 @@ Plugins can do the same, and their `install` can return a cleanup function too, 
 
 ## Animate updates
 
-With `smilAnimations()`, updates move: bars grow and shrink, points and lines slide to their new place, pie slices turn. The timing is part of the chart's look, so it's in CSS: set `--ct-update-duration` on the chart or its container, and optionally `--ct-update-easing`. Without a duration, nothing animates.
+With `smilAnimations()`, updates move: bars grow and shrink, points and lines slide to their new place, pie slices turn. Updates take 300 ms with `ease-out`. The timing is part of the chart's look, so it's in CSS: set `--ct-update-duration` and `--ct-update-easing` on the chart or its container to change it, or `--ct-update-duration: 0s` to turn the animations off.
 
 <LiveExample
   title='Animated updates'

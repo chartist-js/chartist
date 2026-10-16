@@ -90,15 +90,27 @@ describe('smilAnimations() timing', () => {
     [' 250ms ', 250]
   ])('reads a duration of %s', (duration, ms) => {
     const { timing } = animate(bar(100), bar(200), { duration });
-    expect(timing).toEqual({ duration: ms, easing: 'ease' });
+    expect(timing).toEqual({ duration: ms, easing: 'ease-out' });
   });
 
-  it.each([['0s'], ['0ms'], [''], ['fast'], ['400'], [undefined]])(
+  it.each([['0s'], ['0ms']])(
     "doesn't animate with a duration of %j",
     duration => {
       const { timing, element } = animate(bar(100), bar(200), { duration });
       expect(timing).toBeUndefined();
       expect(animationsOf(element)).toHaveLength(0);
+    }
+  );
+
+  it.each([[''], ['fast'], ['400'], [undefined]])(
+    'animates 300 ms with ease-out for a duration of %j',
+    duration => {
+      const { timing, element } = animate(bar(100), bar(200), {
+        duration,
+        easing: undefined
+      });
+      expect(timing).toEqual({ duration: 300, easing: 'ease-out' });
+      expect(animationsOf(element)).toHaveLength(1);
     }
   );
 
@@ -115,7 +127,7 @@ describe('smilAnimations() timing', () => {
     'animates a render with cause %s',
     cause => {
       const { timing, element } = animate(bar(100), bar(200), { cause });
-      expect(timing).toEqual({ duration: 400, easing: 'ease' });
+      expect(timing).toEqual({ duration: 400, easing: 'ease-out' });
       expect(animationsOf(element)).toHaveLength(1);
     }
   );
@@ -136,7 +148,7 @@ describe('smilAnimations() timing', () => {
     expect(animate(bar(100), bar(200)).timing).toBeDefined();
   });
 
-  it("doesn't animate without a way to read the chart's CSS", () => {
+  it("animates with the defaults without a way to read the chart's CSS", () => {
     const { context, element } = animate(bar(100), bar(200), {
       cause: 'create'
     });
@@ -146,8 +158,8 @@ describe('smilAnimations() timing', () => {
         update: { ...context.update, cause: 'update' },
         measureStyle: undefined
       })
-    ).toBeUndefined();
-    expect(animationsOf(element)).toHaveLength(0);
+    ).toEqual({ duration: 300, easing: 'ease-out' });
+    expect(animationsOf(element)).toHaveLength(1);
   });
 
   it('reads the CSS with the root classes, in the container', () => {
@@ -171,8 +183,8 @@ describe('smilAnimations() timing', () => {
     ['cubic-bezier(0.34, 1.56, 0.64, 1)', 'cubic-bezier(0.34, 1.56, 0.64, 1)'],
     ['steps(4, end)', 'steps(4, end)'],
     ['linear(0, 0.8, 1)', 'linear(0, 0.8, 1)'],
-    ['bouncy', 'ease'],
-    ['easeOutBack', 'ease']
+    ['bouncy', 'ease-out'],
+    ['easeOutBack', 'ease-out']
   ])('returns the easing %s as %s', (easing, expected) => {
     expect(animate(bar(100), bar(200), { easing }).timing).toEqual({
       duration: 400,
@@ -182,7 +194,7 @@ describe('smilAnimations() timing', () => {
 
   it('returns the timing also when no attribute animates', () => {
     const { timing, element } = animate(bar(100), bar(100));
-    expect(timing).toEqual({ duration: 400, easing: 'ease' });
+    expect(timing).toEqual({ duration: 400, easing: 'ease-out' });
     expect(animationsOf(element)).toHaveLength(0);
   });
 });

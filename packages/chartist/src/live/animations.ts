@@ -15,7 +15,7 @@ const ANIMATION_CLASS = 'ct-update-animation';
 
 const NUMBER = /-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi;
 
-/** The CSS easings `--ct-update-easing` takes; anything else is `ease`. */
+/** The CSS easings `--ct-update-easing` takes; anything else is `ease-out`. */
 const CSS_EASING =
   /^(linear|ease(-in|-out|-in-out)?|(cubic-bezier|linear|steps)\(.*\))$/;
 
@@ -35,11 +35,16 @@ interface Shape {
   readonly numbers: readonly number[];
 }
 
-/** A CSS time (`400ms`, `0.4s`) in ms; 0 for anything else. */
+/** Without a duration in the CSS, updates take this long, in ms. */
+const DEFAULT_DURATION = 300;
+
+/** A CSS time (`400ms`, `0.4s`) in ms; the default for anything else. */
 function durationOf(value: string | undefined): number {
   const [, amount, unit] =
     value?.trim().match(/^(\d*\.?\d+(?:e[-+]?\d+)?)(m?s)$/i) ?? [];
-  return unit ? Number(amount) * (unit.toLowerCase() === 's' ? 1000 : 1) : 0;
+  return unit
+    ? Number(amount) * (unit.toLowerCase() === 's' ? 1000 : 1)
+    : DEFAULT_DURATION;
 }
 
 /** A path's `d` with absolute commands, unrounded. */
@@ -266,10 +271,11 @@ function animateFrames(
 /**
  * Animates the changes of an update with SMIL, timed by the chart's CSS:
  * each updated node's changed numbers and paths move from their previous
- * value to their new one over `--ct-update-duration` (a CSS time, such as
- * `400ms`) with the easing in `--ct-update-easing` (a CSS easing, `ease`
- * by default). The attributes hold their new values from the start, and an
- * update during an animation continues from where each element is drawn.
+ * value to their new one over `--ct-update-duration` (a CSS time, 300 ms
+ * by default; `0s` turns the animations off) with the easing in
+ * `--ct-update-easing` (a CSS easing, `ease-out` by default). The
+ * attributes hold their new values from the start, and an update during an
+ * animation continues from where each element is drawn.
  *
  * It animates updates (`update()`, `setOptions()`) and changes of the
  * matching `responsive` options, not resizes, and nothing while the
@@ -282,14 +288,15 @@ function animateFrames(
  * import { lineChart } from 'chartist';
  * import { liveDomRenderer, smilAnimations } from 'chartist/live';
  *
- * // In the CSS: #chart { --ct-update-duration: 400ms; }
+ * // 300 ms with ease-out, unless the CSS sets --ct-update-duration
+ * // and --ct-update-easing.
  * const chart = lineChart(
  *   '#chart',
  *   { labels: ['Mon', 'Tue', 'Wed'], series: [[5, 2, 4]] },
  *   { renderer: liveDomRenderer({ animations: smilAnimations() }) }
  * );
  *
- * chart.update({ labels: ['Mon', 'Tue', 'Wed'], series: [[3, 6, 1]] });
+ * chart.update({ data: { labels: ['Mon', 'Tue', 'Wed'], series: [[3, 6, 1]] } });
  * ```
  * @returns The animations, for `liveDomRenderer({ animations })`
  * @experimental
@@ -315,7 +322,7 @@ export function smilAnimations(): LiveAnimations {
         return undefined;
       }
       const css = measureStyle?.('--ct-update-easing', options)?.trim() ?? '';
-      const easing = CSS_EASING.test(css) ? css : 'ease';
+      const easing = CSS_EASING.test(css) ? css : 'ease-out';
       const timing: Timing = {
         duration,
         easing,

@@ -32,7 +32,7 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 #### Scenario: Live updates
 
 - **WHEN** a reader opens the live updates guide
-- **THEN** it shows a chart drawn with `liveDomRenderer({ key: 'label' })` and fed with new values every second, and a chart whose updates animate with `smilAnimations()` and `--ct-update-duration`, both live, and it explains importing `chartist/live` (with a bundler and from a CDN), identity and the `key` option, the changes and `cause` in `mount`, cleanup functions, and what live updates add to the bundle
+- **THEN** its first live example is a chart drawn with `liveDomRenderer({ key: 'label', animations: smilAnimations() })`, fed with a new value every second, that shows below it how many elements each update added, updated and removed; further live examples show animated bars, an animated pie and gauge, a stream of several updates per second, and one update that changes the data and the layers together; and it explains importing `chartist/live` (with a bundler and from a CDN), identity and the `key` option, the changes and `cause` in `mount`, cleanup functions, the default animation timing, and what live updates add to the bundle
 
 #### Scenario: Cleanup in the plugins guide
 
@@ -45,6 +45,15 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 - **THEN** a section on plugins for live updates covers keys for a plugin's own nodes, acting on `add` changes, cleanup, plugin keyframes and the animation timing in `mount`, with a live example of a small v2 tooltip plugin that keeps working while its chart gets new values every second
 
 ## ADDED Requirements
+
+### Requirement: Live data in the examples gallery
+
+The examples gallery SHALL have a "Live data" section with the live update examples, each with its own page like the other examples: a sensor chart with a sliding window, a dashboard, a network speed stream of bars and a line, a seismograph line, an animated pie, an animated gauge, and bars that switch between grouped and stacked with new data. The live updates guide SHALL show these examples from the gallery, not copies of them.
+
+#### Scenario: The section
+
+- **WHEN** a visitor opens the examples gallery
+- **THEN** a "Live data" section lists the live examples, and each one's page runs it and opens it in the playground
 
 ### Requirement: Converted plugins and live updates
 
