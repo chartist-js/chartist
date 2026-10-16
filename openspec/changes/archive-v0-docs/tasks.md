@@ -27,7 +27,7 @@
 ## 5. Records and gate
 
 - [x] 5.1 Update "Docs hosting" in `docs/decisions.md`: 0.x lives under `/v0/` without third-party requests, the old GitHub Pages site redirects there and to v2, and a renamed v2 page or heading means running `docs:v0-redirects` and redeploying `gh-pages`; also the 0.x link in the history paragraph
-- [ ] 5.2 Run the gate: `pnpm nx run-many -t check test --skip-nx-cache`, `pnpm nx format:check --all` and `pnpm nx e2e docs --skip-nx-cache`; all pass
+- [x] 5.2 Run the gate: `pnpm nx run-many -t check test --skip-nx-cache`, `pnpm nx format:check --all` and `pnpm nx e2e docs --skip-nx-cache`; all pass
 
 ## 6. Deploy (each push needs the author's go)
 
