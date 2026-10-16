@@ -1,0 +1,5 @@
+/* The rest of the scale: a faint track in the text color, light or dark. */
+#chart .ct-series-b .ct-slice-donut {
+  stroke: currentColor;
+  stroke-opacity: 0.12;
+}

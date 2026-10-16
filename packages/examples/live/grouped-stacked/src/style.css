@@ -1,0 +1,4 @@
+#chart {
+  --ct-update-duration: 600ms;
+  --ct-update-easing: ease-in-out;
+}

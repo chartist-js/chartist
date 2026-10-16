@@ -1,6 +1,14 @@
 import 'chartist/styles.css';
-import { lineChart } from 'chartist';
-import { liveDomRenderer } from 'chartist/live';
+import './style.css';
+import { lineChart, type SceneNode } from 'chartist';
+import { liveDomRenderer, smilAnimations } from 'chartist/live';
+
+// A seeded generator, so every run shows the same readings.
+let seed = 42;
+const random = () => {
+  seed = (seed * 16807) % 2147483647;
+  return (seed - 1) / 2147483646;
+};
 
 // The last ten readings of a temperature sensor, one per second.
 let data = {
@@ -8,10 +16,32 @@ let data = {
   series: [[21.2, 21.4, 21.3, 21.7, 21.9, 21.8, 22.1, 22, 22.3, 22.2]]
 };
 
+const readout = document.querySelector('#changes')!;
+const count = (node: SceneNode): number =>
+  1 + node.children.reduce((sum, child) => sum + count(child), 0);
+
 const chart = lineChart('#chart', data, {
-  // Keep the SVG, and know each reading by its label.
-  renderer: liveDomRenderer({ key: 'label' }),
-  showArea: true
+  // Keep the SVG, know each reading by its label, and animate updates.
+  renderer: liveDomRenderer({ key: 'label', animations: smilAnimations() }),
+  showArea: true,
+  on: {
+    // What each render did to the SVG's elements.
+    mount: ({ scene, changes, cause }) => {
+      const total = count(scene);
+      if (cause === 'create') {
+        readout.textContent = `Drew ${total} elements.`;
+        return;
+      }
+      const tally = { add: 0, update: 0, remove: 0 };
+      for (const change of changes) {
+        tally[change.op] += 1;
+      }
+      const kept = total - tally.add - tally.update;
+      readout.textContent =
+        `${tally.add} added, ${tally.update} changed, ${tally.remove} removed, ` +
+        `${kept} of ${total} left as they were.`;
+    }
+  }
 });
 
 let second = 10;
@@ -19,7 +49,7 @@ setInterval(() => {
   second += 1;
   const [values] = data.series;
   const last = values[values.length - 1];
-  const reading = Math.round((last + Math.random() - 0.5) * 10) / 10;
+  const reading = Math.round((last + random() - 0.5) * 10) / 10;
   // Drop the oldest reading and add the new one.
   data = {
     labels: [...data.labels.slice(1), `${second}s`],

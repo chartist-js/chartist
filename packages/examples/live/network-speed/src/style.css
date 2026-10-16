@@ -1,0 +1,10 @@
+#chart {
+  /* Faster than the samples come in, and steady. */
+  --ct-update-duration: 200ms;
+  --ct-update-easing: linear;
+  --ct-line-width: 2px;
+}
+
+#chart .ct-bar {
+  stroke-opacity: 0.45;
+}

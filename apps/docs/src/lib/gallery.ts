@@ -25,7 +25,8 @@ export const TYPES: { type: ChartType; title: string }[] = [
   { type: 'bar', title: 'Bar charts' },
   { type: 'pie', title: 'Pie and donut charts' },
   { type: 'composed', title: 'Composed charts' },
-  { type: 'styling', title: 'Styling' }
+  { type: 'styling', title: 'Styling' },
+  { type: 'live', title: 'Live data' }
 ];
 
 function filesOf(folder: string) {

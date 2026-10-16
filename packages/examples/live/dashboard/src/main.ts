@@ -3,8 +3,15 @@ import './style.css';
 import { barChart } from 'chartist';
 import { liveDomRenderer, smilAnimations } from 'chartist/live';
 
+// A seeded generator, so every run shows the same numbers.
+let seed = 7;
+const next = () => {
+  seed = (seed * 16807) % 2147483647;
+  return (seed - 1) / 2147483646;
+};
+
 const labels = ['North', 'East', 'South', 'West'];
-const random = () => labels.map(() => Math.round(Math.random() * 9) + 1);
+const random = () => labels.map(() => Math.round(next() * 9) + 1);
 
 const chart = barChart(
   '#chart',
