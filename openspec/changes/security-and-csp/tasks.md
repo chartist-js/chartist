@@ -14,7 +14,7 @@
 
 ## 3. Payload tests
 
-- [ ] 3.1 Add a shared payload list and a test in `packages/chartist` that puts each payload into labels, series names, `className`, series and value meta, `labelInterpolationFnc` output, target line labels and pie labels, renders with `chart()` in jsdom and with `renderToString()` (parsed back with jsdom), and asserts that no element or attribute comes from a payload and the payload text is present. Verify: the test passes (it documents today's escaping; it fails if a value is written unescaped)
+- [x] 3.1 Add a shared payload list and a test in `packages/chartist` that puts each payload into labels, series names, `className`, series and value meta, `labelInterpolationFnc` output, target line labels and pie labels, renders with `chart()` in jsdom and with `renderToString()` (parsed back with jsdom), and asserts that no element or attribute comes from a payload and the payload text is present. Verify: the test passes (it documents today's escaping; it fails if a value is written unescaped)
 
 ## 4. Terminal element output
 
