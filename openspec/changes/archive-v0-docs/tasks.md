@@ -9,8 +9,8 @@
 
 ## 2. Site wiring
 
-- [ ] 2.1 Point the 0.x entry of `VERSIONS` in `src/lib/site.ts` to `href('v0/')` and update its doc comment; verify the version switcher and the footer link `/v0/` (the existing assertion in `e2e/fixes.spec.ts`, updated)
-- [ ] 2.2 Keep `/v0/` out of the sitemap (`astro.config.mjs`) and out of the checks that skip `/v1/` (`e2e/meta.spec.ts`, `e2e/llms.spec.ts`); add `/v0/` paths to the archive check in `e2e/fixes.spec.ts` (`/v0/`, `/v0/getting-started.html`, `/v0/styles/main.css`); verify with `pnpm nx e2e docs --skip-nx-cache`
+- [x] 2.1 Point the 0.x entry of `VERSIONS` in `src/lib/site.ts` to `href('v0/')` and update its doc comment; verify the version switcher and the footer link `/v0/` (the existing assertion in `e2e/fixes.spec.ts`, updated)
+- [x] 2.2 Keep `/v0/` out of the sitemap (`astro.config.mjs`) and out of the checks that skip `/v1/` (`e2e/meta.spec.ts`, `e2e/llms.spec.ts`); add `/v0/` paths to the archive check in `e2e/fixes.spec.ts` (`/v0/`, `/v0/getting-started.html`, `/v0/styles/main.css`); verify with `pnpm nx e2e docs --skip-nx-cache`
 
 ## 3. The redirect mapping
 

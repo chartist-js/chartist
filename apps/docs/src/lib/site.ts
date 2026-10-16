@@ -8,13 +8,12 @@ export const EDIT_CONTENT = `${REPO}/edit/next/apps/docs/src/content/`;
 
 /**
  * Documentation versions, for the docs' version switcher and the footer. The
- * 1.x docs are static files on this site (`public/v1/`), the 0.x docs stay
- * on GitHub Pages.
+ * 1.x and 0.x docs are static files on this site (`public/v1/`, `public/v0/`).
  */
 export const VERSIONS = [
   { label: 'v2 (current)', href: null },
   { label: 'v1.5 docs', href: href('v1/') },
-  { label: 'v0.11 archive', href: 'https://gionkunz.github.io/chartist-js/' }
+  { label: 'v0.11 archive', href: href('v0/') }
 ] as const;
 
 /** Header navigation. Sections appear as their changes land. */

@@ -85,7 +85,7 @@ test('the version links point to the archives, on this site for 1.x', async ({
   );
   await expect(
     footer.getByRole('link', { name: 'v0.11 archive' })
-  ).toHaveAttribute('href', 'https://gionkunz.github.io/chartist-js/');
+  ).toHaveAttribute('href', '/v0/');
   await expect(
     page.locator('[data-version-switch] option', { hasText: 'v1.5 docs' })
   ).toHaveAttribute('value', '/v1/');
@@ -98,4 +98,13 @@ test('the version links point to the archives, on this site for 1.x', async ({
   }
   const html = await (await request.get('/v1/')).text();
   expect(html).toContain('src="/v1/assets/js/main.');
+  // The 0.x docs too, with the files their pages load.
+  for (const path of [
+    '/v0/',
+    '/v0/getting-started.html',
+    '/v0/styles/main.css',
+    '/v0/fonts/fonts.css'
+  ]) {
+    expect((await request.get(path)).status(), path).toBe(200);
+  }
 });

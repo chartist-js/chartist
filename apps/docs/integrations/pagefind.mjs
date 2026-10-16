@@ -3,15 +3,22 @@
  * Pagefind after the build, and serves the last build's index in dev.
  *
  * Only what's inside `data-pagefind-body` is indexed (guides, API pages,
- * example pages and the landing page). The archived 1.x docs (`v1/`) and
- * the card images (`og/`) stay out of the index.
+ * example pages and the landing page). The archived 1.x and 0.x docs
+ * (`v1/`, `v0/`) and the card images (`og/`) stay out of the index.
  */
 import { readFile, readdir } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 /** Top-level folders of the output that are never indexed. */
-const EXCLUDED = new Set(['v1', 'og', 'pagefind', 'playground-lib', '_astro']);
+const EXCLUDED = new Set([
+  'v1',
+  'v0',
+  'og',
+  'pagefind',
+  'playground-lib',
+  '_astro'
+]);
 /**
  * Code blocks (Shiki's `<pre class="astro-code">`) count less than prose:
  * the guide that explains `showArea` beats the ones whose code uses it.

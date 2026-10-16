@@ -20,8 +20,9 @@ export default defineConfig({
     mdx(),
     playgroundLib(),
     pagefind(),
-    // The archived 1.x docs (public/v1/) and the card images stay out.
-    sitemap({ filter: page => !/\/(v1|og)\//.test(new URL(page).pathname) }),
+    // The archived 1.x and 0.x docs (public/v1/, public/v0/) and the card
+    // images stay out.
+    sitemap({ filter: page => !/\/(v1|v0|og)\//.test(new URL(page).pathname) }),
     // After Pagefind, so the redirect pages aren't indexed for search.
     v1Redirects(),
     movedPages()
