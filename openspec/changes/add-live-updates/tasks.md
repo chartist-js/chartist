@@ -45,4 +45,4 @@
 
 ## 6. The gate
 
-- [ ] 6.1 Run the gate. Verify: `pnpm nx run-many -t lint typecheck test build --skip-nx-cache`, `pnpm nx format:check --all`, `pnpm nx run chartist:test:size`, `pnpm nx run chartist:test:smoke --skip-nx-cache`, `pnpm nx run chartist:test:visual:local` (no changes) and `pnpm nx e2e docs` pass
+- [x] 6.1 Run the gate. Verify: `pnpm nx run-many -t lint typecheck test build --skip-nx-cache`, `pnpm nx format:check --all`, `pnpm nx run chartist:test:size`, `pnpm nx run chartist:test:smoke --skip-nx-cache`, `pnpm nx run chartist:test:visual:local` (no changes) and `pnpm nx e2e docs` pass
