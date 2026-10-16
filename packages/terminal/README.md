@@ -11,7 +11,7 @@ There are two ways to use it: the `ct-cli` command, and an API for your own CLI 
 ## Install
 
 ```sh
-npm install @chartist-js/terminal@next
+npm install @chartist-js/terminal
 ```
 
 It depends on `chartist`, which npm installs with it. The command needs Node.js 22 or later; the API runs in any JavaScript runtime, browsers included.
@@ -22,7 +22,7 @@ It depends on `chartist`, which npm installs with it. The command needs Node.js 
 npx @chartist-js/terminal demo
 ```
 
-Installed globally (`npm install -g @chartist-js/terminal@next`), the command is `ct-cli`. Give it a chart type and the series, each a comma-separated list of numbers:
+Installed globally (`npm install -g @chartist-js/terminal`), the command is `ct-cli`. Give it a chart type and the series, each a comma-separated list of numbers:
 
 ```sh
 ct-cli line 12,9,7,8,5 2,1,3.5,7,3 --labels Mon,Tue,Wed,Thu,Fri --names Visitors,Sign-ups --smooth --area

@@ -1,8 +1,5 @@
 {
-  "runtime": [
-    "compat",
-    "fromLegacyPlugin"
-  ],
+  "runtime": ["compat", "fromLegacyPlugin"],
   "types": [
     "AreaDrawEvent",
     "AxesDrawEvent",

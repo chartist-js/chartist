@@ -98,6 +98,11 @@ chart.setOptions({ showArea: true }, { replace: true });
 
 ## Keep the SVG
 
+<Callout kind='warn'>
+  **Experimental.** `chartist/live` is new with 2.0. Its API may still change in
+  a 2.x minor before it becomes stable; the rest of Chartist is stable.
+</Callout>
+
 What a render does to the page depends on the chart's renderer:
 
 - **`domRenderer()`**, the default, draws a new SVG on every render and replaces the old one: on an update, a resize, a responsive change, or when web fonts finish loading. It's small, and right for charts that rarely change. But the elements are new each time: a hovered bar loses its `:hover`, a focused point its focus, what a plugin added to an element is gone, and [CSS animations](../animations/) play again.

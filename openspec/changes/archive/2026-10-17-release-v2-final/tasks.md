@@ -16,12 +16,12 @@
 
 ## 3. Docs
 
-- [ ] 3.1 Remove the "Experimental until 2.0" callouts from the composed charts, custom layers and target lines and bands guides; say at the start of the live updates guide's `chartist/live` section that it's experimental, new with 2.0 and may change in a 2.x minor; change the API reference legend to "may still change in a 2.x minor". Verify: `grep -rni "until 2.0" apps/docs/src` finds nothing, the API reference shows the experimental badge only on `chartist/live` and the container names, and `pnpm nx run docs:samples` and `pnpm nx e2e docs` pass
-- [ ] 3.2 Update `README.md` and `packages/chartist/README.md`: no release candidate note, `npm install chartist`, CDN URLs with `chartist@2`. Verify: `grep -n "@next\|release candidates" README.md packages/chartist/README.md` finds nothing, and the README sample test passes if there is one
-- [ ] 3.3 Look at the changed pages. Verify: Playwright screenshots of the three guides' changed sections, the live updates guide and the API reference index, in light and dark mode and at 390 px
+- [x] 3.1 Remove the "Experimental until 2.0" callouts from the composed charts, custom layers and target lines and bands guides; say at the start of the live updates guide's `chartist/live` section that it's experimental, new with 2.0 and may change in a 2.x minor; change the API reference legend to "may still change in a 2.x minor". Verify: `grep -rni "until 2.0" apps/docs/src` finds nothing, the API reference shows the experimental badge only on `chartist/live` and the container names, and `pnpm nx run docs:samples` and `pnpm nx e2e docs` pass
+- [x] 3.2 Update `README.md` and `packages/chartist/README.md`: no release candidate note, `npm install chartist`, CDN URLs with `chartist@2`. Verify: `grep -n "@next\|release candidates" README.md packages/chartist/README.md` finds nothing, and the README sample test passes if there is one
+- [x] 3.3 Look at the changed pages. Verify: Playwright screenshots of the three guides' changed sections, the live updates guide and the API reference index, in light and dark mode and at 390 px
 
 ## 4. Release (the author's go for each step)
 
-- [ ] 4.1 Run the gate. Verify: `pnpm nx run-many -t lint typecheck test build --skip-nx-cache`, `pnpm nx format:check --all`, `pnpm nx run chartist:test:size`, `pnpm nx run chartist:test:smoke --skip-nx-cache`, `pnpm nx run chartist:test:visual` and `pnpm nx e2e docs` pass
-- [ ] 4.2 Draft, for the author's review: the GitHub release notes' highlights for 2.0.0 in the author's voice, and the comments closing #3 and #961. Verify: the drafts are shown to the author; nothing is posted without the go
+- [x] 4.1 Run the gate. Verify: `pnpm nx run-many -t lint typecheck test build --skip-nx-cache`, `pnpm nx format:check --all`, `pnpm nx run chartist:test:size`, `pnpm nx run chartist:test:smoke --skip-nx-cache`, `pnpm nx run chartist:test:visual` and `pnpm nx e2e docs` pass
+- [x] 4.2 Draft, for the author's review: the GitHub release notes' highlights for 2.0.0 in the author's voice, and the comments closing #3 and #961. Verify: the drafts are shown to the author; nothing is posted without the go
 - [ ] 4.3 After the merge, the author runs the release workflow by hand with `2.0.0` and approves it, then unsets `RELEASE_PREID`. Verify: `npm view chartist dist-tags` shows `latest: 2.0.0`, `npm view @chartist-js/terminal dist-tags` too, chartist.dev shows `npm install chartist`, and the repository variable list has no `RELEASE_PREID`

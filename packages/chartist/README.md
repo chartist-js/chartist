@@ -19,12 +19,12 @@ Simple, responsive charts, drawn in SVG and styled with CSS. Tiny, typed, and ha
 
 **[chartist.dev](https://chartist.dev)** · [Getting started](https://chartist.dev/docs/getting-started/) · [API](https://chartist.dev/api/) · [Examples](https://chartist.dev/examples/) · [Plugins](https://chartist.dev/plugins/) · [Changelog](https://github.com/chartist-js/chartist/blob/main/CHANGELOG.md)
 
-> **Chartist 2 is in release candidates.** Install it with `npm install chartist@next`. Plain `npm install chartist` installs Chartist 1 until 2.0.0 is out. The 1.x docs are at [chartist.dev/v1/](https://chartist.dev/v1/).
+> **Coming from Chartist 1?** Your code keeps working. [Coming from 1.x](https://chartist.dev/docs/coming-from-1x/) shows what's new, and the 1.x docs are at [chartist.dev/v1/](https://chartist.dev/v1/).
 
 ## Install
 
 ```sh
-npm install chartist@next
+npm install chartist
 ```
 
 ```ts
@@ -49,11 +49,11 @@ No bundler? Chartist is a native ES module:
 ```html
 <link
   rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/chartist@next/dist/index.min.css"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.css"
 />
 <div id="chart" class="ct-golden-section"></div>
 <script type="module">
-  import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@next/dist/index.min.js';
+  import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
 
   lineChart('#chart', { series: [[1, 3, 2, 5]] });
 </script>
