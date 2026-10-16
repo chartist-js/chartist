@@ -2,8 +2,8 @@
 
 ## 0. Archive the open changes
 
-- [ ] 0.1 Tick the last three tasks of `archive-v0-docs` (checked on the live sites on 2026-10-17: `/v0/` pages with the archive note, the old site's redirects, the 404 page's redirect to `/v0/`), then archive it with its specs synced. Verify: `openspec/changes/archive/2026-10-17-archive-v0-docs/` exists, "Old 0.x URLs redirect" and the extended "Archived versions" are in `openspec/specs/docs-site/spec.md`, and `openspec validate --specs --strict` passes
-- [ ] 0.2 Archive `release-v2-rc` with its specs synced. Verify: `openspec/specs/release-process/spec.md` and `openspec/specs/continuous-integration/spec.md` exist with their purpose sections, its `docs-site` and `library-distribution` requirements are in the main specs, `openspec list` shows only `release-v2-final` as active, and `openspec validate --specs --strict` passes
+- [x] 0.1 Tick the last three tasks of `archive-v0-docs` (checked on the live sites on 2026-10-17: `/v0/` pages with the archive note, the old site's redirects, the 404 page's redirect to `/v0/`), then archive it with its specs synced. Verify: `openspec/changes/archive/2026-10-17-archive-v0-docs/` exists, "Old 0.x URLs redirect" and the extended "Archived versions" are in `openspec/specs/docs-site/spec.md`, and `openspec validate --specs --strict` passes
+- [x] 0.2 Archive `release-v2-rc` with its specs synced. Verify: `openspec/specs/release-process/spec.md` and `openspec/specs/continuous-integration/spec.md` exist with their purpose sections, its `docs-site` and `library-distribution` requirements are in the main specs, `openspec list` shows only `release-v2-final` as active, and `openspec validate --specs --strict` passes
 
 ## 1. Recorded experimental names
 

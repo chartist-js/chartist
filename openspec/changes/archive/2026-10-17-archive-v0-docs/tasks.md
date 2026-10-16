@@ -31,6 +31,6 @@
 
 ## 6. Deploy (each push needs the author's go)
 
-- [ ] 6.1 After the change is merged and chartist.dev is deployed, open `https://chartist.dev/v0/`, `/v0/examples.html` and `/v0/getting-started.html#the-sass-way` and check they load with the archive note and working examples
-- [ ] 6.2 Run `pnpm nx run docs:v0-redirects`, then in a scratch clone of `gionkunz/chartist-js` on `gh-pages` replace all files with `tmp/v0-redirects/` as one commit (`docs: redirect to chartist.dev`); show the author the diff summary and push only with their go
-- [ ] 6.3 After GitHub Pages rebuilds, check the live old URLs against the scenarios of "Old 0.x URLs redirect" (including `https://gionkunz.github.io/chartist-js/examples.html#example-line-modify-drawing` and an unknown path) and report the results
+- [x] 6.1 After the change is merged and chartist.dev is deployed, open `https://chartist.dev/v0/`, `/v0/examples.html` and `/v0/getting-started.html#the-sass-way` and check they load with the archive note and working examples
+- [x] 6.2 Run `pnpm nx run docs:v0-redirects`, then in a scratch clone of `gionkunz/chartist-js` on `gh-pages` replace all files with `tmp/v0-redirects/` as one commit (`docs: redirect to chartist.dev`); show the author the diff summary and push only with their go
+- [x] 6.3 After GitHub Pages rebuilds, check the live old URLs against the scenarios of "Old 0.x URLs redirect" (including `https://gionkunz.github.io/chartist-js/examples.html#example-line-modify-drawing` and an unknown path) and report the results

@@ -126,7 +126,7 @@ Decided 2026-10-16 and 2026-10-17 (#3, #961).
 - **Install instructions:** while the version is a prerelease, the site turns `npm install chartist` into `chartist@next` (and `@chartist-js/terminal` into `@chartist-js/terminal@next`) and pins CDN URLs to the exact version (ranges like `chartist@2` skip prereleases). The page sources keep the 2.0.0 wording.
 - **Docs deployment:** `docs.yml` deploys chartist.dev from `main` while the repository variable `DOCS_DEPLOY` is `true`, and waits until the built version is on npm, since the release commit is pushed just before the publish.
 
-The workflows and settings are specified in the release change (`openspec/changes/release-v2-rc/`) and, once it's archived, in the `release-process` and `continuous-integration` specs.
+The workflows and settings are specified in the `release-process` and `continuous-integration` specs.
 
 ## Docs hosting
 
