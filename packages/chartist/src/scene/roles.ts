@@ -221,6 +221,31 @@ export interface TargetLabelContext extends NoSeries, Point {
 }
 
 /**
+ * The context of a `trendLine` node: the line a `trendLine()` layer fits
+ * through a series' values, `y = slope * x + intercept` in the axes'
+ * values (X is the value's index on a step axis). Its ends are in px in
+ * the SVG.
+ */
+export interface TrendLineContext {
+  /** The series' index in the chart's data, across layers. */
+  readonly seriesIndex: number;
+  /** Always absent: the line stands for the whole series. */
+  readonly valueIndex?: undefined;
+  /** How much the fitted value changes per unit of X. */
+  readonly slope: number;
+  /** The fitted value at X 0. */
+  readonly intercept: number;
+  /** The X of the line's start (the series' smallest X), in px. */
+  readonly x1: number;
+  /** The Y of the line's start, in px. */
+  readonly y1: number;
+  /** The X of the line's end (the series' largest X), in px. */
+  readonly x2: number;
+  /** The Y of the line's end, in px. */
+  readonly y2: number;
+}
+
+/**
  * An edge of a band: a constant value, the edge's own values (`undefined`
  * for a hole), or the chart-wide index of the series it follows.
  */
@@ -385,6 +410,11 @@ export interface NodeRoles {
   targetLine: { ctx: TargetLineContext; attrs: LineAttrs };
   /** A target line's label: SVG `text` (class `ct-target-label`). */
   targetLabel: { ctx: TargetLabelContext; attrs: TextAttrs };
+  /**
+   * The fitted line of a `trendLine()` layer through a series: a `line`
+   * (class `ct-trend-line`).
+   */
+  trendLine: { ctx: TrendLineContext; attrs: LineAttrs };
   /** A filled piece of a `band()` layer: a `path` (class `ct-band-area`). */
   band: { ctx: BandContext; attrs: PathAttrs };
 }

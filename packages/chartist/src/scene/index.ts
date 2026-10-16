@@ -33,6 +33,7 @@ export type {
   TargetLabelContext,
   TargetLineContext,
   TextAttrs,
+  TrendLineContext,
   ValueContext
 } from './roles';
 export { findAll, mapNodes } from './tree';

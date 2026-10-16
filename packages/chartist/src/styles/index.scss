@@ -163,6 +163,19 @@
   fill-opacity: var(--ct-band-opacity, #{$ct-band-opacity});
 }
 
+@mixin ct-chart-trend-line(
+  $ct-trend-line-width: $ct-trend-line-width,
+  $ct-trend-line-dasharray: $ct-trend-line-dasharray
+) {
+  fill: none;
+  stroke: var(--ct-color);
+  stroke-width: var(--ct-trend-line-width, #{$ct-trend-line-width});
+  stroke-dasharray: var(
+    --ct-trend-line-dasharray,
+    #{ct-or-none($ct-trend-line-dasharray)}
+  );
+}
+
 // Sets the series color as `--ct-color`, which the series' elements use.
 @mixin ct-chart-series-color($color) {
   --ct-color: #{$color};
@@ -171,6 +184,7 @@
   .#{$ct-class-line},
   .#{$ct-class-bar},
   .#{$ct-class-slice-donut},
+  .#{$ct-class-trend-line},
   .#{$ct-class-target-line} {
     stroke: var(--ct-color);
   }
@@ -309,6 +323,10 @@
 
   .#{$ct-class-band-area} {
     @include ct-chart-band-area();
+  }
+
+  .#{$ct-class-trend-line} {
+    @include ct-chart-trend-line();
   }
 
   @if $ct-include-colored-series {

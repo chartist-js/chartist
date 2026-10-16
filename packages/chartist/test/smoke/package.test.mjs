@@ -256,6 +256,18 @@ test('CSS: target lines and bands take a series color, else the text color', asy
   );
 });
 
+test('CSS: trend lines are dashed in their series color', async () => {
+  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
+  assert.match(
+    css,
+    /\.ct-trend-line \{\s*fill: none;\s*stroke: var\(--ct-color\);\s*stroke-width: var\(--ct-trend-line-width, 2px\);\s*stroke-dasharray: var\(--ct-trend-line-dasharray, 6px 4px\);\s*\}/
+  );
+  assert.match(
+    css,
+    /\.ct-series-b \.ct-trend-line,[^{]*\{\s*stroke: var\(--ct-color\)/
+  );
+});
+
 // light-dark() follows the chart's color-scheme. Browsers without it keep
 // the declaration outside @supports, as a var() with a fallback they don't
 // know would compute to unset.
