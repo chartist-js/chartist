@@ -256,3 +256,123 @@ describe('layers/bar stack modes', () => {
     });
   });
 });
+
+describe('layers/bar offset', () => {
+  const labels = ['Q1', 'Q2'];
+  const series = [
+    { name: '2024 new', data: [3, 4] },
+    { name: '2024 returning', data: [2, 1] },
+    { name: '2025 new', data: [5, 6] },
+    { name: '2025 returning', data: [4, 3] }
+  ];
+
+  function grouped(offsets?: readonly [number, number]) {
+    return runPipeline(
+      createPhaseEmitter(),
+      {
+        data: { labels, series },
+        axes: cartesianAxes({
+          x: { type: stepAxis(), ticks: labels },
+          y: { type: autoScaleAxis(), referenceValue: 0 },
+          normalize: { multi: 'y' }
+        }),
+        layers: [
+          bar({
+            series: ['2024 new', '2024 returning'],
+            stackBars: true,
+            offset: offsets?.[0]
+          }),
+          bar({
+            series: ['2025 new', '2025 returning'],
+            stackBars: true,
+            offset: offsets?.[1]
+          })
+        ]
+      },
+      { width: 400, height: 300, measureText: estimateText }
+    );
+  }
+
+  it('two stacked layers with opposite offsets draw grouped stacks', () => {
+    const state = grouped([-8, 8]);
+    const { area } = state.layout;
+    const x = state.axes.x!;
+    const y = state.axes.y!;
+    // The value axis fits the higher stack: 6 + 3 at Q2.
+    expect(y.range!.max).toBeGreaterThanOrEqual(9);
+    const bars = (seriesIndex: number) =>
+      findAll(state.scene, { role: 'bar', seriesIndex }).map(b => ({
+        x: Number(b.attrs.x1),
+        x2: Number(b.attrs.x2),
+        from: Number(b.attrs.y1),
+        to: Number(b.attrs.y2)
+      }));
+    const center = (index: number) =>
+      area.x1 + x.project(0, index, []) + x.length / labels.length / 2;
+    const at = (v: number) => area.y1 - y.project(v);
+
+    [0, 1].forEach(index => {
+      for (const seriesIndex of [0, 1]) {
+        expect(bars(seriesIndex)[index].x).toBeCloseTo(center(index) - 8, 6);
+      }
+      for (const seriesIndex of [2, 3]) {
+        expect(bars(seriesIndex)[index].x).toBeCloseTo(center(index) + 8, 6);
+        expect(bars(seriesIndex)[index].x2).toBe(bars(seriesIndex)[index].x);
+      }
+    });
+    // Each layer stacks only its own series: 2025 starts at zero.
+    expect(bars(0)[0].from).toBeCloseTo(at(0), 6);
+    expect(bars(1)[0].from).toBeCloseTo(at(3), 6);
+    expect(bars(1)[0].to).toBeCloseTo(at(5), 6);
+    expect(bars(2)[0].from).toBeCloseTo(at(0), 6);
+    expect(bars(3)[0].from).toBeCloseTo(at(5), 6);
+    expect(bars(3)[0].to).toBeCloseTo(at(9), 6);
+  });
+
+  it('moves horizontal bars down with a positive offset', () => {
+    const without = findAll(scene([[1, 2, 3]], { horizontalBars: true }), {
+      role: 'bar'
+    });
+    const moved = findAll(
+      scene([[1, 2, 3]], { horizontalBars: true, offset: 6 }),
+      { role: 'bar' }
+    );
+    expect(moved).toHaveLength(without.length);
+    moved.forEach((b, index) => {
+      const before = without[index].attrs;
+      expect(Number(b.attrs.y1)).toBeCloseTo(Number(before.y1) + 6, 6);
+      expect(Number(b.attrs.y2)).toBeCloseTo(Number(before.y2) + 6, 6);
+      expect(b.attrs.x1).toBe(before.x1);
+      expect(b.attrs.x2).toBe(before.x2);
+    });
+  });
+
+  it('moves grouped and distributed bars too', () => {
+    const data = [
+      [1, 2, 3],
+      [3, 2, 1]
+    ];
+    const pairs = [
+      [scene(data), scene(data, { offset: -5 }), -5],
+      [
+        scene([1, 2, 3], { distributeSeries: true }),
+        scene([1, 2, 3], { distributeSeries: true, offset: 4 }),
+        4
+      ]
+    ] as const;
+    for (const [before, after, offset] of pairs) {
+      const without = findAll(before, { role: 'bar' });
+      const moved = findAll(after, { role: 'bar' });
+      expect(moved).toHaveLength(without.length);
+      moved.forEach((b, index) => {
+        const x = Number(without[index].attrs.x1);
+        expect(Number(b.attrs.x1)).toBeCloseTo(x + offset, 6);
+        expect(b.attrs.y2).toBe(without[index].attrs.y2);
+      });
+    }
+  });
+
+  it('leaves the bars unchanged without an offset', () => {
+    expect(grouped().scene).toEqual(grouped([0, 0]).scene);
+  });
+});

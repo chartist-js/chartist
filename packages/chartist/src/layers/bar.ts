@@ -43,6 +43,13 @@ export interface BarLayerOptions {
     | boolean;
   /** Distance between the bars of different series, in px. */
   readonly seriesBarDistance?: number;
+  /**
+   * Moves all bars of the layer along the label axis, in px: to the right
+   * for vertical bars, down for horizontal bars (negative values move them
+   * the other way). Two stacked bar layers with opposite offsets draw
+   * grouped stacks.
+   */
+  readonly offset?: number;
   /** One series per value of a flat series (1.x `distributeSeries`). */
   readonly distributeSeries?: boolean;
   /**
@@ -151,6 +158,7 @@ export function bar(options: BarLayerOptions = {}): Layer {
   };
   const horizontal = Boolean(options.horizontalBars);
   const seriesBarDistance = options.seriesBarDistance ?? 15;
+  const offset = options.offset ?? 0;
   const stackMode = options.stackMode ?? 'accumulate';
   // `overlap` and `true` draw every bar from zero: the values fit them.
   const stacks =
@@ -257,6 +265,7 @@ export function bar(options: BarLayerOptions = {}): Layer {
                 ? 0
                 : biPol * seriesBarDistance * (horizontal ? -1 : 1);
           }
+          projected[labelPos] += offset;
 
           if (isAccumulateRelative) {
             // By the value along the value axis only: the other one is

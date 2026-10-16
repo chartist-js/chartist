@@ -5,6 +5,7 @@
 import {
   autoScaleAxis,
   band,
+  bar,
   barChart,
   cartesianAxes,
   chart,
@@ -281,5 +282,11 @@ describe('v2 type contract', () => {
         }
       }
     );
+  });
+
+  test('a bar layer moves by an offset in px', () => {
+    bar({ stackBars: true, offset: -8 });
+    // @ts-expect-error: an offset is a number of px
+    bar({ offset: '8px' });
   });
 });
