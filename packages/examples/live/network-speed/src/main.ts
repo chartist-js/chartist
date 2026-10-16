@@ -63,14 +63,7 @@ const live = chart(container, {
       showGrid: false,
       showLabel: false
     },
-    {
-      id: 'mbps',
-      side: 'left',
-      type: autoScaleAxis(),
-      low: 0,
-      high: 140,
-      labelTransform: value => `${value}`
-    }
+    { id: 'mbps', side: 'left', type: autoScaleAxis(), low: 0, high: 140 }
   ]),
   layers: [
     axisGrid({ axes: ['mbps'] }),

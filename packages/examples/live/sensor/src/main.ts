@@ -24,6 +24,9 @@ const chart = lineChart('#chart', data, {
   // Keep the SVG, know each reading by its label, and animate updates.
   renderer: liveDomRenderer({ key: 'label', animations: smilAnimations() }),
   showArea: true,
+  // A fixed range, so the axis stays and only the readings move.
+  low: 20,
+  high: 24,
   on: {
     // What each render did to the SVG's elements.
     mount: ({ scene, changes, cause }) => {
@@ -36,10 +39,9 @@ const chart = lineChart('#chart', data, {
       for (const change of changes) {
         tally[change.op] += 1;
       }
-      const kept = total - tally.add - tally.update;
       readout.textContent =
-        `${tally.add} added, ${tally.update} changed, ${tally.remove} removed, ` +
-        `${kept} of ${total} left as they were.`;
+        `Kept ${total - tally.add} of ${total} elements (${tally.update} changed), ` +
+        `added ${tally.add}, removed ${tally.remove}.`;
     }
   }
 });
@@ -49,7 +51,8 @@ setInterval(() => {
   second += 1;
   const [values] = data.series;
   const last = values[values.length - 1];
-  const reading = Math.round((last + random() - 0.5) * 10) / 10;
+  const next = last + random() - 0.5;
+  const reading = Math.round(Math.min(23.5, Math.max(20.5, next)) * 10) / 10;
   // Drop the oldest reading and add the new one.
   data = {
     labels: [...data.labels.slice(1), `${second}s`],

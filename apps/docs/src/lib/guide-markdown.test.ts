@@ -31,6 +31,22 @@ describe('guide Markdown', () => {
     expect(markdown).toContain('The text.');
   });
 
+  test('turns a gallery example into its files', () => {
+    const markdown = guide(
+      [
+        '<LiveExample',
+        "  title='Live gauge'",
+        "  show='src/style.css'",
+        "  gallery='live/gauge'",
+        '/>'
+      ].join('\n')
+    );
+    expect(markdown).toContain('**Live gauge**');
+    const files = [...markdown.matchAll(/^`([^`]+)`:$/gm)].map(m => m[1]);
+    expect(files).toEqual(['src/style.css', 'src/main.ts', 'index.html']);
+    expect(markdown).toContain('smilAnimations');
+  });
+
   test('turns a live example into its files, the shown file first', () => {
     const markdown = guide(
       [

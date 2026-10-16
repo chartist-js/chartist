@@ -8,3 +8,8 @@
 #chart .ct-bar {
   stroke-opacity: 0.45;
 }
+
+/* The average in the text color, so it stands out from the bars. */
+#chart .ct-line {
+  stroke: currentColor;
+}
