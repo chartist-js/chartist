@@ -289,4 +289,39 @@ describe('v2 type contract', () => {
     // @ts-expect-error: an offset is a number of px
     bar({ offset: '8px' });
   });
+
+  test('axes take labelAlign for their SVG labels', () => {
+    lineChart(
+      '#c',
+      { series: [[1]] },
+      {
+        labels: 'svg',
+        axisX: { labelAlign: { horizontal: 'middle' } },
+        axisY: { labelAlign: { horizontal: 'end', vertical: 'top' } }
+      }
+    );
+    barChart('#c', { series: [[1]] }, { axisX: { labelAlign: {} } });
+    cartesianAxes([
+      {
+        id: 'x',
+        side: 'bottom',
+        type: stepAxis(),
+        labelAlign: { vertical: 'middle' }
+      },
+      { id: 'y', side: 'left', type: autoScaleAxis() }
+    ]);
+    cartesianAxes({
+      y: { type: autoScaleAxis(), labelAlign: { horizontal: 'start' } }
+    });
+    lineChart(
+      '#c',
+      { series: [[1]] },
+      {
+        axisX: {
+          // @ts-expect-error: horizontal is start, middle or end
+          labelAlign: { horizontal: 'left' }
+        }
+      }
+    );
+  });
 });

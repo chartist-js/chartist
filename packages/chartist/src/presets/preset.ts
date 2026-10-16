@@ -213,18 +213,23 @@ export function labelLayer(
     type: 'labels',
     coordinates: ['cartesian'],
     compose(context) {
-      const svgLabel =
-        context.labels === 'svg'
-          ? svgLabels(context.measureText, options.labelKind ?? 'line')
-          : undefined;
       return [
         group(
           options.classNames.labelGroup,
           order.flatMap(dimension => {
             const axis = context.axes[dimension];
-            return axis
-              ? axisNodes(axis, frame(options, context, svgLabel)).labels
-              : [];
+            if (!axis) {
+              return [];
+            }
+            const svgLabel =
+              context.labels === 'svg'
+                ? svgLabels(
+                    context.measureText,
+                    options.labelKind ?? 'line',
+                    options[dimension === 'x' ? 'axisX' : 'axisY'].labelAlign
+                  )
+                : undefined;
+            return axisNodes(axis, frame(options, context, svgLabel)).labels;
           })
         )
       ];

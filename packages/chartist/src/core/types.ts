@@ -1,6 +1,7 @@
 import type { RequiredKeys } from '../utils';
 import type { Axis, AxisType } from '../axes';
 import type { Svg } from '../svg';
+import type { LabelAlign } from '../scales/svgLabels';
 
 /** Space in px between the chart's edges and its drawing area, per side. */
 export interface ChartPadding {
@@ -158,6 +159,11 @@ export interface AxisOptions {
   };
   /** Draws the axis labels. */
   showLabel?: boolean;
+  /**
+   * Aligns this axis's SVG text labels in their box, over the `align` of
+   * {@link axisLabels}. HTML labels ignore it (align them with CSS).
+   */
+  labelAlign?: Partial<LabelAlign>;
   /** Draws the grid lines of the axis. */
   showGrid?: boolean;
   /**
