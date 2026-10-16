@@ -32,7 +32,7 @@ barChart(
       {
         seriesBarDistance: 5,
         axisX: {
-          labelInterpolationFnc(value) {
+          labelTransform(value) {
             return String(value)[0];
           }
         }

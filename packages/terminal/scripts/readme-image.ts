@@ -111,13 +111,13 @@ const scene = toScene(
       x: {
         type: stepAxis(),
         // Every other hour: a tick without a label has no grid line either.
-        labelInterpolationFnc: (value, index) => (index % 2 ? null : value)
+        labelTransform: (value, index) => (index % 2 ? null : value)
       },
       y: {
         type: autoScaleAxis(),
         low: 0,
         scaleMinSpace: 40,
-        labelInterpolationFnc: value => `${value}ms`
+        labelTransform: value => `${value}ms`
       }
     }),
     layers: [

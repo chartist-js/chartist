@@ -108,6 +108,7 @@ The classes, and everything that exists only for them, are deprecated. They keep
 - **`AutoScaleAxis`, `FixedScaleAxis`, `StepAxis`:** use `autoScaleAxis()`, `fixedScaleAxis()` and `stepAxis()`.
 - **`EventEmitter` and the classes' events types:** the handle a chart function returns has `on()` and `off()`.
 - **`DrawEvent`, `CreatedEvent`, `Plugin` and the other 1.x event types:** import the same types from `chartist/compat`.
+- **`labelInterpolationFnc`:** the option is now called `labelTransform`, on axes and pies alike. The old name keeps working; when both are set, `labelTransform` wins.
 
 The data types, `Svg`, `SvgPath`, `easings`, `Interpolation` and the helpers aren't deprecated: the functions use them too.
 

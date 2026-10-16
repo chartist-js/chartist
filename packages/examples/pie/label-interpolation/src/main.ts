@@ -10,6 +10,6 @@ pieChart('#chart', data, {
   width: 100,
   height: 100,
   chartPadding: 10,
-  labelInterpolationFnc: value =>
+  labelTransform: value =>
     `${Math.round((Number(value) / data.series.reduce(sum)) * 100)}%`
 });

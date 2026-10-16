@@ -46,7 +46,7 @@ barChart(
     high: 10,
     low: -10,
     axisX: {
-      labelInterpolationFnc: (value, index) => (index % 2 === 0 ? value : null)
+      labelTransform: (value, index) => (index % 2 === 0 ? value : null)
     }
   }
 );

@@ -50,7 +50,7 @@ for (const cell of document.querySelectorAll('.cell')) {
         type: autoScaleAxis(),
         low: 0,
         onlyInteger: true,
-        labelInterpolationFnc: value => `${value}%`
+        labelTransform: value => `${value}%`
       }
     ]),
     layers: [

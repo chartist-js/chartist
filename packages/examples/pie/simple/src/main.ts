@@ -6,6 +6,6 @@ const data = {
 };
 
 pieChart('#chart', data, {
-  labelInterpolationFnc: value =>
+  labelTransform: value =>
     Math.round((+value / data.series.reduce((a, b) => a + b)) * 100) + '%'
 });

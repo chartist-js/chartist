@@ -25,7 +25,7 @@ barChart(
     },
     axisY: {
       offset: 80,
-      labelInterpolationFnc: value => value + ' CHF',
+      labelTransform: value => value + ' CHF',
       scaleMinSpace: 15
     }
   }

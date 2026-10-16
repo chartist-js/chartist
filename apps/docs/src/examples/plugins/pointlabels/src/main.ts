@@ -19,7 +19,7 @@ lineChart(
       fromLegacyPlugin(
         plugins.ctPointLabels({
           textAnchor: 'middle',
-          labelInterpolationFnc: (value: number) => `$${value.toFixed(2)}`
+          labelTransform: (value: number) => `$${value.toFixed(2)}`
         })
       )
     ]

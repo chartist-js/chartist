@@ -36,7 +36,7 @@ const responsiveOptions: PresetResponsiveOptions<BarChartPresetOptions> = [
     {
       seriesBarDistance: 10,
       axisX: {
-        labelInterpolationFnc: value => value
+        labelTransform: value => value
       }
     }
   ],
@@ -45,7 +45,7 @@ const responsiveOptions: PresetResponsiveOptions<BarChartPresetOptions> = [
     {
       seriesBarDistance: 5,
       axisX: {
-        labelInterpolationFnc: value => String(value)[0]
+        labelTransform: value => String(value)[0]
       }
     }
   ]

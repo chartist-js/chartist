@@ -87,7 +87,7 @@ Small counts are where `onlyInteger` shines. Without it, this chart would put ti
 
 ## Label text
 
-Every axis takes a `labelInterpolationFnc`. It gets each tick's value and index and returns the label to show. Return `null` and the tick is skipped, label and grid line both:
+Every axis takes a `labelTransform`. It gets each tick's value and index and returns the label to show. Return `null` and the tick is skipped, label and grid line both:
 
 ```ts
 import 'chartist/styles.css';
@@ -104,11 +104,11 @@ lineChart(
   {
     axisX: {
       // A label every five days.
-      labelInterpolationFnc: (value, index) =>
+      labelTransform: (value, index) =>
         index % 5 === 0 ? `Day ${value}` : null
     },
     axisY: {
-      labelInterpolationFnc: value => `${value} °C`
+      labelTransform: value => `${value} °C`
     }
   }
 );

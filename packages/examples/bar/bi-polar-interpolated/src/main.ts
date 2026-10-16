@@ -10,7 +10,7 @@ const options: BarChartPresetOptions = {
   high: 10,
   low: -10,
   axisX: {
-    labelInterpolationFnc(value, index) {
+    labelTransform(value, index) {
       return index % 2 === 0 ? value : null;
     }
   }

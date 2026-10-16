@@ -15,7 +15,7 @@ barChart(
   {
     stackBars: true,
     axisY: {
-      labelInterpolationFnc: value => +value / 1000 + 'k'
+      labelTransform: value => +value / 1000 + 'k'
     }
   }
 );

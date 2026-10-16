@@ -52,7 +52,7 @@ console.log(
 
 ## Axes and scales
 
-`low` and `high`, `onlyInteger`, `labelInterpolationFnc` and the axis types work as in [Axes and scales](../../../docs/axes-and-scales/). With `autoScaleAxis()` on the X axis, a line chart becomes a scatter plot:
+`low` and `high`, `onlyInteger`, `labelTransform` and the axis types work as in [Axes and scales](../../../docs/axes-and-scales/). With `autoScaleAxis()` on the X axis, a line chart becomes a scatter plot:
 
 ```ts
 import { autoScaleAxis } from 'chartist';
@@ -74,7 +74,7 @@ console.log(
       showLine: false,
       low: 0,
       axisX: { type: autoScaleAxis(), onlyInteger: true },
-      axisY: { labelInterpolationFnc: value => `${value}k` }
+      axisY: { labelTransform: value => `${value}k` }
     }
   )
 );
@@ -84,7 +84,7 @@ console.log(
 
 ## Bars and pies
 
-Stacked and horizontal bars, `distributeSeries` and `reverseData` work as on [Bar charts](../../../docs/bar-charts/). Pies take `donut`, `startAngle`, `total` and `labelInterpolationFnc`, so a gauge is half a donut:
+Stacked and horizontal bars, `distributeSeries` and `reverseData` work as on [Bar charts](../../../docs/bar-charts/). Pies take `donut`, `startAngle`, `total` and `labelTransform`, so a gauge is half a donut:
 
 ```ts
 import { barChart, pieChart } from '@chartist-js/terminal';
