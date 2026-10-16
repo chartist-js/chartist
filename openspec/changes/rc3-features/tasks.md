@@ -6,7 +6,7 @@
 
 ## 2. `bar()` offset (#262)
 
-- [ ] 2.1 Add `offset` to `bar()` for every bar mode, with its doc comment. Verify: unit tests for the "Bar layer offset" scenarios (grouped stacks, horizontal bars, no offset unchanged)
+- [x] 2.1 Add `offset` to `bar()` for every bar mode, with its doc comment. Verify: unit tests for the "Bar layer offset" scenarios (grouped stacks, horizontal bars, no offset unchanged)
 
 ## 3. Trend line (#1209)
 
@@ -15,7 +15,7 @@
 
 ## 4. Label alignment per axis (#1487)
 
-- [ ] 4.1 Add `labelAlign` to `AxisOptions`, used by `axisLabels()` (over its `align`) and the presets' label layer. Verify: unit tests for the "Label alignment per axis" scenarios
+- [x] 4.1 Add `labelAlign` to `AxisOptions`, used by `axisLabels()` (over its `align`) and the presets' label layer. Verify: unit tests for the "Label alignment per axis" scenarios
 
 ## 5. Line breaks in pie labels (#546)
 
