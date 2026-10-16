@@ -1,3 +1,29 @@
+## 2.0.0-rc.3 (2026-10-16)
+
+### 🚀 Features
+
+- **chartist:** layer refinement and roles for target lines and bands ([ca804c49](https://github.com/chartist-js/chartist/commit/ca804c49))
+- **chartist:** target line layer ([565bd2af](https://github.com/chartist-js/chartist/commit/565bd2af))
+- **chartist:** band layer ([fc1280c9](https://github.com/chartist-js/chartist/commit/fc1280c9))
+- **chartist:** mark values in and out of a band ([5eb30578](https://github.com/chartist-js/chartist/commit/5eb30578))
+- **chartist:** extra layers on presets ([d3e88fdc](https://github.com/chartist-js/chartist/commit/d3e88fdc))
+- **chartist:** one target line per layer, band edges as values ([13eb8dbf](https://github.com/chartist-js/chartist/commit/13eb8dbf))
+- **chartist:** labelTransform, the new name of labelInterpolationFnc ([24b819c6](https://github.com/chartist-js/chartist/commit/24b819c6))
+- **chartist:** line breaks in pie labels ([0552f1e0](https://github.com/chartist-js/chartist/commit/0552f1e0))
+- **chartist:** offset for bar layers ([8d61374e](https://github.com/chartist-js/chartist/commit/8d61374e))
+- **chartist:** label alignment per axis ([e89e27ef](https://github.com/chartist-js/chartist/commit/e89e27ef))
+- **chartist:** trend line layer ([6f74442c](https://github.com/chartist-js/chartist/commit/6f74442c))
+- **styles:** target line, label and band styles ([144f71bd](https://github.com/chartist-js/chartist/commit/144f71bd))
+- **styles:** label and grid defaults for a dark color scheme ([77fa2854](https://github.com/chartist-js/chartist/commit/77fa2854))
+- **terminal:** shade bands ([a0bfa560](https://github.com/chartist-js/chartist/commit/a0bfa560))
+- **terminal:** render text art as a DOM element ([2dc57f0d](https://github.com/chartist-js/chartist/commit/2dc57f0d))
+
+### 🩹 Fixes
+
+- **chartist:** set inline styles through the CSSOM ([9cdeb816](https://github.com/chartist-js/chartist/commit/9cdeb816))
+- **chartist:** check element and attribute names in renderToString() ([e89640e6](https://github.com/chartist-js/chartist/commit/e89640e6))
+- **terminal:** draw circles at their radius ([913a32ca](https://github.com/chartist-js/chartist/commit/913a32ca))
+
 ## 2.0.0-rc.2 (2026-10-15)
 
 ### 🚀 Features
