@@ -274,7 +274,7 @@ For data that arrives every second or faster, keep the duration below the update
 
 ## What it costs
 
-Live updates are opt-in, in their own entry point, so charts that don't use them don't carry them. Minified and gzipped, `liveDomRenderer()` adds about 1.5 kB, and `smilAnimations()` about 2.2 kB more. What the core needs for them (the previous render for renderers, `cause` and `changes`, cleanup functions) is about 0.6 kB, in every chart.
+Live updates are opt-in, in their own entry point, so charts that don't use them don't carry them. Minified and gzipped, `liveDomRenderer()` adds about 1.4 kB to a chart, and `smilAnimations()` about 4 kB more. What the core needs for them (the previous render for renderers, `cause` and `changes`, cleanup functions) is about 0.6 kB, in every chart.
 
 ## Redrawing on resize
 

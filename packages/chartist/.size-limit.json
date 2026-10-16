@@ -28,6 +28,20 @@
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
+    "name": "Live browser ESM (dist/live.min.js, without the core)",
+    "path": "dist/live.min.js",
+    "limit": "4.9 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "Live UMD (dist/live.umd.js, without the core)",
+    "path": "dist/live.umd.js",
+    "limit": "5 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
@@ -88,6 +102,20 @@
     "path": "dist/index.js",
     "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
     "limit": "14.25 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { liveDomRenderer } from chartist/live (tree-shaken)",
+    "path": "dist/live.js",
+    "import": "{ liveDomRenderer }",
+    "limit": "2.7 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { liveDomRenderer, smilAnimations } from chartist/live (tree-shaken)",
+    "path": "dist/live.js",
+    "import": "{ liveDomRenderer, smilAnimations }",
+    "limit": "8 kB",
     "gzip": true
   },
   {
