@@ -33,7 +33,10 @@ const pagerLink =
   'flex flex-col gap-1 rounded-lg border-[1.5px] border-line-strong px-5 py-4 text-ink no-underline hover:border-ink hover:text-ink';
 const tocLink =
   'border-l-2 border-line py-1 text-ink-2 no-underline hover:text-ink-2 aria-[current=true]:border-brand aria-[current=true]:font-bold aria-[current=true]:text-ink';
-const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
+// Sidebars stick below the header and scroll on their own when they're
+// taller than the window; the padding keeps focus rings inside the scroll box.
+const column =
+  'sticky top-[100px] -mx-1 flex max-h-[calc(100dvh-116px)] flex-col overflow-y-auto overscroll-contain px-1 pb-4 text-sm [scrollbar-width:thin] max-md:hidden';
 ---
 
 <BaseLayout title={page.title} description={page.description} section={page.section} markdown={markdown}>
@@ -51,7 +54,7 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
       </nav>
     </details>
 
-    <aside class={`${column} max-w-[260px] flex-[1_1_220px] gap-5`} aria-label={label}>
+    <aside class={`${column} max-w-[260px] flex-[1_1_220px] gap-5`} aria-label={label} data-docs-sidebar>
       <label class="flex flex-col gap-1.5 px-3">
         <span class="eyebrow">Version</span>
         <select class="version min-h-9 appearance-none rounded-pill border-[1.5px] border-line-strong bg-surface py-2 pr-7 pl-2.5 font-mono text-xs leading-none font-bold text-ink" data-version-switch>
@@ -132,7 +135,7 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
 
     {
       toc.length > 0 && (
-        <nav class={`${column} max-w-[200px] flex-[1_1_180px] gap-2`} aria-label="On this page">
+        <nav class={`${column} max-w-[200px] flex-[1_1_180px] gap-2`} aria-label="On this page" data-docs-toc>
           <span class="eyebrow">On this page</span>
           {toc.map(h => (
             <a class:list={['toc-link', tocLink, h.depth === 3 ? 'pl-6' : 'pl-3']} href={`#${h.slug}`}>
@@ -155,6 +158,20 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
     });
   }
 
+  // Scrolls a sidebar so a link in it is visible, without moving the page.
+  const reveal = (scroller: HTMLElement | null, link: HTMLElement | null) => {
+    if (!scroller || !link || scroller.scrollHeight <= scroller.clientHeight) {
+      return;
+    }
+    const top = link.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+    if (top < scroller.scrollTop || top + link.offsetHeight > scroller.scrollTop + scroller.clientHeight) {
+      scroller.scrollTop = top - scroller.clientHeight / 2 + link.offsetHeight / 2;
+    }
+  };
+  const sidebar = document.querySelector<HTMLElement>('[data-docs-sidebar]');
+  reveal(sidebar, sidebar?.querySelector<HTMLElement>('[aria-current="page"]') ?? null);
+  const toc = document.querySelector<HTMLElement>('[data-docs-toc]');
+
   // On-page TOC: mark the section in view.
   const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc-link')];
   const targets = links
@@ -169,6 +186,7 @@ const column = 'sticky top-[100px] flex flex-col text-sm max-md:hidden';
               link.toggleAttribute('aria-current', link.hash === `#${entry.target.id}`);
               if (link.hash === `#${entry.target.id}`) {
                 link.setAttribute('aria-current', 'true');
+                reveal(toc, link);
               }
             }
           }
