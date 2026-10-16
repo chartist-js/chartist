@@ -19,7 +19,7 @@
 
 ## 5. Line breaks in pie labels (#546)
 
-- [ ] 5.1 Split pie labels at `\n` into centered `tspan` lines. Verify: unit tests for the "Line breaks in pie labels" scenarios, `chartist:test:visual` and `test:visual:v1` unchanged, the terminal tests
+- [x] 5.1 Split pie labels at `\n` into centered `tspan` lines. Verify: unit tests for the "Line breaks in pie labels" scenarios, `chartist:test:visual` and `test:visual:v1` unchanged, the terminal tests
 
 ## 6. Docs, examples and the gate
 

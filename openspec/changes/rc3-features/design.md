@@ -60,6 +60,8 @@ trendLine({ series: ['sales'], x: 'month', y: 'eur', align: 'center' });
 ### Line breaks in pie labels (#546)
 
 - The label's text is split at `\n`. One line: unchanged `text`. Several: `text` holds one `tspan` per line with `x` at the anchor and `dy` of one line height (`1.2em`), the first `tspan` moved up by half the block (`dy: -(n - 1) * 0.6em`), so the block stays centered as the one-line label is.
+- A multi-line label's `text` is placed with `x`/`y` (as `svgLabels` places axis labels), not `dx`/`dy`: with `dx` on the `text`, the first `tspan`'s own `x` adds to it and the first line lands at twice the anchor. One-line labels keep `dx`/`dy` as in 1.x; the compat events read positions from the context, not the attributes.
+- The terminal centers a pie label's lines on its anchor, one row apart (`packages/terminal/src/draw.ts`); before, it drew every `tspan` of a pie label on the same row.
 - Applies to presets, `pie()` and the 1.x `PieChart` class alike, so the 1.x output changes only for labels with `\n`, which rendered as a space before.
 
 ## Risks / Trade-offs
