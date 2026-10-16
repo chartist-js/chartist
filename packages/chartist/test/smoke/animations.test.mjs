@@ -43,15 +43,29 @@ const FRAME = `() => new Promise(r => requestAnimationFrame(() => requestAnimati
 let browsers;
 
 before(async () => {
-  browsers = {
-    chromium: await chromium.launch(),
-    firefox: await firefox.launch(),
-    webkit: await webkit.launch()
-  };
+  const engines = { chromium, firefox, webkit };
+  const launched = await Promise.allSettled(
+    Object.values(engines).map(engine => engine.launch())
+  );
+  const failed = launched.find(result => result.status === 'rejected');
+  if (failed) {
+    // An open browser would keep the test process from ever ending.
+    await Promise.all(
+      launched
+        .filter(result => result.status === 'fulfilled')
+        .map(result => result.value.close())
+    );
+    throw failed.reason;
+  }
+  browsers = Object.fromEntries(
+    Object.keys(engines).map((name, i) => [name, launched[i].value])
+  );
 });
 
 after(async () => {
-  await Promise.all(Object.values(browsers).map(browser => browser.close()));
+  await Promise.all(
+    Object.values(browsers ?? {}).map(browser => browser.close())
+  );
 });
 
 /** Opens the page in a browser, with the builds served from dist. */
