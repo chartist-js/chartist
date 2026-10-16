@@ -58,6 +58,16 @@ try {
 const fonts = await document.fonts
   .load("16px 'Chartist Terminal'", '\\u2801')
   .catch(() => []);
+// The violation event can arrive after the failed load: wait for it a bit.
+for (
+  let wait = 0;
+  fonts.length === 0 &&
+  wait < 50 &&
+  !violations.some(violation => violation.startsWith('font-src'));
+  wait++
+) {
+  await new Promise(resolve => setTimeout(resolve, 20));
+}
 window.result = {
   violations,
   errors,
