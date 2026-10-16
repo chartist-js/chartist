@@ -131,12 +131,20 @@ async function run(policy, { trustedTypes = false } = {}) {
   });
   const pageErrors = [];
   tab.on('pageerror', error => pageErrors.push(error.message));
+  // The browser also logs what the policy refused, whether or not the
+  // page's securitypolicyviolation listener got the event.
+  const refused = [];
+  tab.on('console', message => {
+    if (/Refused to/.test(message.text())) {
+      refused.push(message.text());
+    }
+  });
   await tab.goto(`${ORIGIN}/`);
   // A selector, not waitForFunction: the policy blocks Playwright's eval.
   await tab.waitForSelector('body[data-done]', { state: 'attached' });
   const result = await tab.evaluate(() => window.result);
   await tab.close();
-  return { ...result, pageErrors };
+  return { ...result, pageErrors, refused };
 }
 
 test('draws HTML and element output under a strict style policy', async () => {
@@ -152,8 +160,15 @@ test('draws HTML and element output under a strict style policy', async () => {
 
 test('needs font-src data: for the cell font', async () => {
   const result = await run("default-src 'self'; style-src 'self'");
-  assert.equal(result.font, false);
-  assert.ok(result.violations.some(v => v.startsWith('font-src')));
+  assert.equal(result.font, false, 'the cell font is blocked');
+  assert.ok(
+    result.violations.some(v => /^(font|default)-src/.test(v)) ||
+      result.refused.some(text => /font/i.test(text)),
+    `the policy reports the font: ${JSON.stringify({
+      violations: result.violations,
+      refused: result.refused
+    })}`
+  );
 });
 
 test('draws element output where Trusted Types are required', async () => {
