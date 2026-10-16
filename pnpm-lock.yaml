@@ -244,8 +244,8 @@ importers:
         specifier: 14.1.0
         version: 14.1.0
       tsdown:
-        specifier: 0.23.0
-        version: 0.23.0(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@5.9.3)
+        specifier: 0.23.1
+        version: 0.23.1(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@5.9.3)
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -357,8 +357,8 @@ importers:
         specifier: 1.63.0
         version: 1.63.0
       tsdown:
-        specifier: 0.23.0
-        version: 0.23.0(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3)
+        specifier: 0.23.1
+        version: 0.23.1(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -6456,14 +6456,14 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
-  tsdown@0.23.0:
-    resolution: {integrity: sha512-BaT+ep1xnj5hdyICLd5r5SYYE+TXnI1ATePLykv9vcKpHpFTWUWRH+x1AF/E2qcu3YB6+vI8IdyxIIIffEqw5Q==}
+  tsdown@0.23.1:
+    resolution: {integrity: sha512-MSC2WSOts3in95J334/VIS7KPfor3eCSvndJ6KdoVj9Aak9Kh1aNfz9ws5owhdukuTNSXRdfkPEzA/ihpDD6SA==}
     engines: {node: ^22.18.0 || ^24.11.0 || >=26.0.0}
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
-      '@tsdown/css': 0.23.0
-      '@tsdown/exe': 0.23.0
+      '@tsdown/css': 0.23.1
+      '@tsdown/exe': 0.23.1
       '@vitejs/devtools': '*'
       publint: ^0.3.8
       tsx: '*'
@@ -6727,10 +6727,6 @@ packages:
 
   vendors@1.0.4:
     resolution: {integrity: sha512-/juG65kTL4Cy2su4P8HjtkTxk6VmJDiOPBufWniqQ6wknac6jNiXS9vU+hO3wgusiyqWlzTbVHi0dyJqRONg3w==}
-
-  verkit@0.4.1:
-    resolution: {integrity: sha512-mMVzj0TXExtVdlDEq+Mzp0eyOuyznNpFobNM3uAqe3HVm/Ps2c+u17BligMkZjZCA6EiXpoon8iRTer3iu40SQ==}
-    engines: {node: '>=18.12.0'}
 
   verkit@0.5.0:
     resolution: {integrity: sha512-u4J1hr6Y+C/hit34GwL3eIcUf3wngT8TlYUjK7tk0jxydKLAq3sYvifjdTDA6U3KCKRcQCQDGf/srjxfZF3l7g==}
@@ -11087,9 +11083,9 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.7
 
   fflate@0.7.3: {}
 
@@ -13498,8 +13494,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   tinypool@2.2.0: {}
 
@@ -13575,14 +13571,14 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.23.0(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@5.9.3):
+  tsdown@0.23.1(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@5.9.3):
     dependencies:
       cac: 7.1.0
       defu: 6.1.7
       empathic: 2.1.0
       hookable: 6.1.2
       import-without-cache: 0.4.1
-      obug: 2.2.1
+      obug: 3.0.0
       picomatch: 4.0.7
       rolldown: 1.2.13
       rolldown-plugin-dts: 0.28.8(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(rolldown@1.2.13)(typescript@5.9.3)
@@ -13590,7 +13586,7 @@ snapshots:
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
-      verkit: 0.4.1
+      verkit: 0.5.0
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -13600,14 +13596,14 @@ snapshots:
       - oxc-resolver
       - vue-tsc
 
-  tsdown@0.23.0(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3):
+  tsdown@0.23.1(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3):
     dependencies:
       cac: 7.1.0
       defu: 6.1.7
       empathic: 2.1.0
       hookable: 6.1.2
       import-without-cache: 0.4.1
-      obug: 2.2.1
+      obug: 3.0.0
       picomatch: 4.0.7
       rolldown: 1.2.13
       rolldown-plugin-dts: 0.28.8(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(rolldown@1.2.13)(typescript@6.0.3)
@@ -13615,7 +13611,7 @@ snapshots:
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
-      verkit: 0.4.1
+      verkit: 0.5.0
     optionalDependencies:
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -13821,8 +13817,6 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   vendors@1.0.4: {}
-
-  verkit@0.4.1: {}
 
   verkit@0.5.0: {}
 
