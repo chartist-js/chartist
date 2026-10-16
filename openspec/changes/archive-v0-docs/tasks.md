@@ -20,8 +20,8 @@
 
 ## 4. The redirect generator
 
-- [ ] 4.1 Add `scripts/v0-redirects.ts` and the Nx target `docs:v0-redirects` (depends on `docs:build`, not cached) writing `tmp/v0-redirects/`: a page per old page, `404.html`, `.nojekyll` and an allow-all `robots.txt`; verify the folder's file list matches design D5
-- [ ] 4.2 Check every target against `apps/docs/dist` before writing (the file exists; a `#hash` is an `id` in it) and fail with the list of misses; verify by mapping one anchor to a missing heading and seeing the target fail, then reverting
+- [x] 4.1 Add `scripts/v0-redirects.ts` and the Nx target `docs:v0-redirects` (depends on `docs:build`, not cached) writing `tmp/v0-redirects/`: a page per old page, `404.html`, `.nojekyll` and an allow-all `robots.txt`; verify the folder's file list matches design D5
+- [x] 4.2 Check every target against `apps/docs/dist` before writing (the file exists; a `#hash` is an `id` in it) and fail with the list of misses; verify by mapping one anchor to a missing heading and seeing the target fail, then reverting
 - [ ] 4.3 Test the generated pages in a browser against a local copy: serve `tmp/v0-redirects/` under `/chartist-js/` on one port and `dist` on another, with the generator pointed at the local site, and check each scenario of "Old 0.x URLs redirect" (home, an example anchor, an unmapped anchor, an unknown path, scripts off); delete the ad-hoc script afterwards
 
 ## 5. Records and gate
