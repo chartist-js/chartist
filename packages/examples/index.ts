@@ -654,7 +654,7 @@ export const examples: Example[] = [
     id: 'live/sensor',
     title: 'Sensor with a sliding window',
     description:
-      'A reading every second slides in from the right, and the line under it says what each update changed.',
+      'A new reading every second, and a line under the chart that says which elements each update kept, added and removed.',
     v2: true,
     settle: { at: 2500 }
   }),
@@ -684,9 +684,9 @@ export const examples: Example[] = [
   }),
   example({
     id: 'live/votes',
-    title: 'Counting votes',
+    title: 'Votes by district',
     description:
-      'A pie whose slices turn to their new share as each district reports, labels included.',
+      'The results of each district as it reports: the slices and their labels turn to the new shares.',
     v2: true,
     settle: { at: 1900 }
   }),

@@ -1,37 +1,26 @@
 import 'chartist/styles.css';
+import './style.css';
 import { pieChart } from 'chartist';
 import { liveDomRenderer, smilAnimations } from 'chartist/live';
+import { firstCount, onCount, parties } from './count';
 
-// A seeded generator, so every run counts the same votes.
-let seed = 3;
-const random = () => {
-  seed = (seed * 16807) % 2147483647;
-  return (seed - 1) / 2147483646;
-};
-
-// Votes come in district by district; each slice shows its share.
-const parties = ['Greens', 'Blues', 'Reds', 'Yellows'];
-const leaning = [0.32, 0.27, 0.24, 0.17];
-let votes = [120, 100, 90, 60];
-
+let votes = firstCount;
 const total = () => votes.reduce((sum, value) => sum + value, 0);
 
 const chart = pieChart(
   '#chart',
   { labels: parties, series: votes },
   {
-    // Slices are known by their party, and turn to their new size.
+    // Slices are known by their party, and turn to their new share.
     renderer: liveDomRenderer({ key: 'label', animations: smilAnimations() }),
+    // Each slice shows its share.
     labelTransform: (label, index) =>
       `${label}\n${Math.round((votes[index] / total()) * 100)}%`
   }
 );
 
-setInterval(() => {
-  // The next district, with its own mood.
-  votes = votes.map(
-    (value, index) =>
-      value + Math.round(400 * leaning[index] * (0.5 + random()))
-  );
+// The next district's results.
+onCount(count => {
+  votes = count;
   chart.update({ data: { labels: parties, series: votes } });
-}, 1500);
+});

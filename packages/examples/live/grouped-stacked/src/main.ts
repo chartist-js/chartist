@@ -10,17 +10,7 @@ import {
   stepAxis
 } from 'chartist';
 import { liveDomRenderer, smilAnimations } from 'chartist/live';
-
-// A seeded generator, so every run shows the same numbers.
-let seed = 21;
-const random = () => {
-  seed = (seed * 16807) % 2147483647;
-  return (seed - 1) / 2147483646;
-};
-
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-const sales = () => months.map(() => Math.round(2 + random() * 8));
-const data = () => ({ labels: months, series: [sales(), sales(), sales()] });
+import { salesData } from './sales';
 
 // The same bars, grouped or stacked: only the layer's option differs.
 const layers = (stackBars: boolean) => [
@@ -31,7 +21,7 @@ const layers = (stackBars: boolean) => [
 
 let stacked = false;
 const live = chart('#chart', {
-  data: data(),
+  data: salesData(),
   axes: cartesianAxes([
     { id: 'months', side: 'bottom', type: stepAxis() },
     { id: 'sales', side: 'left', type: autoScaleAxis(), low: 0 }
@@ -44,5 +34,5 @@ const live = chart('#chart', {
 // where it was to where it goes.
 setInterval(() => {
   stacked = !stacked;
-  live.update({ data: data(), layers: layers(stacked) });
+  live.update({ data: salesData(), layers: layers(stacked) });
 }, 2500);

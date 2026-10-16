@@ -173,7 +173,7 @@ The site SHALL have a target that captures the landing sections, the first live 
 
 ### Requirement: Guides and chart type pages
 
-The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, updating charts, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output.
+The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output.
 
 #### Scenario: A guide runs as written
 
@@ -199,6 +199,21 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 
 - **WHEN** a reader opens a terminal example
 - **THEN** its code adds the text art with `format: 'element'`, not with `innerHTML`
+
+#### Scenario: Live updates
+
+- **WHEN** a reader opens the live updates guide
+- **THEN** its first live example is a chart drawn with `liveDomRenderer({ key: 'label', animations: smilAnimations() })`, fed with a new value every second, that shows below it how many elements each update added, updated and removed; further live examples show animated bars, an animated pie and gauge, a stream of several updates per second, and one update that changes the data and the layers together; and it explains importing `chartist/live` (with a bundler and from a CDN), identity and the `key` option, the changes and `cause` in `mount`, cleanup functions, the default animation timing, and what live updates add to the bundle
+
+#### Scenario: Cleanup in the plugins guide
+
+- **WHEN** a reader opens the events and plugins guide
+- **THEN** it shows a plugin that returns a cleanup function from `install`, and a `mount` listener that acts on added elements or returns a cleanup function
+
+#### Scenario: Plugins for live updates
+
+- **WHEN** a reader opens the events and plugins guide
+- **THEN** a section on plugins for live updates covers keys for a plugin's own nodes, acting on `add` changes, cleanup, plugin keyframes and the animation timing in `mount`, with a live example of a small v2 tooltip plugin that keeps working while its chart gets new values every second
 
 ### Requirement: Migration guide
 
@@ -617,3 +632,30 @@ A plugin whose use case the core covers SHALL NOT be listed on the plugins page.
 
 - **WHEN** a visitor opens `/plugins/chartist-plugin-targetline/`
 - **THEN** they land on the target lines and bands guide, and the plugins overview has no tile for `chartist-plugin-targetline`
+
+### Requirement: Live data in the examples gallery
+
+The examples gallery SHALL have a "Live data" section with the live update examples, each with its own page like the other examples: a sensor chart with a sliding window, a dashboard, a network speed stream of bars and a line, a seismograph line, an animated pie, an animated gauge, and bars that switch between grouped and stacked with new data. The live updates guide SHALL show these examples from the gallery, not copies of them.
+
+#### Scenario: The section
+
+- **WHEN** a visitor opens the examples gallery
+- **THEN** a "Live data" section lists the live examples, and each one's page runs it and opens it in the playground
+
+### Requirement: Converted plugins and live updates
+
+The plugins page SHALL say that a 1.x plugin converted with `fromLegacyPlugin` makes its chart draw a new SVG on every render, even with `liveDomRenderer()`, and SHALL link the plugin section of the events and plugins guide for writing v2 plugins.
+
+#### Scenario: The note
+
+- **WHEN** a visitor reads the plugins page
+- **THEN** it says that charts with converted 1.x plugins draw a new SVG on every render, even with `liveDomRenderer()`, and links the guide's section on plugins for live updates
+
+### Requirement: The updating charts guide moved
+
+The guide published at `/docs/updating-charts/` SHALL be at `/docs/live-updates/`, and the old path SHALL redirect there.
+
+#### Scenario: Old link
+
+- **WHEN** a reader opens `/docs/updating-charts/`
+- **THEN** the page sends them to `/docs/live-updates/`

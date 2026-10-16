@@ -23,7 +23,7 @@ export const regionData = {
 
 `lineChart()`, `barChart()`, `pieChart()` and `chart()` draw the chart right away and return a handle. Keep it: it's how you give the chart new data, and how you tell it you're done with it.
 
-Here's a temperature sensor that reports every second. The chart drops the oldest reading, adds the new one and keeps its SVG while doing it, sliding the readings to the left. The line under the chart counts what each update did to the SVG: almost every element is kept, many of them with new positions, and only the oldest reading's elements are removed and the new one's added. Press **Edit** to change the code:
+Here's a temperature sensor that reports every second. The chart drops the oldest reading, adds the new one and keeps its SVG while doing it. The line under the chart counts what each update did to the SVG: almost every element is kept, many of them with new positions, and only the oldest reading's elements are removed and the new one's added. Press **Edit** to change the code:
 
 <LiveExample
   title='A live sensor'
@@ -276,8 +276,8 @@ A few things to know:
 Pies animate too. Each slice turns to its new size around the pie, and its label moves around with it. With `key: 'label'`, a slice keeps its element even when the order of the parties changes:
 
 <LiveExample
-  title='Counting votes'
-  label='A pie of four parties whose slices and labels turn to their new share as votes come in'
+  title='Votes by district'
+  label='A pie of four parties whose slices and labels turn to the new shares as each district reports its results'
   gallery='live/votes'
 />
 
@@ -286,7 +286,6 @@ A gauge is a donut on half a ring. Its second slice is the rest of the scale, dr
 <LiveExample
   title='Live gauge'
   label='A half-ring gauge whose red part follows a changing CPU load'
-  show='src/style.css'
   gallery='live/gauge'
 />
 

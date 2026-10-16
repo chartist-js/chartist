@@ -89,20 +89,29 @@ Decided 2026-10-16. The functional API's names and surface are final as they are
 
   It ships soon after, so target lines, bands and layer refinement reach npm.
 
-- **rc.4, the update RC:**
-  - #3 progressive updates: a renderer that patches the existing SVG by node key instead of drawing a new one;
-  - #961 a cleanup hook for plugins;
-  - the wording of the render lifecycle.
-
-  These go together because patching changes when `render` and `mount` run and what a plugin has to undo. Designing the cleanup hook before the renderer would mean changing the plugin contract twice.
-
-- **2.0 final:** no new features after rc.4, only fixes. The `@experimental` tags come off and the API is recorded as final.
+- **Live updates, without an rc.4** (decided 2026-10-17): #3 and #961 went in together, because patching changes when `render` and `mount` run and what a plugin has to undo; designing the cleanup hook before the renderer would have meant changing the plugin contract twice. They ship in 2.0.0 directly, not in a release candidate of their own: the RCs have stalled, waiting for feedback would take long, and feedback on live updates can be met without breaking anything.
+- **2.0 final:** the core is final: the functional API, the pipeline, the renderer contract and the plugin lifecycle lose their `@experimental` tags. `chartist/live` stays experimental and can become stable in a 2.x minor; nothing rules out stabilizing an API in a minor.
+- **The `v2` label** marks what's planned for 2.x, 2.1 and later minors included, not only what fits before 2.0.0.
 - **2.1 and later (additive):**
   - #64 log axis, #116 time axis;
   - #940 series class names without letters, once its API is designed;
   - opt-in options for behavior that would break as a default: #921 closing grid line, #304 axes sized to their labels, #1271 dropping overlapping labels;
   - the other open feature requests.
 - **Bars stay lines** (#522): the presets keep the 1.x `<line>` markup, and so does `bar()`. Bars with a fill and a stroke are a plugin's job, not a later core change.
+
+## Live updates
+
+Decided 2026-10-16 and 2026-10-17 (#3, #961).
+
+- **Opt-in, in its own entry point.** Patching and update animations would add about 3.5 to 4 kB gzipped to every chart (`chart()` +75%), and most charts render once. So they live in `chartist/live`, built like `chartist/compat`; the core grew about 0.6 kB. Measured: `liveDomRenderer()` adds 1.35 kB to a chart, `smilAnimations()` about 4 kB more.
+- **A renderer, not a plugin.** Plugins can't make a renderer patch, reach the previous output or change the `render` and `mount` payloads, so a plugin would have needed a private hook. Charts opt in with `renderer: liveDomRenderer()`, on `chart()` and on the presets, which take a `renderer` for it.
+- **State lives with the chart; renderers are stateless.** From the second render on, a renderer gets the previous render (its own previous output, the previous scene, the cause, both renders' labels and a keyframes lookup) and returns `patched` and its `changes`. One renderer can serve many charts, and a canvas renderer could patch through the same contract. Without `patched`, `render` and `mount` describe a replacement.
+- **The pipeline computes everything on every run.** One changed value moves most nodes anyway (scales, step axes, stacks, pie totals), so stages don't compute deltas. Identity is the live renderer's business: values by `key` (`index`, `label` or a function), ticks by value, groups by layer and class. The scene's keys didn't change.
+- **Updates animate with SMIL.** CSS can't move `<line>` attributes, and Safari doesn't transition `d`. Animations are additive offsets over the final attribute values, so an interrupted animation continues without a jump and the DOM always holds the new state. Easings SMIL can express are `keySplines`; the others, including overshooting ones, are sampled into frames. Timing is CSS: `--ct-update-duration` and `--ct-update-easing`, 300 ms `ease-out` when unset, `0s` turns it off; reduced motion always wins.
+- **Keyframes come from plugins, then the layer.** SMIL only morphs paths with the same commands, so lines, areas and bands need keyframes when keys or counts change, and pie slices whenever their angles change. The built-in ones ship in `smilAnimations()`, not in the layers.
+- **Shared code goes through core exports** (`renderElement()`, `applyAttribute()`, `sampleEasing()`, `keySplinesOf()`), as for the maintained packages: a module shared at build time would be bundled into both `index.min.js` and `live.min.js`.
+- **1.x code always gets a new SVG.** The 1.x classes and charts with compat or converted 1.x plugins never get the previous render, even with `liveDomRenderer()`, because 1.x `draw` listeners expect new elements.
+- **Firefox runs no SMIL inside a `foreignObject`,** so HTML labels move without an animation there; animations that didn't start are removed.
 
 ## Releases
 

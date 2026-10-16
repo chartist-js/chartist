@@ -43,7 +43,12 @@ describe('guide Markdown', () => {
     );
     expect(markdown).toContain('**Live gauge**');
     const files = [...markdown.matchAll(/^`([^`]+)`:$/gm)].map(m => m[1]);
-    expect(files).toEqual(['src/style.css', 'src/main.ts', 'index.html']);
+    expect(files).toEqual([
+      'src/style.css',
+      'src/load.ts',
+      'src/main.ts',
+      'index.html'
+    ]);
     expect(markdown).toContain('smilAnimations');
   });
 
