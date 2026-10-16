@@ -1,0 +1,46 @@
+/*
+ * The fonts of the 0.x docs, served by the site instead of Google Fonts
+ * and cdnjs: Oxygen and Source Code Pro (SIL OFL 1.1, from fontsource,
+ * latin subset), and Font Awesome 4.1.0.
+ */
+@import url('font-awesome/css/font-awesome.min.css');
+
+@font-face {
+  font-family: 'Oxygen';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('oxygen-latin-300-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Oxygen';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('oxygen-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Oxygen';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('oxygen-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('source-code-pro-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('source-code-pro-latin-700-normal.woff2') format('woff2');
+}

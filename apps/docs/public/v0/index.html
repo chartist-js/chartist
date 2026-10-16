@@ -595,19 +595,4 @@ var responsiveOptions = [
 ];
 
 /* Initialize the chart with the above settings */
-new Chartist.Line(&#x27;#my-chart&#x27;, data, options, responsiveOptions);</code></pre><div class="sub-section"><h4 id="configuration-overrides-based-on-media-queries">Configuration overrides based on media queries</h4><p>Configuring different chart behavior for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.<div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.</div></div></div></div><aside class="side-notes"><p>With the clear separation of concerns within Chartist.js, you're able to style your charts with CSS in @media queries. However, sometimes you also need to conditionally control the behavior of your charts. For this purpose, Chartist.js provides you with a simple configuration override mechanism based on media queries.</aside></section></div></article></section><script async src="scripts/all.js"></script><!-- Take web fonts off the critical path but risk FOUT --><script type="text/javascript">WebFontConfig = {
-    google: { families: ['Oxygen:400,300,700', 'Source+Code+Pro:400,700'] },
-    custom: {
-      families: [ 'FontAwesome' ],
-      urls: [ '//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css']
-    }
-  };
-  (function() {
-    var wf = document.createElement('script');
-    wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-    wf.type = 'text/javascript';
-    wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(wf, s);
-  })();</script>
+new Chartist.Line(&#x27;#my-chart&#x27;, data, options, responsiveOptions);</code></pre><div class="sub-section"><h4 id="configuration-overrides-based-on-media-queries">Configuration overrides based on media queries</h4><p>Configuring different chart behavior for various media is made simple with an override mechanism. The priority of the override mechanism is based on order of specification of the matching media queries.<div class="hint hint-cross-browser"><div class="title">Cross-browser support</div><div class="content">For IE9 you need to use a matchMedia polyfill. You should take a look at <a href="https://github.com/paulirish/matchMedia.js/">Paul Irish's matchMedia polyfill</a>.</div></div></div></div><aside class="side-notes"><p>With the clear separation of concerns within Chartist.js, you're able to style your charts with CSS in @media queries. However, sometimes you also need to conditionally control the behavior of your charts. For this purpose, Chartist.js provides you with a simple configuration override mechanism based on media queries.</aside></section></div></article></section><script async src="scripts/all.js"></script><link rel="stylesheet" href="fonts/fonts.css">
