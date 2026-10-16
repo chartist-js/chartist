@@ -52,26 +52,48 @@
   }
 }
 
+// The dark defaults follow the element's `color-scheme` through light-dark().
+// A var() whose fallback a browser doesn't know computes to `unset`, so they
+// sit in @supports and the plain declaration stays for older browsers.
 @mixin ct-chart-label(
   $ct-text-color: $ct-text-color,
   $ct-text-size: $ct-text-size,
-  $ct-text-line-height: $ct-text-line-height
+  $ct-text-line-height: $ct-text-line-height,
+  $ct-text-color-dark: $ct-text-color-dark
 ) {
   fill: var(--ct-label-color, #{$ct-text-color});
   color: var(--ct-label-color, #{$ct-text-color});
   font-size: var(--ct-label-size, #{$ct-text-size});
   line-height: $ct-text-line-height;
+
+  @if $ct-text-color-dark {
+    @supports (color: light-dark(#000, #fff)) {
+      $color: light-dark(#{$ct-text-color}, #{$ct-text-color-dark});
+      fill: var(--ct-label-color, #{$color});
+      color: var(--ct-label-color, #{$color});
+    }
+  }
 }
 
 @mixin ct-chart-grid(
   $ct-grid-color: $ct-grid-color,
   $ct-grid-width: $ct-grid-width,
-  $ct-grid-dasharray: $ct-grid-dasharray
+  $ct-grid-dasharray: $ct-grid-dasharray,
+  $ct-grid-color-dark: $ct-grid-color-dark
 ) {
   stroke: var(--ct-grid-color, #{$ct-grid-color});
   stroke-width: var(--ct-grid-width, #{$ct-grid-width});
   // Always emitted, so the property works; `none` is the initial value.
   stroke-dasharray: var(--ct-grid-dasharray, #{ct-or-none($ct-grid-dasharray)});
+
+  @if $ct-grid-color-dark {
+    @supports (color: light-dark(#000, #fff)) {
+      stroke: var(
+        --ct-grid-color,
+        light-dark(#{$ct-grid-color}, #{$ct-grid-color-dark})
+      );
+    }
+  }
 }
 
 @mixin ct-chart-point(
@@ -141,6 +163,19 @@
   fill-opacity: var(--ct-band-opacity, #{$ct-band-opacity});
 }
 
+@mixin ct-chart-trend-line(
+  $ct-trend-line-width: $ct-trend-line-width,
+  $ct-trend-line-dasharray: $ct-trend-line-dasharray
+) {
+  fill: none;
+  stroke: var(--ct-color);
+  stroke-width: var(--ct-trend-line-width, #{$ct-trend-line-width});
+  stroke-dasharray: var(
+    --ct-trend-line-dasharray,
+    #{ct-or-none($ct-trend-line-dasharray)}
+  );
+}
+
 // Sets the series color as `--ct-color`, which the series' elements use.
 @mixin ct-chart-series-color($color) {
   --ct-color: #{$color};
@@ -149,6 +184,7 @@
   .#{$ct-class-line},
   .#{$ct-class-bar},
   .#{$ct-class-slice-donut},
+  .#{$ct-class-trend-line},
   .#{$ct-class-target-line} {
     stroke: var(--ct-color);
   }
@@ -165,7 +201,9 @@
   $ct-container-ratio: $ct-container-ratio,
   $ct-text-color: $ct-text-color,
   $ct-text-size: $ct-text-size,
+  $ct-text-color-dark: $ct-text-color-dark,
   $ct-grid-color: $ct-grid-color,
+  $ct-grid-color-dark: $ct-grid-color-dark,
   $ct-grid-width: $ct-grid-width,
   $ct-grid-dasharray: $ct-grid-dasharray,
   $ct-point-size: $ct-point-size,
@@ -177,7 +215,11 @@
   $ct-series-colors: $ct-series-colors
 ) {
   .#{$ct-class-label} {
-    @include ct-chart-label($ct-text-color, $ct-text-size);
+    @include ct-chart-label(
+      $ct-text-color,
+      $ct-text-size,
+      $ct-text-color-dark: $ct-text-color-dark
+    );
   }
 
   .#{$ct-class-chart-line} .#{$ct-class-label},
@@ -239,7 +281,12 @@
   }
 
   .#{$ct-class-grid} {
-    @include ct-chart-grid($ct-grid-color, $ct-grid-width, $ct-grid-dasharray);
+    @include ct-chart-grid(
+      $ct-grid-color,
+      $ct-grid-width,
+      $ct-grid-dasharray,
+      $ct-grid-color-dark
+    );
   }
 
   .#{$ct-class-grid-background} {
@@ -276,6 +323,10 @@
 
   .#{$ct-class-band-area} {
     @include ct-chart-band-area();
+  }
+
+  .#{$ct-class-trend-line} {
+    @include ct-chart-trend-line();
   }
 
   @if $ct-include-colored-series {

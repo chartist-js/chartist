@@ -8,6 +8,45 @@ order: 4
 import Callout from '../../components/docs/Callout.astro';
 import LiveExample from '../../components/LiveExample.astro';
 
+export const groupedStacks = {
+  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+  series: [
+    { name: '2024 new', data: [5, 3, 4, 6] },
+    { name: '2024 returning', data: [2, 2, 3, 3] },
+    { name: '2025 new', data: [4, 6, 5, 7] },
+    { name: '2025 returning', data: [3, 4, 4, 5] }
+  ]
+};
+
+export const groupedStacksOptions = {
+  className: 'ct-chart-bar',
+  axes: {
+    $call: 'cartesianAxes',
+    args: [
+      {
+        x: { type: { $call: 'stepAxis' } },
+        y: { type: { $call: 'autoScaleAxis' }, low: 0 }
+      }
+    ]
+  },
+  layers: [
+    { $call: 'axisGrid' },
+    {
+      $call: 'bar',
+      args: [
+        { series: ['2024 new', '2024 returning'], stackBars: true, offset: -8 }
+      ]
+    },
+    {
+      $call: 'bar',
+      args: [
+        { series: ['2025 new', '2025 returning'], stackBars: true, offset: 8 }
+      ]
+    },
+    { $call: 'axisLabels' }
+  ]
+};
+
 export const climate = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
   series: [
@@ -73,14 +112,15 @@ cartesianAxes([
 
 Layers draw in the order you list them, each on top of the ones before. Put the grid first and the labels last.
 
-| Layer          | Draws                                               | Options                                                                                                 |
-| -------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `line()`       | Lines, points and areas                             | `series`, `x`, `y`, `align`, `lineSmooth`, `showLine`, `showPoint`, `showArea`, `areaBase`              |
-| `bar()`        | Bars                                                | `series`, `x`, `y`, `horizontalBars`, `stackBars`, `stackMode`, `seriesBarDistance`, `distributeSeries` |
-| `axisGrid()`   | Grid lines (`g.ct-grids`)                           | `axes` (default: all), `background`                                                                     |
-| `axisLabels()` | Axis labels (`g.ct-labels`)                         | `axes` (default: all), `labels` (`'html'` or `'svg'`)                                                   |
-| `targetLine()` | A target line and its label (`line.ct-target-line`) | `value`, `label`, `className`, `axis`, `labelPosition`                                                  |
-| `band()`       | A band between two edges (`g.ct-band`)              | `series`, `low`, `high`, `x`, `y`, `align`, `lineSmooth`, `mark`                                        |
+| Layer          | Draws                                               | Options                                                                                                           |
+| -------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `line()`       | Lines, points and areas                             | `series`, `x`, `y`, `align`, `lineSmooth`, `showLine`, `showPoint`, `showArea`, `areaBase`                        |
+| `bar()`        | Bars                                                | `series`, `x`, `y`, `horizontalBars`, `stackBars`, `stackMode`, `seriesBarDistance`, `distributeSeries`, `offset` |
+| `axisGrid()`   | Grid lines (`g.ct-grids`)                           | `axes` (default: all), `background`                                                                               |
+| `axisLabels()` | Axis labels (`g.ct-labels`)                         | `axes` (default: all), `labels` (`'html'` or `'svg'`)                                                             |
+| `targetLine()` | A target line and its label (`line.ct-target-line`) | `value`, `label`, `className`, `axis`, `labelPosition`                                                            |
+| `band()`       | A band between two edges (`g.ct-band`)              | `series`, `low`, `high`, `x`, `y`, `align`, `lineSmooth`, `mark`                                                  |
+| `trendLine()`  | A straight line fitted through each series          | `series`, `x`, `y`, `align`                                                                                       |
 
 `series` picks series by `name` or by index; leave it out and the layer draws all of them. `x` and `y` are axis ids; leave them out and the layer uses the first X and the first Y axis. An unknown name or id throws an error that names the layer. Grid and label layers draw for every axis unless you name some: the example draws the grid of `month` and `mm` only, so the right axis doesn't add a second set of lines.
 
@@ -93,6 +133,23 @@ Series keep their place in the data: the temperature is the second series, so it
 Bars sit in the middle of each step, while line points sit at the start of it by default. `align: 'center'` moves the points to the bar centers, as in the example.
 
 Bars grow from zero on their value axis, so make sure zero is on it: `low: 0`, or `referenceValue: 0` to include zero and still scale to the data.
+
+### Grouped stacks
+
+A bar layer with `stackBars` stacks all its series into one bar per label. For two stacks side by side, use two bar layers, one per group, and move them apart with `offset` (in px, along the label axis):
+
+<LiveExample
+  title='Grouped stacks'
+  label='Bar chart of new and returning customers per quarter, two stacks per quarter: 2024 on the left, 2025 on the right'
+  preview={{
+    type: 'chart',
+    data: groupedStacks,
+    options: groupedStacksOptions
+  }}
+  example='composed-charts/grouped-stacks'
+/>
+
+Each layer stacks only the series it picks, and the value axis fits both stacks.
 
 ## The rest of the config
 

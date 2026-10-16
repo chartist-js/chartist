@@ -65,12 +65,15 @@ $ct-class-target-line: ct-target-line !default;
 $ct-class-target-label: ct-target-label !default;
 $ct-class-band: ct-band !default;
 $ct-class-band-area: ct-band-area !default;
+$ct-class-trend-line: ct-trend-line !default;
 
 // Container ratio
 $ct-container-ratio: math.div(1, 1.618) !default;
 
 // Text styles for labels
 $ct-text-color: rgba(0, 0, 0, 0.4) !default;
+// The label color where the chart's `color-scheme` is dark, in browsers with light-dark(). false: always $ct-text-color
+$ct-text-color-dark: rgba(255, 255, 255, 0.6) !default;
 $ct-text-size: 0.75rem !default;
 $ct-text-align: flex-start !default;
 $ct-text-justify: flex-start !default;
@@ -78,6 +81,8 @@ $ct-text-line-height: 1 !default;
 
 // Grid styles
 $ct-grid-color: rgba(0, 0, 0, 0.2) !default;
+// The grid color where the chart's `color-scheme` is dark, in browsers with light-dark(). false: always $ct-grid-color
+$ct-grid-color-dark: rgba(255, 255, 255, 0.2) !default;
 $ct-grid-dasharray: 2px !default;
 $ct-grid-width: 1px !default;
 $ct-grid-background-fill: none !default;
@@ -98,6 +103,10 @@ $ct-bar-width: 10px !default;
 $ct-target-line-color: currentColor !default;
 $ct-target-line-width: 1px !default;
 $ct-target-line-dasharray: 4px 4px !default;
+
+// Trend lines: dashed, in the series' color
+$ct-trend-line-width: 2px !default;
+$ct-trend-line-dasharray: 6px 4px !default;
 
 // Bands: a light fill in the text color by default. Fill transparency between 0 and 1
 $ct-band-color: currentColor !default;

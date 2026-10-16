@@ -597,6 +597,27 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'composed/grouped-stacks',
+    title: 'Grouped stacked bars',
+    description:
+      'New and returning customers per quarter, one stack per year, drawn by two bar layers side by side.',
+    v2: true
+  }),
+  example({
+    id: 'composed/trend-line',
+    title: 'Bars with a trend line',
+    description:
+      'Monthly sign-ups as bars, with the least-squares trend through them added to the bar chart preset.',
+    v2: true
+  }),
+  example({
+    id: 'composed/scatter-regression',
+    title: 'Scatter plot with a regression line',
+    description:
+      'Ice cream sales against the temperature as points, with the least-squares line through them.',
+    v2: true
+  }),
+  example({
     id: 'composed/two-y-axes',
     title: 'Two Y axes with different units',
     description:

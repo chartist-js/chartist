@@ -4,6 +4,24 @@ import type { SceneNode } from '../scene/node';
 const escape = (value: string | number) =>
   String(value).replace(/[&<>"']/g, char => escapingMap[char]);
 
+// The XML Name production, which the DOM checks in createElementNS and
+// setAttribute. Names can't be escaped, so an invalid one throws there and
+// here, instead of writing markup that a plugin built from data.
+const nameStart =
+  'A-Z_:a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D' +
+  '\\u037F-\\u1FFF\\u200C\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF' +
+  '\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
+const xmlName = new RegExp(
+  `^[${nameStart}][${nameStart}\\-.0-9\\u00B7\\u0300-\\u036F\\u203F\\u2040]*$`
+);
+
+function checked(name: string, kind: 'element' | 'attribute') {
+  if (!xmlName.test(name)) {
+    throw new Error(`Chartist: "${name}" is not a valid ${kind} name`);
+  }
+  return name;
+}
+
 type Position = 'root' | 'html-root' | 'other';
 
 function attributes(current: SceneNode, position: Position) {
@@ -19,14 +37,14 @@ function attributes(current: SceneNode, position: Position) {
   }
   for (const [name, value] of Object.entries(current.attrs)) {
     if (name !== 'xmlns') {
-      parts.push(`${name}="${escape(value)}"`);
+      parts.push(`${checked(name, 'attribute')}="${escape(value)}"`);
     }
   }
   return parts.length ? ` ${parts.join(' ')}` : '';
 }
 
 function serialize(current: SceneNode, position: Position): string {
-  const open = `<${current.name}${attributes(current, position)}`;
+  const open = `<${checked(current.name, 'element')}${attributes(current, position)}`;
   const childPosition: Position =
     current.name === 'foreignObject' ? 'html-root' : 'other';
   const content =

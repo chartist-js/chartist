@@ -283,6 +283,62 @@ describe('layers/pie', () => {
     expect([label.attrs.dx, label.attrs.dy]).toEqual([100, 100]);
   });
 
+  describe('line breaks in labels', () => {
+    const labelsOf = (labels: string[], options: PieLayerOptions = {}) =>
+      findAll(scene([60, 40], options, labels), { role: 'label' });
+
+    it('draws each line as a tspan, centered on the anchor', () => {
+      const oneLine = labelsOf(['Apples', 'Pears']);
+      const twoLines = labelsOf(['Apples\n60%', 'Pears\n40%']);
+      twoLines.forEach((label, index) => {
+        const { dx: x, dy: y } = oneLine[index].attrs;
+        expect(label.name).toBe('text');
+        expect(label.classes).toEqual(['ct-label']);
+        expect(label.attrs).toEqual({
+          x,
+          y,
+          'text-anchor': oneLine[index].attrs['text-anchor']
+        });
+        expect(label.content).toBeUndefined();
+        expect(
+          label.children.map(span => [span.name, span.attrs, span.content])
+        ).toEqual([
+          ['tspan', { x, dy: '-0.6em' }, index ? 'Pears' : 'Apples'],
+          ['tspan', { x, dy: '1.2em' }, index ? '40%' : '60%']
+        ]);
+      });
+      expect(twoLines[0].ctx).toMatchObject({
+        kind: 'pie',
+        text: 'Apples\n60%',
+        x: oneLine[0].ctx.x,
+        y: oneLine[0].ctx.y
+      });
+    });
+
+    it('moves a longer block up by half its height', () => {
+      const [label] = labelsOf(['A\nB\nC', 'D']);
+      expect(label.children.map(span => span.attrs.dy)).toEqual([
+        '-1.2em',
+        '1.2em',
+        '1.2em'
+      ]);
+    });
+
+    it('splits the text labelInterpolationFnc returns', () => {
+      const [label] = labelsOf(['Apples', 'Pears'], {
+        labelInterpolationFnc: (value, index) => `${value}\n${index}`
+      });
+      expect(label.children.map(span => span.content)).toEqual(['Apples', '0']);
+    });
+
+    it('keeps a label without a line break a text without tspans', () => {
+      const [label] = labelsOf(['Apples', 'Pears']);
+      expect(label.children).toEqual([]);
+      expect(label.content).toBe('Apples');
+      expect(Object.keys(label.attrs)).toEqual(['dx', 'dy', 'text-anchor']);
+    });
+  });
+
   it('ignoreEmptyValues keeps an empty group for the zero value', () => {
     const result = scene([1, 0, 2], { ignoreEmptyValues: true });
     expect(findAll(result, { role: 'slice' })).toHaveLength(2);

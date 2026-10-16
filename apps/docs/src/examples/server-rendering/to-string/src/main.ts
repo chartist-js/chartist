@@ -5,6 +5,7 @@ import {
   axisGrid,
   axisLabels,
   cartesianAxes,
+  domRenderer,
   line,
   renderToString,
   stepAxis,
@@ -32,10 +33,19 @@ const scene = toScene(
   },
   { width: 400, height: 250 }
 );
-const svg = renderToString(scene);
 
-// In the browser, the string goes into the page like any other markup.
+// On a server, the scene becomes SVG markup: a string for a response or
+// a file.
+const markup = renderToString(scene);
+
+// In the browser, the DOM renderer draws the same scene without parsing
+// markup, so the page needs no innerHTML (which a strict Content Security
+// Policy can block). The string is shown as text below the chart.
 const container = document.querySelector('#chart');
 if (container) {
-  container.innerHTML = svg;
+  domRenderer().render(scene, container);
+}
+const source = document.querySelector('#markup');
+if (source) {
+  source.textContent = markup;
 }

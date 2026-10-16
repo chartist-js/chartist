@@ -87,6 +87,70 @@ describe('label mode', () => {
   });
 });
 
+describe('label alignment per axis', () => {
+  const anchors = (el: Element, direction: 'horizontal' | 'vertical') =>
+    new Set(
+      Array.from(el.querySelectorAll(`text.ct-label.ct-${direction}`), text =>
+        text.getAttribute('text-anchor')
+      )
+    );
+
+  it('preset axes align their SVG labels', () => {
+    const data = { labels: ['a', 'b'], series: [[1, 2]] };
+    const plain = document.createElement('div');
+    lineChart(plain, data, { labels: 'svg', width: 300, height: 200 });
+    expect(anchors(plain, 'horizontal')).toEqual(new Set(['start']));
+
+    const el = document.createElement('div');
+    lineChart(el, data, {
+      labels: 'svg',
+      width: 300,
+      height: 200,
+      axisX: { labelAlign: { horizontal: 'middle' } },
+      axisY: { labelAlign: { horizontal: 'end' } }
+    });
+    expect(anchors(el, 'horizontal')).toEqual(new Set(['middle']));
+    expect(anchors(el, 'vertical')).toEqual(new Set(['end']));
+    // Centered in their boxes: half a box further right than at the start.
+    const x = (root: Element) =>
+      Number(root.querySelector('text.ct-horizontal')!.getAttribute('x'));
+    expect(x(el)).toBeGreaterThan(x(plain));
+  });
+
+  it("an axis's labelAlign wins over the layer's align", () => {
+    const scene = toScene(
+      config({
+        labels: 'svg',
+        axes: cartesianAxes([
+          {
+            id: 'x',
+            side: 'bottom',
+            type: stepAxis(),
+            ticks: ['Mon', 'Tue'],
+            labelAlign: { horizontal: 'end' }
+          },
+          { id: 'y', side: 'left', type: autoScaleAxis() }
+        ]),
+        layers: [axisLabels({ align: { horizontal: 'start' } })]
+      }),
+      SIZE
+    );
+    const anchorsOf = (id: string) =>
+      new Set(
+        findAll(scene, { role: 'label' })
+          .filter(
+            n =>
+              n.ctx.kind === 'axis' &&
+              'id' in n.ctx.axis &&
+              n.ctx.axis.id === id
+          )
+          .map(n => n.attrs['text-anchor'])
+      );
+    expect(anchorsOf('x')).toEqual(new Set(['end']));
+    expect(anchorsOf('y')).toEqual(new Set(['start']));
+  });
+});
+
 describe('label mode: web fonts', () => {
   function fakeFonts() {
     const target = new EventTarget();

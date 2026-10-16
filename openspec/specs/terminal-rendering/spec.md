@@ -105,12 +105,17 @@ Text output SHALL support four color modes: 24-bit, 256 colors, 16 colors (each 
 
 ### Requirement: Nodes without a built-in role
 
-Nodes that plugins add SHALL be drawn by their element: `line` and `path` as lines, `circle` as a point, `text` as a label. Other elements without a role SHALL be skipped, and their children drawn. A node a plugin replaced while keeping its role, whose element differs from the one Chartist draws for that role (a `circle` with the role `point`), SHALL be drawn by its element too. A node in a series group, or with a `ct-series-x` class, SHALL take that series' color.
+Nodes that plugins add SHALL be drawn by their element: `line` and `path` as lines, `circle` as a filled disc of its radius (as a point when it's no bigger than a dot), `text` as a label. Other elements without a role SHALL be skipped, and their children drawn. A node a plugin replaced while keeping its role, whose element differs from the one Chartist draws for that role (a `circle` with the role `point`), SHALL be drawn by its element too. A node in a series group, or with a `ct-series-x` class, SHALL take that series' color.
 
 #### Scenario: A plugin's line
 
 - **WHEN** a scene gets a plain `line` element across the chart
 - **THEN** the output shows it as a braille line
+
+#### Scenario: Circles keep their size
+
+- **WHEN** a scene has a `circle` with `r: 3` and one with `r: 24`
+- **THEN** the first is drawn as a point and the second as a disc many dots across
 
 #### Scenario: A point replaced by a circle
 
@@ -156,7 +161,7 @@ The stylesheet SHALL embed a font with the characters the renderer draws besides
 
 ### Requirement: Chart functions for CLI tools
 
-The package SHALL provide line, bar and pie chart functions that take the data and options of the 1.x presets, plus a size in columns and rows, a color mode, a palette and an output format (text or HTML), and return the rendered chart as a string. Their defaults SHALL fit the character grid; given options SHALL override them.
+The package SHALL provide line, bar and pie chart functions that take the data and options of the 1.x presets, plus a size in columns and rows, a color mode, a palette and an output format (text, HTML or element), and return the rendered chart as a string, or as a `pre` element for the element format. Their defaults SHALL fit the character grid; given options SHALL override them.
 
 #### Scenario: Line chart in one call
 
@@ -168,14 +173,24 @@ The package SHALL provide line, bar and pie chart functions that take the data a
 - **WHEN** the bar chart function gets `horizontalBars: true` and `stackBars: true`
 - **THEN** the bars are horizontal and stacked, as the bar preset draws them
 
+#### Scenario: Element format
+
+- **WHEN** a page calls the pie chart function with `format: 'element'`
+- **THEN** it receives a `pre` element it can append, typed as an element
+
 ### Requirement: Legend
 
-The package SHALL provide a legend for a chart's data: each named series as a colored marker and its name, in the chart's color mode, within a given width.
+The package SHALL provide a legend for a chart's data: each named series as a colored marker and its name, in the chart's color mode, within a given width. It SHALL come as text, as HTML or as an element, like the chart functions.
 
 #### Scenario: Named series
 
 - **WHEN** the legend is made for series named `Visitors` and `Sign-ups` without colors
 - **THEN** it reads `■ Visitors  ■ Sign-ups`
+
+#### Scenario: Legend as an element
+
+- **WHEN** the legend is made with `format: 'element'` for a series named `<b>`
+- **THEN** it is a `pre` element whose text contains `<b>`, with no `b` element
 
 ### Requirement: Color detection
 
@@ -213,3 +228,22 @@ Bands SHALL be shaded with a braille dot pattern below the grid, like areas. Tar
 
 - **WHEN** a chart with `targetLine({ value: 1000, label: 'target' })` is rendered
 - **THEN** the output has a horizontal braille line at 1000 and the text "target" next to it
+
+### Requirement: Element output
+
+A scene SHALL also render as a DOM element: a `pre` element with the same structure, classes and text as the HTML output, built with DOM methods in a given document (the global one by default), so a page can add text art without `innerHTML` or a Trusted Types policy. Rendering a scene as an element SHALL be the only place the package reads the global `document`, and only when no document is given.
+
+#### Scenario: Same markup as HTML
+
+- **WHEN** a bar chart is rendered as an element and as HTML
+- **THEN** the element's `outerHTML` equals the HTML output
+
+#### Scenario: Under Trusted Types
+
+- **WHEN** a page that requires Trusted Types appends a line chart rendered as an element
+- **THEN** the chart shows and no violation is reported
+
+#### Scenario: Escaped by construction
+
+- **WHEN** a chart with the label `<b>` is rendered as an element
+- **THEN** the element contains the text `<b>` and no `b` element

@@ -8,7 +8,7 @@ Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, cont
 
 ## Principles
 
-- **CSS-first.** Style with CSS, control with JS. Charts are plain SVG with predictable classes; colors, lines, grid and labels are `--ct-*` custom properties. Options don't duplicate what CSS can do, and output has no inline `style` attributes.
+- **CSS-first.** Style with CSS, control with JS. Charts are plain SVG with predictable classes; colors, lines, grid and labels are `--ct-*` custom properties. Options don't duplicate what CSS can do, and output has no inline `style` attributes. Default colors follow the page's `color-scheme` through `light-dark()`, not the OS setting (decided 2026-10-16): a light page stays light in dark mode, and a page that declares dark gets light labels and grid lines.
 - **TypeScript-native.** The library is written in TypeScript and its types are part of the API. Docs examples are small HTML + TypeScript + CSS projects in the shape of an `npm create vite` vanilla TypeScript app (`index.html`, `src/main.ts`, `src/style.css`), so they open in StackBlitz or a fresh Vite app unchanged. They use only erasable TypeScript syntax and `import type`, so the browser playground can strip types with sucrase.
 - **No bundler required.** `<script type="module">` with ESM from a CDN is the primary no-bundler path, shown in Getting started next to npm. UMD ships for backwards compatibility only (documented in "Coming from 1.x", never in examples); CJS for older Node tooling.
 - **Functional API first.** `chart()`, `lineChart()`, `barChart()`, `pieChart()` and layers; the core is pure from config to scene (`toScene()`, `renderToString()`), side effects stay at the edges. Event payloads are read-only: handlers transform by returning a new value. Docs, examples and doc comments use the functional API; the 1.x classes appear only where the text is about 1.x.
@@ -28,6 +28,7 @@ Chartist.js started in 2014 (0.x): plain JavaScript, Sass, "style with CSS, cont
 ## Layers
 
 - **Reference lines and bands are core layers** (decided 2026-10-16): `targetLine()` and `band()`, the most common additions to line and bar charts, which 1.x left to plugins. They're ordinary layers, so they tree-shake, render on the server and in the terminal, and are styled with classes and `--ct-target-line-*` / `--ct-band-*` properties only. The size budgets were raised for them on purpose.
+- **Trend lines are a core layer too** (decided 2026-10-16, #1209): `trendLine()` fits a least-squares straight line per series, drawn in the series' color. Other fits (polynomial, moving averages) are left to custom layers.
 - **One target line per layer.** A first version took one line or `lines: [...]` as a union of two option shapes; TypeScript then reported a missing `value` as a wrong `label` type. Several lines are several layers, with plain options.
 - **A band edge is a constant, values of its own, or a series.** Own values (an array, one per label) keep edges that aren't data out of `data`, so presets don't draw them as lines and the series keep their colors. A bare number is a constant; a series by index is `{ series: 2 }`.
 - **Layers that change other layers' output use `refine`,** an optional layer method in the `compose` phase (decided 2026-10-16): every layer composes independently first, then each node with a role passes through the refining layers in list order, before the `compose` events. List order stays the draw order. A dependency order between layers was rejected: compose order doesn't decide draw order, and layers depend on each other's finished nodes, not their data. A refiner sees one node at a time and can't drop nodes or change the tree; charts without a refining layer skip the step. The band's `mark` option is built on it.
@@ -62,6 +63,46 @@ The `@chartist-js` packages ship ESM and CommonJS builds with declarations for b
 - **Shared code goes through `chartist`'s public API**, not a shared internal package (decided 2026-10-15). What a renderer needs is exported from `chartist`: the preset configs without a container (`lineChartConfig`, `barChartConfig`, `pieChartConfig`), the series colors (`seriesColors`, kept equal to `$ct-series-colors` by a test) and the SVG label metric (`textAscent`). Third-party renderers get the same, and there is no extra package to version. A private shared package was considered and dropped, because its code would be copied into every package's build.
 - **Package docs live on chartist.dev** under `/packages/<name>/` (decided 2026-10-15): an overview, the package's guides and one API page generated from its types, with a "Packages" item in the header. Their sources stay with the site, in `apps/docs/src/content/packages/<slug>/`, and `apps/docs/src/data/packages.ts` registers each package. Docs inside each package's folder were considered and left for later: guides import site components, and the site's checks assume its folders.
 - **Packages use only `chartist`'s published entry points** and are tested from their build: unit tests, a test of their README's examples, and a smoke test that packs and installs them.
+
+## Security
+
+Decided 2026-10-16 (#1516).
+
+- **Charts work under a strict Content Security Policy:** `style-src 'self'` without `'unsafe-inline'`, no `'unsafe-eval'`, and Trusted Types. Styles are set through the CSSOM (`element.style.cssText`), which a policy allows, and the markup keeps its `style` attributes, so 1.x output is unchanged. The library needs nothing beyond `'self'`; the terminal stylesheet needs `font-src data:` for its embedded font.
+- **Chart data stays data in every output.** Text and attribute values are escaped, and `renderToString()` throws on an element or attribute name that isn't a valid XML name, as the DOM renderer does, rather than skipping it.
+- **Plugins are the page's own code.** Chartist doesn't filter what they set (event handler attributes, `javascript:` URLs), and the 1.x `Svg#foreignObject()` keeps taking a string as HTML. The Security and CSP guide says so.
+- **Rendering without `innerHTML`:** `chart()` and the DOM renderer build elements, and the terminal has `format: 'element'` (`renderToElement()`) for pages that forbid HTML strings. The string outputs stay for servers and Node.js.
+- **Later, if asked for:** a named Trusted Types policy, so the string outputs can return `TrustedHTML`.
+
+## Road to 2.0 final
+
+Decided 2026-10-16. The functional API's names and surface are final as they are. What remains is which open issues land before 2.0: after 2.0 final, only additive changes go into 2.x minors, and anything that changes existing defaults, output or a documented promise waits for 3.0.
+
+- **rc.3:**
+  - #215 `labelTransform`, the new name of `labelInterpolationFnc`;
+  - #1463 label and grid defaults that follow a dark `color-scheme`;
+  - #262 an offset for `bar()`, for grouped stacks;
+  - #1209 a trend line layer;
+  - #1487 label alignment per axis on the presets;
+  - #546 line breaks in pie labels, on by default.
+  - #1516 security and CSP: charts under a strict policy and Trusted Types, and string output that data can't break.
+
+  It ships soon after, so target lines, bands and layer refinement reach npm.
+
+- **rc.4, the update RC:**
+  - #3 progressive updates: a renderer that patches the existing SVG by node key instead of drawing a new one;
+  - #961 a cleanup hook for plugins;
+  - the wording of the render lifecycle.
+
+  These go together because patching changes when `render` and `mount` run and what a plugin has to undo. Designing the cleanup hook before the renderer would mean changing the plugin contract twice.
+
+- **2.0 final:** no new features after rc.4, only fixes. The `@experimental` tags come off and the API is recorded as final.
+- **2.1 and later (additive):**
+  - #64 log axis, #116 time axis;
+  - #940 series class names without letters, once its API is designed;
+  - opt-in options for behavior that would break as a default: #921 closing grid line, #304 axes sized to their labels, #1271 dropping overlapping labels;
+  - the other open feature requests.
+- **Bars stay lines** (#522): the presets keep the 1.x `<line>` markup, and so does `bar()`. Bars with a fill and a stroke are a plugin's job, not a later core change.
 
 ## Releases
 

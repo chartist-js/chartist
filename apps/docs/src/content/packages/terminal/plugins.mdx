@@ -47,17 +47,17 @@ lineChart('#chart', data, {
 
 Nodes with one of Chartist's roles (`line`, `point`, `bar`, `slice`, `band` and the others) are drawn as the terminal draws that role. Every other node is drawn by its element:
 
-| Element                 | Drawn as                                        |
-| ----------------------- | ----------------------------------------------- |
-| `line`                  | a braille line between its two ends             |
-| `path`                  | its outline as a braille line, curves flattened |
-| `circle`                | a point at its center                           |
-| `text`, `foreignObject` | a label, one cell per character                 |
-| anything else           | nothing, but its children are drawn             |
+| Element                 | Drawn as                                             |
+| ----------------------- | ---------------------------------------------------- |
+| `line`                  | a braille line between its two ends                  |
+| `path`                  | its outline as a braille line, curves flattened      |
+| `circle`                | a filled disc of its radius, or a point if it's tiny |
+| `text`, `foreignObject` | a label, one cell per character                      |
+| anything else           | nothing, but its children are drawn                  |
 
 That goes for nodes a plugin replaced too. The circles above keep the role `point`, but they're circles now, so the terminal draws them as circles.
 
-A node in a series' group, or with a `ct-series-x` class, takes that series' color. Other lines and points use the text color, and text the label color. Sizes and styles (a circle's `r`, `stroke-width`, dashes) and the plugin's own classes don't show: a cell has a character and a color, and in HTML its classes are the kind of mark and the series.
+A node in a series' group, or with a `ct-series-x` class, takes that series' color. Other lines and points use the text color, and text the label color. Styles (`stroke-width`, dashes) and the plugin's own classes don't show: a cell has a character and a color, and in HTML its classes are the kind of mark and the series.
 
 ## Plugins that need a page
 

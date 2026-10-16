@@ -108,7 +108,7 @@ The Chartist options work as they do in the browser: `stackBars`, `horizontalBar
 - `columns` and `rows`: the size in cells, 80 × 20 by default;
 - `color`: `truecolor` (default), `256`, `16` or `none` for plain text;
 - `palette`: series colors as hex, first series first, Chartist's colors by default;
-- `format`: `text` (default) or `html`.
+- `format`: `text` (default), `html` for a string of HTML, or `element` for the same markup as a `pre` element.
 
 `detectColorMode(stream, env)` picks the color mode the way the command does; pass it `process.stdout` and `process.env`.
 
@@ -127,21 +127,26 @@ const scene = toScene(
 console.log(renderToTerminal(scene, { color: 'none' }));
 ```
 
-A cell stands for 8 × 16 px, so a braille dot is 4 × 4 px and circles stay round; `terminalSize()` measures text one cell per character, so labels land on the character grid. Nodes a plugin adds are drawn by their element: `line` and `path` as lines, `circle` as a point, `text` as a label.
+A cell stands for 8 × 16 px, so a braille dot is 4 × 4 px and circles stay round; `terminalSize()` measures text one cell per character, so labels land on the character grid. Nodes a plugin adds are drawn by their element: `line` and `path` as lines, `circle` as a filled disc of its radius (a point when it's tiny), `text` as a label.
 
 ## HTML output
 
-`renderToHtml(scene)`, or `format: 'html'`, gives the same chart as a `pre` element with classes instead of colors: `ct-series-a`, `ct-grid`, `ct-label` and so on. Load the stylesheet to color it:
+`renderToHtml(scene)`, or `format: 'html'`, gives the same chart as HTML: a `pre` element with classes instead of colors, `ct-series-a`, `ct-grid`, `ct-label` and so on. In a browser, `renderToElement(scene)`, or `format: 'element'`, builds that `pre` element with DOM methods, so the page needs no `innerHTML`, also where a Content Security Policy requires Trusted Types. Load the stylesheet to color it:
 
 ```ts
 import '@chartist-js/terminal/styles.css';
+import { lineChart } from '@chartist-js/terminal';
+
+document
+  .querySelector('#chart')
+  ?.replaceChildren(lineChart({ series: [[1, 3, 2]] }, { format: 'element' }));
 ```
 
 Every character sits in a cell 0.6 × 1 em, and the stylesheet brings a small font of its own (embedded, under 5 kB) for the braille dots, the grid and the bar blocks, drawn to fill a cell edge to edge. Fonts on the reader's system rarely have all of those, so the text art looks the same in every browser. Letters and digits use a monospace font: JetBrains Mono when the page loads it, else the system's. The stylesheet reads Chartist's custom properties (`--ct-series-a` to `--ct-series-o`, `--ct-grid-color`, `--ct-label-color`), so your Chartist theme colors the text art too. `ct-cli --html --standalone` writes a complete page.
 
 ## Fonts
 
-In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; on Windows, Cascadia Mono works. If the dots look scattered or the grid has gaps, your font is missing them. HTML output brings its own font for them, so it doesn't depend on the reader's fonts.
+In a terminal, braille and box-drawing characters need a font that has them. Most terminal fonts do; on Windows, Cascadia Mono works. If the dots look scattered or the grid has gaps, your font is missing them. HTML output brings its own font for them, so it doesn't depend on the reader's fonts. The stylesheet embeds it as a `data:` URL, so a page with a Content Security Policy needs `font-src data:`; without it, the browser falls back to the reader's fonts.
 
 ## Limits
 

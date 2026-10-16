@@ -8,6 +8,8 @@ export { pie } from './pie';
 export type { PieLayerOptions } from './pie';
 export { targetLine } from './targetLine';
 export type { TargetLineOptions } from './targetLine';
+export { trendLine } from './trendLine';
+export type { TrendLineOptions } from './trendLine';
 export { axisGrid, axisLabels } from './axes';
 export type {
   AxisLabelsOptions,

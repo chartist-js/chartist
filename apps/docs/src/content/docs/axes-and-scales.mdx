@@ -116,6 +116,27 @@ lineChart(
 
 To keep a grid line but hide its label, return an empty string instead.
 
+### Aligning labels
+
+SVG text labels (`labels: 'svg'`) sit in a box per tick, aligned as the default stylesheet aligns HTML labels. `labelAlign` on an axis moves them within it, with `horizontal` (`'start'`, `'middle'`, `'end'`) and `vertical` (`'top'`, `'middle'`, `'bottom'`):
+
+```ts
+import 'chartist/styles.css';
+import { lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  { labels: ['Mon', 'Tue', 'Wed', 'Thu'], series: [[3, 5, 4, 6]] },
+  {
+    labels: 'svg',
+    axisX: { labelAlign: { horizontal: 'middle' } },
+    axisY: { labelAlign: { horizontal: 'end' } }
+  }
+);
+```
+
+In a composed chart, `axisLabels({ align })` sets the alignment for all its axes, and an axis's own `labelAlign` wins. HTML labels ignore both: align them with CSS.
+
 ## A line chart is only 1-dimensional?!
 
 A step axis places values by index, so a plain series is all it needs. Under the hood, Chartist turns every value into a point with an empty `x`:

@@ -5,6 +5,7 @@
 import {
   autoScaleAxis,
   band,
+  bar,
   barChart,
   cartesianAxes,
   chart,
@@ -16,6 +17,7 @@ import {
   responsive,
   stepAxis,
   targetLine,
+  trendLine,
   withOptions,
   type ChartPlugin,
   type Layer,
@@ -66,6 +68,12 @@ describe('v2 type contract', () => {
       expectTypeOf(scene.ctx.value).toEqualTypeOf<number>();
       expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
       expectTypeOf(scene.attrs.y1).toEqualTypeOf<number>();
+    }
+    if (scene.role === 'trendLine') {
+      expectTypeOf(scene.ctx.seriesIndex).toEqualTypeOf<number>();
+      expectTypeOf(scene.ctx.slope).toEqualTypeOf<number>();
+      expectTypeOf(scene.ctx.intercept).toEqualTypeOf<number>();
+      expectTypeOf(scene.attrs.x2).toEqualTypeOf<number>();
     }
     if (scene.role === 'targetLabel') {
       expectTypeOf(scene.ctx.text).toEqualTypeOf<string>();
@@ -249,6 +257,14 @@ describe('v2 type contract', () => {
     targetLine({ value: 1000, label: 1000 });
   });
 
+  test('a trend line takes the options of a line layer', () => {
+    trendLine();
+    trendLine({ series: ['sales', 1], x: 'month', y: 'eur', align: 'center' });
+    trendLine({ classNames: { series: 'my-series', line: 'my-trend' } });
+    // @ts-expect-error: align is start or center
+    trendLine({ align: 'end' });
+  });
+
   test('a band edge is a constant, values or a series', () => {
     band({ low: 40, high: 60 });
     band({ low: [1, null, 3], high: [{ x: 0, y: 5 }] });
@@ -278,6 +294,47 @@ describe('v2 type contract', () => {
         axisY: {
           // @ts-expect-error: a label function returns a label
           labelTransform: () => 1n
+        }
+      }
+    );
+  });
+
+  test('a bar layer moves by an offset in px', () => {
+    bar({ stackBars: true, offset: -8 });
+    // @ts-expect-error: an offset is a number of px
+    bar({ offset: '8px' });
+  });
+
+  test('axes take labelAlign for their SVG labels', () => {
+    lineChart(
+      '#c',
+      { series: [[1]] },
+      {
+        labels: 'svg',
+        axisX: { labelAlign: { horizontal: 'middle' } },
+        axisY: { labelAlign: { horizontal: 'end', vertical: 'top' } }
+      }
+    );
+    barChart('#c', { series: [[1]] }, { axisX: { labelAlign: {} } });
+    cartesianAxes([
+      {
+        id: 'x',
+        side: 'bottom',
+        type: stepAxis(),
+        labelAlign: { vertical: 'middle' }
+      },
+      { id: 'y', side: 'left', type: autoScaleAxis() }
+    ]);
+    cartesianAxes({
+      y: { type: autoScaleAxis(), labelAlign: { horizontal: 'start' } }
+    });
+    lineChart(
+      '#c',
+      { series: [[1]] },
+      {
+        axisX: {
+          // @ts-expect-error: horizontal is start, middle or end
+          labelAlign: { horizontal: 'left' }
         }
       }
     );

@@ -4,3 +4,13 @@
   width: 100%;
   height: auto;
 }
+
+/* The same chart as SVG markup: a few lines of the string. */
+#markup {
+  max-height: 8em;
+  margin: 1em 0 0;
+  overflow: auto;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}

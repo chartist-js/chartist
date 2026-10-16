@@ -1,6 +1,6 @@
 ---
 title: Target lines and bands
-description: Draw goals, limits and ranges on line and bar charts with the targetLine() and band() layers, on a preset or in a composed chart.
+description: Draw goals, limits, ranges and trends on line and bar charts with the targetLine(), band() and trendLine() layers, on a preset or in a composed chart.
 group: Guides
 order: 6
 ---
@@ -199,9 +199,28 @@ With `mark: true`, the band marks the points and bars of the other layers: `ct-i
 
 The band marks the points no matter where it's listed: it works from the data, after every layer has drawn. Marking classes whole points and bars; a line keeps one color where it crosses an edge.
 
+## Trend lines
+
+`trendLine()` fits a straight line through each series it picks (all of them by default) and draws it from the series' first to its last value, dashed and in the series' color. The fit is least squares: on a step axis it uses the values' order, on a scale axis their `x`.
+
+```ts
+import { lineChart, trendLine } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    series: [[3, 5, 4, 7, 6, 9]]
+  },
+  { layers: { above: [trendLine()] } }
+);
+```
+
+Where the line ends below or above the values, the Y axis grows to keep it in view. Holes are skipped, and a series with fewer than two values gets no line. On bar charts, `align: 'center'` lines it up with the bars, as for [lines](../composed-charts/#lining-up-with-bars). Its role is `trendLine`, with the `slope` and `intercept` in its context. In the gallery: [bars with a trend line](../../examples/composed/trend-line/) and [a scatter plot with a regression line](../../examples/composed/scatter-regression/).
+
 ## Styling
 
-Both layers draw in the text color by default: a dashed target line and a light band, so they read as context behind the data. Change them with custom properties, or give them a series color with `className: 'ct-series-c'`:
+The target line and the band draw in the text color by default: a dashed target line and a light band, so they read as context behind the data. Change them with custom properties, or give them a series color with `className: 'ct-series-c'`:
 
 ```css
 .ct-chart {
@@ -213,7 +232,9 @@ Both layers draw in the text color by default: a dashed target line and a light 
 }
 ```
 
-The markup: a `line.ct-target-line` and a `text.ct-target-label` per target line, and a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the roles `targetLine`, `targetLabel` and `band`, as in [events and plugins](../events-and-plugins/).
+A trend line takes its series' color; `--ct-trend-line-width` and `--ct-trend-line-dasharray` change its look.
+
+The markup: a `line.ct-target-line` and a `text.ct-target-label` per target line, a `line.ct-trend-line` in a series group per trend line, and a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the roles `targetLine`, `targetLabel`, `trendLine` and `band`, as in [events and plugins](../events-and-plugins/).
 
 <Callout>
   **Coming from the target line plugin?** `chartist-plugin-targetline` with

@@ -87,6 +87,7 @@
     "textAscent",
     "times",
     "toScene",
+    "trendLine",
     "withOptions"
   ],
   "types": [
@@ -297,6 +298,8 @@
     "TargetLineOptions",
     "TextAttrs",
     "TextMetrics",
+    "TrendLineContext",
+    "TrendLineOptions",
     "ValueContext",
     "ViewBox",
     "XAxisUnits",
@@ -374,6 +377,7 @@
     "textAscent",
     "times",
     "toScene",
+    "trendLine",
     "withOptions"
   ]
 }

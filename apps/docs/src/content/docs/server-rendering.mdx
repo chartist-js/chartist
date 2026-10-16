@@ -55,11 +55,11 @@ export function weekChart(values: number[]): string {
 
 `toScene()` takes a config, so it works with `chart()`'s building blocks: axes and layers. The presets (`lineChart()` and friends) draw into an element; for their charts as a string, `lineChartConfig()`, `barChartConfig()` and `pieChartConfig()` build the config a preset draws, from the same data and options: `toScene(lineChartConfig(data, options), size)`. The [composed charts](../composed-charts/) page has more on axes and layers.
 
-The browser can run the same code. This example builds the markup with `toScene()` and `renderToString()` and puts it into the page with `innerHTML`:
+The browser can run the same code. This example builds the scene with `toScene()` and shows its markup from `renderToString()` below the chart. The chart itself comes from the same scene through `domRenderer()`: in a page, the DOM renderer creates the elements, so nothing goes through `innerHTML`, which [a strict Content Security Policy](../security-and-csp/) can block.
 
 <LiveExample
   title='Rendered to a string'
-  label='A line chart with two series from Monday to Friday, rendered to SVG markup'
+  label='A line chart with two series from Monday to Friday, drawn from a scene, with its SVG markup below'
   preview={{ type: 'line', data }}
   example='server-rendering/to-string'
 />

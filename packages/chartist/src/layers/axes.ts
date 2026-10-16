@@ -70,8 +70,9 @@ export interface AxisLabelsOptions extends AxisLayerOptions {
   readonly labels?: LabelMode;
   /**
    * Aligns SVG text labels in their box, on every axis of the layer;
-   * default: as the 1.x CSS aligns HTML labels. HTML labels ignore it
-   * (align them with CSS).
+   * default: as the 1.x CSS aligns HTML labels. An axis's own
+   * `labelAlign` wins over it. HTML labels ignore it (align them with
+   * CSS).
    */
   readonly align?: Partial<LabelAlign>;
 }
@@ -256,14 +257,22 @@ export function axisLabels(options: AxisLabelsOptions = {}): Layer {
     coordinates: ['cartesian'],
     series: [],
     compose(context) {
-      const svgLabel =
-        (options.labels ?? context.labels) === 'svg'
-          ? svgLabels(context.measureText, 'line', options.align)
-          : undefined;
+      const svg = (options.labels ?? context.labels) === 'svg';
       return [
         withFields(node('g', {}, classNames.labelGroup), {
           children: selectedAxes(context, options.axes).flatMap(
-            axis => nodesOf(axis, context, classNames, svgLabel).labels
+            axis =>
+              nodesOf(
+                axis,
+                context,
+                classNames,
+                svg
+                  ? svgLabels(context.measureText, 'line', {
+                      ...options.align,
+                      ...axis.options.labelAlign
+                    })
+                  : undefined
+              ).labels
           )
         })
       ];

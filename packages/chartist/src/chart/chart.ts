@@ -6,6 +6,7 @@ import {
   type MeasureStyle,
   type MeasureText
 } from '../render/measure';
+import { setStyle } from '../render/style';
 import type { RenderOutput } from '../render/types';
 import type { ResponsiveWatcher } from '../responsive/responsive';
 import { withChartTypeClass } from './className';
@@ -183,8 +184,8 @@ export function chart(
     probe.setAttribute('height', height);
     // CSS lengths need a unit, unlike the attributes (see #1482).
     const px = (value: unknown) => (typeof value === 'number' ? 'px' : '');
-    probe.setAttribute(
-      'style',
+    setStyle(
+      probe,
       `width: ${width}${px(effective.width)}; height: ${height}${px(effective.height)};`
     );
     container.appendChild(probe);

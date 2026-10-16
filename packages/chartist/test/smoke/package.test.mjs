@@ -256,6 +256,53 @@ test('CSS: target lines and bands take a series color, else the text color', asy
   );
 });
 
+test('CSS: trend lines are dashed in their series color', async () => {
+  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
+  assert.match(
+    css,
+    /\.ct-trend-line \{\s*fill: none;\s*stroke: var\(--ct-color\);\s*stroke-width: var\(--ct-trend-line-width, 2px\);\s*stroke-dasharray: var\(--ct-trend-line-dasharray, 6px 4px\);\s*\}/
+  );
+  assert.match(
+    css,
+    /\.ct-series-b \.ct-trend-line,[^{]*\{\s*stroke: var\(--ct-color\)/
+  );
+});
+
+// light-dark() follows the chart's color-scheme. Browsers without it keep
+// the declaration outside @supports, as a var() with a fallback they don't
+// know would compute to unset.
+const DARK_DEFAULTS =
+  /\.ct-label \{[^}]*fill: var\(--ct-label-color, rgba\(0, 0, 0, 0\.4\)\);[^}]*\}\s*@supports \(color: light-dark\(#000, #fff\)\) \{\s*\.ct-label \{\s*fill: var\(--ct-label-color, light-dark\(rgba\(0, 0, 0, 0\.4\), rgba\(255, 255, 255, 0\.6\)\)\);\s*color: var\(--ct-label-color, light-dark\(rgba\(0, 0, 0, 0\.4\), rgba\(255, 255, 255, 0\.6\)\)\);\s*\}\s*\}/;
+const DARK_GRID =
+  /\.ct-grid \{[^}]*stroke: var\(--ct-grid-color, rgba\(0, 0, 0, 0\.2\)\);[^}]*\}\s*@supports \(color: light-dark\(#000, #fff\)\) \{\s*\.ct-grid \{\s*stroke: var\(--ct-grid-color, light-dark\(rgba\(0, 0, 0, 0\.2\), rgba\(255, 255, 255, 0\.2\)\)\);\s*\}\s*\}/;
+
+test('CSS: labels and grid lines have defaults for a dark color scheme', async () => {
+  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
+  assert.match(css, DARK_DEFAULTS);
+  assert.match(css, DARK_GRID);
+  const min = String(await readFile(path.join(pkgDir, 'dist/index.min.css')));
+  assert.match(min, /@supports \(color:\s*light-dark\(#000,\s*#fff\)\)/);
+});
+
+test('Sass: false leaves out the dark defaults', () => {
+  const importers = [new sass.NodePackageImporter(tmp)];
+  const css = sass.compileString(
+    '@use "pkg:chartist" with ($ct-text-color-dark: false, $ct-grid-color-dark: false);',
+    { ...SASS, importers }
+  ).css;
+  assert.doesNotMatch(css, /light-dark|@supports/);
+  assert.match(css, /fill: var\(--ct-label-color, rgba\(0, 0, 0, 0\.4\)\)/);
+
+  const custom = sass.compileString(
+    '@use "pkg:chartist" with ($ct-text-color-dark: #eee);',
+    { ...SASS, importers }
+  ).css;
+  assert.match(
+    custom,
+    /fill: var\(--ct-label-color, light-dark\(rgba\(0, 0, 0, 0\.4\), #eee\)\)/
+  );
+});
+
 test('CSS: series a to z, the colors repeating after o (#1456)', async () => {
   const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
   const names = 'abcdefghijklmnopqrstuvwxyz';

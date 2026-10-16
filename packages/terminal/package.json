@@ -72,6 +72,7 @@
     "@types/node": "^24.0.0",
     "del-cli": "^5.0.0",
     "opentype.js": "2.0.0",
+    "playwright": "1.63.0",
     "tsdown": "0.23.0",
     "typescript": "6.0.3",
     "vitest": "5.0.2"
@@ -137,7 +138,12 @@
           "build",
           "^build",
           "{projectRoot}/README.md",
-          "{projectRoot}/test/smoke/**/*"
+          "{projectRoot}/test/smoke/**/*",
+          {
+            "externalDependencies": [
+              "playwright"
+            ]
+          }
         ]
       }
     }

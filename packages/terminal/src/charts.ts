@@ -15,7 +15,7 @@ import {
 import { renderToTerminal } from './ansi.ts';
 import type { ColorMode } from './color.ts';
 import { CELL_HEIGHT, CELL_WIDTH, terminalSize } from './draw.ts';
-import { renderToHtml } from './html.ts';
+import { renderToElement, renderToHtml } from './html.ts';
 
 /** The terminal options of the chart functions, next to the 1.x options. */
 export interface TerminalChartOptions {
@@ -27,7 +27,25 @@ export interface TerminalChartOptions {
   readonly color?: ColorMode;
   /** Series colors as hex for text output, by series letter (`a` first). */
   readonly palette?: readonly string[];
-  /** `text` for terminals, or `html` for {@link renderToHtml} markup. */
+  /**
+   * `text` for terminals, `html` for {@link renderToHtml} markup, or
+   * `element` for the same markup as a `pre` element
+   * ({@link renderToElement}), which a page adds without `innerHTML`.
+   */
+  readonly format?: 'text' | 'html' | 'element';
+  /**
+   * The document `element` output is created in; the global `document` by
+   * default.
+   */
+  readonly document?: Document;
+}
+
+/** Options that ask for the chart as a `pre` element. */
+interface AsElement {
+  readonly format: 'element';
+}
+/** Options that ask for the chart as a string, text or HTML. */
+interface AsString {
   readonly format?: 'text' | 'html';
 }
 
@@ -105,8 +123,20 @@ const cartesianDefaults = {
  */
 export function lineChart(
   data: LineChartData,
+  options: TerminalLineChartOptions & AsElement
+): HTMLPreElement;
+export function lineChart(
+  data: LineChartData,
+  options?: TerminalLineChartOptions & AsString
+): string;
+export function lineChart(
+  data: LineChartData,
+  options?: TerminalLineChartOptions
+): string | HTMLPreElement;
+export function lineChart(
+  data: LineChartData,
   options: TerminalLineChartOptions = {}
-): string {
+): string | HTMLPreElement {
   const defaults = extend({}, cartesianDefaults, {
     axisY: { offset: valueLabelWidth(data.series) }
   });
@@ -136,8 +166,20 @@ export function lineChart(
  */
 export function barChart(
   data: BarChartData,
+  options: TerminalBarChartOptions & AsElement
+): HTMLPreElement;
+export function barChart(
+  data: BarChartData,
+  options?: TerminalBarChartOptions & AsString
+): string;
+export function barChart(
+  data: BarChartData,
+  options?: TerminalBarChartOptions
+): string | HTMLPreElement;
+export function barChart(
+  data: BarChartData,
   options: TerminalBarChartOptions = {}
-): string {
+): string | HTMLPreElement {
   // Bars of a group one cell apart: one column, or one row when horizontal.
   const spacing = {
     seriesBarDistance: options.horizontalBars ? CELL_HEIGHT : CELL_WIDTH * 2
@@ -183,8 +225,20 @@ export function barChart(
  */
 export function pieChart(
   data: PieChartData,
+  options: TerminalPieChartOptions & AsElement
+): HTMLPreElement;
+export function pieChart(
+  data: PieChartData,
+  options?: TerminalPieChartOptions & AsString
+): string;
+export function pieChart(
+  data: PieChartData,
+  options?: TerminalPieChartOptions
+): string | HTMLPreElement;
+export function pieChart(
+  data: PieChartData,
   options: TerminalPieChartOptions = {}
-): string {
+): string | HTMLPreElement {
   // CSS sizes the ring in a browser; here the option must.
   const defaults = {
     chartPadding: 0,
@@ -201,7 +255,8 @@ const TERMINAL_OPTIONS: ReadonlySet<string> = new Set([
   'rows',
   'color',
   'palette',
-  'format'
+  'format',
+  'document'
 ]);
 
 /** The options without the terminal ones, for the Chartist presets. */
@@ -211,7 +266,10 @@ function chartOptions(options: TerminalChartOptions): object {
   );
 }
 
-function render(config: ChartConfig, options: TerminalChartOptions): string {
+function render(
+  config: ChartConfig,
+  options: TerminalChartOptions
+): string | HTMLPreElement {
   const scene = toScene(
     config,
     terminalSize(
@@ -219,6 +277,9 @@ function render(config: ChartConfig, options: TerminalChartOptions): string {
       options.rows ?? DEFAULT_ROWS
     )
   );
+  if (options.format === 'element') {
+    return renderToElement(scene, { document: options.document });
+  }
   return options.format === 'html'
     ? renderToHtml(scene)
     : renderToTerminal(scene, {

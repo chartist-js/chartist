@@ -53,7 +53,7 @@ function withoutDefaultDonutWidth(
     event.element
       ? {
           ...event,
-          element: event.element.replace(' style="stroke-width: 60px"', '')
+          element: event.element.replace(/ style="stroke-width: 60px;?"/, '')
         }
       : event
   );

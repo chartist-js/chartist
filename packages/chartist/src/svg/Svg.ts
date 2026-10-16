@@ -1,5 +1,6 @@
 import type { EventEmitter } from '../event';
 import { namespaces } from '../core/constants';
+import { setStyle } from '../render/style';
 import type { Attributes, AnimationDefinition } from './types';
 import { SvgList } from './SvgList';
 import { animationEmitterOf, createAnimation, easings } from './animation';
@@ -125,7 +126,10 @@ export class Svg {
         return;
       }
 
-      if (key.indexOf(':') !== -1) {
+      if (key === 'style') {
+        // Through the CSSOM, so a Content Security Policy allows it.
+        setStyle(this._node, String(attributes[key]));
+      } else if (key.indexOf(':') !== -1) {
         const namespacedAttribute = key.split(':');
         this._node.setAttributeNS(
           namespaces[namespacedAttribute[0]],

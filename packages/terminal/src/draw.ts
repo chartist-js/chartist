@@ -132,7 +132,13 @@ export function drawScene(scene: SceneNode): Canvas {
         );
         return;
       case 'circle':
-        drawPoint(canvas, current.attrs.cx, current.attrs.cy, series);
+        drawCircle(
+          canvas,
+          Number(current.attrs.cx),
+          Number(current.attrs.cy),
+          Number(current.attrs.r),
+          series
+        );
         return;
       case 'path':
         strokePath(canvas, String(current.attrs.d), { kind: 'line', series });
@@ -296,6 +302,42 @@ function drawPoint(
     [0, 1]
   ]) {
     canvas.dot(dx + ox, dy + oy, { kind: 'point', series });
+  }
+}
+
+/**
+ * A circle as a filled disc: every dot whose center lies within `r` of the
+ * circle's center. The terminal can't tell a filled circle from a stroked
+ * one, and at these sizes a disc reads as either. Circles no bigger than a
+ * dot are drawn as a point, so they don't vanish.
+ */
+function drawCircle(
+  canvas: Canvas,
+  cx: number,
+  cy: number,
+  r: number,
+  series: number | undefined
+) {
+  if (!(r > DOT_WIDTH)) {
+    drawPoint(canvas, cx, cy, series);
+    return;
+  }
+  for (
+    let dy = Math.floor((cy - r) / DOT_HEIGHT);
+    dy * DOT_HEIGHT <= cy + r;
+    dy++
+  ) {
+    for (
+      let dx = Math.floor((cx - r) / DOT_WIDTH);
+      dx * DOT_WIDTH <= cx + r;
+      dx++
+    ) {
+      const x = (dx + 0.5) * DOT_WIDTH - cx;
+      const y = (dy + 0.5) * DOT_HEIGHT - cy;
+      if (x * x + y * y <= r * r) {
+        canvas.dot(dx, dy, { kind: 'point', series });
+      }
+    }
   }
 }
 
@@ -499,15 +541,19 @@ function labelLines(current: SceneNode): LabelLine[] {
     const anchor =
       (current.attrs['text-anchor'] as LabelLine['anchor'] | undefined) ??
       'start';
-    // Pie labels are placed with `dx` and `dy` at their center, as in 1.x;
-    // other text at its baseline, `textAscent` of a line below its top.
-    const centered = current.attrs.dy !== undefined;
+    // Pie labels are centered on their anchor: `dx` and `dy` as in 1.x,
+    // or `x` and `y` with a line per `tspan`, one row apart. Other text
+    // sits at its baseline, `textAscent` of a line below its top.
+    const centered =
+      current.attrs.dy !== undefined ||
+      (current.role === 'label' && current.ctx.kind === 'pie');
     const spans = current.children.filter(child => child.name === 'tspan');
-    return (spans.length ? spans : [current]).map(source => ({
+    return (spans.length ? spans : [current]).map((source, index, all) => ({
       text: source.content ?? '',
       x: Number(source.attrs.x ?? current.attrs.x ?? current.attrs.dx),
       y: centered
-        ? Number(current.attrs.dy)
+        ? Number(current.attrs.dy ?? current.attrs.y) +
+          (index - (all.length - 1) / 2) * CELL_HEIGHT
         : Number(source.attrs.y ?? current.attrs.y) -
           (textAscent - 0.5) * CELL_HEIGHT,
       anchor
