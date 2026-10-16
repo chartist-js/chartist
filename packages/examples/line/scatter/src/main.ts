@@ -38,7 +38,7 @@ lineChart(
   {
     showLine: false,
     axisX: {
-      labelInterpolationFnc(value, index) {
+      labelTransform(value, index) {
         return index % 13 === 0 ? 'W' + value : null;
       }
     }
@@ -48,7 +48,7 @@ lineChart(
       'screen and (min-width: 640px)',
       {
         axisX: {
-          labelInterpolationFnc(value, index) {
+          labelTransform(value, index) {
             return index % 4 === 0 ? 'W' + value : null;
           }
         }

@@ -26,7 +26,7 @@ chart('#chart', {
       id: 'temperature',
       side: 'left',
       type: autoScaleAxis(),
-      labelInterpolationFnc: value => `${value} °C`,
+      labelTransform: value => `${value} °C`,
       offset: 60
     },
     {
@@ -34,7 +34,7 @@ chart('#chart', {
       side: 'right',
       type: autoScaleAxis(),
       low: 0,
-      labelInterpolationFnc: value => `${value} mm`,
+      labelTransform: value => `${value} mm`,
       offset: 60
     }
   ]),

@@ -87,7 +87,14 @@ export interface PieChartOptions extends Omit<Options, 'axisX' | 'axisY'> {
   labelPosition?: RadialLabelPosition;
   /**
    * Turns each slice's label (or value) and index into the text to show.
-   * Return `null` or `undefined` to leave a label out.
+   * Return `null` or `undefined` to leave a label out. Wins over
+   * `labelInterpolationFnc` when both are set.
+   */
+  labelTransform?(value: Label, index: number): Label | null | undefined;
+  /**
+   * The 1.x name of `labelTransform`, which wins when both are set.
+   *
+   * @deprecated Use `labelTransform`. Removed in 3.0.
    */
   labelInterpolationFnc?(value: Label, index: number): Label | null | undefined;
   /**
@@ -173,7 +180,7 @@ export interface SliceLabelDrawEvent extends Omit<
 > {
   /** Always `'label'`. */
   type: 'label';
-  /** The label as shown, after `labelInterpolationFnc`. */
+  /** The label as shown, after `labelTransform`. */
   text: string;
   /** The x the label is anchored at, in px. */
   x: number;

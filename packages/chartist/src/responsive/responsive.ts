@@ -61,7 +61,7 @@ export type ResponsiveEntry<T> = readonly [ResponsiveCondition, T];
  *       container('(width < 400px)'),
  *       {
  *         showPoint: false,
- *         axisX: { labelInterpolationFnc: value => String(value)[0] }
+ *         axisX: { labelTransform: value => String(value)[0] }
  *       }
  *     ]
  *   ]

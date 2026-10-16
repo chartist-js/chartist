@@ -30,7 +30,7 @@ chart('#chart', {
       type: autoScaleAxis(),
       low: 0,
       onlyInteger: true,
-      labelInterpolationFnc: value => `${value}%`
+      labelTransform: value => `${value}%`
     }
   ]),
   layers: [

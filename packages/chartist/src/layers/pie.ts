@@ -9,6 +9,7 @@ import { polarToCartesian } from '../core/math';
 import type { Data, Label } from '../core/types';
 import type { Layer } from '../pipeline/types';
 import type { MeasureStyle } from '../render/measure';
+import { labelTransformOf } from './label';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { SvgPath } from '../svg/SvgPath';
 import { sum } from '../utils/functional';
@@ -58,7 +59,19 @@ export interface PieLayerOptions {
    * (in the middle; move them with `labelOffset`).
    */
   readonly labelPosition?: 'inside' | 'outside' | 'center';
-  /** Formats a slice's label: its entry in `labels`, or else its value. */
+  /**
+   * Formats a slice's label: its entry in `labels`, or else its value.
+   * Wins over `labelInterpolationFnc` when both are set.
+   */
+  readonly labelTransform?: (
+    value: Label,
+    index: number
+  ) => Label | null | undefined;
+  /**
+   * The 1.x name of `labelTransform`, which wins when both are set.
+   *
+   * @deprecated Use `labelTransform`. Removed in 3.0.
+   */
   readonly labelInterpolationFnc?: (
     value: Label,
     index: number
@@ -175,8 +188,7 @@ const CLASS_NAMES = {
  */
 export function pie(options: PieLayerOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };
-  const labelInterpolationFnc =
-    options.labelInterpolationFnc ?? ((value: Label) => value);
+  const transform = labelTransformOf(options);
   return {
     type: 'pie',
     chartType: options.donut ? 'donut' : 'pie',
@@ -370,7 +382,7 @@ export function pie(options: PieLayerOptions = {}): Layer {
             labels && !isFalseyButZero(labels[index])
               ? labels[index]
               : values[index];
-          const interpolated = labelInterpolationFnc(rawValue, index);
+          const interpolated = transform(rawValue, index);
           if (interpolated || interpolated === 0) {
             const text = String(interpolated);
             if (options.preventOverlappingLabelOffset) {

@@ -47,12 +47,15 @@ function axisOptions(overrides: Partial<DrawnAxisOptions>): DrawnAxisOptions {
     labelOffset: { x: 0, y: 0 },
     showLabel: true,
     showGrid: true,
-    labelInterpolationFnc: (v: unknown) => v as string,
+    labelTransform: (v: unknown) => v as string,
     ...overrides
   };
 }
 
-function compareWith1x(axisX: DrawnAxisOptions, axisY: DrawnAxisOptions) {
+function compareWith1x(drawnX: DrawnAxisOptions, drawnY: DrawnAxisOptions) {
+  // The 1.x axes read the label function by its 1.x name.
+  const axisX = { ...drawnX, labelInterpolationFnc: drawnX.labelTransform };
+  const axisY = { ...drawnY, labelInterpolationFnc: drawnY.labelTransform };
   // 1.x: draw into Svg groups
   const legacyGrids = new Svg('g');
   const legacyLabels = new Svg('g');
@@ -133,12 +136,11 @@ describe('scales/grid matches 1.x createGridAndLabels', () => {
     );
   });
 
-  it('labelInterpolationFnc, hidden labels and grids, skipped falsy labels', () => {
+  it('labelTransform, hidden labels and grids, skipped falsy labels', () => {
     compareWith1x(
       axisOptions({
         ticks: ['Mon', 'Tue', 'Wed'],
-        labelInterpolationFnc: (v: unknown, i: number) =>
-          i === 1 ? null : `#${v}`
+        labelTransform: (v: unknown, i: number) => (i === 1 ? null : `#${v}`)
       } as Partial<DrawnAxisOptions>),
       axisOptions({ offset: 40, position: 'start', showGrid: false })
     );

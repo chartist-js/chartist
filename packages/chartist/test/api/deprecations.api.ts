@@ -49,3 +49,19 @@ local(`deprecations in the declarations (${BUILDS[build]})`, () => {
     expect(deprecatedNames(build, file)).toEqual({});
   });
 });
+
+local(`deprecated options (${BUILDS[build]})`, () => {
+  test.each(['index.d.ts', 'index.d.cts'])(
+    '%s marks labelInterpolationFnc, pointing to labelTransform',
+    file => {
+      const text = readFileSync(`${BUILDS[build]}/${file}`, 'utf8');
+      // The axis options, the pie chart options and the pie layer.
+      const marked = [
+        ...text.matchAll(
+          /@deprecated Use `labelTransform`\. Removed in 3\.0\.\s*\*\/\s*(?:readonly )?labelInterpolationFnc\?/g
+        )
+      ];
+      expect(marked).toHaveLength(3);
+    }
+  );
+});

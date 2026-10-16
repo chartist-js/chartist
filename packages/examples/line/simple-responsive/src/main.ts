@@ -18,7 +18,7 @@ const data = {
 /* Set some base options (settings will override the default settings in js *see default settings*). We are adding a basic label interpolation function for the xAxis labels. */
 const options: LineChartPresetOptions = {
   axisX: {
-    labelInterpolationFnc: value => 'Calendar Week ' + value
+    labelTransform: value => 'Calendar Week ' + value
   }
 };
 
@@ -29,7 +29,7 @@ const responsiveOptions: PresetResponsiveOptions<LineChartPresetOptions> = [
     {
       showPoint: false,
       axisX: {
-        labelInterpolationFnc: value => 'Week ' + value
+        labelTransform: value => 'Week ' + value
       }
     }
   ],
@@ -38,7 +38,7 @@ const responsiveOptions: PresetResponsiveOptions<LineChartPresetOptions> = [
     {
       showLine: false,
       axisX: {
-        labelInterpolationFnc: value => 'W' + value
+        labelTransform: value => 'W' + value
       }
     }
   ]

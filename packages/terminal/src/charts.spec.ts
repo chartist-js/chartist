@@ -53,7 +53,7 @@ describe('lineChart', () => {
         color: 'none',
         axisY: {
           offset: 80,
-          labelInterpolationFnc: (value: unknown) => `${value}%`
+          labelTransform: (value: unknown) => `${value}%`
         }
       })
     );

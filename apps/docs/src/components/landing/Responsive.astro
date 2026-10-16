@@ -3,13 +3,13 @@ import { Code } from 'astro:components';
 
 const CODE = `barChart('#chart', data, options, [
   [container('(width >= 520px)'), {
-    axisX: { labelInterpolationFnc: month }    // "Jan"
+    axisX: { labelTransform: month }    // "Jan"
   }],
   [container('(360px <= width < 520px)'), {
-    axisX: { labelInterpolationFnc: initial }  // "J"
+    axisX: { labelTransform: initial }  // "J"
   }],
   [container('(width < 360px)'), {
-    axisX: { labelInterpolationFnc: quarter }  // "Q1"
+    axisX: { labelTransform: quarter }  // "Q1"
   }]
 ]);`;
 ---

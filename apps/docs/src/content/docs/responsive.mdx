@@ -39,7 +39,7 @@ Chartist checks the queries with `matchMedia()` and redraws when one starts or s
 
 Every matching entry applies, not only the first one. They're merged over your options in the order you list them, so a later entry wins where two set the same option. Write them from the general to the specific: `(max-width: 640px)` first, `(max-width: 400px)` after it. Below 400 pixels both match, and the second only needs what's different.
 
-The merge is deep, like the merge of [options over defaults](../data-and-options/#the-options-argument): `axisX: { labelInterpolationFnc }` changes the labels and keeps the other X axis options. That includes [options per series](../data-and-options/#options-per-series), which is how the example above drops the area of one series on small screens only.
+The merge is deep, like the merge of [options over defaults](../data-and-options/#the-options-argument): `axisX: { labelTransform }` changes the labels and keeps the other X axis options. That includes [options per series](../data-and-options/#options-per-series), which is how the example above drops the area of one series on small screens only.
 
 ## Responsive `chart()`
 
@@ -113,7 +113,7 @@ lineChart(
       container('(width < 400px)'),
       {
         showPoint: false,
-        axisX: { labelInterpolationFnc: value => String(value)[0] }
+        axisX: { labelTransform: value => String(value)[0] }
       }
     ]
   ]

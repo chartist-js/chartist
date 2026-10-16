@@ -17,7 +17,7 @@ lineChart(
       '(max-width: 640px)',
       {
         showPoint: false,
-        axisX: { labelInterpolationFnc: value => String(value).slice(0, 3) }
+        axisX: { labelTransform: value => String(value).slice(0, 3) }
       }
     ],
     // Up to 400px: both entries match, and this one comes last,
@@ -25,7 +25,7 @@ lineChart(
     [
       '(max-width: 400px)',
       {
-        axisX: { labelInterpolationFnc: value => String(value)[0] },
+        axisX: { labelTransform: value => String(value)[0] },
         series: { signups: { showArea: false } }
       }
     ]

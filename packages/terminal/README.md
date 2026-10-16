@@ -103,7 +103,7 @@ console.log(
 console.log(legend(data, { columns: 60, color }));
 ```
 
-The Chartist options work as they do in the browser: `stackBars`, `horizontalBars`, `low` and `high`, `axisY.labelInterpolationFnc`, `donut` and the others. The terminal options are:
+The Chartist options work as they do in the browser: `stackBars`, `horizontalBars`, `low` and `high`, `axisY.labelTransform`, `donut` and the others. The terminal options are:
 
 - `columns` and `rows`: the size in cells, 80 × 20 by default;
 - `color`: `truecolor` (default), `256`, `16` or `none` for plain text;

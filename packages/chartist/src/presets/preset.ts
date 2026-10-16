@@ -17,6 +17,7 @@ import {
   type AxisFrame,
   type DrawnAxisOptions
 } from '../scales/grid';
+import { labelTransformOf } from '../layers/label';
 import {
   svgLabels,
   type LabelChartKind,
@@ -155,6 +156,12 @@ export interface AxisPresetOptions {
   readonly labelKind?: LabelChartKind;
 }
 
+/** An axis's options with its label function resolved from either name. */
+const drawn = (axis: DrawnAxisOptions): DrawnAxisOptions => ({
+  ...axis,
+  labelTransform: labelTransformOf(axis)
+});
+
 function frame(
   options: AxisPresetOptions,
   context: LayerContext,
@@ -164,8 +171,8 @@ function frame(
     svgLabel,
     area: context.area,
     padding: context.padding,
-    axisX: options.axisX,
-    axisY: options.axisY,
+    axisX: drawn(options.axisX),
+    axisY: drawn(options.axisY),
     classNames: options.classNames
   };
 }

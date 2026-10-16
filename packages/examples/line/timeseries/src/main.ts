@@ -36,7 +36,7 @@ lineChart(
     axisX: {
       type: fixedScaleAxis(),
       divisor: 5,
-      labelInterpolationFnc: value =>
+      labelTransform: value =>
         new Date(value).toLocaleString(undefined, {
           month: 'short',
           day: 'numeric'

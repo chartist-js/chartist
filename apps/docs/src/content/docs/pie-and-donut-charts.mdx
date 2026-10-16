@@ -119,7 +119,7 @@ Labels outside the pie need room, so give the chart some `chartPadding` (the pie
 
 ### Label text
 
-`labelInterpolationFnc` gets each slice's label (or its value, when there are no labels) and its index, and returns the text to show. Return `null` to leave a slice without a label:
+`labelTransform` gets each slice's label (or its value, when there are no labels) and its index, and returns the text to show. Return `null` to leave a slice without a label:
 
 ```ts
 import 'chartist/styles.css';
@@ -133,7 +133,7 @@ pieChart(
   { series },
   {
     // 17%, 42% and 33%; the 8% slice stays unlabeled.
-    labelInterpolationFnc: value => {
+    labelTransform: value => {
       const percent = Math.round((Number(value) / total) * 100);
       return percent < 10 ? null : `${percent}%`;
     }

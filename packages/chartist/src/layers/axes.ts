@@ -7,6 +7,7 @@ import type { Layer, LayerContext } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
 import type { LabelMode } from '../render/measure';
 import type { PlacedScaleAxis } from '../scales/axis';
+import { labelTransformOf } from './label';
 import {
   axisNodes,
   gridBackground,
@@ -85,8 +86,7 @@ function drawnOptions(axis: PlacedScaleAxis): DrawnAxisOptions {
     labelOffset: options.labelOffset ?? { x: 0, y: 0 },
     showLabel: options.showLabel ?? true,
     showGrid: options.showGrid ?? true,
-    labelInterpolationFnc:
-      options.labelInterpolationFnc ?? ((value: unknown) => value as never)
+    labelTransform: labelTransformOf(options)
   } as DrawnAxisOptions;
 }
 

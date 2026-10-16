@@ -44,7 +44,7 @@ export function mountBoardChart(element: HTMLElement): ChartHandle {
       offset: 30,
       scaleMinSpace: 16,
       onlyInteger: true,
-      labelInterpolationFnc: millions
+      labelTransform: millions
     },
     plugins: [boardDrawIn]
   });

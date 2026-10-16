@@ -11,7 +11,7 @@ const data = {
 };
 
 const options: PieChartPresetOptions = {
-  labelInterpolationFnc: value => String(value)[0]
+  labelTransform: value => String(value)[0]
 };
 
 const responsiveOptions: PresetResponsiveOptions<PieChartPresetOptions> = [
@@ -21,7 +21,7 @@ const responsiveOptions: PresetResponsiveOptions<PieChartPresetOptions> = [
       chartPadding: 30,
       labelOffset: 100,
       labelDirection: 'explode',
-      labelInterpolationFnc: value => value
+      labelTransform: value => value
     }
   ],
   [

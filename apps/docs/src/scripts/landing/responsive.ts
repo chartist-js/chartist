@@ -45,18 +45,12 @@ export async function mountResponsiveDemo() {
     { labels: MONTHS, series: [[5, 4, 6, 8, 3, 9, 6, 7, 5, 8, 4, 6]] },
     { axisY: { onlyInteger: true, offset: 24 }, seriesBarDistance: 0 },
     [
-      [
-        container('(width >= 520px)'),
-        { axisX: { labelInterpolationFnc: month } }
-      ],
+      [container('(width >= 520px)'), { axisX: { labelTransform: month } }],
       [
         container('(360px <= width < 520px)'),
-        { axisX: { labelInterpolationFnc: initial } }
+        { axisX: { labelTransform: initial } }
       ],
-      [
-        container('(width < 360px)'),
-        { axisX: { labelInterpolationFnc: quarter } }
-      ]
+      [container('(width < 360px)'), { axisX: { labelTransform: quarter } }]
     ]
   );
 
@@ -97,7 +91,7 @@ export async function mountResponsiveDemo() {
       [
         [
           container('(width < 260px)'),
-          { showPoint: false, axisX: { labelInterpolationFnc: initial } }
+          { showPoint: false, axisX: { labelTransform: initial } }
         ]
       ]
     );

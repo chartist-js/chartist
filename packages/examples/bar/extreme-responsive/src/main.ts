@@ -17,7 +17,7 @@ barChart(
     // Default mobile configuration
     stackBars: true,
     axisX: {
-      labelInterpolationFnc: value =>
+      labelTransform: value =>
         String(value)
           .split(/\s+/)
           .map(word => word[0])
@@ -35,7 +35,7 @@ barChart(
         reverseData: true,
         horizontalBars: true,
         axisX: {
-          labelInterpolationFnc: noop
+          labelTransform: noop
         },
         axisY: {
           offset: 60
