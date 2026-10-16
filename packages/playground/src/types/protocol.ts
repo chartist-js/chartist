@@ -43,7 +43,7 @@ export type TypeRequest =
   | {
       type: 'open';
       project: number;
-      /** Absolute URL of the directory with `index.d.ts` and `compat.d.ts`. */
+      /** Absolute URL of the directory with `index.d.ts`, `compat.d.ts` and `live.d.ts`. */
       typesUrl: string;
       untyped: string[];
       /** Other typed packages: bare name → absolute URL of its `index.d.ts`. */

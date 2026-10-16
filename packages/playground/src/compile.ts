@@ -104,10 +104,13 @@ export async function compile(
   const importMap = {
     imports: {
       chartist: absolute(options.chartistUrl),
-      // Next to the core build; compat.js imports ./index.js, so both
-      // specifiers share one core instance.
+      // Next to the core build; compat.js and live.js import ./index.js,
+      // so every specifier shares one core instance.
       'chartist/compat': absolute(
         options.chartistUrl.replace(/[^/]*$/, 'compat.js')
+      ),
+      'chartist/live': absolute(
+        options.chartistUrl.replace(/[^/]*$/, 'live.js')
       ),
       ...Object.fromEntries(
         Object.entries(options.imports ?? {}).map(([k, v]) => [k, absolute(v)])
