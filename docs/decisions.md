@@ -84,6 +84,12 @@ The workflows and settings are specified in the release change (`openspec/change
 - **0.x** stays archived at https://gionkunz.github.io/chartist-js/; the version switcher and footer link both archives.
 - **Visitor counting:** GoatCounter (`chartist.goatcounter.com`), cookieless, so no consent banner. It loads only on chartist.dev, so dev, tests, previews and forks never request it, and it's the one exception to "no third-party requests" (fonts and assets are self-hosted). The `/v1/` archive isn't counted.
 
+## Test strategy
+
+- **The library is tested rigorously; the docs site gets happy paths** (decided 2026-10-16). Chartist's tests guard what users rely on: unit and public API tests, the 1.x parity tests and the API tests against 1.5.0, pixel comparisons with 1.5.0, the bundle size budgets and the package smoke tests. The docs e2e tests check that each page loads without errors or third-party requests, that every live example runs, and the site's interactive features and published URLs. They don't pin copy, ordering or per-page details.
+- **One page per template** is enough where pages share a template: the accessibility scan opens one page per template (plus pages with components of their own) on every push, and every page only before a release. Checks of static output (share tags, the sitemap) read the built HTML instead of opening a browser per page.
+- **CI checks each thing once:** the Node matrix covers the packages; the docs site is built and tested in its own workflow.
+
 ## Visual regression
 
 - **Reference platform:** Linux x64 with the Chromium of the pinned Playwright version: GitHub's Ubuntu runners or the author's WSL2 host. Committed baselines (`packages/chartist/test/visual/__screenshots__`) are recorded only there.

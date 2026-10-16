@@ -3,7 +3,13 @@ import { fileURLToPath } from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { API_PAGES } from '../src/lib/api-pages';
-import { DOCS, PACKAGE_GUIDES, PACKAGE_PAGES, PAGES } from './pages';
+import {
+  A11Y_PAGES,
+  DOCS,
+  PACKAGE_GUIDES,
+  PACKAGE_PAGES,
+  PAGES
+} from './pages';
 
 /** Scrolls through the page so every lazily rendered chart mounts. */
 async function renderAllCharts(page: Page) {
@@ -37,7 +43,9 @@ for (const { name, path } of PAGES) {
     await renderAllCharts(page);
     expect(problems).toEqual([]);
   });
+}
 
+for (const { name, path } of A11Y_PAGES) {
   for (const theme of ['light', 'dark'] as const) {
     test(`${name}: no accessibility violations (${theme})`, async ({
       page

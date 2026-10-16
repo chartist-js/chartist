@@ -19,8 +19,10 @@ export default defineConfig({
   webServer: {
     command: `node e2e/serve.mjs`,
     env: { PORT: String(PORT) },
-    url: `http://localhost:${PORT}/`,
-    reuseExistingServer: !process.env.CI,
+    // Ready when the server says so: polling a port before it listens can
+    // hang for minutes where localhost drops connections to closed ports
+    // instead of refusing them (seen on WSL).
+    wait: { stdout: /serving / },
     timeout: 60_000
   }
 });
