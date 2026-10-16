@@ -1,6 +1,7 @@
 # security Specification
 
 ## Purpose
+
 Defines what Chartist and its packages guarantee to pages with a Content Security Policy or Trusted Types, and how they keep chart data from injecting markup into any output.
 
 ## Requirements
