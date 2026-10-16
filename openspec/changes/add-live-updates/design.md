@@ -21,9 +21,13 @@
   | built-in keyframes                      | 0.37    |
   | **total**                               | **3.1** |
 
-  That's about 3.5 to 4 kB in production code, which would take `chart` to about 8.7 kB if it were all in the core.
+  The sketches put it at about 3.5 to 4 kB in production code, which would take `chart` to about 8.7 kB if it were all in the core.
 
-- **What the spikes measured** (Chromium, 60 frames of a sliding window): full rebuild 1.2 ms per frame for 50 points and 10.5 ms for 500; a keyed patch 0.7 ms and 4.2 ms, with the same elements kept. `toScene()` takes 0.8 ms for 100 points, 3 ms for 1,000 and 14 ms for 10,000 (line only).
+  Measured after implementing:
+  - the core part: `chart` 5.56 kB (+0.61), `lineChart` 14.27 kB (+0.62), `toScene` with `renderToString` 3.72 kB (+0.09), everything 28.36 kB (+1.53, with the easing code `Svg#animate()` uses);
+  - `chartist/live`: `dist/live.min.js` is 4.8 kB without the core. On top of a `lineChart`, `liveDomRenderer()` adds 1.35 kB and `smilAnimations()` 4 kB more, about half of that the built-in keyframes.
+
+- **What the spikes measured** (Chromium, 60 frames of a sliding window): full rebuild 1.2 ms per frame for 50 points and 10.5 ms for 500; a keyed patch 0.7 ms and 4.2 ms, with the same elements kept. `toScene()` takes 0.8 ms for 100 points, 3 ms for 1,000 and 14 ms for 10,000 (line only). The implemented renderer, measured per update with pipeline, style and layout on a 500-point sliding line: 3.4 to 4.0 ms with `domRenderer()` and 2.8 to 3.4 ms live without axis labels; 14 ms and 11 to 13 ms with 500 HTML labels. Patching saves less time than the spike suggested; what it keeps are the elements.
 - **What CSS can't do.** `x1`, `y1`, `x2` and `y2` aren't CSS properties, so CSS transitions can't move points and bars (both `<line>`). The `d` property transitions in Chromium and Firefox but not in Safari.
 - **What SMIL can do,** measured the same in Chromium, Firefox and WebKit:
   - Additive `<animate>`, an offset from `previous − next` to 0 over the attribute's final value, with a second update halfway through, drew `x1` at 0, 50, 50 (right after the second update), 150 and 200.
@@ -133,8 +137,9 @@ interface RenderOutput {
 - **First render, or no `update`:** `domRenderer().render()`, returned as is (no `patched`).
 - **With `update`:** `diffScenes(update.previousScene, scene, { key, labels: update.labels })`. Then it patches the previous SVG, found with `update.previous.elementOf(update.previousScene)`, and returns `{ svg, elementOf, remove, changes, patched: true, animation }` with a new node → element `WeakMap`. The renderer itself keeps no state, so one instance serves any number of charts.
 - **Identity, in `diffScenes()`.** Matching runs per parent, as the DOM is a tree. A node's identity is:
-  - a value node (with `seriesIndex` and `valueIndex`): `v:<layer>/<series>/<value key>`. The value key is the index, the label (`labels[valueIndex]`, or `labels[seriesIndex]` for flat pie data), or the `key` function's result, given `{ seriesIndex, valueIndex, value, label, meta }`. The layer comes from the node's pipeline key (`layer/…`);
-  - a series node: `s:<layer>/<series>`;
+  - a value node (with `seriesIndex` and `valueIndex`): `v:<layer>/<series>/<value key>:<role>`. The role keeps sibling nodes of one value or series (a line and its area) from swapping matches. The value key is the index, the label (`labels[valueIndex]`, or `labels[seriesIndex]` for flat pie data), or the `key` function's result, given `{ seriesIndex, valueIndex, value, label, meta }`. The layer comes from the node's pipeline key (`layer/…`);
+  - a series node: `s:<layer>/<series>:<role>`;
+  - a pie's slice, its label and its one-slice series group: `v:<layer>/pie/<value key>`, so a sliding pie keeps its slices with their groups;
   - a grid line or axis label (`ctx.axis`): `t:<axis id>:<role>:<axis.ticks[index]>`;
   - another node with a key (a plugin's own): `k:<key>`;
   - the rest: `p:<name>.<first class>`.
@@ -170,7 +175,7 @@ interface RenderOutput {
   - Plugins can use it for their own frames.
   - It's tree-shaken out of charts that use neither `Svg` nor `chartist/live`.
   - 1.x guided mode keeps its behavior otherwise: the attribute is set to `from` first and to `to` on `endEvent`, with `fill="freeze"`.
-- **Cleaning up.** Each `animate` it adds has the class `ct-update-animation` and removes itself on `endEvent`. The next patch also removes those of its elements whose end time has passed, in case `endEvent` didn't fire (a hidden tab, a paused timeline).
+- **Cleaning up.** Each `animate` it adds has the class `ct-update-animation` and removes itself on `endEvent`. One that didn't start is removed at once: Firefox runs no SMIL inside a `foreignObject`, so HTML labels move to their new place without an animation there. The next patch also removes those of its elements whose end time has passed, in case `endEvent` didn't fire (a hidden tab, a paused timeline).
 - _Alternative, a requestAnimationFrame tween in JavaScript:_ state between frames in the renderer, a loop per chart, and interruption that has to read where an element is. SMIL keeps the timing in the document and the renderer stateless.
 - _Alternative, CSS transitions:_ they can't move `<line>`s, nor paths in Safari.
 
