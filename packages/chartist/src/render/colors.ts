@@ -11,7 +11,6 @@
  * // The color of series `c`, the third.
  * export const third = seriesColors[2];
  * ```
- * @experimental
  */
 export const seriesColors: readonly string[] = [
   '#d70206',

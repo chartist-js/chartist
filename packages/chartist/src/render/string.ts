@@ -94,7 +94,6 @@ function serialize(current: SceneNode, position: Position): string {
  *   return renderToString(scene);
  * }
  * ```
- * @experimental
  */
 export function renderToString(scene: SceneNode): string {
   return serialize(scene, 'root');

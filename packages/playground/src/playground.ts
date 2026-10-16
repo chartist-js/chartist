@@ -28,7 +28,7 @@ export interface PlaygroundOptions extends Omit<
   editor?: boolean;
   /**
    * Type-aware editing of TypeScript files: the URL of the directory with
-   * Chartist's `index.d.ts` and `compat.d.ts` (relative to the page), for
+   * Chartist's `index.d.ts`, `compat.d.ts` and `live.d.ts` (relative to the page), for
    * the build `chartistUrl` points to. The type service loads when a
    * TypeScript editor first gets focus. Off without it. `packages` adds
    * other packages' declarations: bare name → `index.d.ts`, relative to

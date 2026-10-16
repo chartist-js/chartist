@@ -5,7 +5,6 @@ group: Chart types
 order: 4
 ---
 
-import Callout from '../../components/docs/Callout.astro';
 import LiveExample from '../../components/LiveExample.astro';
 
 export const groupedStacks = {
@@ -164,11 +163,6 @@ Next to `data`, `axes` and `layers`, `chart()` takes:
 
 The class matters for CSS: the default stylesheet aligns labels by chart type. Without a `className`, a chart with a `bar()` layer gets `ct-chart-bar`, which centers the X labels under the bars, a pie gets `ct-chart-pie` (or `ct-chart-donut`), and anything else gets `ct-chart-line`. A `className` of your own replaces it, so add the chart type's class to it if you want that alignment.
 
-<Callout kind='warn'>
-  **Experimental until 2.0.** `chart()`, `cartesianAxes()` and the layers are
-  new in v2. Their names and options may still change before the 2.0 release.
-</Callout>
-
 In the API reference: [`chart()`](../../api/chart/), [layers](../../api/layers/) and [scales and axes](../../api/scales/).
 
-Next: [learn what each axis type does](../axes-and-scales/), or [keep the chart up to date with new data](../updating-charts/).
+Next: [learn what each axis type does](../axes-and-scales/), or [keep the chart up to date with new data](../live-updates/).

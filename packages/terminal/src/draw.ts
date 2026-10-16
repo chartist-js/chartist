@@ -16,12 +16,10 @@ import {
 /**
  * The width in px a terminal cell stands for in a scene: a glyph is half
  * as wide as high.
- * @experimental
  */
 export const CELL_WIDTH = 8;
 /**
  * The height in px a terminal cell stands for in a scene: one line.
- * @experimental
  */
 export const CELL_HEIGHT = 16;
 
@@ -35,7 +33,6 @@ const DEFAULT_DONUT_WIDTH = 60;
 /**
  * Measures text in terminal cells: each character is one cell wide and
  * one cell high, so labels are laid out on the character grid.
- * @experimental
  */
 export const measureCells: MeasureText = text => ({
   width: [...text].length * CELL_WIDTH,
@@ -46,7 +43,6 @@ export const measureCells: MeasureText = text => ({
 /**
  * The size to lay out a chart at for `columns` × `rows` terminal cells,
  * for `toScene()`: in px, with text measured in cells and SVG text labels.
- * @experimental
  */
 export function terminalSize(columns: number, rows: number): SceneSize {
   return {

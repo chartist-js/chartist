@@ -16,7 +16,8 @@ export interface Diagnostic {
 export interface CompileOptions {
   /**
    * URL the bare specifier `chartist` resolves to. Relative to `baseUrl`.
-   * `chartist/compat` resolves to `compat.js` next to it.
+   * `chartist/compat` and `chartist/live` resolve to `compat.js` and
+   * `live.js` next to it.
    */
   chartistUrl: string;
   /** URL of the Chartist stylesheet (`chartist/styles.css`). Relative to `baseUrl`. */

@@ -10,7 +10,6 @@ import type { AxisDimension } from './axis';
 /**
  * How an SVG text label sits in its label box, as set in the `align`
  * option of {@link axisLabels}.
- * @experimental
  */
 export interface LabelAlign {
   /** Aligns the text to the box's left (`start`), center or right (`end`). */

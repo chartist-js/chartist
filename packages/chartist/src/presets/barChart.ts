@@ -2,6 +2,7 @@
  * `barChart`: the 1.x bar chart as a preset over `chart()`. Takes the 1.x
  * arguments and options and renders the 1.x structure.
  */
+import type { Renderer } from '../render/types';
 import type {
   BarChartData,
   BarChartOptions
@@ -37,7 +38,6 @@ import {
 /**
  * Options of `barChart`: the 1.x `BarChart` options; axis types may also be
  * v2 axis factories.
- * @experimental
  */
 export type BarChartPresetOptions = Omit<
   BarChartOptions,
@@ -51,6 +51,13 @@ export type BarChartPresetOptions = Omit<
    * so they see it too.
    */
   readonly on?: PhaseListeners;
+  /**
+   * Turns the scene into output, as `renderer` in the config of
+   * `chart()`: the DOM renderer by default, or `liveDomRenderer()` from
+   * `chartist/live` for a chart that changes in place on updates. It can't
+   * change after the chart is created.
+   */
+  readonly renderer?: Renderer;
   /** Extra layers below or above the chart's bars. */
   readonly layers?: PresetLayers;
   /**
@@ -223,7 +230,6 @@ const barSpec: PresetSpec<BarChartData, BarChartPresetOptions> = {
  * options, without a container: the bar layer with its axes, grid and labels, horizontal or stacked as the options say. Pass it to `toScene()` to render
  * the preset chart with another renderer. Responsive options and the
  * inline size style of the root svg are left out; both need a container.
- * @experimental
  */
 export function barChartConfig(
   data: BarChartData,
@@ -254,7 +260,6 @@ export function createBarChart(
  * Creates a bar chart with the 1.x options and output, rendered
  * synchronously. Plugins must be v2 plugins; convert 1.x plugins with
  * `fromLegacyPlugin` from `chartist/compat`.
- * @experimental
  */
 export function barChart(
   target: string | Element,

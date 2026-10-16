@@ -30,8 +30,8 @@ export interface PhaseEmitter {
    * observe the final value.
    */
   transform<T>(name: string, value: T): T | null;
-  /** Runs the listeners and ignores their return values. */
-  notify(name: string, value: unknown): void;
+  /** Runs the listeners and returns what they returned. */
+  notify(name: string, value: unknown): unknown[];
   /** Removes every listener, plugins' too. */
   clear(): void;
 }
@@ -100,8 +100,11 @@ export function createPhaseEmitter(): PhaseEmitter {
       return current;
     },
     notify(name: string, value: unknown) {
-      (listeners.get(name) ?? []).forEach(({ listener }) => listener(value));
+      const results = (listeners.get(name) ?? []).map(({ listener }) =>
+        listener(value)
+      );
       observe(name, value);
+      return results;
     },
     clear() {
       listeners.clear();

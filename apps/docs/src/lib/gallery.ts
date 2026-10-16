@@ -25,9 +25,11 @@ export const TYPES: { type: ChartType; title: string }[] = [
   { type: 'bar', title: 'Bar charts' },
   { type: 'pie', title: 'Pie and donut charts' },
   { type: 'composed', title: 'Composed charts' },
-  { type: 'styling', title: 'Styling' }
+  { type: 'styling', title: 'Styling' },
+  { type: 'live', title: 'Live data' }
 ];
 
+/** The files of an example folder, keyed by path. */
 function filesOf(folder: string) {
   const prefix = `../../../../packages/examples/${folder}/`;
   return Object.fromEntries(
@@ -46,6 +48,15 @@ export const gallery: GalleryExample[] = examples
     );
     return { ...example, files, classicCode };
   });
+
+/** The functional entry's files of a gallery example, by id. */
+export function galleryFiles(id: string): Record<string, string> {
+  const example = gallery.find(candidate => candidate.id === id);
+  if (!example) {
+    throw new Error(`No gallery example "${id}"`);
+  }
+  return example.files;
+}
 
 /** The docs examples of one type, in manifest order. */
 export const ofType = (type: ChartType) =>

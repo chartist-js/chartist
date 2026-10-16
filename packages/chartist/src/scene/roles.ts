@@ -3,11 +3,10 @@
  * (`ctx`) and its attributes. Checking `node.role` narrows a node to its
  * role, e.g. `node.role === 'point'` gives `node.ctx.x` as a number.
  * Plugins declare their own roles in `NodeRoles`.
- *
- * @experimental The v2 API may change until v2.0.
  */
 import type { Label, NormalizedSeries, NormalizedSeriesValue } from '../core';
 import type { ScaleAxis } from '../scales/axis';
+import type { LineInterpolation } from '../charts/LineChart/LineChart.types';
 import type { SvgPath } from '../svg';
 
 /** A position in the chart's SVG, in px from its top left corner. */
@@ -95,6 +94,11 @@ export interface PathContext extends SeriesContext {
   readonly values: NormalizedSeries;
   /** The path as drawn (a copy, safe to change). */
   readonly path: SvgPath;
+  /**
+   * The interpolation the path was drawn with (`lineSmooth`), so the path
+   * can be drawn again through other points, e.g. for update animations.
+   */
+  readonly smoothing: LineInterpolation;
 }
 
 /**
@@ -270,6 +274,8 @@ export interface BandContext extends NoSeries {
   readonly series?: readonly number[];
   /** The piece's outline as drawn (a copy, safe to change). */
   readonly path: SvgPath;
+  /** The interpolation the edges were drawn with (`lineSmooth`). */
+  readonly smoothing: LineInterpolation;
 }
 
 /** The attributes of a target label's SVG `text` element. */

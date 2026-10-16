@@ -141,6 +141,13 @@ const ANIMATION_EMITTER = Symbol.for('chartist.animationEmitter');
  */
 const PRESET_STATE = Symbol.for('chartist.presetState');
 
+/**
+ * Set on the chart handle, so the chart never hands its renderer the
+ * previous render: 1.x draw listeners and plugins expect new elements on
+ * every render. The core reads the same global symbol.
+ */
+const REPLACES_OUTPUT = Symbol.for('chartist.replacesOutput');
+
 const presetOf = (handle: ChartHandle) =>
   (handle as { [PRESET_STATE]?: PresetState<Data, AnyOptions> })[PRESET_STATE];
 
@@ -500,6 +507,7 @@ function enable(handle: ChartHandle): CompatState {
   }
   const state: CompatState = { instances: [] };
   states.set(handle, state);
+  (handle as { [REPLACES_OUTPUT]?: boolean })[REPLACES_OUTPUT] = true;
 
   handle.on('resolve', ({ config }) => {
     state.preset = config.preset as CompatState['preset'];

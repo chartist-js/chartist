@@ -28,7 +28,9 @@ export interface ExportList {
 
 export const LIST_FILE = path.join(exportsDir, 'chartist.json');
 export const COMPAT_LIST_FILE = path.join(exportsDir, 'compat.json');
+export const LIVE_LIST_FILE = path.join(exportsDir, 'live.json');
 export const DEPRECATED_FILE = path.join(exportsDir, 'deprecated.json');
+export const EXPERIMENTAL_FILE = path.join(exportsDir, 'experimental.json');
 
 const sorted = (names: Iterable<string>) =>
   [...names].filter(name => name !== 'default').sort();
@@ -43,14 +45,19 @@ export function cjsNames(build: BuildName, entry = 'index') {
   return sorted(Object.keys(require(path.join(BUILDS[build], `${entry}.cjs`))));
 }
 
-/** Runs the UMD file like a classic <script>: no module system, a global. */
-export function umdNames(build: BuildName) {
+/**
+ * Runs UMD files like classic <script>s, in order: no module system, a
+ * global. Returns the names on the global `Chartist` after the last one.
+ */
+export function umdNames(build: BuildName, entries = ['index']) {
   const context: { Chartist?: object } = {};
   vm.createContext(context);
-  vm.runInContext(
-    readFileSync(path.join(BUILDS[build], 'index.umd.js'), 'utf8'),
-    context
-  );
+  for (const entry of entries) {
+    vm.runInContext(
+      readFileSync(path.join(BUILDS[build], `${entry}.umd.js`), 'utf8'),
+      context
+    );
+  }
   if (!context.Chartist) {
     throw new Error(`${build}: the UMD build defines no global Chartist`);
   }
@@ -69,10 +76,10 @@ export function typeNames(build: BuildName, entry = 'index') {
 }
 
 /**
- * The exports a declaration file marks as deprecated, with their messages:
- * what an editor shows for an import of the name from that entry.
+ * The exports a declaration file marks with a JSDoc tag, with the tag's
+ * text: what an editor shows for an import of the name from that entry.
  */
-export function deprecatedNames(build: BuildName, file: string) {
+function taggedNames(build: BuildName, file: string, tagName: string) {
   const full = path.join(BUILDS[build], file);
   const program = ts.createProgram([full], { skipLibCheck: true });
   const checker = program.getTypeChecker();
@@ -80,7 +87,7 @@ export function deprecatedNames(build: BuildName, file: string) {
   if (!module) {
     throw new Error(`${build}: ${full} is not a module`);
   }
-  const deprecated: Record<string, string> = {};
+  const tagged: Record<string, string> = {};
   for (const symbol of checker.getExportsOfModule(module)) {
     const target =
       symbol.flags & ts.SymbolFlags.Alias
@@ -88,13 +95,21 @@ export function deprecatedNames(build: BuildName, file: string) {
         : symbol;
     const tag = target
       .getJsDocTags(checker)
-      .find(({ name }) => name === 'deprecated');
+      .find(({ name }) => name === tagName);
     if (tag) {
-      deprecated[symbol.name] = ts.displayPartsToString(tag.text).trim();
+      tagged[symbol.name] = ts.displayPartsToString(tag.text).trim();
     }
   }
-  return deprecated;
+  return tagged;
 }
+
+/** The exports a declaration file marks as deprecated, with their messages. */
+export const deprecatedNames = (build: BuildName, file: string) =>
+  taggedNames(build, file, 'deprecated');
+
+/** The exports a declaration file marks as experimental, sorted. */
+export const experimentalNames = (build: BuildName, file: string) =>
+  sorted(Object.keys(taggedNames(build, file, 'experimental')));
 
 export function readList(file = LIST_FILE): ExportList {
   return JSON.parse(readFileSync(file, 'utf8'));

@@ -57,7 +57,6 @@ function matches(candidate: SceneNode, query: NodeQuery) {
  *   }
  * );
  * ```
- * @experimental
  */
 export function findAll<R extends NodeRole>(
   scene: SceneNode,
@@ -121,7 +120,6 @@ export function findAll(scene: SceneNode, query: NodeQuery = {}): SceneNode[] {
  * });
  * const markup = mapped ? renderToString(mapped) : '';
  * ```
- * @experimental
  */
 export function mapNodes(
   scene: SceneNode,

@@ -70,6 +70,17 @@
       },
       "default": "./dist/compat.js"
     },
+    "./live": {
+      "import": {
+        "types": "./dist/live.d.ts",
+        "default": "./dist/live.js"
+      },
+      "require": {
+        "types": "./dist/live.d.cts",
+        "default": "./dist/live.cjs"
+      },
+      "default": "./dist/live.js"
+    },
     "./styles.css": "./dist/index.css",
     "./themes/*": "./dist/themes/*",
     "./scss/*": "./dist/scss/*",

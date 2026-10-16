@@ -90,7 +90,7 @@ Every published source map SHALL embed the content of its sources and SHALL NOT 
 
 ### Requirement: Exports map
 
-The package SHALL define an `exports` map with: the root entry (`types`, `import`, `require`, plus `style` and `sass` conditions for style-aware resolvers), `./compat` (`types`, `import`, `require`), `./styles.css` (readable CSS), `./themes/*` (theme stylesheets), `./scss/*` (Sass sources), `./package.json` and `./dist/*` (every file in `dist`). Paths not listed SHALL NOT be importable.
+The package SHALL define an `exports` map with: the root entry (`types`, `import`, `require`, plus `style` and `sass` conditions for style-aware resolvers), `./compat` (`types`, `import`, `require`), `./live` (`types`, `import`, `require`), `./styles.css` (readable CSS), `./themes/*` (theme stylesheets), `./scss/*` (Sass sources), `./package.json` and `./dist/*` (every file in `dist`). Paths not listed SHALL NOT be importable.
 
 #### Scenario: Stylesheet subpath
 
@@ -106,6 +106,11 @@ The package SHALL define an `exports` map with: the root entry (`types`, `import
 
 - **WHEN** an application imports `{ compat }` from `chartist/compat`
 - **THEN** it resolves to `dist/compat.js` (import) or `dist/compat.cjs` (require), and the core it uses is the same module instance as `chartist`
+
+#### Scenario: Live subpath
+
+- **WHEN** an application imports `{ liveDomRenderer }` from `chartist/live`
+- **THEN** it resolves to `dist/live.js` (import) or `dist/live.cjs` (require), and the core it uses is the same module instance as `chartist`
 
 #### Scenario: Theme subpath
 
@@ -137,12 +142,17 @@ The `unpkg` and `jsdelivr` package fields SHALL point to the minified UMD build 
 
 ### Requirement: Size budgets
 
-The build SHALL be checked against gzip size budgets for at least: the browser ESM build, the UMD build, a tree-shaken import of each chart type (`LineChart`, `BarChart`, `PieChart`) and the minified CSS. The check SHALL fail when a file exceeds its budget.
+The build SHALL be checked against gzip size budgets for at least: the browser ESM build, the UMD build, a tree-shaken import of each chart type (`LineChart`, `BarChart`, `PieChart`), the browser ESM build of `chartist/live` without the core, a tree-shaken import of `liveDomRenderer` alone and with `smilAnimations`, and the minified CSS. The check SHALL fail when a file exceeds its budget.
 
 #### Scenario: Budget exceeded
 
 - **WHEN** a change makes `dist/index.min.js` larger than its gzip budget
 - **THEN** the size check target fails and reports the file and the overshoot
+
+#### Scenario: Live updates stay out of the core
+
+- **WHEN** the size check measures a tree-shaken import of `lineChart` from `chartist`
+- **THEN** its size grows by at most 0.65 kB gzipped over rc.3 (13.65 kB), and it contains none of the live renderer's code
 
 ### Requirement: No-bundler smoke test
 
@@ -166,3 +176,30 @@ The compat plugin SHALL ship as ESM (`dist/compat.js`), CJS (`dist/compat.cjs`),
 
 - **WHEN** a page imports `compat` from `dist/compat.min.js` and `LineChart` from `dist/index.min.js`
 - **THEN** the chart with the compat plugin emits 1.x `draw` events
+
+### Requirement: Published package contents
+
+The published `chartist` package SHALL contain its `package.json`, a README, the licenses (`LICENSE-MIT`, `LICENSE-WTFPL`) and the built `dist` folder, and nothing else: no sources, tests or configuration. It SHALL be published from the project folder as built, without a copy step that rewrites the package.
+
+#### Scenario: Packed tarball
+
+- **WHEN** the package is packed as it would be published
+- **THEN** the tarball holds `package.json`, `README.md`, the two licenses and `dist/`, and every path of the `exports` map and the package fields points to a file in it
+
+### Requirement: Package README
+
+The package SHALL have a README for its npm page: what Chartist is, how to install it (with the npm `next` tag while v2 is in release candidates), a short example with the functional API, links to the docs, the 1.x docs and the changelog, and the license.
+
+#### Scenario: npm page
+
+- **WHEN** a release candidate is published
+- **THEN** its npm page shows the README with the v2 install instructions and a link to chartist.dev
+
+### Requirement: Package metadata for publishing
+
+The package's `repository` field SHALL name `https://github.com/chartist-js/chartist` with the `packages/chartist` directory, as npm trusted publishing and provenance compare it with the publishing repository.
+
+#### Scenario: Repository field
+
+- **WHEN** the package's `package.json` is read
+- **THEN** `repository.url` is the Chartist GitHub repository and `repository.directory` is `packages/chartist`

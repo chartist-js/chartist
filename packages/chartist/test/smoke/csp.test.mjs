@@ -37,6 +37,7 @@ const CASES = {
   layers: `lineChart(el, data, { low: 0, layers: { below: [band({ low: 1, high: 4 })], above: [targetLine({ value: 4, label: 'goal' })] } })`,
   responsive: `lineChart(el, data, {}, [['(min-width: 1px)', { showPoint: false }]])`,
   update: `lineChart(el, data).update({ data: { labels, series: [[3, 1, 4, 1, 5]] } })`,
+  live: `lineChart(el, data, { renderer: liveDomRenderer({ animations: smilAnimations() }) }).update({ data: { labels, series: [[3, 1, 4, 1, 5]] } })`,
   compat: `new LineChart(el, data, { plugins: [compat] }).on('draw', d => {
     if (d.type === 'line') d.element.attr({ style: 'opacity: 0.5' });
   })`
@@ -53,7 +54,8 @@ ${Object.keys(CASES)
 <script type="module" src="/csp/cases.js"></script>
 </body></html>`;
 
-const css = '.case { width: 400px; height: 200px; }';
+const css =
+  '.case { width: 400px; height: 200px; } #live { --ct-update-duration: 300ms; }';
 
 const script = `
 const violations = [];
@@ -63,6 +65,7 @@ document.addEventListener('securitypolicyviolation', event =>
 const { lineChart, barChart, pieChart, band, targetLine, LineChart } =
   await import('/dist/index.js');
 const { compat } = await import('/dist/compat.js');
+const { liveDomRenderer, smilAnimations } = await import('/dist/live.js');
 const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 const data = { labels, series: [[1, 5, 3, 4, 2]] };
 const errors = [];

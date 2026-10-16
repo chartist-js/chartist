@@ -1,0 +1,6 @@
+#chart {
+  /* As long as the time between updates: the trace never stops. */
+  --ct-update-duration: 80ms;
+  --ct-update-easing: linear;
+  --ct-line-width: 1px;
+}

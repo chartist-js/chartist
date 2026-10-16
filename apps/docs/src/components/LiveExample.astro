@@ -8,10 +8,13 @@ import { Code } from 'astro:components';
 import Chart from './Chart.astro';
 import type { ChartSpec } from '../scripts/charts';
 import { exampleFiles } from '../lib/examples';
+import { galleryFiles } from '../lib/gallery';
 
 interface Props {
   /** The example project in src/examples (`<page>/<example>`)... */
   example?: string;
+  /** ...or a gallery example (`<type>/<name>`), which also sets `id`... */
+  gallery?: string;
   /** ...or its files directly (built in code, like the landing page's). */
   files?: Record<string, string>;
   /**
@@ -37,9 +40,10 @@ interface Props {
   codeHeight?: string;
 }
 
-const { example, preview, label, title = 'Chartist example', show = 'src/main.ts', previewStyle, classic, id, codeHeight } = Astro.props;
+const { example, gallery, preview, label, title = 'Chartist example', show = 'src/main.ts', previewStyle, classic, codeHeight } = Astro.props;
+const id = Astro.props.id ?? gallery;
 const panelStyle = codeHeight ? `max-height: ${codeHeight}; overflow: auto;` : undefined;
-const files = Astro.props.files ?? exampleFiles(example ?? '');
+const files = Astro.props.files ?? (gallery ? galleryFiles(gallery) : exampleFiles(example ?? ''));
 const shown = files[show];
 const lang = show.endsWith('.css') ? 'css' : show.endsWith('.html') ? 'html' : 'ts';
 ---

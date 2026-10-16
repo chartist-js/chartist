@@ -33,8 +33,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      # The smoke tests open the builds in Chromium.
-      - run: pnpm --dir packages/chartist exec playwright install --with-deps chromium
+      # The smoke tests open the builds in Chromium, and the update
+      # animations in Firefox and WebKit too.
+      - run: pnpm --dir packages/chartist exec playwright install --with-deps chromium firefox webkit
       - run: pnpm nx format:check --all
       # The docs site has its own workflow, and only runs on one Node version.
       - run: pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api test:api:v1 --exclude docs

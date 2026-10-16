@@ -5,7 +5,13 @@
  * read the example files from `<folder>/index.html` and `<folder>/src/`.
  */
 
-export type ChartType = 'line' | 'bar' | 'pie' | 'composed' | 'styling';
+export type ChartType =
+  | 'line'
+  | 'bar'
+  | 'pie'
+  | 'composed'
+  | 'styling'
+  | 'live';
 
 /** Named viewport presets the visual regression tests render an example at. */
 export type ViewportName = 'default' | 'tablet' | 'mobile' | 'mobile-landscape';
@@ -641,5 +647,63 @@ export const examples: Example[] = [
       'Four bar series in the color-blind-safe theme, on a light and on a dark background.',
     v2: true,
     size: 'viewport'
+  }),
+  // Live data: charts that update while they run, with seeded data and a
+  // settle time after their last animation (the seismograph never rests).
+  example({
+    id: 'live/sensor',
+    title: 'Sensor with a sliding window',
+    description:
+      'A new reading every second, and a line under the chart that says which elements each update kept, added and removed.',
+    v2: true,
+    settle: { at: 2500 }
+  }),
+  example({
+    id: 'live/dashboard',
+    title: 'Dashboard with animated bars',
+    description:
+      'Two series by region get new numbers every two seconds, and the bars overshoot a little on their way.',
+    v2: true,
+    settle: { at: 3000 }
+  }),
+  example({
+    id: 'live/network-speed',
+    title: 'Network speed',
+    description:
+      'Four samples a second as touching bars, with their running average as a line on top.',
+    v2: true,
+    settle: { at: 2200 }
+  }),
+  example({
+    id: 'live/seismograph',
+    title: 'Seismograph',
+    description:
+      'A thin trace that scrolls every 80 ms, quiet until a quake comes through.',
+    v2: true,
+    settle: { at: 2000 }
+  }),
+  example({
+    id: 'live/votes',
+    title: 'Votes by district',
+    description:
+      'The results of each district as it reports: the slices and their labels turn to the new shares.',
+    v2: true,
+    settle: { at: 1900 }
+  }),
+  example({
+    id: 'live/gauge',
+    title: 'Live gauge',
+    description:
+      'A half ring that follows the CPU load, updated every 1.2 seconds.',
+    v2: true,
+    settle: { at: 1600 }
+  }),
+  example({
+    id: 'live/grouped-stacked',
+    title: 'Grouped and stacked',
+    description:
+      'New numbers and a switch between grouped and stacked bars in one update, every bar moving to its new place.',
+    v2: true,
+    settle: { at: 3200 }
   })
 ];

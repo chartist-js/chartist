@@ -86,25 +86,58 @@ export function asUserListeners(chart: ChartHandle, add: () => void) {
   }
 }
 
+/** What {@link installPlugins} returns about the installed plugins. */
+export interface InstalledPlugins {
+  /** The plugins, in order. */
+  readonly plugins: readonly ChartPlugin[];
+  /** The functions their `install` returned, in installation order. */
+  readonly cleanups: readonly (() => void)[];
+}
+
 /**
- * Installs v2 plugins in order and returns the event names they provide.
- * Provided names are known before any plugin installs, so a plugin may
- * listen to events another plugin provides. Listeners added while a
- * plugin installs belong to plugins.
+ * Installs v2 plugins in order and adds the event names they provide to
+ * `provided`. Provided names are known before any plugin installs, so a
+ * plugin may listen to events another plugin provides. Listeners added
+ * while a plugin installs belong to plugins.
  */
 export function installPlugins(
   chart: ChartHandle,
   plugins: readonly PluginEntry[] = [],
   provided: Set<string>,
   scope: ListenerScope
-) {
+): InstalledPlugins {
   scopes.set(chart, scope);
   const entries = normalize(plugins);
   for (const [plugin] of entries) {
     plugin.provides?.forEach(name => provided.add(name));
   }
+  const cleanups: (() => void)[] = [];
   for (const [plugin, options] of entries) {
-    addingAs(scope, 'plugin', () => plugin.install(chart, options));
+    addingAs(scope, 'plugin', () => {
+      const cleanup = plugin.install(chart, options);
+      if (typeof cleanup === 'function') {
+        cleanups.push(cleanup as () => void);
+      }
+    });
+  }
+  return { plugins: entries.map(([plugin]) => plugin), cleanups };
+}
+
+/**
+ * Calls every function, also when one throws, and throws the first error
+ * afterwards.
+ */
+export function runAll(functions: readonly (() => void)[]) {
+  const errors: unknown[] = [];
+  for (const run of functions) {
+    try {
+      run();
+    } catch (error) {
+      errors.push(error);
+    }
+  }
+  if (errors.length) {
+    throw errors[0];
   }
 }
 

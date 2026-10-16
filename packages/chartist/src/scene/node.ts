@@ -2,8 +2,6 @@
  * Scene nodes: the renderer-independent tree that v2 charts produce.
  * Nodes are immutable. Builder methods keep the 1.x `Svg` names but return
  * a new node and share every field they don't change.
- *
- * @experimental The v2 API may change until v2.0.
  */
 
 import type { NodeRole, NodeRoles } from './roles';

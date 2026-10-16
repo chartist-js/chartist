@@ -56,7 +56,7 @@ const deprecated = tagsOf(comment, '@deprecated')[0];
   <div class="api-entry-head">
     <h2 class="scroll-mt-[100px]" id={anchor(entry.name)}><a href={`#${anchor(entry.name)}`}>{entry.name}</a></h2>
     {badges.map(badge => <span class={`tag api-badge api-badge-${badge.replace('.', '')}`} data-pagefind-ignore>{badge}</span>)}
-    {entry.module === 'chartist/compat' && <span class="tag api-badge" data-pagefind-ignore>chartist/compat</span>}
+    {entry.module !== 'chartist' && !entry.pkg && <span class="tag api-badge" data-pagefind-ignore>{entry.module}</span>}
     {entry.sourceUrl && !compact && <a class="api-source" href={entry.sourceUrl} data-pagefind-ignore>Source</a>}
   </div>
 

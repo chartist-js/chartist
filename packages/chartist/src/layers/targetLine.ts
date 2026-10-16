@@ -10,7 +10,6 @@ import { node } from '../scene/node';
  * The options of the {@link targetLine} layer: the line's value, its
  * label and class, and the axis it's on. For several lines, add a layer
  * per line.
- * @experimental
  */
 export interface TargetLineOptions {
   /**
@@ -90,7 +89,6 @@ const LABEL_INSET = 4;
  *   ]
  * });
  * ```
- * @experimental
  */
 export function targetLine(options: TargetLineOptions): Layer {
   const { value, label, className } = options;

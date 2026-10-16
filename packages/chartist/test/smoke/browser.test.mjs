@@ -82,6 +82,36 @@ const inlinePages = {
         .on('draw', data => draws.push(data.type))
         .on('created', () => { window.draws = draws; });
     </script>`,
+  // Live updates from their browser module, next to the core module.
+  'live-esm': `<!doctype html>
+    <div id="chart" style="width: 400px; height: 200px"></div>
+    <script type="module">
+      import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js';
+      import { liveDomRenderer } from 'https://cdn.jsdelivr.net/npm/chartist/dist/live.min.js';
+      const chart = lineChart('#chart', { series: [[1, 2, 3]] }, { renderer: liveDomRenderer() });
+      const svg = document.querySelector('#chart svg');
+      chart.update({ data: { series: [[3, 2, 1, 4]] } });
+      window.result = {
+        kept: document.querySelector('#chart svg') === svg,
+        points: svg.querySelectorAll('.ct-point').length
+      };
+    </script>`,
+  // Classic scripts: live.umd.js adds live updates to the global Chartist.
+  'live-umd': `<!doctype html>
+    <div id="chart" style="width: 400px; height: 200px"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/index.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/live.umd.js"></script>
+    <script>
+      const chart = Chartist.lineChart('#chart', { series: [[1, 2, 3]] }, {
+        renderer: Chartist.liveDomRenderer()
+      });
+      const svg = document.querySelector('#chart svg');
+      chart.update({ data: { series: [[3, 2, 1, 4]] } });
+      window.result = {
+        kept: document.querySelector('#chart svg') === svg,
+        points: svg.querySelectorAll('.ct-point').length
+      };
+    </script>`,
   // A 0.x plugin script after compat.umd.js; a plugin registered before
   // compat loads stays.
   'compat-umd-0x': `<!doctype html>
@@ -246,6 +276,19 @@ for (const name of ['compat-esm', 'compat-umd']) {
     assert.equal(draws.filter(type => type === 'point').length, 3);
     assert.ok(draws.includes('line'));
     assert.ok(draws.includes('grid') && draws.includes('label'));
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+}
+
+for (const name of ['live-esm', 'live-umd']) {
+  test(`live updates keep the svg (${name})`, async () => {
+    const { page, errors } = await openPage(`${ORIGIN}/inline/${name}`);
+    await page.waitForFunction(() => window.result);
+    assert.deepEqual(await page.evaluate(() => window.result), {
+      kept: true,
+      points: 4
+    });
     assert.deepEqual(errors, []);
     await page.close();
   });

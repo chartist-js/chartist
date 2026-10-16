@@ -62,6 +62,190 @@ export const easings = {
   easeInOutBack: [0.68, -0.55, 0.265, 1.55]
 };
 
+/** The CSS easing keywords as cubic Bézier curves. */
+const CSS_EASINGS: Readonly<Record<string, readonly number[]>> = {
+  linear: [0, 0, 1, 1],
+  ease: [0.25, 0.1, 0.25, 1],
+  'ease-in': [0.42, 0, 1, 1],
+  'ease-out': [0, 0, 0.58, 1],
+  'ease-in-out': [0.42, 0, 0.58, 1]
+};
+
+const NUMBER = /-?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi;
+
+/** The four numbers of a cubic Bézier easing, or nothing for other easings. */
+function curveOf(easing: string): readonly number[] | undefined {
+  const css = easing.trim();
+  if (CSS_EASINGS[css]) {
+    return CSS_EASINGS[css];
+  }
+  if (easings[css as keyof typeof easings]) {
+    return easings[css as keyof typeof easings];
+  }
+  const numbers = css.startsWith('cubic-bezier(') ? css.match(NUMBER) : null;
+  return numbers?.length === 4 ? numbers.map(Number) : undefined;
+}
+
+/** A cubic Bézier easing as a function of time, solved for x by bisection. */
+function bezier([x1, y1, x2, y2]: readonly number[]) {
+  const at = (a: number, b: number, t: number) =>
+    3 * a * t * (1 - t) ** 2 + 3 * b * t ** 2 * (1 - t) + t ** 3;
+  return (time: number) => {
+    let low = 0;
+    let high = 1;
+    let t = time;
+    for (let i = 0; i < 30; i++) {
+      const x = at(x1, x2, t);
+      if (Math.abs(x - time) < 1e-6) {
+        break;
+      }
+      if (x < time) {
+        low = t;
+      } else {
+        high = t;
+      }
+      t = (low + high) / 2;
+    }
+    return at(y1, y2, t);
+  };
+}
+
+/** `steps(n, position)` as a function of time. */
+function steps(css: string) {
+  const count = Math.max(1, Math.round(Number(css.match(NUMBER)?.[0] ?? 1)));
+  const position =
+    css.match(/(jump-)?(start|end|none|both)\s*\)/)?.[2] ?? 'end';
+  const jumps =
+    position === 'none' ? count - 1 : position === 'both' ? count + 1 : count;
+  const offset = position === 'start' || position === 'both' ? 1 : 0;
+  return (time: number) =>
+    Math.min(
+      1,
+      (Math.min(Math.floor(time * count), count - 1) + offset) /
+        Math.max(1, jumps)
+    );
+}
+
+/** `linear(…)` as a function of time: its stops, evenly spread where not given. */
+function linearStops(css: string) {
+  const stops = css
+    .slice(css.indexOf('(') + 1, css.lastIndexOf(')'))
+    .split(',')
+    .map(stop => stop.trim().split(/\s+/).map(parseFloat));
+  const ys = stops.map(([value]) => value);
+  const xs = stops.map(([, at], index) =>
+    at === undefined || Number.isNaN(at)
+      ? index / Math.max(1, stops.length - 1)
+      : at / 100
+  );
+  return (time: number) => {
+    let i = 1;
+    while (i < xs.length - 1 && time > xs[i]) {
+      i++;
+    }
+    const span = xs[i] - xs[i - 1] || 1;
+    return ys[i - 1] + ((ys[i] - ys[i - 1]) * (time - xs[i - 1])) / span;
+  };
+}
+
+/** An easing as a function of time, `ease` for easings it doesn't know. */
+function easingFunction(easing: string | readonly number[]) {
+  if (typeof easing !== 'string') {
+    return bezier(easing);
+  }
+  const css = easing.trim();
+  if (css.startsWith('steps(')) {
+    return steps(css);
+  }
+  if (css.startsWith('linear(')) {
+    return linearStops(css);
+  }
+  return bezier(curveOf(css) ?? CSS_EASINGS.ease);
+}
+
+/**
+ * The SMIL `keySplines` of an easing SMIL can express: a cubic Bézier
+ * curve whose four numbers lie within 0 and 1 (the CSS keywords, many
+ * `cubic-bezier()` curves, most names of {@link easings}). Browsers ignore
+ * an animation whose `keySplines` leave that range, so for other easings
+ * it returns nothing: sample them with {@link sampleEasing} instead.
+ *
+ * @example
+ * ```ts
+ * import { keySplinesOf } from 'chartist';
+ *
+ * keySplinesOf('ease-out'); // '0 0 0.58 1'
+ * keySplinesOf('easeOutBack'); // undefined: it overshoots
+ * ```
+ * @param easing A CSS easing, a name of {@link easings}, or four numbers
+ * @returns The `keySplines` value, or nothing
+ */
+export function keySplinesOf(
+  easing: string | readonly number[]
+): string | undefined {
+  const curve = typeof easing === 'string' ? curveOf(easing) : easing;
+  return curve?.length === 4 && curve.every(value => value >= 0 && value <= 1)
+    ? curve.join(' ')
+    : undefined;
+}
+
+/**
+ * The eased progress of an animation at evenly spaced times, for SMIL
+ * `values` with even `keyTimes`: 12 points, and one per 50 ms for
+ * animations longer than 600 ms, at most 40. It takes the CSS easings
+ * (the keywords, `cubic-bezier()` curves, also ones that overshoot,
+ * `linear()` and `steps()`), the names of {@link easings} and four
+ * numbers of a cubic Bézier curve; anything else is sampled as `ease`.
+ * Points lie below 0 or above 1 where the easing overshoots.
+ *
+ * @example
+ * ```ts
+ * import { sampleEasing } from 'chartist';
+ *
+ * // A value that grows from 10 to 20 and overshoots a little on the way.
+ * const progress = sampleEasing('cubic-bezier(0.34, 1.56, 0.64, 1)', 400);
+ * const values = progress.map(p => 10 + (20 - 10) * p).join(';');
+ * ```
+ * @param easing The easing
+ * @param duration The animation's duration in ms
+ * @returns The progress at each point, from 0 to 1
+ */
+export function sampleEasing(
+  easing: string | readonly number[],
+  duration: number
+): number[] {
+  const count =
+    duration > 600 ? Math.min(40, Math.max(12, Math.round(duration / 50))) : 12;
+  const at = easingFunction(easing);
+  return Array.from({ length: count }, (_, index) => {
+    const time = index / (count - 1);
+    return index === 0 ? 0 : index === count - 1 ? 1 : at(time);
+  });
+}
+
+/**
+ * The value between `from` and `to` at `progress`: the numbers in `to`
+ * moved from their counterparts in `from`, when both have the same shape
+ * (`10px` and `40px`, two paths with the same commands), else `from`
+ * until halfway and `to` after.
+ */
+function between(from: string, to: string, progress: number): string {
+  const fromNumbers = from.match(NUMBER) ?? [];
+  const toNumbers = to.match(NUMBER) ?? [];
+  if (
+    fromNumbers.length !== toNumbers.length ||
+    from.replace(NUMBER, '#') !== to.replace(NUMBER, '#')
+  ) {
+    return progress < 0.5 ? from : to;
+  }
+  let index = 0;
+  return to.replace(NUMBER, () => {
+    const start = Number(fromNumbers[index]);
+    const end = Number(toNumbers[index++]);
+    return String(+(start + (end - start) * progress).toFixed(4));
+  });
+}
+
 /**
  * The property of an element that holds the emitter its descendants'
  * animations report to when `animate()` gets none. The compat plugin
@@ -102,8 +286,10 @@ export function createAnimation(
   // Check if an easing is specified in the definition object and delete it from the object as it will not
   // be part of the animate element attributes.
   if (easing) {
-    // If already an easing Bézier curve array we take it or we lookup a easing array in the Easing object
-    animationEasing = Array.isArray(easing) ? easing : easings[easing];
+    // A curve, a name of `easings` or a CSS easing.
+    animationEasing = Array.isArray(easing)
+      ? easing
+      : (easings[easing as keyof typeof easings] ?? easing);
   }
 
   // If numeric dur or begin was provided we assume milli seconds
@@ -111,9 +297,29 @@ export function createAnimation(
   def.dur = ensureUnit(def.dur, 'ms');
 
   if (animationEasing) {
-    def.calcMode = 'spline';
-    def.keySplines = animationEasing.join(' ');
-    def.keyTimes = '0;1';
+    const keySplines = keySplinesOf(animationEasing);
+    if (keySplines) {
+      def.calcMode = 'spline';
+      def.keySplines = keySplines;
+      def.keyTimes = '0;1';
+    } else if (def.from !== undefined && def.to !== undefined) {
+      // Browsers ignore keySplines outside 0 to 1 (back easings) and SMIL
+      // has no other easings, so the eased values are written as frames.
+      const duration = quantity(def.dur);
+      const progress = sampleEasing(
+        animationEasing,
+        duration.unit === 's' ? duration.value * 1000 : duration.value
+      );
+      def.calcMode = String(animationEasing).trim().startsWith('steps(')
+        ? 'discrete'
+        : 'linear';
+      def.values = progress
+        .map(at => between(String(def.from), String(def.to), at))
+        .join(';');
+      def.keyTimes = progress
+        .map((_, index) => +(index / (progress.length - 1)).toFixed(4))
+        .join(';');
+    }
   }
 
   // Adding "fill: freeze" if we are in guided mode and set initial attribute values

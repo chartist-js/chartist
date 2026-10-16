@@ -37,3 +37,17 @@ describe('API entry', () => {
     expect(code).not.toMatch(/\bprocess\.|\bBuffer\b|__dirname|__filename/);
   });
 });
+
+describe('API declarations', () => {
+  // The package is stable: no export may change outside a major.
+  it.each(['index.d.ts', 'index.d.cts'])(
+    '%s marks nothing experimental',
+    file => {
+      const declarations = readFileSync(
+        new URL(`../dist/${file}`, import.meta.url),
+        'utf8'
+      );
+      expect(declarations).not.toMatch(/@experimental/);
+    }
+  );
+});

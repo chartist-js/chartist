@@ -12,7 +12,6 @@ import type { Renderer, RenderOutput } from './types';
 /**
  * What {@link domRenderer} returns from `render()`: the inline SVG it
  * added to the container.
- * @experimental
  */
 export interface DomRenderOutput extends RenderOutput {
   /** The chart's `svg` element, in the container. */
@@ -23,7 +22,31 @@ export interface DomRenderOutput extends RenderOutput {
   readonly remove: () => void;
 }
 
-function setAttribute(element: Element, name: string, value: string | number) {
+/**
+ * Sets one scene attribute on an element as the DOM renderer does: names
+ * with a known prefix (`ct:value`) in their namespace, and `style` through
+ * the CSSOM, which a Content Security Policy allows. For renderers that
+ * change elements they keep.
+ *
+ * @example
+ * ```ts
+ * import { applyAttribute } from 'chartist';
+ *
+ * const point = document.querySelector('.ct-point');
+ * if (point) {
+ *   applyAttribute(point, 'ct:value', 12);
+ *   applyAttribute(point, 'style', 'stroke-width: 12px;');
+ * }
+ * ```
+ * @param element The element to change
+ * @param name The attribute's name, as in a scene node's `attrs`
+ * @param value The attribute's value
+ */
+export function applyAttribute(
+  element: Element,
+  name: string,
+  value: string | number
+) {
   const separator = name.indexOf(':');
   const prefix = separator > 0 ? name.slice(0, separator) : '';
   if (name === 'style') {
@@ -35,16 +58,37 @@ function setAttribute(element: Element, name: string, value: string | number) {
   }
 }
 
+/** What {@link renderElement} takes besides the node and the document. */
+export interface RenderElementOptions {
+  /** Creates the elements in the XHTML namespace, as inside a `foreignObject`. */
+  readonly html?: boolean;
+  /** Called for every node and the element created for it. */
+  readonly created?: (node: SceneNode, element: Element) => void;
+}
+
 /**
- * Creates the element tree. Content of a `foreignObject` is HTML and is
- * created in the XHTML namespace.
+ * Creates the element tree of a scene node as the DOM renderer does: SVG
+ * elements, HTML elements inside a `foreignObject`, attributes set with
+ * {@link applyAttribute}. For renderers that create elements.
+ *
+ * @example
+ * ```ts
+ * import { node, renderElement } from 'chartist';
+ *
+ * const dot = renderElement(node('circle', { cx: 5, cy: 5, r: 4 }, 'ct-dot'), document);
+ * document.querySelector('svg')?.append(dot);
+ * ```
+ * @param current The node to create
+ * @param document The document to create the elements in
+ * @param options The namespace, and a callback for each created element
+ * @returns The node's element, with its children
  */
-function build(
-  document: Document,
+export function renderElement(
   current: SceneNode,
-  elements: WeakMap<SceneNode, Element>,
-  html = false
+  document: Document,
+  options: RenderElementOptions = {}
 ): Element {
+  const { html = false, created } = options;
   const element = document.createElementNS(
     html ? namespaces.xhtml : namespaces.svg,
     current.name
@@ -53,17 +97,20 @@ function build(
     element.setAttribute('class', current.classes.join(' '));
   }
   for (const [name, value] of Object.entries(current.attrs)) {
-    setAttribute(element, name, value);
+    applyAttribute(element, name, value);
   }
   // Like textContent = '': empty text creates no text node.
   if (current.content) {
     element.appendChild(document.createTextNode(current.content));
   }
-  const childrenAreHtml = html || current.name === 'foreignObject';
+  const childOptions =
+    html || current.name !== 'foreignObject'
+      ? options
+      : { ...options, html: true };
   for (const child of current.children) {
-    element.appendChild(build(document, child, elements, childrenAreHtml));
+    element.appendChild(renderElement(child, document, childOptions));
   }
-  elements.set(current, element);
+  created?.(current, element);
   return element;
 }
 
@@ -138,8 +185,10 @@ function measureInDocument(document: Document): MeasureText {
 /**
  * Creates the renderer `chart()` uses by default: it renders scenes as
  * inline SVG into the container, replacing an earlier Chartist SVG there
- * (as 1.x does), and measures text and reads styles for layout in the
- * container, so its CSS applies.
+ * (as 1.x does) on every render, and measures text and reads styles for
+ * layout in the container, so its CSS applies. It ignores the previous
+ * render it gets from a chart's second render on; `liveDomRenderer()`
+ * from `chartist/live` keeps its SVG and changes it instead.
  * Wrap it to change what every render puts on the page.
  *
  * @example
@@ -165,7 +214,6 @@ function measureInDocument(document: Document): MeasureText {
  *   renderer
  * });
  * ```
- * @experimental
  */
 export function domRenderer(): Renderer<DomRenderOutput> {
   return {
@@ -173,7 +221,9 @@ export function domRenderer(): Renderer<DomRenderOutput> {
     render(scene, container) {
       const document = container.ownerDocument;
       const elements = new WeakMap<SceneNode, Element>();
-      const svg = build(document, scene, elements) as SVGSVGElement;
+      const svg = renderElement(scene, document, {
+        created: (node, element) => elements.set(node, element)
+      }) as SVGSVGElement;
       svg.setAttributeNS(namespaces.xmlns, 'xmlns:ct', namespaces.ct);
       removePrevious(container);
       container.appendChild(svg);

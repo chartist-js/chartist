@@ -12,7 +12,6 @@ import { centerShift } from './path';
 /**
  * The options of the {@link trendLine} layer. Without them, it draws a
  * trend line for every series, on the first X and Y axis.
- * @experimental
  */
 export interface TrendLineOptions {
   /** Series to draw a trend line for, by index or name; default: all series. */
@@ -138,7 +137,6 @@ function hasX(values: NormalizedSeries): boolean {
  *   layers: [axisGrid(), line(), trendLine(), axisLabels()]
  * });
  * ```
- * @experimental
  */
 export function trendLine(options: TrendLineOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };

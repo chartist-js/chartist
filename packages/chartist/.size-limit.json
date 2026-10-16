@@ -2,28 +2,42 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "26.2 kB",
+    "limit": "27.7 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "26.3 kB",
+    "limit": "27.8 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat browser ESM (dist/compat.min.js, without the core)",
     "path": "dist/compat.min.js",
-    "limit": "3 kB",
+    "limit": "3.05 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Compat UMD (dist/compat.umd.js, without the core)",
     "path": "dist/compat.umd.js",
-    "limit": "3.25 kB",
+    "limit": "3.3 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "Live browser ESM (dist/live.min.js, without the core)",
+    "path": "dist/live.min.js",
+    "limit": "4.9 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "Live UMD (dist/live.umd.js, without the core)",
+    "path": "dist/live.umd.js",
+    "limit": "5 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -31,70 +45,84 @@
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
-    "limit": "15.25 kB",
+    "limit": "15.9 kB",
     "gzip": true
   },
   {
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "13.7 kB",
+    "limit": "14.35 kB",
     "gzip": true
   },
   {
     "name": "import { PieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ PieChart }",
-    "limit": "11.25 kB",
+    "limit": "11.85 kB",
     "gzip": true
   },
   {
     "name": "import { chart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ chart }",
-    "limit": "5 kB",
+    "limit": "5.6 kB",
     "gzip": true
   },
   {
     "name": "import { toScene, renderToString } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ toScene, renderToString }",
-    "limit": "3.7 kB",
+    "limit": "3.75 kB",
     "gzip": true
   },
   {
     "name": "import { lineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ lineChart }",
-    "limit": "13.7 kB",
+    "limit": "14.3 kB",
     "gzip": true
   },
   {
     "name": "import { barChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ barChart }",
-    "limit": "12.2 kB",
+    "limit": "12.8 kB",
     "gzip": true
   },
   {
     "name": "import { pieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ pieChart }",
-    "limit": "9.75 kB",
+    "limit": "10.3 kB",
     "gzip": true
   },
   {
     "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, … } (composed chart)",
     "path": "dist/index.js",
     "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
-    "limit": "13.65 kB",
+    "limit": "14.25 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { liveDomRenderer } from chartist/live (tree-shaken)",
+    "path": "dist/live.js",
+    "import": "{ liveDomRenderer }",
+    "limit": "2.7 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { liveDomRenderer, smilAnimations } from chartist/live (tree-shaken)",
+    "path": "dist/live.js",
+    "import": "{ liveDomRenderer, smilAnimations }",
+    "limit": "8 kB",
     "gzip": true
   },
   {
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "26.9 kB",
+    "limit": "28.45 kB",
     "gzip": true
   },
   {

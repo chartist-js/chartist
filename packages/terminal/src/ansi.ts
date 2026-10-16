@@ -40,7 +40,6 @@ const RESET = '\x1b[0m';
  * );
  * console.log(renderToTerminal(scene, { color: '256' }));
  * ```
- * @experimental
  */
 export function renderToTerminal(
   scene: SceneNode,

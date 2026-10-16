@@ -41,7 +41,6 @@ export interface LineSeriesOptions {
  * The options of the {@link line} layer. Without them, it draws every
  * series as a smooth line with points and no area, on the first X and Y
  * axis.
- * @experimental
  */
 export interface LineLayerOptions extends LineSeriesOptions {
   /** Series to draw, by index or name; default: all series. */
@@ -159,7 +158,6 @@ function seriesOption<K extends keyof LineSeriesOptions>(
  *   ]
  * });
  * ```
- * @experimental
  */
 export function line(options: LineLayerOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };
@@ -197,12 +195,15 @@ export function line(options: LineLayerOptions = {}): Layer {
           ? series.meta
           : undefined;
 
+        const smoothing = interpolationOf(
+          seriesOption(series, options, 'lineSmooth')
+        );
         const path = seriesPath(
           values,
           { x: axisX, y: axisY },
           area,
           shift,
-          interpolationOf(seriesOption(series, options, 'lineSmooth')),
+          smoothing,
           valueIndex => getMetaData(series, valueIndex)
         );
         const seriesContext = { series, seriesIndex, meta: seriesMeta };
@@ -249,7 +250,7 @@ export function line(options: LineLayerOptions = {}): Layer {
           children = [
             node('path', { d: path.stringify() }, classNames.line, {
               role: 'line',
-              ctx: { ...seriesContext, values, path: path.clone() }
+              ctx: { ...seriesContext, values, path: path.clone(), smoothing }
             }),
             ...children
           ];
@@ -276,7 +277,7 @@ export function line(options: LineLayerOptions = {}): Layer {
                 .position(0)
                 .remove(1)
                 .move(first.x, areaBaseProjected)
-                .line(first.x, first.y)
+                .line(first.x, first.y, false, first.data)
                 .position(segment.pathElements.length + 1)
                 .line(last.x, areaBaseProjected);
             })
@@ -284,7 +285,12 @@ export function line(options: LineLayerOptions = {}): Layer {
               children = [
                 node('path', { d: areaPath.stringify() }, classNames.area, {
                   role: 'area',
-                  ctx: { ...seriesContext, values, path: areaPath.clone() }
+                  ctx: {
+                    ...seriesContext,
+                    values,
+                    path: areaPath.clone(),
+                    smoothing
+                  }
                 }),
                 ...children
               ];

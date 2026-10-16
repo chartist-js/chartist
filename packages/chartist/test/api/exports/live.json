@@ -1,0 +1,14 @@
+{
+  "runtime": ["diffScenes", "liveDomRenderer", "smilAnimations"],
+  "types": [
+    "DiffOptions",
+    "LiveAnimationContext",
+    "LiveAnimations",
+    "LiveDomRendererOptions",
+    "ValueKey",
+    "ValueKeyContext",
+    "diffScenes",
+    "liveDomRenderer",
+    "smilAnimations"
+  ]
+}

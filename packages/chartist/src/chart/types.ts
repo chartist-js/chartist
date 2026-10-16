@@ -5,7 +5,8 @@ import type {
   PhaseListeners,
   PhaseName
 } from '../pipeline/types';
-import type { Renderer } from '../render/types';
+import type { Keyframes, Renderer } from '../render/types';
+import type { SceneNode } from '../scene/node';
 import type { ResponsiveSet } from '../responsive/responsive';
 
 /**
@@ -23,7 +24,6 @@ import type { ResponsiveSet } from '../responsive/responsive';
  * ```
  *
  * `chartist/compat` declares the 1.x events (`draw`, `created`, …).
- * @experimental
  */
 export interface ChartEvents {
   /**
@@ -82,7 +82,6 @@ export type CustomEventName = keyof ChartEvents & string;
  *
  * barChart('#chart', { series: [[5, 4, 3, 7]] }, { plugins: [threshold(5)] });
  * ```
- * @experimental
  */
 export interface ChartPlugin<TOptions = unknown> {
   /** Names the plugin. Prefix your custom events with it to keep them apart. */
@@ -98,10 +97,57 @@ export interface ChartPlugin<TOptions = unknown> {
    * chart's handle. Listeners registered here stay for every later render,
    * after updates and resizes too, and `off(name)` without a listener
    * leaves them alone: remove one with its reference.
+   *
+   * Return a function to undo what `install` set up outside the chart,
+   * such as a listener on the document: `destroy()` calls it once, after
+   * the chart's output is removed. `detach()` doesn't.
    * @param chart The chart's handle, to listen to events and emit them.
    * @param options The options of a `[plugin, options]` entry, if any.
+   * @returns A cleanup function for `destroy()`, or anything else, which is
+   *   ignored (so `install: chart => chart.on(…)` stays valid).
    */
-  install(chart: ChartHandle, options?: TOptions): void;
+  install(chart: ChartHandle, options?: TOptions): unknown;
+  /**
+   * Gives the keyframes of a node's update animation, for nodes that don't
+   * move well number by number, such as a path the plugin draws. A
+   * renderer that animates updates (`smilAnimations()` from
+   * `chartist/live`) asks it once per update, never per frame, with the
+   * progress points of the chart's easing: 0 is the previous node, 1 the
+   * new one, and points beyond them come from an easing that overshoots.
+   * Plugins are asked in their order, before the layer that drew the node;
+   * the first one that returns keyframes wins.
+   *
+   * @example
+   * ```ts
+   * import type { ChartPlugin } from 'chartist';
+   *
+   * // Turns the gauge needle the plugin draws (its angle in `ct:angle`),
+   * // instead of morphing its path.
+   * const needle: ChartPlugin = {
+   *   name: 'needle',
+   *   install() {},
+   *   keyframes(previous, next, progress) {
+   *     if (!next.classes.includes('needle')) {
+   *       return undefined;
+   *     }
+   *     const from = Number(previous.attrs['ct:angle']);
+   *     const to = Number(next.attrs['ct:angle']);
+   *     return progress.map(p => ({
+   *       transform: `rotate(${from + (to - from) * p} 100 100)`
+   *     }));
+   *   }
+   * };
+   * ```
+   * @param previous The node in the previous scene
+   * @param next The node in the new scene
+   * @param progress The progress points to give attributes for
+   * @returns One set of attributes per progress point, or nothing.
+   */
+  keyframes?(
+    previous: SceneNode,
+    next: SceneNode,
+    progress: readonly number[]
+  ): Keyframes | undefined;
 }
 
 /**
@@ -130,7 +176,6 @@ export type PluginEntry =
  *
  * Without `axes`, layers draw into the whole chart area; the pie layer
  * needs `coordinates: 'polar'`. {@link toScene} takes the same config.
- * @experimental
  */
 export interface ChartConfig extends PipelineOptions {
   /**
@@ -158,7 +203,6 @@ export interface ChartConfig extends PipelineOptions {
  * The part of a {@link ChartConfig} that responsive entries can override:
  * everything but `responsive`, `plugins`, `on` and `renderer`. The
  * matching entries merge over the config in order, shallowly.
- * @experimental
  */
 export type ChartOverrides = Partial<
   Omit<ChartConfig, 'responsive' | 'plugins' | 'on' | 'renderer'>
@@ -168,7 +212,6 @@ export type ChartOverrides = Partial<
  * The handle {@link chart} returns: update or remove the chart, and listen
  * to its events. Plugins get the same handle in `install`. The methods
  * other than `destroy` and `emit` return the handle, so calls chain.
- * @experimental
  */
 export interface ChartHandle {
   /** The element the chart renders into (undefined in `toScene`). */
@@ -254,7 +297,6 @@ export interface ChartHandle {
  *   { plugins: [withOptions(lastPoint, { className: 'ct-last' })] }
  * );
  * ```
- * @experimental
  */
 export function withOptions<TOptions>(
   plugin: ChartPlugin<TOptions>,

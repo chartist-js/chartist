@@ -295,7 +295,6 @@ export function presetAxes(
  *   `{ x, y }` form.
  * @param extra `reverseData` and `normalize`, for the list form (the
  *   `{ x, y }` form takes them inline).
- * @experimental
  */
 export function cartesianAxes(
   input: AxesConfig | readonly AxisDefinition[],

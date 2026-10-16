@@ -4,7 +4,6 @@ export type Rgb = readonly [number, number, number];
 /**
  * How text output is colored: 24-bit colors, the 256-color palette, the
  * 16 standard colors, or none (plain text without escape codes).
- * @experimental
  */
 export type ColorMode = 'truecolor' | '256' | '16' | 'none';
 
@@ -36,7 +35,6 @@ export interface ColorStream {
  * const color = detectColorMode(process.stdout, process.env);
  * console.log(lineChart({ series: [[1, 3, 2]] }, { color }));
  * ```
- * @experimental
  */
 export function detectColorMode(
   stream: ColorStream,

@@ -1,6 +1,6 @@
 /**
  * The API reference's model: TypeDoc's JSON
- * for chartist and chartist/compat, and one per documented `@chartist-js`
+ * for chartist, chartist/compat and chartist/live, and one per documented `@chartist-js`
  * package (docs:api writes them), read at build time, and what the
  * reference pages need from it: entries per page, comments, types as
  * linked tokens, and the members of option types.
@@ -79,7 +79,7 @@ function offsetIds(value: unknown, by: number): J.ProjectReflection {
   return walk(value) as J.ProjectReflection;
 }
 
-/** `chartist`, `chartist/compat` or a package's npm name. */
+/** `chartist`, `chartist/compat`, `chartist/live` or a package's npm name. */
 export type ModuleName = string;
 
 export interface ApiEntry {
@@ -96,7 +96,13 @@ export interface ApiEntry {
   sourceUrl?: string;
 }
 
-/** Every export of chartist and chartist/compat, in source order per module (core first). */
+/** TypeDoc's module names of chartist's other entry points → their subpath. */
+const ENTRY_POINTS: Readonly<Record<string, string>> = {
+  compat: 'compat',
+  live: 'live'
+};
+
+/** Every export of chartist, chartist/compat and chartist/live, in source order per module (core first). */
 export const ENTRIES: ApiEntry[] = [];
 /** Every export of each package, in source order, by the package's slug. */
 export const PACKAGE_ENTRIES = new Map<string, ApiEntry[]>();
@@ -104,14 +110,14 @@ export const PACKAGE_ENTRIES = new Map<string, ApiEntry[]>();
 const LOCATIONS = new Map<number, { entry: ApiEntry; member?: string }>();
 
 for (const module of project.children ?? []) {
-  const moduleName: ModuleName =
-    module.name === 'compat' ? 'chartist/compat' : 'chartist';
+  const subpath = ENTRY_POINTS[module.name];
+  const moduleName: ModuleName = subpath ? `chartist/${subpath}` : 'chartist';
   for (const reflection of module.children ?? []) {
     const file = reflection.sources?.[0]?.fileName ?? '';
     const assigned = pageFor(
       reflection.name,
-      moduleName === 'chartist/compat'
-        ? `compat/${file.replace(/^compat\//, '')}`
+      subpath
+        ? `${subpath}/${file.replace(new RegExp(`^${subpath}/`), '')}`
         : file
     );
     // The 1.x event and plugin types are documented where compat exports

@@ -1,0 +1,16 @@
+{
+  "$comment": "The exports each entry marks @experimental: they may still change in a 2.x minor. Every other export is stable. The rule: openspec/specs/public-api/spec.md.",
+  "chartist": ["ContainerCondition", "container"],
+  "compat": [],
+  "live": [
+    "DiffOptions",
+    "LiveAnimationContext",
+    "LiveAnimations",
+    "LiveDomRendererOptions",
+    "ValueKey",
+    "ValueKeyContext",
+    "diffScenes",
+    "liveDomRenderer",
+    "smilAnimations"
+  ]
+}

@@ -12,6 +12,10 @@ export const heatData = {
   series: [[3, 6, 9, 12, 9, 6, 3, 6, 9, 12, 9, 6]]
 };
 
+export const visitorData = {
+  series: [[12, 15, 14, 18, 21, 19, 23, 22]]
+};
+
 export const barData = {
   labels: ['Q1', 'Q2', 'Q3', 'Q4'],
   series: [
@@ -26,17 +30,19 @@ Chartist keeps its core small and leaves the extras to you. Tooltips, value labe
 
 A chart goes through seven phases, in this order. Each one emits an event with what it produced:
 
-| Phase     | Payload                            | What it is                                                                               |
-| --------- | ---------------------------------- | ---------------------------------------------------------------------------------------- |
-| `resolve` | `{ config }`                       | The config with defaults applied: padding, coordinates, layers, axes                     |
-| `prepare` | `{ data }`                         | The data, each series as `{ values, name, className, meta }`                             |
-| `layout`  | `{ width, height, padding, area }` | The chart's size and the drawing area inside the padding and axes                        |
-| `compose` | a scene node                       | Each element the layers draw: series, lines, points, bars, slices, grid lines and labels |
-| `scene`   | `{ scene }`                        | The whole tree, its root the `svg`                                                       |
-| `render`  | `{ scene, output }`                | The renderer has written the SVG                                                         |
-| `mount`   | `{ scene, output, elementOf }`     | The SVG is in the page; `elementOf(node)` gives you a node's element                     |
+| Phase     | Payload                                                             | What it is                                                                               |
+| --------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `resolve` | `{ config }`                                                        | The config with defaults applied: padding, coordinates, layers, axes                     |
+| `prepare` | `{ data }`                                                          | The data, each series as `{ values, name, className, meta }`                             |
+| `layout`  | `{ width, height, padding, area }`                                  | The chart's size and the drawing area inside the padding and axes                        |
+| `compose` | a scene node                                                        | Each element the layers draw: series, lines, points, bars, slices, grid lines and labels |
+| `scene`   | `{ scene }`                                                         | The whole tree, its root the `svg`                                                       |
+| `render`  | `{ scene, output, cause, previous, changes }`                       | The renderer has written the SVG, or changed it in place                                 |
+| `mount`   | `{ scene, output, cause, previous, changes, elementOf, animation }` | The SVG is in the page; `elementOf(node)` gives you a node's element                     |
 
-A listener that returns a new payload changes the phase, and later phases build on the change. Return nothing to leave it as it is. The return values of `render` and `mount` listeners are ignored: by then, the SVG exists.
+A listener that returns a new payload changes the phase, and later phases build on the change. Return nothing to leave it as it is. By `render` and `mount`, the SVG exists: `render` listeners only watch, and a `mount` listener may return a function that undoes what it did (see [Cleaning up](#cleaning-up)). Other return values of theirs are ignored.
+
+`render` and `mount` also say why the chart rendered and what the render did: `cause` is `create`, `update`, `resize`, `responsive` or `fonts`, `previous` is the previous render's scene, and `changes` lists every node that was added, updated or removed. `mount` also has the `animation` timing when the chart [animates its update](../live-updates/#animate-updates). [Live updates](../live-updates/#what-changed) has the details.
 
 When the container resizes, the chart runs again from `layout`. The config and data haven't changed, so `resolve` and `prepare` don't run, and their listeners aren't called.
 
@@ -228,6 +234,31 @@ barChart(
 
 Plugins go into `plugins`, in the config of `chart()` or the options of the presets. Plugins install in order, so with two listeners on the same event, the earlier plugin's runs first. `chart()` also takes a `[plugin, options]` pair as an entry, and `install` receives the options as its second argument.
 
+## Cleaning up
+
+What a plugin sets up outside the chart has to go when the chart goes. `install` may return a function, and `destroy()` calls it once, after the chart's SVG is removed. `detach()` doesn't: a detached chart keeps its SVG and its plugins.
+
+```ts
+import type { ChartPlugin } from 'chartist';
+
+/** Logs the chart's size while the Shift key is down. */
+export const shiftToMeasure: ChartPlugin = {
+  name: 'shift-to-measure',
+  install(chart) {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Shift') {
+        const box = chart.container?.getBoundingClientRect();
+        console.log(`${box?.width} x ${box?.height}`);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }
+};
+```
+
+A `mount` listener may return a function too, for what it did to the elements of one render. It runs before the next render touches the SVG, and on `destroy()`. Use it when the next render needs a clean slate, such as a `title` with a point's value. For what you set up once per element, like event listeners, act on the `add` changes instead. [Live updates](../live-updates/#cleaning-up) shows both.
+
 ## Custom events
 
 Plugins can emit events of their own with `chart.emit(name, payload)`. Declare each event and its payload in the `ChartEvents` interface (TypeScript merges your declaration into Chartist's), list it in `provides`, and listen to it with `on()` like to any other event. A misspelled name or a wrong payload is then a type error, not a silent no-op. This plugin reports clicks on bars; the page listens and shows the clicked value. Press **Edit** and click a bar:
@@ -239,9 +270,97 @@ Plugins can emit events of their own with `chart.emit(name, payload)`. Declare e
   example='events-and-plugins/custom-event'
 />
 
-The click handlers go on in `mount`, the first phase in which the elements exist. There's no cleanup to do: every render draws a new SVG, and the old elements go away with their handlers.
+The click handlers go on in `mount`, the first phase in which the elements exist, and only on elements that are new in the page: those of `add` changes. With the default renderer, every render draws a new SVG, so every element is new, and the old ones go away with their handlers. With [`liveDomRenderer()`](../live-updates/#keep-the-svg), a bar can stay the same element for many renders, and a handler added on every render would fire once for each of them. What a kept bar stands for can change, so the plugin notes it per element from `add` and `update` changes, and the handler reads it when it fires.
 
 Phase names are reserved: emitting `compose` or `mount` throws. A prefix such as `bar:` keeps your names apart from other plugins'.
+
+## Plugins for live updates
+
+A chart drawn with [`liveDomRenderer()`](../live-updates/) keeps its elements from one render to the next. That's good news for plugins: what they add to an element stays, hover and focus survive an update, and their own elements can move with the chart instead of popping in again. It asks a little more of them, though.
+
+This tooltip plugin shows the value of the point under the pointer. The chart gets a new value every second, and the tooltip stays on its point, shows the point's new value and moves in step with the chart's update animation. Press **Edit** and hover a point:
+
+<LiveExample
+  title='A tooltip that stays'
+  label='A line chart of visitors that gets a new value every second; hovering a point shows its value'
+  preview={{ type: 'line', data: visitorData, options: { low: 0 } }}
+  example='events-and-plugins/live-tooltip'
+/>
+
+### New elements, kept elements
+
+`mount` comes after every render, and in a live chart most of its elements were there before. Add listeners on `add` changes only, as the tooltip does, or they pile up on kept elements. Read what an element shows when you need it (the tooltip reads `ct:value` when it shows), not when you add the listener: a kept point can get a new value. And return a cleanup function from `install` for what lives outside the SVG, like the tooltip's element.
+
+### Keys for your own nodes
+
+Nodes a plugin adds are matched between renders too, so they keep their elements. Without a key, a node is matched by its element name, its first class and its place among siblings like it. Give it a key with `node()` when that's not enough, for nodes that come and go or change their order:
+
+```ts
+import { node, type ChartPlugin } from 'chartist';
+
+/** Writes the last value of each line next to its end. */
+export const lastValue: ChartPlugin = {
+  name: 'last-value',
+  install(chart) {
+    chart.on('compose', series => {
+      if (series.role !== 'series') {
+        return;
+      }
+      const points = series.children.filter(child => child.role === 'point');
+      const last = points.at(-1);
+      if (!last) {
+        return;
+      }
+      const { x1, y1 } = last.attrs;
+      return series.append(
+        node('text', { x: Number(x1) + 8, y: y1 }, 'ct-last-value', {
+          key: `last-value/${series.ctx.seriesIndex}`
+        }).text(String(last.attrs['ct:value']))
+      );
+    });
+  }
+};
+```
+
+### Keyframes
+
+With update animations, numbers move from their old to their new value, and paths with the same commands move point by point. That's right for most nodes. For a node that should move differently, such as a needle that turns around its center, give the plugin `keyframes()`. The renderer asks it once per update, with the progress points of the chart's easing: 0 is the old node, 1 the new one, and points beyond them come from an easing that overshoots. The plugin returns one set of attributes per point, or nothing for the default:
+
+```ts
+import type { ChartPlugin } from 'chartist';
+
+/**
+ * Turns the needle a gauge plugin draws, instead of morphing its path.
+ * The gauge gives the needle's path its angle in `ct:angle`.
+ */
+export const turningNeedle: ChartPlugin = {
+  name: 'turning-needle',
+  install() {},
+  keyframes(previous, next, progress) {
+    if (!next.classes.includes('ct-needle')) {
+      return undefined;
+    }
+    const from = Number(previous.attrs['ct:angle']);
+    const to = Number(next.attrs['ct:angle']);
+    return progress.map(p => ({
+      transform: `rotate(${from + (to - from) * p} 100 100)`
+    }));
+  }
+};
+```
+
+Plugins are asked first, in their order, then the layer that drew the node, so a plugin can also change how a built-in node moves. [Custom layers](../custom-layers/) can have `keyframes()` too.
+
+### Animate in step
+
+When the chart animates an update, `mount` gets its `animation`: the duration in milliseconds and the easing as a CSS string. Animate what your plugin draws with it, and it moves with the chart. For HTML elements, pass it to the Web Animations API as the tooltip does, `element.animate(frames, animation)`. For SVG elements, `Svg#animate()` takes the CSS easing as it is. When the chart doesn't animate (a resize, `domRenderer()`, or a reader who prefers less motion), `animation` is absent, and your plugin doesn't animate either.
+
+<Callout>
+  **1.x plugins get a new SVG every time.** A chart with a plugin converted with
+  `fromLegacyPlugin` draws a new SVG on every render, even with
+  `liveDomRenderer()`, because 1.x `draw` listeners expect new elements. For a
+  chart that updates live, write a v2 plugin like the one above.
+</Callout>
 
 ## Sharing a plugin
 
@@ -275,6 +394,7 @@ A few things keep a plugin working everywhere:
 
 - Change the scene in `compose` and `scene`, not the DOM. Then it also works when the chart is [rendered to a string](../server-rendering/), where `render` and `mount` never happen.
 - Touch elements only in `mount`, and only through `elementOf`.
+- Set elements up on their `add` change, or return a cleanup function from `mount`. Then the plugin works with both renderers; see [Plugins for live updates](#plugins-for-live-updates).
 - List `chartist` as a peer dependency, so your plugin uses the reader's copy.
 
 ## Publishing a plugin
@@ -329,6 +449,6 @@ Publish your plugin the way Chartist v2 is published: as an ES module with types
   community's plugins running on v2.
 </Callout>
 
-In the API reference: [events and plugins](../../api/events-and-plugins/) and [the scene](../../api/scene/).
+In the API reference: [events and plugins](../../api/events-and-plugins/), [the scene](../../api/scene/) and [chartist/live](../../api/live/).
 
 Next: [render charts on a server](../server-rendering/), or [animate them](../animations/).

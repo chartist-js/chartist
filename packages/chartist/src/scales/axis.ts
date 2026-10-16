@@ -52,7 +52,6 @@ export interface AxisContext {
 /**
  * A range of values on an axis, from `low` to `high`: what a layer reports
  * in {@link Layer.extent}.
- * @experimental
  */
 export interface AxisExtent {
   /** The lowest value. */
@@ -65,7 +64,6 @@ export interface AxisExtent {
  * A positioned axis: ticks, range and projection into px along the axis.
  * An {@link AxisFactory} creates it once the chart area is known; layers
  * read it to place what they draw.
- * @experimental
  */
 export interface ScaleAxis {
   /** Which way the axis runs: `x` or `y`. */
@@ -104,7 +102,6 @@ export interface ScaleAxis {
  * {@link stepAxis}, {@link autoScaleAxis} and {@link fixedScaleAxis} return
  * one; write your own for a scale they don't cover. It goes in the `type`
  * of an axis.
- * @experimental
  */
 export interface AxisFactory {
   /**
@@ -135,7 +132,6 @@ export interface AxisSetup extends Omit<AxisOptions, 'type'> {
 /**
  * An axis of a composed chart, in the list form of {@link cartesianAxes}:
  * an id that layers bind to, a side, a type and the 1.x axis options.
- * @experimental
  */
 export interface AxisDefinition extends AxisSetup {
   /**
@@ -209,7 +205,6 @@ export interface ChartAxes {
  * Axes for a chart's `axes` option, created by {@link cartesianAxes}. The
  * pipeline asks them for the chart area and, after `layout`, to create the
  * axes. Charts without axes don't bundle any of this.
- * @experimental
  */
 export interface CartesianAxes {
   /** The config the axes were created from, with the default offsets filled in. */

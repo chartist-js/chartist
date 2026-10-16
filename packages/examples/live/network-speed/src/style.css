@@ -1,0 +1,11 @@
+#chart {
+  /* Faster than the samples come in, and steady. */
+  --ct-update-duration: 200ms;
+  --ct-update-easing: linear;
+  --ct-line-width: 2px;
+}
+
+/* The average in the text color, so it stands out from the bars. */
+#chart .ct-line {
+  stroke: currentColor;
+}

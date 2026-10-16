@@ -48,7 +48,6 @@ const CLASS_NAMES: AxisLayerClassNames = {
 
 /**
  * The options of {@link axisGrid} and {@link axisLabels}.
- * @experimental
  */
 export interface AxisLayerOptions {
   /**
@@ -63,7 +62,6 @@ export interface AxisLayerOptions {
 /**
  * The options of {@link axisLabels}: those of every axis layer, plus how
  * the labels are drawn.
- * @experimental
  */
 export interface AxisLabelsOptions extends AxisLayerOptions {
   /** HTML (`foreignObject`) or SVG `text`; default: the chart's mode. */
@@ -186,7 +184,6 @@ function nodesOf(
  * ```
  * @param options The axes to draw and their classes; `background` adds a
  *   `rect.ct-grid-background` over the chart area, behind the lines.
- * @experimental
  */
 export function axisGrid(
   options: AxisLayerOptions & { readonly background?: boolean } = {}
@@ -248,7 +245,6 @@ export function axisGrid(
  *   ]
  * });
  * ```
- * @experimental
  */
 export function axisLabels(options: AxisLabelsOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };

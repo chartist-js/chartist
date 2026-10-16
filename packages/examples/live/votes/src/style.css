@@ -1,0 +1,5 @@
+/* White labels on the slices, in light and dark mode. */
+#chart .ct-label {
+  fill: #fff;
+  color: #fff;
+}

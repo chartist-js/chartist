@@ -5,6 +5,7 @@
  */
 import type { DocEntry } from './docs';
 import { exampleFiles } from './examples';
+import { galleryFiles } from './gallery';
 import { rewriteInstallText } from './release';
 import { href } from './site';
 
@@ -42,11 +43,12 @@ const prop = (tag: string, name: string) =>
 /** A live example as its files: the shown file first, then the rest. */
 function liveExample(tag: string): string {
   const id = prop(tag, 'example');
+  const gallery = prop(tag, 'gallery');
   const title = prop(tag, 'title');
-  if (!id) {
+  if (!id && !gallery) {
     return '';
   }
-  const files = exampleFiles(id);
+  const files = gallery ? galleryFiles(gallery) : exampleFiles(id ?? '');
   const shown = prop(tag, 'show') ?? 'src/main.ts';
   const order = [
     shown,

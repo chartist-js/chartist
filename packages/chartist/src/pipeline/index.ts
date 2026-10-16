@@ -15,5 +15,6 @@ export type {
   PhaseResult,
   PreparedData,
   PreparedSeries,
+  RenderEvent,
   ResolvedConfig
 } from './types';

@@ -2,6 +2,7 @@
  * `lineChart`: the 1.x line chart as a preset over `chart()`. Takes the 1.x
  * arguments and options and renders the 1.x structure.
  */
+import type { Renderer } from '../render/types';
 import type {
   LineChartData,
   LineChartOptions
@@ -35,7 +36,6 @@ import {
 /**
  * Options of `lineChart`: the 1.x `LineChart` options; axis types may also
  * be v2 axis factories.
- * @experimental
  */
 export type LineChartPresetOptions = Omit<
   LineChartOptions,
@@ -49,6 +49,13 @@ export type LineChartPresetOptions = Omit<
    * so they see it too.
    */
   readonly on?: PhaseListeners;
+  /**
+   * Turns the scene into output, as `renderer` in the config of
+   * `chart()`: the DOM renderer by default, or `liveDomRenderer()` from
+   * `chartist/live` for a chart that changes in place on updates. It can't
+   * change after the chart is created.
+   */
+  readonly renderer?: Renderer;
   /** Extra layers below or above the chart's lines. */
   readonly layers?: PresetLayers;
   /** Options per series name: only these five apply per series. */
@@ -170,7 +177,6 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
  *   toScene(config, { width: 600, height: 300 })
  * );
  * ```
- * @experimental
  */
 export function lineChartConfig(
   data: LineChartData,
@@ -201,7 +207,6 @@ export function createLineChart(
  * Creates a line chart with the 1.x options and output, rendered
  * synchronously. Plugins must be v2 plugins; convert 1.x plugins with
  * `fromLegacyPlugin` from `chartist/compat`.
- * @experimental
  */
 export function lineChart(
   target: string | Element,

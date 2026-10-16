@@ -7,14 +7,23 @@ import {
   type MeasureText
 } from '../render/measure';
 import { setStyle } from '../render/style';
-import type { RenderOutput } from '../render/types';
+import type {
+  Keyframes,
+  RenderCause,
+  RenderOutput,
+  RenderUpdate
+} from '../render/types';
+import type { SceneNode } from '../scene/node';
 import type { ResponsiveWatcher } from '../responsive/responsive';
+import { replacementChanges, replacesOutput } from './changes';
 import { withChartTypeClass } from './className';
 import {
   eventMethods,
   installPlugins,
   listenerScope,
-  registerListeners
+  registerListeners,
+  runAll,
+  type InstalledPlugins
 } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
 
@@ -95,7 +104,6 @@ function resolveTarget(target: string | Element): Element {
  * @param target The container element, or a CSS selector for it.
  * @param config The data, axes, layers and the rest of the chart.
  * @returns A handle to update the chart, listen to it or remove it.
- * @experimental
  */
 export function chart(
   target: string | Element,
@@ -126,6 +134,11 @@ export function chart(
   let watcher: ResponsiveWatcher | undefined;
   let state: PipelineState | undefined;
   let output: RenderOutput | undefined;
+  // The functions the last render's `mount` listeners returned.
+  let cleanups: (() => void)[] = [];
+  let installed: InstalledPlugins = { plugins: [], cleanups: [] };
+  // Which layer drew each node of the current scene, once asked for.
+  let layerOf: WeakMap<SceneNode, number> | undefined;
   let observer: ResizeObserver | undefined;
   let destroyed = false;
   // Cleared by detach(), also when it's called during the first render.
@@ -138,7 +151,7 @@ export function chart(
   // when web fonts finish loading. HTML labels reflow by themselves.
   const onFontsLoaded = () => {
     if (!destroyed && state && measuredText) {
-      render('layout');
+      render('layout', 'fonts');
     }
   };
 
@@ -209,9 +222,53 @@ export function chart(
     };
   }
 
-  function render(from: 'resolve' | 'layout') {
+  /**
+   * Asks the plugins with `keyframes`, in order, then the layer that drew
+   * the node, for the keyframes of a node's update animation.
+   */
+  function keyframes(
+    previous: SceneNode,
+    next: SceneNode,
+    progress: readonly number[]
+  ): Keyframes | undefined {
+    for (const plugin of installed.plugins) {
+      const frames = plugin.keyframes?.(previous, next, progress);
+      if (frames) {
+        return frames;
+      }
+    }
+    if (!state) {
+      return undefined;
+    }
+    if (!layerOf) {
+      // Built once per render, on the first question: which layer drew
+      // each node. Nodes a `scene` listener replaced belong to none.
+      const map = new WeakMap<SceneNode, number>();
+      const mark = (drawnNode: SceneNode, index: number) => {
+        map.set(drawnNode, index);
+        drawnNode.children.forEach(child => mark(child, index));
+      };
+      state.drawn.forEach(({ nodes }, index) =>
+        nodes.forEach(top => mark(top, index))
+      );
+      layerOf = map;
+    }
+    const index = layerOf.get(next);
+    return index === undefined
+      ? undefined
+      : state.config.layers[index].keyframes?.(
+          previous,
+          next,
+          state.drawn[index].context,
+          progress
+        );
+  }
+
+  function render(from: 'resolve' | 'layout', cause: RenderCause) {
     const { width, height } = size();
     measuredText = false;
+    const previous = state;
+    const previousOutput = output;
     state = runPipeline(
       emitter,
       withChartTypeClass(effective),
@@ -230,13 +287,44 @@ export function chart(
       from
     );
     const { scene } = state;
-    output = renderer.render(scene, container);
+    layerOf = undefined;
+    const pending = cleanups;
+    cleanups = [];
+    runAll(pending);
+    const update: RenderUpdate | undefined =
+      previous && previousOutput && !replacesOutput(handle)
+        ? {
+            previous: previousOutput,
+            previousScene: previous.scene,
+            cause,
+            labels: state.data.labels,
+            previousLabels: previous.data.labels,
+            keyframes
+          }
+        : undefined;
+    const rendered = renderer.render(scene, container, update);
+    output = rendered;
     if (printing) {
       applyPrintViewBox();
     }
-    emitter.notify('render', { scene, output });
-    const elementOf = output.elementOf ?? (() => undefined);
-    emitter.notify('mount', { scene, output, elementOf });
+    const changes =
+      update && rendered.patched && rendered.changes
+        ? rendered.changes
+        : replacementChanges(previous?.scene, scene);
+    const event = {
+      scene,
+      output: rendered,
+      cause,
+      changes,
+      previous: previous?.scene
+    };
+    emitter.notify('render', event);
+    // Nodes of `remove` changes are in the previous output.
+    const elementOf = (node: SceneNode) =>
+      rendered.elementOf?.(node) ?? previousOutput?.elementOf?.(node);
+    cleanups = emitter
+      .notify('mount', { ...event, elementOf, animation: rendered.animation })
+      .filter((result): result is () => void => typeof result === 'function');
   }
 
   function resolveResponsive() {
@@ -253,7 +341,7 @@ export function chart(
     const previousConfig = effective;
     resolveResponsive();
     handle.emit('responsive', { previousConfig, currentConfig: effective });
-    render('resolve');
+    render('resolve', 'responsive');
   }
 
   /** (Re)creates the watcher of the responsive entries. */
@@ -276,7 +364,7 @@ export function chart(
       } else {
         resolveResponsive();
       }
-      render('resolve');
+      render('resolve', 'update');
       return handle;
     },
     detach() {
@@ -297,8 +385,15 @@ export function chart(
       }
       destroyed = true;
       handle.detach();
-      output?.remove?.();
-      emitter.clear();
+      const pending = cleanups;
+      cleanups = [];
+      try {
+        runAll(pending);
+      } finally {
+        output?.remove?.();
+        emitter.clear();
+        runAll([...installed.cleanups].reverse());
+      }
     },
     ...eventMethods(emitter, () => handle, provided, scope)
   };
@@ -322,20 +417,20 @@ export function chart(
       }
       const { width, height } = size();
       if (width !== state.layout.width || height !== state.layout.height) {
-        render('layout');
+        render('layout', 'resize');
       }
     });
     observer.observe(container);
   }
 
-  installPlugins(handle, config.plugins, provided, scope);
+  installed = installPlugins(handle, config.plugins, provided, scope);
   registerListeners(handle, config.on);
   if (attached) {
     watch();
   } else {
     resolveResponsive();
   }
-  render('resolve');
+  render('resolve', 'create');
 
   return handle;
 }

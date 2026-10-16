@@ -62,7 +62,6 @@ const escape = (text: string) => text.replace(/[&<>]/g, char => escapes[char]);
  * console.log(lineChart(data, { columns: 60, rows: 12 }));
  * console.log(legend(data, { columns: 60 }));
  * ```
- * @experimental
  */
 export function legend(
   data: LegendData,

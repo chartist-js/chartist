@@ -173,7 +173,7 @@ The site SHALL have a target that captures the landing sections, the first live 
 
 ### Requirement: Guides and chart type pages
 
-The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, updating charts, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output.
+The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output.
 
 #### Scenario: A guide runs as written
 
@@ -200,6 +200,21 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 - **WHEN** a reader opens a terminal example
 - **THEN** its code adds the text art with `format: 'element'`, not with `innerHTML`
 
+#### Scenario: Live updates
+
+- **WHEN** a reader opens the live updates guide
+- **THEN** its first live example is a chart drawn with `liveDomRenderer({ key: 'label', animations: smilAnimations() })`, fed with a new value every second, that shows below it how many elements each update added, updated and removed; further live examples show animated bars, an animated pie and gauge, a stream of several updates per second, and one update that changes the data and the layers together; and it explains importing `chartist/live` (with a bundler and from a CDN), identity and the `key` option, the changes and `cause` in `mount`, cleanup functions, the default animation timing, and what live updates add to the bundle
+
+#### Scenario: Cleanup in the plugins guide
+
+- **WHEN** a reader opens the events and plugins guide
+- **THEN** it shows a plugin that returns a cleanup function from `install`, and a `mount` listener that acts on added elements or returns a cleanup function
+
+#### Scenario: Plugins for live updates
+
+- **WHEN** a reader opens the events and plugins guide
+- **THEN** a section on plugins for live updates covers keys for a plugin's own nodes, acting on `add` changes, cleanup, plugin keyframes and the animation timing in `mount`, with a live example of a small v2 tooltip plugin that keeps working while its chart gets new values every second
+
 ### Requirement: Migration guide
 
 The docs SHALL have a guide for 1.x users that says what keeps working unchanged, how to move to the functional API, how to keep 1.x events (`compat`) and 1.x plugins (`fromLegacyPlugin`), that UMD ships for backwards compatibility only, and what was removed.
@@ -211,12 +226,22 @@ The docs SHALL have a guide for 1.x users that says what keeps working unchanged
 
 ### Requirement: Experimental features are marked
 
-Docs for experimental or polyfill-dependent features SHALL say so at the start of their section, name what they need, and link the relevant standards discussion.
+Docs for experimental or polyfill-dependent features SHALL say so at the start of their section, name what they need or why they may still change, and link the relevant standards discussion where there is one. Stable APIs SHALL NOT carry experimental marks in the guides. The API reference SHALL explain what its experimental badge means: the export may still change in a 2.x minor.
 
 #### Scenario: Container queries
 
 - **WHEN** a reader opens the container queries section
 - **THEN** a warning says `container()` is experimental, needs the `match-container` polyfill until browsers ship `Element.matchContainer()`, and links csswg-drafts#6205
+
+#### Scenario: Live updates
+
+- **WHEN** a reader opens the live updates guide
+- **THEN** it says that `chartist/live` is experimental: new with 2.0, it may still change in a 2.x minor before it becomes stable
+
+#### Scenario: Stable composition
+
+- **WHEN** a reader opens the composed charts, custom layers or target lines and bands guide
+- **THEN** none of them says the functional API, the layer contract or the layers are experimental
 
 ### Requirement: Checked code samples
 
@@ -345,12 +370,22 @@ Every page SHALL have Open Graph and Twitter card tags with its title, descripti
 
 ### Requirement: Archived versions
 
-The site SHALL serve the 1.x documentation as static files under `/v1/`, unchanged from its last build. The version switcher and the footer SHALL link it and the archived 0.x documentation, with their URLs defined in one place.
+The site SHALL serve the 1.x documentation as static files under `/v1/`, unchanged from its last build, and the 0.x documentation as static files under `/v0/`, from its last build on the former GitHub Pages site. The 0.x archive SHALL keep that build's content and live examples. The only changes SHALL be: no affiliate advertising, no analytics, no version pop-up (a static note points to the current docs instead), and fonts served by the site itself, so its pages make no requests to other hosts. The version switcher and the footer SHALL link both archives on the same site, with their URLs defined in one place. The archives SHALL NOT be listed in the sitemap.
 
 #### Scenario: Going to the 1.x docs
 
 - **WHEN** a reader picks 1.5 in the version switcher
 - **THEN** the 1.x documentation opens under `/v1/` on the same site
+
+#### Scenario: Going to the 0.x docs
+
+- **WHEN** a reader picks the 0.11 archive in the version switcher or the footer
+- **THEN** the 0.x documentation opens under `/v0/` on the same site, with its live examples working
+
+#### Scenario: No third-party requests in the 0.x archive
+
+- **WHEN** a page under `/v0/` loads
+- **THEN** every request it makes goes to the site itself, and the page shows no affiliate block and no version pop-up
 
 ### Requirement: Example previews fill their box
 
@@ -617,3 +652,108 @@ A plugin whose use case the core covers SHALL NOT be listed on the plugins page.
 
 - **WHEN** a visitor opens `/plugins/chartist-plugin-targetline/`
 - **THEN** they land on the target lines and bands guide, and the plugins overview has no tile for `chartist-plugin-targetline`
+
+### Requirement: Live data in the examples gallery
+
+The examples gallery SHALL have a "Live data" section with the live update examples, each with its own page like the other examples: a sensor chart with a sliding window, a dashboard, a network speed stream of bars and a line, a seismograph line, an animated pie, an animated gauge, and bars that switch between grouped and stacked with new data. The live updates guide SHALL show these examples from the gallery, not copies of them.
+
+#### Scenario: The section
+
+- **WHEN** a visitor opens the examples gallery
+- **THEN** a "Live data" section lists the live examples, and each one's page runs it and opens it in the playground
+
+### Requirement: Converted plugins and live updates
+
+The plugins page SHALL say that a 1.x plugin converted with `fromLegacyPlugin` makes its chart draw a new SVG on every render, even with `liveDomRenderer()`, and SHALL link the plugin section of the events and plugins guide for writing v2 plugins.
+
+#### Scenario: The note
+
+- **WHEN** a visitor reads the plugins page
+- **THEN** it says that charts with converted 1.x plugins draw a new SVG on every render, even with `liveDomRenderer()`, and links the guide's section on plugins for live updates
+
+### Requirement: The updating charts guide moved
+
+The guide published at `/docs/updating-charts/` SHALL be at `/docs/live-updates/`, and the old path SHALL redirect there.
+
+#### Scenario: Old link
+
+- **WHEN** a reader opens `/docs/updating-charts/`
+- **THEN** the page sends them to `/docs/live-updates/`
+
+### Requirement: Old 0.x URLs redirect
+
+Every page of the former 0.x site at `https://gionkunz.github.io/chartist-js/` SHALL send its visitors to chartist.dev, keeping the query string. The new page SHALL be chosen as follows:
+
+- a URL without a `#hash` goes to the page's v2 counterpart: the home page to `/`, getting started to the getting started guide, the examples to the examples gallery, the API documentation to the API reference, the plugins page to the plugins overview;
+- a URL whose `#hash` names a section with a v2 counterpart goes to that page, for example a live example to its v2 example page, a guide section to that guide, a plugin to its plugin page;
+- a URL with any other `#hash` goes to the same page and `#hash` under `/v0/`;
+- any other path below `/chartist-js/` goes to the same path under `/v0/`.
+
+Each redirect page SHALL declare its target as the canonical URL and SHALL redirect without delay, also when scripts are off (then without the `#hash` rules). Every redirect target SHALL exist on chartist.dev.
+
+#### Scenario: The old home page
+
+- **WHEN** a visitor opens `https://gionkunz.github.io/chartist-js/`
+- **THEN** they land on `https://chartist.dev/`
+
+#### Scenario: An old example link
+
+- **WHEN** a visitor opens `https://gionkunz.github.io/chartist-js/examples.html#example-line-modify-drawing`
+- **THEN** they land on the v2 example page of that example
+
+#### Scenario: An old section without a v2 counterpart
+
+- **WHEN** a visitor opens an old page with a `#hash` that has no v2 counterpart, such as a function of the 0.x API documentation
+- **THEN** they land on the same page and `#hash` under `https://chartist.dev/v0/`
+
+#### Scenario: An old path that isn't a page
+
+- **WHEN** a visitor opens a path below `/chartist-js/` that has no redirect page of its own
+- **THEN** they land on the same path under `https://chartist.dev/v0/`
+
+#### Scenario: Without scripts
+
+- **WHEN** a search engine or a browser without scripts opens an old page
+- **THEN** the page's canonical URL and its instant refresh both point to the page's v2 counterpart
+
+### Requirement: Deployment to chartist.dev
+
+The docs site SHALL be built and deployed by a GitHub Actions workflow to GitHub Pages at `https://chartist.dev`, from `main`. Pull requests SHALL build the site and run its end-to-end tests without deploying. Deployment SHALL be possible by hand, and SHALL only happen while a repository variable allows it, so the v2 site doesn't go live before its first release candidate is on npm.
+
+#### Scenario: Push to main
+
+- **WHEN** a commit is pushed to `main` and deployment is allowed
+- **THEN** the site is built for `https://chartist.dev` and deployed
+
+#### Scenario: Pull request
+
+- **WHEN** a pull request changes the docs
+- **THEN** the site is built and its end-to-end tests run, and nothing is deployed
+
+### Requirement: Redirects for 1.x URLs
+
+Every page URL of the 1.x site that the v2 site doesn't have SHALL redirect to the same page in the `/v1/` archive, with a static page that works without JavaScript and tells search engines where the page moved. URLs the v2 site has SHALL keep showing the v2 page.
+
+#### Scenario: Old API page
+
+- **WHEN** a visitor opens `https://chartist.dev/api/classes/LineChart`
+- **THEN** they land on `https://chartist.dev/v1/api/classes/LineChart`
+
+#### Scenario: Shared path
+
+- **WHEN** a visitor opens `https://chartist.dev/api/`
+- **THEN** they see the v2 API reference
+
+### Requirement: Install instructions follow the prerelease state
+
+While the `chartist` package version is a prerelease, the site SHALL show install instructions that work for it: `npm install chartist@next` instead of `npm install chartist`, and CDN URLs pinned to the exact version instead of `chartist@2`. For a final version, the site SHALL show the plain forms. The guides' source SHALL keep the final forms.
+
+#### Scenario: During release candidates
+
+- **WHEN** the site is built while the package version is `2.0.0-rc.1`
+- **THEN** its pages say `npm install chartist@next` and load `https://cdn.jsdelivr.net/npm/chartist@2.0.0-rc.1/…`
+
+#### Scenario: After 2.0.0
+
+- **WHEN** the site is built while the package version is `2.0.0`
+- **THEN** its pages say `npm install chartist` and load `https://cdn.jsdelivr.net/npm/chartist@2/…`

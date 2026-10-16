@@ -29,7 +29,6 @@ interface Dot {
 /**
  * The options of the {@link pie} layer. Without them, it draws a filled
  * pie from the top, with a label halfway out on each slice.
- * @experimental
  */
 export interface PieLayerOptions {
   /** Where the first slice starts, in degrees clockwise from the top. */
@@ -231,7 +230,6 @@ function labelText(
  *   className: 'ct-chart-donut'
  * });
  * ```
- * @experimental
  */
 export function pie(options: PieLayerOptions = {}): Layer {
   const classNames = { ...CLASS_NAMES, ...options.classNames };
