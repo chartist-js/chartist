@@ -279,7 +279,7 @@ export function line(options: LineLayerOptions = {}): Layer {
                 .position(0)
                 .remove(1)
                 .move(first.x, areaBaseProjected)
-                .line(first.x, first.y)
+                .line(first.x, first.y, false, first.data)
                 .position(segment.pathElements.length + 1)
                 .line(last.x, areaBaseProjected);
             })
