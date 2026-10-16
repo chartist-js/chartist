@@ -1,14 +1,20 @@
 ---
-title: Updating charts
-description: Every chart function returns a handle. Use it to draw new data, change options, stop a chart from following its container, and clean up when it goes away.
+title: Live updates
+description: Give a chart new data through its handle, and let it keep its SVG with liveDomRenderer(), so elements stay, plugins keep what they added and updates can animate.
 group: Guides
 order: 12
 ---
 
+import Callout from '../../components/docs/Callout.astro';
 import LiveExample from '../../components/LiveExample.astro';
 
-export const data = {
-  labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+export const sensorData = {
+  labels: ['1s', '2s', '3s', '4s', '5s', '6s', '7s', '8s', '9s', '10s'],
+  series: [[21.2, 21.4, 21.3, 21.7, 21.9, 21.8, 22.1, 22, 22.3, 22.2]]
+};
+
+export const regionData = {
+  labels: ['North', 'East', 'South', 'West'],
   series: [
     [5, 4, 3, 7],
     [3, 2, 9, 5]
@@ -16,6 +22,17 @@ export const data = {
 };
 
 `lineChart()`, `barChart()`, `pieChart()` and `chart()` draw the chart right away and return a handle. Keep it: it's how you give the chart new data, and how you tell it you're done with it.
+
+Here's a temperature sensor that reports every second. The chart drops the oldest reading, adds the new one and keeps its SVG while doing it. Press **Edit** to change the code:
+
+<LiveExample
+  title='A live sensor'
+  label='A line chart of the last ten temperature readings, with a new reading every second'
+  preview={{ type: 'line', data: sensorData, options: { showArea: true } }}
+  example='live-updates/sensor'
+/>
+
+The handle's methods:
 
 | Method            | What it does                                                                       |
 | ----------------- | ---------------------------------------------------------------------------------- |
@@ -27,16 +44,7 @@ export const data = {
 
 ## New data
 
-Pass `update()` the parts of the config that changed. Press **Edit** and then the button:
-
-<LiveExample
-  title='New data'
-  label='A bar chart with two series by quarter that gets new numbers on a button press'
-  preview={{ type: 'bar', data }}
-  example='updating-charts/update'
-/>
-
-The merge is shallow: each key you pass replaces that key, the rest stays. `update({ data })` replaces all of the data, labels included, so pass the whole data object, not only the series that changed. The same goes for `axes` and `layers` in a `chart()` config.
+Pass `update()` the parts of the config that changed. The merge is shallow: each key you pass replaces that key, the rest stays. `update({ data })` replaces all of the data, labels included, so pass the whole data object, not only the series that changed. The same goes for `axes` and `layers` in a `chart()` config.
 
 ```ts
 import { autoScaleAxis, cartesianAxes, chart, line, stepAxis } from 'chartist';
@@ -60,8 +68,6 @@ handle.update({ layers: [line({ showArea: true, showPoint: false })] });
 
 Every update runs the whole pipeline again, and your plugins and listeners stay. They aren't part of what `update()` takes: add and remove listeners with `on()` and `off()`.
 
-Each render draws a new SVG and replaces the old one. That's why [CSS animations](../animations/) play again after an update: the elements are new.
-
 ## New options
 
 `update()` takes the config of `chart()`, so on a preset chart it replaces the `data`, but options like `showArea` or `stackBars` aren't part of it. The presets' handles have `setOptions()` for those. The options you pass extend the current ones; with `{ replace: true }` they start from the defaults instead, and the options you gave before are gone:
@@ -82,7 +88,193 @@ chart.setOptions({ showArea: true });
 chart.setOptions({ showArea: true }, { replace: true });
 ```
 
-[Responsive options](../responsive/) still apply on top, and new data from `update({ data })` stays when they change. `plugins` and `on` are set at creation.
+[Responsive options](../responsive/) still apply on top, and new data from `update({ data })` stays when they change. `plugins`, `on` and `renderer` are set at creation.
+
+## Keep the SVG
+
+What a render does to the page depends on the chart's renderer:
+
+- **`domRenderer()`**, the default, draws a new SVG on every render and replaces the old one: on an update, a resize, a responsive change, or when web fonts finish loading. It's small, and right for charts that rarely change. But the elements are new each time: a hovered bar loses its `:hover`, a focused point its focus, what a plugin added to an element is gone, and [CSS animations](../animations/) play again.
+- **`liveDomRenderer()`**, from `chartist/live`, draws the SVG once and then changes it in place. An element whose value is still in the data stays the same element, and only the attributes, classes and text that changed are set. New values get new elements, gone ones are removed. The result is the same SVG a fresh chart would draw.
+
+Opt in per chart with the `renderer` option, on the presets and on `chart()`:
+
+```ts
+import { barChart } from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7]] },
+  { renderer: liveDomRenderer() }
+);
+```
+
+Reach for it when a chart updates while people look at it: dashboards, streams, charts with tooltips or other interactive plugins. A chart that's drawn once doesn't need it.
+
+<Callout>
+  **1.x code always gets a new SVG.** The 1.x classes (`new LineChart()`) and
+  charts with the `compat` plugin or 1.x plugins converted with
+  `fromLegacyPlugin` draw a new SVG on every render, even with
+  `liveDomRenderer()`: their `draw` listeners expect new elements. To update
+  such a chart live, move its plugins to [v2
+  plugins](../events-and-plugins/#plugins-for-live-updates).
+</Callout>
+
+### Importing chartist/live
+
+With a bundler, import it next to `chartist`:
+
+```ts
+import { lineChart } from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+
+lineChart('#chart', { series: [[1, 3, 2]] }, { renderer: liveDomRenderer() });
+```
+
+Without one, load `live.min.js` from the same CDN folder as `index.min.js`. It imports `./index.min.js`, so both share one copy of Chartist:
+
+```html
+<script type="module">
+  import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+  import { liveDomRenderer } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/live.min.js';
+
+  lineChart('#chart', { series: [[1, 3, 2]] }, { renderer: liveDomRenderer() });
+</script>
+```
+
+## Which value is which
+
+To keep an element, the renderer has to know which value of the new data it stands for. The `key` option says what identifies a value:
+
+- **`'index'`**, the default: its position in its series. The third value stays the third value. Right when the data has the same values in the same order, with new numbers.
+- **`'label'`**: the label at its position. Right for a sliding window like the sensor above, where every reading moves one place to the left. With index keys, each point would stay where it is and take its neighbor's value; with label keys, the point of `5s` keeps its element and moves left.
+- **A function** that gets `{ seriesIndex, valueIndex, value, label, meta }` and returns a string or a number. Right when values carry an id, or when they change their order:
+
+```ts
+import { barChart } from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+
+// Each value carries its team's id; the bars are sorted by score.
+barChart(
+  '#chart',
+  {
+    labels: ['Otters', 'Owls', 'Ants'],
+    series: [
+      [
+        { value: 12, meta: 'otters' },
+        { value: 9, meta: 'owls' },
+        { value: 4, meta: 'ants' }
+      ]
+    ]
+  },
+  { renderer: liveDomRenderer({ key: ({ meta }) => String(meta) }) }
+);
+```
+
+Series are matched by their index, and grid lines and axis labels by their tick value: when the scale changes from 0 to 10 to 0 to 15, the lines of 0, 5 and 10 move and the one of 15 is added. Values with the same key in a series are matched in their order, so repeated labels work like index keys. The key only decides which elements are kept, never what's drawn.
+
+## What changed
+
+The `render` and `mount` events say why the chart rendered and what the render did, for every renderer:
+
+- `cause`: `create` for the first render, then `update` (from `update()` and `setOptions()`), `resize`, `responsive` or `fonts`;
+- `previous`: the previous render's scene, if there was one;
+- `changes`: one entry per node, in document order. `add` for a new node, `update` for a node that changed (with its `previous` node), `remove` for a node that's gone. In `mount`, `elementOf()` gives each entry's element, for a `remove` the one just taken out of the page.
+
+With `domRenderer()`, every render is a replacement: every previous node is removed and every new one added. With `liveDomRenderer()`, the changes are what it changed.
+
+That makes `add` entries the place to set up an element once. Listeners added in `mount` to every element would pile up on elements that stay, so add them to new elements only. This works the same with both renderers:
+
+```ts
+import { barChart } from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7]] },
+  {
+    renderer: liveDomRenderer(),
+    on: {
+      mount: ({ cause, changes, elementOf }) => {
+        for (const change of changes) {
+          if (change.op === 'add' && change.node.role === 'bar') {
+            elementOf(change.node)?.addEventListener('click', () =>
+              console.log('clicked a bar')
+            );
+          }
+        }
+        console.log(`${cause}: ${changes.length} changes`);
+      }
+    }
+  }
+);
+```
+
+## Cleaning up
+
+Some things can't be set up once: a `title` that shows a value changes with the value. A `mount` listener can return a function that undoes what it did. It runs right before the next render touches the SVG, and on `destroy()`:
+
+```ts
+import { findAll, lineChart } from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+
+const SVG = 'http://www.w3.org/2000/svg';
+
+lineChart(
+  '#chart',
+  { series: [[1, 3, 2, 4]] },
+  {
+    renderer: liveDomRenderer(),
+    on: {
+      mount: ({ scene, elementOf }) => {
+        // A tooltip with its value on every point.
+        const titles = findAll(scene, { role: 'point' }).map(point => {
+          const title = document.createElementNS(SVG, 'title');
+          title.textContent = String(point.attrs['ct:value']);
+          elementOf(point)?.append(title);
+          return title;
+        });
+        // Gone before the next render adds new ones.
+        return () => titles.forEach(title => title.remove());
+      }
+    }
+  }
+);
+```
+
+Plugins can do the same, and their `install` can return a cleanup function too, for what they set up outside the chart. See [Events and plugins](../events-and-plugins/#cleaning-up).
+
+## Animate updates
+
+With `smilAnimations()`, updates move: bars grow and shrink, points and lines slide to their new place, pie slices turn. The timing is part of the chart's look, so it's in CSS: set `--ct-update-duration` on the chart or its container, and optionally `--ct-update-easing`. Without a duration, nothing animates.
+
+<LiveExample
+  title='Animated updates'
+  label='A bar chart with two series by region that gets new numbers every two seconds, its bars moving to their new values'
+  show='src/style.css'
+  preview={{ type: 'bar', data: regionData }}
+  example='live-updates/dashboard'
+/>
+
+`--ct-update-easing` takes any CSS easing: the keywords (`ease` is the default), `cubic-bezier()` curves, including ones that overshoot like the one above, `linear()` and `steps()`. The animations run with SMIL, which reaches what CSS can't: bars and points are `<line>` elements, and the ends of a line are attributes, not CSS properties. SMIL moves them, and paths, in every browser.
+
+A few things to know:
+
+- **The attributes hold the new values at once.** The animation is drawn on top of them, so whatever you read from the DOM is the final state.
+- **An update during an animation continues from where the elements are drawn**, without a jump. Pie slices start from their previous shape.
+- **Only `update` and `responsive` renders animate.** A resize, the first render and loaded fonts draw the new state at once.
+- **Nothing moves for people who ask for less motion.** Under `prefers-reduced-motion: reduce`, updates aren't animated, whatever the CSS says.
+
+How to animate your own layers and plugins: [keyframes](../events-and-plugins/#keyframes) in the plugin guide, and [Animations](../animations/#update-animations) for the rest of the animation story.
+
+### Streaming
+
+For data that arrives every second or faster, keep the duration below the update interval: a 300 ms animation for an update per second. Every update starts new animations on top of the running ones, and when they come faster than they end, the chart is always on its way somewhere and never quite there.
+
+## What it costs
+
+Live updates are opt-in, in their own entry point, so charts that don't use them don't carry them. Minified and gzipped, `liveDomRenderer()` adds about 1.5 kB, and `smilAnimations()` about 2.2 kB more. What the core needs for them (the previous render for renderers, `cause` and `changes`, cleanup functions) is about 0.6 kB, in every chart.
 
 ## Redrawing on resize
 
@@ -96,7 +288,7 @@ Charts with [SVG labels](../server-rendering/#svg-or-html-labels) also lay out a
 
 `detach()` stops a chart from following its container (and, for presets, the media queries of their responsive options). The SVG and your listeners stay, and `update()` still draws. Use it to freeze a chart, for example before printing or while you animate its container.
 
-`destroy()` is for when the chart goes away: it detaches, removes the SVG from the container and removes every listener. Calling it twice is safe. In a component framework, destroy the chart where the component cleans up, so no observer keeps a removed element alive:
+`destroy()` is for when the chart goes away: it detaches, runs the cleanup functions, removes the SVG from the container and removes every listener. Calling it twice is safe. In a component framework, destroy the chart where the component cleans up, so no observer keeps a removed element alive:
 
 ```ts
 import { lineChart, type ChartHandle } from 'chartist';
@@ -113,6 +305,6 @@ export function unmount() {
 }
 ```
 
-In the API reference: [the chart handle](../../api/chart/#ChartHandle).
+In the API reference: [the chart handle](../../api/chart/#ChartHandle) and [chartist/live](../../api/live/).
 
 Next: [animate charts with CSS](../animations/), or [write a plugin](../events-and-plugins/).

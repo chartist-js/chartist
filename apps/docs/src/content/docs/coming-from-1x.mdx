@@ -138,7 +138,7 @@ The data, the options and the media query pairs in `responsiveOptions` stay as t
 | ------------------------------------------------ | -------------------------------------------------------------------------------- |
 | First render on the next tick                    | Renders right away, before the call returns                                      |
 | Redraws when the window or its container resizes | Redraws when the container resizes (`ResizeObserver`)                            |
-| `chart.update(newData)`                          | `chart.update({ data: newData })`, see [Updating charts](../updating-charts/)    |
+| `chart.update(newData)`                          | `chart.update({ data: newData })`, see [Live updates](../live-updates/)          |
 | `chart.update(undefined, options, true)`         | `chart.setOptions(options)`                                                      |
 | `chart.update(undefined, options)`               | `chart.setOptions(options, { replace: true })`                                   |
 | `chart.detach()`                                 | `chart.detach()`, or `chart.destroy()` to also remove the SVG                    |
@@ -346,7 +346,7 @@ These come with the functions. The classes stay as they were in 1.x, so they don
 - **Container queries** for responsive options, next to media queries (experimental). See [Responsive sugar topping](../responsive/).
 - **Server rendering** with `toScene()` and `renderToString()`, and SVG text labels. See [Server rendering](../server-rendering/).
 - **v2 plugins** that hook into every step of the pipeline. See [Events and plugins](../events-and-plugins/).
-- **`setOptions()`** changes a chart's options after creation, and the **`on` option** listens from the first render. See [Updating charts](../updating-charts/#new-options).
+- **`setOptions()`** changes a chart's options after creation, and the **`on` option** listens from the first render. See [Live updates](../live-updates/#new-options).
 - **Stricter types:** scene nodes narrow by role, event names and payloads are checked, and a misspelled event is a compile error instead of a listener that's never called.
 
 And for every chart, classes included:

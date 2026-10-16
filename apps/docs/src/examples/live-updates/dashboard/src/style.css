@@ -1,0 +1,6 @@
+#chart {
+  /* Updates move the bars from their old values to the new ones. */
+  --ct-update-duration: 700ms;
+  /* A curve that overshoots a little, then settles. */
+  --ct-update-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

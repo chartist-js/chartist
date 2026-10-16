@@ -26,7 +26,9 @@ export const REDIRECT_MARKER = 'data-redirect';
  */
 export const MOVED_PAGES = {
   // The plugin left the plugin list: the core's targetLine() covers it.
-  'plugins/chartist-plugin-targetline/': 'docs/target-lines-and-bands/'
+  'plugins/chartist-plugin-targetline/': 'docs/target-lines-and-bands/',
+  // The guide to updating charts grew into the live updates guide.
+  'docs/updating-charts/': 'docs/live-updates/'
 };
 
 /**

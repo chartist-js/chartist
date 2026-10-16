@@ -22,6 +22,10 @@ describe('moved pages', () => {
     );
   });
 
+  test('the updating charts guide goes to the live updates guide', () => {
+    expect(MOVED_PAGES['docs/updating-charts/']).toBe('docs/live-updates/');
+  });
+
   test('redirects with and without JavaScript, keeping the hash', () => {
     const page = movedPage(path, { base: '/', site: 'https://chartist.dev' });
     expect(page).toContain(` ${REDIRECT_MARKER}>`);

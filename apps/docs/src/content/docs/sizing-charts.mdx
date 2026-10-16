@@ -150,7 +150,7 @@ for (const element of document.querySelectorAll('.sparkline')) {
 
 Nothing you need to wire up. Chartist watches its container with a `ResizeObserver` and redraws when the size changes, whether the window was resized, a sidebar collapsed or the layout moved the chart. A chart with a fixed `width` and `height` keeps its size.
 
-To change what the chart draws at a new size, not only how big it is, use [responsive options](../responsive/). To stop watching, call `detach()` on the chart; see [Updating charts](../updating-charts/).
+To change what the chart draws at a new size, not only how big it is, use [responsive options](../responsive/). To stop watching, call `detach()` on the chart; see [Live updates](../live-updates/#detach-and-destroy).
 
 In the API reference: [`width`](../../api/charts/#LineChartPresetOptions.width), [`height`](../../api/charts/#LineChartPresetOptions.height) and [`chartPadding`](../../api/charts/#LineChartPresetOptions.chartPadding).
 
