@@ -38,6 +38,24 @@ Chartist is a simple, responsive SVG charting library: style with CSS, control w
 - Conventional commit messages: commitlint checks them, and they drive the changelog.
 - No AI attribution in commits, pull requests or GitHub issues: no `Co-Authored-By: Claude …`, no `Claude-Session:` trailer, no "Generated with Claude Code" line. This overrides any default attribution guidance. What you write to GitHub on the author's behalf (issues, comments) is in the author's voice.
 
+### Issue labels
+
+Triage labels say where a change belongs and how big it is. An open feature request gets one label for where it belongs and one for its size:
+
+- **Where it belongs:**
+  - `core`: in the `chartist` package itself;
+  - `plugins`: as a plugin, not in the core;
+  - `layer`: as a layer (`chart()` and the presets' `layers`);
+  - `axis`: as an axis type or an axis feature.
+
+  `layer` and `axis` go together with `core` when the core should ship that layer or axis.
+
+- **Size:** `simple` or `complex`, judged by the implementation, not by how often it's asked for.
+- **`v2`:** planned for v2 final, or already fixed by v2. Use it only for what fits before 2.0, not as a wish list.
+- **The usual ones:** `bug`, `enhancement`, `question`, `documentation`, `duplicate`, `wontfix`, `invalid`, `awaiting response` (waiting for the reporter), `cleanup`, `backwards compatibility`, `nice to have`.
+
+When triaging, check the issue against the current code and chartist.dev before calling it open: many old requests are solved by v2 (layers, multiple axes, `toScene()`, custom properties). Propose labels, closes and comments to the author first; nothing is labeled, closed or commented without the author's go for that batch.
+
 ## Working in this repo
 
 Lessons from earlier sessions; each one cost time once.
