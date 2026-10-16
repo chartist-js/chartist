@@ -265,6 +265,7 @@ A few things to know:
 - **An update during an animation continues from where the elements are drawn**, without a jump. Pie slices start from their previous shape.
 - **Only `update` and `responsive` renders animate.** A resize, the first render and loaded fonts draw the new state at once.
 - **Nothing moves for people who ask for less motion.** Under `prefers-reduced-motion: reduce`, updates aren't animated, whatever the CSS says.
+- **Firefox doesn't animate HTML labels.** It runs no SMIL inside a `foreignObject`, so there the axis labels move to their new place at once. SVG text labels (`labels: 'svg'`) move in every browser.
 
 How to animate your own layers and plugins: [keyframes](../events-and-plugins/#keyframes) in the plugin guide, and [Animations](../animations/#update-animations) for the rest of the animation story.
 
