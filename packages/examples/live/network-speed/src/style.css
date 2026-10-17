@@ -5,7 +5,11 @@
   --ct-line-width: 2px;
 }
 
-/* The average in the text color, so it stands out from the bars. */
+/* Salmon bars, and the average as a red line on top. */
+#chart .ct-bar {
+  stroke: var(--ct-series-b, #f05b4f);
+}
+
 #chart .ct-line {
-  stroke: currentColor;
+  stroke: var(--ct-series-a, #d70206);
 }

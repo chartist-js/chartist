@@ -17,8 +17,9 @@ chart('#chart', {
   data: {
     labels: quarters,
     series: [
-      { name: 'revenue', data: [120, 150, 170, 210] },
-      { name: 'margin', data: [12, 18, 15, 22] }
+      // Salmon bars and a red line.
+      { name: 'revenue', className: 'ct-series-b', data: [120, 150, 170, 210] },
+      { name: 'margin', className: 'ct-series-a', data: [12, 18, 15, 22] }
     ]
   },
   axes: cartesianAxes([
