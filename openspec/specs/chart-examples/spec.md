@@ -32,6 +32,12 @@ The example SHALL run unchanged as a Vite app with `chartist` installed. It SHAL
 - **WHEN** the `src/main.ts` of any example is displayed
 - **THEN** it creates the chart with `lineChart()`, `barChart()`, `pieChart()` or `chart()`, not with a chart class
 
+#### Scenario: The simplest way that fits
+
+- **WHEN** an example, a code sample in the docs or a doc comment draws a line, bar or pie chart, with or without extra layers such as `targetLine()` or `band()`
+- **THEN** it uses the preset (`lineChart()` with `layers: { below, above }`, for example), or the preset's config function (`lineChartConfig()`) where it needs a config, as for `toScene()`
+- **AND** it uses `chart()` only where a preset can't draw the chart (several Y axes, several layers of one kind, a custom layer in place of the series) or where the text is about `chart()` itself
+
 ### Requirement: Examples are type-checked
 
 Every example's TypeScript SHALL type-check in strict mode against the type declarations of the `chartist` package. A type error in any example SHALL fail the examples' type-check task.

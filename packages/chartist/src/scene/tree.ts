@@ -85,27 +85,10 @@ export function findAll(scene: SceneNode, query: NodeQuery = {}): SceneNode[] {
  * @returns The mapped tree, or `null` if the mapper dropped the root
  * @example
  * ```ts
- * import {
- *   autoScaleAxis,
- *   axisGrid,
- *   cartesianAxes,
- *   line,
- *   mapNodes,
- *   renderToString,
- *   stepAxis,
- *   toScene
- * } from 'chartist';
+ * import { lineChartConfig, mapNodes, renderToString, toScene } from 'chartist';
  *
- * const labels = ['Mon', 'Tue', 'Wed'];
  * const scene = toScene(
- *   {
- *     data: { labels, series: [[1, 3, 2]] },
- *     axes: cartesianAxes([
- *       { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
- *       { id: 'y', side: 'left', type: autoScaleAxis() }
- *     ]),
- *     layers: [axisGrid(), line()]
- *   },
+ *   lineChartConfig({ labels: ['Mon', 'Tue', 'Wed'], series: [[1, 3, 2]] }),
  *   { width: 600, height: 300 }
  * );
  *

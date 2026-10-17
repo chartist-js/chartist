@@ -59,27 +59,11 @@ function unavailable(method: string): never {
  * @returns The scene, its root the `svg`
  * @example
  * ```ts
- * import {
- *   autoScaleAxis,
- *   axisGrid,
- *   axisLabels,
- *   cartesianAxes,
- *   line,
- *   node,
- *   renderToString,
- *   stepAxis,
- *   toScene
- * } from 'chartist';
+ * import { lineChartConfig, node, renderToString, toScene } from 'chartist';
  *
- * const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
- * const scene = toScene(
+ * const config = lineChartConfig(
+ *   { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [[12, 9, 7, 8, 5]] },
  *   {
- *     data: { labels, series: [[12, 9, 7, 8, 5]] },
- *     axes: cartesianAxes([
- *       { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
- *       { id: 'y', side: 'left', type: autoScaleAxis() }
- *     ]),
- *     layers: [axisGrid(), line(), axisLabels()],
  *     viewBox: { width: 600, height: 300 },
  *     on: {
  *       // Styles inside the SVG, for tools that read it on its own.
@@ -90,9 +74,9 @@ function unavailable(method: string): never {
  *         )
  *       })
  *     }
- *   },
- *   { width: 600, height: 300 }
+ *   }
  * );
+ * const scene = toScene(config, { width: 600, height: 300 });
  *
  * export const markup = renderToString(scene);
  * ```

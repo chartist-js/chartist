@@ -270,41 +270,23 @@ function edgeContext(
  * holes). Each edge is a constant value, values of its own (one per
  * label) or a series, or `series` names a group and the band covers their
  * minimum to their maximum at each value index. Constants and own values
- * widen the Y axis to include them. List the band
- * before the series layers to draw it behind them. It needs an X and a Y
- * axis, from {@link cartesianAxes}.
+ * widen the Y axis to include them. On a preset, add it to `layers.below`
+ * to draw it behind the series; in a composed chart, list it before the
+ * series layers. It needs an X and a Y axis, from {@link cartesianAxes}
+ * or a preset's.
  *
  * @example
  * ```ts
- * import {
- *   autoScaleAxis,
- *   axisGrid,
- *   axisLabels,
- *   band,
- *   cartesianAxes,
- *   chart,
- *   line,
- *   stepAxis
- * } from 'chartist';
+ * import { band, lineChart } from 'chartist';
  *
- * const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
- *
- * chart('#chart', {
- *   data: {
- *     labels: days,
+ * lineChart(
+ *   '#chart',
+ *   {
+ *     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
  *     series: [{ name: 'visits', data: [12, 9, 7, 8, 5] }]
  *   },
- *   axes: cartesianAxes([
- *     { id: 'day', side: 'bottom', type: stepAxis(), ticks: days },
- *     { id: 'count', side: 'left', type: autoScaleAxis(), low: 0 }
- *   ]),
- *   layers: [
- *     axisGrid(),
- *     band({ low: 6, high: 10, mark: true }),
- *     line(),
- *     axisLabels()
- *   ]
- * });
+ *   { low: 0, layers: { below: [band({ low: 6, high: 10, mark: true })] } }
+ * );
  * ```
  */
 export function band(options: BandOptions): Layer {

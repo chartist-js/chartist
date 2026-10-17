@@ -61,33 +61,21 @@ const LABEL_INSET = 4;
  *
  * @example
  * ```ts
- * import {
- *   autoScaleAxis,
- *   axisGrid,
- *   axisLabels,
- *   cartesianAxes,
- *   chart,
- *   line,
- *   stepAxis,
- *   targetLine
- * } from 'chartist';
+ * import { lineChart, targetLine } from 'chartist';
  *
- * const months = ['Jan', 'Feb', 'Mar', 'Apr'];
- *
- * chart('#chart', {
- *   data: { labels: months, series: [[620, 810, 740, 930]] },
- *   axes: cartesianAxes([
- *     { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
- *     { id: 'sales', side: 'left', type: autoScaleAxis(), low: 0 }
- *   ]),
- *   layers: [
- *     axisGrid(),
- *     line(),
- *     targetLine({ value: 700, label: 'Min' }),
- *     targetLine({ value: 1000, label: 'Goal', className: 'ct-series-b' }),
- *     axisLabels()
- *   ]
- * });
+ * lineChart(
+ *   '#chart',
+ *   { labels: ['Jan', 'Feb', 'Mar', 'Apr'], series: [[620, 810, 740, 930]] },
+ *   {
+ *     low: 0,
+ *     layers: {
+ *       above: [
+ *         targetLine({ value: 700, label: 'Min' }),
+ *         targetLine({ value: 1000, label: 'Goal', className: 'ct-series-b' })
+ *       ]
+ *     }
+ *   }
+ * );
  * ```
  */
 export function targetLine(options: TargetLineOptions): Layer {

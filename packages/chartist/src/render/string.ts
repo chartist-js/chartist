@@ -66,29 +66,14 @@ function serialize(current: SceneNode, position: Position): string {
  * @returns The SVG markup, e.g. `<svg xmlns="…" …>…</svg>`
  * @example
  * ```ts
- * import {
- *   autoScaleAxis,
- *   axisGrid,
- *   axisLabels,
- *   cartesianAxes,
- *   line,
- *   renderToString,
- *   stepAxis,
- *   toScene
- * } from 'chartist';
+ * import { lineChartConfig, renderToString, toScene } from 'chartist';
  *
  * export function weekChart(values: number[]): string {
- *   const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
  *   const scene = toScene(
- *     {
- *       data: { labels, series: [values] },
- *       axes: cartesianAxes([
- *         { id: 'x', side: 'bottom', type: stepAxis(), ticks: labels },
- *         { id: 'y', side: 'left', type: autoScaleAxis() }
- *       ]),
- *       layers: [axisGrid(), line(), axisLabels()],
- *       className: 'ct-chart-line'
- *     },
+ *     lineChartConfig({
+ *       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+ *       series: [values]
+ *     }),
  *     { width: 600, height: 300 }
  *   );
  *   return renderToString(scene);
