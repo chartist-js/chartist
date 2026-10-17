@@ -178,7 +178,7 @@ The site SHALL have a target that captures the landing sections, the first live 
 
 ### Requirement: Guides and chart type pages
 
-The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output.
+The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output. The docs navigation SHALL list the pages from first steps to advanced topics, in the groups Start here, Chart types, Basics (data and options, axes and scales, sizing, styling, responsive options, animations, target lines and bands) and Advanced (live updates, events and plugins, custom layers, server rendering, security and CSP).
 
 #### Scenario: A guide runs as written
 

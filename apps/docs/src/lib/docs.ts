@@ -10,10 +10,16 @@ export type PackageEntry = CollectionEntry<'packages'>;
 /** The API reference's sidebar groups. */
 const API_GROUPS = ['Reference', 'Functional API', '1.x'] as const;
 /**
- * Sidebar groups: a package's overview, the docs' content groups, then the
- * API reference's. Package subsites use Package, Guides and Reference.
+ * Sidebar groups: a package's overview, the docs' content groups, the
+ * package guides, then the API reference's. Package subsites use Package,
+ * Guides and Reference.
  */
-export const NAV_GROUPS = ['Package', ...GROUPS, ...API_GROUPS] as const;
+export const NAV_GROUPS = [
+  'Package',
+  ...GROUPS,
+  'Guides',
+  ...API_GROUPS
+] as const;
 export type NavGroup = (typeof NAV_GROUPS)[number];
 /** The header sections with a sidebar. */
 export type NavSection = 'docs' | 'api' | 'packages';
