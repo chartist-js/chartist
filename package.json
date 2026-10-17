@@ -8,7 +8,7 @@
     "@astrojs/check": "0.9.10",
     "@astrojs/mdx": "8.0.2",
     "@astrojs/sitemap": "3.7.4",
-    "@fission-ai/openspec": "1.14.1",
+    "@fission-ai/openspec": "1.14.3",
     "@geekvetica/nx-astro": "3.0.1",
     "@nx/js": "23.3.0",
     "@nx/oxlint": "23.3.0",
