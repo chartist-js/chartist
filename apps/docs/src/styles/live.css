@@ -53,7 +53,12 @@
   --pg-tok-punctuation: var(--code-muted);
 }
 
-/* An inline live example's height in edit mode. */
+/* An inline live example's height in edit mode; long code scrolls in the
+   editor, as in the code panel before editing. */
 .live {
   --pg-min-height: 420px;
+}
+
+.live .playground-editor {
+  max-height: var(--live-code-height);
 }

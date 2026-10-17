@@ -19,8 +19,6 @@ interface LiveConfig {
   classic?: string;
   /** A gallery example's id: unedited, the playground opens it by id. */
   id?: string;
-  /** Maximum code height; in edit mode, the playground's height. */
-  codeHeight?: string;
 }
 
 /** Gallery examples (with an id) fill their preview frame. */
@@ -122,11 +120,6 @@ export function mountLiveExamples() {
       ?.addEventListener('click', async () => {
         const host = document.createElement('div');
         host.className = 'live-playground';
-        if (config.codeHeight) {
-          // The toolbar plus the code area, so the editor scrolls instead.
-          host.style.height = `calc(${config.codeHeight} + 48px)`;
-          host.style.setProperty('--pg-min-height', '0');
-        }
         root.replaceChildren(host);
         root.classList.add('editing');
         const { copyAction, createPlayground, openAction, resetAction } =

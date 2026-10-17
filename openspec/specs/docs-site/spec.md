@@ -153,6 +153,11 @@ Docs pages and the landing page SHALL be able to embed a live example: an editor
 - **WHEN** a visitor changes a number in the live example's data
 - **THEN** the chart re-renders with the new value without a page reload
 
+#### Scenario: Long code
+
+- **WHEN** a live example's code is taller than its maximum code height (`min(520px, 65vh)` unless the page sets another)
+- **THEN** the code scrolls inside the code panel, and after **Edit** inside the editor, instead of making the example taller
+
 ### Requirement: Motion with calm alternatives
 
 Scroll-driven and decorative motion on the site SHALL use CSS where possible and SHALL have a static alternative under `prefers-reduced-motion: reduce` that keeps all content and controls available.
