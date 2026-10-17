@@ -1,5 +1,6 @@
 /** Swaps a live example's static code for the playground on "Edit". */
 import {
+  CENTER_FRAME,
   FILL_FRAME,
   chartistUrl,
   imports,
@@ -21,9 +22,12 @@ interface LiveConfig {
   id?: string;
 }
 
-/** Gallery examples (with an id) fill their preview frame. */
+/**
+ * Centered in their preview frame, as the static chart before them; gallery
+ * examples (with an id) also fill it.
+ */
 const stylesFor = (config: LiveConfig) =>
-  config.id ? `${previewStyles()}${FILL_FRAME}` : previewStyles();
+  `${previewStyles()}${config.id ? FILL_FRAME : CENTER_FRAME}`;
 
 /**
  * View mode: runs the example's own code in a sandboxed preview over the

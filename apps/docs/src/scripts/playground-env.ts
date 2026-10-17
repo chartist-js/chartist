@@ -110,15 +110,28 @@ export async function playgroundForCode(
 }
 
 /**
+ * Centers what an example draws in its preview frame, as the static chart
+ * the page shows before the example runs: the chart and whatever comes
+ * with it, as one block. Taller content starts at the top.
+ */
+export const CENTER_FRAME = `
+html, body { height: 100%; }
+body {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  align-content: safe center;
+}
+body > * { width: 100%; }`;
+
+/**
  * For gallery examples. Most size their chart for a browser window
  * (`height: 50vh`, as the 1.x sandboxes did); in a preview frame that chart
  * fills the frame both ways instead, so a tall preview shows a tall chart.
  * Examples with their own layout keep it.
  */
-export const FILL_FRAME = `
-html, body { height: 100%; }
-body { box-sizing: border-box; display: grid; place-items: center; }
-body > * { width: 100%; }
+export const FILL_FRAME = `${CENTER_FRAME}
+body:has(> #chart[style*="50vh"]) { align-content: stretch; }
 #chart[style*="50vh"] {
   align-self: stretch;
   height: auto !important;
