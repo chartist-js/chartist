@@ -23,7 +23,7 @@ export const regionData = {
 
 `lineChart()`, `barChart()`, `pieChart()` and `chart()` draw the chart right away and return a handle. Keep it: it's how you give the chart new data, and how you tell it you're done with it.
 
-Here's a temperature sensor that reports every second. The chart drops the oldest reading, adds the new one and keeps its SVG while doing it. The line under the chart counts what each update did to the SVG: almost every element is kept, many of them with new positions, and only the oldest reading's elements are removed and the new one's added. Press **Edit** to change the code:
+Here's a temperature sensor that reports every second. The chart drops the oldest reading, adds the new one and keeps its SVG while doing it. The line under the chart counts what each update did to the SVG: almost every element is kept, many of them with new positions, and only the oldest reading's elements are removed and the new one's added. The axis follows the readings, so when their range changes, its grid lines and labels change too. Press **Edit** to change the code:
 
 <LiveExample
   title='A live sensor'
@@ -31,7 +31,7 @@ Here's a temperature sensor that reports every second. The chart drops the oldes
   preview={{
     type: 'line',
     data: sensorData,
-    options: { showArea: true, low: 20, high: 24 }
+    options: { showArea: true }
   }}
   gallery='live/sensor'
 />

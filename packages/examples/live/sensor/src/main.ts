@@ -12,9 +12,6 @@ const chart = lineChart('#chart', firstReadings, {
   // Keep the SVG, and know each reading by its label.
   renderer: liveDomRenderer({ key: 'label' }),
   showArea: true,
-  // A fixed range, so the axis stays and only the readings move.
-  low: 20,
-  high: 24,
   on: {
     // What each render did to the SVG's elements.
     mount: ({ scene, changes, cause }) => {
