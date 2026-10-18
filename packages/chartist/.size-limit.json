@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "28.75 kB",
+    "limit": "27.6 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "28.85 kB",
+    "limit": "27.7 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -38,6 +38,20 @@
     "name": "Live UMD (dist/live.umd.js, without the core)",
     "path": "dist/live.umd.js",
     "limit": "6 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "Server browser ESM (dist/server.min.js, without the core)",
+    "path": "dist/server.min.js",
+    "limit": "4.15 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "Server UMD (dist/server.umd.js, without the core)",
+    "path": "dist/server.umd.js",
+    "limit": "4.3 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -73,14 +87,28 @@
     "name": "import { toScene, renderToString } from chartist/server (tree-shaken)",
     "path": "dist/server.js",
     "import": "{ toScene, renderToString }",
-    "limit": "3.75 kB",
+    "limit": "3.8 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { renderToString } from chartist/server (tree-shaken)",
+    "path": "dist/server.js",
+    "import": "{ renderToString }",
+    "limit": "0.75 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { applyStyles } from chartist/server (tree-shaken)",
+    "path": "dist/server.js",
+    "import": "{ applyStyles }",
+    "limit": "3.45 kB",
     "gzip": true
   },
   {
     "name": "import { renderForHydration } from chartist/server (tree-shaken)",
     "path": "dist/server.js",
     "import": "{ renderForHydration }",
-    "limit": "4.55 kB",
+    "limit": "4.5 kB",
     "gzip": true
   },
   {
@@ -105,7 +133,7 @@
     "gzip": true
   },
   {
-    "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, … } (composed chart)",
+    "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, \u2026 } (composed chart)",
     "path": "dist/index.js",
     "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
     "limit": "14.55 kB",
@@ -129,7 +157,7 @@
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "29.55 kB",
+    "limit": "28.45 kB",
     "gzip": true
   },
   {
