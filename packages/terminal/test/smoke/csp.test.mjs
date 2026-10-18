@@ -87,8 +87,12 @@ after(async () => {
   await browser?.close();
 });
 
-/** Opens the page under a policy and returns what it found. */
-async function run(policy, { trustedTypes = false } = {}) {
+/**
+ * Opens the page under a policy and returns what it found. With
+ * `blockedFont`, it also waits for the browser's report of the blocked
+ * font, which can come after the page is done on a busy machine.
+ */
+async function run(policy, { trustedTypes = false, blockedFont = false } = {}) {
   const tab = await browser.newPage();
   const headers = { 'content-security-policy': policy };
   await tab.route('**/*', async route => {
@@ -132,17 +136,42 @@ async function run(policy, { trustedTypes = false } = {}) {
   const pageErrors = [];
   tab.on('pageerror', error => pageErrors.push(error.message));
   // The browser also logs what the policy refused, whether or not the
-  // page's securitypolicyviolation listener got the event.
+  // page's securitypolicyviolation listener got the event. The wording
+  // changes between versions ("Refused to load the font …", "Loading the
+  // font … violates …"); the policy's name doesn't.
   const refused = [];
   tab.on('console', message => {
-    if (/Refused to/.test(message.text())) {
+    if (/Content Security Policy/.test(message.text())) {
       refused.push(message.text());
     }
   });
+  // Listening from the start, so a report before the page is done counts.
+  const fontRefused =
+    blockedFont &&
+    tab
+      .waitForEvent('console', {
+        predicate: message =>
+          /\bfont\b/i.test(message.text()) &&
+          /Content Security Policy/.test(message.text()),
+        timeout: 15_000
+      })
+      .then(
+        message => message.text(),
+        () => undefined
+      );
   await tab.goto(`${ORIGIN}/`);
   // A selector, not waitForFunction: the policy blocks Playwright's eval.
   await tab.waitForSelector('body[data-done]', { state: 'attached' });
   const result = await tab.evaluate(() => window.result);
+  if (
+    fontRefused &&
+    !result.violations.some(violation => /^(font|default)-src/.test(violation))
+  ) {
+    const text = await fontRefused;
+    if (text && !refused.includes(text)) {
+      refused.push(text);
+    }
+  }
   await tab.close();
   return { ...result, pageErrors, refused };
 }
@@ -159,7 +188,9 @@ test('draws HTML and element output under a strict style policy', async () => {
 });
 
 test('needs font-src data: for the cell font', async () => {
-  const result = await run("default-src 'self'; style-src 'self'");
+  const result = await run("default-src 'self'; style-src 'self'", {
+    blockedFont: true
+  });
   assert.equal(result.font, false, 'the cell font is blocked');
   assert.ok(
     result.violations.some(v => /^(font|default)-src/.test(v)) ||
