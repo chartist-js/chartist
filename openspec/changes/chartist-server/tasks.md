@@ -32,5 +32,6 @@
 
 ## 5. Release notes and gate
 
-- [ ] 5.1 Write the move as `feat(chartist)!:` with a `BREAKING CHANGE:` footer naming the new import path, and check with a dry run that the changelog renders it in its breaking section. Note in the change that the release is a manual run with `2.1.0`. Verify: `pnpm nx release --dry-run` with the specifier `2.1.0` shows the breaking section.
+- [x] 5.1 Write the move as `feat(chartist)!:` with a `BREAKING CHANGE:` footer naming the new import path, and check with a dry run that the changelog renders it in its breaking section. Note in the change that the release is a manual run with `2.1.0`. Verify: `pnpm nx release --dry-run` with the specifier `2.1.0` shows the breaking section.
+  - Release note: run the release workflow manually with the version `2.1.0`. Without it, the conventional commits ask for a major: a dry run without a version resolves `3.0.0`. With `2.1.0`, the dry run's changelog lists the move under "Breaking Changes".
 - [ ] 5.2 Run the gate: `pnpm nx format:check --all`, `pnpm nx run-many -t lint typecheck test --skip-nx-cache`, `chartist:test:api` and `:v1`, `chartist:test:smoke`, `chartist:test:size`, `docs:check`, `pnpm nx e2e docs`, and the visual tests. Verify: all of them pass.
