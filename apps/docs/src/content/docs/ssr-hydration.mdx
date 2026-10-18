@@ -6,7 +6,9 @@ order: 5
 ---
 
 import Callout from '../../components/docs/Callout.astro';
+import Diagram from '../../components/docs/Diagram.astro';
 import LiveExample from '../../components/LiveExample.astro';
+import flow from '../../diagrams/ssr-hydration/flow.mmd?raw';
 
 export const data = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -19,6 +21,11 @@ export const data = {
 A chart in the server's HTML shows up with the page's first paint, before any script loads. With hydration, the browser then takes that chart over instead of drawing it again: the chart keeps the server's elements and gets updates, plugins and animations from there on.
 
 The server renders the chart with `renderForHydration()`, and the browser creates the chart in the same container with `liveDomRenderer()`. For a static picture of a chart (files, PDFs, email), use the self-contained SVG image from [Server rendering](../server-rendering/) instead.
+
+<Diagram
+  source={flow}
+  caption="The server draws the chart at a size it picks; the browser shows that drawing scaled, takes it over, and lays it out again at the container's size."
+/>
 
 <Callout kind='warn'>
   **Only `liveDomRenderer()` hydrates.** It comes from `chartist/live` and

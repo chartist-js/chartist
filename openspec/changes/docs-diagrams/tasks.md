@@ -36,7 +36,7 @@
 
 ## 3. The first diagram and the docs
 
-- [ ] 3.1 Write `src/diagrams/ssr-hydration/flow.mmd` (the flow in the design, `hydrate` as `accent`, with `accTitle` and `accDescr`) and include it in the SSR with hydration guide after the introduction, with a caption. Verify: `pnpm nx run docs:check`; screenshots in light and dark mode and at 375 px with no horizontal scroll ("A phone").
+- [x] 3.1 Write `src/diagrams/ssr-hydration/flow.mmd` (the flow in the design, `hydrate` as `accent`, with `accTitle` and `accDescr`) and include it in the SSR with hydration guide after the introduction, with a caption. Verify: `pnpm nx run docs:check`; screenshots in light and dark mode and at 375 px with no horizontal scroll ("A phone").
 - [ ] 3.2 Add an e2e test that the guide's diagram is inline in the HTML and that a node's fill changes when the theme switches ("Dark mode"), and add the guide to `A11Y_PAGES` for the axe check in both modes. Verify: `pnpm nx e2e docs`.
 - [ ] 3.3 Add a section on diagrams to `apps/docs/WRITING.md`:
   - when a diagram helps;
