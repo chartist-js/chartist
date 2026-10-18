@@ -1,5 +1,4 @@
-import { escapingMap, namespaces } from '../core/constants';
-import type { SceneNode } from '../scene/node';
+import { escapingMap, namespaces, type SceneNode } from '../index';
 
 const escape = (value: string | number) =>
   String(value).replace(/[&<>"']/g, char => escapingMap[char]);

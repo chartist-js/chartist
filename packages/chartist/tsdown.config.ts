@@ -16,6 +16,8 @@ import { defineConfig, type UserConfig } from 'tsdown';
  *                      plugin scripts (src/compat/global.ts)
  * dist/live.*          live updates (chartist/live) in the same formats,
  *                      importing the core the same way
+ * dist/server.*        server rendering (chartist/server) in the same
+ *                      formats, importing the core the same way
  *
  * Styles are built by scripts/styles.cjs.
  */
@@ -58,12 +60,29 @@ const liveBase: UserConfig = {
   entry: { live: 'src/live/index.ts' },
   deps: { neverBundle: [CORE] }
 };
+const serverBase: UserConfig = {
+  ...base,
+  entry: { server: 'src/server/index.ts' },
+  deps: { neverBundle: [CORE] }
+};
 const toCore =
   (file: string): UserConfig['outputOptions'] =>
   options => ({
     ...options,
     paths: (id: string) => (isCore(id) ? file : id)
   });
+
+/**
+ * UMD builds of the subpaths add their exports to the global `Chartist` of
+ * index.umd.js: classic scripts get the global, CommonJS and AMD loaders the
+ * core UMD file.
+ */
+const extendGlobal: UserConfig['outputOptions'] = options => ({
+  ...options,
+  globals: (id: string) => (isCore(id) ? 'Chartist' : id),
+  paths: (id: string) => (isCore(id) ? './index.umd.js' : id),
+  extend: true
+});
 
 /**
  * Compat declares the 1.x events by augmenting `ChartEvents` in
@@ -176,11 +195,36 @@ export default defineConfig([
     minify: true,
     format: 'umd',
     globalName: 'Chartist',
-    outputOptions: options => ({
-      ...options,
-      globals: (id: string) => (isCore(id) ? 'Chartist' : id),
-      paths: (id: string) => (isCore(id) ? './index.umd.js' : id),
-      extend: true
-    })
+    outputOptions: extendGlobal
+  },
+  { ...serverBase, format: 'esm', outputOptions: toCore('./index.js') },
+  {
+    ...serverBase,
+    format: 'cjs',
+    dts,
+    outputOptions: toCore('./index.cjs')
+  },
+  {
+    ...serverBase,
+    format: 'esm',
+    sourcemap: false,
+    dts: { ...dts, emitDtsOnly: true },
+    outputOptions: toCore('./index.js')
+  },
+  {
+    ...serverBase,
+    minify: true,
+    format: 'esm',
+    outExtensions: () => ({ js: '.min.js' }),
+    outputOptions: toCore('./index.min.js')
+  },
+  {
+    // Adds the server exports to the global `Chartist` of index.umd.js.
+    ...serverBase,
+    entry: { server: 'src/server/umd.ts' },
+    minify: true,
+    format: 'umd',
+    globalName: 'Chartist',
+    outputOptions: extendGlobal
   }
 ]);

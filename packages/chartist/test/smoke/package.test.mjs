@@ -70,7 +70,10 @@ const IMPORTS = {
   'chartist/dist/compat.umd.js': 'dist/compat.umd.js',
   'chartist/live': 'dist/live.js',
   'chartist/dist/live.min.js': 'dist/live.min.js',
-  'chartist/dist/live.umd.js': 'dist/live.umd.js'
+  'chartist/dist/live.umd.js': 'dist/live.umd.js',
+  'chartist/server': 'dist/server.js',
+  'chartist/dist/server.min.js': 'dist/server.min.js',
+  'chartist/dist/server.umd.js': 'dist/server.umd.js'
 };
 
 /** Same for `require`; only the root entry differs. */
@@ -78,7 +81,8 @@ const REQUIRES = {
   ...IMPORTS,
   chartist: 'dist/index.cjs',
   'chartist/compat': 'dist/compat.cjs',
-  'chartist/live': 'dist/live.cjs'
+  'chartist/live': 'dist/live.cjs',
+  'chartist/server': 'dist/server.cjs'
 };
 
 let tmp;
@@ -480,6 +484,32 @@ test('live uses the same core instance as chartist', async () => {
     const code = await readFile(path.join(pkgDir, file), 'utf8');
     assert.ok(code.includes(`"${core}"`), `${file} imports ${core}`);
     // The core build is ~140 kB unminified; live alone is far smaller.
+    assert.ok(
+      code.length < 40_000,
+      `${file} has no core copy (${code.length} bytes)`
+    );
+  }
+});
+
+test('server uses the same core instance as chartist', async () => {
+  const core = await import(resolveImport('chartist'));
+  const esm = await import(resolveImport('chartist/server'));
+  const cjs = require('chartist/server');
+  assert.equal(esm.toScene, core.toScene);
+  assert.equal(cjs.toScene, require('chartist').toScene);
+  for (const server of [esm, cjs]) {
+    assert.equal(typeof server.renderToString, 'function');
+  }
+  // The server builds import the core build next to them, never a copy.
+  const sources = {
+    'dist/server.js': './index.js',
+    'dist/server.cjs': './index.cjs',
+    'dist/server.min.js': './index.min.js',
+    'dist/server.umd.js': './index.umd.js'
+  };
+  for (const [file, core] of Object.entries(sources)) {
+    const code = await readFile(path.join(pkgDir, file), 'utf8');
+    assert.ok(code.includes(`"${core}"`), `${file} imports ${core}`);
     assert.ok(
       code.length < 40_000,
       `${file} has no core copy (${code.length} bytes)`

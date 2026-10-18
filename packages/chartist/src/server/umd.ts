@@ -1,0 +1,6 @@
+/**
+ * The exports `chartist/server` adds to the core: the whole UMD build,
+ * since the global `Chartist` already has `toScene()`. Re-exporting it
+ * there would replace the core's function with a getter that reads itself.
+ */
+export { renderToString } from './string';

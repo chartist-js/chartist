@@ -81,6 +81,17 @@
       },
       "default": "./dist/live.js"
     },
+    "./server": {
+      "import": {
+        "types": "./dist/server.d.ts",
+        "default": "./dist/server.js"
+      },
+      "require": {
+        "types": "./dist/server.d.cts",
+        "default": "./dist/server.cjs"
+      },
+      "default": "./dist/server.js"
+    },
     "./styles.css": "./dist/index.css",
     "./themes/*": "./dist/themes/*",
     "./scss/*": "./dist/scss/*",
