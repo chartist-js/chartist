@@ -15,7 +15,7 @@ import type {
 import type { PlaygroundFiles } from '../types.ts';
 
 export interface TypeClientOptions {
-  /** Directory URL of `index.d.ts`, `compat.d.ts` and `live.d.ts`; relative to the page. */
+  /** Directory URL of `index.d.ts`, `compat.d.ts`, `live.d.ts` and `server.d.ts`; relative to the page. */
   url: string;
   /** Bare imports without types (the host's extra `imports`). */
   untyped?: string[];

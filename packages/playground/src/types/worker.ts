@@ -32,15 +32,17 @@ function declarationsAt(
       fetchText(new URL('index.d.ts', typesUrl).href),
       fetchText(new URL('compat.d.ts', typesUrl).href),
       fetchText(new URL('live.d.ts', typesUrl).href),
+      fetchText(new URL('server.d.ts', typesUrl).href),
       Promise.all(
         Object.entries(packageUrls).map(
           async ([name, url]) => [name, await fetchText(url)] as const
         )
       )
-    ]).then(([index, compat, live, found]) => ({
+    ]).then(([index, compat, live, server, found]) => ({
       index,
       compat,
       live,
+      server,
       packages: Object.fromEntries(
         found.filter(
           (entry): entry is readonly [string, string] => entry[1] !== undefined

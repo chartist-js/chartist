@@ -45,6 +45,7 @@ test('nothing type-related loads before an editor gets focus', async ({
         'index.d.ts',
         'compat.d.ts',
         'live.d.ts',
+        'server.d.ts',
         expect.stringMatching(/^worker-/)
       ])
     );

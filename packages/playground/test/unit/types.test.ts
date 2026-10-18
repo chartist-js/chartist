@@ -8,7 +8,8 @@ const dist = new URL('../../../chartist/dist/', import.meta.url);
 const declarations = {
   index: await readFile(new URL('index.d.ts', dist), 'utf8'),
   compat: await readFile(new URL('compat.d.ts', dist), 'utf8'),
-  live: await readFile(new URL('live.d.ts', dist), 'utf8')
+  live: await readFile(new URL('live.d.ts', dist), 'utf8'),
+  server: await readFile(new URL('server.d.ts', dist), 'utf8')
 };
 const registry = ts.createDocumentRegistry();
 
@@ -51,9 +52,10 @@ describe('type service', () => {
     const main = `import 'chartist/styles.css';
 import './style.css';
 import 'match-container';
-import { lineChart, type ChartPlugin } from 'chartist';
+import { lineChart, lineChartConfig, type ChartPlugin } from 'chartist';
 import { compat } from 'chartist/compat';
 import { liveDomRenderer } from 'chartist/live';
+import { renderToString, toScene } from 'chartist/server';
 
 const marker: ChartPlugin = {
   name: 'marker',
@@ -70,6 +72,7 @@ const marker: ChartPlugin = {
 const chart = lineChart('#chart', { series: [[1, 2, 3]] }, { plugins: [marker, compat] });
 lineChart('#chart', { series: [[1, 2, 3]] }, { renderer: liveDomRenderer({ key: 'label' }) });
 chart.on('draw', data => console.log(data.type, document.title));
+console.log(renderToString(toScene(lineChartConfig({ series: [[1, 2]] }), { width: 100, height: 50 })).length);
 `;
     expect(project(main).diagnostics('src/main.ts')).toEqual([]);
   });

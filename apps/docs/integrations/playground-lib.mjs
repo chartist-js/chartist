@@ -1,8 +1,9 @@
 /**
  * Serves the Chartist build for live examples at `<base>playground-lib/`:
- * index.js, compat.js and live.js (they import ./index.js), index.css and
- * themes/accessible.css (as in the package's dist), the declarations
- * index.d.ts, compat.d.ts and live.d.ts (for type-aware editing), the
+ * index.js, compat.js, live.js and server.js (they import ./index.js),
+ * index.css and themes/accessible.css (as in the package's dist), the
+ * declarations index.d.ts, compat.d.ts, live.d.ts and server.d.ts (for
+ * type-aware editing), the
  * @chartist-js/terminal build under terminal/ (index.js, styles.css and
  * index.d.ts), the match-container polyfill that container query examples
  * import, the UMD
@@ -48,10 +49,12 @@ const FILES = {
   'index.js': { source: new URL('index.js', DIST), type: 'text/javascript' },
   'compat.js': { source: new URL('compat.js', DIST), type: 'text/javascript' },
   'live.js': { source: new URL('live.js', DIST), type: 'text/javascript' },
+  'server.js': { source: new URL('server.js', DIST), type: 'text/javascript' },
   'index.css': { source: new URL('index.css', DIST), type: 'text/css' },
   'index.d.ts': { source: new URL('index.d.ts', DIST), type: 'text/plain' },
   'compat.d.ts': { source: new URL('compat.d.ts', DIST), type: 'text/plain' },
   'live.d.ts': { source: new URL('live.d.ts', DIST), type: 'text/plain' },
+  'server.d.ts': { source: new URL('server.d.ts', DIST), type: 'text/plain' },
   'themes/accessible.css': {
     source: new URL('themes/accessible.css', DIST),
     type: 'text/css'
