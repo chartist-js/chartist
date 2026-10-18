@@ -50,4 +50,4 @@
 
 ## 4. Gate
 
-- [ ] 4.1 Run the gate: `pnpm nx format:check --all`, `pnpm nx run-many -t lint typecheck test --skip-nx-cache`, `pnpm nx run docs:check`, `pnpm nx e2e docs`. Verify: all of them pass.
+- [x] 4.1 Run the gate: `pnpm nx format:check --all`, `pnpm nx run-many -t lint typecheck test --skip-nx-cache`, `pnpm nx run docs:check`, `pnpm nx e2e docs`. Verify: all of them pass.
