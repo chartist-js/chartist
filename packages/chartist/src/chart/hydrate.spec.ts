@@ -12,7 +12,7 @@ import {
 import { installFakeMatchContainer } from '../responsive/fakeContainer';
 import type { SceneNode } from '../scene/node';
 import { chart } from './chart';
-import { renderForHydration } from './renderForHydration';
+import { renderForHydration } from '../server/renderForHydration';
 
 const data = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],

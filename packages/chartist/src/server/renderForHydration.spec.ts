@@ -2,9 +2,9 @@
 import { barChartConfig } from '../presets/barChart';
 import { lineChartConfig } from '../presets/lineChart';
 import { pieChartConfig } from '../presets/pieChart';
-import { renderToString } from '../server/string';
+import { renderToString } from './string';
 import { renderForHydration } from './renderForHydration';
-import { toScene } from './toScene';
+import { toScene } from '../chart/toScene';
 
 const week = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],

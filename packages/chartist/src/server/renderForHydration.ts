@@ -1,14 +1,14 @@
 import { estimateText } from '../render/measure';
-import { renderToString } from '../server/string';
+import { renderToString } from './string';
 import { withFields, type AttrValue, type SceneNode } from '../scene/node';
 import {
   chartRootSize,
   HYDRATION_ATTRIBUTE,
   markedRoot,
   type HydrationMarker
-} from './hydration';
-import { buildScene, type SceneSize } from './toScene';
-import type { ChartConfig } from './types';
+} from '../chart/hydration';
+import { buildScene, type SceneSize } from '../chart/toScene';
+import type { ChartConfig } from '../chart/types';
 
 // The CSS properties SVG has presentation attributes for, without the
 // geometry properties (`x`, `r`, `d`), which only some elements take. A
