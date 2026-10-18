@@ -1,11 +1,7 @@
 import 'chartist/styles.css';
 import './style.css';
-import {
-  domRenderer,
-  lineChartConfig,
-  renderToString,
-  toScene
-} from 'chartist';
+import { domRenderer, lineChartConfig, toScene } from 'chartist';
+import { renderToString } from 'chartist/server';
 
 // The same code runs on a server: no DOM needed up to here.
 const scene = toScene(

@@ -96,22 +96,94 @@ window.result = {
 document.body.dataset.done = '';
 `;
 
+// Server markup in the served HTML, taken over with the live renderer at
+// the server's size: a line chart with HTML labels and a donut with
+// donutWidth. A classic script in the head listens for violations, so
+// the ones the parser reports for the markup count too.
+const { lineChartConfig, pieChartConfig } = await import(
+  path.join(pkgDir, 'dist/index.js')
+);
+const { renderForHydration } = await import(
+  path.join(pkgDir, 'dist/server.js')
+);
+const hydrateData = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [[1, 5, 3, 4, 2]]
+};
+const donutOptions = { donut: true, donutWidth: 20 };
+const hydratePage = `<!doctype html>
+<html><head><meta charset="utf-8">
+<script src="/csp/listen.js"></script>
+<link rel="stylesheet" href="/dist/index.css">
+<link rel="stylesheet" href="/csp/hydrate.css">
+</head><body>
+<div id="hline">${renderForHydration(lineChartConfig(hydrateData), {
+  width: 600,
+  height: 300
+})}</div>
+<div id="hdonut">${renderForHydration(
+  pieChartConfig({ series: [20, 10, 30] }, donutOptions),
+  { width: 300, height: 300 }
+)}</div>
+<script type="module" src="/csp/hydrate.js"></script>
+</body></html>`;
+
+const hydrateCss =
+  '#hline { width: 600px; height: 300px; } #hdonut { width: 300px; height: 300px; } svg { display: block; }';
+
+const listen = `window.violations = [];
+document.addEventListener('securitypolicyviolation', event =>
+  window.violations.push(event.violatedDirective + ': ' + (event.sample || event.blockedURI))
+);`;
+
+const hydrateScript = `
+const measure = () => ({
+  labels: [...document.querySelectorAll('#hline .ct-label')].map(element => {
+    const { x, y, width, height } = element.getBoundingClientRect();
+    return [x, y, width, height].map(Math.round);
+  }),
+  donut: [...document.querySelectorAll('#hdonut .ct-slice-donut')].map(
+    slice => getComputedStyle(slice).strokeWidth
+  )
+});
+const before = measure();
+const svgs = [...document.querySelectorAll('svg')];
+const { lineChart, pieChart } = await import('/dist/index.js');
+const { liveDomRenderer } = await import('/dist/live.js');
+const repaired = [];
+const on = { mount: ({ cause, hydration }) => { repaired.push(cause + ' ' + hydration?.repaired); } };
+const data = ${JSON.stringify(hydrateData)};
+lineChart('#hline', data, { renderer: liveDomRenderer(), on });
+pieChart('#hdonut', { series: [20, 10, 30] }, { ...${JSON.stringify(donutOptions)}, renderer: liveDomRenderer(), on });
+await new Promise(resolve => setTimeout(resolve, 300));
+window.result = {
+  violations: window.violations,
+  before,
+  after: measure(),
+  repaired,
+  kept: svgs.every(svg => svg.isConnected) && document.querySelectorAll('svg').length === 2
+};
+document.body.dataset.done = '';
+`;
+
 let browser;
 let reference;
+let hydrateReference;
 
 before(async () => {
   browser = await chromium.launch();
   reference = await run(POLICIES.none);
   assert.deepEqual(reference.errors, []);
   assert.equal(reference.charts, Object.keys(CASES).length);
+  hydrateReference = await run(POLICIES.none, '/hydrate');
 });
 
 after(async () => {
   await browser?.close();
 });
 
-/** Opens the cases page under a policy and returns what it measured. */
-async function run(policy) {
+/** Opens a page (the cases by default) under a policy and returns what it measured. */
+async function run(policy, pathname = '/') {
   const tab = await browser.newPage();
   const headers = policy ? { 'content-security-policy': policy } : {};
   await tab.route('**/*', async route => {
@@ -123,6 +195,19 @@ async function run(policy) {
       route.fulfill({ body, contentType, headers });
     if (url.pathname === '/') {
       return send(page, 'text/html');
+    }
+    if (url.pathname === '/hydrate') {
+      return send(hydratePage, 'text/html');
+    }
+    const generated = {
+      '/csp/listen.js': listen,
+      '/csp/hydrate.js': hydrateScript
+    }[url.pathname];
+    if (generated) {
+      return send(generated, 'text/javascript');
+    }
+    if (url.pathname === '/csp/hydrate.css') {
+      return send(hydrateCss, 'text/css');
     }
     if (url.pathname === '/csp/page.css') {
       return send(css, 'text/css');
@@ -143,7 +228,7 @@ async function run(policy) {
   });
   const pageErrors = [];
   tab.on('pageerror', error => pageErrors.push(error.message));
-  await tab.goto(`${ORIGIN}/`);
+  await tab.goto(`${ORIGIN}${pathname}`);
   // A selector, not waitForFunction: the policy blocks Playwright's eval.
   await tab.waitForSelector('body[data-done]', { state: 'attached' });
   const result = await tab.evaluate(() => window.result);
@@ -172,4 +257,25 @@ test('draws every chart where Trusted Types are required', async () => {
   assert.deepEqual(result.errors, []);
   assert.deepEqual(result.pageErrors, []);
   assert.equal(result.charts, Object.keys(CASES).length);
+});
+
+for (const name of ['strict', 'trustedTypes']) {
+  test(`takes server markup over without a violation (${name})`, async () => {
+    const result = await run(POLICIES[name], '/hydrate');
+    assert.deepEqual(result.violations, []);
+    assert.deepEqual(result.pageErrors, []);
+    assert.equal(result.kept, true);
+    assert.deepEqual(result.repaired, ['hydrate 0', 'hydrate 0']);
+  });
+}
+
+test('lays out server markup under the policy as without it, before and after the takeover', async () => {
+  const result = await run(POLICIES.strict, '/hydrate');
+  assert.ok(hydrateReference.before.labels.length > 0);
+  assert.deepEqual(result.before.labels, hydrateReference.before.labels);
+  assert.deepEqual(result.after.labels, hydrateReference.after.labels);
+  // Taking the markup over doesn't move the labels.
+  assert.deepEqual(result.after.labels, result.before.labels);
+  assert.deepEqual(result.before.donut, ['20px', '20px', '20px']);
+  assert.deepEqual(result.after.donut, ['20px', '20px', '20px']);
 });

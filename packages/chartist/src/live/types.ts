@@ -99,4 +99,10 @@ export interface LiveDomRendererOptions {
   readonly key?: ValueKey;
   /** Update animations, such as `smilAnimations()`; none by default. */
   readonly animations?: LiveAnimations;
+  /**
+   * Takes over markup from `renderForHydration()` in the chart's container
+   * and keeps its elements; `true` by default. With `false`, the chart
+   * draws a new svg over the server markup.
+   */
+  readonly adopt?: boolean;
 }

@@ -17,6 +17,7 @@ import {
   membersOf,
   pageOf,
   plainText,
+  reexportOf,
   typeTokens,
   type ApiEntry
 } from './api';
@@ -42,6 +43,10 @@ function problems(entry: ApiEntry): string[] {
   const found: string[] = [];
   const page = pageOf(entry.page);
   const legacy = page?.legacy || page?.compact;
+  if (entry.reexport !== undefined) {
+    // Described where it comes from.
+    return reexportOf(entry) ? [] : [`${entry.name}: re-exports nothing`];
+  }
   if (!described(entry.reflection)) {
     found.push(`${entry.name}: no description`);
   }
@@ -172,6 +177,9 @@ describe('API reference', () => {
       ),
       ...declaredExports('chartist/dist/live.d.ts').map(
         name => `chartist/live:${name}`
+      ),
+      ...declaredExports('chartist/dist/server.d.ts').map(
+        name => `chartist/server:${name}`
       )
     ].sort();
     const documented = ENTRIES.map(

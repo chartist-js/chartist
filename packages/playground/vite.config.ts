@@ -6,15 +6,17 @@ const chartistDir = fileURLToPath(new URL('../chartist/', import.meta.url));
 const LIB = 'lib/chartist/';
 const LIB_FILES: Record<string, string> = {
   'index.js': 'text/javascript',
-  // chartist/compat and chartist/live; they import ./index.js, so they
-  // share the core.
+  // chartist/compat, chartist/live and chartist/server; they import
+  // ./index.js, so they share the core.
   'compat.js': 'text/javascript',
   'live.js': 'text/javascript',
+  'server.js': 'text/javascript',
   'index.css': 'text/css',
   // Declarations for type-aware editing (types option).
   'index.d.ts': 'text/plain',
   'compat.d.ts': 'text/plain',
-  'live.d.ts': 'text/plain'
+  'live.d.ts': 'text/plain',
+  'server.d.ts': 'text/plain'
 };
 
 /**

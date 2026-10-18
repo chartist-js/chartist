@@ -2,7 +2,6 @@ export { applyAttribute, domRenderer, renderElement } from './dom';
 export type { DomRenderOutput, RenderElementOptions } from './dom';
 export { seriesColors } from './colors';
 export { estimateText, textAscent } from './measure';
-export { renderToString } from './string';
 export type {
   LabelMode,
   MeasureStyle,

@@ -8,6 +8,7 @@ import {
 } from 'chartist';
 import { compat } from 'chartist/compat';
 import { diffScenes, liveDomRenderer, smilAnimations } from 'chartist/live';
+import { renderForHydration } from 'chartist/server';
 import {
   LIVE_LIST_FILE,
   cjsNames,
@@ -118,6 +119,43 @@ describe('liveDomRenderer (v2)', () => {
     const svg = el.querySelector('svg');
     chart.update({ data: { series: [[2, 1]] } });
     expect(el.querySelector('svg')).toBe(svg);
+  });
+});
+
+describe('liveDomRenderer and renderForHydration (v2)', () => {
+  const data = { labels: ['a', 'b', 'c'], series: [[1, 3, 2]] };
+  // The fixture's svgs measure 500 × 500.
+  const server = () =>
+    renderForHydration(lineChartConfig(data), { width: 500, height: 500 });
+
+  test('a chart takes the server markup over and patches it', () => {
+    const el = container();
+    el.innerHTML = server();
+    const svg = el.querySelector('svg');
+    const points = Array.from(el.querySelectorAll('.ct-point'));
+    const mounts: PhaseEvents['mount'][] = [];
+    const chart = lineChart(el, data, {
+      renderer: liveDomRenderer(),
+      on: { mount: event => void mounts.push(event) }
+    });
+    expect(el.querySelector('svg')).toBe(svg);
+    expect(Array.from(el.querySelectorAll('.ct-point'))).toEqual(points);
+    expect(
+      mounts.map(({ cause, hydration }) => ({ cause, hydration }))
+    ).toEqual([{ cause: 'hydrate', hydration: { repaired: 0 } }]);
+    expect(svg!.hasAttribute('data-ct-hydrate')).toBe(false);
+    chart.update({ data: { ...data, series: [[2, 1, 3]] } });
+    expect(el.querySelector('svg')).toBe(svg);
+    expect(mounts.at(-1)!.cause).toBe('update');
+  });
+
+  test('adopt: false draws a new svg over the server markup', () => {
+    const el = container();
+    el.innerHTML = server();
+    const svg = el.querySelector('svg');
+    lineChart(el, data, { renderer: liveDomRenderer({ adopt: false }) });
+    expect(el.querySelectorAll('svg')).toHaveLength(1);
+    expect(el.querySelector('svg')).not.toBe(svg);
   });
 });
 

@@ -6,7 +6,8 @@
 import { encodeShare } from '@chartist/playground/share';
 import pluginFiles from '../data/plugin-files.json';
 
-// Served by integrations/playground-lib.mjs, with compat.js and live.js next to it.
+// Served by integrations/playground-lib.mjs, with compat.js, live.js and
+// server.js next to it.
 const LIB = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}playground-lib/`;
 /** Absolute URLs of the Chartist build and stylesheet for the sandbox. */
 export const chartistUrl = new URL(`${LIB}index.js`, location.href).href;

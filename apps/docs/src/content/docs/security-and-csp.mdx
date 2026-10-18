@@ -2,7 +2,7 @@
 title: Security and CSP
 description: Run Chartist on pages with a strict Content Security Policy or Trusted Types, and keep the data in your charts from injecting markup.
 group: Advanced
-order: 5
+order: 7
 ---
 
 import Callout from '../../components/docs/Callout.astro';
@@ -41,6 +41,10 @@ The [terminal package](../../packages/terminal/)'s stylesheet brings its own fon
   site size their containers with `style="height: 50vh"` for brevity; under a
   strict policy, move such sizes into your stylesheet.
 </Callout>
+
+## Server-rendered markup
+
+The two server outputs differ here. The self-contained SVG image from `renderToString()` carries `style` attributes. In a page, a strict style policy blocks every one of them and reports it as a violation, and the chart loses what they set, such as a donut's width. For a page with such a policy, render the chart with `renderForHydration()`. Its markup has no `style` attributes, looks the same with Chartist's stylesheet, and once the chart [takes it over](../ssr-hydration/), the chart sets its styles through `element.style` like every chart.
 
 ## Your data stays data
 

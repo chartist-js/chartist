@@ -5,11 +5,11 @@ import {
   findAll,
   lineChartConfig,
   pieChartConfig,
-  renderToString,
   seriesColors,
   textAscent,
   toScene
 } from 'chartist';
+import { renderForHydration, renderToString } from 'chartist/server';
 import { dotsLayer } from './layers.v2.ts';
 
 describe('server-side rendering (v2)', () => {
@@ -25,6 +25,21 @@ describe('server-side rendering (v2)', () => {
     expect(svg).toContain('width="600" height="300"');
     expect(svg.match(/<circle /g)).toHaveLength(2);
     expect(svg).toContain('ct:value="2"');
+  });
+
+  test('renderForHydration writes marked markup without a DOM or style attributes', () => {
+    expect(typeof document).toBe('undefined');
+    const markup = renderForHydration(
+      lineChartConfig({ labels: ['a', 'b'], series: [[1, 2]] }),
+      { width: 600, height: 300 }
+    );
+    expect(markup).toMatch(/^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
+    expect(markup).toContain(
+      'width="100%" height="100%" viewBox="0 0 600 300"'
+    );
+    expect(markup).toContain('data-ct-hydrate="{&quot;v&quot;:1,');
+    expect(markup).toContain('<foreignObject');
+    expect(markup).not.toMatch(/\sstyle=/);
   });
 
   test('equal inputs give equal output', () => {

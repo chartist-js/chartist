@@ -167,7 +167,8 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
  * inline size style of the root svg are left out; both need a container.
  * @example
  * ```ts
- * import { lineChartConfig, renderToString, toScene } from 'chartist';
+ * import { lineChartConfig } from 'chartist';
+ * import { renderToString, toScene } from 'chartist/server';
  *
  * const config = lineChartConfig(
  *   { labels: ['Mon', 'Tue', 'Wed'], series: [[5, 2, 4]] },

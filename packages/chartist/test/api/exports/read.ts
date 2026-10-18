@@ -29,6 +29,7 @@ export interface ExportList {
 export const LIST_FILE = path.join(exportsDir, 'chartist.json');
 export const COMPAT_LIST_FILE = path.join(exportsDir, 'compat.json');
 export const LIVE_LIST_FILE = path.join(exportsDir, 'live.json');
+export const SERVER_LIST_FILE = path.join(exportsDir, 'server.json');
 export const DEPRECATED_FILE = path.join(exportsDir, 'deprecated.json');
 export const EXPERIMENTAL_FILE = path.join(exportsDir, 'experimental.json');
 

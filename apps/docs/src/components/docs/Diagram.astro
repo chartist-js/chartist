@@ -1,0 +1,23 @@
+---
+/**
+ * A Mermaid diagram, rendered during the build (src/lib/diagrams/) and put
+ * into the page as inline SVG, so the site's CSS styles it in both themes.
+ * `source` is the diagram's text, imported with `?raw` from
+ * src/diagrams/<page>/<name>.mmd; `caption` is shown under it.
+ */
+import { root } from 'astro:config/server';
+import { renderDiagram } from '../../lib/diagrams/render';
+
+interface Props {
+  source: string;
+  caption?: string;
+}
+
+const { source, caption } = Astro.props;
+const { svg } = await renderDiagram(source, { root, page: Astro.url.pathname });
+---
+
+<figure class="diagram">
+  <Fragment set:html={svg} />
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>

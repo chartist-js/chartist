@@ -1,5 +1,4 @@
-import { escapingMap, namespaces } from '../core/constants';
-import type { SceneNode } from '../scene/node';
+import { escapingMap, namespaces, type SceneNode } from '../index';
 
 const escape = (value: string | number) =>
   String(value).replace(/[&<>"']/g, char => escapingMap[char]);
@@ -43,14 +42,23 @@ function attributes(current: SceneNode, position: Position) {
   return parts.length ? ` ${parts.join(' ')}` : '';
 }
 
-function serialize(current: SceneNode, position: Position): string {
+function serialize(
+  current: SceneNode,
+  position: Position,
+  html = false
+): string {
   const open = `<${checked(current.name, 'element')}${attributes(current, position)}`;
+  const inner = html || current.name === 'foreignObject';
   const childPosition: Position =
     current.name === 'foreignObject' ? 'html-root' : 'other';
   const content =
     (current.content === undefined ? '' : escape(current.content)) +
-    current.children.map(child => serialize(child, childPosition)).join('');
-  return content ? `${open}>${content}</${current.name}>` : `${open}/>`;
+    current.children
+      .map(child => serialize(child, childPosition, inner))
+      .join('');
+  // The HTML parser ignores `/>` on HTML elements, so an empty one (a
+  // label) would stay open and take in what follows: close them all.
+  return content || html ? `${open}>${content}</${current.name}>` : `${open}/>`;
 }
 
 /**
@@ -62,11 +70,14 @@ function serialize(current: SceneNode, position: Position): string {
  * `chartist/styles.css` where it's shown, or add a `style` element to the
  * scene.
  *
+ * @experimental New in `chartist/server` with 2.1: the server API may still
+ *   change in a 2.x minor before it becomes stable.
  * @param scene A scene, usually from `toScene()`
  * @returns The SVG markup, e.g. `<svg xmlns="…" …>…</svg>`
  * @example
  * ```ts
- * import { lineChartConfig, renderToString, toScene } from 'chartist';
+ * import { lineChartConfig } from 'chartist';
+ * import { renderToString, toScene } from 'chartist/server';
  *
  * export function weekChart(values: number[]): string {
  *   const scene = toScene(

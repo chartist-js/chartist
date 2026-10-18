@@ -20,6 +20,7 @@
 @import './api.css' layer(components);
 @import './search.css' layer(components);
 @import './mascot.css' layer(components);
+@import './diagrams.css' layer(components);
 @import './motion.css' layer(components);
 @import './live.css' layer(components);
 @import 'tailwindcss/utilities.css' layer(utilities);

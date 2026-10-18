@@ -62,6 +62,9 @@ for (const transformer of ['sucrase', 'ts-blank-space'] as TransformerName[]) {
       expect(importMap(doc)['chartist/live']).toBe(
         `${BASE}lib/chartist/live.js`
       );
+      expect(importMap(doc)['chartist/server']).toBe(
+        `${BASE}lib/chartist/server.js`
+      );
       expect(
         doc.indexOf('<script type="importmap">') <
           doc.indexOf('<script type="module">')

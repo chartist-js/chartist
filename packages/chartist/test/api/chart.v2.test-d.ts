@@ -3,7 +3,6 @@ import {
   findAll,
   mapNodes,
   node,
-  renderToString,
   toScene,
   type ChartConfig,
   type ChartHandle,
@@ -11,6 +10,7 @@ import {
   type DomRenderOutput,
   type Keyframes,
   type Layer,
+  type LabelMode,
   type RenderCause,
   type Renderer,
   type SceneChange,
@@ -21,6 +21,8 @@ import {
   lineChart,
   domRenderer
 } from 'chartist';
+import { liveDomRenderer, type LiveDomRendererOptions } from 'chartist/live';
+import { renderToString } from 'chartist/server';
 
 declare const layer: Layer;
 
@@ -122,6 +124,66 @@ describe('render lifecycle types (v2)', () => {
       return () => undefined;
     });
     handle.on('mount', () => handle.detach());
+  });
+
+  test('render and mount carry what a hydrate render repaired', () => {
+    const handle = chart('#c', { data: { series: [] }, layers: [layer] });
+    handle.on('mount', ({ cause, hydration }) => {
+      expectTypeOf(hydration).toEqualTypeOf<
+        { readonly repaired: number } | undefined
+      >();
+      if (cause === 'hydrate') {
+        expectTypeOf(hydration?.repaired).toEqualTypeOf<number | undefined>();
+      }
+    });
+    handle.on('render', ({ hydration }) => {
+      expectTypeOf(hydration?.repaired).toEqualTypeOf<number | undefined>();
+    });
+  });
+
+  test('renderers may adopt markup, or not', () => {
+    const dom = domRenderer();
+    // Without adopt, as before.
+    const plain: Renderer<DomRenderOutput> = { ...dom };
+    expectTypeOf(plain.adopt).toEqualTypeOf<
+      | ((
+          container: Element,
+          replay: (layout: {
+            readonly width: number;
+            readonly height: number;
+            readonly labels: LabelMode;
+          }) => SceneNode
+        ) => (DomRenderOutput & { readonly repaired: number }) | undefined)
+      | undefined
+    >();
+    const adopting: Renderer<DomRenderOutput> = {
+      ...dom,
+      adopt: (container, replay) => {
+        expectTypeOf(container).toEqualTypeOf<Element>();
+        const svg = container.querySelector('svg')!;
+        const scene = replay({ width: 600, height: 300, labels: 'html' });
+        expectTypeOf(scene).toEqualTypeOf<SceneNode>();
+        return {
+          svg,
+          elementOf: () => undefined,
+          remove: () => svg.remove(),
+          repaired: 0
+        };
+      }
+    };
+    // @ts-expect-error adopt returns the output with repaired
+    const missing: Renderer = { ...dom, adopt: () => ({}) };
+    lineChart('#c', { series: [[1]] }, { renderer: adopting });
+    lineChart('#c', { series: [[1]] }, { renderer: missing });
+  });
+
+  test('the live renderer adopts, unless adopt is false', () => {
+    expectTypeOf<LiveDomRendererOptions['adopt']>().toEqualTypeOf<
+      boolean | undefined
+    >();
+    const renderer = liveDomRenderer({ adopt: false });
+    expectTypeOf(renderer).toEqualTypeOf<Renderer<DomRenderOutput>>();
+    lineChart('#c', { series: [[1]] }, { renderer });
   });
 
   test('plugins may return a cleanup from install and give keyframes', () => {

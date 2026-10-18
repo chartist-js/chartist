@@ -229,6 +229,14 @@
     display: flex;
   }
 
+  // A label span fills its foreignObject, the label's box. Charts drawn in
+  // the page size their spans with inline styles; markup without them
+  // (from renderForHydration()) gets the same box from here.
+  foreignObject > .#{$ct-class-label} {
+    width: 100%;
+    height: 100%;
+  }
+
   .#{$ct-class-chart-pie} .#{$ct-class-label},
   .#{$ct-class-chart-donut} .#{$ct-class-label} {
     dominant-baseline: central;
@@ -310,6 +318,12 @@
   }
 
   .#{$ct-class-slice-donut} {
+    fill: none;
+  }
+
+  // Not over a slice's stroke-width attribute, which markup without inline
+  // styles has for donutWidth. :where() keeps the single-class specificity.
+  .#{$ct-class-slice-donut}:not(:where([stroke-width])) {
     @include ct-chart-donut($ct-donut-width);
   }
 

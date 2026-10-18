@@ -8,20 +8,25 @@ Defines how a chart's scene becomes output through interchangeable renderers, an
 
 ### Requirement: DOM SVG renderer is the default
 
-When no renderer is configured and a container element is given, a chart SHALL render its scene as inline SVG into that container using the DOM SVG renderer. A previous Chartist SVG in that container is replaced, as in 1.x.
+When no renderer is configured and a container element is given, a chart SHALL render its scene as inline SVG into that container using the DOM SVG renderer. A previous Chartist SVG in that container is replaced, as in 1.x. That SHALL include a Chartist SVG the browser parsed from HTML, such as server-rendered markup, where the HTML parser leaves the `xmlns:ct` declaration as a plain attribute.
 
 #### Scenario: Default rendering
 
 - **WHEN** `lineChart('#chart', data)` is called in a browser
 - **THEN** an `svg` element with the Chartist namespace attribute is rendered inside `#chart`
 
+#### Scenario: Replacing server-rendered markup
+
+- **WHEN** a container holds the `renderToString()` markup of a chart, parsed as HTML, and `lineChart()` draws into it with the DOM renderer
+- **THEN** the container holds one svg, the new chart
+
 ### Requirement: SVG string rendering
 
-Chartist SHALL render a chart to a standalone SVG markup string without a DOM. Width and height are given explicitly.
+Chartist SHALL render a chart to a standalone SVG markup string without a DOM, with `renderToString()` from `chartist/server`. Width and height are given explicitly.
 
 #### Scenario: Server-side rendering
 
-- **WHEN** a line chart is rendered to a string in Node.js with width 600 and height 300
+- **WHEN** a line chart is rendered to a string in Node.js with width 600 and height 300, with `toScene()` and `renderToString()` from `chartist/server`
 - **THEN** the result is valid SVG markup with `width="600"` and `height="300"` that contains the series paths, and no `window` or `document` access happens
 
 ### Requirement: No global environment access in the core
@@ -237,3 +242,31 @@ Chartist SHALL export `renderElement(node, document)`, which creates the element
 
 - **WHEN** `applyAttribute()` sets `ct:value` and `style` on an existing point element
 - **THEN** `ct:value` is in the Chartist namespace, and the style was applied through the CSSOM
+
+### Requirement: Closed HTML elements in string output
+
+`renderToString()` SHALL write HTML elements inside a `foreignObject` with an explicit end tag, also when they're empty, so the markup parses to the same elements as XML and as HTML. SVG elements without content MAY stay self-closing.
+
+#### Scenario: An empty label in an HTML page
+
+- **WHEN** a line chart with the labels `Mon`, an empty string and `Wed` is rendered with `renderToString()` and HTML labels, and placed in a page before a paragraph
+- **THEN** the page parses with the paragraph after the chart's container, not inside a label
+
+#### Scenario: XML stays the same
+
+- **WHEN** that markup is parsed as XML
+- **THEN** it has the same elements and attributes as before this change
+
+### Requirement: Renderers may adopt markup
+
+A renderer MAY provide `adopt(container, replay)`: it takes over server markup in the container, instead of rendering, builds the scene for the layout the markup records with the chart's `replay`, and returns its output, or nothing when there's no markup or it doesn't match the scene. The output SHALL tell how many differences it repaired. A chart SHALL use it only to take over server markup, as the hydration capability defines. Renderers without it SHALL keep working unchanged.
+
+#### Scenario: A custom renderer without adopt
+
+- **WHEN** a chart with a custom renderer that has no `adopt` draws into a container with hydration markup
+- **THEN** the renderer's `render()` is called as on a first render, with no previous render
+
+#### Scenario: A renderer that declines
+
+- **WHEN** a renderer's `adopt` returns nothing for the server's svg
+- **THEN** the chart renders with the renderer's `render()` as on a first render

@@ -1,0 +1,15 @@
+flowchart TD
+  accTitle: From the server's markup to a live chart
+  accDescr: On the server, the chart's config goes through renderForHydration(), which gives marked markup at the server's size. In the browser, the page shows that markup scaled to its container before any script runs. lineChart() with liveDomRenderer() then takes the markup over in a render with the cause hydrate, keeping the server's elements. When the container's size differs from the server's, a render with the cause resize lays the chart out at the container's size.
+
+  subgraph server [On the server]
+    config[The chart's config] --> markup["renderForHydration()"]:::code
+  end
+
+  markup -->|markup at the server's size| shown
+
+  subgraph browser [In the browser]
+    shown[The page shows the markup, scaled] --> chart["lineChart() with liveDomRenderer()"]:::code
+    chart --> hydrate(["render: hydrate<br>keeps the server's elements"]):::accent
+    hydrate -->|if the size differs| resize(["render: resize<br>at the container's size"])
+  end

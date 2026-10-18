@@ -19,6 +19,8 @@ export interface Declarations {
   readonly compat?: string;
   /** `live.d.ts` (it imports `./index.js`). */
   readonly live?: string;
+  /** `server.d.ts` (it imports `./index.js`). */
+  readonly server?: string;
   /** Other packages' `index.d.ts` by bare name, e.g. `@chartist-js/terminal`. */
   readonly packages?: Readonly<Record<string, string>>;
 }
@@ -114,7 +116,8 @@ export function createProject(options: ProjectOptions): Project {
         exports: {
           '.': { types: './index.d.ts' },
           './compat': { types: './compat.d.ts' },
-          './live': { types: './live.d.ts' }
+          './live': { types: './live.d.ts' },
+          './server': { types: './server.d.ts' }
         }
       })
     );
@@ -124,6 +127,9 @@ export function createProject(options: ProjectOptions): Project {
     }
     if (declarations.live) {
       fixed.set(`${CHARTIST}live.d.ts`, declarations.live);
+    }
+    if (declarations.server) {
+      fixed.set(`${CHARTIST}server.d.ts`, declarations.server);
     }
   }
   // Other packages, e.g. @chartist-js/terminal; they import `chartist`.

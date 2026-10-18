@@ -37,6 +37,7 @@
     "esbuild": "0.28.2",
     "highcharts": "13.1.1",
     "match-container": "0.1.4",
+    "mermaid": "12.2.0",
     "pagefind": "1.5.2",
     "pixelmatch": "7.2.0",
     "pngjs": "7.0.0",

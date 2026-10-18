@@ -12,7 +12,8 @@
     "paths": {
       "chartist": ["../../dist/index.d.ts"],
       "chartist/compat": ["../../dist/compat.d.ts"],
-      "chartist/live": ["../../dist/live.d.ts"]
+      "chartist/live": ["../../dist/live.d.ts"],
+      "chartist/server": ["../../dist/server.d.ts"]
     },
     "allowImportingTsExtensions": true
   },

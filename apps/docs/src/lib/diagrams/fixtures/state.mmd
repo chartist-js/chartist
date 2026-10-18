@@ -1,0 +1,10 @@
+stateDiagram-v2
+  accTitle: A state diagram fixture
+  accDescr: Every state element the diagram styles cover: start and end states, a composite state and labeled transitions.
+  [*] --> Markup
+  Markup --> Live: hydrate
+  state Live {
+    [*] --> Drawn
+    Drawn --> Drawn: update
+  }
+  Live --> [*]: detach

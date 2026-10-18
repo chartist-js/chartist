@@ -32,8 +32,9 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm nx run-many -t lint check test build -p docs
+      # Before the build: it renders the diagrams in Playwright's Chromium.
       - run: pnpm --dir apps/docs exec playwright install --with-deps chromium
+      - run: pnpm nx run-many -t lint check test build -p docs
       - run: pnpm nx run docs:e2e
         env:
           CI: 'true'

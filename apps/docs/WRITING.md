@@ -83,6 +83,29 @@ import Step from '../../components/docs/Step.astro';
 - **`LiveExample`**: a Vite-shaped project shown as code with a live chart; readers press Edit to change it in place. The project lives in real files, `src/examples/<page-slug>/<example>/` with `index.html`, `src/main.ts` and optionally `src/style.css` (imported from `main.ts`), so it's formatted and type-checked like code. (Don't put project files in MDX strings: the formatter strips their indentation.) Pass `example="<page-slug>/<example>"`, `title`, `label` (the chart's accessible name), `preview` (`{ type, data, options }` for the static chart drawn before editing; `type` is `line`, `bar`, `pie` or `composed`) and `files`. `show` picks the file shown before editing (default `src/main.ts`), and `previewStyle` gives the preview the custom properties your CSS sets. Keep `preview` in sync with the code. See `getting-started.mdx` and `styling-with-css.mdx`.
 - **`Callout`**: `kind="tip"` for shortcuts, `kind="info"` (default) for context, `kind="warn"` for experimental features and pitfalls. Bold the first words as a lead-in.
 - **`Step`**: numbered steps for a procedure (Getting started). Rare elsewhere.
+- **`Diagram`**: a Mermaid diagram; see [Diagrams](#diagrams).
+
+## Diagrams
+
+A diagram helps where the text describes a flow: steps that hand something on, two sides that talk to each other, states a chart moves through. If a sentence or a list says it as clearly, leave the diagram out; never draw what a chart or a code sample already shows.
+
+Diagrams are [Mermaid](https://mermaid.js.org/) sources, one per file, in `src/diagrams/<page-slug>/<name>.mmd`. A page imports the source as text and passes it to `Diagram`:
+
+```mdx
+import Diagram from '../../components/docs/Diagram.astro';
+import flow from '../../diagrams/ssr-hydration/flow.mmd?raw';
+
+<Diagram source={flow} caption="From the server's markup to a live chart." />
+```
+
+The build renders it to inline SVG (no Mermaid script in the browser), and `src/styles/diagrams.css` draws it with the tokens in both themes. The dev server renders it again when you save the source. The renderer reads `diagrams.css` once, since its font sizes change the layout: restart the dev server after changing them.
+
+- **`accTitle` and `accDescr` are required**: the title names the diagram for screen readers, the description says in a few sentences what the diagram shows. A source without them fails the build.
+- **Top-down** (`flowchart TD`) for anything wider than a few nodes: a diagram scales down to the column, and a wide one gets small text on phones.
+- **Emphasis by class**: `brand`, `accent`, `muted` or `code` (`hydrate([hydrate]):::accent`, `code` for a function or option name). Don't write colors with `style` or `classDef`: the build fails on a color without a token.
+- **Covered types**: flowcharts (with subgraphs), sequence diagrams and state diagrams are styled fully; other types get the site's colors and fonts only. Use a `caption` instead of Mermaid's `title`.
+- **A new machine**: the build renders in Playwright's Chromium. Install it once with `pnpm --dir apps/docs exec playwright install chromium`. Rendered diagrams are cached in `apps/docs/.cache/diagrams/`, so unchanged ones don't start the browser.
+- `?raw` is Vite's text import. Once Vite supports `with { type: 'text' }`, that replaces it.
 
 ## Code
 

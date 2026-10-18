@@ -110,7 +110,7 @@ The names marked deprecated in each entry's declaration files SHALL be compared 
 
 ### Requirement: Experimental names are recorded
 
-The names marked `@experimental` in each entry's declaration files SHALL be compared against a checked-in list, the same way as the deprecated names. Marking or unmarking a name SHALL require updating the list. From 2.0.0 on, the list SHALL hold only the exports of `chartist/live` and the container query names of `chartist` (`container`, `ContainerCondition`); every other export of `chartist`, `chartist/compat` and `@chartist-js/terminal` is stable and SHALL NOT be marked experimental.
+The names marked `@experimental` in each entry's declaration files SHALL be compared against a checked-in list, the same way as the deprecated names. Marking or unmarking a name SHALL require updating the list. From 2.0.0 on, the list SHALL hold only the exports of `chartist/live`, the container query names of `chartist` (`container`, `ContainerCondition`) and the server API of `chartist/server` (`renderToString`, `renderForHydration`, `computeStyles`, `applyStyles` and their types); every other export of `chartist`, `chartist/compat`, `chartist/server` (the re-exported `toScene` and `SceneSize`) and `@chartist-js/terminal` is stable and SHALL NOT be marked experimental.
 
 #### Scenario: Stable core
 
@@ -126,6 +126,11 @@ The names marked `@experimental` in each entry's declaration files SHALL be comp
 
 - **WHEN** the API tests read the declarations of `chartist/live`
 - **THEN** `liveDomRenderer`, `smilAnimations`, `diffScenes` and their option types are marked experimental, as the list records
+
+#### Scenario: The server API is experimental
+
+- **WHEN** the API tests read the declarations of `chartist/server`
+- **THEN** `renderToString`, `renderForHydration`, `computeStyles`, `applyStyles` and their types are marked experimental, and `toScene` and `SceneSize` are not, as the list records
 
 #### Scenario: Terminal
 

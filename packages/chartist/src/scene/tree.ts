@@ -85,7 +85,8 @@ export function findAll(scene: SceneNode, query: NodeQuery = {}): SceneNode[] {
  * @returns The mapped tree, or `null` if the mapper dropped the root
  * @example
  * ```ts
- * import { lineChartConfig, mapNodes, renderToString, toScene } from 'chartist';
+ * import { lineChartConfig, mapNodes } from 'chartist';
+ * import { renderToString, toScene } from 'chartist/server';
  *
  * const scene = toScene(
  *   lineChartConfig({ labels: ['Mon', 'Tue', 'Wed'], series: [[1, 3, 2]] }),

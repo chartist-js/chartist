@@ -5,7 +5,7 @@ import { targetLine } from '../src/layers/targetLine';
 import { barChart, barChartConfig } from '../src/presets/barChart';
 import { lineChart, lineChartConfig } from '../src/presets/lineChart';
 import { pieChart, pieChartConfig } from '../src/presets/pieChart';
-import { renderToString } from '../src/render/string';
+import { renderToString } from '../src/server/string';
 import { carries, injected, payloads } from './payloads';
 
 // Chart data must stay data in every output: payloads in each field come

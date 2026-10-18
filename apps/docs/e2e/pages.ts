@@ -58,6 +58,8 @@ const A11Y_TEMPLATES = new Set([
   'home',
   'docs/getting-started',
   'docs/composed-charts',
+  // A diagram (src/diagrams/).
+  'docs/ssr-hydration',
   'packages',
   'packages/terminal',
   'packages/terminal/api',

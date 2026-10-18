@@ -2,13 +2,16 @@ import type { AttrValue, SceneNode } from '../scene/node';
 import type { LabelMode, MeasureStyle, MeasureText } from './measure';
 
 /**
- * Why a chart rendered: `create` for its first render, `update` for
- * `update()` (and the presets' `setOptions()`), `resize` when its
- * container's size changed, `responsive` when its matching `responsive`
- * entries changed, `fonts` when web fonts finished loading.
+ * Why a chart rendered: `create` for its first render, `hydrate` for the
+ * first render of a chart that took server markup over (see
+ * `renderForHydration()`), `update` for `update()` (and the presets'
+ * `setOptions()`), `resize` when its container's size changed,
+ * `responsive` when its matching `responsive` entries changed, `fonts`
+ * when web fonts finished loading.
  */
 export type RenderCause =
   | 'create'
+  | 'hydrate'
   | 'update'
   | 'resize'
   | 'responsive'
@@ -106,7 +109,9 @@ export interface RenderOutput {
  * Turns a scene into output. `chart()` renders inline SVG into its
  * container with the DOM renderer, unless its config sets a `renderer`.
  * To get markup instead, without a DOM, use `toScene()` and
- * {@link renderToString}.
+ * `renderToString()` from `chartist/server`. A renderer that wraps another
+ * one keeps its `adopt` only if it passes it on, as spreading the wrapped
+ * renderer does.
  */
 export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   /**
@@ -137,4 +142,30 @@ export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   readonly measureStyle?: MeasureStyle;
   /** The default label mode of this renderer; `html` if omitted. */
   readonly labels?: LabelMode;
+  /**
+   * Takes over markup from `renderForHydration()` in the chart's container,
+   * instead of rendering: finds it and reads the layout its marker
+   * records, gets the scene for that layout from `replay`, binds the
+   * scene's nodes to the markup's elements and makes them what `render()`
+   * would draw. A chart calls it once, before its first render, unless it
+   * always draws a new svg; later renders go through `render()`, with the
+   * adopted output as the previous one. Returns nothing when there's no
+   * markup to take over or it doesn't match the scene, and the chart then
+   * renders as usual. `liveDomRenderer()` from `chartist/live` has it; the
+   * DOM renderer doesn't, since it replaces its svg on every render.
+   * @param container The chart's container element
+   * @param replay Builds the chart's scene at the server's layout size and
+   *   label mode, with the plugins and listeners of the chart, as `render`
+   *   and `mount` then get it
+   * @returns The output, with the number of attributes, classes and texts
+   *   that differed and were set as `repaired`; or nothing
+   */
+  adopt?(
+    container: Element,
+    replay: (layout: {
+      readonly width: number;
+      readonly height: number;
+      readonly labels: LabelMode;
+    }) => SceneNode
+  ): (TOutput & { readonly repaired: number }) | undefined;
 }
