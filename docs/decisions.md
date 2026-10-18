@@ -51,7 +51,7 @@ The `chartist` package ships, under `dist/` and through its `exports` map:
 - a CommonJS build (`index.cjs`) that loads in Node without a DOM;
 - type declarations for both module systems (`.d.ts`, `.d.cts`);
 - compiled CSS (`chartist/styles.css`), the opt-in accessible theme (`chartist/themes/accessible.css`) and the Sass sources (`chartist/scss/…`);
-- `chartist/compat` in every format.
+- `chartist/compat`, `chartist/live` and `chartist/server` in every format, each importing the core instead of bundling a copy.
 
 Every 1.x import path keeps resolving.
 
@@ -99,6 +99,7 @@ Decided 2026-10-16. The functional API's names and surface are final as they are
   - #940 series class names without letters, once its API is designed;
   - opt-in options for behavior that would break as a default: #921 closing grid line, #304 axes sized to their labels, #1271 dropping overlapping labels;
   - the other open feature requests.
+- **One exception to additive minors** (decided 2026-10-18): 2.1 moves `renderToString()` from `chartist` to the new `chartist/server`, without a deprecated re-export. 2.0.0 was a day old, the fix is one import path, and every full browser build (`index.min.js`, UMD, CDN links) gets about 1.1 kB smaller for good; a re-export would have kept those bytes until 3.0. It ships as a manual `2.1.0` release, with the move in the changelog's breaking section. Additive minors stay the rule.
 - **Bars stay lines** (#522): the presets keep the 1.x `<line>` markup, and so does `bar()`. Bars with a fill and a stroke are a plugin's job, not a later core change.
 
 ## Live updates
@@ -119,7 +120,7 @@ Decided 2026-10-16 and 2026-10-17 (#3, #961).
 
 Decided 2026-10-18.
 
-- **Server markup is taken over, not drawn again.** `renderForHydration()` renders markup that `chart()` and the presets take over in the browser: the elements stay, so CSS animations that started with the page continue, a lazily loaded Chartist leaves no blank frame, and LCP stays at first paint. A proof of concept in Next.js, Nuxt, Angular and SvelteKit showed it needs no framework-specific code in Chartist.
+- **Server markup is taken over, not drawn again.** `renderForHydration()` (from `chartist/server`) renders markup that `chart()` and the presets take over in the browser: the elements stay, so CSS animations that started with the page continue, a lazily loaded Chartist leaves no blank frame, and LCP stays at first paint. A proof of concept in Next.js, Nuxt, Angular and SvelteKit showed it needs no framework-specific code in Chartist.
 - **Two server outputs.** `toScene()` + `renderToString()` stay the self-contained SVG image, with inline styles, for files, PDFs and email. Hydration markup has no `style` attributes: what SVG can express becomes presentation attributes, the stylesheet sizes label spans, and the rest is applied at the takeover. So it passes `style-src 'self'`, and the page needs Chartist's stylesheet.
 - **Adoption is a renderer capability, in `chartist/live`.** `Renderer.adopt(container, replay)` finds the marked svg and reads its marker; the core only replays the server's scene (the config without responsive overrides, the recorded size and label mode, the text estimate) and runs `render` and `mount` with the cause `hydrate`. The DOM renderer doesn't adopt, since it replaces its svg on every render. Keeping the marker lookup out of the core kept `lineChart` at +0.295 kB gzipped; with it in the core, it was +0.58 kB.
 - **The correction is a `resize`.** After the `hydrate` mount, the chart lays out at the container's real size through the normal path; when the live renderer patched nothing, the chart emits nothing, so at the server's size there's one mount. That relayout isn't animated.
@@ -127,6 +128,15 @@ Decided 2026-10-18.
 - **A warning when other code replaced the svg,** checked at the start of each render: every framework's raw-HTML feature writes server markup again in some situation, which silently broke live updates.
 - **Recipes, not wrapper packages.** The "Charts in frameworks" guide gives the rule (render the markup once, create the chart after hydration, update through the handle, destroy on unmount) and recipes for React, Vue, Angular and Svelte. A web component, the standing plan for framework support, would build on the same contract.
 - **The server can't know the reader's width,** so the docs explain choosing one size (the most common container width) and what client hints or a cookie leave. The landing page's hero chart is rendered at build time at the board's desktop size, as the site's own test of the feature.
+
+## Server rendering
+
+Decided 2026-10-18.
+
+- **Its own entry point, `chartist/server`,** for what turns charts into markup: `renderToString()`, `renderForHydration()`, `computeStyles()` and `applyStyles()`, experimental from 2.1 on. Built like `chartist/live`, it imports the core instead of bundling it. Server code never needed the serializer in every browser bundle.
+- **`toScene()` stays in the core,** and `chartist/server` re-exports it. It runs on the pipeline's internals, which the core doesn't export, so moving it would have meant a second pipeline in `chartist/server` or exported internals, for 0.16 kB. It's browser code too: `diffScenes()`, the terminal package, `domRenderer().render(scene)`.
+- **Styles for SVG on its own are written as attributes.** Rasterizers and PDF tools ignore custom properties and `light-dark()`, which Chartist's stylesheet colors series with, and a series' color depends on the group a line is in. So styles are computed per element and written as presentation attributes, not copied into a `<style>` element.
+- **A small CSS engine, and a seam for a full one.** `computeStyles()` reads what chart styles use (classes, descendant and child selectors, `:root`, the cascade, custom properties, `light-dark()`, `prefers-color-scheme`) and reports what it leaves out through `onSkip`. A complete CSS engine needs a browser, so `applyStyles()` takes the computed styles of any engine; the guide shows one that uses headless Chromium. The limits are documented instead of growing the engine.
 
 ## Releases
 
@@ -149,6 +159,7 @@ The workflows and settings are specified in the `release-process` and `continuou
 - **`/v1/`** holds the 1.x docs as the static output of their last Docusaurus build; no Docusaurus stack is kept. Old 1.x URLs that v2 doesn't have redirect there.
 - **`/v0/`** holds the 0.x docs, copied from the last build on the `gh-pages` branch of `gionkunz/chartist-js` without the affiliate block, the analytics and the version pop-up, and with self-hosted fonts, so they make no requests to other hosts. The version switcher and the footer link both archives.
 - **The old 0.x site** (https://gionkunz.github.io/chartist-js/) redirects to chartist.dev with a page per old page: canonical link, script and instant meta refresh, since GitHub Pages can't send HTTP redirects. A page without a `#hash` goes to its v2 counterpart, an anchor v2 covers to that page, any other anchor to the same place under `/v0/`. `docs:v0-redirects` checks the targets against the build and writes the pages; a renamed v2 page or heading means running it again and pushing the result to that `gh-pages` branch.
+- **Diagrams are Mermaid,** written as `.mmd` files next to the docs, imported with `?raw` and shown with a `Diagram` component (decided 2026-10-18). They're rendered to SVG during the docs build, in Playwright's Chromium, since Mermaid measures text with a browser's layout engine and Node has none; a cache keeps rebuilds fast, and the docs workflow installs Chromium before it builds. Mermaid's own styles are removed: the site's tokens style the diagrams, so one inline SVG follows light and dark mode. Pages load no Mermaid script. `with { type: 'text' }` replaces `?raw` once Vite supports it.
 - **Visitor counting:** GoatCounter (`chartist.goatcounter.com`), cookieless, so no consent banner. It loads only on chartist.dev, so dev, tests, previews and forks never request it, and it's the one exception to "no third-party requests" (fonts and assets are self-hosted). The `/v1/` archive isn't counted.
 
 ## Test strategy

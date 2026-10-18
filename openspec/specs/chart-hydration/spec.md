@@ -8,7 +8,7 @@ Defines how a chart rendered to markup on a server is taken over in the browser:
 
 ### Requirement: Hydration markup
 
-Chartist SHALL export `renderForHydration(config, size)`. It builds the chart's scene without a DOM, as `toScene()` does, with the size's `width`, `height`, optional `measureText` and optional `labels`, and returns markup for the browser to take over. In that markup, the root SHALL:
+`chartist/server` SHALL export `renderForHydration(config, size)`; `chartist` SHALL NOT. It builds the chart's scene without a DOM, as `toScene()` does, with the size's `width`, `height`, optional `measureText` and optional `labels`, and returns markup for the browser to take over. In that markup, the root SHALL:
 
 - carry a `data-ct-hydrate` attribute with what the browser needs to build the same scene again: the layout width and height, the label mode, whether text was measured with the built-in estimate or a custom `measureText`, and whether the root got a scaling `viewBox`;
 - have the `width` and `height` that `chart()` gives the root for the same config (`100%` unless the config sets a size);

@@ -22,11 +22,11 @@ When no renderer is configured and a container element is given, a chart SHALL r
 
 ### Requirement: SVG string rendering
 
-Chartist SHALL render a chart to a standalone SVG markup string without a DOM. Width and height are given explicitly.
+Chartist SHALL render a chart to a standalone SVG markup string without a DOM, with `renderToString()` from `chartist/server`. Width and height are given explicitly.
 
 #### Scenario: Server-side rendering
 
-- **WHEN** a line chart is rendered to a string in Node.js with width 600 and height 300
+- **WHEN** a line chart is rendered to a string in Node.js with width 600 and height 300, with `toScene()` and `renderToString()` from `chartist/server`
 - **THEN** the result is valid SVG markup with `width="600"` and `height="300"` that contains the series paths, and no `window` or `document` access happens
 
 ### Requirement: No global environment access in the core
