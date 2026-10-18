@@ -45,7 +45,7 @@ function bind(scene: SceneNode, element: Element, into = new Map()) {
 
 /**
  * The DOM renderer, with `adopt` (unless `adopt: false`) that binds the
- * scene to the server's elements, or declines. With a previous render whose
+ * replayed scene to the server's elements, or declines. With a previous render whose
  * scene draws the same markup, it claims to have patched nothing.
  */
 function stubRenderer({ adopt = true, decline = false } = {}) {
@@ -75,9 +75,24 @@ function stubRenderer({ adopt = true, decline = false } = {}) {
       return dom.render(scene, target);
     },
     ...(adopt && {
-      adopt(scene: SceneNode, svg: SVGSVGElement) {
+      adopt(
+        target: Element,
+        replay: Parameters<NonNullable<Renderer['adopt']>>[1]
+      ) {
         calls.push('adopt');
-        return decline ? undefined : { ...output(svg, scene), repaired: 0 };
+        const svg = target.querySelector<SVGSVGElement>(
+          ':scope > svg[data-ct-hydrate]'
+        );
+        if (decline || !svg) {
+          return undefined;
+        }
+        const { width, height, labels } = JSON.parse(
+          svg.getAttribute('data-ct-hydrate')!
+        );
+        return {
+          ...output(svg, replay({ width, height, labels })),
+          repaired: 0
+        };
       }
     })
   };
@@ -157,22 +172,6 @@ describe('chart(): taking server markup over', () => {
     expect(events.map(event => event.cause)).toEqual(['create']);
     expect(el.querySelectorAll('svg')).toHaveLength(1);
     expect(el.querySelector('svg')).not.toBe(server);
-  });
-
-  it.each([
-    ['of an unknown version', '{"v":2,"width":600,"height":300}'],
-    ["that doesn't parse", 'yes']
-  ])('warns about a marker %s and draws a new svg', (_, marker) => {
-    const el = container(serverMarkup());
-    el.querySelector('svg')!.setAttribute('data-ct-hydrate', marker);
-    const { renderer, calls } = stubRenderer();
-    const { events, on } = mounts();
-    lineChart(el, data, { renderer, on });
-    expect(calls).toEqual(['render']);
-    expect(events.map(event => event.cause)).toEqual(['create']);
-    expect(el.querySelectorAll('svg')).toHaveLength(1);
-    expect(warn).toHaveBeenCalledOnce();
-    expect(String(warn.mock.calls[0][0])).toContain('data-ct-hydrate');
   });
 
   it('draws a new svg for a chart with a converted 1.x plugin', () => {
@@ -301,7 +300,7 @@ describe('chart(): markup replaced by other code', () => {
     handle.update({ data: { ...data, series: [[1, 2, 3, 4, 5]] } });
     expect(warn).toHaveBeenCalledOnce();
     expect(String(warn.mock.calls[0][0])).toContain(
-      'removed from its container by other code'
+      "other code removed the chart's svg"
     );
     expect(el.querySelectorAll('svg')).toHaveLength(1);
     expect(el.querySelector('svg')!.hasAttribute('data-ct-hydrate')).toBe(

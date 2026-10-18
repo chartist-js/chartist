@@ -1,5 +1,9 @@
 import { createPhaseEmitter } from '../pipeline/emitter';
-import { runPipeline, type PipelineState } from '../pipeline/phases';
+import {
+  runPipeline,
+  type PipelineEnvironment,
+  type PipelineState
+} from '../pipeline/phases';
 import { domRenderer } from '../render/dom';
 import {
   estimateText,
@@ -17,12 +21,7 @@ import type { SceneNode } from '../scene/node';
 import type { ResponsiveWatcher } from '../responsive/responsive';
 import { replacementChanges, replacesOutput } from './changes';
 import { withChartTypeClass } from './className';
-import {
-  chartRootSize,
-  HYDRATION_ATTRIBUTE,
-  markedRoot,
-  type HydrationMarker
-} from './hydration';
+import { chartRootSize, HYDRATION_ATTRIBUTE } from './hydration';
 import {
   eventMethods,
   installPlugins,
@@ -32,24 +31,6 @@ import {
   type InstalledPlugins
 } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
-
-/** The marker of server markup, if it's one this version reads. */
-function readMarker(svg: Element): HydrationMarker | undefined {
-  try {
-    const marker = JSON.parse(
-      svg.getAttribute(HYDRATION_ATTRIBUTE)!
-    ) as HydrationMarker;
-    if (marker.v === 1 && marker.width > 0 && marker.height > 0) {
-      return marker;
-    }
-  } catch {
-    // Warned below.
-  }
-  console.warn(
-    `Chartist: the server markup's ${HYDRATION_ATTRIBUTE} attribute isn't one this version of Chartist reads, so the chart draws a new svg. Render it with renderForHydration() of the same version.`
-  );
-  return undefined;
-}
 
 /** A fixed size in px: a number or a px string. Other units are measured. */
 function fixedSize(value: number | string | undefined): number | undefined {
@@ -289,63 +270,83 @@ export function chart(
   }
 
   /**
-   * Renders the chart. The render after taking server markup over is a
-   * `correction`: when the renderer patched nothing, the chart's elements
-   * are what the `hydrate` render mounted, so it emits nothing and keeps
-   * that render's cleanups.
+   * Renders the chart. A `hydrate` render lets the renderer take server
+   * markup over instead (see `Renderer.adopt`), and returns false when it
+   * doesn't. The render after it is a `correction`, at the container's real
+   * size: when the renderer patched nothing, the elements are what the
+   * `hydrate` render mounted, so it emits nothing and keeps that render's
+   * cleanups.
    */
   function render(
     from: 'resolve' | 'layout',
     cause: RenderCause,
     correction = false
-  ) {
-    const { width, height } = size();
+  ): boolean {
     measuredText = false;
     const previous = state;
     const previousOutput = output;
     const previousSvg = previous && previousOutput?.elementOf?.(previous.scene);
     if (previousSvg && !container.contains(previousSvg)) {
+      // eslint-disable-next-line no-console
       console.warn(
-        "Chartist: the chart's svg was removed from its container by other code, so the chart draws a new one. A framework should render server markup into the container only once."
+        "Chartist: other code removed the chart's svg, so it draws a new one. Render server markup into a container only once."
       );
     }
-    state = runPipeline(
-      emitter,
-      withChartTypeClass(effective),
-      {
-        width,
-        height,
+    const layOut = (
+      layoutConfig: ChartConfig,
+      environment: Omit<PipelineEnvironment, 'rootSize'>
+    ) => {
+      state = runPipeline(
+        emitter,
+        withChartTypeClass(layoutConfig),
+        { ...environment, rootSize: chartRootSize(layoutConfig) },
+        previous,
+        from
+      );
+      layerOf = undefined;
+      return state.scene;
+    };
+    const pending = cleanups;
+    let update: RenderUpdate | undefined;
+    let rendered: (RenderOutput & { readonly repaired?: number }) | undefined;
+    if (cause === 'hydrate') {
+      // The server's layout: no responsive overrides, estimated text.
+      rendered = renderer.adopt?.(container, layout =>
+        layOut(current, { ...layout, measureText: estimateText })
+      );
+      if (!rendered) {
+        state = previous;
+        return false;
+      }
+    } else {
+      const scene = layOut(effective, {
+        ...size(),
         measureText,
         measureStyle,
-        labels: renderer.labels ?? 'html',
-        rootSize: chartRootSize(effective)
-      },
-      state,
-      from
-    );
-    const { scene } = state;
-    layerOf = undefined;
-    const pending = cleanups;
-    if (!correction) {
-      cleanups = [];
-      runAll(pending);
+        labels: renderer.labels ?? 'html'
+      });
+      if (!correction) {
+        cleanups = [];
+        runAll(pending);
+      }
+      update =
+        previous && previousOutput && !replacesOutput(handle)
+          ? {
+              previous: previousOutput,
+              previousScene: previous.scene,
+              cause,
+              labels: state!.data.labels,
+              previousLabels: previous.data.labels,
+              keyframes
+            }
+          : undefined;
+      rendered = renderer.render(scene, container, update);
     }
-    const update: RenderUpdate | undefined =
-      previous && previousOutput && !replacesOutput(handle)
-        ? {
-            previous: previousOutput,
-            previousScene: previous.scene,
-            cause,
-            labels: state.data.labels,
-            previousLabels: previous.data.labels,
-            keyframes
-          }
-        : undefined;
-    const rendered = renderer.render(scene, container, update);
+    const { scene } = state!;
     output = rendered;
     if (correction) {
       if (rendered.patched && !rendered.changes?.length) {
-        return;
+        return true;
       }
       // Run after the patch, which only then says whether it changed
       // anything.
@@ -364,7 +365,10 @@ export function chart(
       output: rendered,
       cause,
       changes,
-      previous: previous?.scene
+      previous: previous?.scene,
+      ...(cause === 'hydrate' && {
+        hydration: { repaired: rendered.repaired! }
+      })
     };
     emitter.notify('render', event);
     // Nodes of `remove` changes are in the previous output.
@@ -373,6 +377,18 @@ export function chart(
     cleanups = emitter
       .notify('mount', { ...event, elementOf, animation: rendered.animation })
       .filter((result): result is () => void => typeof result === 'function');
+    if (cause === 'hydrate' && !destroyed) {
+      // The server's scaling viewBox (the scene has none of its own) and
+      // marker served the markup until now; from here on, the chart lays
+      // itself out at the real size.
+      const svg = rendered.elementOf?.(scene);
+      if (!scene.attrs.viewBox) {
+        svg?.removeAttribute('viewBox');
+      }
+      svg?.removeAttribute(HYDRATION_ATTRIBUTE);
+      render('resolve', 'resize', true);
+    }
+    return true;
   }
 
   function resolveResponsive() {
@@ -401,69 +417,6 @@ export function chart(
       }
     });
     resolveResponsive();
-  }
-
-  /**
-   * Takes over server markup from `renderForHydration()`, a direct child of
-   * the container, when the renderer can adopt it: builds the server's
-   * scene again (the config without responsive overrides, the recorded size
-   * and label mode, the estimate), lets the renderer bind it to the svg's
-   * elements and runs `render` and `mount` with the cause `hydrate`. Then
-   * lays the chart out at the container's real size. Returns false when
-   * there's nothing to take over; the chart then draws a new svg.
-   */
-  function hydrate(): boolean {
-    const svg =
-      renderer.adopt && !replacesOutput(handle)
-        ? Array.from(container.children).find(
-            (child): child is SVGSVGElement =>
-              child.localName === 'svg' &&
-              child.hasAttribute(HYDRATION_ATTRIBUTE)
-          )
-        : undefined;
-    const marker = svg && readMarker(svg);
-    if (!marker) {
-      return false;
-    }
-    const replayed = runPipeline(emitter, withChartTypeClass(current), {
-      width: marker.width,
-      height: marker.height,
-      measureText: estimateText,
-      labels: marker.labels,
-      rootSize: chartRootSize(current)
-    });
-    // The scene as the server drew it, with the scaling viewBox.
-    const marked = replayed.scene.attr(markedRoot(marker));
-    const adopted = renderer.adopt!(marked, svg);
-    if (!adopted) {
-      return false;
-    }
-    const { scene } = replayed;
-    state = replayed;
-    const elementOf = (node: SceneNode) =>
-      node === scene ? svg : adopted.elementOf?.(node);
-    output = { ...adopted, elementOf };
-    const event = {
-      scene: marked,
-      output,
-      cause: 'hydrate' as const,
-      changes: replacementChanges(undefined, marked),
-      hydration: { repaired: adopted.repaired }
-    };
-    emitter.notify('render', event);
-    cleanups = emitter
-      .notify('mount', { ...event, elementOf })
-      .filter((result): result is () => void => typeof result === 'function');
-    if (!destroyed) {
-      // The viewBox scaled the server's layout until now; the chart lays
-      // itself out at the real size from here on.
-      if (marker.scale) {
-        svg.removeAttribute('viewBox');
-      }
-      svg.removeAttribute(HYDRATION_ATTRIBUTE);
-      render('resolve', 'resize', true);
-    }
-    return true;
   }
 
   const handle: ChartHandle = {
@@ -541,7 +494,8 @@ export function chart(
   } else {
     resolveResponsive();
   }
-  if (!hydrate()) {
+  // Charts that always draw a new svg can't keep server markup.
+  if (replacesOutput(handle) || !render('resolve', 'hydrate')) {
     render('resolve', 'create');
   }
 

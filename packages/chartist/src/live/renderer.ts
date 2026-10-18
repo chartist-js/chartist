@@ -6,7 +6,7 @@ import {
   type Renderer,
   type SceneNode
 } from '../index';
-import { adoptSvg } from './adopt';
+import { adoptMarkup } from './adopt';
 import { matchScenes, valueKeyOf } from './diff';
 import type { LiveDomRendererOptions } from './types';
 
@@ -129,7 +129,7 @@ export function liveDomRenderer(
   const valueKey = valueKeyOf(key);
   return {
     ...dom,
-    ...(adopt && { adopt: adoptSvg }),
+    ...(adopt && { adopt: adoptMarkup }),
     render(scene, container, update) {
       const svg = update?.previous.elementOf(update.previousScene);
       if (

@@ -11,6 +11,7 @@ import {
   type DomRenderOutput,
   type Keyframes,
   type Layer,
+  type LabelMode,
   type RenderCause,
   type Renderer,
   type SceneChange,
@@ -146,16 +147,22 @@ describe('render lifecycle types (v2)', () => {
     const plain: Renderer<DomRenderOutput> = { ...dom };
     expectTypeOf(plain.adopt).toEqualTypeOf<
       | ((
-          scene: SceneNode,
-          svg: SVGSVGElement
+          container: Element,
+          replay: (layout: {
+            readonly width: number;
+            readonly height: number;
+            readonly labels: LabelMode;
+          }) => SceneNode
         ) => (DomRenderOutput & { readonly repaired: number }) | undefined)
       | undefined
     >();
     const adopting: Renderer<DomRenderOutput> = {
       ...dom,
-      adopt: (scene, svg) => {
+      adopt: (container, replay) => {
+        expectTypeOf(container).toEqualTypeOf<Element>();
+        const svg = container.querySelector('svg')!;
+        const scene = replay({ width: 600, height: 300, labels: 'html' });
         expectTypeOf(scene).toEqualTypeOf<SceneNode>();
-        expectTypeOf(svg).toEqualTypeOf<SVGSVGElement>();
         return {
           svg,
           elementOf: () => undefined,

@@ -227,6 +227,25 @@ describe('live/liveDomRenderer: taking server markup over', () => {
     expect(mounts.map(event => event.cause)).toEqual(['create']);
   });
 
+  it.each([
+    ['of an unknown version', '{"v":2,"width":600,"height":300}'],
+    ["that doesn't parse", 'yes']
+  ])('warns about a marker %s and draws a new svg', (_, marker) => {
+    const el = container(renderForHydration(lineChartConfig(week), SERVER));
+    const server = el.querySelector('svg')!;
+    server.setAttribute('data-ct-hydrate', marker);
+    const mounts: MountEvent[] = [];
+    lineChart(el, week, {
+      renderer: liveDomRenderer(),
+      on: { mount: event => void mounts.push(event) }
+    });
+    expect(mounts.map(event => event.cause)).toEqual(['create']);
+    expect(el.querySelectorAll('svg')).toHaveLength(1);
+    expect(el.querySelector('svg')).not.toBe(server);
+    expect(warn).toHaveBeenCalledOnce();
+    expect(String(warn.mock.calls[0][0])).toContain('data-ct-hydrate');
+  });
+
   it('lays the chart out at a different size, keeping the svg', () => {
     const { el, server, mounts } = takeOver('line', { width: 343 });
     expect(mounts.map(event => event.cause)).toEqual(['hydrate', 'resize']);

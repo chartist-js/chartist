@@ -77,19 +77,19 @@ The PoC was a throw-away branch, so its results are recorded here. It tested Nex
 
 ## Decisions
 
-### Adoption is a renderer capability; the core only finds the markup and replays
+### Adoption is a renderer capability; the core only replays
 
-`Renderer.adopt(scene, svg)` is optional. `liveDomRenderer()` implements it in `chartist/live`; `domRenderer()` doesn't. `chart()` does the parts only it can do:
+`Renderer.adopt(container, replay)` is optional. `liveDomRenderer()` implements it in `chartist/live`; `domRenderer()` doesn't. The renderer finds a direct child svg with `data-ct-hydrate`, parses the marker (and warns about one it can't read), and calls `replay` with the recorded size and label mode. `chart()` does the parts only it can do:
 
-- find a direct child svg with `data-ct-hydrate`;
-- parse the marker;
 - replay the server's scene with its own emitter, so plugins and listeners run as on any render;
-- call `adopt`;
-- emit `hydrate`;
+- render the result as a `hydrate` render, through the same code as every other render, so the events and cleanups are shared;
+- remove the scaling `viewBox` and the marker after the `hydrate` mount;
 - run the correction render.
 
+The first draft had `adopt(scene, svg)`, with `chart()` finding and parsing the marker. Measured, that put `lineChart` at +0.58 kB gzipped (14.86 kB), over the 0.3 kB budget, so the marker lookup and parsing moved behind the renderer, and the `hydrate` render went into `render()` instead of a separate function: +0.295 kB (14.58 kB). The cost is the one the alternative names: the core hands out a `replay` closure. It only lays the chart out; the renderer can't change what it replays beyond the recorded layout.
+
 - _Alternative, adoption in the core (`domRenderer().adopt`):_ the PoC's first version. It costs every chart about 1.5 kB minified for the walk, and adoption is useless without patching anyway.
-- _Alternative, the whole hydration behind a renderer hook (`adopt(container, replay)`, with the renderer finding and parsing the marker):_ smaller core, but marker parsing is about 100 bytes. The core would hand out a replay closure whose environment the renderer can't check. Only if the first measurement is over budget do the marker lookup and parsing move behind the renderer.
+- _Alternative, `adopt(scene, svg)` with the marker read in the core:_ the first draft, over budget (above).
 
 ### The correction render skips itself through the live renderer's diff
 
@@ -153,7 +153,7 @@ Unless the config sets a `viewBox`, the hydration markup gets `viewBox="0 0 <lay
 - a `viewBox` on both sides kept tiny text on phones for good;
 - a width hint needs per-client HTML.
 
-The browser replays the scene with the same `viewBox`, so adoption matches. The `viewBox` is removed with the correction render, after the `hydrate` mount. A plugin measuring in that mount then sees the server's layout consistently scaled.
+The replayed scene has no `viewBox` of its own, and the walk keeps the scaling one on the root, so adoption matches. `chart()` removes it with the correction render, after the `hydrate` mount, when the scene has no `viewBox` (the config set none). A plugin measuring in that mount then sees the server's layout consistently scaled.
 
 ### Adoption's rules
 
@@ -174,7 +174,7 @@ Otherwise, adoption would keep the server's elements at equal size. At any other
 
 ### The marker
 
-The marker is JSON in `data-ct-hydrate`, with fields for the version (`v: 1`), width, height, labels, text (`estimate` or `custom`) and scale. A marker that doesn't parse, or has an unknown version, means no adoption: the chart draws fresh and warns. That covers a server and a browser on different Chartist versions with a different marker.
+The marker is JSON in `data-ct-hydrate`, with fields for the version (`v: 1`), width, height, labels, text (`estimate` or `custom`) and scale. A marker that doesn't parse, or has an unknown version, means no adoption: the live renderer warns, and the chart draws fresh. That covers a server and a browser on different Chartist versions with a different marker.
 
 The browser always replays with the built-in text estimate. With `text: 'custom'`, adoption repairs the differences, or falls back if the structure differs. The guide says to use the estimate for hydration markup.
 

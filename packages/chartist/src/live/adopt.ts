@@ -2,10 +2,12 @@ import {
   applyAttribute,
   namespaces,
   type DomRenderOutput,
+  type LabelMode,
+  type Renderer,
   type SceneNode
 } from '../index';
 
-/** What {@link adoptSvg} returns when the markup matches the scene. */
+/** What {@link adoptMarkup} returns when the markup matches the scene. */
 export interface AdoptedOutput extends DomRenderOutput {
   /** Attributes, classes and texts that differed and were set. */
   readonly repaired: number;
@@ -14,8 +16,38 @@ export interface AdoptedOutput extends DomRenderOutput {
 /** Thrown inside the walk; turned into a warning and `undefined`. */
 class Mismatch extends Error {}
 
-/** The marker `chart()` removes once it laid the chart out at the real size. */
+/**
+ * The root attribute `renderForHydration()` records the layout in, which
+ * `chart()` removes once it laid the chart out at the real size.
+ */
 const MARKER = 'data-ct-hydrate';
+
+/** What a marker of version 1 records (others aren't taken over). */
+interface Marker {
+  readonly v: 1;
+  readonly width: number;
+  readonly height: number;
+  readonly labels: LabelMode;
+  /** Whether the root's `viewBox` only scales until the chart lays out. */
+  readonly scale: boolean;
+}
+
+/** The marker of server markup, if it's one this version reads. */
+function readMarker(svg: Element): Marker | undefined {
+  try {
+    const marker = JSON.parse(svg.getAttribute(MARKER)!) as Marker;
+    if (marker.v === 1 && marker.width > 0 && marker.height > 0) {
+      return marker;
+    }
+  } catch {
+    // Warned below.
+  }
+  // eslint-disable-next-line no-console
+  console.warn(
+    `Chartist: the server markup's ${MARKER} attribute isn't one this version of Chartist reads, so the chart draws a new svg. Render it with renderForHydration() of the same version.`
+  );
+  return undefined;
+}
 
 const elementChildren = (element: Element) =>
   Array.from(element.childNodes).filter(
@@ -46,6 +78,33 @@ const properties = (style: string | number | undefined) =>
   );
 
 /**
+ * Takes over markup from `renderForHydration()`, a direct child of the
+ * container: reads its marker, builds the scene for the recorded layout
+ * with `replay` and binds it to the markup (see {@link adoptSvg}).
+ */
+export const adoptMarkup: NonNullable<Renderer<DomRenderOutput>['adopt']> = (
+  container,
+  replay
+) => {
+  const svg = Array.from(container.children).find(
+    (child): child is SVGSVGElement =>
+      child.localName === 'svg' && child.hasAttribute(MARKER)
+  );
+  const marker = svg && readMarker(svg);
+  return marker
+    ? adoptSvg(
+        replay({
+          width: marker.width,
+          height: marker.height,
+          labels: marker.labels
+        }),
+        svg,
+        marker.scale
+      )
+    : undefined;
+};
+
+/**
  * Binds a scene's nodes to the elements of server markup from
  * `renderForHydration()`, instead of creating new ones. The structure
  * (element names, namespaces and child element counts; text and comments
@@ -53,12 +112,14 @@ const properties = (style: string | number | undefined) =>
  * draws: differing attributes, classes and texts are set, attributes the
  * scene doesn't have are removed, `ct:` attributes the HTML parser left
  * without a namespace get it, and the scene's styles are applied through
- * the CSSOM. Returns `undefined`, with a warning naming the first
+ * the CSSOM. A scaling `viewBox` (`scaled`) stays on the root for the
+ * chart to remove. Returns `undefined`, with a warning naming the first
  * difference, when the structure doesn't match.
  */
 export function adoptSvg(
   scene: SceneNode,
-  svg: SVGSVGElement
+  svg: SVGSVGElement,
+  scaled: boolean
 ): AdoptedOutput | undefined {
   const elements = new WeakMap<SceneNode, Element>();
   let repaired = 0;
@@ -117,6 +178,7 @@ export function adoptSvg(
         !kept.has(attribute) &&
         name !== 'class' &&
         name !== MARKER &&
+        !(scaled && element === svg && name === 'viewBox') &&
         name !== 'xmlns' &&
         !name.startsWith('xmlns:')
       ) {
@@ -151,6 +213,7 @@ export function adoptSvg(
     walk(scene, svg, false, 'svg');
   } catch (error) {
     if (error instanceof Mismatch) {
+      // eslint-disable-next-line no-console
       console.warn(
         `Chartist: the server markup doesn't match the chart, so the chart draws a new svg. The server and the browser should draw the same data and options (${error.message}).`
       );

@@ -32,7 +32,7 @@ When no renderer is configured and a container element is given, a chart SHALL r
 
 ### Requirement: Renderers may adopt markup
 
-A renderer MAY provide `adopt(scene, svg)`: it takes over an existing svg for a scene, instead of rendering one, and returns its output, or nothing when the svg doesn't match the scene. The output SHALL tell how many differences it repaired. A chart SHALL use it only to take over server markup, as the hydration capability defines. Renderers without it SHALL keep working unchanged.
+A renderer MAY provide `adopt(container, replay)`: it takes over server markup in the container, instead of rendering, builds the scene for the layout the markup records with the chart's `replay`, and returns its output, or nothing when there's no markup or it doesn't match the scene. The output SHALL tell how many differences it repaired. A chart SHALL use it only to take over server markup, as the hydration capability defines. Renderers without it SHALL keep working unchanged.
 
 #### Scenario: A custom renderer without adopt
 

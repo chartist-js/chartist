@@ -11,22 +11,20 @@ import { buildScene, type SceneSize } from './toScene';
 import type { ChartConfig } from './types';
 
 // The CSS properties SVG has presentation attributes for, without the
-// geometry properties (`x`, `r`, `d`), which only some elements take.
-const presentation = new Set(
-  (
-    'alignment-baseline baseline-shift clip-path clip-rule color ' +
-    'color-interpolation color-interpolation-filters cursor direction ' +
-    'display dominant-baseline fill fill-opacity fill-rule filter ' +
-    'flood-color flood-opacity font-family font-size font-size-adjust ' +
-    'font-stretch font-style font-variant font-weight image-rendering ' +
-    'letter-spacing lighting-color marker-end marker-mid marker-start mask ' +
-    'opacity overflow paint-order pointer-events shape-rendering stop-color ' +
-    'stop-opacity stroke stroke-dasharray stroke-dashoffset stroke-linecap ' +
-    'stroke-linejoin stroke-miterlimit stroke-opacity stroke-width ' +
-    'text-anchor text-decoration text-rendering unicode-bidi vector-effect ' +
-    'visibility word-spacing writing-mode'
-  ).split(' ')
-);
+// geometry properties (`x`, `r`, `d`), which only some elements take. A
+// string, not a Set, so bundles without renderForHydration() drop it.
+const presentation =
+  ' alignment-baseline baseline-shift clip-path clip-rule color' +
+  ' color-interpolation color-interpolation-filters cursor direction' +
+  ' display dominant-baseline fill fill-opacity fill-rule filter' +
+  ' flood-color flood-opacity font-family font-size font-size-adjust' +
+  ' font-stretch font-style font-variant font-weight image-rendering' +
+  ' letter-spacing lighting-color marker-end marker-mid marker-start mask' +
+  ' opacity overflow paint-order pointer-events shape-rendering stop-color' +
+  ' stop-opacity stroke stroke-dasharray stroke-dashoffset stroke-linecap' +
+  ' stroke-linejoin stroke-miterlimit stroke-opacity stroke-width' +
+  ' text-anchor text-decoration text-rendering unicode-bidi vector-effect' +
+  ' visibility word-spacing writing-mode ';
 
 /**
  * The declarations of a style that an SVG element can carry as presentation
@@ -38,7 +36,11 @@ function presentationAttributes(style: string): Record<string, AttrValue> {
     const separator = declaration.indexOf(':');
     const name = declaration.slice(0, separator).trim().toLowerCase();
     const value = declaration.slice(separator + 1).trim();
-    if (separator > 0 && presentation.has(name) && !/!important/i.test(value)) {
+    if (
+      separator > 0 &&
+      presentation.includes(` ${name} `) &&
+      !/!important/i.test(value)
+    ) {
       attrs[name] = value.replace(/^(-?(?:\d+\.?\d*|\.\d+))px$/, '$1');
     }
   }

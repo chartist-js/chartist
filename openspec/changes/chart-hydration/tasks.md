@@ -33,7 +33,7 @@
 
 ## 3. Taking markup over in `chart()`
 
-- [x] 3.1 Add `adopt?(scene, svg)` to `Renderer`, returning the output with `repaired`, or nothing; add `'hydrate'` to `RenderCause` and `hydration?: { repaired }` to the `render` and `mount` payloads. Update the doc comments of `Renderer`, `RenderCause` and the payloads. Verify:
+- [x] 3.1 Add `adopt?(scene, svg)` (since 5.1: `adopt?(container, replay)`) to `Renderer`, returning the output with `repaired`, or nothing; add `'hydrate'` to `RenderCause` and `hydration?: { repaired }` to the `render` and `mount` payloads. Update the doc comments of `Renderer`, `RenderCause` and the payloads. Verify:
   - `pnpm nx typecheck chartist`;
   - type tests in `test/api/` for a renderer with and without `adopt` and a `mount` listener reading `hydration`.
 - [x] 3.2 In `chart/chart.ts`, before the first render, look for a direct child svg with `data-ct-hydrate`. With a marker of version 1, a renderer with `adopt`, and a chart that doesn't always draw a new svg:
@@ -77,7 +77,7 @@
 
 ## 5. Size
 
-- [ ] 5.1 Measure with `pnpm nx run chartist:test:size`. If the `lineChart` import grew by more than 0.3 kB gzipped over 14.28 kB, move the marker lookup and parsing behind the renderer, as in the design's alternative, and measure again. Then set the budgets a little above the measured sizes, and add an entry for `renderForHydration` (tree-shaken), and for the CSS growth. Verify:
+- [x] 5.1 Measure with `pnpm nx run chartist:test:size`. If the `lineChart` import grew by more than 0.3 kB gzipped over 14.28 kB, move the marker lookup and parsing behind the renderer, as in the design's alternative, and measure again. Then set the budgets a little above the measured sizes, and add an entry for `renderForHydration` (tree-shaken), and for the CSS growth. Verify:
   - the size check passes;
   - the `lineChart` bundle contains none of the adoption code (grep for a name only the walk uses);
   - the measured sizes are in the commit message.

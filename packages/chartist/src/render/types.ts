@@ -142,21 +142,29 @@ export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   /** The default label mode of this renderer; `html` if omitted. */
   readonly labels?: LabelMode;
   /**
-   * Takes over an svg from `renderForHydration()` for a scene, instead of
-   * rendering one: binds the scene's nodes to its elements and makes them
-   * what `render()` would draw. A chart calls it once, on its first render,
-   * when its container holds such markup; later renders go through
-   * `render()`, with the adopted output as the previous one. Returns
-   * nothing when the svg doesn't match the scene, and the chart then
+   * Takes over markup from `renderForHydration()` in the chart's container,
+   * instead of rendering: finds it and reads the layout its marker
+   * records, gets the scene for that layout from `replay`, binds the
+   * scene's nodes to the markup's elements and makes them what `render()`
+   * would draw. A chart calls it once, before its first render, unless it
+   * always draws a new svg; later renders go through `render()`, with the
+   * adopted output as the previous one. Returns nothing when there's no
+   * markup to take over or it doesn't match the scene, and the chart then
    * renders as usual. `liveDomRenderer()` from `chartist/live` has it; the
    * DOM renderer doesn't, since it replaces its svg on every render.
-   * @param scene The scene the server drew, built again in the browser
-   * @param svg The server's `svg`, a direct child of the chart's container
+   * @param container The chart's container element
+   * @param replay Builds the chart's scene at the server's layout size and
+   *   label mode, with the plugins and listeners of the chart, as `render`
+   *   and `mount` then get it
    * @returns The output, with the number of attributes, classes and texts
    *   that differed and were set as `repaired`; or nothing
    */
   adopt?(
-    scene: SceneNode,
-    svg: SVGSVGElement
+    container: Element,
+    replay: (layout: {
+      readonly width: number;
+      readonly height: number;
+      readonly labels: LabelMode;
+    }) => SceneNode
   ): (TOutput & { readonly repaired: number }) | undefined;
 }
