@@ -2,7 +2,7 @@ import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { cartesianAxes } from '../scales/cartesian';
 import { axisLabels } from '../layers/axes';
 import { findAll } from '../scene/tree';
-import { renderToString } from '../render/string';
+import { renderToString } from '../server/string';
 import { lineChart } from '../presets/lineChart';
 import { LineChart } from '../charts/LineChart/LineChart';
 import { chart } from './chart';

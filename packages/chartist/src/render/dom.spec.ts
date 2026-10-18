@@ -5,7 +5,7 @@ import { node } from '../scene/node';
 import { spyOnStyleAttributes } from '../../test/style-spy';
 import { applyAttribute, domRenderer, renderElement } from './dom';
 import { estimateText } from './measure';
-import { renderToString } from './string';
+import { renderToString } from '../server/string';
 
 const CT = 'http://gionkunz.github.com/chartist-js/ct';
 

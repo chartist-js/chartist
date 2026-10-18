@@ -1,5 +1,5 @@
 import { estimateText } from '../render/measure';
-import { renderToString } from '../render/string';
+import { renderToString } from '../server/string';
 import { withFields, type AttrValue, type SceneNode } from '../scene/node';
 import {
   chartRootSize,

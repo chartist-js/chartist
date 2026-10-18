@@ -2,7 +2,7 @@
 import { barChartConfig } from '../presets/barChart';
 import { lineChartConfig } from '../presets/lineChart';
 import { pieChartConfig } from '../presets/pieChart';
-import { renderToString } from '../render/string';
+import { renderToString } from '../server/string';
 import { renderForHydration } from './renderForHydration';
 import { toScene } from './toScene';
 

@@ -3,7 +3,7 @@ import { LineChart } from '../charts/LineChart';
 import type { RenderEvent } from '../pipeline/types';
 import { lineChart, lineChartConfig } from '../presets/lineChart';
 import { domRenderer, type DomRenderOutput } from '../render/dom';
-import { renderToString } from '../render/string';
+import { renderToString } from '../server/string';
 import type { Renderer } from '../render/types';
 import {
   container as containerQuery,
