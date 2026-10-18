@@ -29,3 +29,6 @@ pnpm-debug.log*
 
 # the API model from TypeDoc (docs:api)
 src/generated/
+
+# rendered diagrams (src/lib/diagrams)
+.cache/

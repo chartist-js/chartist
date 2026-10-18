@@ -2,7 +2,7 @@
 
 ## 1. Rendering
 
-- [ ] 1.1 Add `mermaid` (12.x, exact version) as a dev dependency of `apps/docs`, listed in the root `package.json` too if nx-astro needs it, and git-ignore `apps/docs/.cache/`. Verify: `pnpm install` and `pnpm nx run docs:build` still pass, and no page's bundle contains Mermaid (grep `dist/apps/docs` for a Mermaid-only string).
+- [x] 1.1 Add `mermaid` (12.x, exact version) as a dev dependency of `apps/docs`, listed in the root `package.json` too if nx-astro needs it, and git-ignore `apps/docs/.cache/`. Verify: `pnpm install` and `pnpm nx run docs:build` still pass, and no page's bundle contains Mermaid (grep `dist/apps/docs` for a Mermaid-only string).
 - [ ] 1.2 Write the post-processing in `src/lib/diagrams/svg.ts`:
   - remove the `<style>` element, the inline `style` attributes and the root's `max-width`;
   - map the sentinel colors to `var(--token)`, and fail on any hex color left;
