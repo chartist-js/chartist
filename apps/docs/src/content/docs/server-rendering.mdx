@@ -32,7 +32,8 @@ What you render depends on where the markup goes:
 `renderToString(scene)` turns a scene into standalone SVG markup, namespaces included.
 
 ```ts
-import { lineChartConfig, renderToString, toScene } from 'chartist';
+import { lineChartConfig } from 'chartist';
+import { renderToString, toScene } from 'chartist/server';
 
 export function weekChart(values: number[]): string {
   const scene = toScene(
@@ -110,7 +111,8 @@ The markup has the same classes as a chart in the page, but no styles. Where it 
 To put styles into the SVG, add a `<style>` element to the scene with a `scene` listener:
 
 ```ts
-import { lineChartConfig, node, renderToString, toScene } from 'chartist';
+import { lineChartConfig, node } from 'chartist';
+import { renderToString, toScene } from 'chartist/server';
 
 const css = `
   .ct-grid { stroke: #ccc; stroke-dasharray: 2px; }

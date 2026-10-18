@@ -3,7 +3,6 @@ import {
   findAll,
   mapNodes,
   node,
-  renderToString,
   toScene,
   type ChartConfig,
   type ChartHandle,
@@ -23,6 +22,7 @@ import {
   domRenderer
 } from 'chartist';
 import { liveDomRenderer, type LiveDomRendererOptions } from 'chartist/live';
+import { renderToString } from 'chartist/server';
 
 declare const layer: Layer;
 

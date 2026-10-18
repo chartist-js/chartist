@@ -70,8 +70,8 @@
     "gzip": true
   },
   {
-    "name": "import { toScene, renderToString } (tree-shaken)",
-    "path": "dist/index.js",
+    "name": "import { toScene, renderToString } from chartist/server (tree-shaken)",
+    "path": "dist/server.js",
     "import": "{ toScene, renderToString }",
     "limit": "3.75 kB",
     "gzip": true

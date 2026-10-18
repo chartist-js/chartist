@@ -53,14 +53,16 @@ function unavailable(method: string): never {
  * type class without `className`. Listeners of `render` and `mount`
  * never run, responsive overrides and the `renderer` are ignored, and
  * calling `update()`, `detach()` or `destroy()` on the handle a plugin gets
- * throws. Turn the scene into markup with {@link renderToString}.
+ * throws. Turn the scene into markup with `renderToString()` from
+ * `chartist/server`, which re-exports this function.
  *
  * @param config The chart: data, axes, layers, plugins and listeners
  * @param size The size to lay out at, in px, and how to measure text
  * @returns The scene, its root the `svg`
  * @example
  * ```ts
- * import { lineChartConfig, node, renderToString, toScene } from 'chartist';
+ * import { lineChartConfig, node, toScene } from 'chartist';
+ * import { renderToString } from 'chartist/server';
  *
  * const config = lineChartConfig(
  *   { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [[12, 9, 7, 8, 5]] },

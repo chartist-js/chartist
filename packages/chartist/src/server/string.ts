@@ -70,11 +70,14 @@ function serialize(
  * `chartist/styles.css` where it's shown, or add a `style` element to the
  * scene.
  *
+ * @experimental New in `chartist/server` with 2.1: the server API may still
+ *   change in a 2.x minor before it becomes stable.
  * @param scene A scene, usually from `toScene()`
  * @returns The SVG markup, e.g. `<svg xmlns="…" …>…</svg>`
  * @example
  * ```ts
- * import { lineChartConfig, renderToString, toScene } from 'chartist';
+ * import { lineChartConfig } from 'chartist';
+ * import { renderToString, toScene } from 'chartist/server';
  *
  * export function weekChart(values: number[]): string {
  *   const scene = toScene(

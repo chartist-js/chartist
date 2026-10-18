@@ -7,7 +7,7 @@
 ## 1. The entry point
 
 - [x] 1.1 Add `src/server/index.ts`, importing only `../index`, and its builds in `tsdown.config.ts` the way `chartist/live` is built: `dist/server.js`, `.cjs`, `.min.js` (importing `./index.min.js`), `.umd.js` (adding to the global `Chartist`), and declarations for both module systems. Add `./server` to the `exports` map. Verify: `pnpm nx build chartist` writes the files, and none of them contains the pipeline (grep for a name only the pipeline uses).
-- [ ] 1.2 Move `renderToString` and its spec into `src/server/`, and remove it from `chartist`. Re-export `toScene` and `SceneSize` from `chartist/server`. Mark `renderToString` `@experimental`, and update its doc comment and example to import from `chartist/server`, as well as every doc comment in `packages/chartist` and `packages/terminal` that imports it. Verify: `pnpm nx run-many -t typecheck test -p chartist terminal`.
+- [x] 1.2 Move `renderToString` and its spec into `src/server/`, and remove it from `chartist`. Re-export `toScene` and `SceneSize` from `chartist/server`. Mark `renderToString` `@experimental`, and update its doc comment and example to import from `chartist/server`, as well as every doc comment in `packages/chartist` and `packages/terminal` that imports it. Verify: `pnpm nx run-many -t typecheck test -p chartist terminal`.
 - [x] 1.3 Move `renderForHydration` into `src/server/`, rebuilt on `toScene()` and the public node methods (design), with the presentation-property list shared in `src/server/`. Mark it `@experimental`. Keep `HYDRATION_ATTRIBUTE` and `chartRootSize` in the core for `chart()`. Verify: the moved `renderForHydration` specs, the core's hydration specs and the live adoption specs pass unchanged, apart from their imports.
 
 ## 2. applyStyles

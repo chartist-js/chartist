@@ -109,8 +109,9 @@ export interface RenderOutput {
  * Turns a scene into output. `chart()` renders inline SVG into its
  * container with the DOM renderer, unless its config sets a `renderer`.
  * To get markup instead, without a DOM, use `toScene()` and
- * {@link renderToString}. A renderer that wraps another one keeps its
- * `adopt` only if it passes it on, as spreading the wrapped renderer does.
+ * `renderToString()` from `chartist/server`. A renderer that wraps another
+ * one keeps its `adopt` only if it passes it on, as spreading the wrapped
+ * renderer does.
  */
 export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   /**

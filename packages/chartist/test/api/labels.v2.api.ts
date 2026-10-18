@@ -6,11 +6,11 @@ import {
   chart,
   LineChart,
   lineChart,
-  renderToString,
   stepAxis,
   toScene,
   type ChartConfig
 } from 'chartist';
+import { renderToString } from 'chartist/server';
 import { container } from './fixture.ts';
 
 const SIZE = { width: 600, height: 300 };
