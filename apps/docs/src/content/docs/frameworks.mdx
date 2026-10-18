@@ -1,0 +1,296 @@
+---
+title: Charts in frameworks
+description: Use Chartist in React, Vue, Angular and Svelte, with the chart rendered on the server and taken over in the browser.
+group: Advanced
+order: 5
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const data = {
+  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+  series: [[4, 7, 3, 8, 5]]
+};
+
+Chartist has no framework wrappers, and it doesn't need them: a chart is a container element and a handle. A component creates the chart once, passes new data to the handle and destroys it when it goes away. With server rendering, the component also puts the chart's [hydration markup](../server-rendering/#taking-charts-over-in-the-browser) into the server's HTML, and the chart takes it over in the browser.
+
+## The rule
+
+The framework owns the container, Chartist owns everything inside it:
+
+- Render the server markup into the container **once**, and never again. In the browser, the framework doesn't touch the container's children.
+- Create the chart after the framework's hydration, with `liveDomRenderer()` from `chartist/live`, so it keeps the server's elements.
+- Pass new data and options to the chart's handle: `update()`, or a preset's `setOptions()`.
+- Destroy the chart when the component unmounts.
+
+Every framework's raw-HTML feature writes the markup again in some situation, without an error. The chart then draws into an svg that's no longer in the page. Chartist warns about it on the next render (`other code removed the chart's svg`), and each recipe below names its framework's trap.
+
+Without a framework, that's this lifecycle. Mount, update and unmount the chart:
+
+<LiveExample
+  title='The lifecycle of a chart'
+  label='A line chart from Monday to Friday, with buttons to mount it, give it new data and unmount it, and a line that says what its last render did'
+  preview={{ type: 'line', data, options: { low: 0 } }}
+  example='frameworks/lifecycle'
+/>
+
+Give the container a height or an `aspect-ratio` that matches the size the server lays the chart out at, and make the svg a block. The recipes leave that to your stylesheet:
+
+```css
+.chart {
+  aspect-ratio: 2 / 1;
+}
+
+.chart svg {
+  display: block;
+}
+```
+
+## React
+
+Freeze the markup when the component mounts: React writes `dangerouslySetInnerHTML` into the container again whenever its `__html` string changes. Create the chart in `useLayoutEffect`, before the browser paints:
+
+```tsx
+'use client';
+import {
+  lineChart,
+  lineChartConfig,
+  renderForHydration,
+  type ChartHandle,
+  type LineChartData
+} from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+
+export function LineChart({ data }: { data: LineChartData }) {
+  const container = useRef<HTMLDivElement>(null);
+  const chart = useRef<ChartHandle | undefined>(undefined);
+  // Frozen: a new string would make React write the container again.
+  const [html] = useState(() => ({
+    __html: renderForHydration(lineChartConfig(data), {
+      width: 600,
+      height: 300
+    })
+  }));
+
+  useLayoutEffect(() => {
+    const handle = lineChart(container.current!, data, {
+      renderer: liveDomRenderer()
+    });
+    chart.current = handle;
+    return () => handle.destroy();
+  }, []);
+
+  // New data from the parent; the first run is the chart's own data.
+  const drawn = useRef(data);
+  useEffect(() => {
+    if (drawn.current !== data) {
+      drawn.current = data;
+      chart.current?.update({ data });
+    }
+  }, [data]);
+
+  return (
+    <div ref={container} className='chart' dangerouslySetInnerHTML={html} />
+  );
+}
+```
+
+In development, Strict Mode runs the effect twice: the first chart is destroyed with its svg, and the second draws a new one. That's harmless, and production builds take the server's svg over.
+
+## Vue
+
+Give `v-html` the markup on the server only. In the browser, Vue writes any `v-html` string into the container while it hydrates, even the same one, without a warning; `undefined` it leaves alone:
+
+```vue
+<script setup lang="ts">
+import {
+  lineChart,
+  lineChartConfig,
+  renderForHydration,
+  type ChartHandle,
+  type LineChartData
+} from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+import {
+  onBeforeUnmount,
+  onMounted,
+  shallowRef,
+  toRaw,
+  useTemplateRef,
+  watch
+} from 'vue';
+
+const props = defineProps<{ data: LineChartData }>();
+
+// On the server only: never a string in the browser.
+const markup = import.meta.server
+  ? renderForHydration(lineChartConfig(props.data), { width: 600, height: 300 })
+  : undefined;
+
+const container = useTemplateRef<HTMLElement>('container');
+const chart = shallowRef<ChartHandle>();
+
+onMounted(() => {
+  chart.value = lineChart(container.value!, toRaw(props.data), {
+    renderer: liveDomRenderer()
+  });
+});
+
+// Chartist gets plain objects, not Vue's proxies.
+watch(
+  () => props.data,
+  data => chart.value?.update({ data: toRaw(data) }),
+  { deep: true }
+);
+
+onBeforeUnmount(() => chart.value?.destroy());
+</script>
+
+<template>
+  <div ref="container" class="chart" v-html="markup" />
+</template>
+```
+
+`import.meta.server` is Nuxt's. With Vue's own server rendering through Vite, use `import.meta.env.SSR`.
+
+## Angular
+
+Leave the template empty and write the markup into the host element on the server. A template binding is the trap here: `[innerHTML]` strips the SVG through Angular's sanitizer, `bypassSecurityTrustHtml()` gets it set again on the first change detection, and `ngSkipHydration` renders the component again. Create the chart in `afterNextRender`:
+
+```ts nocheck
+import { isPlatformServer } from '@angular/common';
+import {
+  afterNextRender,
+  Component,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  PLATFORM_ID,
+  untracked,
+  ViewEncapsulation
+} from '@angular/core';
+import {
+  lineChart,
+  lineChartConfig,
+  renderForHydration,
+  type ChartHandle,
+  type LineChartData
+} from 'chartist';
+import { liveDomRenderer } from 'chartist/live';
+
+@Component({
+  selector: 'line-chart',
+  // Angular owns the host element, Chartist what's inside it.
+  template: '',
+  encapsulation: ViewEncapsulation.None,
+  styles: 'line-chart, line-chart > svg { display: block; }'
+})
+export class LineChartComponent {
+  readonly data = input.required<LineChartData>();
+  private readonly host: HTMLElement = inject(ElementRef).nativeElement;
+  private chart?: ChartHandle;
+  private drawn?: LineChartData;
+
+  constructor() {
+    if (isPlatformServer(inject(PLATFORM_ID))) {
+      // An effect, so data that arrives later in the server render counts.
+      effect(() => {
+        this.host.innerHTML = renderForHydration(lineChartConfig(this.data()), {
+          width: 600,
+          height: 300
+        });
+      });
+      return;
+    }
+    afterNextRender(() => {
+      this.drawn = untracked(this.data);
+      this.chart = lineChart(this.host, this.drawn, {
+        renderer: liveDomRenderer()
+      });
+    });
+    effect(() => {
+      const data = this.data();
+      if (this.chart && data !== this.drawn) {
+        this.drawn = data;
+        this.chart.update({ data });
+      }
+    });
+    inject(DestroyRef).onDestroy(() => this.chart?.destroy());
+  }
+}
+```
+
+With Zone.js, create the chart in `NgZone.runOutsideAngular()`, so its resize observer doesn't run change detection.
+
+## Svelte
+
+`{@html}` writes the markup again when its value changes, and an empty value in the browser is worse: Svelte throws a `hydration_mismatch` and mounts the whole app again. So the browser gets a constant placeholder that isn't empty, and Svelte keeps the server's markup. Create the chart in an attachment that runs once:
+
+```svelte
+<script lang="ts">
+  import { browser } from '$app/env';
+  import {
+    lineChart,
+    lineChartConfig,
+    renderForHydration,
+    type LineChartData
+  } from 'chartist';
+  import { liveDomRenderer } from 'chartist/live';
+  import { untrack } from 'svelte';
+  import type { Attachment } from 'svelte/attachments';
+
+  let { data }: { data: LineChartData } = $props();
+
+  // Not '' in the browser: an empty {@html} makes Svelte mount the app again.
+  const markup = browser
+    ? '<!--ct-->'
+    : untrack(() =>
+        renderForHydration(lineChartConfig(data), { width: 600, height: 300 })
+      );
+
+  const attach: Attachment<HTMLElement> = element => {
+    // Untracked, so the attachment doesn't run again when data changes.
+    const chart = untrack(() =>
+      lineChart(element, $state.snapshot(data), { renderer: liveDomRenderer() })
+    );
+    let first = true;
+    $effect(() => {
+      const next = $state.snapshot(data);
+      if (!first) {
+        untrack(() => chart.update({ data: next }));
+      }
+      first = false;
+    });
+    return () => chart.destroy();
+  };
+</script>
+
+<div class="chart" {@attach attach}>
+  <!-- svelte-ignore hydration_html_changed -->
+  {@html markup}
+</div>
+```
+
+`$state.snapshot()` reads the data deeply, so changes inside it count, and hands Chartist plain objects instead of Svelte's proxies.
+
+## What goes into updates
+
+`update()` shallow-merges config changes into the chart, and a preset's `setOptions()` changes its options. Pass the data and options a parent component gives you. Leave out what's set when the chart is created:
+
+- `plugins` and `on`: they stay installed for the chart's life;
+- `renderer`: the chart keeps the one it was created with.
+
+Updates from a memoized or computed value keep the chart from redrawing when nothing changed. Give Chartist plain objects: `toRaw()` in Vue, `$state.snapshot()` in Svelte.
+
+<Callout kind='tip'>
+  **Same data on both sides.** The browser builds the scene from its own config,
+  not from the markup. Log `hydration.repaired` in development, as in [the
+  hydrate render](../server-rendering/#the-hydrate-render), to catch a server
+  and a browser that draw different data.
+</Callout>
+
+Next: [Security and CSP](../security-and-csp/), for pages with a strict policy.

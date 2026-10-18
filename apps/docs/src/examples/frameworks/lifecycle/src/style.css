@@ -1,0 +1,19 @@
+#chart {
+  aspect-ratio: 2 / 1;
+}
+
+#chart svg {
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin: 0.5em 0 0;
+}
+
+#log {
+  margin: 0.5em 0 0;
+  font-size: 13px;
+}

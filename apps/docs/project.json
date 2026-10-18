@@ -43,7 +43,7 @@
         }
       ],
       "cache": true,
-      "dependsOn": ["sync", "samples", "api", "test"]
+      "dependsOn": ["sync", "samples", "server-markup", "api", "test"]
     },
     "sync": {
       "executor": "@geekvetica/nx-astro:sync",
@@ -101,6 +101,23 @@
       "cache": false,
       "metadata": {
         "description": "Screenshot comparison with a baseline: --update takes it, --only filters shots, --baseline points elsewhere"
+      }
+    },
+    "server-markup": {
+      "command": "node scripts/server-markup.ts",
+      "options": {
+        "cwd": "{projectRoot}"
+      },
+      "dependsOn": ["^build"],
+      "inputs": [
+        "{projectRoot}/src/examples/**/*",
+        "{projectRoot}/src/lib/server-markup.ts",
+        "{projectRoot}/scripts/server-markup.ts",
+        "^production"
+      ],
+      "cache": true,
+      "metadata": {
+        "description": "Checks that the server markup in example pages is what the current build renders; --write writes it"
       }
     },
     "samples": {

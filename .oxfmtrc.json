@@ -25,6 +25,7 @@
     "/apps/docs/public/v0",
     "/packages/chartist/test/visual/__screenshots__",
     "CHANGELOG.md",
-    "*.fixture.html"
+    "*.fixture.html",
+    "/apps/docs/src/examples/server-rendering/hydrate/index.html"
   ]
 }

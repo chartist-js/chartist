@@ -1,0 +1,13 @@
+/* The server's size, so the markup takes its space before the chart runs. */
+#chart {
+  aspect-ratio: 2 / 1;
+}
+
+#chart svg {
+  display: block;
+}
+
+#status {
+  margin: 0.5em 0 0;
+  font-size: 13px;
+}

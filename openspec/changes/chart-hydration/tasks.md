@@ -98,10 +98,10 @@
 
 ## 7. Docs
 
-- [ ] 7.1 Add the example `server-rendering/hydrate`: its `index.html` holds the server markup between marker comments, and `main.ts` takes it over with `lineChart()` and `liveDomRenderer()` and updates it with a button. Add a script that writes the markup from `renderForHydration()` of the example's config, and a check in the docs `check` target that fails when the HTML differs from the current build's markup. Verify:
+- [x] 7.1 Add the example `server-rendering/hydrate`: its `index.html` holds the server markup between marker comments, and `main.ts` takes it over with `lineChart()` and `liveDomRenderer()` and updates it with a button. Add a script that writes the markup from `renderForHydration()` of the example's config, and a check in the docs `check` target that fails when the HTML differs from the current build's markup. Verify:
   - the check passes after running the script, and fails after changing the config without running it ("A stale example");
   - the example runs in the playground and keeps the server's svg.
-- [ ] 7.2 Rework `server-rendering.mdx`:
+- [x] 7.2 Rework `server-rendering.mdx`:
   - the two outputs: the self-contained SVG image (`toScene()` + `renderToString()`, inline styles) and the hydration markup (`renderForHydration()`, no inline styles, needs Chartist's stylesheet, passes a strict style policy);
   - say the same in the security and CSP guide.
 
@@ -119,7 +119,7 @@
   - the page's e2e and axe checks pass (`pnpm nx e2e docs`);
   - screenshots in light and dark mode and at 375 px show no horizontal scroll.
 
-- [ ] 7.3 Write `frameworks.mdx` ("Charts in frameworks", Advanced, after server rendering):
+- [x] 7.3 Write `frameworks.mdx` ("Charts in frameworks", Advanced, after server rendering):
   - the rule;
   - the four recipes from the design, each with its framework's trap (React's `__html` and Strict Mode, Vue's `v-html` string, Angular's sanitizer, `[innerHTML]` and `ngSkipHydration`, Svelte's `{@html}` with the comment about `''`);
   - what wrappers pass to `update()` and what they don't (`plugins`, `on`, `renderer`);
@@ -130,11 +130,11 @@
   - `pnpm nx run docs:samples` and `pnpm nx e2e docs` pass;
   - screenshots in light and dark mode and at 375 px.
 
-- [ ] 7.4 Check that the API reference shows `renderForHydration`, `Renderer.adopt`, the `hydrate` cause, the `hydration` field and the `adopt` option, with their doc comments following `packages/chartist/DOC-COMMENTS.md`. Verify: the generated `api.json` has them, and the reference pages render them.
+- [x] 7.4 Check that the API reference shows `renderForHydration`, `Renderer.adopt`, the `hydrate` cause, the `hydration` field and the `adopt` option, with their doc comments following `packages/chartist/DOC-COMMENTS.md`. Verify: the generated `api.json` has them, and the reference pages render them.
 
 ## 8. Gate
 
-- [ ] 8.1 Run the gate on the branch. Verify:
+- [x] 8.1 Run the gate on the branch. Verify:
   - `pnpm nx format:check --all`;
   - `pnpm nx run-many -t lint typecheck test --skip-nx-cache`;
   - `pnpm nx run chartist:test:api --skip-nx-cache` and `pnpm nx run chartist:test:api:v1 --skip-nx-cache`;
