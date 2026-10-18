@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 import { API_PAGES } from '../src/lib/api-pages';
+import { PACKAGES } from '../src/data/packages';
 import {
   A11Y_PAGES,
   DOCS,
@@ -196,6 +197,28 @@ test('the Packages header item leads to the packages and stays current', async (
         .getByRole('link', { name: 'Packages' })
     ).toHaveAttribute('aria-current', 'page');
   }
+});
+
+test('each package card shows what the package draws and links to its docs', async ({
+  page
+}) => {
+  await page.goto('/packages/');
+  for (const pkg of PACKAGES) {
+    const card = page.locator(`[data-package="${pkg.slug}"]`);
+    await expect(card.getByRole('img')).toBeVisible();
+    const docs = card.getByRole('navigation', { name: `${pkg.name} docs` });
+    await expect(docs.getByRole('link', { name: 'Overview' })).toHaveAttribute(
+      'href',
+      `/packages/${pkg.slug}/`
+    );
+    await expect(docs.getByRole('link', { name: 'API' })).toHaveAttribute(
+      'href',
+      `/packages/${pkg.slug}/api/`
+    );
+  }
+  await expect(
+    page.locator('[data-package="terminal"] pre.ct-terminal')
+  ).toBeVisible();
 });
 
 test('keyboard: skip link and mobile menu', async ({ page }) => {

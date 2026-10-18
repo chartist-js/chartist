@@ -49,8 +49,45 @@ export const groupedStacksOptions = {
 export const climate = {
   labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
   series: [
-    [64, 58, 70, 82, 104, 120],
-    [1, 3, 8, 12, 16, 20]
+    {
+      name: 'rain',
+      className: 'ct-series-b',
+      data: [64, 58, 70, 82, 104, 120]
+    },
+    {
+      name: 'temperature',
+      className: 'ct-series-a',
+      data: [1, 3, 8, 12, 16, 20]
+    }
+  ]
+};
+
+export const climateOptions = {
+  axes: {
+    $call: 'cartesianAxes',
+    args: [
+      [
+        { id: 'month', side: 'bottom', type: { $call: 'stepAxis' } },
+        { id: 'mm', side: 'left', type: { $call: 'autoScaleAxis' }, low: 0 },
+        {
+          id: 'celsius',
+          side: 'right',
+          type: { $call: 'autoScaleAxis' },
+          low: 0
+        }
+      ]
+    ]
+  },
+  layers: [
+    { $call: 'axisGrid', args: [{ axes: ['month', 'mm'] }] },
+    { $call: 'bar', args: [{ series: ['rain'], x: 'month', y: 'mm' }] },
+    {
+      $call: 'line',
+      args: [
+        { series: ['temperature'], x: 'month', y: 'celsius', align: 'center' }
+      ]
+    },
+    { $call: 'axisLabels' }
   ]
 };
 
@@ -74,7 +111,7 @@ A climate chart: rain as bars on the left axis, temperature as a line on the rig
 <LiveExample
   title='Rain and temperature'
   label='Composed chart: monthly rain in mm as bars on the left axis and temperature in degrees as a line on the right axis, January to June'
-  preview={{ type: 'composed', data: climate }}
+  preview={{ type: 'chart', data: climate, options: climateOptions }}
   example='composed-charts/rain-and-temperature'
 />
 

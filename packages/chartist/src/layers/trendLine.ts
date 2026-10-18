@@ -112,30 +112,16 @@ function hasX(values: NormalizedSeries): boolean {
  *
  * @example
  * ```ts
- * import {
- *   autoScaleAxis,
- *   axisGrid,
- *   axisLabels,
- *   cartesianAxes,
- *   chart,
- *   line,
- *   stepAxis,
- *   trendLine
- * } from 'chartist';
+ * import { lineChart, trendLine } from 'chartist';
  *
- * const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
- *
- * chart('#chart', {
- *   data: {
- *     labels: months,
+ * lineChart(
+ *   '#chart',
+ *   {
+ *     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
  *     series: [{ name: 'sales', data: [620, 810, 740, 930, 880, 1020] }]
  *   },
- *   axes: cartesianAxes([
- *     { id: 'month', side: 'bottom', type: stepAxis(), ticks: months },
- *     { id: 'eur', side: 'left', type: autoScaleAxis() }
- *   ]),
- *   layers: [axisGrid(), line(), trendLine(), axisLabels()]
- * });
+ *   { layers: { above: [trendLine()] } }
+ * );
  * ```
  */
 export function trendLine(options: TrendLineOptions = {}): Layer {

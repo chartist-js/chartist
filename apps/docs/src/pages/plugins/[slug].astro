@@ -68,7 +68,7 @@ const TYPE_LABEL = { line: 'Line', bar: 'Bar', pie: 'Pie' } as const;
     <section class="flex flex-col gap-4" aria-labelledby="example-title">
       <h2 id="example-title" class="text-2xl">See it run</h2>
       {plugin.hint && <p class="m-0 font-bold">{plugin.hint}</p>}
-      <LiveExample example={plugin.example} title={plugin.title} label={`${plugin.title}: a chart with ${plugin.package}`} codeHeight="min(520px, 65vh)" />
+      <LiveExample example={plugin.example} title={plugin.title} label={`${plugin.title}: a chart with ${plugin.package}`} />
     </section>
 
     <section class="flex flex-col gap-3" aria-labelledby="setup-title">

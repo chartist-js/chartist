@@ -95,7 +95,7 @@ Unknown paths SHALL show a 404 page with the mascot and links back to the docs a
 
 ### Requirement: Landing page
 
-The home page SHALL present Chartist as in the approved design: hero with the mascot and a live chart, numbers, a scroll story whose easel chart changes per chapter, features with live demos, the rendering pipeline with a plugin demo, a gallery, an inline live editor, responsive and animation showcases, the comparison, the ecosystem, community and sponsor, and a finale. All charts on it SHALL be rendered by Chartist, and all code samples SHALL use the v2 API as it exists.
+The home page SHALL present Chartist as in the approved design: hero with the mascot and a live chart, numbers, a scroll story whose easel chart changes per chapter, features with live demos, the rendering pipeline with a plugin demo, the packages, a gallery, an inline live editor, responsive and animation showcases, the comparison, the ecosystem, community and sponsor, and a finale. All charts on it SHALL be rendered by Chartist, and all code samples SHALL use the v2 API as it exists.
 
 #### Scenario: Story chapters
 
@@ -106,6 +106,39 @@ The home page SHALL present Chartist as in the approved design: hero with the ma
 
 - **WHEN** a code sample from the landing page is run against the current build
 - **THEN** it executes without errors and draws the chart it describes
+
+### Requirement: News on the landing page
+
+Below the hero, the landing page SHALL show a news list instead of a single release banner: at most the three newest entries, newest first. Each entry SHALL have a tag (such as "New"), a title, one sentence and a link, and the whole row SHALL be the link. The entries SHALL come from one place in the site's data, so an announcement is added without changing the page. The list SHALL include the Chartist 2.0 release and the `@chartist-js/terminal` package, linking to the release notes and to `/packages/terminal/`.
+
+#### Scenario: Two announcements
+
+- **WHEN** a visitor opens the home page
+- **THEN** below the hero, a news list shows the `@chartist-js/terminal` announcement and the Chartist 2.0 release, each linking to its page
+
+#### Scenario: A fourth entry
+
+- **WHEN** a fourth news entry is added to the site's data
+- **THEN** the landing page shows the three newest entries, and the oldest one no longer appears
+
+### Requirement: Packages on the landing page
+
+The landing page SHALL have a packages section after the rendering pipeline section, with a chapter in the landing's navigation. It SHALL draw one chart twice, from the same data and options: as SVG by `chartist`, live in the page like the landing's other charts, and as text art by `@chartist-js/terminal`. The text art SHALL be part of the page's HTML, so it shows without JavaScript and adds no script to the page. The section SHALL show the `ct-cli` command that draws a chart in a terminal, list every documented package with its name, one sentence and its license, and link to `/packages/`.
+
+#### Scenario: One chart, two renderers
+
+- **WHEN** a visitor scrolls to the packages section
+- **THEN** the same chart appears as an SVG chart and as text art in a terminal frame, both drawn by the packages
+
+#### Scenario: Navigation
+
+- **WHEN** a visitor picks the packages chapter in the landing's navigation
+- **THEN** the page scrolls to the packages section and the chapter is marked as current
+
+#### Scenario: A new package
+
+- **WHEN** a package is added to the site's package registry
+- **THEN** it appears in the landing's package list without changes to the section
 
 ### Requirement: Sourced facts
 
@@ -153,6 +186,11 @@ Docs pages and the landing page SHALL be able to embed a live example: an editor
 - **WHEN** a visitor changes a number in the live example's data
 - **THEN** the chart re-renders with the new value without a page reload
 
+#### Scenario: Long code
+
+- **WHEN** a live example's code is taller than its maximum code height (`min(520px, 65vh)` unless the page sets another)
+- **THEN** the code scrolls inside the code panel, and after **Edit** inside the editor, instead of making the example taller
+
 ### Requirement: Motion with calm alternatives
 
 Scroll-driven and decorative motion on the site SHALL use CSS where possible and SHALL have a static alternative under `prefers-reduced-motion: reduce` that keeps all content and controls available.
@@ -173,7 +211,7 @@ The site SHALL have a target that captures the landing sections, the first live 
 
 ### Requirement: Guides and chart type pages
 
-The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output.
+The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output. The docs navigation SHALL list the pages from first steps to advanced topics, in the groups Start here, Chart types, Basics (data and options, axes and scales, sizing, styling, responsive options, animations, target lines and bands) and Advanced (live updates, events and plugins, custom layers, server rendering, security and CSP).
 
 #### Scenario: A guide runs as written
 

@@ -26,6 +26,8 @@
 @layer playground {
   .playground {
     display: grid;
+    /* minmax(0, …): long code lines scroll instead of widening the page. */
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr) auto;
     border: var(--pg-border, 1px solid #ccc);
     font: 14px/1.4 var(--pg-font, system-ui, sans-serif);

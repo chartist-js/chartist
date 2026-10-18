@@ -1,8 +1,8 @@
 ---
 title: Server rendering
 description: Build a chart's scene without a browser and turn it into SVG markup, for server-rendered pages, PDFs, email and images.
-group: Guides
-order: 10
+group: Advanced
+order: 4
 ---
 
 import Callout from '../../components/docs/Callout.astro';
@@ -25,35 +25,21 @@ A Chartist chart doesn't need a browser until the very end. The pipeline builds 
 `renderToString(scene)` turns a scene into standalone SVG markup, namespaces included.
 
 ```ts
-import {
-  autoScaleAxis,
-  axisGrid,
-  axisLabels,
-  cartesianAxes,
-  line,
-  renderToString,
-  stepAxis,
-  toScene
-} from 'chartist';
+import { lineChartConfig, renderToString, toScene } from 'chartist';
 
 export function weekChart(values: number[]): string {
-  const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
   const scene = toScene(
-    {
-      data: { labels, series: [values] },
-      axes: cartesianAxes([
-        { id: 'x', side: 'bottom', type: stepAxis() },
-        { id: 'y', side: 'left', type: autoScaleAxis() }
-      ]),
-      layers: [axisGrid(), line(), axisLabels()]
-    },
+    lineChartConfig({
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+      series: [values]
+    }),
     { width: 600, height: 300 }
   );
   return renderToString(scene);
 }
 ```
 
-`toScene()` takes a config, so it works with `chart()`'s building blocks: axes and layers. The presets (`lineChart()` and friends) draw into an element; for their charts as a string, `lineChartConfig()`, `barChartConfig()` and `pieChartConfig()` build the config a preset draws, from the same data and options: `toScene(lineChartConfig(data, options), size)`. The [composed charts](../composed-charts/) page has more on axes and layers.
+The presets (`lineChart()` and friends) draw into an element. For their charts as a string, `lineChartConfig()`, `barChartConfig()` and `pieChartConfig()` build the config a preset draws, from the same data and options: `toScene(lineChartConfig(data, options), size)`. `toScene()` takes any config of `chart()`, so [composed charts](../composed-charts/) with their own axes and layers render the same way.
 
 The browser can run the same code. This example builds the scene with `toScene()` and shows its markup from `renderToString()` below the chart. The chart itself comes from the same scene through `domRenderer()`: in a page, the DOM renderer creates the elements, so nothing goes through `innerHTML`, which [a strict Content Security Policy](../security-and-csp/) can block.
 
@@ -117,17 +103,7 @@ The markup has the same classes as a chart in the page, but no styles. Where it 
 To put styles into the SVG, add a `<style>` element to the scene with a `scene` listener:
 
 ```ts
-import {
-  autoScaleAxis,
-  axisGrid,
-  axisLabels,
-  cartesianAxes,
-  line,
-  node,
-  renderToString,
-  stepAxis,
-  toScene
-} from 'chartist';
+import { lineChartConfig, node, renderToString, toScene } from 'chartist';
 
 const css = `
   .ct-grid { stroke: #ccc; stroke-dasharray: 2px; }
@@ -136,21 +112,17 @@ const css = `
   .ct-point { stroke: #d70206; stroke-width: 10px; stroke-linecap: round; }
 `;
 
-const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 const scene = toScene(
-  {
-    data: { labels, series: [[12, 9, 7, 8, 5]] },
-    axes: cartesianAxes([
-      { id: 'x', side: 'bottom', type: stepAxis() },
-      { id: 'y', side: 'left', type: autoScaleAxis() }
-    ]),
-    layers: [axisGrid(), line(), axisLabels()],
-    on: {
-      scene: ({ scene }) => ({
-        scene: scene.append(node('style').text(css), true)
-      })
+  lineChartConfig(
+    { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [[12, 9, 7, 8, 5]] },
+    {
+      on: {
+        scene: ({ scene }) => ({
+          scene: scene.append(node('style').text(css), true)
+        })
+      }
     }
-  },
+  ),
   { width: 600, height: 300 }
 );
 

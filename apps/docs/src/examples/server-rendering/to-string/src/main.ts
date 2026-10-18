@@ -1,36 +1,24 @@
 import 'chartist/styles.css';
 import './style.css';
 import {
-  autoScaleAxis,
-  axisGrid,
-  axisLabels,
-  cartesianAxes,
   domRenderer,
-  line,
+  lineChartConfig,
   renderToString,
-  stepAxis,
   toScene
 } from 'chartist';
 
-const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-
 // The same code runs on a server: no DOM needed up to here.
 const scene = toScene(
-  {
-    data: {
-      labels,
+  lineChartConfig(
+    {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
       series: [
         [12, 9, 7, 8, 5],
         [2, 1, 3.5, 7, 3]
       ]
     },
-    axes: cartesianAxes([
-      { id: 'x', side: 'bottom', type: stepAxis() },
-      { id: 'y', side: 'left', type: autoScaleAxis() }
-    ]),
-    layers: [axisGrid(), line(), axisLabels()],
-    viewBox: { width: 400, height: 250 }
-  },
+    { viewBox: { width: 400, height: 250 } }
+  ),
   { width: 400, height: 250 }
 );
 

@@ -62,7 +62,7 @@ Scroll-driven animations use longhands (`animation-name`, `animation-timeline`, 
 2. **Keep** `id`s, `data-*` attributes (`data-section`, `data-visual`, `data-chart`, `data-stage-scene`, …), ARIA attributes, and classes that scripts, `motion.css` or tests select (`grep` `src/scripts`, `src/styles` and `e2e` before removing one).
 3. Check: `pnpm nx run-many -t lint check build e2e -p docs`, then `node e2e/visual.mjs` (from `apps/docs`) against a baseline taken before the change. Fix every difference you didn't intend.
 
-Examples: `src/components/landing/ReleaseBanner.astro` and `Numbers.astro`.
+Examples: `src/components/landing/News.astro` and `Numbers.astro`.
 
 ## Screenshot comparison
 

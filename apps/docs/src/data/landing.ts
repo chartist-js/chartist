@@ -4,6 +4,7 @@ export const SECTIONS = [
   { id: 'story', label: 'Tour' },
   { id: 'features', label: 'Features' },
   { id: 'extend', label: 'Extend' },
+  { id: 'packages', label: 'Packages' },
   { id: 'try', label: 'Try it' },
   { id: 'responsive', label: 'Responsive' },
   { id: 'compare', label: 'Compare' },

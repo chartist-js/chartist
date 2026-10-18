@@ -16,11 +16,15 @@ chart('#chart', {
   data: {
     labels: months,
     series: [
-      { name: 'rain', data: [64, 58, 70, 82, 104, 120] },
-      // A palette color that stands apart from the bars.
+      // Salmon bars and a red line.
+      {
+        name: 'rain',
+        className: 'ct-series-b',
+        data: [64, 58, 70, 82, 104, 120]
+      },
       {
         name: 'temperature',
-        className: 'ct-series-e',
+        className: 'ct-series-a',
         data: [1, 3, 8, 12, 16, 20]
       }
     ]

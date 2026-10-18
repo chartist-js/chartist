@@ -1,0 +1,54 @@
+---
+/**
+ * Text art from `@chartist-js/terminal` in a terminal window: a title bar
+ * and a dark screen, dark in both themes like the code blocks. The art is
+ * HTML rendered at build time (`format: 'html'`), so it shows without
+ * JavaScript.
+ */
+import '@chartist-js/terminal/styles.css';
+
+interface Props {
+  /** The text art's markup, a `pre.ct-terminal`. */
+  html: string;
+  /** The window title, e.g. the command that drew it. */
+  title: string;
+  /** What the art shows, for assistive technology. */
+  label: string;
+  /** The text size, which sets the art's size (a CSS length); 13px by default. */
+  fontSize?: string;
+  class?: string;
+}
+
+const { html, title, label, fontSize, class: className } = Astro.props;
+---
+
+<div class:list={['w-fit max-w-full overflow-hidden rounded-md bg-code-bg shadow-float', className]} style={fontSize && `--terminal-font-size: ${fontSize}`}>
+  <div class="flex items-center gap-2 bg-code-hover px-3 py-2.5" aria-hidden="true">
+    <span class="size-3 rounded-pill bg-(--ct-series-a)"></span>
+    <span class="size-3 rounded-pill bg-(--ct-series-c)"></span>
+    <span class="size-3 rounded-pill bg-(--ct-series-b)"></span>
+    <span class="mr-[52px] flex-1 text-center font-mono text-xs font-semibold text-code-ink">{title}</span>
+  </div>
+  <div class="screen p-3 text-code-ink" role="img" aria-label={label} set:html={html} />
+</div>
+
+<style>
+  /* Text art reads the same custom properties as SVG charts. */
+  .screen {
+    --ct-label-color: color-mix(in oklab, var(--code-ink) 70%, transparent);
+    --ct-grid-color: color-mix(in oklab, var(--code-ink) 16%, transparent);
+  }
+
+  .screen :global(.ct-terminal) {
+    margin: 0;
+    font-size: var(--terminal-font-size, 13px);
+    /* Narrower than the art, the window cuts it off. */
+    overflow: hidden;
+    font-weight: 700;
+  }
+
+  /* On the dark screen, the area shading needs a little more. */
+  .screen :global(.ct-area) {
+    opacity: 0.75;
+  }
+</style>
