@@ -137,7 +137,7 @@ The `render` and `mount` events with the cause `hydrate` SHALL carry `hydration:
 
 #### Scenario: Other values, same structure
 
-- **WHEN** the server drew a series `[12, 9, 7, 8, 5]` and the browser draws `[12, 9, 7, 8, 6]`
+- **WHEN** the server drew a series `[12, 9, 7, 8, 5]` and the browser draws `[12, 9, 7, 8, 6]`, both with `low: 0`, so the axis ticks stay
 - **THEN** the chart keeps the server's elements, shows the browser's values, the `hydrate` events carry `hydration.repaired` greater than 0, and nothing is logged
 
 ### Requirement: Markup that doesn't match

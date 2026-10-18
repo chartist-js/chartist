@@ -6,6 +6,7 @@ import {
   type Renderer,
   type SceneNode
 } from '../index';
+import { adoptSvg } from './adopt';
 import { matchScenes, valueKeyOf } from './diff';
 import type { LiveDomRendererOptions } from './types';
 
@@ -86,8 +87,11 @@ function order(parent: Element, elements: readonly Element[]) {
  * to kept elements stays, and `mount` gets the `changes` of the render.
  *
  * Its first render, and every render without the previous one (1.x
- * charts), draws a new SVG as {@link domRenderer} does. The renderer
- * keeps no state of its own, so one instance can serve many charts.
+ * charts), draws a new SVG as {@link domRenderer} does. A chart whose
+ * container holds markup from `renderForHydration()` takes that markup
+ * over instead, keeping the server's elements, unless `adopt` is `false`.
+ * The renderer keeps no state of its own, so one instance can serve many
+ * charts.
  *
  * @example
  * ```ts
@@ -112,8 +116,8 @@ function order(parent: Element, elements: readonly Element[]) {
  *   chart.update({ labels: [...labels], series: [[...values]] });
  * }, 1000);
  * ```
- * @param options How values are identified (`key`), and update
- *   animations, such as `smilAnimations()`
+ * @param options How values are identified (`key`), update animations,
+ *   such as `smilAnimations()`, and whether to take server markup over
  * @returns The renderer, for `renderer` in `chart()` and the presets
  * @experimental
  */
@@ -121,10 +125,11 @@ export function liveDomRenderer(
   options: LiveDomRendererOptions = {}
 ): Renderer<DomRenderOutput> {
   const dom = domRenderer();
-  const { key, animations } = options;
+  const { key, animations, adopt = true } = options;
   const valueKey = valueKeyOf(key);
   return {
     ...dom,
+    ...(adopt && { adopt: adoptSvg }),
     render(scene, container, update) {
       const svg = update?.previous.elementOf(update.previousScene);
       if (

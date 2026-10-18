@@ -58,7 +58,7 @@
 
 ## 4. Adoption in the live renderer
 
-- [ ] 4.1 Write the adoption walk in `src/live/`, importing only from `../index`:
+- [x] 4.1 Write the adoption walk in `src/live/`, importing only from `../index`:
   - structure check (names, namespaces, child element counts; text and comments ignored);
   - attribute repair by namespace and local name, moving plain `ct:` attributes into their namespace;
   - removal of attributes the scene lacks, except `class`, `xmlns*` and the marker;
@@ -69,11 +69,11 @@
 
   Verify: unit tests in jsdom on markup parsed with `innerHTML` for "Attributes from the HTML parser", "An extra attribute", "Styles applied at the takeover", "The same data", "Other values, same structure" and "A point more".
 
-- [ ] 4.2 Give `liveDomRenderer()` the `adopt` method and the `adopt` option (default `true`), with doc comments. Verify:
+- [x] 4.2 Give `liveDomRenderer()` the `adopt` method and the `adopt` option (default `true`), with doc comments. Verify:
   - unit tests for "Adopting by default", "Opting out" and "The default renderer";
   - "Same elements", "Equal size", "Equal to a fresh chart" (markup compared with a fresh chart's, apart from namespace declarations) and "Updates after taking over" end to end with `lineChart()`, `barChart()` and `pieChart()`;
   - "A tooltip plugin" for mount plugins.
-- [ ] 4.3 Add the new exports and option to the API recordings and type tests. Verify: `pnpm nx run chartist:test:api --skip-nx-cache` passes with the updated recordings.
+- [x] 4.3 Add the new exports and option to the API recordings and type tests. Verify: `pnpm nx run chartist:test:api --skip-nx-cache` passes with the updated recordings.
 
 ## 5. Size
 

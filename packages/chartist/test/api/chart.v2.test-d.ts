@@ -21,6 +21,7 @@ import {
   lineChart,
   domRenderer
 } from 'chartist';
+import { liveDomRenderer, type LiveDomRendererOptions } from 'chartist/live';
 
 declare const layer: Layer;
 
@@ -167,6 +168,15 @@ describe('render lifecycle types (v2)', () => {
     const missing: Renderer = { ...dom, adopt: () => ({}) };
     lineChart('#c', { series: [[1]] }, { renderer: adopting });
     lineChart('#c', { series: [[1]] }, { renderer: missing });
+  });
+
+  test('the live renderer adopts, unless adopt is false', () => {
+    expectTypeOf<LiveDomRendererOptions['adopt']>().toEqualTypeOf<
+      boolean | undefined
+    >();
+    const renderer = liveDomRenderer({ adopt: false });
+    expectTypeOf(renderer).toEqualTypeOf<Renderer<DomRenderOutput>>();
+    lineChart('#c', { series: [[1]] }, { renderer });
   });
 
   test('plugins may return a cleanup from install and give keyframes', () => {
