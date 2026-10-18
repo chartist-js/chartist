@@ -43,14 +43,23 @@ function attributes(current: SceneNode, position: Position) {
   return parts.length ? ` ${parts.join(' ')}` : '';
 }
 
-function serialize(current: SceneNode, position: Position): string {
+function serialize(
+  current: SceneNode,
+  position: Position,
+  html = false
+): string {
   const open = `<${checked(current.name, 'element')}${attributes(current, position)}`;
+  const inner = html || current.name === 'foreignObject';
   const childPosition: Position =
     current.name === 'foreignObject' ? 'html-root' : 'other';
   const content =
     (current.content === undefined ? '' : escape(current.content)) +
-    current.children.map(child => serialize(child, childPosition)).join('');
-  return content ? `${open}>${content}</${current.name}>` : `${open}/>`;
+    current.children
+      .map(child => serialize(child, childPosition, inner))
+      .join('');
+  // The HTML parser ignores `/>` on HTML elements, so an empty one (a
+  // label) would stay open and take in what follows: close them all.
+  return content || html ? `${open}>${content}</${current.name}>` : `${open}/>`;
 }
 
 /**

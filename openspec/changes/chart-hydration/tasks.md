@@ -2,7 +2,7 @@
 
 ## 1. Fixes that stand on their own
 
-- [ ] 1.1 In `render/string.ts`, write HTML elements inside a `foreignObject` with an end tag, also when they're empty; SVG elements without content stay self-closing. Verify:
+- [x] 1.1 In `render/string.ts`, write HTML elements inside a `foreignObject` with an end tag, also when they're empty; SVG elements without content stay self-closing. Verify:
   - unit tests for the "An empty label in an HTML page" scenario (markup in a page before a paragraph, parsed with `innerHTML`: the paragraph stays outside the chart) and "XML stays the same" (`DOMParser` as XML gives the same elements as before);
   - the existing `string.spec.ts` and `toScene.spec.ts` tests pass.
 
