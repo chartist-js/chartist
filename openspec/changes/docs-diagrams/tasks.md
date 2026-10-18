@@ -24,8 +24,8 @@
 
 ## 2. Component and styles
 
-- [ ] 2.1 Write `src/components/docs/Diagram.astro`: it takes the source text (`source`) and an optional `caption`, renders it through the renderer and puts the SVG inline in a `<figure class="diagram">` with a `<figcaption>`, at `width: 100%` and a `max-width` of the rendered width. Verify: a page that imports a `.mmd` file with `?raw` and renders `<Diagram source={…} caption="…" />` builds with the SVG inline ("Including a diagram"); a syntax error fails the build with the file's message ("A syntax error"); saving the source in the dev server updates the page ("Editing in the dev server").
-- [ ] 2.2 Write `src/styles/diagrams.css` with the tokens:
+- [x] 2.1 Write `src/components/docs/Diagram.astro`: it takes the source text (`source`) and an optional `caption`, renders it through the renderer and puts the SVG inline in a `<figure class="diagram">` with a `<figcaption>`, at `width: 100%` and a `max-width` of the rendered width. Verify: a page that imports a `.mmd` file with `?raw` and renders `<Diagram source={…} caption="…" />` builds with the SVG inline ("Including a diagram"); a syntax error fails the build with the file's message ("A syntax error"); saving the source in the dev server updates the page ("Editing in the dev server").
+- [x] 2.2 Write `src/styles/diagrams.css` with the tokens:
   - flowcharts (nodes, clusters, edges, edge labels, markers);
   - sequence diagrams (actors, messages, notes, activations);
   - state diagrams;
