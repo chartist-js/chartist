@@ -1,4 +1,5 @@
 export { chart } from './chart';
+export { renderForHydration } from './renderForHydration';
 export { toScene } from './toScene';
 export { withOptions } from './types';
 export type { SceneSize } from './toScene';

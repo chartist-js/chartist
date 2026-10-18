@@ -20,7 +20,7 @@
   - a browser test page in the smoke suite with an unstyled label span and slices with and without `stroke-width`, in Chromium, Firefox and WebKit, for "Label box from the foreignObject" and "Donut width from the attribute";
   - the visual tests show no change ("Charts look the same"): the local baseline, and the committed images for examples without 1.x code.
 
-- [ ] 2.2 Add `renderForHydration(config, size)` next to `toScene()`, with a doc comment and an example (what the marker records, the root, the scaling `viewBox`, HTML labels by default, no inline styles, that `liveDomRenderer()` takes it over, and when to use `renderToString()` instead). It:
+- [x] 2.2 Add `renderForHydration(config, size)` next to `toScene()`, with a doc comment and an example (what the marker records, the root, the scaling `viewBox`, HTML labels by default, no inline styles, that `liveDomRenderer()` takes it over, and when to use `renderToString()` instead). It:
   - lays out as `toScene()` does, with `chart()`'s root size and HTML labels by default;
   - adds the scaling `viewBox` unless the config sets one;
   - writes the marker as JSON with `v: 1`, width, height, labels, text and scale;
