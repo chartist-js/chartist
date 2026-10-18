@@ -1,0 +1,14 @@
+sequenceDiagram
+  autonumber
+  accTitle: A sequence diagram fixture
+  accDescr: Every sequence element the diagram styles cover: actors, numbered solid and dashed messages, a note, an activation and a loop.
+  participant S as Server
+  participant B as Browser
+  S->>B: the markup
+  activate B
+  Note over B: shown scaled
+  loop every update
+    B->>B: render
+  end
+  B-->>S: fetch new data
+  deactivate B

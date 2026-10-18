@@ -1,0 +1,335 @@
+/*
+ * Diagrams: Mermaid's SVG, rendered during the build (src/lib/diagrams/),
+ * with Mermaid's own styles removed. This stylesheet draws them with the
+ * tokens, so one SVG follows light and dark mode. The selectors are
+ * Mermaid's class names for flowcharts, sequence diagrams and state
+ * diagrams (the diagrams' unit test checks they're still rendered); other
+ * diagram types get the colors and fonts only.
+ *
+ * The renderer measures text with this stylesheet loaded, so sizes and
+ * fonts here change the layout. Sequence diagrams measure with Mermaid's
+ * settings instead: their text stays at 15px Atkinson (FONT_SIZE in
+ * render.ts).
+ */
+.diagram {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(16px, 4vw, 28px) clamp(12px, 3vw, 24px) clamp(14px, 3vw, 20px);
+  background-color: var(--surface);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 16px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.diagram > svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.diagram > figcaption {
+  max-width: 60ch;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--ink-2);
+  text-align: center;
+  text-wrap: balance;
+}
+
+/* Text */
+.diagram svg {
+  font-family: var(--font-body);
+  font-size: 15px;
+  fill: var(--ink);
+}
+
+.diagram text {
+  fill: var(--ink);
+}
+
+/* Mermaid centers these with its own stylesheet, which is removed. */
+.diagram svg.flowchart .node .label text {
+  text-anchor: middle;
+}
+
+/* Label backgrounds Mermaid draws behind node text: not needed. */
+.diagram .node .label rect,
+.diagram .cluster-label rect {
+  fill: none;
+  stroke: none;
+}
+
+/*
+ * Boxes: the site's printed cards, with an offset shadow (svg.ts adds it).
+ * A box is a shape, or a group of a fill path and an outline path (rounded
+ * shapes). The emphasis classes set the custom properties.
+ */
+.diagram .node {
+  --box-fill: var(--surface-raised);
+  --box-stroke: var(--ink);
+  --box-text: var(--ink);
+}
+
+:root[data-theme='dark'] .diagram .node {
+  --box-stroke: var(--line-strong);
+}
+
+.diagram .node .label-container,
+.diagram .node g.label-container > path:first-child {
+  fill: var(--box-fill);
+}
+
+.diagram .node .label-container {
+  stroke: var(--box-stroke);
+  stroke-width: 2px;
+}
+
+.diagram .node g.label-container > path:first-child {
+  stroke: none;
+}
+
+.diagram .node g.label-container > path + path {
+  fill: none;
+  stroke: var(--box-stroke);
+  stroke-width: 2px;
+}
+
+.diagram .node rect.label-container {
+  rx: var(--r-sm);
+  ry: var(--r-sm);
+}
+
+.diagram .node .label text {
+  fill: var(--box-text);
+}
+
+.diagram .diagram-shadow {
+  transform: translate(0, 3px);
+}
+
+.diagram .diagram-shadow,
+.diagram .diagram-shadow * {
+  fill: var(--ink);
+  stroke: var(--ink);
+  stroke-width: 2px;
+}
+
+:root[data-theme='dark'] .diagram .diagram-shadow,
+:root[data-theme='dark'] .diagram .diagram-shadow * {
+  fill: var(--bg-sunken);
+  stroke: var(--bg-sunken);
+}
+
+/* Groups: subgraphs and composite states */
+.diagram .cluster rect,
+.diagram .statediagram-cluster rect.outer {
+  fill: var(--bg-sunken);
+  stroke: var(--line-strong);
+  stroke-width: 1.5px;
+  stroke-dasharray: 6 4;
+  rx: var(--r-md);
+  ry: var(--r-md);
+}
+
+.diagram .statediagram-cluster rect.inner {
+  fill: none;
+  stroke: none;
+}
+
+.diagram .cluster-label text {
+  /* A halo in the group's color hides a line that crosses the title. */
+  paint-order: stroke;
+  stroke: var(--bg-sunken);
+  stroke-width: 8px;
+  stroke-linejoin: round;
+  font-family: var(--font-code);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--ink-2);
+}
+
+/* Lines and arrowheads */
+.diagram .flowchart-link,
+.diagram .transition {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 2px;
+}
+
+.diagram .flowchart-link.edge-thickness-thick {
+  stroke: var(--ink);
+  stroke-width: 3.5px;
+}
+
+.diagram .flowchart-link.edge-pattern-dotted {
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
+}
+
+.diagram .marker,
+.diagram marker path {
+  fill: var(--ink-2);
+  stroke: var(--ink-2);
+  stroke-width: 1px;
+  stroke-dasharray: none;
+}
+
+.diagram .marker.cross {
+  fill: none;
+  stroke-width: 2px;
+}
+
+/* Labels on lines: Mermaid measures them in the diagram's own font. */
+.diagram .edgeLabel text {
+  fill: var(--ink-2);
+}
+
+.diagram .edgeLabel rect.background {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1px;
+  rx: 4px;
+  ry: 4px;
+}
+
+/* Emphasis: classes a node can take (`hydrate[hydrate]:::accent`) */
+.diagram .node.accent {
+  --box-fill: var(--accent);
+  --box-text: var(--on-accent);
+}
+
+.diagram .node.brand {
+  --box-fill: var(--brand);
+  --box-text: var(--on-brand);
+}
+
+.diagram .node.accent text,
+.diagram .node.brand text {
+  font-weight: 700;
+}
+
+.diagram .node.muted {
+  --box-fill: var(--bg-sunken);
+  --box-stroke: var(--line-strong);
+  --box-text: var(--ink-2);
+}
+
+.diagram .node.muted .label-container,
+.diagram .node.muted g.label-container > path + path {
+  stroke-dasharray: 5 4;
+}
+
+.diagram .node.muted .diagram-shadow {
+  display: none;
+}
+
+.diagram .node.code {
+  --box-fill: var(--code-bg);
+  --box-text: var(--code-ink);
+}
+
+.diagram .node.code text {
+  font-family: var(--font-code);
+  font-size: 13.5px;
+}
+
+/* State diagrams: start and end states */
+.diagram .state-start {
+  fill: var(--ink);
+  stroke: var(--ink);
+}
+
+/* Sequence diagrams */
+.diagram rect.actor {
+  fill: var(--surface-raised);
+  stroke: var(--ink);
+  stroke-width: 2px;
+  rx: var(--r-sm);
+  ry: var(--r-sm);
+}
+
+:root[data-theme='dark'] .diagram rect.actor {
+  stroke: var(--line-strong);
+}
+
+.diagram text.actor {
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.diagram .actor-line {
+  stroke: var(--line-strong);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4 4;
+}
+
+.diagram .messageLine0,
+.diagram .messageLine1 {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 2px;
+}
+
+.diagram .messageLine1 {
+  stroke-dasharray: 6 5;
+}
+
+.diagram .messageText {
+  fill: var(--ink);
+}
+
+.diagram rect.note {
+  fill: var(--warn-bg);
+  stroke: var(--line-strong);
+  stroke-width: 1.5px;
+  rx: var(--r-sm);
+  ry: var(--r-sm);
+}
+
+.diagram .noteText {
+  fill: var(--ink);
+}
+
+.diagram [class^='activation'] {
+  fill: var(--bg-sunken);
+  stroke: var(--line-strong);
+  stroke-width: 1.5px;
+}
+
+.diagram .loopLine {
+  stroke: var(--line-strong);
+  stroke-width: 1.5px;
+  stroke-dasharray: 4 3;
+}
+
+.diagram .labelBox {
+  fill: var(--bg-sunken);
+  stroke: var(--line-strong);
+  stroke-width: 1.5px;
+}
+
+.diagram .labelText,
+.diagram .loopText {
+  fill: var(--ink-2);
+}
+
+.diagram .sequenceNumber {
+  font-family: var(--font-body);
+  font-weight: 700;
+  fill: var(--on-brand);
+}
+
+/* The numbers' circles are markers on an empty line: sized by its stroke. */
+.diagram line[marker-start$='-sequencenumber)'] {
+  stroke-width: 2px;
+}
+
+.diagram [id$='-sequencenumber'] circle {
+  fill: var(--brand);
+}

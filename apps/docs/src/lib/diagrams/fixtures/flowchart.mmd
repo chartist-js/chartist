@@ -1,0 +1,12 @@
+flowchart TD
+  accTitle: A flowchart fixture
+  accDescr: Every flowchart element the diagram styles cover: a cluster, nodes with each emphasis class, a decision, labeled, dotted and thick edges.
+  subgraph server [On the server]
+    config[The config] --> render["renderForHydration()"]:::code
+  end
+  render -->|markup| page[The page]
+  page --> ready{Scripts loaded?}
+  ready -->|yes| hydrate([hydrate]):::accent
+  ready -.->|not yet| page
+  hydrate ==> live[A live chart]:::brand
+  live --- note[Plugins and updates]:::muted

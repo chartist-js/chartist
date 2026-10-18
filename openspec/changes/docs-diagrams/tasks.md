@@ -3,7 +3,7 @@
 ## 1. Rendering
 
 - [x] 1.1 Add `mermaid` (12.x, exact version) as a dev dependency of `apps/docs`, listed in the root `package.json` too if nx-astro needs it, and git-ignore `apps/docs/.cache/`. Verify: `pnpm install` and `pnpm nx run docs:build` still pass, and no page's bundle contains Mermaid (grep `dist/apps/docs` for a Mermaid-only string).
-- [ ] 1.2 Write the post-processing in `src/lib/diagrams/svg.ts`:
+- [x] 1.2 Write the post-processing in `src/lib/diagrams/svg.ts`:
   - remove the `<style>` element, the inline `style` attributes and the root's `max-width`;
   - map the sentinel colors to `var(--token)`, and fail on any hex color left;
   - check that every id has the diagram's prefix;
@@ -11,7 +11,7 @@
 
   Verify: unit tests on a fixture SVG that Mermaid rendered, covering each step and each failure.
 
-- [ ] 1.3 Write the renderer in `src/lib/diagrams/render.ts`:
+- [x] 1.3 Write the renderer in `src/lib/diagrams/render.ts`:
   - one Playwright Chromium page per process, opened on the first diagram that isn't cached;
   - Mermaid's browser bundle and the site's `@font-face` rules with the self-hosted fonts;
   - `theme: 'base'` with the sentinel `themeVariables`, `htmlLabels: false`, `mermaid.render('diagram-<hash>', source)`;
@@ -20,7 +20,7 @@
 
   Add an Astro integration that closes the browser in `astro:build:done` and when the dev server stops. Verify: unit tests for the cache key and the error messages; a build renders a diagram once, and a second build takes it from the cache without starting the browser ("An unchanged diagram").
 
-- [ ] 1.4 Add a fixture test that renders one flowchart, one sequence diagram and one state diagram, and lists the Mermaid class names `diagrams.css` relies on, so a Mermaid update that renames one fails. Verify: the test passes on the pinned version.
+- [x] 1.4 Add a fixture test that renders one flowchart, one sequence diagram and one state diagram, and lists the Mermaid class names `diagrams.css` relies on, so a Mermaid update that renames one fails. Verify: the test passes on the pinned version.
 
 ## 2. Component and styles
 

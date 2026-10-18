@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { diagrams } from './integrations/diagrams.mjs';
 import { pagefind } from './integrations/pagefind.mjs';
 import { playgroundLib } from './integrations/playground-lib.mjs';
 import { movedPages } from './integrations/redirects.mjs';
@@ -18,6 +19,7 @@ export default defineConfig({
   outDir: '../../dist/apps/docs',
   integrations: [
     mdx(),
+    diagrams(),
     playgroundLib(),
     pagefind(),
     // The archived 1.x and 0.x docs (public/v1/, public/v0/) and the card
