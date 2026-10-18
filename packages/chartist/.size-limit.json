@@ -77,10 +77,10 @@
     "gzip": true
   },
   {
-    "name": "import { renderForHydration } (tree-shaken)",
-    "path": "dist/index.js",
+    "name": "import { renderForHydration } from chartist/server (tree-shaken)",
+    "path": "dist/server.js",
     "import": "{ renderForHydration }",
-    "limit": "4.45 kB",
+    "limit": "4.55 kB",
     "gzip": true
   },
   {

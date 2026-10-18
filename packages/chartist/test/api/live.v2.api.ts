@@ -3,12 +3,12 @@ import {
   lineChart,
   lineChartConfig,
   pieChart,
-  renderForHydration,
   toScene,
   type PhaseEvents
 } from 'chartist';
 import { compat } from 'chartist/compat';
 import { diffScenes, liveDomRenderer, smilAnimations } from 'chartist/live';
+import { renderForHydration } from 'chartist/server';
 import {
   LIVE_LIST_FILE,
   cjsNames,

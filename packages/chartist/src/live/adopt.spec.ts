@@ -6,12 +6,12 @@ import {
   lineChartConfig,
   pieChart,
   pieChartConfig,
-  renderForHydration,
   type ChartHandle,
   type ChartPlugin,
   type PhaseEvents,
   type Renderer
 } from '../index';
+import { renderForHydration } from '../server';
 import { liveDomRenderer } from './renderer';
 
 const CT = 'http://gionkunz.github.com/chartist-js/ct';

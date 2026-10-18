@@ -1,4 +1,5 @@
-import { lineChartConfig, renderForHydration } from 'chartist';
+import { lineChartConfig } from 'chartist';
+import { renderForHydration } from 'chartist/server';
 
 // The chart, as the server and the browser both draw it.
 export const data = {

@@ -100,8 +100,11 @@ document.body.dataset.done = '';
 // the server's size: a line chart with HTML labels and a donut with
 // donutWidth. A classic script in the head listens for violations, so
 // the ones the parser reports for the markup count too.
-const { lineChartConfig, pieChartConfig, renderForHydration } = await import(
+const { lineChartConfig, pieChartConfig } = await import(
   path.join(pkgDir, 'dist/index.js')
+);
+const { renderForHydration } = await import(
+  path.join(pkgDir, 'dist/server.js')
 );
 const hydrateData = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],

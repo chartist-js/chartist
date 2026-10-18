@@ -1,30 +1,35 @@
-import { estimateText } from '../render/measure';
-import { renderToString } from './string';
-import { withFields, type AttrValue, type SceneNode } from '../scene/node';
 import {
-  chartRootSize,
-  HYDRATION_ATTRIBUTE,
-  markedRoot,
-  type HydrationMarker
-} from '../chart/hydration';
-import { buildScene, type SceneSize } from '../chart/toScene';
-import type { ChartConfig } from '../chart/types';
+  toScene,
+  type AttrValue,
+  type ChartConfig,
+  type LabelMode,
+  type SceneNode,
+  type SceneSize
+} from '../index';
+import { isPresentation } from './presentation';
+import { renderToString } from './string';
 
-// The CSS properties SVG has presentation attributes for, without the
-// geometry properties (`x`, `r`, `d`), which only some elements take. A
-// string, not a Set, so bundles without renderForHydration() drop it.
-const presentation =
-  ' alignment-baseline baseline-shift clip-path clip-rule color' +
-  ' color-interpolation color-interpolation-filters cursor direction' +
-  ' display dominant-baseline fill fill-opacity fill-rule filter' +
-  ' flood-color flood-opacity font-family font-size font-size-adjust' +
-  ' font-stretch font-style font-variant font-weight image-rendering' +
-  ' letter-spacing lighting-color marker-end marker-mid marker-start mask' +
-  ' opacity overflow paint-order pointer-events shape-rendering stop-color' +
-  ' stop-opacity stroke stroke-dasharray stroke-dashoffset stroke-linecap' +
-  ' stroke-linejoin stroke-miterlimit stroke-opacity stroke-width' +
-  ' text-anchor text-decoration text-rendering unicode-bidi vector-effect' +
-  ' visibility word-spacing writing-mode ';
+/**
+ * The root attribute the browser reads the layout from. `chart()` (which
+ * removes it) and `liveDomRenderer()` (which reads it) name it in the core;
+ * the hydration tests fail if the names drift apart.
+ */
+const MARKER = 'data-ct-hydrate';
+
+/** What the root records for the browser to build the same scene again. */
+interface HydrationMarker {
+  /** The marker's version; others aren't taken over. */
+  readonly v: 1;
+  /** The layout size in px. */
+  readonly width: number;
+  readonly height: number;
+  /** The label mode the scene was laid out with. */
+  readonly labels: LabelMode;
+  /** `estimate` for the built-in estimate, `custom` for a `measureText`. */
+  readonly text: 'estimate' | 'custom';
+  /** Whether the root got a `viewBox` that only scales until hydration. */
+  readonly scale: boolean;
+}
 
 /**
  * The declarations of a style that an SVG element can carry as presentation
@@ -36,11 +41,7 @@ function presentationAttributes(style: string): Record<string, AttrValue> {
     const separator = declaration.indexOf(':');
     const name = declaration.slice(0, separator).trim().toLowerCase();
     const value = declaration.slice(separator + 1).trim();
-    if (
-      separator > 0 &&
-      presentation.includes(` ${name} `) &&
-      !/!important/i.test(value)
-    ) {
+    if (separator > 0 && isPresentation(name) && !/!important/i.test(value)) {
       attrs[name] = value.replace(/^(-?(?:\d+\.?\d*|\.\d+))px$/, '$1');
     }
   }
@@ -54,22 +55,29 @@ function presentationAttributes(style: string): Record<string, AttrValue> {
  * or are applied when the browser takes the markup over.
  */
 function withoutStyles(current: SceneNode, html: boolean): SceneNode {
-  const { style, ...attrs } = current.attrs;
+  const style = current.attrs.style;
   const inner = html || current.name === 'foreignObject';
   const children = current.children.map(child => withoutStyles(child, inner));
-  if (
-    style === undefined &&
-    children.every((child, index) => child === current.children[index])
-  ) {
-    return current;
+  const changed = children.some(
+    (child, index) => child !== current.children[index]
+  );
+  let next =
+    style === undefined
+      ? current
+      : current.attr({
+          style: undefined,
+          ...(html ? {} : presentationAttributes(String(style)))
+        });
+  if (changed) {
+    next = children.reduce(
+      (parent, child) => parent.append(child),
+      next.empty()
+    );
+    if (current.content !== undefined) {
+      next = next.text(current.content);
+    }
   }
-  return withFields(current, {
-    attrs:
-      style === undefined || html
-        ? attrs
-        : { ...attrs, ...presentationAttributes(String(style)) },
-    children
-  });
+  return next;
 }
 
 /**
@@ -96,6 +104,8 @@ function withoutStyles(current: SceneNode, html: boolean): SceneNode {
  * self-contained SVG image, with its styles inline (files, email, a static
  * chart), use `toScene()` and {@link renderToString} instead.
  *
+ * @experimental New with 2.1: the server API may still change in a 2.x
+ *   minor before it becomes stable.
  * @param config The chart, as the browser creates it: data, axes, layers,
  *   plugins and listeners
  * @param size The size to lay out at, in px, and how to measure text; use
@@ -103,7 +113,8 @@ function withoutStyles(current: SceneNode, html: boolean): SceneNode {
  * @returns The SVG markup, its root marked with `data-ct-hydrate`
  * @example
  * ```ts
- * import { lineChartConfig, renderForHydration } from 'chartist';
+ * import { lineChartConfig } from 'chartist';
+ * import { renderForHydration } from 'chartist/server';
  *
  * const data = {
  *   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -133,17 +144,16 @@ export function renderForHydration(
     text: size.measureText ? 'custom' : 'estimate',
     scale: !config.viewBox
   };
-  const scene = buildScene(config, {
-    width: size.width,
-    height: size.height,
-    measureText: size.measureText ?? estimateText,
-    labels,
-    rootSize: chartRootSize(config)
-  });
+  const scene = toScene(config, { ...size, labels });
   return renderToString(
     withoutStyles(scene, false).attr({
-      ...markedRoot(marker),
-      [HYDRATION_ATTRIBUTE]: JSON.stringify(marker)
+      // The root size chart() draws, so both sides draw the same root.
+      width: config.width ?? '100%',
+      height: config.height ?? '100%',
+      ...(marker.scale
+        ? { viewBox: `0 0 ${marker.width} ${marker.height}` }
+        : {}),
+      [MARKER]: JSON.stringify(marker)
     })
   );
 }

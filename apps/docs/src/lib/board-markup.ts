@@ -3,7 +3,8 @@
  * chart is in the page's HTML and the browser takes it over
  * (scripts/board-chart.ts).
  */
-import { lineChartConfig, renderForHydration } from 'chartist';
+import { lineChartConfig } from 'chartist';
+import { renderForHydration } from 'chartist/server';
 import { BOARD_DATA, BOARD_OPTIONS } from '../scripts/board-chart';
 
 /**

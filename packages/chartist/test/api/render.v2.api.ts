@@ -5,12 +5,12 @@ import {
   findAll,
   lineChartConfig,
   pieChartConfig,
-  renderForHydration,
   renderToString,
   seriesColors,
   textAscent,
   toScene
 } from 'chartist';
+import { renderForHydration } from 'chartist/server';
 import { dotsLayer } from './layers.v2.ts';
 
 describe('server-side rendering (v2)', () => {

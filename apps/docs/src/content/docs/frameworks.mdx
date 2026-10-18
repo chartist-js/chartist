@@ -56,11 +56,11 @@ Freeze the markup when the component mounts: React writes `dangerouslySetInnerHT
 import {
   lineChart,
   lineChartConfig,
-  renderForHydration,
   type ChartHandle,
   type LineChartData
 } from 'chartist';
 import { liveDomRenderer } from 'chartist/live';
+import { renderForHydration } from 'chartist/server';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export function LineChart({ data }: { data: LineChartData }) {
@@ -108,11 +108,11 @@ Give `v-html` the markup on the server only. In the browser, Vue writes any `v-h
 import {
   lineChart,
   lineChartConfig,
-  renderForHydration,
   type ChartHandle,
   type LineChartData
 } from 'chartist';
 import { liveDomRenderer } from 'chartist/live';
+import { renderForHydration } from 'chartist/server';
 import {
   onBeforeUnmount,
   onMounted,
@@ -176,11 +176,11 @@ import {
 import {
   lineChart,
   lineChartConfig,
-  renderForHydration,
   type ChartHandle,
   type LineChartData
 } from 'chartist';
 import { liveDomRenderer } from 'chartist/live';
+import { renderForHydration } from 'chartist/server';
 
 @Component({
   selector: 'line-chart',
@@ -233,13 +233,9 @@ With Zone.js, create the chart in `NgZone.runOutsideAngular()`, so its resize ob
 ```svelte
 <script lang="ts">
   import { browser } from '$app/env';
-  import {
-    lineChart,
-    lineChartConfig,
-    renderForHydration,
-    type LineChartData
-  } from 'chartist';
+  import { lineChart, lineChartConfig, type LineChartData } from 'chartist';
   import { liveDomRenderer } from 'chartist/live';
+  import { renderForHydration } from 'chartist/server';
   import { untrack } from 'svelte';
   import type { Attachment } from 'svelte/attachments';
 

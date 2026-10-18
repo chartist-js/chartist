@@ -49,8 +49,11 @@ function cdnFile(url) {
 }
 
 // Server markup from the build, for the hydration pages.
-const { lineChartConfig, renderForHydration } = await import(
+const { lineChartConfig } = await import(
   pathToFileURL(path.join(pkgDir, 'dist/index.js'))
+);
+const { renderForHydration } = await import(
+  pathToFileURL(path.join(pkgDir, 'dist/server.js'))
 );
 const week = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],

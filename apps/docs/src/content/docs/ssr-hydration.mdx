@@ -41,7 +41,8 @@ The server renders the chart with `renderForHydration()`, and the browser create
 On the server, render the chart's markup into its container:
 
 ```ts
-import { lineChartConfig, renderForHydration } from 'chartist';
+import { lineChartConfig } from 'chartist';
+import { renderForHydration } from 'chartist/server';
 
 const data = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
