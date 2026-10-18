@@ -1,6 +1,6 @@
 /**
- * Rewrites chartist.json, compat.json, live.json and experimental.json from
- * the local build. Review the diff: every added or removed name is an API
+ * Rewrites chartist.json, compat.json, live.json, server.json and
+ * experimental.json from the local build. Review the diff: every added or removed name is an API
  * change, and every name marked or unmarked experimental a promise about it.
  *
  * Run: pnpm nx run chartist:test:api:update-exports (builds first).
@@ -13,6 +13,7 @@ import {
   experimentalNames,
   LIST_FILE,
   LIVE_LIST_FILE,
+  SERVER_LIST_FILE,
   typeNames,
   type ExportList
 } from './read.ts';
@@ -40,12 +41,20 @@ const liveList: ExportList = {
 writeFileSync(LIVE_LIST_FILE, JSON.stringify(liveList, null, 2) + '\n');
 console.log(`Wrote the chartist/live names to ${LIVE_LIST_FILE}`);
 
+const serverList: ExportList = {
+  runtime: await esmNames('local', 'server'),
+  types: typeNames('local', 'server')
+};
+writeFileSync(SERVER_LIST_FILE, JSON.stringify(serverList, null, 2) + '\n');
+console.log(`Wrote the chartist/server names to ${SERVER_LIST_FILE}`);
+
 const experimental = {
   $comment:
     'The exports each entry marks @experimental: they may still change in a 2.x minor. Every other export is stable. The rule: openspec/specs/public-api/spec.md.',
   chartist: experimentalNames('local', 'index.d.ts'),
   compat: experimentalNames('local', 'compat.d.ts'),
-  live: experimentalNames('local', 'live.d.ts')
+  live: experimentalNames('local', 'live.d.ts'),
+  server: experimentalNames('local', 'server.d.ts')
 };
 writeFileSync(EXPERIMENTAL_FILE, JSON.stringify(experimental, null, 2) + '\n');
 console.log(`Wrote the experimental names to ${EXPERIMENTAL_FILE}`);

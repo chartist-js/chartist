@@ -20,7 +20,7 @@
 
 ## 3. Package surface
 
-- [ ] 3.1 Update the export recordings (`test/api/exports/`: a `server` list, `renderToString` gone from `chartist`, the `server` experimental names) and add API tests through the published entry: `chartist/server` in ESM, CJS and UMD, `toScene` the same function as in `chartist`, and type tests for `applyStyles`. Verify: `pnpm nx run chartist:test:api --skip-nx-cache` and `test:api:v1`.
+- [x] 3.1 Update the export recordings (`test/api/exports/`: a `server` list, `renderToString` gone from `chartist`, the `server` experimental names) and add API tests through the published entry: `chartist/server` in ESM, CJS and UMD, `toScene` the same function as in `chartist`, and type tests for `applyStyles`. Verify: `pnpm nx run chartist:test:api --skip-nx-cache` and `test:api:v1`.
 - [ ] 3.2 Add smoke tests: the UMD page loads `server.umd.js` after `index.umd.js` and renders a string; the browser ESM page imports from `server.min.js`; the CSP test's hydration page gets its markup through `chartist/server`. Verify: `pnpm nx run chartist:test:smoke --skip-nx-cache`.
 - [ ] 3.3 Measure with `pnpm nx run chartist:test:size` and set the budgets: `dist/index.min.js` and the UMD build lower (below 2.0.0's 27.62 kB), new entries for `dist/server.min.js`, `import { renderToString }` and `import { applyStyles }` from `chartist/server`, and the renderForHydration entry moved. Verify: the size check passes, and the measured sizes are in the commit message.
 

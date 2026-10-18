@@ -12,5 +12,11 @@
     "diffScenes",
     "liveDomRenderer",
     "smilAnimations"
+  ],
+  "server": [
+    "ApplyStylesOptions",
+    "applyStyles",
+    "renderForHydration",
+    "renderToString"
   ]
 }
