@@ -41,6 +41,18 @@ describe('server/selectors', () => {
     expect(matching(selector)).toBe(true);
   });
 
+  it('matches :root, html and body above the scene, as the cascade puts them', () => {
+    const page: SceneNode[] = [node('html'), node('body'), ...path];
+    expect(matching(':root .ct-line', page)).toBe(true);
+    expect(matching('html .ct-series-a .ct-line', page)).toBe(true);
+    expect(matching('body > svg > g > path', page)).toBe(true);
+    expect(matching(':root', page)).toBe(false);
+    expect(matching(':root', page.slice(0, 1))).toBe(true);
+    expect(parseSelector(':root')?.specificity).toBe(
+      parseSelector('.a')?.specificity
+    );
+  });
+
   it.each([
     'line',
     '.ct-bar',
@@ -62,7 +74,6 @@ describe('server/selectors', () => {
     '.ct-line:hover',
     '.ct-line::before',
     '.ct-line:before',
-    ':root .ct-line',
     '#chart .ct-line',
     '.ct-series + .ct-line',
     '.ct-series ~ .ct-line',

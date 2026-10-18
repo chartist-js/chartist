@@ -7,9 +7,11 @@ import vm from 'node:vm';
 import { lineChartConfig, toScene as coreToScene } from 'chartist';
 import {
   applyStyles,
+  computeStyles,
   renderForHydration,
   renderToString,
-  toScene
+  toScene,
+  type SkippedStyle
 } from 'chartist/server';
 import {
   BUILDS,
@@ -56,6 +58,7 @@ describe('chartist/server entry', () => {
     );
     expect(names.filter(name => !core.includes(name))).toEqual([
       'applyStyles',
+      'computeStyles',
       'renderForHydration',
       'renderToString'
     ]);
@@ -100,6 +103,30 @@ describe('chartist/server (v2)', () => {
     expect(
       renderToString(applyStyles(scene, css, { colorScheme: 'dark' }))
     ).toContain('stroke="rgba(255, 255, 255, 0.2)"');
+  });
+
+  test('computeStyles gives the values per node, and reports what it skips', () => {
+    const scene = toScene(lineChartConfig(week), SIZE);
+    const skipped: SkippedStyle[] = [];
+    const styles = computeStyles(
+      scene,
+      [css, ':root { --ct-series-a: teal; } .ct-line:hover { stroke: red; }'],
+      { onSkip: part => skipped.push(part) }
+    );
+    expect(renderToString(applyStyles(scene, styles))).toMatch(
+      /<path class="ct-line" [^>]*stroke="teal"/
+    );
+    expect(skipped).toEqual([{ reason: 'selector', text: '.ct-line:hover' }]);
+  });
+
+  test('applyStyles writes the styles of another engine', () => {
+    const scene = toScene(lineChartConfig(week), SIZE);
+    const styled = renderToString(
+      applyStyles(scene, current =>
+        current.role === 'line' ? { stroke: 'navy' } : undefined
+      )
+    );
+    expect(styled).toMatch(/<path class="ct-line" [^>]*stroke="navy"/);
   });
 
   test('renderForHydration writes marked markup', () => {

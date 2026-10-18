@@ -16,6 +16,23 @@ export interface Declaration {
   readonly important: boolean;
 }
 
+/**
+ * Why `computeStyles()` left a part of a stylesheet out: `at-rule`,
+ * `selector`, `nested`, `shorthand` or `value` (see `SkippedStyle`).
+ *
+ * @experimental New with 2.1: the server API may still change in a 2.x
+ *   minor before it becomes stable.
+ */
+export type SkipReason =
+  | 'at-rule'
+  | 'selector'
+  | 'nested'
+  | 'shorthand'
+  | 'value';
+
+/** Reports a part of a stylesheet that was left out, with its text. */
+export type Report = (reason: SkipReason, text: string) => void;
+
 /** A style rule, read in place from whatever block it was in. */
 export interface StyleRule {
   /** The selector list as written, e.g. `.ct-series-a .ct-line, .ct-bar`. */
@@ -147,7 +164,8 @@ function declaration(text: string): Declaration | undefined {
 export function readDeclarations(
   text: string,
   start = 0,
-  end = text.length
+  end = text.length,
+  report?: Report
 ): Declaration[] {
   const declarations: Declaration[] = [];
   let i = start;
@@ -155,6 +173,7 @@ export function readDeclarations(
     const index = topLevel(text, ';{', i, end);
     if (text[index] === '{' && index < end) {
       // A nested rule, with its selector: skipped.
+      report?.('nested', text.slice(i, index).trim());
       i = blockEnd(text, index + 1, end) + 1;
       continue;
     }
@@ -169,12 +188,16 @@ export function readDeclarations(
 
 /**
  * Whether the rules of an at-rule apply: `@media` with one
- * `prefers-color-scheme` condition when it's the scheme, `@supports`
+ * `prefers-color-scheme` condition when it's the scheme (`other-scheme`
+ * when it's the other one, which isn't reported), `@supports`
  * unless its condition starts with `not` (a current browser has what chart
  * styles test for), and `@layer` blocks, read in place. Other at-rules are
  * skipped.
  */
-function applies(prelude: string, scheme: ColorScheme): boolean {
+function applies(
+  prelude: string,
+  scheme: ColorScheme
+): boolean | 'other-scheme' {
   const [, name = '', condition = ''] =
     /^@([\w-]+)\s*([\s\S]*)$/.exec(prelude) ?? [];
   switch (name.toLowerCase()) {
@@ -182,7 +205,9 @@ function applies(prelude: string, scheme: ColorScheme): boolean {
       const query = /^\(\s*prefers-color-scheme\s*:\s*(light|dark)\s*\)$/i.exec(
         condition
       );
-      return query?.[1].toLowerCase() === scheme;
+      return query
+        ? query[1].toLowerCase() === scheme || 'other-scheme'
+        : false;
     }
     case 'supports':
       return !/^not\b/i.test(condition);
@@ -198,7 +223,8 @@ function readRules(
   start: number,
   end: number,
   scheme: ColorScheme,
-  rules: StyleRule[]
+  rules: StyleRule[],
+  report?: Report
 ) {
   let i = start;
   while (i < end) {
@@ -206,18 +232,25 @@ function readRules(
     const prelude = text.slice(i, index).trim();
     if (index >= end || text[index] !== '{') {
       // A statement (`@import …;`, `@layer a, b;`) or a stray character.
+      // Only `@import` would have added rules.
+      if (/^@import\b/i.test(prelude)) {
+        report?.('at-rule', prelude);
+      }
       i = index + 1;
       continue;
     }
     const close = blockEnd(text, index + 1, end);
     if (prelude.startsWith('@')) {
-      if (applies(prelude, scheme)) {
-        readRules(text, index + 1, close, scheme, rules);
+      const read = applies(prelude, scheme);
+      if (read === true) {
+        readRules(text, index + 1, close, scheme, rules, report);
+      } else if (!read) {
+        report?.('at-rule', prelude);
       }
     } else if (prelude) {
       rules.push({
         selectors: prelude,
-        declarations: readDeclarations(text, index + 1, close)
+        declarations: readDeclarations(text, index + 1, close, report)
       });
     }
     i = close + 1;
@@ -230,9 +263,13 @@ function readRules(
  * in `@supports` and `@layer` blocks in place (ignoring layer order), and
  * none from other at-rules or nested rules.
  */
-export function readStylesheet(css: string, scheme: ColorScheme): StyleRule[] {
+export function readStylesheet(
+  css: string,
+  scheme: ColorScheme,
+  report?: Report
+): StyleRule[] {
   const text = withoutComments(css);
   const rules: StyleRule[] = [];
-  readRules(text, 0, text.length, scheme, rules);
+  readRules(text, 0, text.length, scheme, rules, report);
   return rules;
 }

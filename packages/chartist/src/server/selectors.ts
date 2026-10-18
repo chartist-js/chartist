@@ -5,7 +5,7 @@
  * with anything else (`:hover`, `::before`, `#id`, `+`) matches nothing.
  */
 import type { SceneNode } from '../index';
-import { splitTopLevel, topLevel } from './css';
+import { splitTopLevel, topLevel, type Report } from './css';
 
 type Simple =
   | { readonly kind: 'type'; readonly name: string }
@@ -19,7 +19,9 @@ type Simple =
   | {
       readonly kind: 'not' | 'is';
       readonly selectors: readonly Selector[];
-    };
+    }
+  /** `:root`: the page's root element, the `html` above the scene. */
+  | { readonly kind: 'root' };
 
 /** A complex selector, read right to left. */
 export interface Selector {
@@ -119,6 +121,10 @@ export function parseSelector(text: string): Selector | undefined {
       current.push(simple);
       specificity += CLASS;
       i = close + 1;
+    } else if (/^:root(?![\w(-])/i.test(rest)) {
+      current.push({ kind: 'root' });
+      specificity += CLASS;
+      i += 5;
     } else if (char === ':') {
       const name = /^:([\w-]+)\(/.exec(rest)?.[1].toLowerCase();
       if (name !== 'not' && name !== 'is' && name !== 'where') {
@@ -204,6 +210,8 @@ function matchesSimple(
       return simple.selectors.some(selector =>
         matchesAt(selector, path, index)
       );
+    case 'root':
+      return index === 0;
   }
 }
 
@@ -239,16 +247,31 @@ const matchesAt = (
 
 /**
  * Whether a selector matches the last node of `path`, a node with its
- * ancestors in the scene, the root first.
+ * ancestors, the outermost first (the page's `html` in `computeStyles()`).
  */
 export const matches = (selector: Selector, path: readonly SceneNode[]) =>
   matchesAt(selector, path, path.length - 1);
 
 /**
- * Reads a selector list, e.g. a rule's `.a, .b > .c`. Selectors it can't
- * match are left out.
+ * Pseudo-elements (`::before`, and `:before`-style ones): content SVG
+ * elements don't have, so their rules style nothing in a scene.
  */
-export const parseSelectorList = (text: string): Selector[] =>
-  splitTopLevel(text, ',')
-    .map(parseSelector)
-    .filter((selector): selector is Selector => selector !== undefined);
+const PSEUDO_ELEMENT = /::|:(?:before|after|first-line|first-letter)(?![\w-])/i;
+
+/**
+ * Reads a selector list, e.g. a rule's `.a, .b > .c`. Selectors it can't
+ * match are left out, and reported, except pseudo-elements, which can't
+ * apply to a scene at all.
+ */
+export function parseSelectorList(text: string, report?: Report): Selector[] {
+  const selectors: Selector[] = [];
+  for (const part of splitTopLevel(text, ',')) {
+    const selector = parseSelector(part);
+    if (selector) {
+      selectors.push(selector);
+    } else if (!PSEUDO_ELEMENT.test(part)) {
+      report?.('selector', part.trim());
+    }
+  }
+  return selectors;
+}

@@ -109,6 +109,22 @@ How it works:
 
 Size: the parser, matcher and resolver are a few hundred lines; the budget is measured and set in the size task. They load only with `chartist/server`.
 
+### A small CSS engine by default, and a seam for another
+
+After the first implementation, a probe against real-world CSS showed the engine's limits. All 70 kB of the repository's stylesheets went through in 14 ms without an error. But some rules were skipped silently:
+
+- `:root` theme rules;
+- the `font` shorthand;
+- structural and sibling selectors.
+
+And `calc()` and `rem` values were written as they are, which rasterizers don't read. A complete CSS engine is out of reach without a browser, so the engine stays small and says so:
+
+- **Two steps:** `computeStyles(scene, css, { colorScheme, onSkip })` computes the values per node and returns them as a function (`ComputedStyles`). `applyStyles(scene, styles)` writes any such function's values as attributes, and still takes CSS text as a shortcut for `computeStyles()`.
+- **Another engine** plugs in at the computed values, not at the parser. The gaps are in matching selectors against the scene and in computing values, and a parser library (`css-tree`, PostCSS, Lightning CSS) only parses; it can't say which rule hits a scene node. What can is a browser. The server rendering guide shows a recipe that renders the markup with the stylesheet in Playwright, reads `getComputedStyle()` for each element, and maps the elements back to the scene's nodes in document order. Splitting the steps keeps the default synchronous while another engine may be async.
+- **`onSkip(skipped)`** reports, with the part's text and a reason (`at-rule`, `selector`, `nested`, `shorthand`, `value`), what the engine leaves out. Each declaration is reported once, so a rule that never applies isn't a mystery.
+- **The page around the scene:** the scene is matched below a virtual `html` and `body`, so `:root`, `html` and `body` rules apply to them. Their custom properties are inherited by the scene, and their inherited presentation properties (`color`, the font properties, `fill` and `stroke` and their siblings) are written on the root when no rule for the root sets them. Themes commonly set custom properties on `:root`.
+- **Documented limits instead of more engine:** `calc()`, relative units such as `rem` and `em`, the `font` shorthand, structural and sibling selectors, ids and nesting stay unsupported. The guide lists them; the browser recipe covers them.
+
 ### Values are written as escaped attributes
 
 The serializer already escapes attribute values and checks names. `applyStyles()` writes only property names from its fixed list, so CSS can't add an attribute name, and every value goes through the serializer's escaping. The docs still treat CSS as code: pass only stylesheets your application controls, since values such as `url()` reach the markup.

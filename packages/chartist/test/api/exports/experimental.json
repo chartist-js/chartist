@@ -15,7 +15,12 @@
   ],
   "server": [
     "ApplyStylesOptions",
+    "ComputeStylesOptions",
+    "ComputedStyles",
+    "SkipReason",
+    "SkippedStyle",
     "applyStyles",
+    "computeStyles",
     "renderForHydration",
     "renderToString"
   ]

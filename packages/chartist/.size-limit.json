@@ -44,14 +44,14 @@
   {
     "name": "Server browser ESM (dist/server.min.js, without the core)",
     "path": "dist/server.min.js",
-    "limit": "4.15 kB",
+    "limit": "4.75 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "Server UMD (dist/server.umd.js, without the core)",
     "path": "dist/server.umd.js",
-    "limit": "4.3 kB",
+    "limit": "4.85 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -101,7 +101,7 @@
     "name": "import { applyStyles } from chartist/server (tree-shaken)",
     "path": "dist/server.js",
     "import": "{ applyStyles }",
-    "limit": "3.45 kB",
+    "limit": "4.1 kB",
     "gzip": true
   },
   {

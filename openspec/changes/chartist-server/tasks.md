@@ -35,3 +35,12 @@
 - [x] 5.1 Write the move as `feat(chartist)!:` with a `BREAKING CHANGE:` footer naming the new import path, and check with a dry run that the changelog renders it in its breaking section. Note in the change that the release is a manual run with `2.1.0`. Verify: `pnpm nx release --dry-run` with the specifier `2.1.0` shows the breaking section.
   - Release note: run the release workflow manually with the version `2.1.0`. Without it, the conventional commits ask for a major: a dry run without a version resolves `3.0.0`. With `2.1.0`, the dry run's changelog lists the move under "Breaking Changes".
 - [x] 5.2 Run the gate: `pnpm nx format:check --all`, `pnpm nx run-many -t lint typecheck test --skip-nx-cache`, `chartist:test:api` and `:v1`, `chartist:test:smoke`, `chartist:test:size`, `docs:check`, `pnpm nx e2e docs`, and the visual tests. Verify: all of them pass.
+
+## 6. A seam for the style engine, after review
+
+- [x] 6.1 Split `applyStyles()` into `computeStyles(scene, css, { colorScheme, onSkip })`, which returns the values per node (`ComputedStyles`), and `applyStyles(scene, styles)`, which writes any such values as attributes and still takes CSS as a shortcut. Export `computeStyles` and its types from `chartist/server`, marked `@experimental`. Verify: unit tests for "CSS in one call" and "Another style engine", and the existing applyStyles tests unchanged.
+- [x] 6.2 Match the scene below a virtual `html` and `body` (`:root`, `html` and `body` rules; their custom properties inherited; their inherited presentation properties written on the root unless a root rule sets them). Verify: unit tests for "A theme on the root" and "Inherited from the page".
+- [x] 6.3 Report skipped parts to `onSkip` once each, with their text and reason; nothing for the other color scheme. Verify: unit tests for "What it skips" and "Chartist's stylesheet is fully read".
+- [x] 6.4 Update the API recordings, type tests and size budgets. Verify: `pnpm nx run chartist:test:api --skip-nx-cache` and `chartist:test:size`.
+- [ ] 6.5 In the server rendering guide, add a section on how Chartist reads CSS: deliberately small, what it supports, the known limits, `onSkip`, and another engine with a headless-browser recipe. Verify: `pnpm nx run docs:samples`, the guide's e2e checks, and screenshots in light and dark mode and at 375 px.
+- [ ] 6.6 Run the gate from 5.2 again. Verify: all of it passes.

@@ -1,13 +1,14 @@
 /**
- * The cascade of `applyStyles()`: which declaration wins per element and
+ * The cascade of `computeStyles()`: which declaration wins per element and
  * property, and the computed custom properties each element inherits.
  */
-import type { AttrValue, SceneNode } from '../index';
+import type { SceneNode } from '../index';
 import {
   readDeclarations,
   readStylesheet,
   type ColorScheme,
-  type Declaration
+  type Declaration,
+  type Report
 } from './css';
 import { isPresentation } from './presentation';
 import { matches, parseSelectorList, type Selector } from './selectors';
@@ -25,6 +26,8 @@ const PER_RULE = 1e4;
 
 /** A declaration that applies to an element, with what ranks it. */
 interface Candidate extends Declaration {
+  /** The declaration as read, the same for every element it applies to. */
+  readonly source: Declaration;
   /** From the element's own `style` attribute. */
   readonly inline: boolean;
   readonly specificity: number;
@@ -44,15 +47,24 @@ const wins = (a: Candidate, b: Candidate) =>
 /** The style rules of the stylesheets, in order, with parsed selectors. */
 export function readRules(
   sheets: readonly string[],
-  scheme: ColorScheme
+  scheme: ColorScheme,
+  report?: Report
 ): Rule[] {
   return sheets
-    .flatMap(css => readStylesheet(css, scheme))
-    .map((rule, order) => ({
-      selectors: parseSelectorList(rule.selectors),
-      declarations: rule.declarations,
-      order
-    }))
+    .flatMap(css => readStylesheet(css, scheme, report))
+    .map((rule, order) => {
+      for (const { property, value } of rule.declarations) {
+        // Not expanded into its longhands, which are presentation properties.
+        if (property === 'font') {
+          report?.('shorthand', `${property}: ${value}`);
+        }
+      }
+      return {
+        selectors: parseSelectorList(rule.selectors, report),
+        declarations: rule.declarations,
+        order
+      };
+    })
     .filter(rule => rule.selectors.length && rule.declarations.length);
 }
 
@@ -76,6 +88,7 @@ function cascade(
       rule.declarations.forEach((declaration, index) =>
         offer({
           ...declaration,
+          source: declaration,
           inline: false,
           specificity,
           order: rule.order * PER_RULE + index
@@ -84,7 +97,13 @@ function cascade(
     }
   }
   style.forEach((declaration, index) =>
-    offer({ ...declaration, inline: true, specificity: 0, order: index })
+    offer({
+      ...declaration,
+      source: declaration,
+      inline: true,
+      specificity: 0,
+      order: index
+    })
   );
   return winners;
 }
@@ -152,64 +171,127 @@ function resolve(
 }
 
 /**
- * The node with the presentation attributes the rules give it, and its
- * children styled the same way, except inside a `foreignObject`.
+ * Properties that inherit: the ones the page's `html` and `body` pass on
+ * to the scene's root.
  */
-export function styled(
-  current: SceneNode,
-  ancestors: readonly SceneNode[],
-  inherited: ReadonlyMap<string, string>,
-  rules: readonly Rule[],
-  scheme: ColorScheme
-): SceneNode {
-  const path = [...ancestors, current];
-  const style =
-    current.attrs.style === undefined
-      ? []
-      : readDeclarations(String(current.attrs.style));
-  const winners = cascade(rules, path, style);
-  const custom = customProperties(winners, inherited);
+const INHERITED = /* @__PURE__ */ new Set([
+  'color',
+  'cursor',
+  'direction',
+  'dominant-baseline',
+  'fill',
+  'fill-opacity',
+  'fill-rule',
+  'font-family',
+  'font-size',
+  'font-size-adjust',
+  'font-stretch',
+  'font-style',
+  'font-variant',
+  'font-weight',
+  'letter-spacing',
+  'paint-order',
+  'pointer-events',
+  'shape-rendering',
+  'stroke',
+  'stroke-dasharray',
+  'stroke-dashoffset',
+  'stroke-linecap',
+  'stroke-linejoin',
+  'stroke-miterlimit',
+  'stroke-opacity',
+  'stroke-width',
+  'text-anchor',
+  'text-rendering',
+  'visibility',
+  'word-spacing',
+  'writing-mode'
+]);
 
-  const attrs: Record<string, AttrValue | undefined> = {};
-  // Declarations of the `style` attribute that an !important rule beats.
-  const beaten = new Set<string>();
-  for (const [property, winner] of winners) {
-    if (!winner.inline && isPresentation(property)) {
-      const value = resolve(winner.value, custom, scheme);
-      if (value !== undefined) {
-        attrs[property] = value;
-        if (style.some(declaration => declaration.property === property)) {
-          beaten.add(property);
+/** The values of the presentation properties an element gets. */
+export type Values = Readonly<Record<string, string>>;
+
+/**
+ * The presentation values of every SVG element of the scene, matched below
+ * a page's `html` and `body`: their custom properties are inherited, and
+ * their inherited properties reach the root. Elements inside a
+ * `foreignObject` get none.
+ */
+export function computeValues(
+  scene: SceneNode,
+  rules: readonly Rule[],
+  scheme: ColorScheme,
+  report?: Report
+): WeakMap<SceneNode, Values> {
+  const out = new WeakMap<SceneNode, Values>();
+  const reported = new Set<Declaration>();
+  const valueOf = (
+    candidate: Candidate,
+    custom: ReadonlyMap<string, string>
+  ) => {
+    const value = resolve(candidate.value, custom, scheme);
+    // Once per declaration, not per element it applies to.
+    if (value === undefined && report && !reported.has(candidate.source)) {
+      reported.add(candidate.source);
+      report('value', `${candidate.property}: ${candidate.value}`);
+    }
+    return value;
+  };
+
+  // The page around the scene.
+  const page: SceneNode[] = [];
+  const passed = new Map<string, string>();
+  let custom = new Map<string, string>();
+  // Only matched, never rendered: what selectors read of an element.
+  const element = (name: string) =>
+    ({ name, attrs: {}, classes: [], children: [] }) as unknown as SceneNode;
+  for (const pageElement of [element('html'), element('body')]) {
+    page.push(pageElement);
+    const winners = cascade(rules, page, []);
+    custom = customProperties(winners, custom);
+    for (const [property, winner] of winners) {
+      if (INHERITED.has(property)) {
+        const value = valueOf(winner, custom);
+        if (value !== undefined) {
+          passed.set(property, value);
         }
       }
     }
   }
-  if (beaten.size) {
-    const kept = style.filter(declaration => !beaten.has(declaration.property));
-    attrs.style = kept.length
-      ? kept
-          .map(
-            ({ property, value, important }) =>
-              `${property}: ${value}${important ? ' !important' : ''};`
-          )
-          .join(' ')
-      : undefined;
-  }
-  let next = Object.keys(attrs).length ? current.attr(attrs) : current;
 
-  if (current.name !== 'foreignObject' && current.children.length) {
-    const children = current.children.map(child =>
-      styled(child, path, custom, rules, scheme)
-    );
-    if (children.some((child, index) => child !== current.children[index])) {
-      next = children.reduce(
-        (parent, child) => parent.append(child),
-        next.empty()
-      );
-      if (current.content !== undefined) {
-        next = next.text(current.content);
+  const walk = (
+    current: SceneNode,
+    ancestors: readonly SceneNode[],
+    inherited: ReadonlyMap<string, string>
+  ) => {
+    const path = [...ancestors, current];
+    const style =
+      current.attrs.style === undefined
+        ? []
+        : readDeclarations(String(current.attrs.style));
+    const winners = cascade(rules, path, style);
+    const own = customProperties(winners, inherited);
+    const values: Record<string, string> = {};
+    for (const [property, winner] of winners) {
+      if (isPresentation(property)) {
+        const value = valueOf(winner, own);
+        if (value !== undefined) {
+          values[property] = value;
+        }
       }
     }
-  }
-  return next;
+    if (current === scene) {
+      for (const [property, value] of passed) {
+        values[property] ??= value;
+      }
+    }
+    if (Object.keys(values).length) {
+      out.set(current, values);
+    }
+    if (current.name !== 'foreignObject') {
+      current.children.forEach(child => walk(child, path, own));
+    }
+  };
+  walk(scene, page, custom);
+  return out;
 }

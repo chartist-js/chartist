@@ -5,13 +5,13 @@ import { findAll } from '../scene/tree';
 import { node, type SceneNode } from '../scene/node';
 import { toScene } from '../chart/toScene';
 import type { ColorScheme } from './css';
-import { readRules, styled } from './cascade';
+import { applyStyles } from './applyStyles';
 
 const apply = (
   scene: SceneNode,
   sheets: string[],
   scheme: ColorScheme = 'light'
-) => styled(scene, [], new Map(), readRules(sheets, scheme), scheme);
+) => applyStyles(scene, sheets, { colorScheme: scheme });
 
 const lineScene = () =>
   toScene(
