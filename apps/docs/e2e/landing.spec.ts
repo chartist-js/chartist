@@ -31,6 +31,43 @@ test('every section renders and no placeholder reaches the page', async ({
   }
 });
 
+test('the hero chart is in the HTML, and the page takes it over', async ({
+  page,
+  request
+}) => {
+  // Built into the page, ready for the browser to take over.
+  const html = await (await request.get('/')).text();
+  expect(html).toMatch(/data-board-chart[^>]*><svg [^>]*data-ct-hydrate=/);
+
+  const warnings: string[] = [];
+  page.on('console', message => {
+    if (message.type() === 'warning' || message.type() === 'error') {
+      warnings.push(message.text());
+    }
+  });
+  // The parsed server svg, before the page's scripts run.
+  await page.addInitScript(() => {
+    document.addEventListener('readystatechange', () => {
+      if (document.readyState === 'interactive') {
+        (window as { serverSvg?: Element | null }).serverSvg =
+          document.querySelector('[data-board-chart] svg');
+      }
+    });
+  });
+  await page.goto('/');
+  const board = page.locator('[data-board-chart]');
+  // Taken over: the marker is removed once the chart laid itself out.
+  await expect(board.locator('svg:not([data-ct-hydrate])')).toHaveCount(1);
+  expect(
+    await page.evaluate(
+      () =>
+        document.querySelector('[data-board-chart] svg') ===
+        (window as { serverSvg?: Element | null }).serverSvg
+    )
+  ).toBe(true);
+  expect(warnings.filter(text => text.includes('Chartist'))).toEqual([]);
+});
+
 test('numbers and "Used by" come from the facts snapshot', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#start').locator('..')).toBeAttached();

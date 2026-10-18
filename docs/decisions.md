@@ -115,6 +115,19 @@ Decided 2026-10-16 and 2026-10-17 (#3, #961).
 - **1.x code always gets a new SVG.** The 1.x classes and charts with compat or converted 1.x plugins never get the previous render, even with `liveDomRenderer()`, because 1.x `draw` listeners expect new elements.
 - **Firefox runs no SMIL inside a `foreignObject`,** so HTML labels move without an animation there; animations that didn't start are removed.
 
+## Hydration
+
+Decided 2026-10-18.
+
+- **Server markup is taken over, not drawn again.** `renderForHydration()` renders markup that `chart()` and the presets take over in the browser: the elements stay, so CSS animations that started with the page continue, a lazily loaded Chartist leaves no blank frame, and LCP stays at first paint. A proof of concept in Next.js, Nuxt, Angular and SvelteKit showed it needs no framework-specific code in Chartist.
+- **Two server outputs.** `toScene()` + `renderToString()` stay the self-contained SVG image, with inline styles, for files, PDFs and email. Hydration markup has no `style` attributes: what SVG can express becomes presentation attributes, the stylesheet sizes label spans, and the rest is applied at the takeover. So it passes `style-src 'self'`, and the page needs Chartist's stylesheet.
+- **Adoption is a renderer capability, in `chartist/live`.** `Renderer.adopt(container, replay)` finds the marked svg and reads its marker; the core only replays the server's scene (the config without responsive overrides, the recorded size and label mode, the text estimate) and runs `render` and `mount` with the cause `hydrate`. The DOM renderer doesn't adopt, since it replaces its svg on every render. Keeping the marker lookup out of the core kept `lineChart` at +0.295 kB gzipped; with it in the core, it was +0.58 kB.
+- **The correction is a `resize`.** After the `hydrate` mount, the chart lays out at the container's real size through the normal path; when the live renderer patched nothing, the chart emits nothing, so at the server's size there's one mount. That relayout isn't animated.
+- **Strict structure, repaired values.** A different structure warns and draws a new svg; different values are set and counted in `hydration.repaired`, which is 0 for the same data and options.
+- **A warning when other code replaced the svg,** checked at the start of each render: every framework's raw-HTML feature writes server markup again in some situation, which silently broke live updates.
+- **Recipes, not wrapper packages.** The "Charts in frameworks" guide gives the rule (render the markup once, create the chart after hydration, update through the handle, destroy on unmount) and recipes for React, Vue, Angular and Svelte. A web component, the standing plan for framework support, would build on the same contract.
+- **The server can't know the reader's width,** so the docs explain choosing one size (the most common container width) and what client hints or a cookie leave. The landing page's hero chart is rendered at build time at the board's desktop size, as the site's own test of the feature.
+
 ## Releases
 
 - **Versions:** release candidates were `2.0.0-rc.N` (with the dot, so `rc.10` sorts after `rc.9`) under the npm `next` dist-tag. `2.0.0` is published under `latest` from a manual run with that version (decided 2026-10-17); afterwards `RELEASE_PREID` is unset, so versions follow the conventional commits. A later prerelease sets it again and goes under `next`.

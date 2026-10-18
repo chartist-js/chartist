@@ -17,6 +17,7 @@ import Compare from '../components/landing/Compare.astro';
 import Outro from '../components/landing/Outro.astro';
 import { facts, formatCount } from '../data/facts';
 import { REPO, href } from '../lib/site';
+import { boardMarkup } from '../lib/board-markup';
 ---
 
 <BaseLayout title="Chartist" description="Simple, responsive charts drawn in SVG and styled with CSS. Tiny, typed, and happy without a build step.">
@@ -42,7 +43,7 @@ import { REPO, href } from '../lib/site';
     </div>
     <div class="flex flex-col items-center gap-3 [&_.mascot-stage]:w-full [&_.mascot-stage]:max-w-[560px]">
       <Mascot pose="hero">
-        <div class="board-chart ct-draw size-full" data-board-chart role="img" aria-label="A line chart with two series"></div>
+        <div class="board-chart ct-draw size-full" data-board-chart role="img" aria-label="A line chart with two series" set:html={boardMarkup()}></div>
       </Mascot>
       <a href="#story" class="pill-link">Scroll, he'll show you around ↓</a>
     </div>

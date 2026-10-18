@@ -154,6 +154,11 @@ The build SHALL be checked against gzip size budgets for at least: the browser E
 - **WHEN** the size check measures a tree-shaken import of `lineChart` from `chartist`
 - **THEN** its size grows by at most 0.65 kB gzipped over rc.3 (13.65 kB), and it contains none of the live renderer's code
 
+#### Scenario: Hydration stays mostly out of the core
+
+- **WHEN** the size check measures a tree-shaken import of `lineChart` from `chartist` after hydration is added
+- **THEN** it is at most 0.3 kB gzipped larger than in 2.0.0 (14.28 kB), and it contains none of the code that adopts markup, which ships with `chartist/live`
+
 ### Requirement: No-bundler smoke test
 
 The package SHALL have an automated test that opens plain HTML pages (no bundler, no import map) in a real browser, loads the UMD build and the browser ESM build the way the published standalone examples do, and asserts that charts render.

@@ -145,3 +145,11 @@
   - the local visual tests, since charts drawn by `chart()` don't change (`pnpm nx run chartist:test:visual:local`).
 
   All of them pass.
+
+## 9. After review
+
+- [x] 9.1 Split the server rendering guide: "Server rendering" keeps the self-contained SVG image, and a new Advanced guide "SSR with hydration" (`/docs/ssr-hydration/`, after server rendering) takes the hydration sections. Move the live example to `ssr-hydration/hydrate` in its own commit. Verify: the links to the moved sections point to the new page, and the navigation lists it.
+- [x] 9.2 In the new guide: a warning box that only `liveDomRenderer()` hydrates, instead of a section; examples of what causes repairs and what can't be repaired; how to choose the server's size, why the server can't know the reader's width and what that leaves. Verify: `pnpm nx run docs:samples`.
+- [x] 9.3 Let the hydration example wait for a **Hydrate** click, so readers see the server's chart first, and show what each render changed and how many of the server's elements are still in the chart, instead of whether the root svg is the same. Verify: the example's status after hydrate, resize and an update.
+- [x] 9.4 Render the landing hero's board chart with `renderForHydration()` at build time, at the board's desktop size (255 × 176), and take it over with `liveDomRenderer()`. Verify: an e2e test that the chart is in the HTML and keeps its svg (and fails with the default renderer); in a browser at 1440, 1280 and 375 px, the svg and the line's draw-in animation are kept, and at desktop width the takeover changes no geometry.
+- [x] 9.5 Run the gate again.
