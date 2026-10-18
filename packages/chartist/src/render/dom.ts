@@ -117,7 +117,13 @@ export function renderElement(
 /** Removes Chartist SVGs (the ones with the ct namespace) from a container. */
 function removePrevious(container: Element) {
   Array.from(container.querySelectorAll('svg'))
-    .filter(svg => svg.getAttributeNS(namespaces.xmlns, 'ct'))
+    // Parsed from HTML (server-rendered markup), `xmlns:ct` is a plain
+    // attribute, not one in the xmlns namespace.
+    .filter(
+      svg =>
+        svg.getAttributeNS(namespaces.xmlns, 'ct') ||
+        svg.getAttribute('xmlns:ct') === namespaces.ct
+    )
     .forEach(svg => svg.remove());
 }
 

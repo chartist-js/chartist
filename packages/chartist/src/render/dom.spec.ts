@@ -1,5 +1,6 @@
 import { pointContext } from '../../test/contexts';
-import { lineChart } from '../presets/lineChart';
+import { toScene } from '../chart/toScene';
+import { lineChart, lineChartConfig } from '../presets/lineChart';
 import { node } from '../scene/node';
 import { spyOnStyleAttributes } from '../../test/style-spy';
 import { applyAttribute, domRenderer, renderElement } from './dom';
@@ -182,6 +183,22 @@ describe('render/dom HTML in foreignObject', () => {
     expect(parsed.getElementsByTagName('span')[0].namespaceURI).toBe(
       'http://www.w3.org/1999/xhtml'
     );
+  });
+
+  it('replaces server-rendered markup parsed as HTML', () => {
+    const data = { labels: ['a', 'b'], series: [[1, 2]] };
+    const container = document.createElement('div');
+    container.innerHTML = renderToString(
+      toScene(lineChartConfig(data), { width: 300, height: 150 })
+    );
+    const server = container.querySelector('svg')!;
+    // The HTML parser leaves the declaration as a plain attribute.
+    expect(server.getAttributeNS('http://www.w3.org/2000/xmlns/', 'ct')).toBe(
+      null
+    );
+    lineChart(container, data);
+    expect(container.querySelectorAll('svg')).toHaveLength(1);
+    expect(container.querySelector('svg')).not.toBe(server);
   });
 
   it('string output declares XHTML on the HTML root and parses', () => {

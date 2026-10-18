@@ -8,7 +8,7 @@
 
   Commit as a `fix:`.
 
-- [ ] 1.2 In `render/dom.ts`, let the DOM renderer's cleanup also find Chartist svgs whose `xmlns:ct` is a plain attribute. Verify: a unit test for "Replacing server-rendered markup" (markup parsed with `innerHTML`, then `lineChart()`: one svg). Commit as a `fix:`.
+- [x] 1.2 In `render/dom.ts`, let the DOM renderer's cleanup also find Chartist svgs whose `xmlns:ct` is a plain attribute. Verify: a unit test for "Replacing server-rendered markup" (markup parsed with `innerHTML`, then `lineChart()`: one svg). Commit as a `fix:`.
 
 ## 2. Hydration markup
 
