@@ -1,0 +1,38 @@
+flowchart TD
+  accTitle: The pipeline of a chart
+  accDescr: A chart renders in seven phases, each with an event. A first render, an update or a change of responsive options starts at resolve, which applies the defaults and responsive overrides to the config. prepare turns the data into series, layout measures the chart and its drawing area and sets up the axes, compose lets each layer draw its nodes, and scene gives the whole tree. These five phases need no DOM, and toScene() stops after scene, for renderToString() on a server. A resize or loaded web fonts start again at layout. render hands the scene to the renderer, which draws a new svg, patches the one it has, or takes server markup over. mount runs with the elements in the page, where plugins attach to them and return cleanups.
+
+  first(["first render, update(),<br>responsive options"]):::muted
+  again(["resize, web fonts"]):::muted
+
+  subgraph build [Builds the scene, without a DOM]
+    resolve["`**resolve**
+the config, with defaults
+and responsive overrides`"]
+    prepare["`**prepare**
+the data as series`"]
+    layout["`**layout**
+size and drawing area,
+then the axes`"]
+    compose["`**compose**
+each layer draws its nodes:
+lines, points, bars, labels`"]
+    scene["`**scene**
+the whole tree, its root the svg`"]
+  end
+
+  subgraph page [Puts it into the page]
+    render["`**render**
+the renderer draws a new svg,
+patches it, or takes
+server markup over`"]:::accent
+    mount["`**mount**
+the elements are in the page:
+plugins attach, return cleanups`"]
+  end
+
+  first --> resolve
+  resolve --> prepare --> layout --> compose --> scene
+  again --> layout
+  scene --> render --> mount
+  scene -.-> server(["toScene() stops here,<br>for renderToString()<br>on a server"]):::code

@@ -7,6 +7,8 @@ order: 2
 
 import Callout from '../../components/docs/Callout.astro';
 import LiveExample from '../../components/LiveExample.astro';
+import Diagram from '../../components/docs/Diagram.astro';
+import pipeline from '../../diagrams/events-and-plugins/pipeline.mmd?raw';
 
 export const heatData = {
   series: [[3, 6, 9, 12, 9, 6, 3, 6, 9, 12, 9, 6]]
@@ -28,7 +30,14 @@ Chartist keeps its core small and leaves the extras to you. Tooltips, value labe
 
 ## The pipeline
 
-A chart goes through seven phases, in this order. Each one emits an event with what it produced:
+A chart goes through seven phases, in this order. The first five build the chart's scene, a plain tree of SVG nodes, without touching the page; the last two put it there:
+
+<Diagram
+  source={pipeline}
+  caption='A render runs the phases top to bottom, each with an event. A resize starts again at layout, and toScene() stops after scene.'
+/>
+
+Each phase emits an event with what it produced:
 
 | Phase     | Payload                                                             | What it is                                                                               |
 | --------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -42,7 +51,7 @@ A chart goes through seven phases, in this order. Each one emits an event with w
 
 A listener that returns a new payload changes the phase, and later phases build on the change. Return nothing to leave it as it is. By `render` and `mount`, the SVG exists: `render` listeners only watch, and a `mount` listener may return a function that undoes what it did (see [Cleaning up](#cleaning-up)). Other return values of theirs are ignored.
 
-`render` and `mount` also say why the chart rendered and what the render did: `cause` is `create`, `update`, `resize`, `responsive` or `fonts`, `previous` is the previous render's scene, and `changes` lists every node that was added, updated or removed. `mount` also has the `animation` timing when the chart [animates its update](../live-updates/#animate-updates). [Live updates](../live-updates/#what-changed) has the details.
+`render` and `mount` also say why the chart rendered and what the render did: `cause` is `create`, `hydrate` (a chart that [took server markup over](../ssr-hydration/)), `update`, `resize`, `responsive` or `fonts`, `previous` is the previous render's scene, and `changes` lists every node that was added, updated or removed. `mount` also has the `animation` timing when the chart [animates its update](../live-updates/#animate-updates). [Live updates](../live-updates/#what-changed) has the details.
 
 When the container resizes, the chart runs again from `layout`. The config and data haven't changed, so `resolve` and `prepare` don't run, and their listeners aren't called.
 
