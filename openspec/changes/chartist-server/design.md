@@ -102,6 +102,7 @@ How it works:
   - `var()` resolves recursively, with its fallback, and gives up on cycles and missing values, leaving the declaration out;
   - `light-dark(a, b)` picks by `colorScheme`;
   - px lengths stay as they are, since presentation attributes accept CSS lengths in SVG 2 and in the rasterizers checked (a task).
+- **Checked with resvg** (2.6.2, through `@resvg/resvg-js`, in `src/server/applyStyles.raster.spec.ts`): it reads `<style>` elements with class and descendant selectors, but ignores custom properties, `var()` (its fallback too) and `light-dark()`, so Chartist's stylesheet in a `<style>` element draws every series line without a stroke. It also ignores `rem` font sizes and draws its default 12px instead (`px` and `em` work), which happens to match the stylesheet's `0.75rem` labels. The attributes `applyStyles()` writes, px lengths (`stroke-width="4px"`, `stroke-dasharray="2px"`) and `rgba()` colors included, draw as in a browser.
 - **Scope:** elements inside a `foreignObject` are skipped. The docs recommend SVG labels for images, since rasterizers don't draw HTML.
 - **The property list** is the one `renderForHydration()` uses, moved to `src/server/` and shared.
 

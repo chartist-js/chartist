@@ -210,6 +210,9 @@ importers:
       '@playwright/test':
         specifier: 1.63.0
         version: 1.63.0
+      '@resvg/resvg-js':
+        specifier: 2.6.2
+        version: 2.6.2
       '@size-limit/esbuild':
         specifier: 14.1.0
         version: 14.1.0(size-limit@14.1.0)

@@ -128,6 +128,7 @@
     "@commitlint/cli": "^17.0.0",
     "@commitlint/config-conventional": "^17.0.0",
     "@playwright/test": "1.63.0",
+    "@resvg/resvg-js": "2.6.2",
     "@size-limit/esbuild": "14.1.0",
     "@size-limit/file": "14.1.0",
     "@types/node": "^18.0.0",
