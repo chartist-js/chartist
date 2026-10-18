@@ -36,7 +36,7 @@
 - [x] 3.1 Add `adopt?(scene, svg)` to `Renderer`, returning the output with `repaired`, or nothing; add `'hydrate'` to `RenderCause` and `hydration?: { repaired }` to the `render` and `mount` payloads. Update the doc comments of `Renderer`, `RenderCause` and the payloads. Verify:
   - `pnpm nx typecheck chartist`;
   - type tests in `test/api/` for a renderer with and without `adopt` and a `mount` listener reading `hydration`.
-- [ ] 3.2 In `chart/chart.ts`, before the first render, look for a direct child svg with `data-ct-hydrate`. With a marker of version 1, a renderer with `adopt`, and a chart that doesn't always draw a new svg:
+- [x] 3.2 In `chart/chart.ts`, before the first render, look for a direct child svg with `data-ct-hydrate`. With a marker of version 1, a renderer with `adopt`, and a chart that doesn't always draw a new svg:
   - replay the scene with the chart's emitter (the config without responsive overrides, the marker's size and labels, `chart()`'s root size, the scaling `viewBox` when recorded, the text estimate);
   - adopt it;
   - emit `render` and `mount` with the cause `hydrate`, `add` changes for every node and `hydration`.
@@ -48,13 +48,13 @@
   - an unknown marker version;
   - "A converted 1.x plugin", and a 1.x `LineChart` on hydration markup (one new svg, cause `create`).
 
-- [ ] 3.3 After adoption, render at the real size with the cause `resize` through the normal path:
+- [x] 3.3 After adoption, render at the real size with the cause `resize` through the normal path:
   - when the renderer returns `patched` with no changes, keep the new state and output without running cleanups or emitting `render` and `mount`;
   - remove the scaling `viewBox` and the marker with this step.
 
   Verify: unit tests with a stub patching renderer for one `mount` at equal size, `hydrate` then `resize` at another size, the `viewBox` still present during the `hydrate` mount ("Geometry during the hydrate mount"), and a responsive override applied ("Responsive overrides").
 
-- [ ] 3.4 At the start of every render, check whether the previous output's svg is still in the container; if not, warn (what happened, and that a framework should render the server markup into the container once) and render. Verify: a unit test for "A framework writes the markup again" with the DOM renderer and with a stub renderer.
+- [x] 3.4 At the start of every render, check whether the previous output's svg is still in the container; if not, warn (what happened, and that a framework should render the server markup into the container once) and render. Verify: a unit test for "A framework writes the markup again" with the DOM renderer and with a stub renderer.
 
 ## 4. Adoption in the live renderer
 

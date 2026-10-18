@@ -18,6 +18,12 @@ import type { ResponsiveWatcher } from '../responsive/responsive';
 import { replacementChanges, replacesOutput } from './changes';
 import { withChartTypeClass } from './className';
 import {
+  chartRootSize,
+  HYDRATION_ATTRIBUTE,
+  markedRoot,
+  type HydrationMarker
+} from './hydration';
+import {
   eventMethods,
   installPlugins,
   listenerScope,
@@ -26,6 +32,24 @@ import {
   type InstalledPlugins
 } from './plugins';
 import type { ChartConfig, ChartHandle } from './types';
+
+/** The marker of server markup, if it's one this version reads. */
+function readMarker(svg: Element): HydrationMarker | undefined {
+  try {
+    const marker = JSON.parse(
+      svg.getAttribute(HYDRATION_ATTRIBUTE)!
+    ) as HydrationMarker;
+    if (marker.v === 1 && marker.width > 0 && marker.height > 0) {
+      return marker;
+    }
+  } catch {
+    // Warned below.
+  }
+  console.warn(
+    `Chartist: the server markup's ${HYDRATION_ATTRIBUTE} attribute isn't one this version of Chartist reads, so the chart draws a new svg. Render it with renderForHydration() of the same version.`
+  );
+  return undefined;
+}
 
 /** A fixed size in px: a number or a px string. Other units are measured. */
 function fixedSize(value: number | string | undefined): number | undefined {
@@ -264,11 +288,27 @@ export function chart(
         );
   }
 
-  function render(from: 'resolve' | 'layout', cause: RenderCause) {
+  /**
+   * Renders the chart. The render after taking server markup over is a
+   * `correction`: when the renderer patched nothing, the chart's elements
+   * are what the `hydrate` render mounted, so it emits nothing and keeps
+   * that render's cleanups.
+   */
+  function render(
+    from: 'resolve' | 'layout',
+    cause: RenderCause,
+    correction = false
+  ) {
     const { width, height } = size();
     measuredText = false;
     const previous = state;
     const previousOutput = output;
+    const previousSvg = previous && previousOutput?.elementOf?.(previous.scene);
+    if (previousSvg && !container.contains(previousSvg)) {
+      console.warn(
+        "Chartist: the chart's svg was removed from its container by other code, so the chart draws a new one. A framework should render server markup into the container only once."
+      );
+    }
     state = runPipeline(
       emitter,
       withChartTypeClass(effective),
@@ -278,10 +318,7 @@ export function chart(
         measureText,
         measureStyle,
         labels: renderer.labels ?? 'html',
-        rootSize: {
-          width: effective.width ?? '100%',
-          height: effective.height ?? '100%'
-        }
+        rootSize: chartRootSize(effective)
       },
       state,
       from
@@ -289,8 +326,10 @@ export function chart(
     const { scene } = state;
     layerOf = undefined;
     const pending = cleanups;
-    cleanups = [];
-    runAll(pending);
+    if (!correction) {
+      cleanups = [];
+      runAll(pending);
+    }
     const update: RenderUpdate | undefined =
       previous && previousOutput && !replacesOutput(handle)
         ? {
@@ -304,6 +343,15 @@ export function chart(
         : undefined;
     const rendered = renderer.render(scene, container, update);
     output = rendered;
+    if (correction) {
+      if (rendered.patched && !rendered.changes?.length) {
+        return;
+      }
+      // Run after the patch, which only then says whether it changed
+      // anything.
+      cleanups = [];
+      runAll(pending);
+    }
     if (printing) {
       applyPrintViewBox();
     }
@@ -353,6 +401,69 @@ export function chart(
       }
     });
     resolveResponsive();
+  }
+
+  /**
+   * Takes over server markup from `renderForHydration()`, a direct child of
+   * the container, when the renderer can adopt it: builds the server's
+   * scene again (the config without responsive overrides, the recorded size
+   * and label mode, the estimate), lets the renderer bind it to the svg's
+   * elements and runs `render` and `mount` with the cause `hydrate`. Then
+   * lays the chart out at the container's real size. Returns false when
+   * there's nothing to take over; the chart then draws a new svg.
+   */
+  function hydrate(): boolean {
+    const svg =
+      renderer.adopt && !replacesOutput(handle)
+        ? Array.from(container.children).find(
+            (child): child is SVGSVGElement =>
+              child.localName === 'svg' &&
+              child.hasAttribute(HYDRATION_ATTRIBUTE)
+          )
+        : undefined;
+    const marker = svg && readMarker(svg);
+    if (!marker) {
+      return false;
+    }
+    const replayed = runPipeline(emitter, withChartTypeClass(current), {
+      width: marker.width,
+      height: marker.height,
+      measureText: estimateText,
+      labels: marker.labels,
+      rootSize: chartRootSize(current)
+    });
+    // The scene as the server drew it, with the scaling viewBox.
+    const marked = replayed.scene.attr(markedRoot(marker));
+    const adopted = renderer.adopt!(marked, svg);
+    if (!adopted) {
+      return false;
+    }
+    const { scene } = replayed;
+    state = replayed;
+    const elementOf = (node: SceneNode) =>
+      node === scene ? svg : adopted.elementOf?.(node);
+    output = { ...adopted, elementOf };
+    const event = {
+      scene: marked,
+      output,
+      cause: 'hydrate' as const,
+      changes: replacementChanges(undefined, marked),
+      hydration: { repaired: adopted.repaired }
+    };
+    emitter.notify('render', event);
+    cleanups = emitter
+      .notify('mount', { ...event, elementOf })
+      .filter((result): result is () => void => typeof result === 'function');
+    if (!destroyed) {
+      // The viewBox scaled the server's layout until now; the chart lays
+      // itself out at the real size from here on.
+      if (marker.scale) {
+        svg.removeAttribute('viewBox');
+      }
+      svg.removeAttribute(HYDRATION_ATTRIBUTE);
+      render('resolve', 'resize', true);
+    }
+    return true;
   }
 
   const handle: ChartHandle = {
@@ -430,7 +541,9 @@ export function chart(
   } else {
     resolveResponsive();
   }
-  render('resolve', 'create');
+  if (!hydrate()) {
+    render('resolve', 'create');
+  }
 
   return handle;
 }
