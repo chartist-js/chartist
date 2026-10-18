@@ -402,15 +402,24 @@ export interface RenderEvent {
   readonly output: RenderOutput;
   /** Why the chart rendered, e.g. `update` or `resize`. */
   readonly cause: RenderCause;
-  /** The previous render's scene; absent on the first render. */
+  /** The previous render's scene; absent on the first render and on `hydrate`. */
   readonly previous?: SceneNode;
   /**
    * What the render did to the output, in document order. When the
    * renderer changed its output in place (`liveDomRenderer()` from
    * `chartist/live`), these are its changes; otherwise every node of the
-   * previous scene is removed and every node of the new one added.
+   * previous scene is removed and every node of the new one added. A
+   * `hydrate` render has an `add` entry for every node, as a first render.
    */
   readonly changes: readonly SceneChange[];
+  /**
+   * On a `hydrate` render: how many attributes, classes and texts of the
+   * server's markup differed from the scene the browser built, and were
+   * set. 0 when the server and the browser drew the same data and options;
+   * more means they didn't. Styles, which the markup leaves out, don't
+   * count.
+   */
+  readonly hydration?: { readonly repaired: number };
 }
 
 /** The name of a pipeline phase, such as `compose`: a key of {@link PhaseEvents}. */

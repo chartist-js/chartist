@@ -33,7 +33,7 @@
 
 ## 3. Taking markup over in `chart()`
 
-- [ ] 3.1 Add `adopt?(scene, svg)` to `Renderer`, returning the output with `repaired`, or nothing; add `'hydrate'` to `RenderCause` and `hydration?: { repaired }` to the `render` and `mount` payloads. Update the doc comments of `Renderer`, `RenderCause` and the payloads. Verify:
+- [x] 3.1 Add `adopt?(scene, svg)` to `Renderer`, returning the output with `repaired`, or nothing; add `'hydrate'` to `RenderCause` and `hydration?: { repaired }` to the `render` and `mount` payloads. Update the doc comments of `Renderer`, `RenderCause` and the payloads. Verify:
   - `pnpm nx typecheck chartist`;
   - type tests in `test/api/` for a renderer with and without `adopt` and a `mount` listener reading `hydration`.
 - [ ] 3.2 In `chart/chart.ts`, before the first render, look for a direct child svg with `data-ct-hydrate`. With a marker of version 1, a renderer with `adopt`, and a chart that doesn't always draw a new svg:

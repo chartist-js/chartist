@@ -2,13 +2,16 @@ import type { AttrValue, SceneNode } from '../scene/node';
 import type { LabelMode, MeasureStyle, MeasureText } from './measure';
 
 /**
- * Why a chart rendered: `create` for its first render, `update` for
- * `update()` (and the presets' `setOptions()`), `resize` when its
- * container's size changed, `responsive` when its matching `responsive`
- * entries changed, `fonts` when web fonts finished loading.
+ * Why a chart rendered: `create` for its first render, `hydrate` for the
+ * first render of a chart that took server markup over (see
+ * `renderForHydration()`), `update` for `update()` (and the presets'
+ * `setOptions()`), `resize` when its container's size changed,
+ * `responsive` when its matching `responsive` entries changed, `fonts`
+ * when web fonts finished loading.
  */
 export type RenderCause =
   | 'create'
+  | 'hydrate'
   | 'update'
   | 'resize'
   | 'responsive'
@@ -106,7 +109,8 @@ export interface RenderOutput {
  * Turns a scene into output. `chart()` renders inline SVG into its
  * container with the DOM renderer, unless its config sets a `renderer`.
  * To get markup instead, without a DOM, use `toScene()` and
- * {@link renderToString}.
+ * {@link renderToString}. A renderer that wraps another one keeps its
+ * `adopt` only if it passes it on, as spreading the wrapped renderer does.
  */
 export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   /**
@@ -137,4 +141,22 @@ export interface Renderer<TOutput extends RenderOutput = RenderOutput> {
   readonly measureStyle?: MeasureStyle;
   /** The default label mode of this renderer; `html` if omitted. */
   readonly labels?: LabelMode;
+  /**
+   * Takes over an svg from `renderForHydration()` for a scene, instead of
+   * rendering one: binds the scene's nodes to its elements and makes them
+   * what `render()` would draw. A chart calls it once, on its first render,
+   * when its container holds such markup; later renders go through
+   * `render()`, with the adopted output as the previous one. Returns
+   * nothing when the svg doesn't match the scene, and the chart then
+   * renders as usual. `liveDomRenderer()` from `chartist/live` has it; the
+   * DOM renderer doesn't, since it replaces its svg on every render.
+   * @param scene The scene the server drew, built again in the browser
+   * @param svg The server's `svg`, a direct child of the chart's container
+   * @returns The output, with the number of attributes, classes and texts
+   *   that differed and were set as `repaired`; or nothing
+   */
+  adopt?(
+    scene: SceneNode,
+    svg: SVGSVGElement
+  ): (TOutput & { readonly repaired: number }) | undefined;
 }
