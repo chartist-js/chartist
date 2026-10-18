@@ -33,7 +33,7 @@ Values SHALL be resolved so the result needs no CSS support:
 
 - `var()` SHALL be replaced by the custom property's value on the element, inherited from its ancestors in the scene as in a browser, or by the `var()` fallback when the property isn't set; a declaration whose value can't be resolved SHALL be left out;
 - `light-dark()` SHALL be replaced by its light or dark value, as the `colorScheme` option says (`light` by default);
-- rules in `@media (prefers-color-scheme: …)` SHALL apply when they match that color scheme, and rules in other at-rules SHALL be left out.
+- rules in `@media (prefers-color-scheme: …)` SHALL apply when they match that color scheme, rules in `@supports` blocks SHALL apply unless the condition starts with `not`, rules in `@layer` blocks SHALL apply in place, and rules in other at-rules SHALL be left out.
 
 The result SHALL contain no `var()` and no `light-dark()`. Elements inside a `foreignObject` (HTML labels) SHALL be left as they are.
 

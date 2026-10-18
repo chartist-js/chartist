@@ -85,7 +85,8 @@ How it works:
 - **Parsing:** a small tokenizer for comments, strings, rules and at-rules.
   - `@media` is evaluated for `prefers-color-scheme` only, and other conditions skip their rules.
   - `@layer` blocks are read in place, ignoring layer order; the docs say so.
-  - Other at-rules (`@keyframes`, `@supports`, `@container`, `@font-face`, `@import`) are skipped.
+  - `@supports` blocks are read unless the condition starts with `not`: `applyStyles()` stands for a current browser, which has what chart styles test for. Chartist's stylesheet sets its `light-dark()` grid and label colors inside `@supports (color: light-dark(#000, #fff))`, so skipping it would give the dark scheme the light colors.
+  - Other at-rules (`@keyframes`, `@container`, `@font-face`, `@import`) are skipped.
   - Nested rules aren't supported, and are skipped.
 - **Matching** runs against the scene tree:
   - type, class, `*` and attribute selectors (presence, `=`, `~=`);
