@@ -1,6 +1,6 @@
 ---
 title: Server rendering
-description: Render charts without a browser, as SVG images for files, PDFs and email, or as markup that the browser takes over and keeps running.
+description: Build a chart's scene without a browser and turn it into SVG markup, for server-rendered pages, PDFs, email and images.
 group: Advanced
 order: 4
 ---
@@ -22,10 +22,8 @@ A Chartist chart doesn't need a browser until the very end. The pipeline builds 
 
 What you render depends on where the markup goes:
 
-- **A self-contained SVG image**, from `toScene()` and `renderToString()`. It's a picture of the chart for files, PDFs, email, social images or a static chart in a page. It carries its inline styles, since there's often no stylesheet where it ends up.
-- **Hydration markup**, from `renderForHydration()`. It's a page fragment that the browser [takes over](#taking-charts-over-in-the-browser): the chart is in the server's HTML, and once the page's script runs, it keeps its elements and gets updates, plugins and animations. It has no inline styles, so it needs Chartist's stylesheet in the page, and it passes a strict `style-src` policy.
-
-The rest of this page starts with the image, then takes a chart over.
+- **A self-contained SVG image**, from `toScene()` and `renderToString()`: a picture of the chart for files, PDFs, email, social images or a static chart in a page. It carries its inline styles, since there's often no stylesheet where it ends up. This page is about it.
+- **Hydration markup**, from `renderForHydration()`: a page fragment that the browser takes over and keeps running, with updates, plugins and animations. It has no inline styles, needs Chartist's stylesheet in the page and passes a strict `style-src` policy. See [SSR with hydration](../ssr-hydration/).
 
 ## Two functions
 
@@ -103,7 +101,7 @@ The renderer picks the default: `chart()` and the presets draw HTML labels in th
 
 The markup has the same classes as a chart in the page, but no styles. Where it ends up decides how it gets them.
 
-**Server-rendered pages.** Put the string into your HTML and load `chartist/styles.css` (or your own chart styles) on the page, like for any chart. Since the page is HTML, HTML labels work, if you want them. If the chart should run in the page once its script loads, render [hydration markup](#taking-charts-over-in-the-browser) instead.
+**Server-rendered pages.** Put the string into your HTML and load `chartist/styles.css` (or your own chart styles) on the page, like for any chart. Since the page is HTML, HTML labels work, if you want them. If the chart should run in the page once its script loads, render it for [SSR with hydration](../ssr-hydration/) instead.
 
 **PDFs.** If you print HTML to PDF with a headless browser, it's the same as a web page. Other PDF tools read the SVG on its own: there, use SVG labels and put the styles into the SVG.
 
@@ -147,116 +145,6 @@ export const markup = renderToString(scene);
   come from the `mount` phase. See [Events and plugins](../events-and-plugins/).
 </Callout>
 
-## Taking charts over in the browser
-
-A chart in the server's HTML shows up with the page's first paint. To make it a live chart afterwards, without drawing it again, render it on the server with `renderForHydration()` and create the chart in the same container in the browser, with the same data and options:
-
-```ts
-import { lineChartConfig, renderForHydration } from 'chartist';
-
-const data = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-  series: [[12, 9, 7, 8, 5]]
-};
-
-// On the server, inside the chart's container: <div id="chart">…</div>
-export const markup = renderForHydration(lineChartConfig(data), {
-  width: 600,
-  height: 300
-});
-```
-
-```ts
-import { lineChart } from 'chartist';
-import { liveDomRenderer } from 'chartist/live';
-
-const data = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-  series: [[12, 9, 7, 8, 5]]
-};
-
-// In the browser: the chart keeps the server's svg and its elements.
-const chart = lineChart('#chart', data, { renderer: liveDomRenderer() });
-chart.update({ data: { ...data, series: [[3, 9, 7, 8, 11]] } });
-```
-
-The browser doesn't read the data from the markup: it builds the same scene again from its own config, at the size the server recorded, and binds it to the server's elements. From there on, it's a chart like any other. The example's page holds the server markup in its `index.html`, and **New values** updates the chart it became:
-
-<LiveExample
-  title='Taken over in the browser'
-  label='A line chart with two series from Monday to Friday, rendered on the server and taken over in the browser, with a button for new values'
-  preview={{ type: 'line', data, options: { low: 0, showArea: true } }}
-  example='server-rendering/hydrate'
-/>
-
-### Keep it with the live renderer
-
-`liveDomRenderer()` from `chartist/live` takes the markup over: the elements stay, and so does what the page did with them. A CSS animation that started with the page continues, and a lazily loaded Chartist leaves no blank frame. With the default renderer, which draws a new svg on every render, the chart draws a new svg over the server's. That works too, but the animation starts again. `liveDomRenderer({ adopt: false })` does the same, for a chart that wants live updates but not the server's elements.
-
-### The hydrate render
-
-The takeover is the chart's first render: `render` and `mount` run with the cause `hydrate`, and `mount` gets the server's elements, so plugins work on them as on a first render. The events also carry `hydration.repaired`: how many attributes, classes and texts of the markup differed from what the browser built. It's 0 when the server and the browser drew the same data and options. Log it in development to catch the two drifting apart:
-
-```ts
-import { lineChart } from 'chartist';
-import { liveDomRenderer } from 'chartist/live';
-
-lineChart(
-  '#chart',
-  { labels: ['Mon', 'Tue', 'Wed'], series: [[12, 9, 7]] },
-  {
-    renderer: liveDomRenderer(),
-    on: {
-      mount: ({ cause, hydration }) => {
-        if (cause === 'hydrate' && hydration?.repaired) {
-          console.warn(`The server drew ${hydration.repaired} differences`);
-        }
-      }
-    }
-  }
-);
-```
-
-Values that differ are set, and the chart shows the browser's. A different structure, such as a point more, can't be kept: the chart warns, names the first difference and draws a new svg.
-
-### Size in the browser
-
-A server has no container to measure, so it lays the chart out at the size you give it and records that size. The markup's svg is `100%` wide and high (unless the config sets a size), with a `viewBox` of the server's size, so the drawing scales into its container until the chart runs. Then the chart lays itself out at the container's real size.
-
-How close the two sizes are decides what readers see at the takeover:
-
-- **The same size:** nothing is drawn again. The chart keeps the server's layout, and the takeover is invisible.
-- **A narrower container:** before the chart runs, the whole drawing is scaled down, text and lines included: a 600 px wide layout in a 343 px phone column shows 12 px labels at about 7 px. At the takeover, the chart lays out again at 343 px, so the labels get their real size and the points, grid lines and labels move. An auto-scaled axis can also get fewer ticks, since it keeps them at least `scaleMinSpace` px apart.
-- **A wider container:** the same, scaled up before the takeover.
-
-The elements stay either way: the chart changes them instead of drawing new ones. Responsive options apply only from the takeover on too, since the server draws without them.
-
-So pick the server's size for the readers you have: the width your layout gives the chart most often, for example its column on a desktop, or a phone's width if most of your readers come on phones. The server can't know a reader's width; sending a size per device (from client hints or a cookie) is up to your app. HTML labels that move at the takeover count as a small layout shift (CLS), around 0.002 to 0.03 in our tests; SVG labels don't.
-
-Give the container a height or an `aspect-ratio` that matches the server's size, and make the svg a block, as for every chart that fills its container:
-
-```css
-#chart {
-  aspect-ratio: 2 / 1;
-}
-
-#chart svg {
-  display: block;
-}
-```
-
-With a matching `aspect-ratio`, the server's drawing fills the container exactly; with another one, it sits letterboxed inside it until the takeover. Without a height, the server markup looks right, but the chart collapses to 150 px once it runs, as it would without server rendering. See [Sizing charts](../sizing-charts/).
-
-### Styles and text
-
-Hydration markup has no `style` attributes. Chartist's stylesheet sizes the label boxes and the root's attributes size the svg; a donut's `donutWidth` becomes a `stroke-width` attribute. So the markup looks the same before and after the takeover, and it passes a policy of `style-src 'self'` (see [Security and CSP](../security-and-csp/)). Styles that your `scene` listeners add appear only once the chart runs: for what should show before, use classes and CSS.
-
-Use the built-in text estimate on the server, without a `measureText`: the browser replays the server's layout with it.
-
-### Render the markup once
-
-The chart owns its svg after the takeover. Code that writes the server markup into the container again, as some frameworks' raw-HTML features do when a page updates, leaves the chart drawing into an svg that's no longer on the page. Chartist warns on its next render and draws a new svg, but the fix is to render the markup into the container only once. [Charts in frameworks](../frameworks/) shows how, in React, Vue, Angular and Svelte.
-
 In the API reference: [rendering](../../api/rendering/).
 
-Next: [charts in frameworks](../frameworks/), or [update charts with new data](../live-updates/).
+Next: keep a server-rendered chart running in the page with [SSR with hydration](../ssr-hydration/).

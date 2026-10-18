@@ -9,5 +9,12 @@
 
 #status {
   margin: 0.5em 0 0;
+  white-space: pre-line;
   font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5em;
+  margin: 0.5em 0 0;
 }

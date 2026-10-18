@@ -196,6 +196,8 @@ Both are independent of hydration, so they ship as `fix:` commits.
 ### Docs
 
 - **The server rendering guide** gets a section on taking charts over. Its live example `server-rendering/hydrate` keeps the server markup in its `index.html`, between marker comments. A script writes the markup from `renderForHydration()` of the example's own config; a check that's part of the docs `check` target fails when the committed HTML differs from the current build's markup.
+- **After review, the guide was split:** "Server rendering" keeps the self-contained SVG image, and "SSR with hydration" (`/docs/ssr-hydration/`) takes the hydration sections, since the two outputs serve different readers and the combined page had grown long. The live example moved to `ssr-hydration/hydrate`.
+- **The landing hero dogfoods it:** its board chart is rendered with `renderForHydration()` when the site is built, at the board's desktop size, and taken over with `liveDomRenderer()`. A static site renders once for every reader, so desktops get the exact layout and phones lay the chart out again at the takeover.
 - **A new guide, "Charts in frameworks"** (`/docs/frameworks/`, Advanced), gives the rule and the four recipes from the PoC's final round:
   - React: a frozen `__html` via `useState(() => markup)`, `useLayoutEffect`, plain `destroy()`;
   - Vue: `import.meta.server ? markup : undefined` with `v-html`;

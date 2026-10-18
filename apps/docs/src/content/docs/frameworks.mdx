@@ -2,7 +2,7 @@
 title: Charts in frameworks
 description: Use Chartist in React, Vue, Angular and Svelte, with the chart rendered on the server and taken over in the browser.
 group: Advanced
-order: 5
+order: 6
 ---
 
 import Callout from '../../components/docs/Callout.astro';
@@ -13,7 +13,7 @@ export const data = {
   series: [[4, 7, 3, 8, 5]]
 };
 
-Chartist has no framework wrappers, and it doesn't need them: a chart is a container element and a handle. A component creates the chart once, passes new data to the handle and destroys it when it goes away. With server rendering, the component also puts the chart's [hydration markup](../server-rendering/#taking-charts-over-in-the-browser) into the server's HTML, and the chart takes it over in the browser.
+Chartist has no framework wrappers, and it doesn't need them: a chart is a container element and a handle. A component creates the chart once, passes new data to the handle and destroys it when it goes away. With server rendering, the component also puts the chart's [hydration markup](../ssr-hydration/) into the server's HTML, and the chart takes it over in the browser.
 
 ## The rule
 
@@ -289,8 +289,8 @@ Updates from a memoized or computed value keep the chart from redrawing when not
 <Callout kind='tip'>
   **Same data on both sides.** The browser builds the scene from its own config,
   not from the markup. Log `hydration.repaired` in development, as in [the
-  hydrate render](../server-rendering/#the-hydrate-render), to catch a server
-  and a browser that draw different data.
+  hydrate render](../ssr-hydration/#the-hydrate-render), to catch a server and a
+  browser that draw different data.
 </Callout>
 
 Next: [Security and CSP](../security-and-csp/), for pages with a strict policy.
