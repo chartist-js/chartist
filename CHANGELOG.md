@@ -1,3 +1,37 @@
+## 2.1.0 (2026-10-18)
+
+### 🚀 Features
+
+- **chartist:** style label spans and donut widths without inline styles ([134ac969](https://github.com/chartist-js/chartist/commit/134ac969))
+- **chartist:** render charts to markup for hydration ([783706ef](https://github.com/chartist-js/chartist/commit/783706ef))
+- **chartist:** let renderers adopt server markup ([2dadbc73](https://github.com/chartist-js/chartist/commit/2dadbc73))
+- **chartist:** take server markup over in chart() ([27384933](https://github.com/chartist-js/chartist/commit/27384933))
+- **chartist:** adopt server markup in liveDomRenderer() ([71a9412f](https://github.com/chartist-js/chartist/commit/71a9412f))
+- **chartist:** add the chartist/server entry point ([d9e0fa89](https://github.com/chartist-js/chartist/commit/d9e0fa89))
+- **chartist:** move renderForHydration() to chartist/server ([15db13c5](https://github.com/chartist-js/chartist/commit/15db13c5))
+- ⚠️  **chartist:** move renderToString() to chartist/server ([2dd9a589](https://github.com/chartist-js/chartist/commit/2dd9a589))
+- **chartist:** read stylesheets for applyStyles() ([7cb1ce45](https://github.com/chartist-js/chartist/commit/7cb1ce45))
+- **chartist:** match selectors against the scene ([5ee9383c](https://github.com/chartist-js/chartist/commit/5ee9383c))
+- **chartist:** resolve the cascade and values for applyStyles() ([74ec0eb8](https://github.com/chartist-js/chartist/commit/74ec0eb8))
+- **chartist:** add applyStyles() to chartist/server ([c65c501f](https://github.com/chartist-js/chartist/commit/c65c501f))
+- **chartist:** computeStyles() and other style engines for applyStyles() ([c9359545](https://github.com/chartist-js/chartist/commit/c9359545))
+
+### 🩹 Fixes
+
+- **chartist:** close empty HTML elements in renderToString() ([d93f24d3](https://github.com/chartist-js/chartist/commit/d93f24d3))
+- **chartist:** replace Chartist svgs parsed from HTML ([519bc0eb](https://github.com/chartist-js/chartist/commit/519bc0eb))
+
+### 🔥 Performance
+
+- **chartist:** keep hydration mostly out of the core bundles ([de1c8e2c](https://github.com/chartist-js/chartist/commit/de1c8e2c))
+
+### ⚠️  Breaking Changes
+
+- **chartist:** move renderToString() to chartist/server  ([2dd9a589](https://github.com/chartist-js/chartist/commit/2dd9a589))
+  renderToString() is no longer exported from chartist.
+  Import it from chartist/server instead:
+  import { renderToString } from 'chartist/server';
+
 # 2.0.0 (2026-10-16)
 
 ### 🚀 Features
