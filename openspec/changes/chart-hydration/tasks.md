@@ -84,11 +84,11 @@
 
 ## 6. Browser tests
 
-- [ ] 6.1 Add cases to `test/smoke/csp.test.mjs` whose served HTML contains hydration markup: a line chart with HTML labels taken over with `liveDomRenderer()` at the server's size, and a donut with `donutWidth: 20`, under the `strict` and `trustedTypes` policies. Verify:
+- [x] 6.1 Add cases to `test/smoke/csp.test.mjs` whose served HTML contains hydration markup: a line chart with HTML labels taken over with `liveDomRenderer()` at the server's size, and a donut with `donutWidth: 20`, under the `strict` and `trustedTypes` policies. Verify:
   - no violation at all, before and after the takeover ("No violations");
   - label boxes equal to the no-policy run, and the slices' stroke width 20 px, without JavaScript and after the takeover ("Labels and donut width under the policy");
   - `hydration.repaired` 0 ("The same data").
-- [ ] 6.2 Add a hydration case to `test/smoke/browser.test.mjs`: served HTML with hydration markup whose `.ct-line` has a 2 s CSS animation from page load, taken over after 500 ms. Verify:
+- [x] 6.2 Add a hydration case to `test/smoke/browser.test.mjs`: served HTML with hydration markup whose `.ct-line` has a 2 s CSS animation from page load, taken over after 500 ms. Verify:
   - the svg and points are the same objects;
   - the animation's `startTime` is unchanged and it isn't restarted ("A load animation");
   - with a dynamic `import()` of the build, no animation frame without the chart ("Lazy Chartist");
