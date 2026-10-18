@@ -188,6 +188,35 @@ const inlinePages = {
         points: svg.querySelectorAll('.ct-point').length
       };
     </script>`,
+  // Server rendering in the browser, e.g. to export a chart as an image:
+  // the browser module imports the core module next to it.
+  'server-esm': `<!doctype html>
+    <script type="module">
+      import * as core from 'https://cdn.jsdelivr.net/npm/chartist/dist/index.min.js';
+      import * as server from 'https://cdn.jsdelivr.net/npm/chartist/dist/server.min.js';
+      const css = await (await fetch('https://cdn.jsdelivr.net/npm/chartist/dist/index.css')).text();
+      const scene = core.toScene(core.lineChartConfig({ series: [[1, 2, 3]] }), { width: 400, height: 200 });
+      const markup = server.renderToString(server.applyStyles(scene, css));
+      window.result = {
+        oneCore: server.toScene === core.toScene,
+        svg: markup.startsWith('<svg '),
+        stroke: markup.includes('stroke="#d70206"')
+      };
+    </script>`,
+  // Classic scripts: server.umd.js adds the server API to the global Chartist.
+  'server-umd': `<!doctype html>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/index.umd.js"></script>
+    <script>window.coreToScene = Chartist.toScene;</script>
+    <script src="https://cdn.jsdelivr.net/npm/chartist/dist/server.umd.js"></script>
+    <script>
+      const scene = Chartist.toScene(Chartist.lineChartConfig({ series: [[1, 2, 3]] }), { width: 400, height: 200 });
+      const markup = Chartist.renderToString(Chartist.applyStyles(scene, '.ct-line { stroke: #d70206 }'));
+      window.result = {
+        oneCore: Chartist.toScene === window.coreToScene,
+        svg: markup.startsWith('<svg '),
+        stroke: markup.includes('stroke="#d70206"')
+      };
+    </script>`,
   // A 0.x plugin script after compat.umd.js; a plugin registered before
   // compat loads stays.
   'compat-umd-0x': `<!doctype html>
@@ -364,6 +393,20 @@ for (const name of ['live-esm', 'live-umd']) {
     assert.deepEqual(await page.evaluate(() => window.result), {
       kept: true,
       points: 4
+    });
+    assert.deepEqual(errors, []);
+    await page.close();
+  });
+}
+
+for (const name of ['server-esm', 'server-umd']) {
+  test(`server rendering runs in the browser (${name})`, async () => {
+    const { page, errors } = await openPage(`${ORIGIN}/inline/${name}`);
+    await page.waitForFunction(() => window.result);
+    assert.deepEqual(await page.evaluate(() => window.result), {
+      oneCore: true,
+      svg: true,
+      stroke: true
     });
     assert.deepEqual(errors, []);
     await page.close();
