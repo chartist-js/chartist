@@ -19,13 +19,13 @@ const headings = [
     you’re working on; the guides explain how the pieces fit together.
   </p>
   <ul>
-    <li><span class="tag api-badge api-badge-experimental">experimental</span> May still change in a 2.x minor: live updates, new with 2.0, and <code>container()</code>, which rests on a draft standard.</li>
+    <li><span class="tag api-badge api-badge-experimental">experimental</span> May still change in a 2.x minor: live updates, new with 2.0, the server API of <code>chartist/server</code>, new with 2.1, and <code>container()</code>, which rests on a draft standard.</li>
     <li><span class="tag api-badge api-badge-1x">1.x</span> Kept so 1.x code runs unchanged. New code doesn’t need it.</li>
     <li>Signatures link their types: click a type to see it.</li>
   </ul>
   <p>
-    Everything is exported from <code>chartist</code>, except the 1.x events, which come from <code>chartist/compat</code>, and live updates, which come from
-    <code>chartist/live</code>.
+    Everything is exported from <code>chartist</code>, except the 1.x events, which come from <code>chartist/compat</code>, live updates, which come from
+    <code>chartist/live</code>, and rendering to markup, which comes from <code>chartist/server</code>.
   </p>
   {
     API_PAGES.map(page => (

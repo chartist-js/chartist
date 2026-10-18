@@ -1,6 +1,6 @@
 /**
  * The API reference's model: TypeDoc's JSON
- * for chartist, chartist/compat and chartist/live, and one per documented `@chartist-js`
+ * for chartist, chartist/compat, chartist/live and chartist/server, and one per documented `@chartist-js`
  * package (docs:api writes them), read at build time, and what the
  * reference pages need from it: entries per page, comments, types as
  * linked tokens, and the members of option types.
@@ -79,7 +79,7 @@ function offsetIds(value: unknown, by: number): J.ProjectReflection {
   return walk(value) as J.ProjectReflection;
 }
 
-/** `chartist`, `chartist/compat`, `chartist/live` or a package's npm name. */
+/** `chartist`, `chartist/compat`, `chartist/live`, `chartist/server` or a package's npm name. */
 export type ModuleName = string;
 
 export interface ApiEntry {
@@ -94,15 +94,21 @@ export interface ApiEntry {
   file: string;
   /** A link to the source on GitHub. */
   sourceUrl?: string;
+  /**
+   * For an export another entry point re-exports from `chartist` (the
+   * `toScene` of `chartist/server`): the id of the original.
+   */
+  reexport?: number;
 }
 
 /** TypeDoc's module names of chartist's other entry points → their subpath. */
 const ENTRY_POINTS: Readonly<Record<string, string>> = {
   compat: 'compat',
-  live: 'live'
+  live: 'live',
+  server: 'server'
 };
 
-/** Every export of chartist, chartist/compat and chartist/live, in source order per module (core first). */
+/** Every export of chartist and its other entry points, in source order per module (core first). */
 export const ENTRIES: ApiEntry[] = [];
 /** Every export of each package, in source order, by the package's slug. */
 export const PACKAGE_ENTRIES = new Map<string, ApiEntry[]>();
@@ -130,7 +136,11 @@ for (const module of project.children ?? []) {
       page: page ?? '',
       reflection,
       file,
-      sourceUrl: reflection.sources?.[0]?.url
+      sourceUrl: reflection.sources?.[0]?.url,
+      reexport:
+        reflection.kind === KIND.Reference
+          ? (reflection as { target?: number }).target
+          : undefined
     };
     ENTRIES.push(entry);
     index(reflection, entry);
@@ -171,6 +181,12 @@ function index(reflection: Reflection, entry: ApiEntry, member?: string) {
   }
 }
 
+/** The `chartist` export a re-export stands for. */
+export const reexportOf = (entry: ApiEntry): ApiEntry | undefined =>
+  entry.reexport === undefined
+    ? undefined
+    : LOCATIONS.get(entry.reexport)?.entry;
+
 export const pageOf = (slug: string): ApiPage | undefined =>
   API_PAGES.find(page => page.slug === slug);
 
@@ -196,7 +212,7 @@ export function sortedEntries(slug: string): ApiEntry[] {
 /** Entries named in `first` lead; then functions, classes, types. */
 function sortByKind(entries: ApiEntry[], first: readonly string[]): ApiEntry[] {
   const rank = (entry: ApiEntry) => {
-    const kind = entry.reflection.kind;
+    const kind = (reexportOf(entry) ?? entry).reflection.kind;
     if (
       kind === KIND.Function ||
       kind === KIND.Variable ||

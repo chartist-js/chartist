@@ -14,9 +14,12 @@ import {
   declarationHead,
   entryMembers,
   exampleCode,
+  firstSentence,
+  linkTo,
   memberTypeTokens,
   membersOf,
   pageOf,
+  reexportOf,
   signatureTokens,
   tagsOf,
   typeTokens,
@@ -33,6 +36,7 @@ interface Props {
 }
 
 const { entry } = Astro.props;
+const original = reexportOf(entry);
 const reflection = entry.reflection;
 const legacy = pageOf(entry.page)?.legacy;
 const compact = Boolean(pageOf(entry.page)?.compact);
@@ -40,7 +44,8 @@ const isFunction = reflection.kind === KIND.Function;
 const isClass = reflection.kind === KIND.Class;
 const signatures = isFunction ? (reflection.signatures ?? []) : [];
 const constructor = isClass ? reflection.children?.find(child => child.kind === KIND.Constructor)?.signatures?.[0] : undefined;
-const comment = commentOf(isFunction ? signatures[0] : reflection);
+// A re-export is described where it comes from.
+const comment = original ? undefined : commentOf(isFunction ? signatures[0] : reflection);
 const badges = badgesOf(entry);
 const showMembers = !compact && !(legacy === 'classes' && isClass) && reflection.kind !== KIND.Namespace;
 const members: Member[] = showMembers ? entryMembers(entry) : [];
@@ -61,7 +66,12 @@ const deprecated = tagsOf(comment, '@deprecated')[0];
   </div>
 
   {
-    signatures.length > 0
+    original ? (
+      <div class="api-text"><p>
+        {firstSentence(commentOf(original.reflection.kind === KIND.Function ? original.reflection.signatures?.[0] : original.reflection)?.summary)}{' '}
+        The same as <a href={linkTo(original.reflection.id)}><code>{original.name}</code></a> from <code>{original.module}</code>, re-exported so server code needs one import.
+      </p></div>
+    ) : signatures.length > 0
       ? signatures.map(signature => <Tokens tokens={signatureTokens(entry.name, signature)} block />)
       : <Tokens tokens={declarationHead(entry)} block />
   }

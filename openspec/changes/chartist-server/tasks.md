@@ -26,9 +26,9 @@
 
 ## 4. Docs and consumers
 
-- [ ] 4.1 Change every import of `renderToString` and `renderForHydration` in `apps/docs` (guides, examples, `lib/og-card.ts`, `lib/board-markup.ts`, the landing's Features section) and in the terminal package's docs to `chartist/server`, and add `chartist/server` to the playground's import map and its types. Verify: `pnpm nx run docs:samples`, `pnpm nx run docs:check` (the server-markup check included), and the examples using it run in the playground.
+- [x] 4.1 Change every import of `renderToString` and `renderForHydration` in `apps/docs` (guides, examples, `lib/og-card.ts`, `lib/board-markup.ts`, the landing's Features section) and in the terminal package's docs to `chartist/server`, and add `chartist/server` to the playground's import map and its types. Verify: `pnpm nx run docs:samples`, `pnpm nx run docs:check` (the server-markup check included), and the examples using it run in the playground.
 - [ ] 4.2 In the server rendering guide, replace the hand-written `<style>` listener with `applyStyles()` and Chartist's stylesheet read from `chartist/styles.css`; say which color scheme it uses, what CSS it leaves out, to pass only your own stylesheets, to use SVG labels for images, and that the server API is experimental (a warning callout, as on the live updates guide). Verify: `pnpm nx run docs:samples`, the page's e2e checks, and screenshots in light and dark mode and at 375 px.
-- [ ] 4.3 Check that the API reference lists a `chartist/server` page with `applyStyles`, `renderToString`, `renderForHydration` and the re-exported `toScene`, with experimental badges, and that `chartist`'s page no longer lists `renderToString`. Verify: the generated `api.json` and the built reference pages.
+- [x] 4.3 Check that the API reference lists a `chartist/server` page with `applyStyles`, `renderToString`, `renderForHydration` and the re-exported `toScene`, with experimental badges, and that `chartist`'s page no longer lists `renderToString`. Verify: the generated `api.json` and the built reference pages.
 
 ## 5. Release notes and gate
 

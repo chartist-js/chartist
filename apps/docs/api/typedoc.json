@@ -3,7 +3,8 @@
   "entryPoints": [
     "../../../packages/chartist/src/index.ts",
     "../../../packages/chartist/src/compat/index.ts",
-    "../../../packages/chartist/src/live/index.ts"
+    "../../../packages/chartist/src/live/index.ts",
+    "../../../packages/chartist/src/server/index.ts"
   ],
   "tsconfig": "./tsconfig.json",
   "json": "../src/generated/api.json",

@@ -101,6 +101,12 @@ export const API_PAGES: ApiPage[] = [
       'Live updates: the renderer that changes a chart’s SVG in place, the keyed diff, and SMIL update animations.'
   },
   {
+    slug: 'server',
+    title: 'chartist/server',
+    description:
+      'Charts as markup without a DOM: SVG strings, markup the browser takes over, and stylesheets written into the SVG for images and PDFs.'
+  },
+  {
     slug: 'classes',
     title: '1.x classes',
     description:
@@ -205,6 +211,7 @@ const BY_NAME: Record<string, string> = {
 const BY_FILE: Array<[string, string]> = [
   ['compat/', 'compat'],
   ['live/', 'live'],
+  ['server/', 'server'],
   ['presets/', 'charts'],
   ['chart/toScene', 'rendering'],
   ['chart/', 'chart'],

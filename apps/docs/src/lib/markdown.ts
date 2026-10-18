@@ -14,10 +14,13 @@ import {
   declarationHead,
   entryMembers,
   exampleCode,
+  firstSentence,
+  linkTo,
   listsMembers,
   membersOf,
   pageOf,
   partHref,
+  reexportOf,
   signatureTokens,
   packageApiEntries,
   sortedEntries,
@@ -90,6 +93,21 @@ function entryMarkdown(entry: ApiEntry): string {
   ].filter(Boolean);
   if (badges.length) {
     out.push(`*${badges.join(' · ')}*`);
+  }
+  const original = reexportOf(entry);
+  if (original) {
+    const link = linkTo(original.reflection.id);
+    const summary = firstSentence(
+      commentOf(
+        original.reflection.kind === KIND.Function
+          ? original.reflection.signatures?.[0]
+          : original.reflection
+      )?.summary
+    );
+    out.push(
+      `${summary} The same as [\`${original.name}\`](${link ? absolute(link) : ''}) from \`${original.module}\`, re-exported so server code needs one import.`
+    );
+    return out.join('\n\n');
   }
   const code = signatures.length
     ? signatures
