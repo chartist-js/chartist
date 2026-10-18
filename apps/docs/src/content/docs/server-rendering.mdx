@@ -27,9 +27,16 @@ What you render depends on where the markup goes:
 
 ## Two functions
 
+<Callout kind='warn'>
+  **Experimental.** The server API of `chartist/server` (`renderToString()`,
+  `renderForHydration()` and `applyStyles()`) is new with 2.1. It may still
+  change in a 2.x minor before it becomes stable; `toScene()` and the rest of
+  Chartist are stable.
+</Callout>
+
 `toScene(config, size)` runs the pipeline from `resolve` to `scene` and returns the scene. It takes the same config as `chart()`, with your plugins and listeners, plus the size to lay out at. It touches no DOM, timers or globals.
 
-`renderToString(scene)` turns a scene into standalone SVG markup, namespaces included.
+`renderToString(scene)` turns a scene into standalone SVG markup, namespaces included. Both come from `chartist/server`, the entry point for rendering without a DOM; `toScene()` is the one from `chartist`, re-exported there so server code needs one import. In 2.0, `renderToString()` came from `chartist`: import it from `chartist/server` now.
 
 ```ts
 import { lineChartConfig } from 'chartist';
@@ -104,39 +111,48 @@ The markup has the same classes as a chart in the page, but no styles. Where it 
 
 **Server-rendered pages.** Put the string into your HTML and load `chartist/styles.css` (or your own chart styles) on the page, like for any chart. Since the page is HTML, HTML labels work, if you want them. If the chart should run in the page once its script loads, render it for [SSR with hydration](../ssr-hydration/) instead.
 
-**PDFs.** If you print HTML to PDF with a headless browser, it's the same as a web page. Other PDF tools read the SVG on its own: there, use SVG labels and put the styles into the SVG.
+**PDFs.** If you print HTML to PDF with a headless browser, it's the same as a web page. Other PDF tools read the SVG on its own: there, use SVG labels and write the styles into the SVG.
 
-**Email and images.** Many email clients don't show SVG at all, so send a PNG. Convert the markup with an SVG rasterizer, for example in a Node.js service, and use SVG labels with the styles inside the SVG. Rasterizers support less CSS than browsers: keep those styles to plain selectors and values.
+**Email and images.** Many email clients don't show SVG at all, so send a PNG. Convert the markup with an SVG rasterizer, for example in a Node.js service, and use SVG labels with the styles written into the SVG. Rasterizers don't draw HTML, so HTML labels would be missing.
 
-To put styles into the SVG, add a `<style>` element to the scene with a `scene` listener:
+### Styles in the SVG
+
+Tools that read SVG on its own know less CSS than browsers. Chartist's stylesheet colors each series through a custom property (`stroke: var(--ct-color)`, set on the series group) and the grid and labels with `light-dark()`. Rasterizers such as resvg support neither, and draw the lines without their color. So don't copy the stylesheet into the SVG. Write it into the scene with `applyStyles()`:
 
 ```ts
-import { lineChartConfig, node } from 'chartist';
-import { renderToString, toScene } from 'chartist/server';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { lineChartConfig } from 'chartist';
+import { applyStyles, renderToString, toScene } from 'chartist/server';
 
-const css = `
-  .ct-grid { stroke: #ccc; stroke-dasharray: 2px; }
-  .ct-label { fill: #666; font: 12px sans-serif; }
-  .ct-line { fill: none; stroke: #d70206; stroke-width: 4px; }
-  .ct-point { stroke: #d70206; stroke-width: 10px; stroke-linecap: round; }
-`;
+// Chartist's stylesheet, from the package, and your own after it.
+const require = createRequire(import.meta.url);
+const css = [
+  readFileSync(require.resolve('chartist/styles.css'), 'utf8'),
+  '.ct-series-a { --ct-color: #0b7285; }'
+];
 
 const scene = toScene(
-  lineChartConfig(
-    { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], series: [[12, 9, 7, 8, 5]] },
-    {
-      on: {
-        scene: ({ scene }) => ({
-          scene: scene.append(node('style').text(css), true)
-        })
-      }
-    }
-  ),
+  lineChartConfig({
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[12, 9, 7, 8, 5]]
+  }),
   { width: 600, height: 300 }
 );
 
-export const markup = renderToString(scene);
+export const markup = renderToString(applyStyles(scene, css));
 ```
+
+`applyStyles(scene, css)` matches the rules against the scene as a browser would and writes the values each element gets as SVG attributes, such as `stroke="#0b7285"` on the line. Custom properties are resolved per element, inherited through the scene, and `light-dark()` takes its light value. Pass `{ colorScheme: 'dark' }` for the dark values and the `@media (prefers-color-scheme: dark)` rules. The classes stay, and the scene you pass in isn't changed.
+
+It reads what chart styles use: type, class and attribute selectors, `:not()`, `:is()` and `:where()`, the descendant and child combinators, `!important`, and `@supports` and `@layer` blocks in place (without layer order). It leaves out rules with other pseudo-classes such as `:hover`, nested rules, other at-rules such as `@keyframes` and `@container`, properties SVG has no attribute for, and the HTML inside a `foreignObject`: use SVG labels.
+
+<Callout kind='warn'>
+  **Pass only your own CSS.** The values end up in the markup, `url()` included.
+  They're written as escaped attribute values, so CSS can't add elements, but
+  treat a stylesheet like code: pass only the ones your application controls,
+  never one from a user.
+</Callout>
 
 <Callout>
   **Plugins run on the server too.** `toScene()` installs the config's plugins
@@ -147,6 +163,6 @@ export const markup = renderToString(scene);
   come from the `mount` phase. See [Events and plugins](../events-and-plugins/).
 </Callout>
 
-In the API reference: [rendering](../../api/rendering/).
+In the API reference: [rendering](../../api/rendering/) and [chartist/server](../../api/server/).
 
 Next: keep a server-rendered chart running in the page with [SSR with hydration](../ssr-hydration/).
