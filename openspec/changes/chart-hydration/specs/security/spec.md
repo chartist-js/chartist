@@ -1,15 +1,15 @@
 ## ADDED Requirements
 
-### Requirement: Server markup under a strict style policy
+### Requirement: Hydration markup under a strict style policy
 
-A chart that takes server markup over on a page whose policy allows styles only from the page's own origin (`style-src 'self'`) SHALL end up with every inline style applied, as a chart drawn in that page does, and the page SHALL report no violation caused by Chartist's scripts. The `style` attributes in the server markup stay blocked by such a policy until the chart takes it over; until then, without JavaScript, labels MAY be misplaced. The server rendering docs SHALL say so.
+The markup `renderForHydration()` returns SHALL contain no `style` attributes and no `style` elements, so a page whose policy allows styles only from the page's own origin (`style-src 'self'`) reports no violation for it, before and after the chart takes it over. With Chartist's stylesheet, the markup SHALL look under such a policy as it does without it. The chart that took it over SHALL apply its inline styles through the CSSOM, as every chart does. The self-contained SVG markup from `renderToString()` keeps its `style` attributes; the security docs SHALL say which of the two outputs to put into pages with such a policy.
 
-#### Scenario: Labels after the takeover
+#### Scenario: No violations
 
-- **WHEN** a page served with `default-src 'self'; style-src 'self'` contains the hydration markup of a line chart with HTML labels, and draws it with `lineChart()` and `liveDomRenderer()` at the server's size
-- **THEN** the labels have the positions and sizes they have without the policy, and no violation is reported for Chartist's styles
+- **WHEN** a page served with `default-src 'self'; style-src 'self'` contains the hydration markup of a line chart with HTML labels and of a donut with `donutWidth: 20`, and takes both over with `lineChart()`, `pieChart()` and `liveDomRenderer()`
+- **THEN** the page reports no CSP violation, before or after the takeover
 
-#### Scenario: Donut width after the takeover
+#### Scenario: Labels and donut width under the policy
 
-- **WHEN** such a page contains the hydration markup of a donut with `donutWidth: 20`, and draws it with `pieChart()` and `liveDomRenderer()`
-- **THEN** its slices have a stroke width of 20 px
+- **WHEN** that page is shown without JavaScript, and again after the takeover
+- **THEN** the labels have the positions and sizes they have without the policy, and the slices have a stroke width of 20 px, both times

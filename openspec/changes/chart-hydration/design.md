@@ -99,13 +99,51 @@ After adoption, `chart()` renders at the container's real size with the cause `r
 - _Alternative, `renderToString()` both scenes_ (the PoC's first version): it pulls the string renderer into every `chart()` bundle.
 - The skip applies to the correction render only. Skipping every render without changes, for `update()` with the same data for example, would change what `mount` listeners of live charts see today. That's a separate decision.
 
-### The server markup has the root `chart()` draws
+### Two server outputs, two functions
 
-With `hydrate`, `toScene()` passes the same `rootSize` that `chart()` uses (`config.width ?? '100%'`). For a preset config, it also adds the inline size style the preset adds in the browser. `presetConfig()` marks its config for that with a symbol property, which `toScene()` reads; it isn't part of the public `ChartConfig` type.
+`toScene()` + `renderToString()` stay the self-contained SVG image: inline styles, SVG labels by default, px size. `renderForHydration(config, size)` is new and returns the hydration markup. It builds the scene as `toScene()` does, with the hydration settings below, then serializes it with the same serializer.
 
-Without this, the server root was `width="600"` against the browser's `100%`, so the comparison could never find the same scene, and every hydration rendered twice. The preset style appeared only at hydration and overrode page CSS that had sized the svg before (round 3).
+It takes a config, not a scene, because the marker needs the size and label mode the scene was laid out with, and because it decides the root and the styles. It lives in the core next to `toScene()`, so only server bundles that import it pay for it.
+
+- _Alternative, a `hydrate` option on `toScene()`_ (the first draft of this change): one function fewer, but a scene API would take on a page-integration concern. Its output could then no longer be the self-contained image the docs describe.
+- _Alternative, the name `renderServerSide()`:_ it names where, not what. The self-contained image is rendered on the server too, which is the confusion the separate function removes.
+
+### The root of the hydration markup
+
+`renderForHydration()` lays out with the `rootSize` that `chart()` uses (`config.width ?? '100%'`). So at equal size, the browser's real-size scene equals the replayed one, and the correction render finds nothing to change.
 
 - _Alternative, adoption ignores the root's size:_ the double render goes away, but the no-JS chart then has a px size, which overflows on phones.
+
+### Hydration markup without inline styles
+
+The serializer gets the scene with its styles turned into what a page can show under `style-src 'self'`:
+
+- SVG elements: declarations that are SVG presentation attributes become attributes. That's `overflow: visible` on label `foreignObject`s and a donut slice's `stroke-width`.
+- The label `span`'s px size is dropped: a stylesheet rule sizes it from its `foreignObject`.
+- The root's inline size style is dropped: its `width` and `height` attributes do the same.
+- Any other declaration, such as a plugin's style added in a `scene` listener, is dropped and applied at adoption. Classes and CSS work before hydration, in line with CSS-first.
+
+`styles.css` gets two additive rules:
+
+- `foreignObject > .ct-label { width: 100%; height: 100% }`;
+- the donut width rule guarded with `:not([stroke-width])`.
+
+Charts drawn by `chart()` keep their inline styles, which take precedence over both, so nothing changes for them. The visual tests prove it.
+
+Checked in Chromium under `style-src 'self'` with no inline styles:
+
+- `overflow="visible"` computes to `visible`;
+- a span in a 47.3 × 20.6 `foreignObject` is 47.3 × 20.6, slightly more exact than the inline style's rounded px;
+- a slice with `stroke-width="20"` draws 20 px, one without it the default 60 px;
+- no violation is reported.
+
+Firefox and WebKit go into the browser smoke test.
+
+This replaces two things from the first draft: comparing styles through the CSSOM during adoption, and marking preset configs so the hydration markup could carry the presets' inline root style. The markup no longer has styles to compare or match. Adoption applies all of them.
+
+- _Alternative, inline styles in the hydration markup, repaired through the CSSOM at adoption_ (the PoC): every style attribute is blocked and reported under a strict policy (35 for one line chart), and labels sit wrong until hydration.
+- _Alternative, a `<style>` element with a nonce:_ the framework's nonce would have to reach Chartist, and per-element rules need ids.
+- _Alternative, removing the inline styles from `chart()`'s markup too:_ a breaking change to the 1.x structure and the security spec. Out of scope.
 
 ### The scaling viewBox
 
@@ -123,10 +161,16 @@ The walk compares element names, namespaces and child element counts; text and c
 
 - **Attributes:** reads them by namespace and local name, so it finds the plain `ct:value` the parser left, moves it into the Chartist namespace, and sets values that differ.
 - **Extra attributes:** removes the ones the scene doesn't have, except `class`, the `xmlns` declarations and `data-ct-hydrate`.
-- **Styles:** compares `element.style.cssText` with the scene's style, ignoring whitespace, and sets it through the CSSOM where they differ. A blocked style reads as empty, so it's applied.
+- **Styles:** applies every scene style through the CSSOM.
 - **Classes and texts:** sets them where they differ.
 
-`repaired` counts the repairs, with two exceptions: the root's size and inline size style, and a style whose attribute text already equals the scene's (a policy blocked it). With the same data and options, it's 0 under any policy (round 3 counted 34 under a strict policy before this rule).
+`repaired` counts attribute, class and text repairs. It doesn't count styles, or the removal of a presentation attribute whose property is in the element's scene style, since those stand in for the styles by design. With the same data and options, it's 0 under any policy.
+
+### Charts that always draw a new svg
+
+The 1.x classes and the compat plugin set the internal flag that keeps `chart()` from handing a renderer its previous render. `chart()` doesn't adopt for such charts; they draw fresh over the server markup, as with the default renderer.
+
+Otherwise, adoption would keep the server's elements at equal size. At any other size, the correction render would replace them, and a converted plugin's `draw` events would run against two sets of elements.
 
 ### The marker
 
@@ -151,7 +195,7 @@ Both are independent of hydration, so they ship as `fix:` commits.
 
 ### Docs
 
-- **The server rendering guide** gets a section on taking charts over. Its live example `server-rendering/hydrate` keeps the server markup in its `index.html`, between marker comments. A script writes the markup from `toScene()` and `renderToString()` of the example's own config; a check that's part of the docs `check` target fails when the committed HTML differs from the current build's markup.
+- **The server rendering guide** gets a section on taking charts over. Its live example `server-rendering/hydrate` keeps the server markup in its `index.html`, between marker comments. A script writes the markup from `renderForHydration()` of the example's own config; a check that's part of the docs `check` target fails when the committed HTML differs from the current build's markup.
 - **A new guide, "Charts in frameworks"** (`/docs/frameworks/`, Advanced), gives the rule and the four recipes from the PoC's final round:
   - React: a frozen `__html` via `useState(() => markup)`, `useLayoutEffect`, plain `destroy()`;
   - Vue: `import.meta.server ? markup : undefined` with `v-html`;
@@ -170,14 +214,15 @@ Both are independent of hydration, so they ship as `fix:` commits.
   - `hydrate` then `resize` at another size;
   - equal to a fresh chart;
   - strict repairs and `repaired`;
-  - blocked styles, simulated by an empty `cssText`;
+  - the style-free markup (presentation attributes, no `style` attributes) and styles applied at adoption;
+  - charts that always draw a new svg;
   - the fallbacks;
   - the warning;
   - closing HTML elements;
   - replacing parsed svgs.
-- **The CSP smoke test** gets cases whose served HTML contains hydration markup: a line chart with HTML labels and a donut with `donutWidth`, under `strict` and `trustedTypes`.
+- **The CSP smoke test** gets cases whose served HTML contains hydration markup: a line chart with HTML labels and a donut with `donutWidth`, under `strict` and `trustedTypes`, with no violation before or after the takeover, and label boxes and donut width equal to the no-policy run, without JavaScript and after the takeover.
 - **The browser smoke test** gets one case for element identity and a CSS animation that continues.
-- **The API recordings** cover `adopt`, the `hydrate` cause, the `hydration` field and the `adopt` option; the size-limit entries get new budgets.
+- **The API recordings** cover `renderForHydration`, `adopt`, the `hydrate` cause, the `hydration` field and the `adopt` option; the size-limit entries get new budgets.
 - **Framework apps:** none in the repository. Four frameworks as dev dependencies, kept up to date, would cost more than they protect. The contract they rely on is tested above, and the guide's recipes state the rules the PoC proved.
 
 ## Risks / Trade-offs
@@ -202,7 +247,7 @@ Additive, for a 2.x minor release. The changelog notes the 2.0 changes the propo
 - `renderToString()` closes empty HTML elements;
 - parsed Chartist svgs are replaced.
 
-No migration is needed: without `hydrate: true` on the server, nothing changes. On archive, `docs/decisions.md` gets a hydration entry: the contract, adoption in the live renderer, recipes instead of wrapper packages, and how that relates to the planned web component.
+No migration is needed: without `renderForHydration()` on the server, nothing changes, and the two stylesheet rules don't change existing charts. On archive, `docs/decisions.md` gets a hydration entry: the contract, adoption in the live renderer, recipes instead of wrapper packages, and how that relates to the planned web component.
 
 ## Open Questions
 

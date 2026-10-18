@@ -27,7 +27,7 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 #### Scenario: Taking charts over in the server rendering guide
 
 - **WHEN** a reader opens the server rendering guide
-- **THEN** a section on taking charts over in the browser explains `hydrate`, that `liveDomRenderer()` keeps the server's elements while the default renderer draws a new chart over them, the cause `hydrate` and `hydration.repaired`, the scaling `viewBox` and that the container needs a height or an `aspect-ratio`, the warning when markup is replaced, and what a strict style policy does to the markup before the takeover; with a live example whose page holds server markup that the chart takes over
+- **THEN** it explains the two outputs, the self-contained SVG image from `toScene()` and `renderToString()` with its inline styles, and the hydration markup from `renderForHydration()` without them; and a section on taking charts over in the browser explains `renderForHydration()`, that `liveDomRenderer()` keeps the server's elements while the default renderer draws a new chart over them, the cause `hydrate` and `hydration.repaired`, the scaling `viewBox` and that the container needs a height or an `aspect-ratio`, that the markup needs Chartist's stylesheet and passes a strict style policy, and the warning when markup is replaced; with a live example whose page holds server markup that the chart takes over
 
 #### Scenario: Charts in frameworks
 
@@ -58,7 +58,7 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 
 ### Requirement: Server markup in examples
 
-An example whose page holds server markup for a chart to take over SHALL get that markup from `toScene()` and `renderToString()` of the example's own config, written into its HTML by a script. A check SHALL fail when the markup in the HTML differs from what the current build renders, so the example can't drift from the library.
+An example whose page holds server markup for a chart to take over SHALL get that markup from `renderForHydration()` of the example's own config, written into its HTML by a script. A check SHALL fail when the markup in the HTML differs from what the current build renders, so the example can't drift from the library.
 
 #### Scenario: A stale example
 

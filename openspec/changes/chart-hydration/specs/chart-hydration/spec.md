@@ -6,34 +6,46 @@ Defines how a chart rendered to markup on a server is taken over in the browser:
 
 ### Requirement: Hydration markup
 
-`toScene()` SHALL take a `hydrate` option. With it, the scene's root SHALL:
+Chartist SHALL export `renderForHydration(config, size)`. It builds the chart's scene without a DOM, as `toScene()` does, with the size's `width`, `height`, optional `measureText` and optional `labels`, and returns markup for the browser to take over. In that markup, the root SHALL:
 
 - carry a `data-ct-hydrate` attribute with what the browser needs to build the same scene again: the layout width and height, the label mode, whether text was measured with the built-in estimate or a custom `measureText`, and whether the root got a scaling `viewBox`;
 - have the `width` and `height` that `chart()` gives the root for the same config (`100%` unless the config sets a size);
-- unless the config sets a `viewBox`, have a `viewBox` of the layout size, so the drawing scales into its container until the browser lays it out;
-- for a preset config (`lineChartConfig()`, `barChartConfig()`, `pieChartConfig()`), have the inline size style the preset draws in the browser.
+- unless the config sets a `viewBox`, have a `viewBox` of the layout size, so the drawing scales into its container until the browser lays it out.
 
-With `hydrate`, labels SHALL default to HTML, as `chart()` draws them; a `labels` option still decides. Without `hydrate`, `toScene()` SHALL build the same scene as before.
+Labels SHALL default to HTML, as `chart()` draws them; a `labels` option still decides.
+
+The markup SHALL have no `style` attributes:
+
+- declarations an SVG presentation attribute can express SHALL be written as that attribute (a label `foreignObject`'s `overflow`, a donut slice's `stroke-width`);
+- a label span's size and the root's inline size style SHALL be left out, since the stylesheet and the root's attributes give the same layout;
+- any other declarations, such as styles a `scene` listener added, SHALL be left out, and are applied when the browser takes the markup over.
+
+`toScene()` and `renderToString()` SHALL stay unchanged by this: their markup is a self-contained SVG image and keeps its inline styles.
 
 #### Scenario: Marked root
 
-- **WHEN** a line chart config is passed to `toScene()` with `{ width: 600, height: 300, hydrate: true }` and rendered with `renderToString()`
+- **WHEN** a line chart config is passed to `renderForHydration()` with `{ width: 600, height: 300 }`
 - **THEN** the root svg has `width="100%"`, `height="100%"`, `viewBox="0 0 600 300"` and a `data-ct-hydrate` attribute recording 600 × 300, HTML labels, the estimate and the scaling `viewBox`, and the labels are `foreignObject` elements
 
 #### Scenario: The config sets a viewBox
 
-- **WHEN** a config with `viewBox: { width: 400, height: 200 }` is passed to `toScene()` with `hydrate`
+- **WHEN** a config with `viewBox: { width: 400, height: 200 }` is passed to `renderForHydration()`
 - **THEN** the root's `viewBox` is the config's, and the marker records that it isn't a scaling `viewBox`
 
-#### Scenario: A preset config
+#### Scenario: No style attributes
 
-- **WHEN** `lineChartConfig(data)` is passed to `toScene()` with `hydrate`
-- **THEN** the root has the inline size style `lineChart()` gives it in the browser
+- **WHEN** `renderForHydration()` renders a line chart with HTML labels, a preset config, and a donut with `donutWidth: 20`
+- **THEN** none of the markup has a `style` attribute, the label `foreignObject` elements have `overflow="visible"`, and the donut's slices have `stroke-width="20"`
 
-#### Scenario: Without hydrate
+#### Scenario: The self-contained image is unchanged
 
-- **WHEN** the same config is passed to `toScene()` without `hydrate`
-- **THEN** the markup has no `data-ct-hydrate` attribute and is the same as before this change
+- **WHEN** the same configs are rendered with `toScene()` and `renderToString()`
+- **THEN** the markup has no `data-ct-hydrate` attribute and has the inline styles it had before this change
+
+#### Scenario: Same look as after the takeover
+
+- **WHEN** a page with Chartist's stylesheet shows the hydration markup of a line chart and of a donut with `donutWidth: 20` in containers of the server's size, without JavaScript
+- **THEN** the labels have the boxes and the slices the stroke width they have after the chart took the markup over
 
 #### Scenario: Visible without JavaScript
 
@@ -42,7 +54,7 @@ With `hydrate`, labels SHALL default to HTML, as `chart()` draws them; a `labels
 
 ### Requirement: Taking over server markup
 
-When `chart()` or a preset draws into a container whose direct child is an svg with a `data-ct-hydrate` attribute, and the chart's renderer can adopt markup, the chart SHALL take that svg over instead of drawing a new one:
+When `chart()` or a preset draws into a container whose direct child is an svg with a `data-ct-hydrate` attribute, and the chart's renderer can adopt markup (unless the chart is one that always draws a new svg, see "Charts without adoption"), the chart SHALL take that svg over instead of drawing a new one:
 
 - it builds the scene the server drew again, from the config without responsive overrides, at the recorded size and label mode, with the built-in text estimate;
 - the renderer binds that scene to the svg's elements;
@@ -95,9 +107,9 @@ After taking server markup over, the chart SHALL lay itself out at its container
 
 A renderer that adopts markup SHALL require the structure to match the scene: the same element names, namespaces and number of child elements throughout. It SHALL make everything else match what a fresh render draws:
 
-- it sets attributes, classes and texts that differ, and removes attributes the scene doesn't have;
+- it sets attributes, classes and texts that differ, and removes attributes the scene doesn't have, including the presentation attributes the markup used instead of styles;
 - it sets `ct:` attributes, which the HTML parser leaves without their namespace, in the Chartist namespace;
-- it applies the scene's styles through the CSSOM where the element's applied style differs from the scene's, also when a style policy blocked the markup's `style` attribute.
+- it applies the scene's styles through the CSSOM.
 
 #### Scenario: Attributes from the HTML parser
 
@@ -109,24 +121,19 @@ A renderer that adopts markup SHALL require the structure to match the scene: th
 - **WHEN** an element of the server markup has an attribute the scene doesn't have
 - **THEN** the attribute is removed when the chart takes the markup over
 
-#### Scenario: Styles a policy blocked
+#### Scenario: Styles applied at the takeover
 
-- **WHEN** a page with `style-src 'self'` shows the hydration markup of a line chart with HTML labels, and the chart takes it over
-- **THEN** the labels' `foreignObject` and `span` elements have the styles a fresh chart gives them, and the labels sit where they do without the policy
+- **WHEN** a chart takes over the hydration markup of a line chart with HTML labels and of a donut with `donutWidth: 20`
+- **THEN** the label `foreignObject` and `span` elements and the donut's slices have the inline styles a fresh chart gives them, and the `overflow` and `stroke-width` attributes the markup used instead are gone
 
 ### Requirement: Differences from the server
 
-The `render` and `mount` events with the cause `hydrate` SHALL carry `hydration: { repaired }`: the number of attributes, classes, texts and styles that differed between the server's markup and the scene the browser built, and were set. It SHALL be 0 when the server and the browser drew the same data and options:
-
-- the root's size and inline size style SHALL NOT count, since the host sets them;
-- a style that was in the markup with the scene's value, but blocked by a policy and applied again, SHALL NOT count.
-
-Differences alone SHALL NOT log anything.
+The `render` and `mount` events with the cause `hydrate` SHALL carry `hydration: { repaired }`: the number of attributes, classes and texts that differed between the server's markup and the scene the browser built, and were set. Styles, and the presentation attributes the markup carries in their place, SHALL NOT count: the markup leaves styles out by design. So `repaired` SHALL be 0 when the server and the browser drew the same data and options. Differences alone SHALL NOT log anything.
 
 #### Scenario: The same data
 
 - **WHEN** the server and the browser draw the same data and options
-- **THEN** the `hydrate` events carry `hydration.repaired` 0, also on a page with `style-src 'self'`
+- **THEN** the `hydrate` events carry `hydration.repaired` 0
 
 #### Scenario: Other values, same structure
 
@@ -144,7 +151,7 @@ When the server's markup doesn't have the structure of the scene the browser bui
 
 ### Requirement: Charts without adoption
 
-With a renderer that doesn't adopt (`domRenderer()`, or `liveDomRenderer({ adopt: false })`), a chart drawing into a container with hydration markup SHALL draw a new svg, remove the server's svg and log nothing; `mount` SHALL run with the cause `create`.
+With a renderer that doesn't adopt (`domRenderer()`, or `liveDomRenderer({ adopt: false })`), and for charts that draw a new svg on every render whatever the renderer (the 1.x classes, charts with plugins converted with `fromLegacyPlugin`), a chart drawing into a container with hydration markup SHALL draw a new svg, remove the server's svg and log nothing; `mount` SHALL run with the cause `create`.
 
 #### Scenario: The default renderer
 
@@ -155,6 +162,11 @@ With a renderer that doesn't adopt (`domRenderer()`, or `liveDomRenderer({ adopt
 
 - **WHEN** `lineChart()` with `renderer: liveDomRenderer({ adopt: false })` is called on a container with hydration markup
 - **THEN** the container holds one new svg, and later updates patch that svg
+
+#### Scenario: A converted 1.x plugin
+
+- **WHEN** `lineChart()` with `renderer: liveDomRenderer()` and a plugin converted with `fromLegacyPlugin` is called on a container with hydration markup
+- **THEN** the container holds one new svg, `mount` runs with the cause `create`, and the plugin's `draw` events come from that svg's elements
 
 ### Requirement: Markup replaced by other code
 
