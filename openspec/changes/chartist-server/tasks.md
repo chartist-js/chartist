@@ -42,5 +42,5 @@
 - [x] 6.2 Match the scene below a virtual `html` and `body` (`:root`, `html` and `body` rules; their custom properties inherited; their inherited presentation properties written on the root unless a root rule sets them). Verify: unit tests for "A theme on the root" and "Inherited from the page".
 - [x] 6.3 Report skipped parts to `onSkip` once each, with their text and reason; nothing for the other color scheme. Verify: unit tests for "What it skips" and "Chartist's stylesheet is fully read".
 - [x] 6.4 Update the API recordings, type tests and size budgets. Verify: `pnpm nx run chartist:test:api --skip-nx-cache` and `chartist:test:size`.
-- [ ] 6.5 In the server rendering guide, add a section on how Chartist reads CSS: deliberately small, what it supports, the known limits, `onSkip`, and another engine with a headless-browser recipe. Verify: `pnpm nx run docs:samples`, the guide's e2e checks, and screenshots in light and dark mode and at 375 px.
-- [ ] 6.6 Run the gate from 5.2 again. Verify: all of it passes.
+- [x] 6.5 In the server rendering guide, add a section on how Chartist reads CSS: deliberately small, what it supports, the known limits, `onSkip`, and another engine with a headless-browser recipe. Verify: `pnpm nx run docs:samples`, the guide's e2e checks, and screenshots in light and dark mode and at 375 px.
+- [x] 6.6 Run the gate from 5.2 again. Verify: all of it passes.

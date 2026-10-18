@@ -29,9 +29,9 @@ What you render depends on where the markup goes:
 
 <Callout kind='warn'>
   **Experimental.** The server API of `chartist/server` (`renderToString()`,
-  `renderForHydration()` and `applyStyles()`) is new with 2.1. It may still
-  change in a 2.x minor before it becomes stable; `toScene()` and the rest of
-  Chartist are stable.
+  `renderForHydration()`, `computeStyles()` and `applyStyles()`) is new with
+  2.1. It may still change in a 2.x minor before it becomes stable; `toScene()`
+  and the rest of Chartist are stable.
 </Callout>
 
 `toScene(config, size)` runs the pipeline from `resolve` to `scene` and returns the scene. It takes the same config as `chart()`, with your plugins and listeners, plus the size to lay out at. It touches no DOM, timers or globals.
@@ -145,7 +145,101 @@ export const markup = renderToString(applyStyles(scene, css));
 
 `applyStyles(scene, css)` matches the rules against the scene as a browser would and writes the values each element gets as SVG attributes, such as `stroke="#0b7285"` on the line. Custom properties are resolved per element, inherited through the scene, and `light-dark()` takes its light value. Pass `{ colorScheme: 'dark' }` for the dark values and the `@media (prefers-color-scheme: dark)` rules. The classes stay, and the scene you pass in isn't changed.
 
-It reads what chart styles use: type, class and attribute selectors, `:not()`, `:is()` and `:where()`, the descendant and child combinators, `!important`, and `@supports` and `@layer` blocks in place (without layer order). It leaves out rules with other pseudo-classes such as `:hover`, nested rules, other at-rules such as `@keyframes` and `@container`, properties SVG has no attribute for, and the HTML inside a `foreignObject`: use SVG labels.
+### How Chartist reads your CSS
+
+`applyStyles()` uses `computeStyles()`, a CSS engine of its own: deliberately small, made for the CSS charts are styled with, and without dependencies. It isn't a browser, and some CSS it leaves out. What it reads:
+
+- type, class and attribute selectors, `:root`, `:not()`, `:is()` and `:where()`, and the descendant and child combinators;
+- the cascade: `!important`, an element's own `style`, specificity, order;
+- custom properties, inherited through the scene, with `var()` fallbacks, and `light-dark()`;
+- `@media (prefers-color-scheme)` for the color scheme you pass, and `@supports` and `@layer` blocks, in place (without layer order);
+- the page around the chart: rules for `:root`, `html` and `body` apply, so a theme's custom properties on `:root` reach the chart, and inherited properties such as `color` and `font-family` set there reach the svg.
+
+What it doesn't:
+
+| CSS                                                                          | What happens                                                                                |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Sibling and structural selectors (`+`, `~`, `:nth-child()`), ids, `:hover`   | The rule is left out.                                                                       |
+| Nested rules                                                                 | Left out.                                                                                   |
+| The `font` shorthand                                                         | Left out: write `font-family`, `font-size` and the others.                                  |
+| At-rules other than the ones above (`@media print`, `@container`, `@import`) | Their rules are left out.                                                                   |
+| `calc()`, relative units (`rem`, `em`, `%`), newer color functions           | Written as they are. Browsers read them, many rasterizers don't: use `px` and plain colors. |
+| HTML labels (`foreignObject`)                                                | Left as they are. Rasterizers don't draw them: use SVG labels.                              |
+
+Pass `onSkip` to `computeStyles()` to find out what it left out, with the reason:
+
+```ts
+import { lineChartConfig } from 'chartist';
+import { applyStyles, computeStyles, toScene } from 'chartist/server';
+
+const css = '.ct-label { font: 14px Georgia; } .ct-line:hover { stroke: red; }';
+const scene = toScene(lineChartConfig({ series: [[5, 2, 4]] }), {
+  width: 600,
+  height: 300
+});
+
+const styles = computeStyles(scene, css, {
+  // shorthand: font: 14px Georgia
+  // selector: .ct-line:hover
+  onSkip: ({ reason, text }) => console.warn(`${reason}: ${text}`)
+});
+export const styled = applyStyles(scene, styles);
+```
+
+### Another CSS engine
+
+For CSS beyond that, compute the styles with something that knows all of it: a browser. `applyStyles()` takes any function that gives a scene node its values (a `ComputedStyles`), not only the one from `computeStyles()`. This one renders the markup with your stylesheet in headless Chromium, with [Playwright](https://playwright.dev/), and reads each element's computed style:
+
+```ts nocheck
+import type { SceneNode } from 'chartist';
+import { chromium } from 'playwright';
+import {
+  applyStyles,
+  renderToString,
+  type ComputedStyles
+} from 'chartist/server';
+
+// The properties to read: the ones your stylesheet sets.
+const properties = ['fill', 'stroke', 'stroke-width', 'opacity', 'font-size'];
+
+export async function browserStyles(
+  scene: SceneNode,
+  css: string
+): Promise<ComputedStyles> {
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    await page.setContent(`<style>${css}</style>${renderToString(scene)}`);
+    // The computed values of every element, in document order.
+    const values = await page.$$eval(
+      'svg, svg *',
+      (elements, names) =>
+        elements.map(element => {
+          const style = getComputedStyle(element);
+          return Object.fromEntries(
+            names.map(name => [name, style.getPropertyValue(name)])
+          );
+        }),
+      properties
+    );
+    // The scene's nodes are in the same order.
+    const nodes: SceneNode[] = [];
+    const visit = (node: SceneNode) => {
+      nodes.push(node);
+      node.children.forEach(visit);
+    };
+    visit(scene);
+    const byNode = new Map(nodes.map((node, index) => [node, values[index]]));
+    return node => byNode.get(node);
+  } finally {
+    await browser.close();
+  }
+}
+
+// const styled = applyStyles(scene, await browserStyles(scene, css));
+```
+
+It costs a browser on your server, and it's slower: use it when the small engine doesn't cover your CSS.
 
 <Callout kind='warn'>
   **Pass only your own CSS.** The values end up in the markup, `url()` included.
