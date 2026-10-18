@@ -12,7 +12,7 @@
 
 ## 2. Hydration markup
 
-- [ ] 2.1 Add the two rules to `src/styles/index.scss`:
+- [x] 2.1 Add the two rules to `src/styles/index.scss`:
   - `foreignObject > .ct-label` fills its `foreignObject` (`width: 100%; height: 100%`);
   - the default donut width only for slices `:not([stroke-width])`.
 
