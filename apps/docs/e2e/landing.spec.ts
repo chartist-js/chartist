@@ -1,6 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from '@playwright/test';
+import { SECTIONS } from '../src/data/landing';
+import { NEWS, NEWS_ROWS } from '../src/data/news';
 
 const facts = JSON.parse(
   await readFile(new URL('../src/data/facts.json', import.meta.url), 'utf8')
@@ -9,22 +11,12 @@ const facts = JSON.parse(
   github: { contributors: number };
   usedBy: { name: string; evidence: string }[];
 };
-const SECTIONS = [
-  'top',
-  'story',
-  'features',
-  'extend',
-  'try',
-  'responsive',
-  'compare',
-  'start'
-];
 
 test('every section renders and no placeholder reaches the page', async ({
   page
 }) => {
   await page.goto('/');
-  for (const id of SECTIONS) {
+  for (const { id } of SECTIONS) {
     await expect(page.locator(`#${id}`)).toBeAttached();
   }
   const text = await page.locator('body').innerText();
@@ -218,4 +210,36 @@ test('the story code samples run against the current build', async ({
     expect(errors).toEqual([]);
     await page.unroute('https://sample.test/');
   }
+});
+
+test('the packages section draws one chart as SVG and as text art', async ({
+  page
+}) => {
+  await page.goto('/');
+  await page
+    .getByRole('navigation', { name: 'On this page' })
+    .getByRole('link', { name: /Packages/ })
+    .click();
+  await expect(page).toHaveURL(/#packages$/);
+  const section = page.locator('#packages');
+  await expect(section.locator('.ct-line').first()).toBeVisible();
+  await expect(section.locator('pre.ct-terminal:visible')).toHaveCount(1);
+  await expect(page.locator('[data-chapter-link="packages"]')).toHaveAttribute(
+    'aria-current',
+    'true'
+  );
+  await expect(
+    section.getByRole('link', { name: 'All packages' })
+  ).toHaveAttribute('href', '/packages/');
+});
+
+test('the news rows link to their announcements', async ({ page }) => {
+  await page.goto('/');
+  const news = page.getByRole('complementary', { name: 'News' });
+  await expect(news.getByRole('link')).toHaveCount(
+    Math.min(NEWS.length, NEWS_ROWS)
+  );
+  await expect(
+    news.getByRole('link', { name: /@chartist-js\/terminal/ })
+  ).toHaveAttribute('href', '/packages/terminal/');
 });

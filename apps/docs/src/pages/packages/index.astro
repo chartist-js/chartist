@@ -1,37 +1,70 @@
 ---
 import { Code } from 'astro:components';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import TerminalWindow from '../../components/TerminalWindow.astro';
+import PackageLicense from '../../components/PackageLicense.astro';
 import { PACKAGES, installCommand } from '../../data/packages';
+import { navPages } from '../../lib/docs';
+import { packagePreview } from '../../lib/package-previews';
 import { rewriteInstallText } from '../../lib/release';
 import { href } from '../../lib/site';
+
+const cards = await Promise.all(
+  PACKAGES.map(async pkg => ({
+    pkg,
+    preview: packagePreview(pkg.slug),
+    // Overview, guides and API, as in the package's sidebar.
+    pages: await navPages('packages', pkg.slug)
+  }))
+);
 ---
 
-<BaseLayout title="Packages" description="Packages made next to Chartist: renderers, plugins and wrappers, released with it under @chartist-js." section="packages">
+<BaseLayout title="Packages" description="Packages by Chartist's author that take your charts further: renderers and chart types, free and paid, under @chartist-js." section="packages">
   <div class="wrap flex flex-col gap-10 pt-[clamp(32px,6vw,64px)] pb-[clamp(56px,8vw,104px)]" data-pagefind-body data-pagefind-filter="section:Packages">
     <header class="flex flex-col gap-4">
       <span class="eyebrow">Packages</span>
       <h1 class="display">More than SVG</h1>
       <p class="lead max-w-[62ch]">
-        Packages made next to Chartist, released with it under <code>@chartist-js</code>. They take the charts you know somewhere else. For the community's plugins, see <a href={href('plugins/')}>Plugins</a>.
+        Packages made by Chartist's author, under <code>@chartist-js</code>. They take the charts you know somewhere else: into a terminal today, more to come. Some are free, some come with a yearly license and support. Plugins from the community are on <a href={href('plugins/')}>Plugins</a>.
       </p>
     </header>
 
-    <ul class="m-0 flex list-none flex-col gap-10 p-0">
+    <!-- One package per row: the preview next to the details, stacked on phones. -->
+    <ul class="m-0 flex list-none flex-col gap-8 p-0">
       {
-        PACKAGES.map(pkg => (
-          <li class="flex flex-col gap-4">
-            <h2 class="text-3xl">
-              <a class="text-ink no-underline hover:underline" href={href(`packages/${pkg.slug}/`)}>
-                {pkg.name}
-              </a>
-            </h2>
-            <p class="max-w-[70ch]">{pkg.description}</p>
-            <div class="max-w-[560px]">
-              <Code code={rewriteInstallText(installCommand(pkg))} lang="sh" theme="css-variables" class="rounded-lg px-5 py-3.5 text-[13px]" />
+        cards.map(({ pkg, preview, pages }) => (
+          <li class="card grid min-w-0 overflow-hidden md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]" data-package={pkg.slug}>
+            <div class="dot-grid flex items-center justify-center border-line px-5 py-6 max-md:border-b md:border-r">
+              {preview.terminal ? (
+                <TerminalWindow html={preview.html} title={preview.terminal} label={preview.label} />
+              ) : (
+                <div class="w-full" role="img" aria-label={preview.label} set:html={preview.html} />
+              )}
             </div>
-            <a class="w-fit font-bold" href={href(`packages/${pkg.slug}/`)}>
-              Read the docs <span aria-hidden="true">→</span>
-            </a>
+            <div class="flex min-w-0 flex-col gap-4 p-[clamp(20px,3vw,32px)]">
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="mr-auto text-2xl">
+                  <a class="text-ink no-underline hover:underline" href={href(`packages/${pkg.slug}/`)}>
+                    {pkg.name}
+                  </a>
+                </h2>
+                <span class="tag">v{pkg.version}</span>
+              </div>
+              <p class="m-0">{pkg.description}</p>
+              <PackageLicense license={pkg.license} />
+              {pkg.license.kind === 'free' ? (
+                <Code code={rewriteInstallText(installCommand(pkg))} lang="sh" theme="css-variables" class="rounded-md py-3 pr-10 pl-4 text-[13px] max-sm:text-xs" />
+              ) : (
+                <a class="btn primary w-fit" href={pkg.license.href}>
+                  Get a license
+                </a>
+              )}
+              <nav class="mt-auto flex flex-wrap gap-x-4 gap-y-2 border-t border-line pt-4 text-sm font-semibold" aria-label={`${pkg.name} docs`}>
+                {pages.map(page => (
+                  <a href={href(page.path)}>{page.label}</a>
+                ))}
+              </nav>
+            </div>
           </li>
         ))
       }

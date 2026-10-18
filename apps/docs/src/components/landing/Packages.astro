@@ -1,0 +1,72 @@
+---
+import { Code } from 'astro:components';
+import Chart from '../Chart.astro';
+import TerminalWindow from '../TerminalWindow.astro';
+import PackageLicense from '../PackageLicense.astro';
+import { PACKAGES } from '../../data/packages';
+import { TEXT_ART_CHART, TEXT_ART_Y_AXIS, textArt } from '../../lib/package-previews';
+import { href } from '../../lib/site';
+
+// The terminal overview's quick start: the same data, in a terminal.
+const CLI = 'npx @chartist-js/terminal line 12,9,7,8,5 2,1,3.5,7,3 --labels Mon,Tue,Wed,Thu,Fri --area';
+const LABEL = 'A smoothed line chart with areas from Monday to Friday';
+const ART_LABEL = `${LABEL}, drawn as text art in braille dots and box-drawing characters`;
+---
+
+<section id="packages" class="section sunken" data-section data-visual="packages">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <h2>Same chart, other screens</h2>
+      <p>Chartist builds every chart as a scene, and SVG is one way to draw it. Packages by Chartist's author draw the same scene somewhere else. Here it is in a terminal, from the same data and options.</p>
+    </div>
+    <div class="reveal grid grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] items-stretch gap-6">
+      <figure class="card m-0 flex min-w-0 flex-col gap-3 p-5">
+        <figcaption class="eyebrow">chartist · SVG</figcaption>
+        <div class="flex flex-1 items-center">
+          <!-- Plain: the library's own look and room for the "12.5" label. The top padding
+               is the library's 15px plus the terminal's title bar, so both plots start alike. -->
+          <Chart type="line" data={TEXT_ART_CHART.data} options={{
+            ...TEXT_ART_CHART.options,
+            axisY: { ...TEXT_ART_Y_AXIS, type: { $call: 'fixedScaleAxis' } },
+            chartPadding: { top: 47, right: 15, bottom: 5, left: 10 }
+          }} plain draw={false} label={`${LABEL}, drawn as SVG`} aspect="3 / 2" />
+        </div>
+      </figure>
+      <figure class="card m-0 flex min-w-0 flex-col gap-3 p-5">
+        <figcaption class="eyebrow">@chartist-js/terminal · text art</figcaption>
+        <div class="flex flex-1 items-center justify-center">
+          <!-- Two sizes, both static: more cells on wide screens, 34 columns that fit a phone below. -->
+          <TerminalWindow class="max-lg:hidden" html={textArt(46, 17)} title="ct-cli" fontSize="clamp(13px, 1.25vw, 16px)" label={ART_LABEL} />
+          <TerminalWindow class="lg:hidden" html={textArt()} title="ct-cli" fontSize="clamp(13px, 1.6vw, 16px)" label={ART_LABEL} />
+        </div>
+      </figure>
+    </div>
+    <div class="cli reveal mt-6 min-w-0">
+      <Code code={CLI} lang="sh" theme="css-variables" />
+    </div>
+    <ul class="reveal mt-8 mb-5 grid list-none grid-cols-[repeat(auto-fit,minmax(min(340px,100%),1fr))] gap-4 p-0">
+      {
+        PACKAGES.map(pkg => (
+          <li>
+            <a href={href(`packages/${pkg.slug}/`)} class="card flat link flex h-full flex-col gap-2 px-5 py-4 text-ink no-underline">
+              <strong>{pkg.name}</strong>
+              <span class="muted">{pkg.description}</span>
+              <PackageLicense license={pkg.license} />
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="pill-link reveal" href={href('packages/')}>All packages →</a>
+  </div>
+</section>
+
+<style>
+  /* Shiki output stays CSS: the command wraps instead of scrolling
+     sideways, clear of the copy button. */
+  .cli :global(pre.astro-code) {
+    padding-right: 48px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+</style>

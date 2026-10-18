@@ -1,12 +1,24 @@
 ---
-import { RELEASE } from '../../data/news';
+import { latestNews } from '../../data/news';
+import { href } from '../../lib/site';
+
+// Site paths go through the base; release notes and other sites stay as they are.
+const link = (target: string) => (/^https?:/.test(target) ? target : href(target));
 ---
 
-<aside class="wrap mt-10 mb-10" aria-label="Latest release" data-visual="release">
-  <a href={RELEASE.href} class="card flat flex flex-wrap items-center gap-x-3.5 gap-y-2 bg-surface px-5 py-3.5 text-ink no-underline">
-    <span class="tag brand">{RELEASE.tag}</span>
-    <strong>{RELEASE.title}</strong>
-    <span class="muted">{RELEASE.text}</span>
-    <span class="pill-link ml-auto">{RELEASE.linkLabel} →</span>
-  </a>
+<aside class="wrap mt-10 mb-10" aria-label="News" data-visual="news">
+  <ul class="m-0 flex list-none flex-col gap-3 p-0">
+    {
+      latestNews().map(entry => (
+        <li>
+          <a href={link(entry.href)} class="card flat flex flex-wrap items-center gap-x-3.5 gap-y-2 bg-surface px-5 py-3.5 text-ink no-underline">
+            <span class="tag brand">{entry.tag}</span>
+            <strong>{entry.title}</strong>
+            <span class="muted">{entry.text}</span>
+            <span class="pill-link ml-auto">{entry.linkLabel} →</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </aside>
