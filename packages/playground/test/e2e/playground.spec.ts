@@ -214,9 +214,9 @@ test('share copies a link that decodes to the current files', async ({
   await expect(preview(page).locator('svg.ct-chart-line')).toBeVisible({
     timeout: 20_000
   });
-  await page.getByRole('button', { name: 'Copy a link to this code' }).click();
+  await page.getByRole('button', { name: 'Share a link to this code' }).click();
   await expect(
-    page.getByRole('button', { name: 'Copy a link to this code' })
+    page.getByRole('button', { name: 'Share a link to this code' })
   ).toHaveText('Link copied');
   const link = await page.evaluate(() => navigator.clipboard.readText());
   expect(link).toMatch(/#code=1\./);
