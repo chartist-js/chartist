@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Browser ESM (dist/index.min.js)",
+    "path": "dist/index.min.js",
+    "limit": "4.1 kB",
+    "gzip": true,
+    "disablePlugins": ["@size-limit/esbuild"]
+  },
+  {
+    "name": "import { tooltips } (tree-shaken)",
+    "path": "dist/index.js",
+    "import": "{ tooltips }",
+    "limit": "4.1 kB",
+    "gzip": true
+  }
+]

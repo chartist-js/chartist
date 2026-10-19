@@ -638,8 +638,8 @@ The plugins page SHALL have a filter for the plugin tiles only: a text field tha
 
 #### Scenario: Filter by text
 
-- **WHEN** a visitor types "tooltip" into the filter
-- **THEN** only the tooltip plugins' tiles remain and the page says how many match
+- **WHEN** a visitor types "threshold" into the filter
+- **THEN** only the tiles of plugins that match "threshold" remain and the page says how many match
 
 #### Scenario: Filter by chart type
 
@@ -690,21 +690,31 @@ Each listed plugin SHALL have a page at `/plugins/<slug>/`, where the slug is it
 
 ### Requirement: Old plugin links keep working
 
-A link to an entry of the former single-page list, `/plugins/#<slug>`, SHALL land on that plugin's page. Links within the site SHALL point to the plugin pages directly.
+A link to an entry of the former single-page list, `/plugins/#<slug>`, SHALL land on that plugin's page while the plugin is listed; a link to a plugin that has left the list SHALL stay on the plugins overview. Links within the site SHALL point to the plugin pages directly.
 
 #### Scenario: Old anchor
 
-- **WHEN** a visitor opens `/plugins/#stklcode-chartist-plugin-tooltips`
-- **THEN** the page of `@stklcode/chartist-plugin-tooltips` opens
+- **WHEN** a visitor opens `/plugins/#chartist-plugin-threshold`
+- **THEN** the page of `chartist-plugin-threshold` opens
 
 ### Requirement: Plugins the core replaces
 
-A plugin whose use case the core covers SHALL NOT be listed on the plugins page. When its page was published, its URL SHALL redirect to the docs page that covers the use case.
+A plugin whose use case the core covers SHALL NOT be listed on the plugins page. When its page was published, its URL SHALL redirect to the docs page that covers the use case. A plugin that an official `@chartist-js` package replaces SHALL NOT be listed either, and its page and live example SHALL be removed from the site without a redirect. Every link to such a removed page, within the site, in its tests and in the redirect pages for the 0.x site, SHALL point to the package's docs instead, so no link of the site leads to a removed page.
 
 #### Scenario: The target line plugin
 
 - **WHEN** a visitor opens `/plugins/chartist-plugin-targetline/`
 - **THEN** they land on the target lines and bands guide, and the plugins overview has no tile for `chartist-plugin-targetline`
+
+#### Scenario: The tooltip plugins
+
+- **WHEN** the site is built
+- **THEN** it has no page and no redirect page at `/plugins/chartist-plugin-tooltips/` or `/plugins/stklcode-chartist-plugin-tooltips/`, and the plugins overview has no tooltip tile
+
+#### Scenario: The 0.x tooltip example
+
+- **WHEN** the 0.x redirect table is read for the old plugins page's `#tooltip-plugin` or `#example-plugin-tooltip` anchor
+- **THEN** its target is `/packages/tooltips/`, a page of the built site
 
 ### Requirement: Live data in the examples gallery
 
