@@ -68,7 +68,7 @@ export async function cards(): Promise<Card[]> {
       eyebrow: ['Packages'],
       title: 'More than SVG',
       description:
-        "Packages by Chartist's author that take your charts further: renderers and chart types, free and paid, under @chartist-js.",
+        "Packages by Chartist's author that take your charts further: layers and renderers, open source, under @chartist-js.",
       pose: 'hero'
     },
     ...(await Promise.all(PACKAGES.map(pkg => navPages('packages', pkg.slug))))

@@ -19,13 +19,13 @@ const cards = await Promise.all(
 );
 ---
 
-<BaseLayout title="Packages" description="Packages by Chartist's author that take your charts further: renderers and chart types, free and paid, under @chartist-js." section="packages">
+<BaseLayout title="Packages" description="Packages by Chartist's author that take your charts further: layers and renderers, open source, under @chartist-js." section="packages">
   <div class="wrap flex flex-col gap-10 pt-[clamp(32px,6vw,64px)] pb-[clamp(56px,8vw,104px)]" data-pagefind-body data-pagefind-filter="section:Packages">
     <header class="flex flex-col gap-4">
       <span class="eyebrow">Packages</span>
       <h1 class="display">More than SVG</h1>
       <p class="lead max-w-[62ch]">
-        Packages made by Chartist's author, under <code>@chartist-js</code>. They add to the charts you know, with layers most charts need sooner or later, or take them somewhere else, such as into a terminal. Some are free, some come with a yearly license and support. Plugins from the community are on <a href={href('plugins/')}>Plugins</a>.
+        Packages made by Chartist's author, under <code>@chartist-js</code>. They add to the charts you know, with layers most charts need sooner or later, or take them somewhere else, such as into a terminal. Like Chartist, they're open source. Plugins from the community are on <a href={href('plugins/')}>Plugins</a>.
       </p>
     </header>
 
@@ -52,7 +52,7 @@ const cards = await Promise.all(
               </div>
               <p class="m-0">{pkg.description}</p>
               <PackageLicense license={pkg.license} />
-              {pkg.license.kind === 'free' ? (
+              {pkg.license.kind === 'open-source' ? (
                 <Code code={rewriteInstallText(installCommand(pkg))} lang="sh" theme="css-variables" class="rounded-md py-3 pr-10 pl-4 text-[13px] max-sm:text-xs" />
               ) : (
                 <a class="btn primary w-fit" href={pkg.license.href}>
