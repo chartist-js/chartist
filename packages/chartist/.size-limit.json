@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "28.15 kB",
+    "limit": "28.35 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "28.2 kB",
+    "limit": "28.45 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -157,13 +157,13 @@
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "28.95 kB",
+    "limit": "29.2 kB",
     "gzip": true
   },
   {
     "name": "CSS (dist/index.min.css)",
     "path": "dist/index.min.css",
-    "limit": "2.2 kB",
+    "limit": "2.25 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },

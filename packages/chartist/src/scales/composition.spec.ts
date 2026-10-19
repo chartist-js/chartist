@@ -10,6 +10,10 @@ import { axisArea } from './axis';
 import { cartesianAxes } from './cartesian';
 import { autoScaleAxis, stepAxis } from './factories';
 import { axisNodes } from './grid';
+import { barChartConfig } from '../presets/barChart';
+import { toScene } from '../chart/toScene';
+import { log10, logScale } from '../../test/logScale';
+import type { AxisTransform } from './axis';
 
 const PADDING = { top: 15, right: 15, bottom: 5, left: 10 };
 const data = {
@@ -349,5 +353,122 @@ describe('composition: layers', () => {
     });
     expect(placed.labels).toEqual(preset.labels);
     expect(placed.grids).toEqual(preset.grids);
+  });
+});
+
+describe('composition: minor ticks and transforms', () => {
+  const run = (layers: Layer[], showGrid = true) =>
+    runPipeline(
+      createPhaseEmitter(),
+      {
+        data: { series: [[1, 10, 100]] },
+        axes: cartesianAxes([
+          { id: 'x', side: 'bottom', type: stepAxis(), ticks: ['a', 'b', 'c'] },
+          {
+            id: 'y',
+            side: 'left',
+            type: logScale([2, 4, 6, 8]),
+            low: 1,
+            high: 10,
+            ticks: [1, 10],
+            showGrid
+          }
+        ]),
+        layers
+      },
+      { width: 400, height: 200, measureText: estimateText }
+    );
+
+  it('draws minor grid lines beneath the other grid lines, without labels', () => {
+    const { scene } = run([
+      axisGrid({ axes: ['y'] }),
+      axisLabels({ axes: ['y'] })
+    ]);
+    const grids = findAll(scene, { role: 'grid' });
+    expect(grids.map(grid => grid.classes.includes('ct-grid-minor'))).toEqual([
+      true,
+      true,
+      true,
+      true,
+      false,
+      false
+    ]);
+    expect(grids[0].classes).toEqual([
+      'ct-grid',
+      'ct-vertical',
+      'ct-grid-minor'
+    ]);
+    expect(grids[0].ctx).toMatchObject({ index: 0, minor: true });
+    expect(grids[4].ctx).not.toHaveProperty('minor');
+    // Minor tick 2 sits at log10(2) of the decade, from the bottom.
+    const { area } = run([]).layout;
+    expect(grids[0].attrs.y1).toBeCloseTo(
+      area.y1 - area.height * Math.log10(2)
+    );
+    expect(findAll(scene, { role: 'label' })).toHaveLength(2);
+  });
+
+  it('draws no minor grid lines without the grid, and takes a class name', () => {
+    const hidden = run([axisGrid({ axes: ['y'] })], false).scene;
+    expect(findAll(hidden, { role: 'grid' })).toHaveLength(0);
+    const renamed = run([
+      axisGrid({ axes: ['y'], classNames: { gridMinor: 'minor' } })
+    ]).scene;
+    expect(findAll(renamed, { role: 'grid' })[0].classes).toContain('minor');
+  });
+
+  it('core axes have no minor grid lines', () => {
+    const { scene } = runPipeline(
+      createPhaseEmitter(),
+      { data, axes: axes(), layers: [axisGrid(), line()] },
+      { width: 400, height: 200, measureText: estimateText }
+    );
+    const grids = findAll(scene, { role: 'grid' });
+    expect(grids.length).toBeGreaterThan(0);
+    expect(grids.every(grid => !('minor' in grid.ctx))).toBe(true);
+    expect(grids.every(grid => !grid.classes.includes('ct-grid-minor'))).toBe(
+      true
+    );
+  });
+
+  it("gives a layer's extent and compose the transforms of its axes", () => {
+    const seen: { extent?: unknown; compose?: AxisTransform; x?: unknown } = {};
+    const probe: Layer = {
+      type: 'probe',
+      coordinates: ['cartesian'],
+      extent: ({ transforms }) => {
+        seen.extent = transforms;
+        return {};
+      },
+      compose: ({ axes }) => {
+        seen.compose = axes.y?.transform;
+        seen.x = axes.x?.transform;
+        return [];
+      }
+    };
+    run([probe]);
+    expect(seen.extent).toEqual({ x: undefined, y: log10 });
+    expect(seen.compose).toBe(log10);
+    expect(seen.x).toBeUndefined();
+  });
+
+  it("keeps a factory's transform in the bar chart's value axis", () => {
+    let transform: AxisTransform | undefined;
+    const probe: Layer = {
+      type: 'probe',
+      coordinates: ['cartesian'],
+      compose: ({ axes }) => {
+        transform = axes.y?.transform;
+        return [];
+      }
+    };
+    toScene(
+      barChartConfig(
+        { labels: ['a', 'b'], series: [[10, 100]] },
+        { axisY: { type: logScale() }, layers: { above: [probe] } }
+      ),
+      { width: 400, height: 200 }
+    );
+    expect(transform).toBe(log10);
   });
 });

@@ -123,6 +123,7 @@
     "AxisOptions",
     "AxisSetup",
     "AxisSide",
+    "AxisTransform",
     "AxisType",
     "AxisUnits",
     "BandContext",

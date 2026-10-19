@@ -8,6 +8,7 @@ import { autoScaleAxis, stepAxis } from '../scales/factories';
 import { findAll } from '../scene/tree';
 import { line } from './line';
 import { trendLine } from './trendLine';
+import { logScale } from '../../test/logScale';
 
 const stepAxes = (count: number): AxisDefinition[] => [
   {
@@ -211,5 +212,46 @@ describe('layers/trendLine', () => {
     const flat = run([[3, 3, 3]]).lines[0];
     expect(flat.ctx.slope).toBe(0);
     expect('correlation' in flat.ctx).toBe(false);
+  });
+
+  describe('on a log Y axis', () => {
+    const logAxes = (count: number): AxisDefinition[] => [
+      stepAxes(count)[0],
+      { id: 'y', side: 'left', type: logScale(), low: 1, high: 1000 }
+    ];
+
+    it('fits an exponential trend, straight through the points', () => {
+      const { lines, scene } = run([[1, 10, 100, 1000]], undefined, logAxes(4));
+      const [trend] = lines;
+      expect(trend.ctx.slope).toBeCloseTo(1);
+      expect(trend.ctx.intercept).toBeCloseTo(0);
+      expect(trend.ctx.correlation).toBeCloseTo(1);
+      const points = findAll(scene, { role: 'point' });
+      expect(trend.attrs.x1).toBeCloseTo(points[0].attrs.x1 as number);
+      expect(trend.attrs.y1).toBeCloseTo(points[0].attrs.y1 as number);
+      expect(trend.attrs.x2).toBeCloseTo(points[3].attrs.x1 as number);
+      expect(trend.attrs.y2).toBeCloseTo(points[3].attrs.y1 as number);
+    });
+
+    it('leaves out values the axis has no place for', () => {
+      const { lines } = run([[0, 10, 100, 1000]], undefined, logAxes(4));
+      // log10 of 10, 100 and 1,000 at the indexes 1 to 3.
+      expect(lines[0].ctx.slope).toBeCloseTo(1);
+      expect(lines[0].ctx.intercept).toBeCloseTo(0);
+    });
+
+    it('reports its ends as values, so the axis can widen to them', () => {
+      const layer = trendLine();
+      const extent = layer.extent!({
+        normalized: {
+          labels: [],
+          series: [[1, 10, 100].map(y => ({ x: undefined, y }))]
+        },
+        axes: { x: 'x', y: 'y' },
+        transforms: { y: logScale().transform }
+      } as never);
+      expect(extent.y.low).toBeCloseTo(1);
+      expect(extent.y.high).toBeCloseTo(100);
+    });
   });
 });

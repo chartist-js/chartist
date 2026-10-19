@@ -133,8 +133,10 @@ export interface SliceContext extends SeriesContext {
 export interface GridContext extends NoSeries {
   /** The axis the line belongs to; `axis.dimension` is `x` or `y`. */
   readonly axis: ScaleAxis;
-  /** The tick's index. */
+  /** The tick's index, in `axis.minorTicks` for a minor grid line. */
   readonly index: number;
+  /** `true` for a grid line at one of the axis's `minorTicks`. */
+  readonly minor?: true;
   /** The X of the line's start, in px. */
   readonly x1: number;
   /** The Y of the line's start, in px. */
@@ -235,9 +237,13 @@ export interface TrendLineContext {
   readonly seriesIndex: number;
   /** Always absent: the line stands for the whole series. */
   readonly valueIndex?: undefined;
-  /** How much the fitted value changes per unit of X. */
+  /**
+   * How much the fitted value changes per unit of X. On axes with a
+   * transform, such as a log axis, it's in their transformed values: on a
+   * base 10 log Y axis, the powers of ten per unit of X.
+   */
   readonly slope: number;
-  /** The fitted value at X 0. */
+  /** The fitted value at X 0, in transformed values like `slope`. */
   readonly intercept: number;
   /**
    * How closely the values follow the line: Pearson's correlation
@@ -245,8 +251,10 @@ export interface TrendLineContext {
    * straight trend) to 1 (every value on a rising line). Its square is R²,
    * the share of the values' variation the line explains, as spreadsheets
    * show it next to a trendline. It describes the fit, not how reliable it
-   * is: with two values it's always 1 or -1. Absent when all values are
-   * equal, where it isn't defined.
+   * is: with two values it's always 1 or -1. On axes with a transform,
+   * it's computed in their transformed values, so it says how straight
+   * the values look on the chart. Absent when all values are equal, where
+   * it isn't defined.
    */
   readonly correlation?: number;
   /** The X of the line's start (the series' smallest X), in px. */

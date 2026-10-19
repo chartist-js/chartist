@@ -14,6 +14,7 @@ import {
   type AxesConfig,
   type AxisDefinition,
   type AxisExtent,
+  type AxisFactory,
   type AxisSetup,
   type CartesianAxes,
   type LayerBinding,
@@ -142,11 +143,17 @@ function layerExtents(
     const binding = bindings[index] ?? {};
     // As in compose: a flat series isn't split by a selection.
     const selection = data.flat ? undefined : binding.series;
+    const axes = { x: binding.x ?? firstOf('x'), y: binding.y ?? firstOf('y') };
+    // 1.x axis classes have no transform.
+    const transformOf = (id?: string) =>
+      (definitions.find(d => d.id === id)?.type as AxisFactory | undefined)
+        ?.transform;
     const reported = layer.extent({
       normalized: selection
         ? { ...normalized, series: selection.map(i => normalized.series[i]) }
         : normalized,
-      axes: { x: binding.x ?? firstOf('x'), y: binding.y ?? firstOf('y') }
+      axes,
+      transforms: { x: transformOf(axes.x), y: transformOf(axes.y) }
     });
     for (const [id, extent] of Object.entries(reported ?? {})) {
       const current = merged.get(id);

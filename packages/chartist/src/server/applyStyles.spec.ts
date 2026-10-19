@@ -6,6 +6,7 @@ import { lineChartConfig } from '../presets/lineChart';
 import { findAll } from '../scene/tree';
 import { applyStyles } from './applyStyles';
 import { renderToString } from './string';
+import { logScale } from '../../test/logScale';
 
 const week = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
@@ -77,5 +78,36 @@ describe('server/applyStyles', () => {
     );
     expect(markup).not.toContain('<script');
     expect(markup).toContain('&lt;script&gt;alert(2)');
+  });
+
+  it('draws minor grid lines lighter, and restyles them alone', () => {
+    const minor = toScene(
+      lineChartConfig(
+        { labels: ['a', 'b'], series: [[1, 100]] },
+        { axisY: { type: logScale([2, 3, 20, 30]), low: 1, high: 100 } }
+      ),
+      { width: 600, height: 300 }
+    );
+    const grids = (css: string | string[]) => {
+      const styled = applyStyles(minor, css);
+      const all = findAll(styled, { role: 'grid' });
+      return {
+        minor: all.find(grid => grid.ctx.minor)!.attrs,
+        major: all.find(grid => !grid.ctx.minor)!.attrs
+      };
+    };
+    const plain = grids(chartistCss);
+    expect(plain.minor).toMatchObject({
+      stroke: 'rgba(0, 0, 0, 0.08)',
+      'stroke-width': '1px'
+    });
+    expect(plain.minor['stroke-dasharray']).toBe('none');
+    expect(plain.major.stroke).toBe('rgba(0, 0, 0, 0.2)');
+    const red = grids([
+      chartistCss,
+      '.ct-chart-line { --ct-grid-minor-color: red; }'
+    ]);
+    expect(red.minor.stroke).toBe('red');
+    expect(red.major.stroke).toBe('rgba(0, 0, 0, 0.2)');
   });
 });

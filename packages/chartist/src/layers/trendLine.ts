@@ -6,6 +6,7 @@ import { getMultiValue, isDataHoleValue } from '../core/data/data';
 import { alphaNumerate } from '../core/lang';
 import type { NormalizedSeries } from '../core/types';
 import type { Layer } from '../pipeline/types';
+import type { AxisTransform } from '../scales/axis';
 import { node, withFields } from '../scene/node';
 import { centerShift } from './path';
 
@@ -41,7 +42,10 @@ const CLASS_NAMES = {
   line: 'ct-trend-line'
 };
 
-/** A fitted line `y = slope * x + intercept`, from `x1` to `x2`. */
+/**
+ * A fitted line `y = slope * x + intercept`, from `x1` to `x2`, in the
+ * axes' transformed values when they have transforms.
+ */
 interface Fit {
   readonly slope: number;
   readonly intercept: number;
@@ -53,19 +57,30 @@ interface Fit {
 
 /**
  * Fits a straight line through a series' values by least squares: X is
- * the value's index (`byIndex`, for step axes) or its `x`. Holes and
- * values without a number for X are skipped. Fewer than two values, or
- * values that all share one X, fit no line.
+ * the value's index (`byIndex`, for step axes) or its `x`, and both go
+ * through their axis's transform when it has one, so the line is straight
+ * on that axis. Holes and values without a finite number for X or Y are
+ * skipped. Fewer than two values, or values that all share one X, fit no
+ * line.
  */
-function fit(values: NormalizedSeries, byIndex: boolean): Fit | undefined {
+function fit(
+  values: NormalizedSeries,
+  byIndex: boolean,
+  tx?: AxisTransform,
+  ty?: AxisTransform
+): Fit | undefined {
   const xs: number[] = [];
   const ys: number[] = [];
   values.forEach((value, index) => {
-    const y = isDataHoleValue(value) ? undefined : getMultiValue(value, 'y');
-    const x = byIndex ? index : getMultiValue(value, 'x');
-    if (typeof x === 'number' && Number.isFinite(x) && Number.isFinite(y)) {
-      xs.push(x);
-      ys.push(y as number);
+    let y = isDataHoleValue(value) ? NaN : getMultiValue(value, 'y');
+    let x = byIndex ? index : getMultiValue(value, 'x');
+    if (typeof x === 'number' && typeof y === 'number') {
+      x = tx && !byIndex ? tx.forward(x) : x;
+      y = ty ? ty.forward(y) : y;
+      if (Number.isFinite(x) && Number.isFinite(y)) {
+        xs.push(x);
+        ys.push(y);
+      }
     }
   });
   if (xs.length < 2) {
@@ -99,6 +114,10 @@ function fit(values: NormalizedSeries, byIndex: boolean): Fit | undefined {
   };
 }
 
+/** A fitted number as a value on its axis. */
+const valueOf = (transform: AxisTransform | undefined, value: number) =>
+  transform ? transform.inverse(value) : value;
+
 /** True when every value that isn't a hole has a number for X. */
 function hasX(values: NormalizedSeries): boolean {
   const present = values.filter(value => !isDataHoleValue(value));
@@ -115,7 +134,9 @@ function hasX(values: NormalizedSeries): boolean {
  * (`g.ct-series.ct-series-a`), so it takes the series' color. On a step
  * axis X is the value's index, on a scale axis the value's `x`. Holes are
  * skipped, and a series with fewer than two values gets no line. The Y
- * axis widens to include the line's ends. Add it next to the {@link line}
+ * axis widens to include the line's ends. On an axis with a transform,
+ * such as a log axis, the line is fitted to the transformed values, so
+ * it's straight on that axis: an exponential trend on a log Y axis. Add it next to the {@link line}
  * or {@link bar} layer that draws the values.
  *
  * @example
@@ -139,19 +160,18 @@ export function trendLine(options: TrendLineOptions = {}): Layer {
     coordinates: ['cartesian'],
     axes: { x: options.x, y: options.y },
     series: options.series,
-    extent({ normalized, axes }) {
+    extent({ normalized, axes, transforms: { x: tx, y: ty } = {} }) {
       if (axes.y === undefined) {
         return {};
       }
       // The axes don't exist yet: values with an `x` are read as on a
       // scale axis, others by index, as a step axis places them.
       const ends = normalized.series.flatMap(values => {
-        const fitted = fit(values, !hasX(values));
+        const fitted = fit(values, !hasX(values), tx, ty);
         return fitted
-          ? [
-              fitted.slope * fitted.x1 + fitted.intercept,
-              fitted.slope * fitted.x2 + fitted.intercept
-            ]
+          ? [fitted.x1, fitted.x2].map(x =>
+              valueOf(ty, fitted.slope * x + fitted.intercept)
+            )
           : [];
       });
       return ends.length > 0
@@ -165,17 +185,19 @@ export function trendLine(options: TrendLineOptions = {}): Layer {
       }
       const byIndex = axisX.kind === 'step';
       const shift = centerShift(axisX, options.align);
+      const tx = byIndex ? undefined : axisX.transform;
+      const ty = axisY.transform;
 
       return data.series.flatMap((series, localIndex) => {
-        const fitted = fit(normalized.series[localIndex], byIndex);
+        const fitted = fit(normalized.series[localIndex], byIndex, tx, ty);
         if (!fitted) {
           return [];
         }
         const seriesIndex = seriesIndexes?.[localIndex] ?? localIndex;
         const { slope, intercept, correlation } = fitted;
         const at = (x: number) => ({
-          x: area.x1 + shift + axisX.project(x, x),
-          y: area.y1 - axisY.project(slope * x + intercept)
+          x: area.x1 + shift + axisX.project(valueOf(tx, x), x),
+          y: area.y1 - axisY.project(valueOf(ty, slope * x + intercept))
         });
         const start = at(fitted.x1);
         const end = at(fitted.x2);

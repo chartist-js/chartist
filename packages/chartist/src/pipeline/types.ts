@@ -14,6 +14,7 @@ import type {
   AxisDefinition,
   AxisExtent,
   AxisSide,
+  AxisTransform,
   CartesianAxes,
   ChartAxes
 } from '../scales/axis';
@@ -202,6 +203,14 @@ export interface ExtentContext {
   readonly normalized: NormalizedChartData;
   /** The ids of the X and Y axis the layer draws on. */
   readonly axes: { readonly x?: string; readonly y?: string };
+  /**
+   * The transforms of the X and Y axis the layer draws on, for axes that
+   * declare one (see {@link AxisTransform}), such as a log axis.
+   */
+  readonly transforms?: {
+    readonly x?: AxisTransform;
+    readonly y?: AxisTransform;
+  };
 }
 
 /**

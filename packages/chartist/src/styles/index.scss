@@ -297,6 +297,29 @@
     );
   }
 
+  .#{$ct-class-grid}.#{$ct-class-grid-minor} {
+    $minor-dark: $ct-grid-minor-color-dark;
+    @if $minor-dark == null and $ct-grid-color-dark {
+      $minor-dark: rgba(255, 255, 255, 0.08);
+    }
+
+    stroke: var(--ct-grid-minor-color, #{$ct-grid-minor-color});
+    stroke-width: var(--ct-grid-minor-width, #{$ct-grid-minor-width});
+    stroke-dasharray: var(
+      --ct-grid-minor-dasharray,
+      #{ct-or-none($ct-grid-minor-dasharray)}
+    );
+
+    @if $minor-dark {
+      @supports (color: light-dark(#000, #fff)) {
+        stroke: var(
+          --ct-grid-minor-color,
+          light-dark(#{$ct-grid-minor-color}, #{$minor-dark})
+        );
+      }
+    }
+  }
+
   .#{$ct-class-grid-background} {
     fill: var(--ct-grid-background-fill, #{$ct-grid-background-fill});
   }
