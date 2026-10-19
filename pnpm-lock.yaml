@@ -284,6 +284,9 @@ importers:
 
   packages/examples:
     dependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
       chartist:
         specifier: workspace:*
         version: link:../chartist
@@ -400,6 +403,9 @@ importers:
 
   packages/visual:
     devDependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
       '@chartist/examples':
         specifier: workspace:*
         version: link:../examples

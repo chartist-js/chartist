@@ -11,7 +11,8 @@ export type ChartType =
   | 'pie'
   | 'composed'
   | 'styling'
-  | 'live';
+  | 'live'
+  | 'essentials';
 
 /** Named viewport presets the visual regression tests render an example at. */
 export type ViewportName = 'default' | 'tablet' | 'mobile' | 'mobile-landscape';
@@ -705,5 +706,20 @@ export const examples: Example[] = [
       'New numbers and a switch between grouped and stacked bars in one update, every bar moving to its new place.',
     v2: true,
     settle: { at: 3200 }
+  }),
+  // Essentials: the layers and axes of @chartist-js/essentials.
+  example({
+    id: 'essentials/axis-titles',
+    title: 'Axis titles',
+    description:
+      'A line chart of visits per day with a title for each axis, each in room of its own.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/axis-titles-composed',
+    title: 'Axis titles on two Y axes',
+    description:
+      'Revenue in EUR and ad spend in USD on their own Y axes, each named, one title aligned to the end and one turned to face the chart.',
+    v2: true
   })
 ];

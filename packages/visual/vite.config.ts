@@ -24,6 +24,10 @@ const pkgDir = fileURLToPath(new URL('.', import.meta.url));
 const examplesDir = path.dirname(
   require.resolve('@chartist/examples/package.json')
 );
+// Packages the examples import besides chartist, served from their builds.
+const essentialsDir = path.dirname(
+  require.resolve('@chartist-js/essentials/package.json')
+);
 
 export const lib = process.env.CHARTIST_LIB === 'v1' ? 'v1' : 'local';
 const fixtureDir = fileURLToPath(new URL('fixture', import.meta.url));
@@ -134,7 +138,7 @@ export default defineConfig({
     hmr: false,
     watch: null,
     fs: {
-      allow: [examplesDir, libDir, fixtureDir]
+      allow: [examplesDir, libDir, fixtureDir, essentialsDir]
     }
   },
   plugins: [visualHarness()]

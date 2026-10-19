@@ -26,7 +26,8 @@ export const TYPES: { type: ChartType; title: string }[] = [
   { type: 'pie', title: 'Pie and donut charts' },
   { type: 'composed', title: 'Composed charts' },
   { type: 'styling', title: 'Styling' },
-  { type: 'live', title: 'Live data' }
+  { type: 'live', title: 'Live data' },
+  { type: 'essentials', title: 'Essentials' }
 ];
 
 /** The files of an example folder, keyed by path. */
