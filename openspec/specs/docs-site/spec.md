@@ -95,7 +95,7 @@ Unknown paths SHALL show a 404 page with the mascot and links back to the docs a
 
 ### Requirement: Landing page
 
-The home page SHALL present Chartist as in the approved design: hero with the mascot and a live chart, numbers, a scroll story whose easel chart changes per chapter, features with live demos, the rendering pipeline with a plugin demo, the packages, a gallery, an inline live editor, responsive and animation showcases, the comparison, the ecosystem, community and sponsor, and a finale. All charts on it SHALL be rendered by Chartist, and all code samples SHALL use the v2 API as it exists.
+The home page SHALL present Chartist as in the approved design: hero with the mascot and a live chart, numbers, a scroll story whose easel chart changes per chapter, features with live demos, the rendering pipeline with a plugin demo, the packages, a gallery, an inline live editor, responsive and animation showcases, the comparison, the community wrappers (the same list as the charts in frameworks guide, each with the Chartist version it's built for), community and sponsor, and a finale. All charts on it SHALL be rendered by Chartist, and all code samples SHALL use the v2 API as it exists.
 
 #### Scenario: Story chapters
 
@@ -246,7 +246,7 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 #### Scenario: Charts in frameworks
 
 - **WHEN** a reader opens the charts in frameworks guide
-- **THEN** it states the rule every framework integration follows (render the server markup into the container once and never again, create the chart after the framework's hydration, update it through its handle, destroy it on unmount), shows a recipe each for React, Vue, Angular and Svelte with the trap of that framework's raw-HTML feature, says that the Svelte recipe keeps a constant non-empty placeholder in the browser because an empty `{@html}` value makes Svelte re-mount the app, and links the SSR with hydration guide for the markup itself
+- **THEN** it states the rule every framework integration follows (render the server markup into the container once and never again, create the chart after the framework's hydration, update it through its handle, destroy it on unmount), shows a recipe each for React, Vue, Angular and Svelte with the trap of that framework's raw-HTML feature, says that the Svelte recipe keeps a constant non-empty placeholder in the browser because an empty `{@html}` value makes Svelte re-mount the app, links the SSR with hydration guide for the markup itself, and lists the community wrappers with the Chartist version each is built for, the npm `overrides` entry that lets a wrapper built for 1.x install next to v2, and that wrappers built for 0.x need Chartist 0.x
 
 #### Scenario: Terminal examples
 

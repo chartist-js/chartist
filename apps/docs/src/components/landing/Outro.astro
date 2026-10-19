@@ -1,6 +1,6 @@
 ---
 import Mascot from '../Mascot.astro';
-import { ECOSYSTEM } from '../../data/ecosystem';
+import { WRAPPERS } from '../../data/ecosystem';
 import { facts } from '../../data/facts';
 import { rewriteInstallText } from '../../lib/release';
 import { REPO, href } from '../../lib/site';
@@ -16,22 +16,28 @@ const people = facts.credits.people.map(person => {
 });
 ---
 
-<section class="wrap section" data-visual="ecosystem">
+<section id="wrappers" class="wrap section" data-visual="ecosystem">
   <div class="section-head reveal">
     <h2>Fits whatever you build with</h2>
-    <p>Framework-free, so it works everywhere. Community wrappers make it feel native in your stack.</p>
+    <p>Chartist needs no wrapper: a chart is a container and a function call, in any framework or none. If you'd rather have a component, the community wraps Chartist for these stacks.</p>
   </div>
-  <div class="grid-auto-sm">
+  <ul class="grid-auto-sm m-0 list-none p-0">
     {
-      ECOSYSTEM.map(entry => (
-        <a class="card flat reveal flex flex-col gap-1.5 bg-surface px-5 py-4.5 text-ink no-underline" href={entry.href}>
-          <strong>{entry.name}</strong>
-          <code class="w-fit">{entry.pkg}</code>
-          <span class="muted">{entry.note}</span>
-        </a>
+      WRAPPERS.map(wrapper => (
+        <li class="reveal">
+          <a class="card flat flex h-full flex-col gap-1.5 bg-surface px-5 py-4.5 text-ink no-underline" href={wrapper.href}>
+            <span class="flex flex-wrap items-center justify-between gap-2">
+              <strong>{wrapper.stack}</strong>
+              <span class:list={['tag', { accent: wrapper.chartist === '1.x' }]} title={`Written for the Chartist ${wrapper.chartist} API`}>API v{wrapper.chartist}</span>
+            </span>
+            <code class="w-fit max-w-full [overflow-wrap:anywhere]">{wrapper.pkg}</code>
+            <span class="muted">{wrapper.note}</span>
+          </a>
+        </li>
       ))
     }
-  </div>
+  </ul>
+  <a class="pill-link reveal mt-6" href={href('docs/frameworks/')}>Recipes for React, Vue, Angular and Svelte →</a>
 </section>
 
 <section class="wrap section grid grid-cols-[repeat(auto-fit,minmax(min(380px,100%),1fr))] gap-6" data-visual="community">

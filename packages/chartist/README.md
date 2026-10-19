@@ -72,6 +72,28 @@ No bundler? Chartist is a native ES module:
 
 Your 1.x code keeps working: the chart classes draw what they drew before. 1.x events and plugins work with `chartist/compat`. The classes are deprecated, and 3.0 removes them from `chartist`. [Coming from 1.x](https://chartist.dev/docs/coming-from-1x/) explains what changed and how to move to the functions.
 
+## Community wrappers
+
+Chartist needs no wrapper: a chart is a container and a function call, and [Charts in frameworks](https://chartist.dev/docs/frameworks/) has recipes for React, Vue, Angular and Svelte, with server rendering. If you'd rather use a component, the community wraps Chartist for these stacks. Thank you to everyone who built them!
+
+| Stack         | Wrapper                                                                                         | Built for    |
+| ------------- | ----------------------------------------------------------------------------------------------- | ------------ |
+| React         | [react-chartist](https://github.com/fraserxu/react-chartist)                                    | Chartist 1.x |
+| Angular       | [ng-chartist](https://github.com/willsoto/ng-chartist)                                          | Chartist 1.x |
+| Vue           | [vue-chartist](https://github.com/Yopadd/vue-chartist)                                          | Chartist 0.x |
+| Node.js       | [node-chartist](https://github.com/panosoft/node-chartist)                                      | Chartist 0.x |
+| Ember         | [ember-cli-chartist](https://github.com/jherdman/ember-cli-chartist)                            | Chartist 0.x |
+| Java (JSF)    | [ChartistJSF](https://github.com/hatemalimam/ChartistJSF)                                       | Chartist 0.x |
+| Vue 2         | [v-chartist](https://github.com/lakb248/vue-chartist)                                           | Chartist 0.x |
+| R             | [chartist](https://github.com/yutannihilation/chartist) (htmlwidget)                            | Chartist 0.x |
+| Meteor        | [mfpierre:chartist-js](https://github.com/mfpierre/meteor-chartist-js)                          | Chartist 0.x |
+| WordPress     | [TablePress Extension: Chartist](https://wordpress.org/plugins/charts-for-tablepress-chartist/) | Chartist 0.x |
+| Blazor        | [UnlockedData.Chartist.Blazor](https://github.com/unlockeddataltd/UnlockedData.Chartist.Blazor) | Chartist 0.x |
+| Angular       | [ngx-chartist](https://github.com/affilnost/ngx-chartist)                                       | Chartist 0.x |
+| Ruby on Rails | [chartist-rails](https://github.com/AnthonyBobsin/chartist-rails)                               | Chartist 0.x |
+
+Wrappers built for 1.x run on v2: see [Community wrappers](https://chartist.dev/docs/frameworks/#community-wrappers) for the npm `overrides` entry they need until they allow `chartist@2`. Maintain a wrapper that's missing here? Send a pull request.
+
 ## Supported by
 
 [Cube](https://cube.dev) sponsors Chartist's maintenance. Thank you!
