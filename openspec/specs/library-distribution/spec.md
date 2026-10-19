@@ -203,7 +203,7 @@ The published `chartist` package SHALL contain its `package.json`, a README, the
 
 ### Requirement: Package README
 
-The package SHALL have a README for its npm page: what Chartist is, how to install it (with the npm `next` tag while v2 is in release candidates), a short example with the functional API, links to the docs, the 1.x docs and the changelog, and the license.
+The package SHALL have a README for its npm page: what Chartist is, how to install it (with the npm `next` tag while v2 is in release candidates), a short example with the functional API, links to the docs, the 1.x docs and the changelog, the community wrappers, and the license.
 
 #### Scenario: npm page
 

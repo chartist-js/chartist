@@ -7,13 +7,14 @@ order: 6
 
 import Callout from '../../components/docs/Callout.astro';
 import LiveExample from '../../components/LiveExample.astro';
+import { WRAPPERS } from '../../data/ecosystem';
 
 export const data = {
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
   series: [[4, 7, 3, 8, 5]]
 };
 
-Chartist has no framework wrappers, and it doesn't need them: a chart is a container element and a handle. A component creates the chart once, passes new data to the handle and destroys it when it goes away. With server rendering, the component also puts the chart's [hydration markup](../ssr-hydration/) into the server's HTML, and the chart takes it over in the browser.
+Chartist doesn't need a framework wrapper: a chart is a container element and a handle. (The community has written [wrappers](#community-wrappers) anyway, for React, Angular, Vue and more.) A component creates the chart once, passes new data to the handle and destroys it when it goes away. With server rendering, the component also puts the chart's [hydration markup](../ssr-hydration/) into the server's HTML, and the chart takes it over in the browser.
 
 ## The rule
 
@@ -288,5 +289,45 @@ Updates from a memoized or computed value keep the chart from redrawing when not
   hydrate render](../ssr-hydration/#the-hydrate-render), to catch a server and a
   browser that draw different data.
 </Callout>
+
+## Community wrappers
+
+If you'd rather use a component than the recipes above, these wrappers come from the community. Thank you to everyone who built and kept them going!
+
+<table>
+  <thead>
+    <tr>
+      <th>Stack</th>
+      <th>Chartist</th>
+      <th>Wrapper</th>
+    </tr>
+  </thead>
+  <tbody>
+    {WRAPPERS.map(wrapper => (
+      <tr>
+        <td>{wrapper.stack}</td>
+        <td>{wrapper.chartist}</td>
+        <td>
+          <a href={wrapper.href}>
+            <code>{wrapper.pkg}</code>
+          </a>{' '}
+          ({wrapper.registry}): {wrapper.note}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+Wrappers built for 1.x use the chart classes, which v2 keeps. Until a wrapper allows `chartist@2` in its peer dependencies, npm stops the install with `ERESOLVE`. Tell npm that the wrapper may use your Chartist:
+
+```json
+{
+  "overrides": {
+    "react-chartist": { "chartist": "$chartist" }
+  }
+}
+```
+
+If you listen to 1.x events like `draw`, add `compat` to the chart's options, as [Coming from 1.x](../coming-from-1x/#events-need-the-compat-plugin) shows. Wrappers built for 0.x use the 0.x API, which went away in 1.0, so they need Chartist 0.x.
 
 Next: [Security and CSP](../security-and-csp/), for pages with a strict policy.
