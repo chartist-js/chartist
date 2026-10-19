@@ -135,7 +135,7 @@
     "browserslist": "^4.20.2",
     "chartist-v1": "npm:chartist@1.5.0",
     "cssnano": "^4.1.11",
-    "del-cli": "^5.0.0",
+    "del-cli": "^8.0.0",
     "playwright": "1.64.1",
     "postcss": "^8.0.0",
     "postcss-preset-env": "^6.7.1",
