@@ -721,5 +721,19 @@ export const examples: Example[] = [
     description:
       'Revenue in EUR and ad spend in USD on their own Y axes, each named, one title aligned to the end and one turned to face the chart.',
     v2: true
+  }),
+  example({
+    id: 'essentials/log-axis',
+    title: 'Log axis',
+    description:
+      'Users growing from 120 to 850,000 in six years on a log Y axis, where each tenfold step is the same height.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/log-log',
+    title: 'Log-log chart',
+    description:
+      'Body mass and metabolic rate from a mouse to an elephant on two log axes with minor grid lines, and the straight trend line of their power law.',
+    v2: true
   })
 ];
