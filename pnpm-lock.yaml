@@ -131,8 +131,8 @@ importers:
         specifier: 4.3.3
         version: 4.3.3(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
       apexcharts:
-        specifier: 7.6.1
-        version: 7.6.1
+        specifier: 8.3.1
+        version: 8.3.1
       chart.js:
         specifier: 4.5.1
         version: 4.5.1
@@ -3407,8 +3407,8 @@ packages:
   apex-commons@0.8.2:
     resolution: {integrity: sha512-XTaIc8S8YEJ6gjNMvnY2Eq5X8UM2IstpYaVSh7iERBUXIefJ8hjUR2nGhWr9guZuQpFvG9NFca9arhrDdYSgIQ==}
 
-  apexcharts@7.6.1:
-    resolution: {integrity: sha512-IeAgHCYk7G91X6zlLHZTd9MSQxnYeAMKDfSHn9WXCYYmVZisY5g1PkNBgG1U+1t6pXwkJutTtnq/UVyY3dELHA==}
+  apexcharts@8.3.1:
+    resolution: {integrity: sha512-Z0LX1rPyXBe85082t9EqUWzikOdLy3Z184cvL+4uYS7J4kyLAzK50JBtAGKH5OU8Y6EOPqiH8BqjxjMIBF2+gw==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
 
   arg@5.0.2:
@@ -9998,7 +9998,7 @@ snapshots:
 
   apex-commons@0.8.2: {}
 
-  apexcharts@7.6.1:
+  apexcharts@8.3.1:
     dependencies:
       apex-commons: 0.8.2
 

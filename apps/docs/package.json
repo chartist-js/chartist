@@ -22,7 +22,7 @@
     "@resvg/resvg-js": "2.6.2",
     "@stklcode/chartist-plugin-tooltips": "2.0.1",
     "@tailwindcss/vite": "4.3.3",
-    "apexcharts": "7.6.1",
+    "apexcharts": "8.3.1",
     "chart.js": "4.5.1",
     "chartist-hover": "1.0.5",
     "chartist-plugin-accessibility": "0.0.5",
