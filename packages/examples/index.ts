@@ -730,6 +730,13 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'essentials/moores-law',
+    title: "Moore's law, linear or log",
+    description:
+      'Transistors per processor from 1971 to 2022 on a log Y axis with minor grid lines, and a button that moves the points to a linear scale and back.',
+    v2: true
+  }),
+  example({
     id: 'essentials/log-log',
     title: 'Log-log chart',
     description:
