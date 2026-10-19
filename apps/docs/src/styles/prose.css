@@ -25,3 +25,21 @@
 .prose pre.astro-code {
   font-size: 14px;
 }
+
+/* A wide table scrolls in its own box, so the page never scrolls sideways
+   at phone width. */
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--fs-md);
+}
+
+.prose th,
+.prose td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
