@@ -55,21 +55,6 @@ const schema = z.array(
 
 export const PLUGINS = schema.parse([
   {
-    package: 'chartist-plugin-axistitle',
-    registers: 'ctAxisTitle',
-    title: 'Axis title',
-    description:
-      'Adds a title to the X and Y axes, with an offset and text anchor of your choice.',
-    author: 'Alex Stanbury',
-    repository: 'https://github.com/astanb/chartist-plugin-axistitle',
-    license: 'MIT',
-    types: ['line', 'bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/axistitle'
-  },
-  {
     package: 'chartist-plugin-legend',
     registers: 'legend',
     title: 'Legend',

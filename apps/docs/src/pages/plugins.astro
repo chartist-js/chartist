@@ -51,7 +51,7 @@ const threshold = (limit: number): ChartPlugin => ({
 barChart('#chart', data, { plugins: [threshold(5)] });`;
 ---
 
-<BaseLayout title="Plugins" description="Community plugins for Chartist: tooltips, axis titles, legends, labels, zoom and more, each running live on v2." section="plugins" markdown="plugins.md">
+<BaseLayout title="Plugins" description="Community plugins for Chartist: tooltips, legends, labels, zoom and more, each running live on v2." section="plugins" markdown="plugins.md">
   <script is:inline define:vars={{ slugs: plugins.map(plugin => plugin.slug), base: href('plugins/') }}>
     // A link to an entry of the former single-page list (#<slug>) opens the
     // plugin's own page.
@@ -65,7 +65,7 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
       <span class="eyebrow">Plugins</span>
       <h1 class="display">Small add-ons, big tricks</h1>
       <p class="lead max-w-[62ch]">
-        Tooltips, axis titles, legends, labels and zoom: the community's most used plugins, each running live on v2. They hook into the events Chartist emits while drawing. <a href={href('docs/events-and-plugins/')}>How plugins work</a>
+        Tooltips, legends, labels and zoom: the community's most used plugins, each running live on v2. They hook into the events Chartist emits while drawing. <a href={href('docs/events-and-plugins/')}>How plugins work</a>
       </p>
       <p class="muted text-sm">Sorted by npm downloads in the last month · {formatDate(facts.generatedAt)}</p>
     </header>

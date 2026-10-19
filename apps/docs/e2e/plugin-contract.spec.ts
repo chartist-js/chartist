@@ -39,12 +39,6 @@ const tooltipShows = async (page: Page) =>
 
 const CASES: Case[] = [
   {
-    package: 'chartist-plugin-axistitle',
-    kind: 'line',
-    plugin: `Chartist.plugins.ctAxisTitle({ axisX: { axisTitle: 'Day', axisClass: 'ct-axis-title', offset: { x: 0, y: 50 }, textAnchor: 'middle' }, axisY: { axisTitle: 'Visits', axisClass: 'ct-axis-title', offset: { x: 0, y: -1 }, flipTitle: false } })`,
-    check: page => expect(page.locator('#chart .ct-axis-title')).toHaveCount(2)
-  },
-  {
     package: 'chartist-plugin-legend',
     kind: 'line',
     plugin: 'Chartist.plugins.legend()',
@@ -154,7 +148,6 @@ const CASES: Case[] = [
 ];
 
 const SCRIPTS: Record<string, string> = {
-  'chartist-plugin-axistitle': 'chartist-plugin-axistitle.js',
   'chartist-plugin-legend': 'chartist-plugin-legend.js',
   'chartist-plugin-tooltips': 'chartist-plugin-tooltip.js',
   'chartist-plugin-pointlabels': 'chartist-plugin-pointlabels.js',
@@ -285,14 +278,16 @@ test('a plugin script loaded at runtime after importing compat, as with a bundle
       document.head.append(script);
     });
   }
-  await loadScript('${LIB}plugins/chartist-plugin-axistitle/chartist-plugin-axistitle.js');
+  await loadScript('${LIB}plugins/chartist-plugin-threshold/chartist-plugin-threshold.js');
   lineChart('#chart', { series: [[1, 3, 2, 4]] }, {
-    plugins: [fromLegacyPlugin(Chartist.plugins.ctAxisTitle({ axisY: { axisTitle: 'Visits', axisClass: 'ct-axis-title' } }))]
+    plugins: [fromLegacyPlugin(Chartist.plugins.ctThreshold({ threshold: 2.5 }))]
   });
 </script>`
     })
   );
   await page.goto(url);
-  await expect(page.locator('#chart .ct-axis-title')).toHaveCount(1);
+  await expect(
+    page.locator('#chart .ct-threshold-above').first()
+  ).toBeAttached();
   expect(errors).toEqual([]);
 });

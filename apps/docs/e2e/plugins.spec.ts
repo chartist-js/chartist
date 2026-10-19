@@ -22,18 +22,16 @@ test('a tile shows the plugin at a glance and opens its page', async ({
   page
 }) => {
   await page.goto('/plugins/');
-  const tile = page.locator('#chartist-plugin-axistitle');
-  await expect(tile).toContainText('Axis title');
-  await expect(tile).toContainText('Adds a title to the X and Y axes');
+  const tile = page.locator('#chartist-plugin-threshold');
+  await expect(tile).toContainText('Threshold');
+  await expect(tile).toContainText('Splits lines and bars at a value');
   await expect(tile.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
   await expect(tile.locator('.tag.warn', { hasText: 'Global' })).toBeVisible();
   await expect(tile.locator('.tag', { hasText: 'No SSR' })).toBeVisible();
   await expect(tile).toContainText('downloads a month');
   await tile.getByRole('link').click();
-  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-axistitle\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Axis title'
-  );
+  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-threshold\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Threshold');
   await page
     .getByRole('navigation', { name: 'Breadcrumb' })
     .getByRole('link', { name: 'Plugins' })
@@ -59,15 +57,15 @@ test('the tile previews run the plugins', async ({ page }) => {
 test('a plugin page credits its author and links its sources', async ({
   page
 }) => {
-  await page.goto('/plugins/chartist-plugin-axistitle/');
+  await page.goto('/plugins/chartist-plugin-threshold/');
   const main = page.locator('article');
-  await expect(main).toContainText('Alex Stanbury');
-  await expect(main).toContainText('MIT');
+  await expect(main).toContainText('Gion Kunz');
+  await expect(main).toContainText('WTFPL');
   await expect(main).toContainText('a month');
   await expect(main.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
   await expect(main.getByRole('link', { name: 'npm' })).toHaveAttribute(
     'href',
-    'https://www.npmjs.com/package/chartist-plugin-axistitle'
+    'https://www.npmjs.com/package/chartist-plugin-threshold'
   );
   await expect(
     main.getByRole('heading', { name: 'Use it on your site' })

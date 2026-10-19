@@ -231,7 +231,7 @@ export const V0_PAGES: readonly V0Page[] = [
       ),
       ...each(
         ['axis-title-plugin', 'example-plugin-axistitle'],
-        'plugins/chartist-plugin-axistitle/'
+        'packages/essentials/axis-titles/'
       ),
       ...each(
         ['threshold-plugin', 'example-plugin-threshold'],

@@ -145,9 +145,6 @@ importers:
       chartist-plugin-accessibility:
         specifier: 0.0.5
         version: 0.0.5
-      chartist-plugin-axistitle:
-        specifier: 0.0.7
-        version: 0.0.7
       chartist-plugin-barlabels:
         specifier: 0.0.5
         version: 0.0.5
@@ -3704,10 +3701,6 @@ packages:
 
   chartist-plugin-accessibility@0.0.5:
     resolution: {integrity: sha512-TwY5UQqHjmvq3aj4L1+X4CP7cuuY71/efKWmkCnZMyR7aqIODnOfesfUfQWi1Txg5xRBL2uIoUZXxv44VQztiA==}
-    engines: {node: '>=0.8.0'}
-
-  chartist-plugin-axistitle@0.0.7:
-    resolution: {integrity: sha512-qFG7R/qiZZyCn/gx9WJpMcnyhE0LIpGBxDnPpYtzY5cG53fHBkvJDsAEHEFFfO1l/RHI0G8oN9fpoUD/BMeiFA==}
     engines: {node: '>=0.8.0'}
 
   chartist-plugin-barlabels@0.0.5:
@@ -10395,8 +10388,6 @@ snapshots:
   chartist-hover@1.0.5: {}
 
   chartist-plugin-accessibility@0.0.5: {}
-
-  chartist-plugin-axistitle@0.0.7: {}
 
   chartist-plugin-barlabels@0.0.5: {}
 

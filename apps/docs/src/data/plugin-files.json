@@ -1,8 +1,4 @@
 {
-  "chartist-plugin-axistitle": {
-    "script": "dist/chartist-plugin-axistitle.js",
-    "license": "LICENSE"
-  },
   "chartist-plugin-legend": {
     "script": "chartist-plugin-legend.js",
     "license": "LICENSE"
@@ -16,7 +12,10 @@
     "script": "dist/chartist-plugin-pointlabels.js",
     "license": "LICENSE"
   },
-  "chartist-hover": { "script": "chartist-hover.js", "license": "LICENSE" },
+  "chartist-hover": {
+    "script": "chartist-hover.js",
+    "license": "LICENSE"
+  },
   "chartist-plugin-zoom": {
     "script": "dist/chartist-plugin-zoom.js",
     "license": "LICENSE"

@@ -141,10 +141,6 @@
     ]
   },
   "plugins": {
-    "chartist-plugin-axistitle": {
-      "monthlyDownloads": 43221,
-      "lastRelease": "2019-12-19"
-    },
     "chartist-plugin-legend": {
       "monthlyDownloads": 27780,
       "lastRelease": "2017-08-05"
