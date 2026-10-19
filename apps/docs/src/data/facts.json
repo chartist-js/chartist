@@ -1,23 +1,23 @@
 {
-  "generatedAt": "2026-10-14",
+  "generatedAt": "2026-10-19",
   "npm": {
-    "monthlyDownloads": 519991,
+    "monthlyDownloads": 493639,
     "period": {
-      "start": "2026-09-13",
-      "end": "2026-10-12"
+      "start": "2026-09-17",
+      "end": "2026-10-16"
     }
   },
   "github": {
-    "stars": 13389,
-    "contributors": 92,
-    "dependents": 72835
+    "stars": 13400,
+    "contributors": 93,
+    "dependents": 72837
   },
   "usedBy": [
     {
       "owner": "vendurehq",
       "name": "Vendure",
       "repo": "vendurehq/vendure",
-      "stars": 8517,
+      "stars": 8526,
       "evidence": "https://github.com/vendurehq/vendure/blob/master/packages/admin-ui/package.json",
       "avatar": "vendurehq.png"
     },
@@ -25,7 +25,7 @@
       "owner": "opensourcepos",
       "name": "Open Source POS",
       "repo": "opensourcepos/opensourcepos",
-      "stars": 4436,
+      "stars": 4447,
       "evidence": "https://github.com/opensourcepos/opensourcepos/blob/master/package.json",
       "avatar": "opensourcepos.png"
     },
@@ -33,7 +33,7 @@
       "owner": "indico",
       "name": "Indico",
       "repo": "indico/indico",
-      "stars": 2118,
+      "stars": 2117,
       "evidence": "https://github.com/indico/indico/blob/master/package.json",
       "avatar": "indico.png"
     },
@@ -71,7 +71,7 @@
         "login": "gionkunz",
         "name": "Gion Kunz",
         "url": "https://github.com/gionkunz",
-        "commits": 444,
+        "commits": 989,
         "role": "creator",
         "avatar": "gionkunz.png"
       },
@@ -142,75 +142,75 @@
   },
   "plugins": {
     "chartist-plugin-axistitle": {
-      "monthlyDownloads": 45483,
+      "monthlyDownloads": 43221,
       "lastRelease": "2019-12-19"
     },
     "chartist-plugin-legend": {
-      "monthlyDownloads": 29053,
+      "monthlyDownloads": 27780,
       "lastRelease": "2017-08-05"
     },
     "chartist-plugin-tooltips": {
-      "monthlyDownloads": 22820,
+      "monthlyDownloads": 21622,
       "lastRelease": "2016-09-18"
     },
     "chartist-plugin-pointlabels": {
-      "monthlyDownloads": 11888,
+      "monthlyDownloads": 11446,
       "lastRelease": "2018-02-18"
     },
     "chartist-hover": {
-      "monthlyDownloads": 9844,
+      "monthlyDownloads": 9597,
       "lastRelease": "2018-05-15"
     },
     "chartist-plugin-zoom": {
-      "monthlyDownloads": 9140,
+      "monthlyDownloads": 8423,
       "lastRelease": "2019-12-14"
     },
     "chartist-plugin-fill-donut": {
-      "monthlyDownloads": 5181,
+      "monthlyDownloads": 4854,
       "lastRelease": "2016-11-05"
     },
     "chartist-plugin-barlabels": {
-      "monthlyDownloads": 2585,
+      "monthlyDownloads": 2401,
       "lastRelease": "2016-02-01"
     },
     "chartist-plugin-accessibility": {
-      "monthlyDownloads": 1988,
+      "monthlyDownloads": 1946,
       "lastRelease": "2018-02-11"
     },
     "chartist-plugin-threshold": {
-      "monthlyDownloads": 1441,
+      "monthlyDownloads": 1379,
       "lastRelease": "2015-11-18"
     },
     "@stklcode/chartist-plugin-tooltips": {
-      "monthlyDownloads": 811,
+      "monthlyDownloads": 816,
       "lastRelease": "2026-09-20"
     }
   },
   "sizes": {
     "method": "One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts’ recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).",
     "versions": {
-      "chartist": "workspace (1.5.0 package version)",
+      "chartist": "workspace (2.1.0 package version)",
       "chart.js": "4.5.1",
-      "apexcharts": "7.6.1",
+      "apexcharts": "8.3.1",
       "highcharts": "13.1.1",
       "esbuild": "0.28.2"
     },
     "bytes": {
       "chartist (lineChart)": {
-        "minified": 31927,
-        "gzip": 12447
+        "minified": 36884,
+        "gzip": 14486
       },
       "chartist (core: chart)": {
-        "minified": 10525,
-        "gzip": 4415
+        "minified": 13722,
+        "gzip": 5758
       },
       "chart.js": {
         "minified": 139095,
         "gzip": 49350
       },
       "apexcharts": {
-        "minified": 537814,
-        "gzip": 154909
+        "minified": 582581,
+        "gzip": 172312
       },
       "highcharts": {
         "minified": 281246,
