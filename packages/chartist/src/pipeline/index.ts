@@ -4,6 +4,7 @@ export type {
   ChartData,
   Coordinates,
   ExtentContext,
+  InsetContext,
   Layer,
   LayerContext,
   NormalizedChartData,

@@ -1,6 +1,11 @@
 import type { ChartPadding } from '../core/types';
 import type { LabelMode, MeasureStyle, MeasureText } from '../render/measure';
-import type { CartesianAxes, ChartAxes, LayerBinding } from '../scales/axis';
+import type {
+  AxisSide,
+  CartesianAxes,
+  ChartAxes,
+  LayerBinding
+} from '../scales/axis';
 import { node, withFields, type SceneNode } from '../scene/node';
 import { assignKeys, mapNodes } from '../scene/tree';
 import type { PhaseEmitter } from './emitter';
@@ -8,6 +13,7 @@ import type {
   Area,
   ChartData,
   Coordinates,
+  InsetContext,
   Layer,
   LayerContext,
   Layout,
@@ -204,13 +210,127 @@ function validate(result: Layout) {
   }
 }
 
+/** The room each layer reserved with `inset`, by layer index. */
+export type LayerInsets = readonly (ChartPadding | undefined)[];
+
+/** The boxes each layer reserved, by layer index. */
+export type LayerInsetAreas = readonly (
+  | Partial<Record<AxisSide, Area>>
+  | undefined
+)[];
+
+const SIDES = ['top', 'right', 'bottom', 'left'] as const;
+
+const bySide = (value: (side: AxisSide) => number) =>
+  Object.fromEntries(SIDES.map(side => [side, value(side)])) as Record<
+    AxisSide,
+    number
+  >;
+
+/** The layer's data: only its series when it selects some. */
+function layerDataOf(data: PreparedData, binding: LayerBinding | undefined) {
+  const selection = data.flat ? undefined : binding?.series;
+  return {
+    selection,
+    data: selection
+      ? { ...data, series: selection.map(i => data.series[i]) }
+      : data
+  };
+}
+
+/**
+ * Asks each layer with `inset` for the room it needs outside the drawing
+ * area. A layer that reserves nothing gets `undefined`.
+ */
+function reserveRoom(
+  config: ResolvedConfig,
+  data: PreparedData,
+  bindings: readonly LayerBinding[],
+  context: Omit<InsetContext, 'data' | 'layerIndex' | 'axes' | 'padding'>
+): LayerInsets {
+  return config.layers.map((layer, layerIndex) => {
+    const room =
+      layer.inset?.({
+        ...context,
+        data: layerDataOf(data, bindings[layerIndex]).data,
+        layerIndex,
+        axes: config.axes?.definitions ?? [],
+        padding: config.padding
+      }) ?? {};
+    let reserved = 0;
+    const sides = bySide(side => {
+      const value = room[side] ?? 0;
+      // Also rejects NaN.
+      if (!(value >= 0 && value < Infinity)) {
+        throw new Error(
+          `Chartist: layer "${layer.type}" reserved invalid room`
+        );
+      }
+      reserved += value;
+      return value;
+    });
+    return reserved ? sides : undefined;
+  });
+}
+
+/**
+ * The boxes of the reserved room: per side, just outside the axis bands,
+ * stacked outward in the order of the layers, as long as the area.
+ */
+function insetAreasOf(
+  insets: LayerInsets,
+  area: Area,
+  config: ResolvedConfig
+): LayerInsetAreas {
+  // How far from the area each side's next box starts: the axis bands first.
+  const used = bySide(() => 0);
+  for (const definition of config.axes?.definitions ?? []) {
+    used[definition.side] += definition.offset || 0;
+  }
+  return insets.map(
+    room =>
+      room &&
+      Object.fromEntries(
+        SIDES.filter(side => room[side]).map(side => {
+          const size = room[side];
+          const start =
+            side === 'top'
+              ? area.y2 - used[side] - size
+              : side === 'bottom'
+                ? area.y1 + used[side]
+                : side === 'left'
+                  ? area.x1 - used[side] - size
+                  : area.x2 + used[side];
+          used[side] += size;
+          return [
+            side,
+            side === 'top' || side === 'bottom'
+              ? { ...area, y2: start, y1: start + size, height: size }
+              : { ...area, x1: start, x2: start + size, width: size }
+          ];
+        })
+      )
+  );
+}
+
+/**
+ * Lays the chart out: the drawing area inside the padding, the room the
+ * layers reserved and the axes. Returns the layout after the `layout`
+ * listeners, and the layers' boxes, computed before them.
+ */
 export function layout(
   emitter: PhaseEmitter,
   config: ResolvedConfig,
   width: number,
-  height: number
-): Layout {
-  const { padding } = config;
+  height: number,
+  insets: LayerInsets = []
+): { layout: Layout; insetAreas: LayerInsetAreas } {
+  const inset = insets.some(Boolean)
+    ? bySide(side => insets.reduce((sum, room) => sum + (room?.[side] ?? 0), 0))
+    : undefined;
+  const padding = inset
+    ? bySide(side => config.padding[side] + inset[side])
+    : config.padding;
   let initial: Layout;
   if (config.axes) {
     initial = { ...config.axes.area(width, height, padding), padding };
@@ -225,9 +345,13 @@ export function layout(
     const area: Area = { x1, y1, x2, y2, width: x2 - x1, height: y1 - y2 };
     initial = { width: w, height: h, padding, area };
   }
+  if (inset) {
+    initial = { ...initial, inset };
+  }
+  const insetAreas = inset ? insetAreasOf(insets, initial.area, config) : [];
   const result = check(emitter.transform('layout', initial), 'layout');
   validate(result);
-  return result;
+  return { layout: result, insetAreas };
 }
 
 export function compose(
@@ -242,17 +366,15 @@ export function compose(
   bindings: readonly LayerBinding[] = [],
   labels: LabelMode = 'html',
   measureStyle?: MeasureStyle,
-  drawn: LayerDrawing[] = []
+  drawn: LayerDrawing[] = [],
+  insetAreas: LayerInsetAreas = []
 ): SceneNode[] {
   const byId = new Map((axes.all ?? []).map(axis => [axis.id, axis]));
   // Every layer composes before any node is refined or emitted, so a
   // layer's refine sees the nodes of the layers listed after it too.
   const layers = config.layers.map((layer, layerIndex) => {
     const binding = bindings[layerIndex] ?? {};
-    const selection = data.flat ? undefined : binding.series;
-    const layerData = selection
-      ? { ...data, series: selection.map(i => data.series[i]) }
-      : data;
+    const { selection, data: layerData } = layerDataOf(data, binding);
     const layerNormalized =
       selection && normalized
         ? {
@@ -275,7 +397,8 @@ export function compose(
       normalized: layerNormalized,
       seriesIndexes: selection,
       labels,
-      measureStyle
+      measureStyle,
+      ...(insetAreas[layerIndex] ? { insetArea: insetAreas[layerIndex] } : {})
     };
     const nodes = layer
       .compose(context)
@@ -352,17 +475,8 @@ export function runPipeline(
   const reuse = from === 'layout' && previous;
   const config = reuse ? previous.config : resolve(emitter, options);
   const data = reuse ? previous.data : prepare(emitter, config);
-  const laidOut = layout(
-    emitter,
-    config,
-    environment.width,
-    environment.height
-  );
   // Axis ids and series selections; only cartesian axes bind layers.
   const bindings = config.axes?.bind?.(config.layers, data) ?? [];
-  // The layers go along for the extents they report (stacked bars).
-  const { axes = {}, normalized = undefined } =
-    config.axes?.create(data, laidOut.area, bindings, config.layers) ?? {};
   // Measure with the root classes, so chart-type CSS applies.
   const { className } = config;
   const withRootClass = <T extends MeasureText | MeasureStyle | undefined>(
@@ -372,9 +486,30 @@ export function runPipeline(
       ? (value: string, measureOptions?: object) =>
           measure(value, { rootClass: className, ...measureOptions })
       : measure) as T;
-  const drawn: LayerDrawing[] = [];
   const measureText = withRootClass(environment.measureText);
   const measureStyle = withRootClass(environment.measureStyle);
+  const labels = config.labels ?? environment.labels ?? 'html';
+  const insets = config.layers.some(layer => layer.inset)
+    ? reserveRoom(config, data, bindings, {
+        width: environment.width,
+        height: environment.height,
+        coordinates: config.coordinates,
+        labels,
+        measureText,
+        measureStyle
+      })
+    : [];
+  const { layout: laidOut, insetAreas } = layout(
+    emitter,
+    config,
+    environment.width,
+    environment.height,
+    insets
+  );
+  // The layers go along for the extents they report (stacked bars).
+  const { axes = {}, normalized = undefined } =
+    config.axes?.create(data, laidOut.area, bindings, config.layers) ?? {};
+  const drawn: LayerDrawing[] = [];
   const children = compose(
     emitter,
     config,
@@ -385,9 +520,10 @@ export function runPipeline(
     normalized,
     laidOut.padding,
     bindings,
-    config.labels ?? environment.labels ?? 'html',
+    labels,
     measureStyle,
-    drawn
+    drawn,
+    insetAreas
   );
   const built = scene(
     emitter,

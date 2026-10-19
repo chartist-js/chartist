@@ -19,7 +19,10 @@ import {
   targetLine,
   trendLine,
   withOptions,
+  type Area,
+  type ChartPadding,
   type ChartPlugin,
+  type InsetContext,
   type Layer,
   type PresetLayers,
   type ResponsiveWatcher,
@@ -246,6 +249,33 @@ describe('v2 type contract', () => {
       refine: () => null
     };
     void dropping;
+  });
+
+  test('inset reserves room per side and the boxes are areas', () => {
+    const titled: Layer = {
+      type: 'titled',
+      coordinates: ['cartesian'],
+      inset: ({ measureText }) => ({ bottom: measureText('Title').height }),
+      compose: ({ insetArea }) => {
+        expectTypeOf(insetArea?.bottom).toEqualTypeOf<Area | undefined>();
+        return [];
+      }
+    };
+    void titled;
+    expectTypeOf<ReturnType<NonNullable<Layer['inset']>>>().toEqualTypeOf<
+      Partial<ChartPadding> | undefined
+    >();
+    expectTypeOf<InsetContext['axes'][number]['side']>().toEqualTypeOf<
+      'top' | 'bottom' | 'left' | 'right'
+    >();
+    const wrong: Layer = {
+      type: 'wrong',
+      coordinates: ['cartesian'],
+      compose: () => [],
+      // @ts-expect-error: room is in px per side
+      inset: () => ({ bottom: '20px' })
+    };
+    void wrong;
   });
 
   test('a target line takes one value and an optional label', () => {

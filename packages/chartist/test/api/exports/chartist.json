@@ -178,6 +178,7 @@
     "GridBackgroundDrawEvent",
     "GridContext",
     "GridDrawEvent",
+    "InsetContext",
     "Interpolation",
     "Keyframes",
     "Label",
