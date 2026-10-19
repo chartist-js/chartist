@@ -8,6 +8,7 @@ import {
   type NodeRole,
   type SceneNode
 } from 'chartist';
+import { axisTitle } from '@chartist-js/essentials';
 import { toPlainText } from './canvas.ts';
 import { drawScene, measureCells, terminalSize } from './draw.ts';
 
@@ -372,5 +373,107 @@ describe('nodes without a built-in role', () => {
       scene(2, 1, [group.append(node('text', { x: 0, y: 13.6 }).text('ok'))])
     );
     expect(output).toBe('ok');
+  });
+});
+
+describe('vertical text', () => {
+  /** The characters of a column, top to bottom. */
+  const column = (output: string, index: number) =>
+    lines(output)
+      .map(line => line[index] ?? ' ')
+      .join('');
+
+  it('draws a −90° turn from bottom to top, one character per row', () => {
+    const output = toPlainText(
+      drawScene(
+        scene(4, 6, [
+          node('text', { x: 14, y: 80, transform: 'rotate(-90 14 80)' }).text(
+            'abc'
+          )
+        ])
+      )
+    );
+    expect(column(output, 1)).toBe('  cba');
+  });
+
+  it('draws a 90° turn from top to bottom', () => {
+    const output = toPlainText(
+      drawScene(
+        scene(4, 6, [
+          node('text', { x: 2, y: 16, transform: 'rotate(90 2 16)' }).text(
+            'abc'
+          )
+        ])
+      )
+    );
+    expect(column(output, 0)).toBe(' abc');
+  });
+
+  it('aligns the column by its text-anchor', () => {
+    const at = (anchor: string) =>
+      column(
+        toPlainText(
+          drawScene(
+            scene(2, 8, [
+              node('text', {
+                x: 14,
+                y: 64,
+                'text-anchor': anchor,
+                transform: 'rotate(-90 14 64)'
+              }).text('abcd')
+            ])
+          )
+        ),
+        1
+      );
+    // The anchor is at the top of row 4: the text starts there and reads
+    // up, is centered on it, or ends there.
+    expect(at('start')).toBe('dcba');
+    expect(at('middle')).toBe('  dcba');
+    expect(at('end')).toBe('    dcba');
+  });
+
+  it('draws text with another transform in a row, as before', () => {
+    const output = toPlainText(
+      drawScene(
+        scene(4, 1, [
+          node('text', { x: 0, y: 13.6, transform: 'translate(0 0)' }).text(
+            'ab'
+          )
+        ])
+      )
+    );
+    expect(output).toBe('ab');
+  });
+
+  it('draws axis titles of @chartist-js/essentials beside the labels', () => {
+    const data = { labels: ['Mon', 'Tue', 'Wed'], series: [[12, 9, 7]] };
+    const titles = [
+      axisTitle({ axis: 'x', text: 'Day' }),
+      axisTitle({ axis: 'y', text: 'Visits' })
+    ];
+    for (const config of [
+      lineChartConfig(data, { layers: { above: titles } }),
+      barChartConfig(data, { layers: { above: titles } })
+    ]) {
+      const output = toPlainText(
+        drawScene(toScene(config, terminalSize(40, 14)))
+      );
+      const rows = lines(output);
+      // The Y title reads from bottom to top in a column of its own.
+      const columns = Array.from({ length: 4 }, (_, index) =>
+        column(output, index).trim()
+      );
+      expect(columns).toContain('stisiV');
+      const titleColumn = columns.indexOf('stisiV');
+      expect(rows.every(row => /^\s*$/.test(row.slice(0, titleColumn)))).toBe(
+        true
+      );
+      // The X title is the last row, below the X labels.
+      expect(rows.at(-1)!.trim()).toBe('Day');
+      expect(rows.findIndex(row => /Mon/.test(row))).toBeLessThan(
+        rows.length - 1
+      );
+    }
   });
 });

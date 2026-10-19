@@ -69,6 +69,7 @@
     "chartist": "workspace:^"
   },
   "devDependencies": {
+    "@chartist-js/essentials": "workspace:*",
     "@types/node": "^24.0.0",
     "del-cli": "^8.0.0",
     "opentype.js": "2.0.0",

@@ -373,6 +373,9 @@ importers:
         specifier: workspace:^
         version: link:../chartist
     devDependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
       '@types/node':
         specifier: ^24.0.0
         version: 24.19.2
