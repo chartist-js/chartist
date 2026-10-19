@@ -49,6 +49,8 @@ Chartist has three axis types, each created by a function:
 
 A step axis doesn't look at values at all, which is right for categories like weekdays or quarters. The two scale axes are continuous: a value of 7 lands at 70% of an axis from 0 to 10.
 
+For values that span several orders of magnitude, [`@chartist-js/essentials`](../../packages/essentials/) has a fourth type, [`logAxis()`](../../packages/essentials/log-axis/): it places a value by its logarithm, so 10, 100 and 1,000 are evenly spaced.
+
 ## How the presets choose
 
 | Preset        | X axis                                                    | Y axis                                                                                     |

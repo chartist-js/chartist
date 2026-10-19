@@ -1,0 +1,178 @@
+---
+title: Log axis
+description: A logarithmic scale for values that span several orders of magnitude, with ticks at the powers of ten, minor grid lines and straight trend lines for exponential growth.
+order: 2
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+An app that grew from 120 users to 850,000 makes a dull chart on a linear scale: a flat line along the bottom for four years, then a wall. On a log scale every tenfold step is the same height, so the first hundred users get as much room as the last hundred thousand, and steady growth looks like a straight line.
+
+`logAxis()` is an axis type, like `autoScaleAxis()`. It goes in the `type` of an axis:
+
+<LiveExample
+  title='Users per year'
+  label='A line chart of users per year from 2019 to 2024 on a log Y axis, rising from 120 to 850,000 with the Y labels 100, 1,000, 10,000, 100,000 and 1,000,000 evenly spaced'
+  gallery='essentials/log-axis'
+/>
+
+Use it when the values span several orders of magnitude, or when what matters is the rate of growth rather than the amount: a line that's straight on a log axis grows by the same factor in every step.
+
+## Linear or log
+
+Moore's law says the transistors on a chip double about every two years. Here are fifteen processors from the Intel 4004 in 1971 to the Apple M1 Ultra in 2022, from 2,250 transistors to 114 billion. Switch the Y axis to a linear scale and back, and watch the points move:
+
+<LiveExample
+  title="Moore's law"
+  label='Transistors per processor from 1971 to 2022 as points on a log Y axis with minor grid lines, rising in a nearly straight line from 2,250 to 114 billion; a button switches the axis to a linear scale, where all but the last two points lie flat on the bottom'
+  gallery='essentials/moores-law'
+  show='src/main.ts'
+/>
+
+On the linear scale, thirteen of the fifteen processors sit on the bottom edge: next to 114 billion, a billion is a rounding error. On the log scale every chip gets its place, and the straight climb is the doubling itself. Switching is `setOptions({ axisY: { type } })`, and [`liveDomRenderer()`](../../../docs/live-updates/) moves the points from one scale to the other.
+
+## Range and ticks
+
+Without `low` and `high`, the axis runs from the power of ten at or below the smallest value to the power at or above the largest: 120 to 850,000 becomes 100 to 1,000,000. The ticks sit at the powers in between, and when they'd come closer than `scaleMinSpace` (20 px by default), the axis keeps every second or third. The axis's own options work as on the core's axes:
+
+```ts
+import { lineChart } from 'chartist';
+import { logAxis } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  { labels: ['A', 'B', 'C'], series: [[12, 180, 2400]] },
+  {
+    axisY: {
+      type: logAxis(),
+      // The range exactly, without rounding to powers.
+      low: 10,
+      high: 4000,
+      // Ticks by hand, at their places on the log scale.
+      ticks: [10, 25, 63, 160, 400, 1000, 2500]
+    }
+  }
+);
+```
+
+When the range is narrower than a power, say from 20 to 80, the ticks are the whole numbers between: 20, 30, 40 and so on.
+
+`base` changes the base of the logarithm. `logAxis({ base: 2 })` puts the ticks at 1, 2, 4, 8, 16, which suits values that double, such as memory sizes.
+
+## Minor grid lines
+
+`minorTicks: true` draws lighter grid lines without labels between the ticks: at 2, 3, … 9 times each power, the way log paper has them. When the axis shows only every second power, the ones it leaves out get the minor lines instead. Moore's law above has them on its Y axis only. On a log-log chart, both axes are logarithmic, and both can have them:
+
+<LiveExample
+  title='Kleiber’s law'
+  label='Body mass against resting metabolic rate for seven animals from a mouse to an elephant, on two log axes with light minor grid lines, and a dashed trend line running straight through the points'
+  gallery='essentials/log-log'
+/>
+
+They're grid lines with the class `ct-grid-minor` next to `ct-grid`, and Chartist's stylesheet styles them with three custom properties:
+
+```css
+.ct-chart {
+  --ct-grid-minor-color: rgba(0, 0, 0, 0.05);
+  --ct-grid-minor-width: 1px;
+  --ct-grid-minor-dasharray: 1px 3px;
+}
+```
+
+## Labels
+
+The labels show the tick values. Long numbers read better with separators, and `labelTransform` formats them as on any axis. Give the axis an `offset` wide enough for the longest label:
+
+```ts
+import { lineChart } from 'chartist';
+import { logAxis } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  { labels: ['2022', '2023', '2024'], series: [[3200, 41000, 870000]] },
+  {
+    axisY: {
+      type: logAxis(),
+      offset: 64,
+      labelTransform: value => value.toLocaleString('en-US')
+    }
+  }
+);
+```
+
+## Zero and negative values
+
+A log scale has no place for zero: you can halve a value forever and never reach it. A zero in your data doesn't break the chart, though. Zero and negative values are left out of the range and drawn at the start of the axis, on its bottom edge. A bar for zero has no length.
+
+That's what you want for a day with no sales, but it can read as "very small" for a missing measurement. Use `null` where a value is missing: it's a gap in the line, as on every axis.
+
+## Bars
+
+Bars grow from the start of the axis, so on a log axis their length shows the value's power of ten rather than the value: a bar for 1,000 is three times as long as one for 10 when the axis starts at 1. Set `low` to say where the bars start. Stacked bars work, but stacking adds values while a log axis compares factors, so the segments' lengths don't add up; grouped bars or lines read better.
+
+## Trend lines
+
+A `trendLine()` on a log axis is fitted to the logarithms of the values, so it's straight on the chart and follows exponential growth on a log Y axis. On two log axes, as in the log-log chart above, it finds a power law: the animals' metabolic rate grows with their mass to the power of about ¾, and the trend line's `slope` says so.
+
+```ts
+import { lineChart, trendLine } from 'chartist';
+import { logAxis } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[30, 75, 210, 480, 1300]]
+  },
+  {
+    axisY: { type: logAxis() },
+    layers: { above: [trendLine()] }
+  }
+);
+```
+
+The trend line's context has its `slope` in powers of the base per step: a slope of 0.4 on a base 10 axis means the values grow about 2.5 times (10<sup>0.4</sup>) a day.
+
+## Next to a linear axis
+
+In a [composed chart](../../../docs/composed-charts/), a log axis is one axis among others. Each axis fits its range to the series of the layers drawn on it:
+
+```ts
+import {
+  autoScaleAxis,
+  axisGrid,
+  axisLabels,
+  bar,
+  cartesianAxes,
+  chart,
+  line,
+  stepAxis
+} from 'chartist';
+import { logAxis } from '@chartist-js/essentials';
+
+chart('#chart', {
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+    series: [
+      { name: 'posts', data: [3, 5, 4, 6] },
+      { name: 'reach', data: [240, 3100, 18000, 95000] }
+    ]
+  },
+  axes: cartesianAxes([
+    { id: 'month', side: 'bottom', type: stepAxis() },
+    { id: 'posts', side: 'left', type: autoScaleAxis(), low: 0 },
+    { id: 'reach', side: 'right', type: logAxis(), offset: 50 }
+  ]),
+  layers: [
+    axisGrid({ axes: ['month', 'posts'] }),
+    bar({ series: ['posts'], y: 'posts' }),
+    line({ series: ['reach'], y: 'reach', align: 'center' }),
+    axisLabels()
+  ],
+  className: 'ct-chart-bar'
+});
+```
+
+## Coming from chartist-logaxis
+
+The `chartist-logaxis` plugin patched 1.x's auto-scale axis with `scale: 'log10'`. With `logAxis()`, change the axis type: `type: logAxis()` instead of `type: Chartist.AutoScaleAxis, scale: 'log10'`, and `logAxis({ minorTicks: true })` instead of `showMinorGrid: true`. The minor grid lines keep the class `ct-grid-minor`, so your CSS for them still applies. Zeros no longer throw an error.
