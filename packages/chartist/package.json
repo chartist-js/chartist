@@ -131,7 +131,7 @@
     "@resvg/resvg-js": "2.6.2",
     "@size-limit/esbuild": "14.2.0",
     "@size-limit/file": "14.2.0",
-    "@types/node": "^18.0.0",
+    "@types/node": "^24.0.0",
     "browserslist": "^4.20.2",
     "chartist-v1": "npm:chartist@1.5.0",
     "cssnano": "^4.1.11",
