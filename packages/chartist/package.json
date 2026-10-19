@@ -114,18 +114,11 @@
     "test:size": "size-limit",
     "format": "echo \"Format from the workspace root: pnpm nx format\"",
     "test:smoke": "node --test \"test/smoke/*.test.mjs\"",
-    "test:visual": "playwright test -c test/visual/playwright.config.ts",
-    "test:visual:v1": "CHARTIST_LIB=v1 playwright test -c test/visual/playwright.config.ts",
-    "test:visual:update": "CHARTIST_LIB=v1 playwright test -c test/visual/playwright.config.ts --update-snapshots",
     "test:api": "CHARTIST_API_TARGET=local vitest run --config test/api/vitest.config.ts",
     "test:api:v1": "CHARTIST_API_TARGET=v1 vitest run --config test/api/vitest.config.ts",
-    "test:api:update-exports": "node test/api/exports/update.ts",
-    "test:visual:local-baseline": "rm -rf test/visual/.local-baseline && CHARTIST_LIB=v1 VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts --update-snapshots=all && (VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts --update-snapshots=missing || true)",
-    "test:visual:local": "VISUAL_SNAPSHOTS=test/visual/.local-baseline playwright test -c test/visual/playwright.config.ts"
+    "test:api:update-exports": "node test/api/exports/update.ts"
   },
   "devDependencies": {
-    "@chartist/examples": "workspace:*",
-    "@playwright/test": "1.64.1",
     "@resvg/resvg-js": "2.6.2",
     "@size-limit/esbuild": "14.2.0",
     "@size-limit/file": "14.2.0",
@@ -140,13 +133,9 @@
     "sass": "^1.50.1",
     "size-limit": "14.2.0",
     "tsdown": "0.23.1",
-    "typescript": "^5.9.3",
-    "vite": "8.3.4"
+    "typescript": "^5.9.3"
   },
   "nx": {
-    "implicitDependencies": [
-      "!examples"
-    ],
     "namedInputs": {
       "build": [
         "{projectRoot}/src/**/*",
@@ -214,46 +203,6 @@
           }
         ]
       },
-      "test:visual": {
-        "cache": true,
-        "dependsOn": [
-          "build"
-        ],
-        "inputs": [
-          "build",
-          "{projectRoot}/test/visual/**/*",
-          "!{projectRoot}/test/visual/test-results/**/*",
-          "!{projectRoot}/test/visual/playwright-report/**/*",
-          "{workspaceRoot}/packages/examples/**/*",
-          "!{workspaceRoot}/packages/examples/node_modules/**/*",
-          {
-            "externalDependencies": [
-              "@playwright/test",
-              "vite"
-            ]
-          }
-        ]
-      },
-      "test:visual:v1": {
-        "cache": true,
-        "inputs": [
-          "{projectRoot}/package.json",
-          "{projectRoot}/test/visual/**/*",
-          "!{projectRoot}/test/visual/test-results/**/*",
-          "!{projectRoot}/test/visual/playwright-report/**/*",
-          "{workspaceRoot}/packages/examples/**/*",
-          "!{workspaceRoot}/packages/examples/node_modules/**/*",
-          {
-            "externalDependencies": [
-              "@playwright/test",
-              "vite"
-            ]
-          }
-        ]
-      },
-      "test:visual:update": {
-        "cache": false
-      },
       "test:api": {
         "cache": true,
         "dependsOn": [
@@ -286,18 +235,6 @@
         ]
       },
       "test:api:update-exports": {
-        "cache": false,
-        "dependsOn": [
-          "build"
-        ]
-      },
-      "test:visual:local-baseline": {
-        "cache": false,
-        "dependsOn": [
-          "build"
-        ]
-      },
-      "test:visual:local": {
         "cache": false,
         "dependsOn": [
           "build"

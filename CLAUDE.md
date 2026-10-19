@@ -76,14 +76,14 @@ Lessons from earlier sessions; each one cost time once.
 
 - **Verify UI by looking.** Tests pass on broken layouts.
   - After a visible change, take Playwright screenshots in light and dark mode and at phone width (375 to 390 px), and check that the page doesn't scroll horizontally.
-  - `@playwright/test` resolves from `packages/chartist/`, so run ad-hoc scripts from there, and delete them afterwards.
+  - `playwright` resolves from `packages/chartist/` (and `@playwright/test` from `packages/visual/`), so run ad-hoc scripts from there, and delete them afterwards.
   - Run the page's e2e and axe checks (`pnpm nx e2e docs`).
 - **Dev servers.**
   - The author's docs dev server runs on 127.0.0.1:4321. Never stop or restart it.
   - Astro allows one dev server per project. A second one with `--ignore-lock` shares Vite's dependency cache and breaks both (504 "Outdated Optimize Dep").
   - For your own testing, build and serve `dist`: `PORT=<free port> node apps/docs/e2e/serve.mjs`.
   - Stop processes by explicit PID from `ps`. `pkill -f` and `pgrep -f` patterns can match your own shell.
-- **The visual reference platform.** Committed screenshots are recorded on the author's WSL host or in CI, never in the dev container, whose fonts render differently. In the container, use `pnpm nx run chartist:test:visual:local`. For examples without 1.x code, the local baseline compares the current build with itself, so check those against the committed images.
+- **The visual reference platform.** Committed screenshots are recorded on the author's WSL host or in CI, never in the dev container, whose fonts render differently. In the container, use `pnpm nx run visual:test:visual:local`. For examples without 1.x code, the local baseline compares the current build with itself, so check those against the committed images.
 - **Shell.** The interactive shell is zsh: it doesn't word-split `$VAR` in loops, and an unmatched glob is an error (for example `grep --include=*.ts`). Use `bash -c '…'` or quote the patterns.
 - **Don't guess facts.**
   - Check CLI flags with `--help`. Check GitHub and npm state with `gh api` and `npm view` before stating it.

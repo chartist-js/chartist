@@ -1,0 +1,77 @@
+{
+  "name": "@chartist/visual",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Visual regression tests: screenshots every example of @chartist/examples and compares it with the 1.5.0 baseline",
+  "license": "MIT OR WTFPL",
+  "scripts": {
+    "test:visual": "playwright test",
+    "test:visual:v1": "CHARTIST_LIB=v1 playwright test",
+    "test:visual:update": "CHARTIST_LIB=v1 playwright test --update-snapshots",
+    "test:visual:local-baseline": "rm -rf .local-baseline && CHARTIST_LIB=v1 VISUAL_SNAPSHOTS=.local-baseline playwright test --update-snapshots=all && (VISUAL_SNAPSHOTS=.local-baseline playwright test --update-snapshots=missing || true)",
+    "test:visual:local": "VISUAL_SNAPSHOTS=.local-baseline playwright test"
+  },
+  "devDependencies": {
+    "@chartist/examples": "workspace:*",
+    "@playwright/test": "1.64.1",
+    "@types/node": "^24.0.0",
+    "chartist": "workspace:*",
+    "chartist-v1": "npm:chartist@1.5.0",
+    "vite": "8.3.4"
+  },
+  "nx": {
+    "name": "visual",
+    "namedInputs": {
+      "visual": [
+        "{projectRoot}/**/*",
+        "!{projectRoot}/test-results/**/*",
+        "!{projectRoot}/playwright-report/**/*",
+        "!{projectRoot}/.local-baseline/**/*",
+        "{workspaceRoot}/packages/examples/**/*",
+        "!{workspaceRoot}/packages/examples/node_modules/**/*",
+        {
+          "externalDependencies": [
+            "@playwright/test",
+            "vite"
+          ]
+        }
+      ]
+    },
+    "targets": {
+      "test:visual": {
+        "cache": true,
+        "dependsOn": [
+          "^build"
+        ],
+        "inputs": [
+          "visual",
+          {
+            "dependentTasksOutputFiles": "**/*"
+          }
+        ]
+      },
+      "test:visual:v1": {
+        "cache": true,
+        "inputs": [
+          "visual"
+        ]
+      },
+      "test:visual:update": {
+        "cache": false
+      },
+      "test:visual:local-baseline": {
+        "cache": false,
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "test:visual:local": {
+        "cache": false,
+        "dependsOn": [
+          "^build"
+        ]
+      }
+    }
+  }
+}

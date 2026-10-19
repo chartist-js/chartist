@@ -35,7 +35,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # The smoke tests open the builds in Chromium, and the update
       # animations in Firefox and WebKit too.
-      - run: pnpm --dir packages/chartist exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm --dir packages/visual exec playwright install --with-deps chromium firefox webkit
       - run: pnpm nx format:check --all
       # The docs site has its own workflow, and only runs on one Node version.
       - run: pnpm nx run-many -t lint typecheck check test build test:smoke test:size test:api test:api:v1 --exclude docs
@@ -53,18 +53,18 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --dir packages/chartist exec playwright install --with-deps chromium
+      - run: pnpm --dir packages/visual exec playwright install --with-deps chromium
       # The committed baselines are recorded on this platform: Linux x64 with
       # the Chromium of the pinned Playwright version.
-      - run: pnpm nx run-many -t test:visual test:visual:v1 -p chartist
+      - run: pnpm nx run-many -t test:visual test:visual:v1 -p visual
       - name: Keep the diffs
         if: failure()
         uses: actions/upload-artifact@v7
         with:
           name: visual-diffs
           path: |
-            packages/chartist/test/visual/test-results
-            packages/chartist/test/visual/playwright-report
+            packages/visual/test-results
+            packages/visual/playwright-report
           retention-days: 14
 
   playground:

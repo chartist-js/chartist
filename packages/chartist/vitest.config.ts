@@ -5,9 +5,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['{test,src}/**/*.spec.ts'],
-    // Playwright screenshot tests (test:visual) and the public API suite
-    // (test:api) have their own configs.
-    exclude: ['test/visual/**', 'test/api/**'],
+    // The public API suite (test:api) has its own config.
+    exclude: ['test/api/**'],
     setupFiles: ['test/setup.ts'],
     coverage: {
       enabled: true,

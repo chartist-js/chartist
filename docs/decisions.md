@@ -174,8 +174,8 @@ The workflows and settings are specified in the `release-process` and `continuou
 
 ## Visual regression
 
-- **Reference platform:** Linux x64 with the Chromium of the pinned Playwright version: GitHub's Ubuntu runners or the author's WSL2 host. Committed baselines (`packages/chartist/test/visual/__screenshots__`) are recorded only there.
-- **The dev container's fonts render differently,** so it never records committed baselines. It uses `chartist:test:visual:local`, against a local baseline made from 1.5.0 by `chartist:test:visual:local-baseline`. Examples without 1.x code get their local baseline from the current build, so for those, check the committed images instead.
+- **Reference platform:** Linux x64 with the Chromium of the pinned Playwright version: GitHub's Ubuntu runners or the author's WSL2 host. Committed baselines (`packages/visual/__screenshots__`) are recorded only there.
+- **The dev container's fonts render differently,** so it never records committed baselines. It uses `visual:test:visual:local`, against a local baseline made from 1.5.0 by `visual:test:visual:local-baseline`. Examples without 1.x code get their local baseline from the current build, so for those, check the committed images instead.
 - Considered for later: running the visual tests in the official Playwright Docker image, so every machine matches the reference platform.
 
 ## Standards to monitor

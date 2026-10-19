@@ -4,7 +4,7 @@
  * Serves every example of @chartist/examples at /<type>/<name>/, with
  * `chartist` resolved to the build under test:
  *
- * - CHARTIST_LIB unset or "local": packages/chartist/dist (the local build)
+ * - CHARTIST_LIB unset or "local": the workspace's chartist build (its dist)
  * - CHARTIST_LIB=v1: published chartist@1.5.0 (the chartist-v1 alias)
  *
  * The example files are served unchanged. A harness plugin only adds the
@@ -20,7 +20,7 @@ import { defineConfig, type Plugin } from 'vite';
 import { examples } from '@chartist/examples';
 
 const require = createRequire(import.meta.url);
-const pkgDir = fileURLToPath(new URL('../..', import.meta.url));
+const pkgDir = fileURLToPath(new URL('.', import.meta.url));
 const examplesDir = path.dirname(
   require.resolve('@chartist/examples/package.json')
 );
@@ -31,7 +31,7 @@ const libDir =
   lib === 'v1'
     ? // chartist@1.5.0 doesn't export its package.json, so no require.resolve.
       path.join(pkgDir, 'node_modules/chartist-v1/dist')
-    : path.join(pkgDir, 'dist');
+    : path.join(path.dirname(require.resolve('chartist/package.json')), 'dist');
 
 const font = readFileSync(
   fileURLToPath(

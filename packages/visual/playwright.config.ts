@@ -7,9 +7,9 @@
  * run the tests in the official Playwright Docker image or in CI.
  *
  * Run (see the Nx targets in package.json):
- * - pnpm nx run chartist:test:visual          local build (packages/chartist/dist)
- * - pnpm nx run chartist:test:visual:v1       published chartist@1.5.0
- * - pnpm nx run chartist:test:visual:update   re-record the baseline from 1.5.0
+ * - pnpm nx run visual:test:visual          local build (packages/chartist/dist)
+ * - pnpm nx run visual:test:visual:v1       published chartist@1.5.0
+ * - pnpm nx run visual:test:visual:update   re-record the baseline from 1.5.0
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -61,8 +61,8 @@ export default defineConfig({
   },
   projects: [{ name: `chromium (chartist ${lib})` }],
   webServer: {
-    command: `pnpm exec vite --config test/visual/vite.config.ts --port ${port} --strictPort`,
-    cwd: fileURLToPath(new URL('../..', import.meta.url)),
+    command: `pnpm exec vite --config vite.config.ts --port ${port} --strictPort`,
+    cwd: fileURLToPath(new URL('.', import.meta.url)),
     // Ready when the server says so: polling a port before it listens can
     // hang for minutes where localhost drops connections to closed ports
     // instead of refusing them (seen on WSL).
