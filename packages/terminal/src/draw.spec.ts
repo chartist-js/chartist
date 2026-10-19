@@ -1,10 +1,12 @@
 import {
+  autoScaleAxis,
   barChartConfig,
   lineChartConfig,
   node,
   pieChartConfig,
   toScene,
   type AttrValue,
+  type AxisFactory,
   type NodeRole,
   type SceneNode
 } from 'chartist';
@@ -106,6 +108,42 @@ describe('lines, points and areas', () => {
     );
     expect(lines(output)[0]).toBe('┈'.repeat(10));
     expect(lines(output)[1]).toMatch(/^[⠁-⣿]{10}$/);
+  });
+});
+
+describe('grid lines', () => {
+  it('leaves out minor grid lines', () => {
+    // The default scale axis, with a minor tick between every two ticks.
+    const withMinor: AxisFactory = {
+      kind: 'autoScale',
+      create(context) {
+        const axis = autoScaleAxis().create(context);
+        const ticks = axis.ticks as number[];
+        return {
+          ...axis,
+          minorTicks: ticks.slice(1).map((tick, i) => (tick + ticks[i]) / 2)
+        };
+      }
+    };
+    const draw = (type?: AxisFactory) =>
+      plain(
+        toScene(
+          lineChartConfig(
+            { series: [[1, 9, 4, 7]] },
+            { axisY: type && { type } }
+          ),
+          terminalSize(60, 16)
+        )
+      );
+    const minor = toScene(
+      lineChartConfig(
+        { series: [[1, 9, 4, 7]] },
+        { axisY: { type: withMinor } }
+      ),
+      terminalSize(60, 16)
+    );
+    expect(JSON.stringify(minor)).toContain('ct-grid-minor');
+    expect(draw(withMinor)).toBe(draw(autoScaleAxis()));
   });
 });
 

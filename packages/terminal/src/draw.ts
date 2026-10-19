@@ -83,7 +83,10 @@ export function drawScene(scene: SceneNode): Canvas {
         case 'gridBackground':
           return;
         case 'grid':
-          drawGrid(canvas, grid, current.attrs);
+          // Minor grid lines would fill most rows at 16 px per row.
+          if (!current.ctx.minor) {
+            drawGrid(canvas, grid, current.attrs);
+          }
           return;
         case 'bar':
           drawBar(canvas, current.attrs, series);
