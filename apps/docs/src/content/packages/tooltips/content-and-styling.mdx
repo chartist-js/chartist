@@ -69,7 +69,7 @@ With `render`, `format` still decides which values have a tooltip and gives thei
 
 ## Which values, and where
 
-`roles` picks the nodes that get tooltips: `point`, `bar` and `slice` by default. Any role works, including the roles of other layers and plugins: `roles: ['line']` gives each series of a line chart one tooltip, with its name, and a target line's tooltip shows its label and value. For what the default text doesn't know, `item.context` is the node's data context, so `format` can describe a trend line by its `slope`:
+`roles` picks the nodes that get tooltips: `point`, `bar` and `slice` by default. Any role works, including the roles of other layers and plugins: `roles: ['line']` gives each series of a line chart one tooltip, with its name, and a target line's tooltip shows its label and value. For what the default text doesn't know, `item.context` is the node's data context, so `format` can describe a trend line by its `slope`, and by its `correlation` how well it fits the values (squared, the R² spreadsheets show):
 
 ```ts
 import { lineChart, trendLine } from 'chartist';
@@ -83,10 +83,18 @@ lineChart(
     plugins: [
       tooltips({
         roles: ['point', 'trendLine'],
-        format: item =>
-          item.role === 'trendLine'
-            ? `${item.seriesName}: ${Number(item.context.slope).toFixed(1)} a day`
-            : String(item.value)
+        format: item => {
+          if (item.role !== 'trendLine') {
+            // Points keep the default text.
+            return undefined;
+          }
+          const { slope, correlation } = item.context;
+          const fit =
+            correlation === undefined
+              ? ''
+              : `, R² ${(correlation ** 2).toFixed(2)}`;
+          return `${item.seriesName}: ${slope >= 0 ? '+' : ''}${slope.toFixed(1)} a day${fit}`;
+        }
       })
     ]
   }
