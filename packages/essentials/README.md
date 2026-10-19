@@ -2,7 +2,7 @@
 
 The Chartist additions people ask for most, as layers you add to a chart. They're kept out of the core, so charts that don't use them stay small, and they're made and released together with Chartist.
 
-It holds `axisTitle()` today. More layers and axes follow.
+It holds `axisTitle()` and `logAxis()` today. More layers and axes follow.
 
 ## Install
 
@@ -129,9 +129,39 @@ The title is an SVG `text` with the classes `ct-axis-title`, `ct-horizontal` or 
 }
 ```
 
+## Log axis
+
+`logAxis()` is an axis type for values that span several orders of magnitude. Each power of the base is the same distance from the next, so 100, 1,000 and 10,000 are evenly spaced:
+
+```ts
+import { lineChart } from 'chartist';
+import { logAxis } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+    series: [[120, 980, 4100, 36000, 210000, 850000]]
+  },
+  {
+    axisY: {
+      type: logAxis({ minorTicks: true }),
+      labelTransform: value => value.toLocaleString('en-US')
+    }
+  }
+);
+```
+
+| Option       | What it does                                                                               |
+| ------------ | ------------------------------------------------------------------------------------------ |
+| `base`       | The base of the logarithm, any number above 1 (default 10)                                 |
+| `minorTicks` | Grid lines without labels between the ticks, styled with `--ct-grid-minor-*` (default off) |
+
+The axis's own options work as on the core's axes: `low` and `high` set the range exactly, `ticks` sets the ticks by hand, and `labelTransform` formats the labels. Zero and negative values have no place on a log scale: they're drawn at the start of the axis. Use `null` for a gap. A `trendLine()` on a log axis is fitted to the logarithms, so it's straight on the chart.
+
 ## On the server
 
-The layers are part of the scene, so they render with `chartist/server` and hydrate like the rest of the chart:
+The layers and the log axis are part of the scene, so they render with `chartist/server` and hydrate like the rest of the chart:
 
 ```ts
 import { lineChartConfig } from 'chartist';

@@ -10,7 +10,7 @@ import {
   type NodeRole,
   type SceneNode
 } from 'chartist';
-import { axisTitle } from '@chartist-js/essentials';
+import { axisTitle, logAxis } from '@chartist-js/essentials';
 import { toPlainText } from './canvas.ts';
 import { drawScene, measureCells, terminalSize } from './draw.ts';
 
@@ -144,6 +144,26 @@ describe('grid lines', () => {
     );
     expect(JSON.stringify(minor)).toContain('ct-grid-minor');
     expect(draw(withMinor)).toBe(draw(autoScaleAxis()));
+  });
+
+  it('draws a log axis with a grid line and a label per tick', () => {
+    const draw = (minorTicks: boolean) =>
+      plain(
+        toScene(
+          lineChartConfig(
+            { labels: ['a', 'b', 'c'], series: [[2, 40, 900]] },
+            { axisY: { type: logAxis({ minorTicks }) } }
+          ),
+          terminalSize(60, 20)
+        )
+      );
+    const output = draw(true);
+    expect(output).toBe(draw(false));
+    for (const label of ['1', '10', '100', '1000']) {
+      expect(lines(output).some(row => row.trim().startsWith(label))).toBe(
+        true
+      );
+    }
   });
 });
 

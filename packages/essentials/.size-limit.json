@@ -6,5 +6,13 @@
     "ignore": ["chartist"],
     "limit": "700 B",
     "gzip": true
+  },
+  {
+    "name": "import { logAxis } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ logAxis }",
+    "ignore": ["chartist"],
+    "limit": "1 kB",
+    "gzip": true
   }
 ]

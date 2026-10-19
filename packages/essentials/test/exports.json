@@ -1,4 +1,4 @@
 {
-  "runtime": ["axisTitle"],
-  "types": ["AxisTitleOptions"]
+  "runtime": ["axisTitle", "logAxis"],
+  "types": ["AxisTitleOptions", "LogAxisOptions"]
 }
