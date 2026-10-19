@@ -90,7 +90,7 @@ Lessons from earlier sessions; each one cost time once.
   - Read a third-party API's docs before relying on it.
   - Type-check code snippets the docs show (`pnpm nx run docs:samples`, part of `check`).
 - **Facts snapshot.** `pnpm nx run docs:facts` refreshes `apps/docs/src/data/facts.json`. Run it with `GITHUB_TOKEN=$(gh auth token)`, or the collaborator roles can't be read. Builds never fetch.
-- **Caching.** Nx caches test targets, so a green run may not have run anything. When verifying a change, use `--skip-nx-cache`, or check that the output shows the tests ran.
+- **Caching.** Nx caches test targets, so a green run may not have run anything. When verifying a change, use `--skip-nx-cache`, or check that the output shows the tests ran. Vitest keeps transformed modules in `node_modules/.vitest-cache`, `import.meta.glob` results included: after adding a generated file (a package's API model), delete that folder, or the tests don't see the file.
 - **nx-astro** rewrites `apps/docs/package.json` (dropping its final newline) unless every `astro`/`@astrojs/*` dependency is also listed in the root `package.json`.
 - **Tailwind and `hidden`.** A `flex` or `grid` utility overrides the `[hidden]` attribute. On elements toggled with `hidden`, add `[&[hidden]]:hidden`.
 - **Big splittable work** goes to parallel worktree agents after a shared foundation commit, so they build on the same base and don't collide:
