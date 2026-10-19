@@ -46,9 +46,13 @@ Triage labels say where a change belongs and how big it is. An open feature requ
   - `core`: in the `chartist` package itself;
   - `plugins`: as a plugin, not in the core;
   - `layer`: as a layer (`chart()` and the presets' `layers`);
-  - `axis`: as an axis type or an axis feature.
+  - `axis`: as an axis type or an axis feature;
+  - `essentials`: in `@chartist-js/essentials` (new axis types and layers such as axis titles, legend, value labels);
+  - `tooltips`: in `@chartist-js/tooltips`.
 
-  `layer` and `axis` go together with `core` when the core should ship that layer or axis.
+  `layer` and `axis` go together with `core` or `essentials`, whichever ships that layer or axis.
+
+- **Milestone:** the release a planned change ships in (`2.2.0`, `2.3.0`, …).
 
 - **Size:** `simple` or `complex`, judged by the implementation, not by how often it's asked for.
 - **`v2`:** planned for v2 final, or already fixed by v2. Use it only for what fits before 2.0, not as a wish list.
