@@ -29,8 +29,9 @@ const SUGGESTIONS = ['lineChart', 'showArea', 'container queries', 'animations']
         enterkeyhint="go"
         data-search-input
       />
-      <button class="search-close" type="button" aria-label="Close search" data-search-close>
-        <kbd class="max-md:hidden">Esc</kbd>
+      <button class="search-close" type="button" aria-keyshortcuts="Escape" data-search-close>
+        <span class="sr-only">Close search</span>
+        <kbd class="max-md:hidden" aria-hidden="true">Esc</kbd>
         <svg class="hidden max-md:block" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"
           ><path d="M6 6l12 12M18 6 6 18"></path></svg
         >
