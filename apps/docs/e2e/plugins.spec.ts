@@ -70,13 +70,6 @@ test('a plugin page credits its author and links its sources', async ({
   await expect(
     main.getByRole('heading', { name: 'Use it on your site' })
   ).toBeVisible();
-  await page.goto('/plugins/stklcode-chartist-plugin-tooltips/');
-  await expect(
-    page.locator('article .tag', { hasText: 'API v1.x' })
-  ).toBeVisible();
-  // A plugin whose repository is gone links to npm and says so.
-  await page.goto('/plugins/chartist-plugin-tooltips/');
-  await expect(page.locator('article')).toContainText('Repository gone');
 });
 
 test('plugin pages link to their neighbors in the overview order', async ({
@@ -90,10 +83,8 @@ test('plugin pages link to their neighbors in the overview order', async ({
 });
 
 test('an old link to an entry opens the plugin page', async ({ page }) => {
-  await page.goto('/plugins/#stklcode-chartist-plugin-tooltips');
-  await expect(page).toHaveURL(
-    /\/plugins\/stklcode-chartist-plugin-tooltips\/$/
-  );
+  await page.goto('/plugins/#chartist-plugin-threshold');
+  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-threshold\/$/);
 });
 
 test('the filter narrows the tiles by text and chart type', async ({
@@ -105,9 +96,11 @@ test('the filter narrows the tiles by text and chart type', async ({
   const count = page.locator('[data-plugin-count]');
   await expect(count).toHaveText(`${total} plugins`);
 
-  await page.getByRole('searchbox', { name: 'Find a plugin' }).fill('tooltip');
-  await expect(visible).toHaveCount(2);
-  await expect(count).toHaveText(`2 of ${total} plugins`);
+  await page
+    .getByRole('searchbox', { name: 'Find a plugin' })
+    .fill('threshold');
+  await expect(visible).toHaveCount(1);
+  await expect(count).toHaveText(`1 of ${total} plugins`);
 
   await page.getByRole('searchbox', { name: 'Find a plugin' }).fill('');
   await page.getByRole('button', { name: 'Pie' }).click();

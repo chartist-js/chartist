@@ -223,7 +223,7 @@ export const V0_PAGES: readonly V0Page[] = [
       ),
       ...each(
         ['tooltip-plugin', 'example-plugin-tooltip'],
-        'plugins/chartist-plugin-tooltips/'
+        'packages/tooltips/'
       ),
       ...each(
         ['point-label-plugin', 'example-plugin-pointlabel'],

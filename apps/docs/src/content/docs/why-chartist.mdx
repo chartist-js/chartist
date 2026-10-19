@@ -36,9 +36,9 @@ Here's the proof. The script below only says what to draw. Everything you see co
 
 When the brand color changes, you change one line. [Styling with CSS](../styling-with-css/) has the full list of properties and classes.
 
-## No built-in tooltips
+## Tooltips, as a package
 
-Chartist doesn't ship tooltips, zoom, legends or click handlers. The DOM already has events, and a tooltip is a positioned element with some text in it. You can add one with a few lines of your own code, or with a plugin, and it works the way the rest of your site does.
+Chartist's core doesn't ship tooltips, zoom, legends or click handlers. A tooltip is interaction in the browser, and a chart drawn on a server or in a terminal has nothing to hover, so the core leaves it out. [`@chartist-js/tooltips`](../../packages/tooltips/) adds tooltips to the charts that need them, for mouse, touch and keyboard, styled with CSS. For anything else, the DOM already has events: a few lines of your own code or a plugin work the way the rest of your site does.
 
 If you need zoom, panning and crosshairs out of the box, or tens of thousands of points, Chartist isn't the right tool. A canvas library will serve you better.
 

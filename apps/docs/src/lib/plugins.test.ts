@@ -27,8 +27,8 @@ describe('plugin pages', () => {
   });
 
   test('a slug finds its plugin', () => {
-    expect(pluginBySlug('stklcode-chartist-plugin-tooltips')?.package).toBe(
-      '@stklcode/chartist-plugin-tooltips'
+    expect(pluginBySlug('chartist-plugin-threshold')?.package).toBe(
+      'chartist-plugin-threshold'
     );
     expect(pluginBySlug('nope')).toBeUndefined();
   });

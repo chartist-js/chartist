@@ -145,10 +145,6 @@
       "monthlyDownloads": 27780,
       "lastRelease": "2017-08-05"
     },
-    "chartist-plugin-tooltips": {
-      "monthlyDownloads": 21622,
-      "lastRelease": "2016-09-18"
-    },
     "chartist-plugin-pointlabels": {
       "monthlyDownloads": 11446,
       "lastRelease": "2018-02-18"
@@ -176,10 +172,6 @@
     "chartist-plugin-threshold": {
       "monthlyDownloads": 1379,
       "lastRelease": "2015-11-18"
-    },
-    "@stklcode/chartist-plugin-tooltips": {
-      "monthlyDownloads": 816,
-      "lastRelease": "2026-09-20"
     }
   },
   "sizes": {

@@ -9,6 +9,7 @@
  */
 import essentials from '../../../../packages/essentials/package.json' with { type: 'json' };
 import terminal from '../../../../packages/terminal/package.json' with { type: 'json' };
+import tooltips from '../../../../packages/tooltips/package.json' with { type: 'json' };
 
 /**
  * How a package is licensed: open source, under its license, or premium,
@@ -57,6 +58,14 @@ export const PACKAGES: readonly DocumentedPackage[] = [
       'The additions people ask for most, as layers you add to a chart: axis titles that make room for themselves.',
     version: essentials.version,
     license: { kind: 'open-source', name: essentials.license }
+  },
+  {
+    slug: 'tooltips',
+    name: tooltips.name,
+    description:
+      'Tooltips for mouse, touch and keyboard, with the label, series and value as text, styled with CSS.',
+    version: tooltips.version,
+    license: { kind: 'open-source', name: tooltips.license }
   }
 ];
 

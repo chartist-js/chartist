@@ -302,7 +302,7 @@ When writing Chartist code:
 - Change what a chart draws with plugins: listeners on the pipeline's phase events (\`compose\` for scene nodes, \`mount\` for the DOM). 1.x \`draw\` events need the \`compat\` plugin from \`chartist/compat\`.
 - Size charts with their container (CSS), and use responsive options for what changes with the size.
 - For charts that update while people look at them, pass \`renderer: liveDomRenderer()\` from \`chartist/live\`: the chart keeps its SVG and changes it in place. Set up elements on the \`add\` changes in \`mount\`, not on every render.
-- Packages under \`@chartist-js\` (listed below) take the same data and options: \`@chartist-js/terminal\` draws charts as terminal text or HTML text art, and \`@chartist-js/essentials\` adds layers such as \`axisTitle()\`.`;
+- Packages under \`@chartist-js\` (listed below) take the same data and options: \`@chartist-js/terminal\` draws charts as terminal text or HTML text art, \`@chartist-js/essentials\` adds layers such as \`axisTitle()\`, and \`@chartist-js/tooltips\` adds tooltips for mouse, touch and keyboard.`;
 
 export async function llmsTxt(guides: DocEntry[]): Promise<string> {
   const link = (title: string, path: string, description?: string) =>
@@ -311,7 +311,7 @@ export async function llmsTxt(guides: DocEntry[]): Promise<string> {
     `## Docs\n\n${guides.map(guide => link(guide.data.title, `docs/${guide.id}/`, guide.data.description)).join('\n')}`,
     `## API reference\n\n- [The whole reference and guides in one file](${absolute('llms-full.txt')})\n${API_PAGES.map(page => link(page.title, apiPath(page.slug), page.description)).join('\n')}`,
     `## Packages\n\n${(await packagePages()).map(({ pkg, pages }) => [`### ${pkg.name}`, ...pages.map(page => link(page.title, page.path, page.description))].join('\n\n')).join('\n\n')}`,
-    `## Plugins\n\n${[link('Plugins', 'plugins/', 'Community plugins: tooltips, legends, labels, zoom and more'), ...sortedPlugins().map(plugin => link(plugin.title, `plugins/${pluginSlug(plugin)}/`, plugin.description))].join('\n')}`,
+    `## Plugins\n\n${[link('Plugins', 'plugins/', 'Community plugins: legends, labels, zoom and more'), ...sortedPlugins().map(plugin => link(plugin.title, `plugins/${pluginSlug(plugin)}/`, plugin.description))].join('\n')}`,
     `## Examples\n\n${TYPES.map(({ type, title }) => [`### ${title}`, ...gallery.filter(example => example.type === type).map(example => link(example.title, `examples/${example.id}/`, example.description))].join('\n\n')).join('\n\n')}`,
     `## Optional\n\n${VERSIONS.filter(version => version.href)
       .map(

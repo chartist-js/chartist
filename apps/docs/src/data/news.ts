@@ -17,6 +17,13 @@ export interface NewsEntry {
 export const NEWS: readonly NewsEntry[] = [
   {
     tag: 'New',
+    title: '@chartist-js/tooltips',
+    text: 'Tooltips for mouse, touch and keyboard that stay on their value while the chart updates.',
+    href: 'packages/tooltips/',
+    linkLabel: 'Meet it'
+  },
+  {
+    tag: 'New',
     title: '@chartist-js/essentials',
     text: 'Axis titles that make room for themselves, in a new package for the additions people ask for most.',
     href: 'packages/essentials/',

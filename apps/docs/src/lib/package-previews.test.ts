@@ -34,6 +34,13 @@ describe('packagePreview', () => {
     expect(terminal).toBeUndefined();
   });
 
+  test('the tooltips package shows a tooltip over a chart', () => {
+    const { html } = packagePreview('tooltips');
+    expect(html).toMatch(/<svg[^>]*aria-hidden="true"/);
+    expect(html).toContain('<div class="ct-tooltip" aria-hidden="true"');
+    expect(html).toContain('<span class="ct-tooltip-title">Thu</span>');
+  });
+
   test('an unknown package throws', () => {
     expect(() => packagePreview('nope')).toThrow(/No preview/);
   });

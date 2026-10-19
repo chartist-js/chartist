@@ -303,7 +303,7 @@ Phase names are reserved: emitting `compose` or `mount` throws. A prefix such as
 
 A chart drawn with [`liveDomRenderer()`](../live-updates/) keeps its elements from one render to the next. That's good news for plugins: what they add to an element stays, hover and focus survive an update, and their own elements can move with the chart instead of popping in again. It asks a little more of them, though.
 
-This tooltip plugin shows the value of the point under the pointer. The chart gets a new value every second, and the tooltip stays on its point, shows the point's new value and moves in step with the chart's update animation. Press **Edit** and hover a point:
+This tooltip plugin shows the value of the point under the pointer. It's here to show how a plugin works with live updates; for tooltips on your charts, use [`@chartist-js/tooltips`](../../packages/tooltips/). The chart gets a new value every second, and the tooltip stays on its point, shows the point's new value and moves in step with the chart's update animation. Press **Edit** and hover a point:
 
 <LiveExample
   title='A tooltip that stays'

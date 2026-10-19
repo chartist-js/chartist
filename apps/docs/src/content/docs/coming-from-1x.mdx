@@ -219,13 +219,13 @@ You don't need `compat` in the list as well.
 
 ## Community plugins
 
-Most community plugins, like the tooltips and legends on the [plugins page](../../plugins/), were written for 0.x. They're scripts: they read the global `Chartist`, register on `Chartist.plugins`, and check the chart type with `chart instanceof Chartist.Line`.
+Most community plugins, like the legends and labels on the [plugins page](../../plugins/), were written for 0.x. They're scripts: they read the global `Chartist`, register on `Chartist.plugins`, and check the chart type with `chart instanceof Chartist.Line`.
 
 Importing `chartist/compat` sets that global up for them, in every build: the library, compat, and the 0.x names they use (`plugins`, `Line`, `Bar` and `Pie` for the chart classes, and `getDataArray`). It only adds what's missing, so plugins that already registered keep their place. These names live on the global only; they aren't exports.
 
 Then load the plugin as a script that runs after that import, and wrap it with `fromLegacyPlugin`. How depends on how you load Chartist.
 
-Axis titles don't need a plugin any more: [`axisTitle()`](../../packages/essentials/axis-titles/) in `@chartist-js/essentials` is a layer that reserves its own room.
+Tooltips and axis titles don't need a community plugin any more: [`@chartist-js/tooltips`](../../packages/tooltips/) replaces the 1.x tooltip plugins on the functional API, and [`axisTitle()`](../../packages/essentials/axis-titles/) in `@chartist-js/essentials` is a layer that reserves its own room.
 
 These plugins need a browser: their `draw` and `created` events fire when the chart is drawn in the page, so they don't run in [server rendering](../server-rendering/).
 
@@ -328,7 +328,7 @@ declare const Chartist: {
 
 ### Plugins that are ES modules
 
-A plugin written for 1.x as an ES module imports `chartist` itself, like [`@stklcode/chartist-plugin-tooltips`](../../plugins/stklcode-chartist-plugin-tooltips/). Import it as usual and wrap it with `fromLegacyPlugin`; it needs no global.
+A plugin written for 1.x as an ES module imports `chartist` itself, like `@stklcode/chartist-plugin-tooltips`. Import it as usual and wrap it with `fromLegacyPlugin`; it needs no global. For tooltips on the functional API, [`@chartist-js/tooltips`](../../packages/tooltips/) replaces the 1.x tooltip plugins.
 
 ### One copy of Chartist
 

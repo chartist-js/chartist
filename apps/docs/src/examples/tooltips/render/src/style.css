@@ -1,0 +1,12 @@
+.ct-tooltip strong,
+.ct-tooltip span {
+  display: block;
+}
+
+.ct-tooltip .up {
+  color: light-dark(#6ee7b7, #047857);
+}
+
+.ct-tooltip .down {
+  color: light-dark(#fca5a5, #b91c1c);
+}

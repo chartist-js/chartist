@@ -3,11 +3,6 @@
     "script": "chartist-plugin-legend.js",
     "license": "LICENSE"
   },
-  "chartist-plugin-tooltips": {
-    "script": "dist/chartist-plugin-tooltip.js",
-    "style": "dist/chartist-plugin-tooltip.css",
-    "license": "LICENSE"
-  },
   "chartist-plugin-pointlabels": {
     "script": "dist/chartist-plugin-pointlabels.js",
     "license": "LICENSE"
@@ -34,12 +29,6 @@
   },
   "chartist-plugin-threshold": {
     "script": "dist/chartist-plugin-threshold.js",
-    "license": "LICENSE"
-  },
-  "@stklcode/chartist-plugin-tooltips": {
-    "script": "dist/chartist-plugin-tooltip.umd.js",
-    "module": "dist/chartist-plugin-tooltip.js",
-    "style": "dist/chartist-plugin-tooltip.css",
     "license": "LICENSE"
   }
 }

@@ -34,8 +34,6 @@ const hoverPoint = async (page: Page) => {
   const box = (await point.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
 };
-const tooltipShows = async (page: Page) =>
-  expect(page.locator('.chartist-tooltip')).toContainText('b');
 
 const CASES: Case[] = [
   {
@@ -43,14 +41,6 @@ const CASES: Case[] = [
     kind: 'line',
     plugin: 'Chartist.plugins.legend()',
     check: page => expect(page.locator('.ct-legend li')).toHaveCount(2)
-  },
-  {
-    package: 'chartist-plugin-tooltips',
-    kind: 'line',
-    plugin: 'Chartist.plugins.tooltip()',
-    stylesheet: 'chartist-plugin-tooltips/chartist-plugin-tooltip.css',
-    act: hoverPoint,
-    check: tooltipShows
   },
   {
     package: 'chartist-plugin-pointlabels',
@@ -135,29 +125,18 @@ const CASES: Case[] = [
         page.locator('#chart .ct-threshold-below').first()
       ).toBeAttached();
     }
-  },
-  {
-    package: '@stklcode/chartist-plugin-tooltips',
-    kind: 'line',
-    plugin: 'window.ChartistPluginTooltip',
-    stylesheet:
-      '@stklcode/chartist-plugin-tooltips/chartist-plugin-tooltip.css',
-    act: hoverPoint,
-    check: tooltipShows
   }
 ];
 
 const SCRIPTS: Record<string, string> = {
   'chartist-plugin-legend': 'chartist-plugin-legend.js',
-  'chartist-plugin-tooltips': 'chartist-plugin-tooltip.js',
   'chartist-plugin-pointlabels': 'chartist-plugin-pointlabels.js',
   'chartist-hover': 'chartist-hover.js',
   'chartist-plugin-zoom': 'chartist-plugin-zoom.js',
   'chartist-plugin-fill-donut': 'chartist-plugin-fill-donut.js',
   'chartist-plugin-barlabels': 'chartist-plugin-barlabels.js',
   'chartist-plugin-accessibility': 'chartist-plugin-accessibility.js',
-  'chartist-plugin-threshold': 'chartist-plugin-threshold.js',
-  '@stklcode/chartist-plugin-tooltips': 'chartist-plugin-tooltip.umd.js'
+  'chartist-plugin-threshold': 'chartist-plugin-threshold.js'
 };
 
 /** How the page loads Chartist, the plugin, and how it creates the chart. */
