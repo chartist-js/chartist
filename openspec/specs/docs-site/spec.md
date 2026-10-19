@@ -857,3 +857,12 @@ The docs SHALL import `renderToString`, `renderForHydration`, `computeStyles` an
 
 - **WHEN** a reader opens the server rendering guide's section on styles in the SVG
 - **THEN** it says that Chartist's CSS engine is deliberately small and made for chart styles, lists what it supports and its known limitations (sibling and structural selectors, ids, nesting, the `font` shorthand, `calc()` and relative units such as `rem`, which are written as they are), shows `onSkip` for finding rules that didn't apply, and shows how to pass another style engine to `applyStyles()`, with a recipe that computes the styles in a headless browser
+
+### Requirement: Essentials in the examples gallery
+
+The examples gallery SHALL have an "Essentials" section, after "Live data", with every docs example of the `essentials` type, each with its own page like the other examples, running in the playground with `@chartist-js/essentials` and its stylesheet. Examples that use the package SHALL NOT appear in the other sections. The guides of the essentials docs SHALL show these examples from the gallery, not copies of them.
+
+#### Scenario: The section
+
+- **WHEN** a visitor opens the examples gallery
+- **THEN** an "Essentials" section after "Live data" lists the axis title examples, its filter chip shows only them, and each one's page runs it and opens it in the playground

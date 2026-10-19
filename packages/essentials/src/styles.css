@@ -1,0 +1,19 @@
+/* @chartist-js/essentials: styles for the layers of the package. */
+
+/* Axis titles look like the axis labels unless the page says otherwise. */
+.ct-axis-title {
+  fill: var(--ct-axis-title-color, var(--ct-label-color, rgba(0, 0, 0, 0.4)));
+  font-size: var(--ct-axis-title-size, var(--ct-label-size, 0.75rem));
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  .ct-axis-title {
+    fill: var(
+      --ct-axis-title-color,
+      var(
+        --ct-label-color,
+        light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.6))
+      )
+    );
+  }
+}

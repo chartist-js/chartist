@@ -1,0 +1,10 @@
+[
+  {
+    "name": "import { axisTitle } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ axisTitle }",
+    "ignore": ["chartist"],
+    "limit": "700 B",
+    "gzip": true
+  }
+]
