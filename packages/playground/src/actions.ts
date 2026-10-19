@@ -59,7 +59,7 @@ export function shareAction(options: {
 }): PlaygroundAction {
   return {
     label: 'Share',
-    title: 'Copy a link to this code',
+    title: 'Share a link to this code',
     run: async (playground, button) => {
       try {
         const url = await options.url(playground.files, playground.title);

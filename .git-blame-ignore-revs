@@ -10,3 +10,6 @@
 
 # style: format the workflow run titles
 b1a5034c6d67344f5339fc40d7eaa26f4ecda9a1
+
+# style: format the TypeScript guidelines with oxfmt 0.73
+6036216ec5f172458a7244e2f4a1adc9a71a38c2

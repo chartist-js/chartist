@@ -289,7 +289,8 @@ export interface SessionContext {
 // ✅ DO: Type aliases for unions
 export type EntityStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED';
 export type ValidationResult =
-  { success: true; value: string } | { success: false; error: string };
+  | { success: true; value: string }
+  | { success: false; error: string };
 
 // ✅ DO: Type aliases for intersections
 export type AuthenticatedUser = User & { token: string };
