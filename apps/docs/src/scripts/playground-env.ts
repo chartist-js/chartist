@@ -18,7 +18,10 @@ export const stylesUrl = new URL(`${LIB}index.css`, location.href).href;
  */
 export const types = {
   url: LIB,
-  packages: { '@chartist-js/terminal': 'terminal/index.d.ts' }
+  packages: {
+    '@chartist-js/terminal': 'terminal/index.d.ts',
+    '@chartist-js/essentials': 'essentials/index.d.ts'
+  }
 };
 const lib = (path: string) => new URL(`${LIB}${path}`, location.href).href;
 
@@ -33,6 +36,8 @@ export const imports: Record<string, string> = {
   // Its build imports `chartist`, which the same map resolves.
   '@chartist-js/terminal': lib('terminal/index.js'),
   '@chartist-js/terminal/styles.css': lib('terminal/styles.css'),
+  '@chartist-js/essentials': lib('essentials/index.js'),
+  '@chartist-js/essentials/styles.css': lib('essentials/styles.css'),
   'match-container': lib('match-container.js'),
   ...Object.fromEntries(
     Object.entries(pluginFiles).flatMap(([name, files]) => {

@@ -1,0 +1,90 @@
+---
+title: '@chartist-js/essentials'
+description: The additions people ask for most, as layers you add to a chart, kept out of the core so charts without them stay small.
+order: 0
+label: Overview
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+Some things almost every chart grows sooner or later: a title for an axis, a value next to a bar, a legend. In 1.x they came from community plugins, each with its own way to load and its own guess at the padding. `@chartist-js/essentials` makes them layers like `line()` and `targetLine()`, made and released together with Chartist.
+
+They're a package of their own so the core stays small: a chart pays only for the layers it imports. Today the package holds axis titles, which take the room they need and never land on your labels:
+
+<LiveExample
+  title='Axis titles'
+  label='A line chart of visits per day, with the title Day of the week below the X axis and Visits beside the Y axis'
+  gallery='essentials/axis-titles'
+/>
+
+## Install
+
+```sh
+npm install @chartist-js/essentials
+```
+
+It brings `chartist` along. Load its stylesheet after Chartist's:
+
+```ts
+import 'chartist/styles.css';
+import '@chartist-js/essentials/styles.css';
+```
+
+### Without a bundler
+
+From a CDN, map both packages in an import map. The package imports `chartist` by name, so the map gives it the same copy your page uses:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@chartist-js/essentials@2/dist/styles.css"
+/>
+<script type="importmap">
+  {
+    "imports": {
+      "chartist": "https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js",
+      "@chartist-js/essentials": "https://cdn.jsdelivr.net/npm/@chartist-js/essentials@2/dist/index.js"
+    }
+  }
+</script>
+<script type="module">
+  import { lineChart } from 'chartist';
+  import { axisTitle } from '@chartist-js/essentials';
+</script>
+```
+
+## Quick start
+
+The layers go where Chartist's own extra layers go: into `layers` on the presets, or into the list of a composed chart.
+
+```ts
+import 'chartist/styles.css';
+import '@chartist-js/essentials/styles.css';
+import { barChart } from 'chartist';
+import { axisTitle } from '@chartist-js/essentials';
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3', 'Q4'], series: [[5, 4, 3, 7]] },
+  {
+    layers: {
+      above: [
+        axisTitle({ axis: 'x', text: 'Quarter' }),
+        axisTitle({ axis: 'y', text: 'Orders (thousands)' })
+      ]
+    }
+  }
+);
+```
+
+They're part of the chart's scene, so they render on the server, hydrate and show in the terminal like everything else Chartist draws.
+
+## Next
+
+- [Axis titles](axis-titles/): sides, alignment, several axes and styling.
+- [API](api/): every function and option of the package.
+- [Custom layers](../../docs/custom-layers/): how layers like these are made, including the room they reserve.

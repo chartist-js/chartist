@@ -35,6 +35,7 @@ Use it like any layer: in `layers` of [`chart()`](../composed-charts/), or on a 
 | `axes`        | The ids of the X and Y axis to draw on; by default the first of each                                |
 | `series`      | The series to draw, by name or index; by default all of them                                        |
 | `extent`      | Widens the axes beyond the layer's values, such as to include zero                                  |
+| `inset`       | Reserves room outside the drawing area, such as for a title or a legend                             |
 | `refine`      | Changes nodes that any layer drew, after all of them have drawn                                     |
 | `chartType`   | The chart class it gives `chart()` without a `className`: `'bar'` centers the X labels, for example |
 
@@ -53,6 +54,7 @@ Only `type`, `coordinates` and `compose` are required. A layer is data: create i
 | `seriesIndexes` | Each series' index in the whole chart, when the layer selects some                             |
 | `layerIndex`    | The layer's position in `layers`                                                               |
 | `measureText`   | Measures text with the page's fonts, for layers that lay out labels                            |
+| `insetArea`     | The boxes of the room the layer reserved with `inset`, one per side                            |
 
 **From values to px.** `axis.project(value, index, series)` gives the distance in px from the start of the axis. Y grows upward and SVG downward, so a Y position is `area.y1 - y.project(value)`, and an X position `area.x1 + x.project(value)`. A step axis places by index instead of value; its `step` is the width of one step.
 
@@ -121,6 +123,23 @@ Refining has rules, so layers can't break each other:
 - **No state.** Don't count or remember between calls: the same layer object may refine several charts.
 
 Leave `refine` out when you don't need it: charts without a refining layer skip the step.
+
+## inset: room outside the chart
+
+Titles, notes and legends sit next to the chart, not on it. A layer that draws there reserves the room it needs with `inset(context)`, in px per side. Chartist adds the room to the padding before the axes take theirs, so the drawing area shrinks and the axis labels stay next to it. You don't touch `chartPadding`:
+
+<LiveExample
+  title='A source note below the chart'
+  label='A line chart of visits from Monday to Friday, with the note Source: web analytics, week 20 below the X axis labels, aligned right'
+  example='custom-layers/source-note'
+  show='src/source.ts'
+/>
+
+`inset` runs on every layout, before the axes are created, so the room can depend on the chart's size. Its context has the chart's `width` and `height`, the `padding` option, the layer's series in `data`, the axis definitions in `axes` (with their ids, sides and offsets) and `measureText`, so the room follows the stylesheet's font.
+
+`compose` then gets the room as `insetArea`: one box per side the layer reserved, an `Area` like the drawing area. A box sits just outside the axes on its side and runs along the drawing area. Layers that reserve room on the same side stack outward in the order of `layers`, the way axes do. The `layout` event shows the total as `inset`, and charts without such a layer lay out as before.
+
+[Axis titles](../../packages/essentials/axis-titles/) in `@chartist-js/essentials` are built this way.
 
 ## Sharing a layer
 

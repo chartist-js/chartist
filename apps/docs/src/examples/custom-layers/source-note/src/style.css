@@ -1,0 +1,5 @@
+.ct-source {
+  fill: var(--ct-label-color, rgba(0, 0, 0, 0.4));
+  font-size: 0.7rem;
+  font-style: italic;
+}

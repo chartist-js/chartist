@@ -7,6 +7,7 @@
  * `src/lib/package-previews.ts`. Packages are the author's own, free or
  * commercial; community plugins are listed in `src/data/plugins.ts`.
  */
+import essentials from '../../../../packages/essentials/package.json' with { type: 'json' };
 import terminal from '../../../../packages/terminal/package.json' with { type: 'json' };
 
 /**
@@ -47,6 +48,14 @@ export const PACKAGES: readonly DocumentedPackage[] = [
       'Draws Chartist charts in the terminal and as text art in HTML, with the ct-cli command and an API for CLI tools.',
     version: terminal.version,
     license: { kind: 'free', name: terminal.license }
+  },
+  {
+    slug: 'essentials',
+    name: essentials.name,
+    description:
+      'The additions people ask for most, as layers you add to a chart: axis titles that make room for themselves.',
+    version: essentials.version,
+    license: { kind: 'free', name: essentials.license }
   }
 ];
 

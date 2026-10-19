@@ -87,6 +87,9 @@ importers:
       '@astrojs/mdx':
         specifier: 8.1.0
         version: 8.1.0(@astrojs/markdown-satteri@0.4.4)(astro@7.4.0(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../../packages/essentials
       '@chartist-js/terminal':
         specifier: workspace:*
         version: link:../../packages/terminal

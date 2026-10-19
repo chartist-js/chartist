@@ -6,6 +6,7 @@
   "dependencies": {
     "@astrojs/check": "0.9.10",
     "@astrojs/mdx": "8.1.0",
+    "@chartist-js/essentials": "workspace:*",
     "@chartist-js/terminal": "workspace:*",
     "@fontsource-variable/atkinson-hyperlegible-next": "5.3.0",
     "@fontsource-variable/jetbrains-mono": "5.3.0",

@@ -302,7 +302,7 @@ When writing Chartist code:
 - Change what a chart draws with plugins: listeners on the pipeline's phase events (\`compose\` for scene nodes, \`mount\` for the DOM). 1.x \`draw\` events need the \`compat\` plugin from \`chartist/compat\`.
 - Size charts with their container (CSS), and use responsive options for what changes with the size.
 - For charts that update while people look at them, pass \`renderer: liveDomRenderer()\` from \`chartist/live\`: the chart keeps its SVG and changes it in place. Set up elements on the \`add\` changes in \`mount\`, not on every render.
-- Packages under \`@chartist-js\` (listed below) take the same data and options: \`@chartist-js/terminal\` draws charts as terminal text or HTML text art.`;
+- Packages under \`@chartist-js\` (listed below) take the same data and options: \`@chartist-js/terminal\` draws charts as terminal text or HTML text art, and \`@chartist-js/essentials\` adds layers such as \`axisTitle()\`.`;
 
 export async function llmsTxt(guides: DocEntry[]): Promise<string> {
   const link = (title: string, path: string, description?: string) =>
