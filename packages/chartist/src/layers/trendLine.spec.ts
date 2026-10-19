@@ -49,6 +49,8 @@ describe('layers/trendLine', () => {
     expect(trend.ctx.seriesIndex).toBe(0);
     expect(trend.ctx.slope).toBeCloseTo(0.9);
     expect(trend.ctx.intercept).toBeCloseTo(1.2);
+    // Pearson's r of 1, 2, 4, 3, 5 against 0 to 4.
+    expect(trend.ctx.correlation).toBeCloseTo(0.9);
 
     const x = axes.x!;
     const y = axes.y!;
@@ -201,5 +203,13 @@ describe('layers/trendLine', () => {
 
   it('supports only cartesian coordinates', () => {
     expect(trendLine().coordinates).toEqual(['cartesian']);
+  });
+
+  it('gives the correlation of the values, absent when they are all equal', () => {
+    expect(run([[1, 2, 3, 4]]).lines[0].ctx.correlation).toBeCloseTo(1);
+    expect(run([[8, 6, 4, 2]]).lines[0].ctx.correlation).toBeCloseTo(-1);
+    const flat = run([[3, 3, 3]]).lines[0];
+    expect(flat.ctx.slope).toBe(0);
+    expect('correlation' in flat.ctx).toBe(false);
   });
 });

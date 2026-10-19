@@ -2,7 +2,7 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "28.1 kB",
+    "limit": "28.15 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },

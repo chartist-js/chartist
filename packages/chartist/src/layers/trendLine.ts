@@ -45,6 +45,8 @@ const CLASS_NAMES = {
 interface Fit {
   readonly slope: number;
   readonly intercept: number;
+  /** Pearson's r of the values; absent when they're all equal. */
+  readonly correlation?: number;
   readonly x1: number;
   readonly x2: number;
 }
@@ -75,9 +77,11 @@ function fit(values: NormalizedSeries, byIndex: boolean): Fit | undefined {
   const meanY = mean(ys);
   let covariance = 0;
   let variance = 0;
+  let varianceY = 0;
   xs.forEach((x, i) => {
     covariance += (x - meanX) * (ys[i] - meanY);
     variance += (x - meanX) ** 2;
+    varianceY += (ys[i] - meanY) ** 2;
   });
   if (variance === 0) {
     return undefined;
@@ -86,6 +90,10 @@ function fit(values: NormalizedSeries, byIndex: boolean): Fit | undefined {
   return {
     slope,
     intercept: meanY - slope * meanX,
+    // Undefined for values that are all equal (0 / 0): left out.
+    ...(varianceY > 0 && {
+      correlation: covariance / Math.sqrt(variance * varianceY)
+    }),
     x1: Math.min(...xs),
     x2: Math.max(...xs)
   };
@@ -164,7 +172,7 @@ export function trendLine(options: TrendLineOptions = {}): Layer {
           return [];
         }
         const seriesIndex = seriesIndexes?.[localIndex] ?? localIndex;
-        const { slope, intercept } = fitted;
+        const { slope, intercept, correlation } = fitted;
         const at = (x: number) => ({
           x: area.x1 + shift + axisX.project(x, x),
           y: area.y1 - axisY.project(slope * x + intercept)
@@ -197,7 +205,13 @@ export function trendLine(options: TrendLineOptions = {}): Layer {
             children: [
               node('line', ends, classNames.line, {
                 role: 'trendLine',
-                ctx: { seriesIndex, slope, intercept, ...ends }
+                ctx: {
+                  seriesIndex,
+                  slope,
+                  intercept,
+                  ...(correlation !== undefined && { correlation }),
+                  ...ends
+                }
               })
             ]
           })

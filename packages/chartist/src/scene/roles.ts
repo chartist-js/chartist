@@ -239,6 +239,16 @@ export interface TrendLineContext {
   readonly slope: number;
   /** The fitted value at X 0. */
   readonly intercept: number;
+  /**
+   * How closely the values follow the line: Pearson's correlation
+   * coefficient r, from -1 (every value on a falling line) through 0 (no
+   * straight trend) to 1 (every value on a rising line). Its square is R²,
+   * the share of the values' variation the line explains, as spreadsheets
+   * show it next to a trendline. It describes the fit, not how reliable it
+   * is: with two values it's always 1 or -1. Absent when all values are
+   * equal, where it isn't defined.
+   */
+  readonly correlation?: number;
   /** The X of the line's start (the series' smallest X), in px. */
   readonly x1: number;
   /** The Y of the line's start, in px. */

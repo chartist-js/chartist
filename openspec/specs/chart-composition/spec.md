@@ -400,12 +400,17 @@ The `bar()` layer SHALL take an `offset` in px that moves all its bars along the
 
 ### Requirement: Trend line layer
 
-The `trendLine()` layer SHALL fit a least-squares straight line through the values of each series it selects (all by default) and draw it from the series' smallest to its largest X: on a step axis X is the value index, on a scale axis the value's `x`. It SHALL skip holes, draw nothing for a series with fewer than two values, and take `x`, `y`, `align` (as the line layer) and `classNames`. Each line SHALL be a `line.ct-trend-line` with the role `trendLine` inside a series group with the series' classes, so it takes the series' color, and its context SHALL carry the series index, the slope and the intercept. The values at the line's ends SHALL count towards the Y axis's range. The layer SHALL support only `cartesian` coordinates.
+The `trendLine()` layer SHALL fit a least-squares straight line through the values of each series it selects (all by default) and draw it from the series' smallest to its largest X: on a step axis X is the value index, on a scale axis the value's `x`. It SHALL skip holes, draw nothing for a series with fewer than two values, and take `x`, `y`, `align` (as the line layer) and `classNames`. Each line SHALL be a `line.ct-trend-line` with the role `trendLine` inside a series group with the series' classes, so it takes the series' color, and its context SHALL carry the series index, the slope, the intercept and, unless all values are equal, the correlation coefficient r of the values (from -1 to 1; its square is R²). The values at the line's ends SHALL count towards the Y axis's range. The layer SHALL support only `cartesian` coordinates.
 
 #### Scenario: A rising series
 
 - **WHEN** a line chart's series `[1, 2, 4, 3, 5]` gets `trendLine()` as an extra layer
 - **THEN** a `line.ct-trend-line` in `g.ct-series-a` runs from the fitted value at index 0 to the fitted value at index 4, and its context has the slope 0.9
+
+#### Scenario: Correlation
+
+- **WHEN** a series' values all lie on a rising line, and another series' values are all equal
+- **THEN** the first trend line's context has the correlation 1, and the second's has none
 
 #### Scenario: Ends outside the values
 
