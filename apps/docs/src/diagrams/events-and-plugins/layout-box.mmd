@@ -1,0 +1,14 @@
+flowchart TD
+  accTitle: The layout box of a chart
+  accDescr: The layout phase measures a chart from the outside in, like the CSS box model. The outer box is the chart, layout.width by layout.height. Inside it is the padding from chartPadding. Inside that is the room layers reserve with inset(), reported as layout.inset, each layer drawing in its own insetArea. Inside that are the axis bands, each axis's offset, where its tick labels are drawn. In the middle is the drawing area, layout.area, where the layers draw their series.
+
+  subgraph chart [Chart]
+    subgraph padding [Padding]
+      subgraph room [Reserved room]
+        subgraph bands [Axis bands]
+          area["`**Drawing area**
+layout.area`"]:::brand
+        end
+      end
+    end
+  end
