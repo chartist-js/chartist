@@ -1,3 +1,6 @@
+import { toScene } from '../chart/toScene';
+import { getMultiValue } from '../core/data/data';
+import { barChartConfig } from '../presets/barChart';
 import { estimateText } from '../render/measure';
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline } from '../pipeline/phases';
@@ -409,4 +412,45 @@ describe('layers/bar context', () => {
       );
     }
   );
+});
+
+describe('layers/bar meta', () => {
+  it('reverses the meta with the values for reverseData (#1534)', () => {
+    const meta = (value: number, name: string) => ({ value, meta: name });
+    for (const options of [
+      { reverseData: true },
+      { reverseData: true, horizontalBars: true, stackBars: true }
+    ]) {
+      const bars = findAll(
+        toScene(
+          barChartConfig(
+            {
+              labels: ['a', 'b', 'c'],
+              series: [
+                [meta(1, 'a1'), meta(2, 'a2'), meta(3, 'a3')],
+                [meta(10, 'b1'), meta(20, 'b2'), meta(30, 'b3')]
+              ]
+            },
+            options
+          ),
+          { width: 400, height: 300 }
+        ),
+        { role: 'bar' }
+      );
+      expect(
+        bars.map(current => [
+          getMultiValue(current.ctx.value, options.horizontalBars ? 'x' : 'y'),
+          current.ctx.meta,
+          current.attrs['ct:meta']
+        ])
+      ).toEqual([
+        [30, 'b3', 'b3'],
+        [20, 'b2', 'b2'],
+        [10, 'b1', 'b1'],
+        [3, 'a3', 'a3'],
+        [2, 'a2', 'a2'],
+        [1, 'a1', 'a1']
+      ]);
+    }
+  });
 });

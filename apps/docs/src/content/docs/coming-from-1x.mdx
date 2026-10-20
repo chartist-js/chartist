@@ -405,6 +405,7 @@ A few 1.x behaviors were bugs, and v2 fixes them, on the classes too:
 - **Charts in an iframe or a JSDOM document** use that document's window, and options arrays made there stay arrays.
 - **`detach()` during the first render** sticks, and a missing target throws once, not again later.
 - **Printed charts** scale to the page instead of being cut off.
+- **With `reverseData`**, each value keeps its `meta` on bar and line charts. In 1.x, the meta stayed in the original order, so a bar got the meta of the value at the other end.
 
 In the API reference: [`chartist/compat`](../../api/compat/) and [the 1.x classes](../../api/classes/).
 

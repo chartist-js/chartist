@@ -152,7 +152,7 @@ The 1.x unit test suite SHALL pass against the v2 presets with the compat plugin
 
 ### Requirement: 1.x behaviors v2 corrects
 
-v2 SHALL correct these 1.x behaviors in both APIs, and the migration guide SHALL list them: an axis's own `low` and `high` win over a bar chart's reference value; a fixed scale axis with `divisor` has a tick at `high`; rounding to 0 digits rounds to integers, in `roundWithPrecision` and `SvgPath`; donut widths come from CSS unless `donutWidth` is set, and in the page the ring is laid out for that width; `accumulate-relative` stacks negative values below zero with an axis that fits them; a slice that fills the circle is drawn centred; smoothed lines connect x values in descending order; holes given as `{ x, y: null }` leave gaps with every interpolation; a chart-level `low` or `high` that empties the value range is repaired instead of looping; a next tick at position 0 counts when sizing labels; a line chart's top-level `referenceValue` applies to its default Y axis; label spans carry no `xmlns` attribute; series p to z are coloured; `SvgPath` splits, joins, parses, scales and translates consistently; options arrays from another realm stay arrays; a `detach()` during the first render sticks; a missing target throws once; charts use their container's document and window; printed charts scale to the printed box.
+v2 SHALL correct these 1.x behaviors in both APIs, and the migration guide SHALL list them: an axis's own `low` and `high` win over a bar chart's reference value; a fixed scale axis with `divisor` has a tick at `high`; rounding to 0 digits rounds to integers, in `roundWithPrecision` and `SvgPath`; donut widths come from CSS unless `donutWidth` is set, and in the page the ring is laid out for that width; `accumulate-relative` stacks negative values below zero with an axis that fits them; a slice that fills the circle is drawn centred; smoothed lines connect x values in descending order; holes given as `{ x, y: null }` leave gaps with every interpolation; a chart-level `low` or `high` that empties the value range is repaired instead of looping; a next tick at position 0 counts when sizing labels; a line chart's top-level `referenceValue` applies to its default Y axis; label spans carry no `xmlns` attribute; series p to z are coloured; `SvgPath` splits, joins, parses, scales and translates consistently; options arrays from another realm stay arrays; a `detach()` during the first render sticks; a missing target throws once; charts use their container's document and window; printed charts scale to the printed box; with `reverseData`, each value of a bar or line chart keeps its `meta` (#851, #1534).
 
 #### Scenario: A bar chart's axis low
 
@@ -193,6 +193,11 @@ v2 SHALL correct these 1.x behaviors in both APIs, and the migration guide SHALL
 
 - **WHEN** `new SvgPath(false, { accuracy: 0 }).move(0.4, 0.6).stringify()` runs
 - **THEN** it returns `M0,1`, and `accuracy: false` keeps the decimals
+
+#### Scenario: Meta with reverseData
+
+- **WHEN** a bar or line chart with `reverseData` draws the values `{ value: 1, meta: 'a1' }`, `{ value: 2, meta: 'a2' }` and `{ value: 3, meta: 'a3' }`
+- **THEN** the values are drawn in the order 3, 2, 1, each with its own meta (`a3`, `a2`, `a1`) in `ct:meta` and in the node's context
 
 #### Scenario: Missing target
 
