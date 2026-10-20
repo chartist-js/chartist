@@ -148,19 +148,17 @@ cartesianAxes([
 
 Layers draw in the order you list them, each on top of the ones before. Put the grid first and the labels last.
 
-| Layer          | Draws                                               | Options                                                                                                           |
-| -------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `line()`       | Lines, points and areas                             | `series`, `x`, `y`, `align`, `lineSmooth`, `showLine`, `showPoint`, `showArea`, `areaBase`                        |
-| `bar()`        | Bars                                                | `series`, `x`, `y`, `horizontalBars`, `stackBars`, `stackMode`, `seriesBarDistance`, `distributeSeries`, `offset` |
-| `axisGrid()`   | Grid lines (`g.ct-grids`)                           | `axes` (default: all), `background`                                                                               |
-| `axisLabels()` | Axis labels (`g.ct-labels`)                         | `axes` (default: all), `labels` (`'html'` or `'svg'`)                                                             |
-| `targetLine()` | A target line and its label (`line.ct-target-line`) | `value`, `label`, `className`, `axis`, `labelPosition`                                                            |
-| `band()`       | A band between two edges (`g.ct-band`)              | `series`, `low`, `high`, `x`, `y`, `align`, `lineSmooth`, `mark`                                                  |
-| `trendLine()`  | A straight line fitted through each series          | `series`, `x`, `y`, `align`                                                                                       |
+| Layer          | Draws                                  | Options                                                                                                           |
+| -------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `line()`       | Lines, points and areas                | `series`, `x`, `y`, `align`, `lineSmooth`, `showLine`, `showPoint`, `showArea`, `areaBase`                        |
+| `bar()`        | Bars                                   | `series`, `x`, `y`, `horizontalBars`, `stackBars`, `stackMode`, `seriesBarDistance`, `distributeSeries`, `offset` |
+| `axisGrid()`   | Grid lines (`g.ct-grids`)              | `axes` (default: all), `background`                                                                               |
+| `axisLabels()` | Axis labels (`g.ct-labels`)            | `axes` (default: all), `labels` (`'html'` or `'svg'`)                                                             |
+| `band()`       | A band between two edges (`g.ct-band`) | `series`, `low`, `high`, `x`, `y`, `align`, `lineSmooth`, `mark`                                                  |
 
 `series` picks series by `name` or by index; leave it out and the layer draws all of them. `x` and `y` are axis ids; leave them out and the layer uses the first X and the first Y axis. An unknown name or id throws an error that names the layer. Grid and label layers draw for every axis unless you name some: the example draws the grid of `month` and `mm` only, so the right axis doesn't add a second set of lines.
 
-Target lines and bands have [a guide of their own](../target-lines-and-bands/).
+Bands have [a guide of their own](../bands/). Target lines, trend lines and axis titles are layers of [`@chartist-js/essentials`](../../packages/essentials/), and work in composed charts the same way.
 
 Series keep their place in the data: the temperature is the second series, so it would be `ct-series-b` even though it's the only series its layer draws. Your [series colors](../styling-with-css/#one-color-per-series) stay put when you move a series to another layer. (The example picks `ct-series-e` with `className`, the dark ink that stands apart from the red bars.)
 

@@ -1,0 +1,83 @@
+---
+title: Target lines
+description: Draw goals, limits and averages across a chart with targetLine(), on a preset or in a composed chart, horizontal or vertical.
+order: 2
+---
+
+import Callout from '../../../components/docs/Callout.astro';
+import LiveExample from '../../../components/LiveExample.astro';
+
+A number on its own says little. Is 950 good? Against a goal of 1000, you see it at a glance. `targetLine()` draws that line: a goal, a limit or an average, across the chart at a value, with a label if you want one. It works on the presets and in composed charts, and you style it with CSS like the rest of the chart. For the trend of a series, see [trend lines](../trend-lines/).
+
+It comes from `@chartist-js/essentials`, with its stylesheet after Chartist's:
+
+```ts
+import 'chartist/styles.css';
+import '@chartist-js/essentials/styles.css';
+```
+
+## A target line
+
+Presets take extra layers in their `layers` option: `above` draws them on top of the bars or lines, `below` behind them.
+
+<LiveExample
+  title='A goal line'
+  label='Bar chart of monthly sales from January to June, with a dashed horizontal line labeled Goal at 1000'
+  example='target-lines/goal'
+/>
+
+[Responsive options](../../../docs/responsive/) can change the layers too: a `layers: { above: [...] }` entry replaces the `above` list and keeps `below`.
+
+The Y axis makes room for the line: a goal above all the bars still shows. A `low` or `high` you set on the axis wins, and a line outside it isn't drawn.
+
+| Option          | What it does                                                              |
+| --------------- | ------------------------------------------------------------------------- |
+| `value`         | Where the line goes, on the axis                                          |
+| `label`         | Text next to the line (optional)                                          |
+| `className`     | Extra class for the line and its label, such as `ct-series-b` for a color |
+| `axis`          | The id of the axis the value is on; by default the first Y axis           |
+| `labelPosition` | `'end'` (default) or `'start'` of the line                                |
+
+## Several lines
+
+One layer draws one line. For a minimum and a goal, add two, and give one a series color with `className`:
+
+<LiveExample
+  title='A goal and a minimum'
+  label='Bar chart of monthly sales with two dashed horizontal lines, a goal and a minimum, each labeled'
+  gallery='essentials/target-line'
+/>
+
+## Vertical lines
+
+On an X axis, the lines are vertical. That's where the values are on horizontal bars: the presets call their axes `x` and `y`, so use `targetLine({ axis: 'x', value })`. In a [composed chart](../../../docs/composed-charts/), use your own axis ids. Here the line is the average, computed from the data:
+
+<LiveExample
+  title='An average on horizontal bars'
+  label='Horizontal bars of minutes per visit for five pages, with a dashed vertical line labeled Average at 40 minutes'
+  example='target-lines/vertical'
+  show='src/main.ts'
+/>
+
+A target line next to a range: put a [band](../../../docs/bands/) behind it.
+
+## Styling
+
+A target line draws in the text color by default, dashed, so it reads as context behind the data. Change it with custom properties, or give it a series color with `className: 'ct-series-c'`:
+
+```css
+.ct-chart {
+  --ct-target-line-color: #c8102e;
+  --ct-target-line-width: 2px;
+  --ct-target-line-dasharray: none;
+}
+```
+
+The markup: a `line.ct-target-line` and a `text.ct-target-label` per line. In listeners and plugins, find them by the roles `targetLine` and `targetLabel`, as in [events and plugins](../../../docs/events-and-plugins/). Importing `@chartist-js/essentials` declares the roles, so TypeScript knows their contexts.
+
+<Callout>
+  **Coming from the target line plugin?** `chartist-plugin-targetline` with
+  `{ value: 1000 }` becomes `layers: { above: [targetLine({ value: 1000 })] }`.
+  The line keeps the class `ct-target-line`, so your CSS still applies. You
+  also get labels, any axis, and server rendering.
+</Callout>

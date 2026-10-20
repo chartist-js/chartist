@@ -1,17 +1,12 @@
 ---
-title: Target lines and bands
-description: Draw goals, limits, ranges and trends on line and bar charts with the targetLine(), band() and trendLine() layers, on a preset or in a composed chart.
+title: Bands
+description: Shade ranges on line and bar charts with the band() layer, between two series, around a group or at fixed values, and mark the values in or out of them.
 group: Basics
 order: 7
 ---
 
 import Callout from '../../components/docs/Callout.astro';
 import LiveExample from '../../components/LiveExample.astro';
-
-export const sales = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  series: [[820, 950, 1100, 760, 1240, 980]]
-};
 
 export const weeks = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'];
 
@@ -47,54 +42,9 @@ export const temperatures = {
   series: [[18, 17.5, 17, 17, 19, 21, 22.5, 24.5, 25, 23, 21, 19.5]]
 };
 
-A number on its own says little. Is 950 good? Against a goal of 1000, you see it at a glance. Two layers draw that context: `targetLine()` for goals and limits, `band()` for ranges. Both are part of the core, work on the presets and in composed charts, and you style them with CSS like the rest of the chart.
+A value on its own says little. Is 21 degrees fine? Against a comfort zone of 19 to 24, you see it at a glance. `band()` draws that range: a shaded area between two edges, from a group of series, two series, your own values or two numbers. It's part of the core, works on the presets and in composed charts, and you style it with CSS like the rest of the chart.
 
-## A target line
-
-Presets take extra layers in their `layers` option: `above` draws them on top of the bars or lines, `below` behind them.
-
-<LiveExample
-  title='A goal line'
-  label='Bar chart of monthly sales from January to June, with a dashed horizontal line labeled Goal at 1000'
-  preview={{
-    type: 'bar',
-    data: sales,
-    options: {
-      low: 0,
-      layers: {
-        above: [{ $call: 'targetLine', args: [{ value: 1000, label: 'Goal' }] }]
-      }
-    }
-  }}
-  example='target-lines-and-bands/goal'
-/>
-
-[Responsive options](../responsive/) can change the layers too: a `layers: { above: [...] }` entry replaces the `above` list and keeps `below`.
-
-The Y axis makes room for the line: a goal above all the bars still shows. A `low` or `high` you set on the axis wins, and a line outside it isn't drawn.
-
-| Option          | What it does                                                              |
-| --------------- | ------------------------------------------------------------------------- |
-| `value`         | Where the line goes, on the axis                                          |
-| `label`         | Text next to the line (optional)                                          |
-| `className`     | Extra class for the line and its label, such as `ct-series-b` for a color |
-| `axis`          | The id of the axis the value is on; by default the first Y axis           |
-| `labelPosition` | `'end'` (default) or `'start'` of the line                                |
-
-### Several lines, and vertical ones
-
-One layer draws one line. For a minimum and a goal, add two:
-
-```ts
-import { targetLine } from '@chartist-js/essentials';
-
-export const limits = [
-  targetLine({ value: 1000, label: 'Goal' }),
-  targetLine({ value: 800, label: 'Minimum', className: 'ct-series-b' })
-];
-```
-
-On an X axis, the lines are vertical. That's where the values are on horizontal bars: the presets call their axes `x` and `y`, so use `targetLine({ axis: 'x', value: 1000 })`. In a [composed chart](../composed-charts/), use your own axis ids.
+For a single goal or limit, or the trend of a series, use the [target lines](../../packages/essentials/target-lines/) and [trend lines](../../packages/essentials/trend-lines/) of `@chartist-js/essentials`. They go well with a band.
 
 ## Band charts
 
@@ -137,7 +87,7 @@ A band shows a range: from the lowest to the highest value of a group, between t
       ]
     }
   }}
-  example='target-lines-and-bands/band-chart'
+  example='bands/band-chart'
 />
 
 `band({ series })` takes the group by name or index and covers its minimum to its maximum at each label. The average is a series you compute yourself: one line of code, and you decide what "average" means. Layers draw in order, so the band comes before the lines.
@@ -154,6 +104,8 @@ A number is a constant, an array holds values, and a string names a series; pick
 Edges follow `lineSmooth` like lines do, smooth by default, and `align: 'center'` lines a band up with bars, as for [lines](../composed-charts/#lining-up-with-bars). Where an edge has no value, the band breaks.
 
 ### On a preset
+
+Presets take extra layers in their `layers` option: `below` draws them behind the bars or lines, `above` on top. [Responsive options](../responsive/) can change them too: a `layers: { below: [...] }` entry replaces the `below` list and keeps `above`.
 
 Give a preset's band its own values. The edges then stay out of your data, so the preset doesn't draw them as lines and the series keep their colors:
 
@@ -194,54 +146,22 @@ With `mark: true`, the band marks the points and bars of the other layers: `ct-i
       }
     }
   }}
-  example='target-lines-and-bands/comfort-zone'
+  example='bands/comfort-zone'
 />
 
 The band marks the points no matter where it's listed: it works from the data, after every layer has drawn. Marking classes whole points and bars; a line keeps one color where it crosses an edge.
 
-## Trend lines
-
-`trendLine()` fits a straight line through each series it picks (all of them by default) and draws it from the series' first to its last value, dashed and in the series' color. The fit is least squares: on a step axis it uses the values' order, on a scale axis their `x`.
-
-```ts
-import { lineChart } from 'chartist';
-import { trendLine } from '@chartist-js/essentials';
-
-lineChart(
-  '#chart',
-  {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    series: [[3, 5, 4, 7, 6, 9]]
-  },
-  { layers: { above: [trendLine()] } }
-);
-```
-
-Where the line ends below or above the values, the Y axis grows to keep it in view. Holes are skipped, and a series with fewer than two values gets no line. On bar charts, `align: 'center'` lines it up with the bars, as for [lines](../composed-charts/#lining-up-with-bars). Its role is `trendLine`, with the `slope` and `intercept` in its context. In the gallery: [bars with a trend line](../../examples/composed/trend-line/) and [a scatter plot with a regression line](../../examples/composed/scatter-regression/).
-
 ## Styling
 
-The target line and the band draw in the text color by default: a dashed target line and a light band, so they read as context behind the data. Change them with custom properties, or give them a series color with `className: 'ct-series-c'`:
+A band draws in the text color by default, as a light fill, so it reads as context behind the data. Change it with custom properties, or give it a series color with `className: 'ct-series-c'`:
 
 ```css
 .ct-chart {
-  --ct-target-line-color: #c8102e;
-  --ct-target-line-width: 2px;
-  --ct-target-line-dasharray: none;
   --ct-band-color: #b07800;
   --ct-band-opacity: 0.2;
 }
 ```
 
-A trend line takes its series' color; `--ct-trend-line-width` and `--ct-trend-line-dasharray` change its look.
+The markup: a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the role `band`, as in [events and plugins](../events-and-plugins/).
 
-The markup: a `line.ct-target-line` and a `text.ct-target-label` per target line, a `line.ct-trend-line` in a series group per trend line, and a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the roles `targetLine`, `targetLabel`, `trendLine` and `band`, as in [events and plugins](../events-and-plugins/).
-
-<Callout>
-  **Coming from the target line plugin?** `chartist-plugin-targetline` with
-  `{ value: 1000 }` becomes `layers: { above: [targetLine({ value: 1000 })] }`.
-  The line keeps the class `ct-target-line`, so your CSS still applies. You
-  also get labels, any axis, and server rendering.
-</Callout>
-
-Next: [compose your own charts](../composed-charts/) with several axes, or [style the chart](../styling-with-css/) to match your page.
+Next: add a goal with a [target line](../../packages/essentials/target-lines/), [compose your own charts](../composed-charts/) with several axes, or [style the chart](../styling-with-css/) to match your page.

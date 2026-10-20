@@ -245,10 +245,10 @@ export const V0_PAGES: readonly V0Page[] = [
         ['zoom-plugin', 'example-plugin-zoom'],
         'plugins/chartist-plugin-zoom/'
       ),
-      // The core's target lines replace the plugin.
+      // The target lines of @chartist-js/essentials replace the plugin.
       ...each(
         ['target-line-plugin', 'example-plugin-targetline'],
-        'docs/target-lines-and-bands/'
+        'packages/essentials/target-lines/'
       ),
       ...each(
         [

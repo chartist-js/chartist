@@ -98,7 +98,7 @@ describe('v0Target', () => {
       'packages/tooltips/'
     );
     expect(v0Target(page('plugins.html'), 'target-line-plugin')).toBe(
-      'docs/target-lines-and-bands/'
+      'packages/essentials/target-lines/'
     );
     expect(v0Target(page('index.html'), 'crazy-animations-with-smil')).toBe(
       'docs/animations/#smil-for-what-css-cant-animate'

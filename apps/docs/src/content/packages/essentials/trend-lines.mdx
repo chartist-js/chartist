@@ -1,0 +1,83 @@
+---
+title: Trend lines
+description: Fit a straight line through each series with trendLine(), read how well it fits, and draw exponential trends on a log axis.
+order: 3
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+Values go up and down. Is the series growing anyway? `trendLine()` answers with one straight line through it, dashed and in the series' color. It works on the presets and in composed charts, on bars, lines and points. For a fixed goal or limit, see [target lines](../target-lines/).
+
+It comes from `@chartist-js/essentials`, with its stylesheet after Chartist's:
+
+```ts
+import 'chartist/styles.css';
+import '@chartist-js/essentials/styles.css';
+```
+
+## A trend through bars
+
+Presets take extra layers in their `layers` option: `above` draws them on top of the bars or lines. On bar charts, `align: 'center'` lines the trend up with the middle of the bars:
+
+<LiveExample
+  title='Bars with a trend line'
+  label='Bar chart of monthly sign-ups with a dashed line rising through the bars'
+  gallery='essentials/trend-line'
+/>
+
+The line runs from the series' first to its last value. Where it ends below or above the values, the Y axis grows to keep it in view. Holes are skipped, and a series with fewer than two values gets no line. Without options, every series gets a line; `series` picks some by name or index.
+
+| Option       | What it does                                                           |
+| ------------ | ---------------------------------------------------------------------- |
+| `series`     | The series to fit, by name or index; by default all of them            |
+| `x`, `y`     | The ids of the axes to draw on, in a composed chart                    |
+| `align`      | `'start'` (default) or `'center'` of each step, to line up with bars   |
+| `classNames` | `{ series, line }` replace the classes `ct-series` and `ct-trend-line` |
+
+## Points on a scale
+
+The fit is least squares: on a step axis it uses the values' order, on a scale axis their `x`. So a scatter plot gets its regression line:
+
+<LiveExample
+  title='A regression line'
+  label='Scatter plot of ice cream sales against the temperature, with a dashed line rising through the points'
+  gallery='essentials/scatter-regression'
+/>
+
+## How well it fits
+
+A rising line says little when the values jump around it. Each trend line's node has the line's `slope` and `intercept`, and its `correlation`: Pearson's r, from -1 for values that all lie on a falling line, through 0 for no straight trend, to 1 for a rising one. Its square is the R² that spreadsheets show next to a trendline, the share of the ups and downs the line explains. A listener can read it from the scene:
+
+<LiveExample
+  title='Two trends, two fits'
+  label='Line chart of two shops over twelve weeks with a trend line each; the text below says Basel grows 1.9 a week with an R² of 0.98, and Bern 1.5 a week with an R² of 0.26'
+  example='trend-lines/fit'
+  show='src/main.ts'
+/>
+
+Both shops grow, but only Basel's line describes its weeks. With two values r is always 1 or -1, so a fit needs a few values before it means much. A [tooltip](../../tooltips/content-and-styling/) can show the same numbers on hover.
+
+## Exponential growth
+
+On a [log axis](../log-axis/), the line is fitted to the logarithms of the values, so it's straight there: an exponential trend on a log Y axis, a power law on two log axes. Here an animal's metabolic rate grows with its mass to the power of about ¾:
+
+<LiveExample
+  title='A power law'
+  label='Body mass against resting metabolic rate for seven animals from a mouse to an elephant, on two log axes, with a dashed trend line running straight through the points'
+  gallery='essentials/log-log'
+/>
+
+The `slope` is then in powers of the base per step, here about 0.75: the rate grows by a factor of 10 to the 0.75 for every tenfold mass.
+
+## Styling
+
+A trend line takes its series' color. Its width and dash pattern are custom properties:
+
+```css
+.ct-chart {
+  --ct-trend-line-width: 1px;
+  --ct-trend-line-dasharray: 2px 2px;
+}
+```
+
+The markup: a `line.ct-trend-line` in a series group (`g.ct-series.ct-series-a`) per line. In listeners and plugins, find them by the role `trendLine`, as in [events and plugins](../../../docs/events-and-plugins/). Importing `@chartist-js/essentials` declares the role, so TypeScript knows its context.

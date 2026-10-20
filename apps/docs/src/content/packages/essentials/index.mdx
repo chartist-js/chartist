@@ -9,7 +9,7 @@ import LiveExample from '../../../components/LiveExample.astro';
 
 Some things almost every chart grows sooner or later: a title for an axis, a value next to a bar, a legend. In 1.x they came from community plugins, each with its own way to load and its own guess at the padding. `@chartist-js/essentials` makes them layers like `line()` and `targetLine()`, made and released together with Chartist.
 
-They're a package of their own so the core stays small: a chart pays only for the layers it imports. Today the package holds axis titles, which take the room they need and never land on your labels, and a [log axis](log-axis/) for values that span several orders of magnitude:
+They're a package of their own so the core stays small: a chart pays only for the layers it imports. Today the package holds axis titles, which take the room they need and never land on your labels, [target](target-lines/) and [trend lines](trend-lines/), and a [log axis](log-axis/) for values that span several orders of magnitude:
 
 <LiveExample
   title='Axis titles'
@@ -86,6 +86,8 @@ They're part of the chart's scene, so they render on the server, hydrate and sho
 ## Next
 
 - [Axis titles](axis-titles/): sides, alignment, several axes and styling.
+- [Target lines](target-lines/): goals, limits and averages, across or up and down.
+- [Trend lines](trend-lines/): the trend of a series and how well it fits.
 - [Log axis](log-axis/): decades, minor grid lines, zero values and trend lines.
 - [API](api/): every function and option of the package.
 - [Custom layers](../../docs/custom-layers/): how layers like these are made, including the room they reserve.

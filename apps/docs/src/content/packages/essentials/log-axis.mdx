@@ -1,7 +1,7 @@
 ---
 title: Log axis
 description: A logarithmic scale for values that span several orders of magnitude, with ticks at the powers of ten, minor grid lines and straight trend lines for exponential growth.
-order: 2
+order: 4
 ---
 
 import LiveExample from '../../../components/LiveExample.astro';
@@ -112,7 +112,7 @@ Bars grow from the start of the axis, so on a log axis their length shows the va
 
 ## Trend lines
 
-A `trendLine()` on a log axis is fitted to the logarithms of the values, so it's straight on the chart and follows exponential growth on a log Y axis. On two log axes, as in the log-log chart above, it finds a power law: the animals' metabolic rate grows with their mass to the power of about ¾, and the trend line's `slope` says so.
+A [`trendLine()`](../trend-lines/) on a log axis is fitted to the logarithms of the values, so it's straight on the chart and follows exponential growth on a log Y axis. On two log axes, as in the log-log chart above, it finds a power law: the animals' metabolic rate grows with their mass to the power of about ¾, and the trend line's `slope` says so.
 
 ```ts
 import { lineChart } from 'chartist';
