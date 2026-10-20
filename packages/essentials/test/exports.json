@@ -1,4 +1,9 @@
 {
-  "runtime": ["axisTitle", "logAxis"],
-  "types": ["AxisTitleOptions", "LogAxisOptions"]
+  "runtime": ["axisTitle", "logAxis", "targetLine", "trendLine"],
+  "types": [
+    "AxisTitleOptions",
+    "LogAxisOptions",
+    "TargetLineOptions",
+    "TrendLineOptions"
+  ]
 }

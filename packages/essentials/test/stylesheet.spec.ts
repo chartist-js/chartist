@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { findAll, lineChartConfig, toScene } from 'chartist';
+import { applyStyles } from 'chartist/server';
+import { targetLine, trendLine } from '../src/index.ts';
 
 const require = createRequire(import.meta.url);
 // The built stylesheets; `test` depends on `build`.
@@ -76,5 +79,42 @@ describe('stylesheet', () => {
     ).toEqual(
       lightDark(fallbackAfter(rule(core, '.ct-label', 1), '--ct-label-color,'))
     );
+  });
+
+  it('draws target and trend lines as the core did in 2.1', () => {
+    const scene = toScene(
+      lineChartConfig(
+        { labels: ['a', 'b', 'c'], series: [[1, 3, 2]] },
+        {
+          layers: {
+            above: [
+              trendLine(),
+              targetLine({ value: 2, label: 'Goal' }),
+              targetLine({ value: 1, className: 'ct-series-b' })
+            ]
+          }
+        }
+      ),
+      { width: 600, height: 300 }
+    );
+    const styled = applyStyles(scene, [core, css]);
+    const [trend] = findAll(styled, { role: 'trendLine' });
+    expect(trend.attrs).toMatchObject({
+      stroke: '#d70206',
+      'stroke-width': '2px',
+      'stroke-dasharray': '6px 4px'
+    });
+    const [goal, series] = findAll(styled, { role: 'targetLine' });
+    expect(goal.attrs).toMatchObject({
+      stroke: 'currentColor',
+      'stroke-width': '1px',
+      'stroke-dasharray': '4px 4px'
+    });
+    expect(series.attrs.stroke).toBe('#f05b4f');
+    const [label] = findAll(styled, { role: 'targetLabel' });
+    expect(label.attrs).toMatchObject({
+      fill: 'currentColor',
+      'font-size': '0.75rem'
+    });
   });
 });

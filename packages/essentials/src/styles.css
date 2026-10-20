@@ -17,3 +17,27 @@
     );
   }
 }
+
+/*
+ * Target lines: a dashed line in the text color, so it reads as a
+ * reference behind the data; in a series' color with a ct-series-* class.
+ */
+.ct-target-line {
+  fill: none;
+  stroke: var(--ct-color, var(--ct-target-line-color, currentColor));
+  stroke-width: var(--ct-target-line-width, 1px);
+  stroke-dasharray: var(--ct-target-line-dasharray, 4px 4px);
+}
+
+.ct-target-label {
+  fill: var(--ct-color, var(--ct-target-line-color, currentColor));
+  font-size: var(--ct-label-size, 0.75rem);
+}
+
+/* Trend lines: dashed, in their series' color. */
+.ct-trend-line {
+  fill: none;
+  stroke: var(--ct-color);
+  stroke-width: var(--ct-trend-line-width, 2px);
+  stroke-dasharray: var(--ct-trend-line-dasharray, 6px 4px);
+}

@@ -2,7 +2,7 @@
 
 The Chartist additions people ask for most, as layers you add to a chart. They're kept out of the core, so charts that don't use them stay small, and they're made and released together with Chartist.
 
-It holds `axisTitle()` and `logAxis()` today. More layers and axes follow.
+It holds `axisTitle()`, `targetLine()`, `trendLine()` and `logAxis()` today. More layers and axes follow.
 
 ## Install
 
@@ -128,6 +128,31 @@ The title is an SVG `text` with the classes `ct-axis-title`, `ct-horizontal` or 
   font-weight: 600;
 }
 ```
+
+## Target and trend lines
+
+`targetLine()` draws a line across the chart at a value, such as a goal or a limit, with an optional label. `trendLine()` fits a straight line through each series' values (least squares) and draws it in the series' color:
+
+```ts
+import { lineChart } from 'chartist';
+import { targetLine, trendLine } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    series: [[620, 810, 740, 930, 880, 1020]]
+  },
+  {
+    low: 0,
+    layers: {
+      above: [targetLine({ value: 1000, label: 'Goal' }), trendLine()]
+    }
+  }
+);
+```
+
+A target line takes `value`, `label`, `className`, the `axis` it's on (a Y axis draws it across, an X axis up and down) and where its label sits. A trend line's node knows its `slope`, `intercept` and `correlation`. On a log axis it's fitted to the logarithms, so it's straight there. Style them with `--ct-target-line-color`, `--ct-target-line-width`, `--ct-target-line-dasharray`, `--ct-trend-line-width` and `--ct-trend-line-dasharray`.
 
 ## Log axis
 

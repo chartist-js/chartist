@@ -14,5 +14,21 @@
     "ignore": ["chartist"],
     "limit": "1 kB",
     "gzip": true
+  },
+  {
+    "name": "import { targetLine } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ targetLine }",
+    "ignore": ["chartist"],
+    "limit": "700 B",
+    "gzip": true
+  },
+  {
+    "name": "import { trendLine } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ trendLine }",
+    "ignore": ["chartist"],
+    "limit": "1.1 kB",
+    "gzip": true
   }
 ]
