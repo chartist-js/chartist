@@ -1,0 +1,4 @@
+/* Each label in its series' color, set by its ct-series-* class. */
+.ct-value-label {
+  --ct-value-label-color: var(--ct-color);
+}

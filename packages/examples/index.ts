@@ -723,6 +723,27 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'essentials/value-labels-bars',
+    title: 'Value labels on bars',
+    description:
+      'Profit per quarter with each value past the end of its bar, and below it for a loss.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/value-labels-stacked',
+    title: 'Labels on stacked segments',
+    description:
+      'Hours per work order on three machines as stacked horizontal bars, each segment labeled with its order and hours.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/value-labels-line',
+    title: 'Labeled points with a unit',
+    description:
+      "Temperatures in two cities, each point labeled in degrees and in its series' color.",
+    v2: true
+  }),
+  example({
     id: 'essentials/log-axis',
     title: 'Log axis',
     description:
