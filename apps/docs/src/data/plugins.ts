@@ -72,21 +72,6 @@ export const PLUGINS = schema.parse([
     note: 'It ships no stylesheet; its README has the CSS, as in the example.'
   },
   {
-    package: 'chartist-plugin-pointlabels',
-    registers: 'ctPointLabels',
-    title: 'Point labels',
-    description:
-      'Writes each value next to its point, so readers see exact numbers without hovering.',
-    author: 'Gion Kunz',
-    repository: 'https://github.com/gionkunz/chartist-plugin-pointlabels',
-    license: 'WTFPL',
-    types: ['line', 'bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/pointlabels'
-  },
-  {
     package: 'chartist-hover',
     registers: 'hover',
     title: 'Hover',
@@ -133,20 +118,6 @@ export const PLUGINS = schema.parse([
     chartist: '0.x',
     ssr: false,
     example: 'plugins/fill-donut'
-  },
-  {
-    package: 'chartist-plugin-barlabels',
-    registers: 'ctBarLabels',
-    title: 'Bar labels',
-    description: 'Writes each value at the end of its bar.',
-    author: 'Matt Gibbs',
-    repository: 'https://github.com/mtgibbs/chartist-plugin-barlabels',
-    license: 'WTFPL',
-    types: ['bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/barlabels'
   },
   {
     package: 'chartist-plugin-accessibility',

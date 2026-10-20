@@ -145,10 +145,6 @@
       "monthlyDownloads": 27780,
       "lastRelease": "2017-08-05"
     },
-    "chartist-plugin-pointlabels": {
-      "monthlyDownloads": 11446,
-      "lastRelease": "2018-02-18"
-    },
     "chartist-hover": {
       "monthlyDownloads": 9597,
       "lastRelease": "2018-05-15"
@@ -161,10 +157,6 @@
       "monthlyDownloads": 4854,
       "lastRelease": "2016-11-05"
     },
-    "chartist-plugin-barlabels": {
-      "monthlyDownloads": 2401,
-      "lastRelease": "2016-02-01"
-    },
     "chartist-plugin-accessibility": {
       "monthlyDownloads": 1946,
       "lastRelease": "2018-02-11"
@@ -175,7 +167,7 @@
     }
   },
   "sizes": {
-    "method": "One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts’ recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).",
+    "method": "One line chart with the smallest setup each library documents (Chart.js tree-shaken registration, ApexCharts core plus the line type, Highcharts\u2019 recommended import), bundled with esbuild (minified, ESM, browser) and gzipped (level 9).",
     "versions": {
       "chartist": "workspace (2.1.0 package version)",
       "chart.js": "4.5.1",

@@ -3,10 +3,6 @@
     "script": "chartist-plugin-legend.js",
     "license": "LICENSE"
   },
-  "chartist-plugin-pointlabels": {
-    "script": "dist/chartist-plugin-pointlabels.js",
-    "license": "LICENSE"
-  },
   "chartist-hover": {
     "script": "chartist-hover.js",
     "license": "LICENSE"
@@ -18,10 +14,6 @@
   "chartist-plugin-fill-donut": {
     "script": "dist/chartist-plugin-fill-donut.js",
     "license": "LICENSE-MIT"
-  },
-  "chartist-plugin-barlabels": {
-    "script": "dist/chartist-plugin-barlabels.js",
-    "license": "LICENSE"
   },
   "chartist-plugin-accessibility": {
     "script": "dist/chartist-plugin-accessibility.js",

@@ -227,7 +227,7 @@ export const V0_PAGES: readonly V0Page[] = [
       ),
       ...each(
         ['point-label-plugin', 'example-plugin-pointlabel'],
-        'plugins/chartist-plugin-pointlabels/'
+        'packages/essentials/value-labels/'
       ),
       ...each(
         ['axis-title-plugin', 'example-plugin-axistitle'],

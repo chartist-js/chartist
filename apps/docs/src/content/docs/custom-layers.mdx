@@ -37,6 +37,7 @@ Use it like any layer: in `layers` of [`chart()`](../composed-charts/), or on a 
 | `extent`      | Widens the axes beyond the layer's values, such as to include zero                                  |
 | `inset`       | Reserves room outside the drawing area, such as for a title or a legend                             |
 | `refine`      | Changes nodes that any layer drew, after all of them have drawn                                     |
+| `annotate`    | Draws from the finished nodes of the other layers, such as a label at each bar's end                |
 | `chartType`   | The chart class it gives `chart()` without a `className`: `'bar'` centers the X labels, for example |
 
 Only `type`, `coordinates` and `compose` are required. A layer is data: create it with a function that takes options, and keep no state in it. The same layer object may draw several charts, and every resize draws again.
@@ -123,6 +124,32 @@ Refining has rules, so layers can't break each other:
 - **No state.** Don't count or remember between calls: the same layer object may refine several charts.
 
 Leave `refine` out when you don't need it: charts without a refining layer skip the step.
+
+## annotate: drawing from what others drew
+
+`refine` changes nodes but can't add any. To draw something where another layer's nodes ended up, such as a label at each bar's end after stacking, use `annotate(drawn, context)`. It runs once the other layers' nodes are composed, refined and through the plugins' `compose` events, and gets those finished nodes. What it returns is drawn at the layer's place in `layers`:
+
+```ts
+import { findAll, getMultiValue, node, type Layer } from 'chartist';
+
+// Writes each bar's value past its end.
+export const barValues: Layer = {
+  type: 'barValues',
+  coordinates: ['cartesian'],
+  series: [],
+  compose: () => [],
+  annotate: drawn =>
+    drawn.flatMap(top =>
+      findAll(top, { role: 'bar' }).map(bar =>
+        node('text', { x: bar.ctx.x2, y: bar.ctx.y2 - 4 }, 'ct-bar-value').text(
+          String(getMultiValue(bar.ctx.value, 'y'))
+        )
+      )
+    )
+};
+```
+
+A bar a plugin dropped isn't in `drawn`, and a moved one is where it ends up. Annotating layers don't see each other's nodes. A bar's context also says whether it's `horizontal` and `stacked`. [`valueLabels()`](../../packages/essentials/value-labels/) of `@chartist-js/essentials` is built this way.
 
 ## inset: room outside the chart
 

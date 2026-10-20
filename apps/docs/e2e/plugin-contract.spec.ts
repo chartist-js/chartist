@@ -43,13 +43,6 @@ const CASES: Case[] = [
     check: page => expect(page.locator('.ct-legend li')).toHaveCount(2)
   },
   {
-    package: 'chartist-plugin-pointlabels',
-    kind: 'line',
-    plugin: 'Chartist.plugins.ctPointLabels()',
-    check: page =>
-      expect(page.locator('#chart .ct-series text.ct-label')).toHaveCount(10)
-  },
-  {
     package: 'chartist-hover',
     kind: 'line',
     plugin:
@@ -100,13 +93,6 @@ const CASES: Case[] = [
     }
   },
   {
-    package: 'chartist-plugin-barlabels',
-    kind: 'bar',
-    plugin: 'Chartist.plugins.ctBarLabels()',
-    check: page =>
-      expect(page.locator('#chart .ct-series text.ct-label')).toHaveCount(8)
-  },
-  {
     package: 'chartist-plugin-accessibility',
     kind: 'line',
     plugin: `Chartist.plugins.ctAccessibility({ caption: 'Visits per day' })`,
@@ -130,11 +116,9 @@ const CASES: Case[] = [
 
 const SCRIPTS: Record<string, string> = {
   'chartist-plugin-legend': 'chartist-plugin-legend.js',
-  'chartist-plugin-pointlabels': 'chartist-plugin-pointlabels.js',
   'chartist-hover': 'chartist-hover.js',
   'chartist-plugin-zoom': 'chartist-plugin-zoom.js',
   'chartist-plugin-fill-donut': 'chartist-plugin-fill-donut.js',
-  'chartist-plugin-barlabels': 'chartist-plugin-barlabels.js',
   'chartist-plugin-accessibility': 'chartist-plugin-accessibility.js',
   'chartist-plugin-threshold': 'chartist-plugin-threshold.js'
 };

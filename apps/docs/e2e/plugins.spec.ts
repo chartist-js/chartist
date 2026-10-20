@@ -44,12 +44,12 @@ test('the tile previews run the plugins', async ({ page }) => {
   page.on('pageerror', error => errors.push(String(error)));
   await page.goto('/plugins/');
   const preview = page.locator(
-    '#chartist-plugin-pointlabels [data-gallery-preview]'
+    '#chartist-plugin-threshold [data-gallery-preview]'
   );
   await preview.scrollIntoViewIfNeeded();
-  // The plugin's labels, drawn by its published code in the thumbnail.
+  // The plugin's split, drawn by its published code in the thumbnail.
   await expect(
-    preview.frameLocator('iframe').locator('text.ct-label').first()
+    preview.frameLocator('iframe').locator('.ct-threshold-above').first()
   ).toBeAttached({ timeout: 10_000 });
   expect(errors).toEqual([]);
 });
@@ -173,7 +173,7 @@ for (const plugin of examples) {
 test('a plugin example runs in the full playground from its link', async ({
   page
 }) => {
-  await page.goto('/plugins/chartist-plugin-pointlabels/');
+  await page.goto('/plugins/chartist-plugin-threshold/');
   const live = page.locator('[data-live-example]');
   await live.scrollIntoViewIfNeeded();
   await live.getByRole('button', { name: 'Edit' }).click();
@@ -190,8 +190,8 @@ test('a plugin example runs in the full playground from its link', async ({
   await expect(frame.locator('svg.ct-chart-line')).toBeVisible({
     timeout: 10_000
   });
-  // The plugin drew its labels in the playground too.
-  await expect(frame.locator('text.ct-label').first()).toBeVisible();
+  // The plugin split the chart in the playground too.
+  await expect(frame.locator('.ct-threshold-above').first()).toBeAttached();
   await expect(
     playground.getByRole('button', { name: 'Export to StackBlitz' })
   ).toHaveCount(0);

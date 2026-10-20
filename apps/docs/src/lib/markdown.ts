@@ -311,7 +311,7 @@ export async function llmsTxt(guides: DocEntry[]): Promise<string> {
     `## Docs\n\n${guides.map(guide => link(guide.data.title, `docs/${guide.id}/`, guide.data.description)).join('\n')}`,
     `## API reference\n\n- [The whole reference and guides in one file](${absolute('llms-full.txt')})\n${API_PAGES.map(page => link(page.title, apiPath(page.slug), page.description)).join('\n')}`,
     `## Packages\n\n${(await packagePages()).map(({ pkg, pages }) => [`### ${pkg.name}`, ...pages.map(page => link(page.title, page.path, page.description))].join('\n\n')).join('\n\n')}`,
-    `## Plugins\n\n${[link('Plugins', 'plugins/', 'Community plugins: legends, labels, zoom and more'), ...sortedPlugins().map(plugin => link(plugin.title, `plugins/${pluginSlug(plugin)}/`, plugin.description))].join('\n')}`,
+    `## Plugins\n\n${[link('Plugins', 'plugins/', 'Community plugins: legends, zoom, thresholds and more'), ...sortedPlugins().map(plugin => link(plugin.title, `plugins/${pluginSlug(plugin)}/`, plugin.description))].join('\n')}`,
     `## Examples\n\n${TYPES.map(({ type, title }) => [`### ${title}`, ...gallery.filter(example => example.type === type).map(example => link(example.title, `examples/${example.id}/`, example.description))].join('\n\n')).join('\n\n')}`,
     `## Optional\n\n${VERSIONS.filter(version => version.href)
       .map(

@@ -51,7 +51,7 @@ const threshold = (limit: number): ChartPlugin => ({
 barChart('#chart', data, { plugins: [threshold(5)] });`;
 ---
 
-<BaseLayout title="Plugins" description="Community plugins for Chartist: legends, labels, zoom and more, each running live on v2." section="plugins" markdown="plugins.md">
+<BaseLayout title="Plugins" description="Community plugins for Chartist: legends, zoom, thresholds and more, each running live on v2." section="plugins" markdown="plugins.md">
   <script is:inline define:vars={{ slugs: plugins.map(plugin => plugin.slug), base: href('plugins/') }}>
     // A link to an entry of the former single-page list (#<slug>) opens the
     // plugin's own page.
@@ -65,7 +65,7 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
       <span class="eyebrow">Plugins</span>
       <h1 class="display">Small add-ons, big tricks</h1>
       <p class="lead max-w-[62ch]">
-        Legends, labels and zoom: the community's most used plugins, each running live on v2. They hook into the events Chartist emits while drawing. <a href={href('docs/events-and-plugins/')}>How plugins work</a>
+        Legends, zoom and thresholds: the community's most used plugins, each running live on v2. They hook into the events Chartist emits while drawing. <a href={href('docs/events-and-plugins/')}>How plugins work</a>
       </p>
       <p class="muted text-sm">Sorted by npm downloads in the last month · {formatDate(facts.generatedAt)}</p>
     </header>
@@ -74,7 +74,7 @@ barChart('#chart', data, { plugins: [threshold(5)] });`;
       <div class="flex flex-wrap items-center gap-x-4 gap-y-3">
         <label class="flex min-w-[min(320px,100%)] flex-1 flex-col gap-1.5 text-sm font-bold">
           Find a plugin
-          <input class="min-h-11 rounded-lg border-2 border-line-strong bg-surface px-3.5 font-sans text-base font-normal text-ink placeholder:text-ink-2" type="search" placeholder="tooltip, labels, zoom…" autocomplete="off" data-plugin-query />
+          <input class="min-h-11 rounded-lg border-2 border-line-strong bg-surface px-3.5 font-sans text-base font-normal text-ink placeholder:text-ink-2" type="search" placeholder="legend, zoom, threshold…" autocomplete="off" data-plugin-query />
         </label>
         <div class="flex flex-wrap gap-2 self-end" role="group" aria-label="Chart type">
           <button class="chip" type="button" aria-pressed="true" data-plugin-type="">All</button>

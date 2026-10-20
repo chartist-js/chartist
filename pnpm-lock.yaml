@@ -145,18 +145,12 @@ importers:
       chartist-plugin-accessibility:
         specifier: 0.0.5
         version: 0.0.5
-      chartist-plugin-barlabels:
-        specifier: 0.0.5
-        version: 0.0.5
       chartist-plugin-fill-donut:
         specifier: 0.1.4
         version: 0.1.4
       chartist-plugin-legend:
         specifier: 0.6.2
         version: 0.6.2
-      chartist-plugin-pointlabels:
-        specifier: 0.0.6
-        version: 0.0.6
       chartist-plugin-threshold:
         specifier: 0.0.2
         version: 0.0.2
@@ -3734,19 +3728,11 @@ packages:
     resolution: {integrity: sha512-TwY5UQqHjmvq3aj4L1+X4CP7cuuY71/efKWmkCnZMyR7aqIODnOfesfUfQWi1Txg5xRBL2uIoUZXxv44VQztiA==}
     engines: {node: '>=0.8.0'}
 
-  chartist-plugin-barlabels@0.0.5:
-    resolution: {integrity: sha512-QJpFB37jCD0pyDqb0/FSnaXXqUhnzabN1gULkBqK0VOoC/KerihR5EomNdOPnjZoEm8T9gRSNbxGGObZKJFKiw==}
-    engines: {node: '>=0.8.0'}
-
   chartist-plugin-fill-donut@0.1.4:
     resolution: {integrity: sha512-/ZUXLQY9LfDJuDoHYG2sZIPBpFKZ/FYwm9E6zyIy8j0ZDUpG8yMUmXvngBfJCtUEmPMde5782Q2CLuuZ3YyndQ==}
 
   chartist-plugin-legend@0.6.2:
     resolution: {integrity: sha512-GKDgbY1JmeizWboebQO+cx/W7+0f3PcccRoKXtptqUw9ZxzT7+4eD+FCc8JS3d1AgDsJ8nndbueyEDuWDwXVIg==}
-
-  chartist-plugin-pointlabels@0.0.6:
-    resolution: {integrity: sha512-DUemVUBWAN0qAHBUMXKKLrDCsUL1qWWwN+EfxN8gpftgXSheMiYeq83uHoHyp4X+W5Pz/aUWBf3N/HJwj+eRFw==}
-    engines: {node: '>=0.8.0'}
 
   chartist-plugin-threshold@0.0.2:
     resolution: {integrity: sha512-PkT5ll2ezoMx8iSLVySF2UoxXUVg0hsklyqOmRmUil4m85ipIKW+SSPqLgbV6KI03O40be5Za8Ai1gd8TuPN2w==}
@@ -10412,13 +10398,9 @@ snapshots:
 
   chartist-plugin-accessibility@0.0.5: {}
 
-  chartist-plugin-barlabels@0.0.5: {}
-
   chartist-plugin-fill-donut@0.1.4: {}
 
   chartist-plugin-legend@0.6.2: {}
-
-  chartist-plugin-pointlabels@0.0.6: {}
 
   chartist-plugin-threshold@0.0.2: {}
 

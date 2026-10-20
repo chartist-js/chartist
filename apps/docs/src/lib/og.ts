@@ -102,7 +102,7 @@ export async function cards(): Promise<Card[]> {
       eyebrow: ['Plugins'],
       title: 'Small add-ons, big tricks',
       description:
-        'Community plugins for Chartist: legends, labels, zoom and more, each running live on v2.',
+        'Community plugins for Chartist: legends, zoom, thresholds and more, each running live on v2.',
       pose: 'point'
     },
     ...sortedPlugins().map((plugin): Card => ({
