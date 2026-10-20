@@ -73,6 +73,14 @@ export interface PointContext extends SeriesContext, ValueContext, Point {}
  * ends. Bars are clipped to the chart area.
  */
 export interface BarContext extends SeriesContext, ValueContext {
+  /** Whether the bar is horizontal (`horizontalBars`). */
+  readonly horizontal: boolean;
+  /**
+   * Whether the bar is a segment of a stack: stacked with `accumulate` or
+   * `accumulate-relative`, so its base is where the previous segment
+   * ends. False for `overlap`, whose bars all start at zero.
+   */
+  readonly stacked: boolean;
   /** The X of the bar's base, in px. */
   readonly x1: number;
   /** The Y of the bar's base, in px. */

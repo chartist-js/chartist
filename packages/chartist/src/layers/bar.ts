@@ -316,6 +316,8 @@ export function bar(options: BarLayerOptions = {}): Layer {
                   valueIndex,
                   value,
                   meta,
+                  horizontal,
+                  stacked: Boolean(stacks),
                   ...positions
                 }
               }

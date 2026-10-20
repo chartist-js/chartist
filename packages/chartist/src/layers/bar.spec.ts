@@ -376,3 +376,37 @@ describe('layers/bar offset', () => {
     expect(grouped().scene).toEqual(grouped([0, 0]).scene);
   });
 });
+
+describe('layers/bar context', () => {
+  const contexts = (options: Parameters<typeof bar>[0]) =>
+    findAll(
+      scene(
+        [
+          [1, 2],
+          [3, 4]
+        ],
+        options
+      ),
+      { role: 'bar' }
+    ).map(current => [current.ctx.horizontal, current.ctx.stacked]);
+
+  it.each([
+    [{}, false, false],
+    [{ horizontalBars: true }, true, false],
+    [{ stackBars: true }, false, true],
+    [
+      { stackBars: true, stackMode: 'accumulate-relative' as const },
+      false,
+      true
+    ],
+    [{ stackBars: true, stackMode: 'overlap' as const }, false, false],
+    [{ horizontalBars: true, stackBars: true }, true, true]
+  ])(
+    'says whether a bar is horizontal and stacked: %o',
+    (options, horizontal, stacked) => {
+      expect(contexts(options)).toEqual(
+        Array.from({ length: 4 }, () => [horizontal, stacked])
+      );
+    }
+  );
+});

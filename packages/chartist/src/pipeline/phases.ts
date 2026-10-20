@@ -420,8 +420,7 @@ export function compose(
           })
         : refined;
     }, current);
-  const composed: SceneNode[] = [];
-  for (const { nodes, layerIndex } of layers) {
+  const emit = (nodes: readonly SceneNode[], layerIndex: number) => {
     for (const top of nodes) {
       const result = mapNodes(top, current =>
         current.role === undefined
@@ -433,11 +432,28 @@ export function compose(
       );
       if (result) {
         drawn[layerIndex].nodes.push(result);
-        composed.push(result);
       }
     }
+  };
+  for (const { nodes, layerIndex } of layers) {
+    emit(nodes, layerIndex);
   }
-  return composed;
+  // Annotating layers draw from the finished nodes of the others, then
+  // take their place in the order of `layers`.
+  const finished = layers.flatMap(({ layer, layerIndex }) =>
+    layer.annotate ? [] : drawn[layerIndex].nodes
+  );
+  for (const { layer, context, layerIndex } of layers) {
+    if (layer.annotate) {
+      emit(
+        layer
+          .annotate(finished, context)
+          .map(top => assignKeys(top, layerIndex)),
+        layerIndex
+      );
+    }
+  }
+  return drawn.flatMap(entry => entry.nodes);
 }
 
 export function scene(

@@ -326,6 +326,41 @@ export interface Layer {
    */
   refine?(node: SceneNode, context: LayerContext): SceneNode | undefined;
   /**
+   * Draws from where the other layers drew, such as a label at each bar's
+   * end. Runs once the nodes of every layer without `annotate` are
+   * composed, keyed, refined and through the `compose` listeners, so a bar
+   * a listener dropped isn't there and a moved one is where it ends up.
+   * It gets those finished top-level nodes in the order of `layers`, not
+   * the nodes of other annotating layers. The nodes it returns are keyed,
+   * refined and emitted like `compose`'s, after them, at the layer's place
+   * in `layers`; their `compose` events come after the other layers'. Find
+   * the nodes you need with `findAll()`.
+   *
+   * @param drawn The finished top-level nodes of the other layers.
+   * @param context The context this layer's `compose` got.
+   *
+   * @example
+   * ```ts
+   * import { findAll, getMultiValue, node, type Layer } from 'chartist';
+   *
+   * // Writes each bar's value past its end.
+   * const barValues: Layer = {
+   *   type: 'barValues',
+   *   coordinates: ['cartesian'],
+   *   series: [],
+   *   compose: () => [],
+   *   annotate: drawn =>
+   *     drawn.flatMap(top =>
+   *       findAll(top, { role: 'bar' }).map(bar =>
+   *         node('text', { x: bar.ctx.x2, y: bar.ctx.y2 - 4 }, 'ct-bar-value')
+   *           .text(String(getMultiValue(bar.ctx.value, 'y')))
+   *       )
+   *     )
+   * };
+   * ```
+   */
+  annotate?(drawn: readonly SceneNode[], context: LayerContext): SceneNode[];
+  /**
    * Gives the keyframes of an update animation for one of the layer's
    * nodes, for attributes that don't move well number by number, such as
    * an arc that should turn around its center. A renderer that animates
