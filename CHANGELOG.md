@@ -1,3 +1,41 @@
+## 2.2.0 (2026-10-20)
+
+### 🚀 Features
+
+- **chartist:** let layers reserve room outside the drawing area ([#1528](https://github.com/chartist-js/chartist/issues/1528))
+- **chartist:** give trend lines their correlation ([d163dae3](https://github.com/chartist-js/chartist/commit/d163dae3))
+- **chartist:** add minor grid lines and axis transforms ([c6d9ddc9](https://github.com/chartist-js/chartist/commit/c6d9ddc9))
+- ⚠️  **chartist:** move trendLine() and targetLine() to @chartist-js/essentials ([bd1ba658](https://github.com/chartist-js/chartist/commit/bd1ba658))
+- **chartist:** let layers annotate what other layers drew ([9c650792](https://github.com/chartist-js/chartist/commit/9c650792))
+- **essentials:** add @chartist-js/essentials with axisTitle() ([2899e0ee](https://github.com/chartist-js/chartist/commit/2899e0ee))
+- **essentials:** add logAxis ([d931d754](https://github.com/chartist-js/chartist/commit/d931d754))
+- **essentials:** add trendLine() and targetLine() ([558c6af6](https://github.com/chartist-js/chartist/commit/558c6af6))
+- **essentials:** add valueLabels() ([69c641b4](https://github.com/chartist-js/chartist/commit/69c641b4))
+- **essentials:** draw target lines 2 px wide by default ([dc0b1940](https://github.com/chartist-js/chartist/commit/dc0b1940))
+- **terminal:** draw quarter-turned text vertically ([665254cf](https://github.com/chartist-js/chartist/commit/665254cf))
+- **terminal:** leave out minor grid lines ([b92f92e8](https://github.com/chartist-js/chartist/commit/b92f92e8))
+- **tooltips:** add @chartist-js/tooltips ([09388f28](https://github.com/chartist-js/chartist/commit/09388f28))
+
+### 🩹 Fixes
+
+- **chartist:** keep each value's meta with reverseData ([#1534](https://github.com/chartist-js/chartist/issues/1534))
+
+### ⚠️  Breaking Changes
+
+- **chartist:** move trendLine() and targetLine() to @chartist-js/essentials  ([bd1ba658](https://github.com/chartist-js/chartist/commit/bd1ba658))
+  trendLine() and targetLine() are no longer exported
+  from chartist. Import them from @chartist-js/essentials and load its
+  stylesheet:
+  import { trendLine, targetLine } from '@chartist-js/essentials';
+  import '@chartist-js/essentials/styles.css';
+  The types TrendLineOptions, TargetLineOptions, TrendLineContext,
+  TargetLineContext and TargetLabelContext move with them. The Sass
+  settings $ct-target-line-color, $ct-target-line-width,
+  $ct-target-line-dasharray, $ct-trend-line-width,
+  $ct-trend-line-dasharray, $ct-class-target-line, $ct-class-target-label
+  and $ct-class-trend-line are gone; set the --ct-target-line-* and
+  --ct-trend-line-* custom properties instead.
+
 ## 2.1.0 (2026-10-18)
 
 ### 🚀 Features

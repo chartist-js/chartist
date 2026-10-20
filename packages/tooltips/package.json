@@ -1,7 +1,7 @@
 {
   "name": "@chartist-js/tooltips",
   "type": "module",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Accessible tooltips for Chartist charts: pointer, touch and keyboard, text by default, styled with CSS",
   "author": "Gion Kunz",
   "homepage": "https://chartist.dev/packages/tooltips/",
