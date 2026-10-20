@@ -89,12 +89,12 @@ The `targetLine()` and `trendLine()` layers SHALL give their nodes the roles `ta
 
 ### Requirement: Target and trend line styles
 
-The essentials stylesheet SHALL style target lines, their labels and trend lines through custom properties with defaults: the target line's color, width and dash pattern (`--ct-target-line-color`, `--ct-target-line-width`, `--ct-target-line-dasharray`) and the trend line's width and dash pattern (`--ct-trend-line-width`, `--ct-trend-line-dasharray`). By default a target line SHALL be a dashed line in the text color, and a trend line dashed in its series' color. A target line or label with a `ct-series-<letter>` class, or inside a series group, SHALL take that series' color from `--ct-color` instead. The defaults SHALL work in light and dark mode, and SHALL be those the core stylesheet had in 2.1.
+The essentials stylesheet SHALL style target lines, their labels and trend lines through custom properties with defaults: the target line's color, width and dash pattern (`--ct-target-line-color`, `--ct-target-line-width`, `--ct-target-line-dasharray`) and the trend line's width and dash pattern (`--ct-trend-line-width`, `--ct-trend-line-dasharray`). By default a target line SHALL be a dashed line 2 px wide in the text color, and a trend line dashed and 2 px wide in its series' color. A target line or label with a `ct-series-<letter>` class, or inside a series group, SHALL take that series' color from `--ct-color` instead. The defaults SHALL work in light and dark mode; apart from the target line's width, 1 px in 2.1, they're those the core stylesheet had in 2.1.
 
 #### Scenario: Both stylesheets
 
 - **WHEN** a page loads `chartist/styles.css` and `@chartist-js/essentials/styles.css` and draws a target line and a trend line
-- **THEN** they look as they did in 2.1 with the core stylesheet alone
+- **THEN** they look as they did in 2.1 with the core stylesheet alone, except that the target line is 2 px wide
 
 #### Scenario: Series color on a target line
 

@@ -25,7 +25,7 @@
 .ct-target-line {
   fill: none;
   stroke: var(--ct-color, var(--ct-target-line-color, currentColor));
-  stroke-width: var(--ct-target-line-width, 1px);
+  stroke-width: var(--ct-target-line-width, 2px);
   stroke-dasharray: var(--ct-target-line-dasharray, 4px 4px);
 }
 

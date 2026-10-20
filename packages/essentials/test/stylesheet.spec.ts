@@ -81,7 +81,7 @@ describe('stylesheet', () => {
     );
   });
 
-  it('draws target and trend lines as the core did in 2.1', () => {
+  it('draws target and trend lines dashed, 2 px wide', () => {
     const scene = toScene(
       lineChartConfig(
         { labels: ['a', 'b', 'c'], series: [[1, 3, 2]] },
@@ -107,7 +107,7 @@ describe('stylesheet', () => {
     const [goal, series] = findAll(styled, { role: 'targetLine' });
     expect(goal.attrs).toMatchObject({
       stroke: 'currentColor',
-      'stroke-width': '1px',
+      'stroke-width': '2px',
       'stroke-dasharray': '4px 4px'
     });
     expect(series.attrs.stroke).toBe('#f05b4f');
