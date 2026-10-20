@@ -17,10 +17,10 @@ import {
   line,
   node,
   stepAxis,
-  targetLine,
   toScene,
   type ChartPlugin
 } from 'chartist';
+import { targetLine } from '@chartist-js/essentials';
 import { legend, renderToHtml, terminalSize } from '../src/index.ts';
 
 const root = new URL('../../../', import.meta.url);

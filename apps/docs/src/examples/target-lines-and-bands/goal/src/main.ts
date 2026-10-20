@@ -1,5 +1,7 @@
 import 'chartist/styles.css';
-import { barChart, targetLine } from 'chartist';
+import '@chartist-js/essentials/styles.css';
+import { barChart } from 'chartist';
+import { targetLine } from '@chartist-js/essentials';
 
 barChart(
   '#chart',

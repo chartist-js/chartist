@@ -64,8 +64,9 @@ export interface AxisExtent {
 /**
  * How an axis that isn't linear in its values maps them: the axis is
  * linear in `forward(value)`, as a log axis is in the logarithm of its
- * values. Layers that fit lines, such as {@link trendLine}, fit them in
- * that space, so the lines are straight on the axis.
+ * values. Layers that fit lines, such as `trendLine()` from
+ * `@chartist-js/essentials`, fit them in that space, so the lines are
+ * straight on the axis.
  *
  * @example
  * ```ts

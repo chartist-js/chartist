@@ -3,7 +3,10 @@
   "types": [
     "AxisTitleOptions",
     "LogAxisOptions",
+    "TargetLabelContext",
+    "TargetLineContext",
     "TargetLineOptions",
+    "TrendLineContext",
     "TrendLineOptions"
   ]
 }

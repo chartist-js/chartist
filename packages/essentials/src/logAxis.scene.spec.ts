@@ -11,14 +11,13 @@ import {
   line,
   lineChartConfig,
   stepAxis,
-  targetLine,
   toScene,
-  trendLine,
   type Area,
   type ChartAxes,
   type ChartConfig,
   type Layer
 } from 'chartist';
+import { targetLine, trendLine } from './index.ts';
 import { renderToString } from 'chartist/server';
 import { logAxis } from './logAxis.ts';
 

@@ -89,14 +89,9 @@ The scene node type SHALL be discriminated by role: checking a node's role again
 - **WHEN** code reads `ctx.path` on a node narrowed to role `point`
 - **THEN** it does not type-check
 
-### Requirement: Target line and band roles
+### Requirement: Band role
 
-The target line and band layers SHALL give their nodes the built-in roles `targetLine` (a line), `targetLabel` (a line's label) and `band` (a band's filled path). Each role SHALL have a defined context type: a target line and its label know the axis, the value, the label text and their position in px; a band knows the edges it was drawn from and its path. Checking a node's role against one of them SHALL narrow its context and attributes like the other built-in roles, and `compose` listeners SHALL receive these nodes and be able to change or drop them.
-
-#### Scenario: Finding a target line
-
-- **WHEN** a `scene` listener queries the scene for nodes with role `targetLine`
-- **THEN** it gets one node per target line, and each node's context has the line's value and its axis
+The band layer SHALL give its nodes the built-in role `band` (a band's filled path), with a defined context type: the edges it was drawn from and its path. Checking a node's role against it SHALL narrow its context and attributes like the other built-in roles, and `compose` listeners SHALL receive these nodes and be able to change or drop them.
 
 #### Scenario: Dropping a band
 

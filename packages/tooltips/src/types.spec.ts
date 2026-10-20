@@ -1,4 +1,5 @@
-import type { BarContext, PointContext, TrendLineContext } from 'chartist';
+import type { BarContext, PointContext } from 'chartist';
+import type { TrendLineContext } from '@chartist-js/essentials';
 import { tooltips } from './plugin.ts';
 
 // A role of another package's layer, declared as such layers do.

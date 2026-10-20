@@ -62,6 +62,7 @@
     "chartist": "workspace:^"
   },
   "devDependencies": {
+    "@chartist-js/essentials": "workspace:*",
     "@size-limit/esbuild": "14.2.0",
     "@size-limit/file": "14.2.0",
     "@types/node": "^24.0.0",

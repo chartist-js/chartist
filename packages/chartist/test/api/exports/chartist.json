@@ -86,11 +86,9 @@
     "splitIntoSegments",
     "stepAxis",
     "sum",
-    "targetLine",
     "textAscent",
     "times",
     "toScene",
-    "trendLine",
     "withOptions"
   ],
   "types": [
@@ -304,13 +302,8 @@
     "SvgList",
     "SvgPath",
     "SvgPathOptions",
-    "TargetLabelContext",
-    "TargetLineContext",
-    "TargetLineOptions",
     "TextAttrs",
     "TextMetrics",
-    "TrendLineContext",
-    "TrendLineOptions",
     "UpdateAnimation",
     "ValueContext",
     "ViewBox",
@@ -388,11 +381,9 @@
     "splitIntoSegments",
     "stepAxis",
     "sum",
-    "targetLine",
     "textAscent",
     "times",
     "toScene",
-    "trendLine",
     "withOptions"
   ]
 }

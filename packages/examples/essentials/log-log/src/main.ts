@@ -1,13 +1,7 @@
 import 'chartist/styles.css';
-import {
-  axisGrid,
-  axisLabels,
-  cartesianAxes,
-  chart,
-  line,
-  trendLine
-} from 'chartist';
-import { logAxis } from '@chartist-js/essentials';
+import '@chartist-js/essentials/styles.css';
+import { axisGrid, axisLabels, cartesianAxes, chart, line } from 'chartist';
+import { logAxis, trendLine } from '@chartist-js/essentials';
 
 // Body mass (kg) and resting metabolic rate (W) from a mouse to an
 // elephant. The rate grows with the mass to the power of about 3/4

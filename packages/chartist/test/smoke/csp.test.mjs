@@ -34,7 +34,7 @@ const CASES = {
   pie: `pieChart(el, { labels: ['A', 'B', 'C'], series: [20, 10, 30] })`,
   donut: `pieChart(el, { series: [20, 10, 30] }, { donut: true, donutWidth: 20 })`,
   svgLabels: `barChart(el, data, { labels: 'svg' })`,
-  layers: `lineChart(el, data, { low: 0, layers: { below: [band({ low: 1, high: 4 })], above: [targetLine({ value: 4, label: 'goal' })] } })`,
+  layers: `lineChart(el, data, { low: 0, layers: { below: [band({ low: 1, high: 4 })], above: [band({ low: 4, high: 4.5, className: 'ct-series-b' })] } })`,
   responsive: `lineChart(el, data, {}, [['(min-width: 1px)', { showPoint: false }]])`,
   update: `lineChart(el, data).update({ data: { labels, series: [[3, 1, 4, 1, 5]] } })`,
   live: `lineChart(el, data, { renderer: liveDomRenderer({ animations: smilAnimations() }) }).update({ data: { labels, series: [[3, 1, 4, 1, 5]] } })`,
@@ -62,7 +62,7 @@ const violations = [];
 document.addEventListener('securitypolicyviolation', event =>
   violations.push(event.violatedDirective + ': ' + (event.sample || event.blockedURI))
 );
-const { lineChart, barChart, pieChart, band, targetLine, LineChart } =
+const { lineChart, barChart, pieChart, band, LineChart } =
   await import('/dist/index.js');
 const { compat } = await import('/dist/compat.js');
 const { liveDomRenderer, smilAnimations } = await import('/dist/live.js');

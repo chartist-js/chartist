@@ -1,5 +1,7 @@
 import 'chartist/styles.css';
-import { barChart, trendLine } from 'chartist';
+import '@chartist-js/essentials/styles.css';
+import { barChart } from 'chartist';
+import { trendLine } from '@chartist-js/essentials';
 
 // Monthly sign-ups with the trend they follow.
 barChart(

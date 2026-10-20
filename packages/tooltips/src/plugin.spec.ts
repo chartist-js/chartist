@@ -3,12 +3,11 @@ import {
   lineChart,
   lineChartConfig,
   pieChart,
-  targetLine,
   toScene,
-  trendLine,
   type PhaseEvents,
   type UpdateAnimation
 } from 'chartist';
+import { targetLine, trendLine } from '@chartist-js/essentials';
 import { liveDomRenderer, smilAnimations } from 'chartist/live';
 import { renderForHydration } from 'chartist/server';
 import { tooltips } from './plugin.ts';

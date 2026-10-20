@@ -1,5 +1,7 @@
 import 'chartist/styles.css';
-import { autoScaleAxis, lineChart, trendLine } from 'chartist';
+import '@chartist-js/essentials/styles.css';
+import { autoScaleAxis, lineChart } from 'chartist';
+import { trendLine } from '@chartist-js/essentials';
 
 // Daily ice cream sales against the day's high, in °C.
 const days = [

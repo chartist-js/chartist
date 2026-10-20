@@ -86,7 +86,7 @@ The Y axis makes room for the line: a goal above all the bars still shows. A `lo
 One layer draws one line. For a minimum and a goal, add two:
 
 ```ts
-import { targetLine } from 'chartist';
+import { targetLine } from '@chartist-js/essentials';
 
 export const limits = [
   targetLine({ value: 1000, label: 'Goal' }),
@@ -204,7 +204,8 @@ The band marks the points no matter where it's listed: it works from the data, a
 `trendLine()` fits a straight line through each series it picks (all of them by default) and draws it from the series' first to its last value, dashed and in the series' color. The fit is least squares: on a step axis it uses the values' order, on a scale axis their `x`.
 
 ```ts
-import { lineChart, trendLine } from 'chartist';
+import { lineChart } from 'chartist';
+import { trendLine } from '@chartist-js/essentials';
 
 lineChart(
   '#chart',

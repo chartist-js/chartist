@@ -16,8 +16,6 @@ import {
   pieChart,
   responsive,
   stepAxis,
-  targetLine,
-  trendLine,
   withOptions,
   type Area,
   type ChartPadding,
@@ -66,20 +64,6 @@ describe('v2 type contract', () => {
     }
     if (scene.role === 'label' && scene.ctx.kind === 'axis') {
       expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
-    }
-    if (scene.role === 'targetLine') {
-      expectTypeOf(scene.ctx.value).toEqualTypeOf<number>();
-      expectTypeOf(scene.ctx.axis).toEqualTypeOf<ScaleAxis>();
-      expectTypeOf(scene.attrs.y1).toEqualTypeOf<number>();
-    }
-    if (scene.role === 'trendLine') {
-      expectTypeOf(scene.ctx.seriesIndex).toEqualTypeOf<number>();
-      expectTypeOf(scene.ctx.slope).toEqualTypeOf<number>();
-      expectTypeOf(scene.ctx.intercept).toEqualTypeOf<number>();
-      expectTypeOf(scene.attrs.x2).toEqualTypeOf<number>();
-    }
-    if (scene.role === 'targetLabel') {
-      expectTypeOf(scene.ctx.text).toEqualTypeOf<string>();
     }
     if (scene.role === 'band') {
       expectTypeOf(scene.ctx.path).toEqualTypeOf<SvgPath>();
@@ -276,23 +260,6 @@ describe('v2 type contract', () => {
       inset: () => ({ bottom: '20px' })
     };
     void wrong;
-  });
-
-  test('a target line takes one value and an optional label', () => {
-    targetLine({ value: 1000, label: 'Target', className: 'ct-series-b' });
-    targetLine({ axis: 'eur', value: 800, labelPosition: 'start' });
-    // @ts-expect-error: a line needs a value
-    targetLine({ label: 'Target' });
-    // @ts-expect-error: a label is text
-    targetLine({ value: 1000, label: 1000 });
-  });
-
-  test('a trend line takes the options of a line layer', () => {
-    trendLine();
-    trendLine({ series: ['sales', 1], x: 'month', y: 'eur', align: 'center' });
-    trendLine({ classNames: { series: 'my-series', line: 'my-trend' } });
-    // @ts-expect-error: align is start or center
-    trendLine({ align: 'end' });
   });
 
   test('a band edge is a constant, values or a series', () => {

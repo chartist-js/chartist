@@ -241,13 +241,9 @@ test('CSS: themable values read --ct-* properties with 1.x fallbacks', async () 
   );
 });
 
-test('CSS: target lines and bands take a series color, else the text color', async () => {
+test('CSS: bands take a series color, else the text color', async () => {
   const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
   for (const declaration of [
-    'stroke: var(--ct-color, var(--ct-target-line-color, currentColor))',
-    'stroke-width: var(--ct-target-line-width, 1px)',
-    'stroke-dasharray: var(--ct-target-line-dasharray, 4px 4px)',
-    'fill: var(--ct-color, var(--ct-target-line-color, currentColor))',
     'fill: var(--ct-color, var(--ct-band-color, currentColor))',
     'fill-opacity: var(--ct-band-opacity, 0.12)'
   ]) {
@@ -256,24 +252,10 @@ test('CSS: target lines and bands take a series color, else the text color', asy
   // A series group around them sets their color too.
   assert.match(
     css,
-    /\.ct-series-c \.ct-target-line \{\s*stroke: var\(--ct-color\)/
+    /\.ct-series-c \.ct-band-area \{\s*fill: var\(--ct-color\)/
   );
-  assert.match(
-    css,
-    /\.ct-series-c \.ct-target-label,\s*\.ct-series-c \.ct-band-area \{\s*fill: var\(--ct-color\)/
-  );
-});
-
-test('CSS: trend lines are dashed in their series color', async () => {
-  const css = String(await readFile(path.join(pkgDir, 'dist/index.css')));
-  assert.match(
-    css,
-    /\.ct-trend-line \{\s*fill: none;\s*stroke: var\(--ct-color\);\s*stroke-width: var\(--ct-trend-line-width, 2px\);\s*stroke-dasharray: var\(--ct-trend-line-dasharray, 6px 4px\);\s*\}/
-  );
-  assert.match(
-    css,
-    /\.ct-series-b \.ct-trend-line,[^{]*\{\s*stroke: var\(--ct-color\)/
-  );
+  // Target and trend lines are styled by @chartist-js/essentials.
+  assert.doesNotMatch(css, /ct-target-line|ct-target-label|ct-trend-line/);
 });
 
 // light-dark() follows the chart's color-scheme. Browsers without it keep

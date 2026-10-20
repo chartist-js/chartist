@@ -115,8 +115,8 @@ Bars grow from the start of the axis, so on a log axis their length shows the va
 A `trendLine()` on a log axis is fitted to the logarithms of the values, so it's straight on the chart and follows exponential growth on a log Y axis. On two log axes, as in the log-log chart above, it finds a power law: the animals' metabolic rate grows with their mass to the power of about ¾, and the trend line's `slope` says so.
 
 ```ts
-import { lineChart, trendLine } from 'chartist';
-import { logAxis } from '@chartist-js/essentials';
+import { lineChart } from 'chartist';
+import { logAxis, trendLine } from '@chartist-js/essentials';
 
 lineChart(
   '#chart',

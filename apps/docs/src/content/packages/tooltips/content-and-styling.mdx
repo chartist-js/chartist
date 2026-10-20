@@ -72,7 +72,8 @@ With `render`, `format` still decides which values have a tooltip and gives thei
 `roles` picks the nodes that get tooltips: `point`, `bar` and `slice` by default. Any role works, including the roles of other layers and plugins: `roles: ['line']` gives each series of a line chart one tooltip, with its name, and a target line's tooltip shows its label and value. For what the default text doesn't know, `item.context` is the node's data context, so `format` can describe a trend line by its `slope`, and by its `correlation` how well it fits the values (squared, the R² spreadsheets show):
 
 ```ts
-import { lineChart, trendLine } from 'chartist';
+import { lineChart } from 'chartist';
+import { trendLine } from '@chartist-js/essentials';
 import { tooltips } from '@chartist-js/tooltips';
 
 lineChart(

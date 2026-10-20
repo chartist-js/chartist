@@ -404,6 +404,9 @@ importers:
         specifier: workspace:^
         version: link:../chartist
     devDependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
       '@size-limit/esbuild':
         specifier: 14.2.0
         version: 14.2.0(size-limit@14.2.0)

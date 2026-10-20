@@ -68,7 +68,8 @@ export interface TooltipsOptions<R extends NodeRole = DefaultTooltipRole> {
   /**
    * The roles of the nodes that get tooltips: `point`, `bar` and `slice`
    * by default. Any role works, of other layers and plugins too: `line` for
-   * a tooltip per series, `trendLine`, `targetLine`. The default text shows
+   * a tooltip per series, `trendLine` and `targetLine` of
+   * `@chartist-js/essentials`. The default text shows
    * what a node has (a target line's label and value, a trend line's
    * series); for more, read `item.context` in `format` or `render`, where
    * checking `item.role` narrows it to that role's context.

@@ -1,6 +1,6 @@
 import '@chartist-js/terminal/styles.css';
 import './style.css';
-import { targetLine } from 'chartist';
+import { targetLine } from '@chartist-js/essentials';
 import { lineChart } from '@chartist-js/terminal';
 import { reached } from './reached';
 

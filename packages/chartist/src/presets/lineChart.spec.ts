@@ -121,9 +121,8 @@ describe('presets/lineChart', () => {
     expect(children()).toEqual(['ct-grids', 'band', '', 'ct-labels']);
   });
 
-  it('draws a band and a target line from the layers option', async () => {
+  it('draws bands from the layers option and its responsive changes', async () => {
     const { band } = await import('../layers/band');
-    const { targetLine } = await import('../layers/targetLine');
     const media = mockMedia();
     const element = sized();
     lineChart(
@@ -133,16 +132,16 @@ describe('presets/lineChart', () => {
       [
         [
           '(min-width: 600px)',
-          { layers: { above: [targetLine({ value: 6, label: 'Goal' })] } }
+          { layers: { above: [band({ low: 0, high: 1, className: 'goal' })] } }
         ]
       ]
     );
     expect(element.querySelectorAll('.ct-band-area')).toHaveLength(1);
-    expect(element.querySelectorAll('.ct-target-line')).toHaveLength(0);
+    expect(element.querySelectorAll('.goal')).toHaveLength(0);
     expect(element.querySelectorAll('.ct-point.ct-out-band')).toHaveLength(2);
     media.set('(min-width: 600px)', true);
-    expect(element.querySelector('.ct-target-label')?.textContent).toBe('Goal');
-    expect(element.querySelectorAll('.ct-band-area')).toHaveLength(1);
+    expect(element.querySelectorAll('.goal .ct-band-area')).toHaveLength(1);
+    expect(element.querySelectorAll('.ct-band-area')).toHaveLength(2);
   });
 
   it('handle methods return the preset handle', () => {

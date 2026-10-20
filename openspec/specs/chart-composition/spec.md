@@ -244,30 +244,6 @@ The handles of `lineChart`, `barChart` and `pieChart` SHALL change the chart's o
 - **WHEN** `chart()` draws a bar layer and a line layer without `className`
 - **THEN** its SVG has the class `ct-chart-bar`
 
-### Requirement: Target line layer
-
-The `targetLine()` layer SHALL draw one line across the chart area at a constant value on one axis: an axis id, by default the first Y axis. Several lines SHALL be several layers. On a Y axis the line SHALL be horizontal; on an X axis, vertical. On a step axis the value SHALL be a position by index, as for the axis's ticks. The line SHALL accept an optional label and an optional class. A label SHALL be drawn as SVG text next to the line, inside the chart area, at the line's end by default or at its start. The layer SHALL report its value as its extent, so the axis includes it (an axis's own `low` and `high` still win). A value outside the axis's range SHALL draw nothing. A layer without a value SHALL throw when it's created. The layer SHALL support only `cartesian` coordinates.
-
-#### Scenario: One labeled line
-
-- **WHEN** a line chart's Y axis goes from 0 to 800 and `targetLine({ value: 1000, label: 'Target' })` is one of its layers
-- **THEN** the Y axis goes up to at least 1000, and the output has one horizontal `line.ct-target-line` across the chart area at 1000 and a `text.ct-target-label` reading "Target" at its right end
-
-#### Scenario: Several lines
-
-- **WHEN** `targetLine({ value: 20, label: 'Min' })` and `targetLine({ value: 80, label: 'Max', className: 'ct-series-b' })` are two layers of a chart
-- **THEN** the output has two target lines in that order, and the second line and its label carry the class `ct-series-b`
-
-#### Scenario: A vertical line
-
-- **WHEN** a horizontal bar chart has `targetLine({ axis: 'value', value: 50 })` and `value` is its X axis id
-- **THEN** the target line is vertical, at 50 on that axis, from the top to the bottom of the chart area
-
-#### Scenario: Unknown axis
-
-- **WHEN** a target line names an axis id the chart doesn't have
-- **THEN** creating the chart throws an error naming the layer and the id
-
 ### Requirement: Band layer
 
 The `band()` layer SHALL fill the area between a low and a high edge, on one X and one Y axis like the line layer. Each edge SHALL be a constant value (a number), values of its own (an array with one value per label, a number, `{ x, y }` or `null` for a hole), or a series: its name, or `{ series }` with a name or an index, since a bare number is a constant. Values of its own SHALL draw like the same values given as a series, without being part of the chart's data, and SHALL count towards the Y axis's range. Alternatively, `series` SHALL select a group of series, and the band SHALL cover the minimum to the maximum of their values at each value index. Series the band uses SHALL stay visible to the other layers: a layer without a series selection still draws them. The edges SHALL follow the same interpolation option as the line layer (`lineSmooth`, smooth by default), and `align: 'center'` SHALL line the band up with bars on a step axis as it does for lines. Where an edge has a hole, or no series of a group has a value, the band SHALL break, like a line's area. With `mark: true`, the band SHALL give every `point` and `bar` node of the chart whose value at its value index lies between the band's edges (edges included) the class `ct-in-band`, and every other one with a value the class `ct-out-band`; nodes at an index where the band has a hole SHALL get neither. Without `mark`, the band SHALL change no other layer's nodes. The band's values SHALL count towards its axes' range. The layer SHALL support only `cartesian` coordinates.
@@ -398,30 +374,6 @@ The `bar()` layer SHALL take an `offset` in px that moves all its bars along the
 - **WHEN** a horizontal bar layer has `offset: 6`
 - **THEN** its bars are drawn 6 px lower than without it
 
-### Requirement: Trend line layer
-
-The `trendLine()` layer SHALL fit a least-squares straight line through the values of each series it selects (all by default) and draw it from the series' smallest to its largest X: on a step axis X is the value index, on a scale axis the value's `x`. It SHALL skip holes, draw nothing for a series with fewer than two values, and take `x`, `y`, `align` (as the line layer) and `classNames`. Each line SHALL be a `line.ct-trend-line` with the role `trendLine` inside a series group with the series' classes, so it takes the series' color, and its context SHALL carry the series index, the slope, the intercept and, unless all values are equal, the correlation coefficient r of the values (from -1 to 1; its square is R²). The values at the line's ends SHALL count towards the Y axis's range. The layer SHALL support only `cartesian` coordinates.
-
-#### Scenario: A rising series
-
-- **WHEN** a line chart's series `[1, 2, 4, 3, 5]` gets `trendLine()` as an extra layer
-- **THEN** a `line.ct-trend-line` in `g.ct-series-a` runs from the fitted value at index 0 to the fitted value at index 4, and its context has the slope 0.9
-
-#### Scenario: Correlation
-
-- **WHEN** a series' values all lie on a rising line, and another series' values are all equal
-- **THEN** the first trend line's context has the correlation 1, and the second's has none
-
-#### Scenario: Ends outside the values
-
-- **WHEN** the fitted line's end lies below the smallest value of the series
-- **THEN** the Y axis extends to include it
-
-#### Scenario: Too few values
-
-- **WHEN** a selected series has one value and holes
-- **THEN** no trend line is drawn for it
-
 ### Requirement: Label alignment per axis
 
 An axis SHALL take `labelAlign` (`horizontal` and `vertical`, as the `align` of `axisLabels()`) in the preset axis options (`axisX`, `axisY`) and in the axes of `cartesianAxes()`. It SHALL align that axis's SVG text labels and win over the `align` of `axisLabels()`. HTML labels SHALL ignore it, as they ignore `align`.
@@ -543,22 +495,3 @@ An axis factory, and the axis it creates, SHALL be able to declare a transform: 
 
 - **WHEN** `barChart` gets `axisY: { type: factory }` and the factory declares a transform
 - **THEN** the bar chart's value axis carries that transform
-
-### Requirement: Trend lines on transformed axes
-
-On axes with a transform, `trendLine()` SHALL fit its least-squares straight line to the transformed values (`forward(x)` on a scale X axis, the index on a step axis, and `forward(y)`), skip values whose transformed value isn't a finite number, and draw a straight line between the fitted ends, placed by their values (`inverse` of the fitted transformed values). The context's slope and intercept SHALL be those of the line in transformed values. The values at the line's ends SHALL count towards the Y axis's range as values. On axes without a transform, the fit SHALL be the same as before.
-
-#### Scenario: An exponential trend on a log axis
-
-- **WHEN** a line chart on a base 10 log Y axis has the values 1, 10, 100 and 1,000 on a step X axis and a `trendLine()` layer
-- **THEN** the trend line runs from the point of the first value to the point of the last, and its context has the slope 1 and the intercept 0
-
-#### Scenario: Values without a place
-
-- **WHEN** a series on a log Y axis has the values 0, 10, 100 and 1,000
-- **THEN** the trend line is fitted to 10, 100 and 1,000 only
-
-#### Scenario: Linear axes unchanged
-
-- **WHEN** a line chart's series `[1, 2, 4, 3, 5]` on the default axes gets `trendLine()`
-- **THEN** its context has the slope 0.9, as before

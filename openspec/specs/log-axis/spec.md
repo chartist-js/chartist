@@ -132,13 +132,13 @@ Labels SHALL show the tick value as a number by default. `labelTransform` SHALL 
 
 ### Requirement: Layers on a log axis
 
-The core layers SHALL draw on a log axis without changes:
+The core layers and the essentials lines SHALL draw on a log axis without changes:
 
 - lines, points and areas at their log positions; areas SHALL close at the axis start;
 - bars SHALL grow from the axis start; a bar for zero or a negative value SHALL have no length;
 - `band()` edges at their log positions; `mark` SHALL compare values, not positions;
 - `targetLine()` at its value; a target line at zero or below SHALL sit at the axis start;
-- `trendLine()` SHALL fit its line in log space (see chart-composition, "Trend lines on transformed axes"), so it's straight on the axis and follows exponential growth on a log Y axis.
+- `trendLine()` SHALL fit its line in log space (see reference-lines, "Trend lines on transformed axes"), so it's straight on the axis and follows exponential growth on a log Y axis.
 
 #### Scenario: Bars from the axis start
 
