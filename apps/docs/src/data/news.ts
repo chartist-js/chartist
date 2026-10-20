@@ -25,7 +25,7 @@ export const NEWS: readonly NewsEntry[] = [
   {
     tag: 'New',
     title: '@chartist-js/essentials',
-    text: 'Axis titles that make room for themselves, in a new package for the additions people ask for most.',
+    text: 'Axis titles, trend lines, a log axis and more: the additions people ask for most, in a package of their own.',
     href: 'packages/essentials/',
     linkLabel: 'Meet it'
   },
