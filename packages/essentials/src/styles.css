@@ -41,3 +41,45 @@
   stroke-width: var(--ct-trend-line-width, 2px);
   stroke-dasharray: var(--ct-trend-line-dasharray, 6px 4px);
 }
+
+/*
+ * Value labels look like the axis labels unless the page says otherwise;
+ * `--ct-value-label-color: var(--ct-color)` gives them their series' color.
+ * Labels inside a bar sit on its fill, so they're white by default.
+ */
+.ct-value-label {
+  fill: var(--ct-value-label-color, var(--ct-label-color, rgba(0, 0, 0, 0.4)));
+  color: var(--ct-value-label-color, var(--ct-label-color, rgba(0, 0, 0, 0.4)));
+  font-size: var(--ct-value-label-size, var(--ct-label-size, 0.75rem));
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  .ct-value-label {
+    fill: var(
+      --ct-value-label-color,
+      var(
+        --ct-label-color,
+        light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.6))
+      )
+    );
+    color: var(
+      --ct-value-label-color,
+      var(
+        --ct-label-color,
+        light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.6))
+      )
+    );
+  }
+}
+
+.ct-value-label.ct-value-label-inside {
+  fill: var(--ct-value-label-inside-color, #fff);
+  color: var(--ct-value-label-inside-color, #fff);
+}
+
+/* HTML labels keep their line breaks. */
+span.ct-value-label {
+  display: block;
+  white-space: pre;
+  line-height: 1.2;
+}

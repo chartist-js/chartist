@@ -30,5 +30,13 @@
     "ignore": ["chartist"],
     "limit": "1.1 kB",
     "gzip": true
+  },
+  {
+    "name": "import { valueLabels } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ valueLabels }",
+    "ignore": ["chartist"],
+    "limit": "2.2 kB",
+    "gzip": true
   }
 ]

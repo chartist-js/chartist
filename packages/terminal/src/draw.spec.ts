@@ -10,7 +10,7 @@ import {
   type NodeRole,
   type SceneNode
 } from 'chartist';
-import { axisTitle, logAxis } from '@chartist-js/essentials';
+import { axisTitle, logAxis, valueLabels } from '@chartist-js/essentials';
 import { toPlainText } from './canvas.ts';
 import { drawScene, measureCells, terminalSize } from './draw.ts';
 
@@ -239,6 +239,21 @@ describe('target lines and bands', () => {
 });
 
 describe('bars', () => {
+  it('writes value labels next to the bars', () => {
+    const output = plain(
+      toScene(
+        barChartConfig(
+          { labels: ['a', 'b', 'c'], series: [[12, 47, 30]] },
+          { high: 60, layers: { above: [valueLabels()] } }
+        ),
+        terminalSize(40, 14)
+      )
+    );
+    for (const value of ['12', '47', '30']) {
+      expect(output).toContain(value);
+    }
+  });
+
   it('ends a vertical bar with an eighth block', () => {
     const output = plain(
       scene(1, 4, [withRole('line', { x1: 4, y1: 64, x2: 4, y2: 42 }, 'bar')])

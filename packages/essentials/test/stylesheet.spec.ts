@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { findAll, lineChartConfig, toScene } from 'chartist';
+import { barChartConfig, findAll, lineChartConfig, toScene } from 'chartist';
 import { applyStyles } from 'chartist/server';
-import { targetLine, trendLine } from '../src/index.ts';
+import { targetLine, trendLine, valueLabels } from '../src/index.ts';
 
 const require = createRequire(import.meta.url);
 // The built stylesheets; `test` depends on `build`.
@@ -116,5 +116,52 @@ describe('stylesheet', () => {
       fill: 'currentColor',
       'font-size': '0.75rem'
     });
+  });
+
+  it('gives value labels the core dark default', () => {
+    expect(
+      lightDark(
+        fallbackAfter(rule(css, '.ct-value-label', 1), '--ct-label-color,')
+      )
+    ).toEqual(
+      lightDark(fallbackAfter(rule(core, '.ct-label', 1), '--ct-label-color,'))
+    );
+  });
+
+  it('styles value labels on the server, white inside bars', () => {
+    const scene = toScene(
+      barChartConfig(
+        { labels: ['a', 'b'], series: [[5, 40]] },
+        {
+          stackBars: false,
+          layers: {
+            above: [
+              valueLabels({ barPosition: 'inside-end', overflow: 'show' })
+            ]
+          }
+        }
+      ),
+      { width: 600, height: 300 }
+    );
+    const styled = applyStyles(scene, [core, css]);
+    const labels = findAll(styled, { role: 'valueLabel' });
+    expect(labels[1].attrs).toMatchObject({
+      fill: '#fff',
+      'font-size': '0.75rem'
+    });
+    const page = '.ct-value-label { --ct-value-label-color: var(--ct-color); }';
+    const outside = applyStyles(
+      toScene(
+        barChartConfig(
+          { labels: ['a'], series: [[5]] },
+          { high: 10, layers: { above: [valueLabels()] } }
+        ),
+        { width: 600, height: 300 }
+      ),
+      [core, css, page]
+    );
+    expect(findAll(outside, { role: 'valueLabel' })[0].attrs.fill).toBe(
+      '#d70206'
+    );
   });
 });

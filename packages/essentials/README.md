@@ -2,7 +2,7 @@
 
 The Chartist additions people ask for most, as layers you add to a chart. They're kept out of the core, so charts that don't use them stay small, and they're made and released together with Chartist.
 
-It holds `axisTitle()`, `targetLine()`, `trendLine()` and `logAxis()` today. More layers and axes follow.
+It holds `axisTitle()`, `targetLine()`, `trendLine()`, `valueLabels()` and `logAxis()` today. More layers and axes follow.
 
 ## Install
 
@@ -153,6 +153,32 @@ lineChart(
 ```
 
 A target line takes `value`, `label`, `className`, the `axis` it's on (a Y axis draws it across, an X axis up and down) and where its label sits. A trend line's node knows its `slope`, `intercept` and `correlation`. On a log axis it's fitted to the logarithms, so it's straight there. Style them with `--ct-target-line-color`, `--ct-target-line-width`, `--ct-target-line-dasharray`, `--ct-trend-line-width` and `--ct-trend-line-dasharray`.
+
+## Value labels
+
+`valueLabels()` writes each value next to its point or bar: above points, past the ends of bars, and in the middle of stacked segments. Labels that don't fit their bar or would leave the chart move to where they fit:
+
+```ts
+import { barChart } from 'chartist';
+import { valueLabels } from '@chartist-js/essentials';
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3'], series: [[1250, 1830, 1470]] },
+  {
+    layers: {
+      above: [
+        valueLabels({
+          locale: 'en-US',
+          numberFormat: { style: 'currency', currency: 'USD' }
+        })
+      ]
+    }
+  }
+);
+```
+
+`format(item)` gets the same item as the `format` of `@chartist-js/tooltips`: `undefined` keeps the default text, `null` draws no label, and `\n` starts a new line. `pointPosition`, `barPosition` and `offset` place the labels, `roles` and `series` pick what gets one. Style them with `--ct-value-label-color`, `--ct-value-label-inside-color` and `--ct-value-label-size`.
 
 ## Log axis
 
