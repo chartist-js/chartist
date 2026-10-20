@@ -83,7 +83,10 @@ export function drawScene(scene: SceneNode): Canvas {
         case 'gridBackground':
           return;
         case 'grid':
-          drawGrid(canvas, grid, current.attrs);
+          // Minor grid lines would fill most rows at 16 px per row.
+          if (!current.ctx.minor) {
+            drawGrid(canvas, grid, current.attrs);
+          }
           return;
         case 'bar':
           drawBar(canvas, current.attrs, series);
@@ -509,7 +512,54 @@ interface LabelLine {
   readonly anchor: 'start' | 'middle' | 'end';
 }
 
+/** A quarter turn about the text's anchor: `rotate(-90 x y)` or `rotate(90 x y)`. */
+const QUARTER_TURN =
+  /^rotate\(\s*(-?90)[\s,]+(-?[\d.e+-]+)[\s,]+(-?[\d.e+-]+)\s*\)$/;
+
+/**
+ * Draws a text turned a quarter turn as a column, one character per row:
+ * bottom to top for −90°, top to bottom for 90°, aligned along the column
+ * by its `text-anchor`.
+ */
+function drawVertical(canvas: Canvas, current: SceneNode, turn: number): void {
+  const chars = [...(current.content ?? '')];
+  const x = Number(current.attrs.x);
+  const y = Number(current.attrs.y);
+  // Reading direction in rows: up for −90°, down for 90°.
+  const direction = turn < 0 ? -1 : 1;
+  const anchor = current.attrs['text-anchor'];
+  const offset =
+    anchor === 'middle'
+      ? chars.length / 2
+      : anchor === 'end'
+        ? chars.length
+        : 0;
+  // The line's center: its top is `textAscent` of a line from the baseline,
+  // toward the left for −90° and toward the right for 90°.
+  const column = Math.floor(
+    (x + direction * (textAscent - 0.5) * CELL_HEIGHT) / CELL_WIDTH
+  );
+  chars.forEach((char, index) => {
+    const row = Math.floor(
+      y / CELL_HEIGHT + direction * (index - offset + 0.5)
+    );
+    const below = canvas.cellAt(column, row)?.ink;
+    canvas.char(column, row, char, {
+      kind: 'label',
+      background: below?.kind === 'label' ? below.background : below?.series
+    });
+  });
+}
+
 function drawLabel(canvas: Canvas, current: SceneNode) {
+  const turn =
+    current.name === 'text'
+      ? QUARTER_TURN.exec(String(current.attrs.transform ?? ''))
+      : null;
+  if (turn) {
+    drawVertical(canvas, current, Number(turn[1]));
+    return;
+  }
   for (const line of labelLines(current)) {
     const chars = [...line.text];
     const anchor = line.x / CELL_WIDTH;

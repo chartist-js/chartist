@@ -73,6 +73,14 @@ export interface PointContext extends SeriesContext, ValueContext, Point {}
  * ends. Bars are clipped to the chart area.
  */
 export interface BarContext extends SeriesContext, ValueContext {
+  /** Whether the bar is horizontal (`horizontalBars`). */
+  readonly horizontal: boolean;
+  /**
+   * Whether the bar is a segment of a stack: stacked with `accumulate` or
+   * `accumulate-relative`, so its base is where the previous segment
+   * ends. False for `overlap`, whose bars all start at zero.
+   */
+  readonly stacked: boolean;
   /** The X of the bar's base, in px. */
   readonly x1: number;
   /** The Y of the bar's base, in px. */
@@ -133,8 +141,10 @@ export interface SliceContext extends SeriesContext {
 export interface GridContext extends NoSeries {
   /** The axis the line belongs to; `axis.dimension` is `x` or `y`. */
   readonly axis: ScaleAxis;
-  /** The tick's index. */
+  /** The tick's index, in `axis.minorTicks` for a minor grid line. */
   readonly index: number;
+  /** `true` for a grid line at one of the axis's `minorTicks`. */
+  readonly minor?: true;
   /** The X of the line's start, in px. */
   readonly x1: number;
   /** The Y of the line's start, in px. */
@@ -187,66 +197,6 @@ export interface PieLabelContext extends SeriesContext, Point {
   readonly index: number;
   /** The label as drawn. */
   readonly text: string;
-}
-
-/**
- * The context of a `targetLine` node: the line of a `targetLine()` layer,
- * across the chart area at a value on an axis. Its ends are in px in the
- * SVG.
- */
-export interface TargetLineContext extends NoSeries {
-  /** The axis the value is on; `axis.dimension` is `x` or `y`. */
-  readonly axis: ScaleAxis;
-  /** The value the line is drawn at. */
-  readonly value: number;
-  /** The line's label, if it has one. */
-  readonly label?: string;
-  /** The X of the line's start, in px. */
-  readonly x1: number;
-  /** The Y of the line's start, in px. */
-  readonly y1: number;
-  /** The X of the line's end, in px. */
-  readonly x2: number;
-  /** The Y of the line's end, in px. */
-  readonly y2: number;
-}
-
-/**
- * The context of a `targetLabel` node: the label of a target line, and
- * where it's anchored, in px in the SVG.
- */
-export interface TargetLabelContext extends NoSeries, Point {
-  /** The axis of the line's value. */
-  readonly axis: ScaleAxis;
-  /** The value of the line. */
-  readonly value: number;
-  /** The label as drawn. */
-  readonly text: string;
-}
-
-/**
- * The context of a `trendLine` node: the line a `trendLine()` layer fits
- * through a series' values, `y = slope * x + intercept` in the axes'
- * values (X is the value's index on a step axis). Its ends are in px in
- * the SVG.
- */
-export interface TrendLineContext {
-  /** The series' index in the chart's data, across layers. */
-  readonly seriesIndex: number;
-  /** Always absent: the line stands for the whole series. */
-  readonly valueIndex?: undefined;
-  /** How much the fitted value changes per unit of X. */
-  readonly slope: number;
-  /** The fitted value at X 0. */
-  readonly intercept: number;
-  /** The X of the line's start (the series' smallest X), in px. */
-  readonly x1: number;
-  /** The Y of the line's start, in px. */
-  readonly y1: number;
-  /** The X of the line's end (the series' largest X), in px. */
-  readonly x2: number;
-  /** The Y of the line's end, in px. */
-  readonly y2: number;
 }
 
 /**
@@ -409,18 +359,6 @@ export interface NodeRoles {
    * pie label (SVG `text`). Check `ctx.kind` to tell them apart.
    */
   label: { ctx: AxisLabelContext | PieLabelContext; attrs: object };
-  /**
-   * A line of a `targetLine()` layer: a `line` across the chart area
-   * (class `ct-target-line`).
-   */
-  targetLine: { ctx: TargetLineContext; attrs: LineAttrs };
-  /** A target line's label: SVG `text` (class `ct-target-label`). */
-  targetLabel: { ctx: TargetLabelContext; attrs: TextAttrs };
-  /**
-   * The fitted line of a `trendLine()` layer through a series: a `line`
-   * (class `ct-trend-line`).
-   */
-  trendLine: { ctx: TrendLineContext; attrs: LineAttrs };
   /** A filled piece of a `band()` layer: a `path` (class `ct-band-area`). */
   band: { ctx: BandContext; attrs: PathAttrs };
 }

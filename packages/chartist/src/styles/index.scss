@@ -129,31 +129,6 @@
 }
 
 // A series class on the element or a series group around it wins over the default color.
-@mixin ct-chart-target-line(
-  $ct-target-line-color: $ct-target-line-color,
-  $ct-target-line-width: $ct-target-line-width,
-  $ct-target-line-dasharray: $ct-target-line-dasharray
-) {
-  fill: none;
-  stroke: var(
-    --ct-color,
-    var(--ct-target-line-color, #{$ct-target-line-color})
-  );
-  stroke-width: var(--ct-target-line-width, #{$ct-target-line-width});
-  stroke-dasharray: var(
-    --ct-target-line-dasharray,
-    #{ct-or-none($ct-target-line-dasharray)}
-  );
-}
-
-@mixin ct-chart-target-label(
-  $ct-target-line-color: $ct-target-line-color,
-  $ct-text-size: $ct-text-size
-) {
-  fill: var(--ct-color, var(--ct-target-line-color, #{$ct-target-line-color}));
-  font-size: var(--ct-label-size, #{$ct-text-size});
-}
-
 @mixin ct-chart-band-area(
   $ct-band-color: $ct-band-color,
   $ct-band-opacity: $ct-band-opacity
@@ -163,19 +138,6 @@
   fill-opacity: var(--ct-band-opacity, #{$ct-band-opacity});
 }
 
-@mixin ct-chart-trend-line(
-  $ct-trend-line-width: $ct-trend-line-width,
-  $ct-trend-line-dasharray: $ct-trend-line-dasharray
-) {
-  fill: none;
-  stroke: var(--ct-color);
-  stroke-width: var(--ct-trend-line-width, #{$ct-trend-line-width});
-  stroke-dasharray: var(
-    --ct-trend-line-dasharray,
-    #{ct-or-none($ct-trend-line-dasharray)}
-  );
-}
-
 // Sets the series color as `--ct-color`, which the series' elements use.
 @mixin ct-chart-series-color($color) {
   --ct-color: #{$color};
@@ -183,15 +145,12 @@
   .#{$ct-class-point},
   .#{$ct-class-line},
   .#{$ct-class-bar},
-  .#{$ct-class-slice-donut},
-  .#{$ct-class-trend-line},
-  .#{$ct-class-target-line} {
+  .#{$ct-class-slice-donut} {
     stroke: var(--ct-color);
   }
 
   .#{$ct-class-slice-pie},
   .#{$ct-class-area},
-  .#{$ct-class-target-label},
   .#{$ct-class-band-area} {
     fill: var(--ct-color);
   }
@@ -297,6 +256,29 @@
     );
   }
 
+  .#{$ct-class-grid}.#{$ct-class-grid-minor} {
+    $minor-dark: $ct-grid-minor-color-dark;
+    @if $minor-dark == null and $ct-grid-color-dark {
+      $minor-dark: rgba(255, 255, 255, 0.08);
+    }
+
+    stroke: var(--ct-grid-minor-color, #{$ct-grid-minor-color});
+    stroke-width: var(--ct-grid-minor-width, #{$ct-grid-minor-width});
+    stroke-dasharray: var(
+      --ct-grid-minor-dasharray,
+      #{ct-or-none($ct-grid-minor-dasharray)}
+    );
+
+    @if $minor-dark {
+      @supports (color: light-dark(#000, #fff)) {
+        stroke: var(
+          --ct-grid-minor-color,
+          light-dark(#{$ct-grid-minor-color}, #{$minor-dark})
+        );
+      }
+    }
+  }
+
   .#{$ct-class-grid-background} {
     fill: var(--ct-grid-background-fill, #{$ct-grid-background-fill});
   }
@@ -327,20 +309,8 @@
     @include ct-chart-donut($ct-donut-width);
   }
 
-  .#{$ct-class-target-line} {
-    @include ct-chart-target-line();
-  }
-
-  .#{$ct-class-target-label} {
-    @include ct-chart-target-label($ct-target-line-color, $ct-text-size);
-  }
-
   .#{$ct-class-band-area} {
     @include ct-chart-band-area();
-  }
-
-  .#{$ct-class-trend-line} {
-    @include ct-chart-trend-line();
   }
 
   @if $ct-include-colored-series {

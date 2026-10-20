@@ -1,0 +1,98 @@
+---
+title: Axis titles
+description: Name an axis on any side of the chart. The title reserves its own room, so it never overlaps the labels.
+order: 1
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+A chart of "1200, 1450, 1380" says little until you know they're visits. `axisTitle()` puts a name next to an axis. It measures its text and reserves that much room beside the axis labels, so the drawing area shrinks a little and you don't have to tune `chartPadding` until the title stops covering the labels.
+
+<LiveExample
+  title='Visits per day'
+  label='A line chart of visits per day, with the title Day of the week below the X axis and Visits beside the Y axis'
+  gallery='essentials/axis-titles'
+/>
+
+## One title per axis
+
+A layer draws one title, for the axis you name with `axis`. On the presets, the axes are `x` and `y`, wherever they sit:
+
+```ts
+import { lineChart } from 'chartist';
+import { axisTitle } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  { labels: ['Mon', 'Tue', 'Wed'], series: [[12, 9, 7]] },
+  {
+    axisX: { position: 'start' },
+    layers: {
+      above: [
+        axisTitle({ axis: 'x', text: 'Day' }),
+        axisTitle({ axis: 'y', text: 'Visits' })
+      ]
+    }
+  }
+);
+```
+
+With `position: 'start'` the X axis is at the top, and so is its title. On horizontal bars, `x` is the value axis at the bottom. An empty `text` draws nothing and takes no room, which is handy in [responsive options](../../../docs/responsive/) that drop the title on small screens.
+
+## Several axes
+
+In a [composed chart](../../../docs/composed-charts/), use the ids you gave the axes. Each title sits outside its axis's labels, on the axis's side:
+
+<LiveExample
+  title='Two Y axes, each named'
+  label='Revenue in EUR as bars on the left axis and ad spend in USD as a line on the right axis, with a title beside each Y axis and the year at the end of the X axis'
+  gallery='essentials/axis-titles-composed'
+/>
+
+Titles on the same side stack outward in the order of `layers`. With two Y axes on the left, list their titles in the order of the axes, so each title lines up with its own labels.
+
+## Placement
+
+| Option  | What it does                                                                                                                                   |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `align` | `start`, `middle` (default) or `end` along the axis. The start of an X axis is its left, the start of a Y axis its bottom.                     |
+| `flip`  | Left and right titles read from bottom to top; `flip: true` turns them to read from top to bottom. Titles of top and bottom axes don't change. |
+| `gap`   | The space between the title and the axis labels, in px (4 by default).                                                                         |
+
+The right axis above uses `flip: true`, so its title faces the chart, and the year is aligned to the `end` of the X axis.
+
+## Styling
+
+The title is an SVG `text` with the classes `ct-axis-title`, `ct-horizontal` (top and bottom) or `ct-vertical` (left and right), and `ct-start` (top and left) or `ct-end` (bottom and right). It looks like the axis labels until you say otherwise:
+
+```css
+.ct-axis-title {
+  --ct-axis-title-color: #555;
+  --ct-axis-title-size: 0.875rem;
+  font-weight: 600;
+}
+```
+
+`--ct-axis-title-color` and `--ct-axis-title-size` fall back to `--ct-label-color` and `--ct-label-size`, so a page that restyles the labels restyles the titles too. The room follows the size: a larger font reserves a taller line. `className` adds classes (`ct-series-b` gives a title the color of the second series), and `classNames: { title }` replaces `ct-axis-title`.
+
+In `compose` listeners and plugins, a title has the role `axisTitle`, with its axis, side, text and position in `ctx`.
+
+## On the server and in the terminal
+
+Titles are SVG text in every label mode, so [server rendering](../../../docs/server-rendering/) draws them, `applyStyles()` styles them, and hydration takes them over. On the server, the room comes from Chartist's text estimate. In the browser it comes from the stylesheet's font; a chart that takes over server markup keeps the server's room until its next resize, so hydration repairs nothing. `@chartist-js/terminal` draws them too, vertical titles in a column of their own.
+
+## Coming from chartist-plugin-axistitle
+
+The 1.x plugin drew titles in the `created` event and reserved nothing, so its titles needed an `offset` and a `chartPadding` that left room for them. `axisTitle()` reserves the room itself:
+
+| `chartist-plugin-axistitle` | `axisTitle()`                                                                       |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| `axisX` / `axisY`           | One layer per axis: `axis: 'x'` or `axis: 'y'`                                      |
+| `axisTitle`                 | `text`                                                                              |
+| `axisClass`                 | `classNames: { title }`                                                             |
+| `textAnchor`                | `align`                                                                             |
+| `flipTitle`                 | `flip`                                                                              |
+| `offset`                    | Not needed: the title sits in its own room. `gap` sets the space to the labels.     |
+| A function as title         | Change the text with `update()` or [responsive options](../../../docs/responsive/). |
+
+Next: every option on the [API page](../api/), or how a layer reserves room in [Custom layers](../../../docs/custom-layers/).

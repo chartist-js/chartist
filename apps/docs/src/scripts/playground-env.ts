@@ -6,6 +6,14 @@
 import { encodeShare } from '@chartist/playground/share';
 import pluginFiles from '../data/plugin-files.json';
 
+/** A plugin's served files, as in plugin-files.json. */
+interface PluginFiles {
+  readonly script: string;
+  readonly module?: string;
+  readonly style?: string;
+  readonly license: string;
+}
+
 // Served by integrations/playground-lib.mjs, with compat.js, live.js and
 // server.js next to it.
 const LIB = `${import.meta.env.BASE_URL.replace(/\/?$/, '/')}playground-lib/`;
@@ -18,7 +26,11 @@ export const stylesUrl = new URL(`${LIB}index.css`, location.href).href;
  */
 export const types = {
   url: LIB,
-  packages: { '@chartist-js/terminal': 'terminal/index.d.ts' }
+  packages: {
+    '@chartist-js/terminal': 'terminal/index.d.ts',
+    '@chartist-js/essentials': 'essentials/index.d.ts',
+    '@chartist-js/tooltips': 'tooltips/index.d.ts'
+  }
 };
 const lib = (path: string) => new URL(`${LIB}${path}`, location.href).href;
 
@@ -33,19 +45,23 @@ export const imports: Record<string, string> = {
   // Its build imports `chartist`, which the same map resolves.
   '@chartist-js/terminal': lib('terminal/index.js'),
   '@chartist-js/terminal/styles.css': lib('terminal/styles.css'),
+  '@chartist-js/essentials': lib('essentials/index.js'),
+  '@chartist-js/essentials/styles.css': lib('essentials/styles.css'),
+  '@chartist-js/tooltips': lib('tooltips/index.js'),
+  '@chartist-js/tooltips/styles.css': lib('tooltips/styles.css'),
   'match-container': lib('match-container.js'),
   ...Object.fromEntries(
-    Object.entries(pluginFiles).flatMap(([name, files]) => {
-      const file = (path: string) =>
-        lib(`plugins/${name}/${path.slice(path.lastIndexOf('/') + 1)}`);
-      const entries = [
-        [name, file('module' in files ? files.module : files.script)]
-      ];
-      if ('style' in files) {
-        entries.push([`${name}/style`, file(files.style)]);
+    Object.entries(pluginFiles as Record<string, PluginFiles>).flatMap(
+      ([name, files]) => {
+        const file = (path: string) =>
+          lib(`plugins/${name}/${path.slice(path.lastIndexOf('/') + 1)}`);
+        const entries = [[name, file(files.module ?? files.script)]];
+        if (files.style) {
+          entries.push([`${name}/style`, file(files.style)]);
+        }
+        return entries;
       }
-      return entries;
-    })
+    )
   )
 };
 

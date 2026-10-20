@@ -46,6 +46,34 @@ describe('Charts', () => {
       options = {};
     });
 
+    describe('meta with reverseData (#1534)', () => {
+      it('follows the reversed values', async () => {
+        data = {
+          labels: ['a', 'b', 'c'],
+          series: [
+            [
+              { value: 1, meta: 'a1' },
+              { value: 2, meta: 'a2' },
+              { value: 3, meta: 'a3' }
+            ]
+          ]
+        };
+        options = { reverseData: true };
+        await createChart();
+        const bars = Array.from(fixture.wrapper.querySelectorAll('.ct-bar'));
+        expect(
+          bars.map(bar => [
+            bar.getAttributeNS(namespaces.ct, 'value'),
+            deserialize(bar.getAttributeNS(namespaces.ct, 'meta'))
+          ])
+        ).toEqual([
+          ['3', 'a3'],
+          ['2', 'a2'],
+          ['1', 'a1']
+        ]);
+      });
+    });
+
     describe('grids', () => {
       beforeEach(() => {
         data = {

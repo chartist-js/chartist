@@ -11,6 +11,7 @@ import type {
 } from '../core/types';
 import type {
   Area,
+  ExtentContext,
   Layer,
   NormalizedChartData,
   PreparedData
@@ -61,6 +62,34 @@ export interface AxisExtent {
 }
 
 /**
+ * How an axis that isn't linear in its values maps them: the axis is
+ * linear in `forward(value)`, as a log axis is in the logarithm of its
+ * values. Layers that fit lines, such as `trendLine()` from
+ * `@chartist-js/essentials`, fit them in that space, so the lines are
+ * straight on the axis.
+ *
+ * @example
+ * ```ts
+ * import type { AxisTransform } from 'chartist';
+ *
+ * // A base 10 log scale.
+ * const log10: AxisTransform = {
+ *   forward: value => Math.log10(value),
+ *   inverse: value => 10 ** value
+ * };
+ * ```
+ */
+export interface AxisTransform {
+  /**
+   * The value in the space the axis is linear in; `NaN` or an infinite
+   * number for a value the axis has no place for (zero on a log axis).
+   */
+  forward(value: number): number;
+  /** The value of a number in that space: the inverse of `forward`. */
+  inverse(value: number): number;
+}
+
+/**
  * A positioned axis: ticks, range and projection into px along the axis.
  * An {@link AxisFactory} creates it once the chart area is known; layers
  * read it to place what they draw.
@@ -79,6 +108,17 @@ export interface ScaleAxis {
    * axis, numbers on a scale.
    */
   readonly ticks: readonly Label[];
+  /**
+   * Values between the ticks that get a grid line without a label, such
+   * as 20 to 90 between 10 and 100 on a log axis. The grid draws them
+   * beneath the other grid lines, with the class `ct-grid-minor`.
+   */
+  readonly minorTicks?: readonly number[];
+  /**
+   * How the axis maps its values, when it isn't linear in them; see
+   * {@link AxisTransform}.
+   */
+  readonly transform?: AxisTransform;
   /**
    * The values at the axis start (`min`) and end (`max`). Step axes have
    * none.
@@ -109,6 +149,13 @@ export interface AxisFactory {
    * the line and bar layers center on `step` axes.
    */
   readonly kind: string;
+  /**
+   * How the axes of this type map their values, when they aren't linear
+   * in them. Declared on the factory too, so layers know it before the
+   * axes exist (see {@link ExtentContext}); the axis it creates carries
+   * the same one.
+   */
+  readonly transform?: AxisTransform;
   /**
    * Creates the axis for a chart area and data. Runs on every layout, so
    * after resizes too.

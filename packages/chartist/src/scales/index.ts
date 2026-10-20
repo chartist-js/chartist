@@ -9,6 +9,7 @@ export type {
   AxisExtent,
   AxisFactory,
   AxisSetup,
+  AxisTransform,
   CartesianAxes,
   ChartAxes,
   LegacyAxisClass,

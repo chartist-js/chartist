@@ -12,6 +12,8 @@
 @import './tokens.css';
 @import 'chartist/styles.css' layer(components);
 @import 'chartist/themes/accessible.css' layer(components);
+@import '@chartist-js/essentials/styles.css' layer(components);
+@import '@chartist-js/tooltips/styles.css' layer(components);
 @import './chart-theme.css' layer(components);
 @import './base.css' layer(components);
 @import './ui.css' layer(components);

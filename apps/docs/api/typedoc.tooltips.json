@@ -1,0 +1,17 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["../../../packages/tooltips/src/index.ts"],
+  "tsconfig": "./tsconfig.tooltips.json",
+  "json": "../src/generated/api/tooltips.json",
+  "excludeExternals": true,
+  "excludeInternal": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "sort": ["source-order"],
+  "validation": {
+    "notExported": false,
+    "invalidLink": true,
+    "notDocumented": false
+  },
+  "logLevel": "Warn"
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "import { axisTitle } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ axisTitle }",
+    "ignore": ["chartist"],
+    "limit": "700 B",
+    "gzip": true
+  },
+  {
+    "name": "import { logAxis } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ logAxis }",
+    "ignore": ["chartist"],
+    "limit": "1 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { targetLine } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ targetLine }",
+    "ignore": ["chartist"],
+    "limit": "700 B",
+    "gzip": true
+  },
+  {
+    "name": "import { trendLine } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ trendLine }",
+    "ignore": ["chartist"],
+    "limit": "1.1 kB",
+    "gzip": true
+  },
+  {
+    "name": "import { valueLabels } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ valueLabels }",
+    "ignore": ["chartist"],
+    "limit": "2.2 kB",
+    "gzip": true
+  }
+]

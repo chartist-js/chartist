@@ -343,3 +343,23 @@ describe('classic scripts by bare name', () => {
     );
   });
 });
+
+test('stackblitz project adds every @chartist-js package the example imports', () => {
+  const project = stackblitzProject(
+    {
+      'index.html': html,
+      'src/main.ts': [
+        "import { axisTitle } from '@chartist-js/essentials';",
+        "import '@chartist-js/essentials/styles.css';",
+        "import { tooltips } from '@chartist-js/tooltips';"
+      ].join('\n')
+    },
+    { title: 'Packages', chartistVersion: '^2.2.0' }
+  );
+  const pkg = JSON.parse(project.files['package.json']);
+  expect(pkg.dependencies).toEqual({
+    chartist: '^2.2.0',
+    '@chartist-js/essentials': '^2.2.0',
+    '@chartist-js/tooltips': '^2.2.0'
+  });
+});

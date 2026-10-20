@@ -3,9 +3,9 @@
  * from elsewhere: monthly downloads and the last release from the facts
  * snapshot, the files the site serves from plugin-files.json, the version
  * from the docs app's package.json. Plugins that don't run on v2 for a
- * reason in their own code aren't listed; `chartist-plugin-tooltip` (the
- * original) is left out because it needs jQuery, and the tooltips fork
- * replaced it.
+ * reason in their own code aren't listed. Plugins an official package
+ * replaces (axis titles, tooltips) aren't listed either; their packages
+ * are on /packages/.
  */
 import { z } from 'astro/zod';
 import pkg from '../../package.json' with { type: 'json' };
@@ -55,21 +55,6 @@ const schema = z.array(
 
 export const PLUGINS = schema.parse([
   {
-    package: 'chartist-plugin-axistitle',
-    registers: 'ctAxisTitle',
-    title: 'Axis title',
-    description:
-      'Adds a title to the X and Y axes, with an offset and text anchor of your choice.',
-    author: 'Alex Stanbury',
-    repository: 'https://github.com/astanb/chartist-plugin-axistitle',
-    license: 'MIT',
-    types: ['line', 'bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/axistitle'
-  },
-  {
     package: 'chartist-plugin-legend',
     registers: 'legend',
     title: 'Legend',
@@ -85,37 +70,6 @@ export const PLUGINS = schema.parse([
     example: 'plugins/legend',
     hint: 'Click a legend entry to hide its series.',
     note: 'It ships no stylesheet; its README has the CSS, as in the example.'
-  },
-  {
-    package: 'chartist-plugin-tooltips',
-    registers: 'tooltip',
-    title: 'Tooltips',
-    description:
-      "Shows a tooltip with a point's value and meta data on hover, for lines, bars and slices.",
-    author: 'Markus Padourek',
-    license: 'MIT',
-    types: ['line', 'bar', 'pie'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/tooltips',
-    hint: 'Hover a point to see its tooltip.',
-    note: "The most used fork of the original tooltip plugin, without jQuery. Its repository is gone; the npm package remains. For a maintained alternative, see Stefan Kalscheuer's tooltips below."
-  },
-  {
-    package: 'chartist-plugin-pointlabels',
-    registers: 'ctPointLabels',
-    title: 'Point labels',
-    description:
-      'Writes each value next to its point, so readers see exact numbers without hovering.',
-    author: 'Gion Kunz',
-    repository: 'https://github.com/gionkunz/chartist-plugin-pointlabels',
-    license: 'WTFPL',
-    types: ['line', 'bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/pointlabels'
   },
   {
     package: 'chartist-hover',
@@ -166,20 +120,6 @@ export const PLUGINS = schema.parse([
     example: 'plugins/fill-donut'
   },
   {
-    package: 'chartist-plugin-barlabels',
-    registers: 'ctBarLabels',
-    title: 'Bar labels',
-    description: 'Writes each value at the end of its bar.',
-    author: 'Matt Gibbs',
-    repository: 'https://github.com/mtgibbs/chartist-plugin-barlabels',
-    license: 'WTFPL',
-    types: ['bar'],
-    loads: 'script',
-    chartist: '0.x',
-    ssr: false,
-    example: 'plugins/barlabels'
-  },
-  {
     package: 'chartist-plugin-accessibility',
     registers: 'ctAccessibility',
     title: 'Accessibility',
@@ -209,21 +149,6 @@ export const PLUGINS = schema.parse([
     chartist: '0.x',
     ssr: false,
     example: 'plugins/threshold'
-  },
-  {
-    package: '@stklcode/chartist-plugin-tooltips',
-    title: 'Tooltips (maintained)',
-    description:
-      'Shows a tooltip with the value and meta data on hover. A maintained version of the tooltips plugin, written for 1.x, with an ES module build.',
-    author: 'Stefan Kalscheuer',
-    repository: 'https://github.com/stklcode/chartist-plugin-tooltip',
-    license: 'MIT',
-    types: ['line', 'bar', 'pie'],
-    loads: 'module',
-    chartist: '1.x',
-    ssr: false,
-    example: 'plugins/stklcode-tooltips',
-    hint: 'Hover a point to see its tooltip.'
   }
 ]);
 

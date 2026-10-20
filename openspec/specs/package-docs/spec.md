@@ -19,7 +19,7 @@ The site SHALL have a "Packages" item in the header navigation, on desktop and i
 
 `/packages/` SHALL present every `@chartist-js` package the site documents as a card, one package per row, with the preview next to the details on wide screens and above them at phone width. Each card SHALL show a preview of what the package draws, rendered by the package itself and part of the page's HTML, the package name and version, one sentence on what it does, its license (see "Package licenses"), and links to its overview, its guides and its API page. Install commands SHALL follow the prerelease rule of the rest of the site (`@next` while the version is a prerelease).
 
-The index intro SHALL say that packages are made by Chartist's author, that some are free and some come with a paid license, and SHALL link to `/plugins/` for plugins from the community.
+The index intro SHALL say that packages are made by Chartist's author and that they're open source, and SHALL link to `/plugins/` for plugins from the community. It SHALL NOT mention paid packages while none is listed.
 
 #### Scenario: The terminal package
 
@@ -38,17 +38,17 @@ The index intro SHALL say that packages are made by Chartist's author, that some
 
 ### Requirement: Package licenses
 
-Every documented package SHALL declare its license as free or commercial. A free package SHALL show the name of its license (for example MIT) and its install command. A commercial package SHALL show that it's licensed per year with support included, and a link to get a license in place of the install command. The package index and the landing page SHALL show the same license for a package.
+Every documented package SHALL declare its license as open source or premium. An open source package SHALL show the label "Open source", the name of its license (for example MIT) and its install command. A premium package SHALL show the label "Premium", that it's licensed per year with support included, and a link to get a license in place of the install command. The package index and the landing page SHALL show the same license for a package.
 
-#### Scenario: A free package
+#### Scenario: An open source package
 
 - **WHEN** a visitor looks at the card of `@chartist-js/terminal`
-- **THEN** it says the package is free under its license and shows its install command
+- **THEN** it says the package is open source under its license and shows its install command
 
-#### Scenario: A commercial package
+#### Scenario: A premium package
 
-- **WHEN** a package is registered as commercial and a visitor looks at its card
-- **THEN** the card says it's a yearly license with support, shows a "Get a license" link to the address the package registers, and shows no install command
+- **WHEN** a package is registered as premium and a visitor looks at its card
+- **THEN** the card says it's premium, a yearly license with support, shows a "Get a license" link to the address the package registers, and shows no install command
 
 ### Requirement: Package subsite
 

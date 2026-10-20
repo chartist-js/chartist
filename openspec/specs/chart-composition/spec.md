@@ -244,30 +244,6 @@ The handles of `lineChart`, `barChart` and `pieChart` SHALL change the chart's o
 - **WHEN** `chart()` draws a bar layer and a line layer without `className`
 - **THEN** its SVG has the class `ct-chart-bar`
 
-### Requirement: Target line layer
-
-The `targetLine()` layer SHALL draw one line across the chart area at a constant value on one axis: an axis id, by default the first Y axis. Several lines SHALL be several layers. On a Y axis the line SHALL be horizontal; on an X axis, vertical. On a step axis the value SHALL be a position by index, as for the axis's ticks. The line SHALL accept an optional label and an optional class. A label SHALL be drawn as SVG text next to the line, inside the chart area, at the line's end by default or at its start. The layer SHALL report its value as its extent, so the axis includes it (an axis's own `low` and `high` still win). A value outside the axis's range SHALL draw nothing. A layer without a value SHALL throw when it's created. The layer SHALL support only `cartesian` coordinates.
-
-#### Scenario: One labeled line
-
-- **WHEN** a line chart's Y axis goes from 0 to 800 and `targetLine({ value: 1000, label: 'Target' })` is one of its layers
-- **THEN** the Y axis goes up to at least 1000, and the output has one horizontal `line.ct-target-line` across the chart area at 1000 and a `text.ct-target-label` reading "Target" at its right end
-
-#### Scenario: Several lines
-
-- **WHEN** `targetLine({ value: 20, label: 'Min' })` and `targetLine({ value: 80, label: 'Max', className: 'ct-series-b' })` are two layers of a chart
-- **THEN** the output has two target lines in that order, and the second line and its label carry the class `ct-series-b`
-
-#### Scenario: A vertical line
-
-- **WHEN** a horizontal bar chart has `targetLine({ axis: 'value', value: 50 })` and `value` is its X axis id
-- **THEN** the target line is vertical, at 50 on that axis, from the top to the bottom of the chart area
-
-#### Scenario: Unknown axis
-
-- **WHEN** a target line names an axis id the chart doesn't have
-- **THEN** creating the chart throws an error naming the layer and the id
-
 ### Requirement: Band layer
 
 The `band()` layer SHALL fill the area between a low and a high edge, on one X and one Y axis like the line layer. Each edge SHALL be a constant value (a number), values of its own (an array with one value per label, a number, `{ x, y }` or `null` for a hole), or a series: its name, or `{ series }` with a name or an index, since a bare number is a constant. Values of its own SHALL draw like the same values given as a series, without being part of the chart's data, and SHALL count towards the Y axis's range. Alternatively, `series` SHALL select a group of series, and the band SHALL cover the minimum to the maximum of their values at each value index. Series the band uses SHALL stay visible to the other layers: a layer without a series selection still draws them. The edges SHALL follow the same interpolation option as the line layer (`lineSmooth`, smooth by default), and `align: 'center'` SHALL line the band up with bars on a step axis as it does for lines. Where an edge has a hole, or no series of a group has a value, the band SHALL break, like a line's area. With `mark: true`, the band SHALL give every `point` and `bar` node of the chart whose value at its value index lies between the band's edges (edges included) the class `ct-in-band`, and every other one with a value the class `ct-out-band`; nodes at an index where the band has a hole SHALL get neither. Without `mark`, the band SHALL change no other layer's nodes. The band's values SHALL count towards its axes' range. The layer SHALL support only `cartesian` coordinates.
@@ -398,25 +374,6 @@ The `bar()` layer SHALL take an `offset` in px that moves all its bars along the
 - **WHEN** a horizontal bar layer has `offset: 6`
 - **THEN** its bars are drawn 6 px lower than without it
 
-### Requirement: Trend line layer
-
-The `trendLine()` layer SHALL fit a least-squares straight line through the values of each series it selects (all by default) and draw it from the series' smallest to its largest X: on a step axis X is the value index, on a scale axis the value's `x`. It SHALL skip holes, draw nothing for a series with fewer than two values, and take `x`, `y`, `align` (as the line layer) and `classNames`. Each line SHALL be a `line.ct-trend-line` with the role `trendLine` inside a series group with the series' classes, so it takes the series' color, and its context SHALL carry the series index, the slope and the intercept. The values at the line's ends SHALL count towards the Y axis's range. The layer SHALL support only `cartesian` coordinates.
-
-#### Scenario: A rising series
-
-- **WHEN** a line chart's series `[1, 2, 4, 3, 5]` gets `trendLine()` as an extra layer
-- **THEN** a `line.ct-trend-line` in `g.ct-series-a` runs from the fitted value at index 0 to the fitted value at index 4, and its context has the slope 0.9
-
-#### Scenario: Ends outside the values
-
-- **WHEN** the fitted line's end lies below the smallest value of the series
-- **THEN** the Y axis extends to include it
-
-#### Scenario: Too few values
-
-- **WHEN** a selected series has one value and holes
-- **THEN** no trend line is drawn for it
-
 ### Requirement: Label alignment per axis
 
 An axis SHALL take `labelAlign` (`horizontal` and `vertical`, as the `align` of `axisLabels()`) in the preset axis options (`axisX`, `axisY`) and in the axes of `cartesianAxes()`. It SHALL align that axis's SVG text labels and win over the `align` of `axisLabels()`. HTML labels SHALL ignore it, as they ignore `align`.
@@ -444,3 +401,131 @@ An axis SHALL take `labelAlign` (`horizontal` and `vertical`, as the `align` of 
 
 - **WHEN** a preset is created without `renderer`
 - **THEN** it renders with `domRenderer()`, as before
+
+### Requirement: Layers reserve room outside the drawing area
+
+A layer SHALL be able to define an optional `inset` method that returns the room it needs outside the drawing area, in px, for any of the sides `top`, `right`, `bottom` and `left`. It SHALL be called on every layout (the first one, resizes, updates and responsive changes), before the `layout` listeners, with the chart's size, its padding option, the layer's series, the chart's axis definitions (empty without axes), the coordinate system, the layer's index, the label mode and the renderer's text and style measuring. The room SHALL be added to the chart's padding before the axes take their offsets, so the drawing area shrinks by it and the axes and their labels stay next to the area. A value that isn't a finite number of 0 or more SHALL throw an error naming the layer.
+
+Each layer that reserved room SHALL get, as `insetArea` in the context its `compose` and `refine` get, one box per side it reserved, in px in the SVG: across the side, the room it reserved, just outside the axes on that side and the room of the layers listed before it; along the side, the extent of the drawing area. Layers that reserve room on the same side SHALL stack outward in the order of `layers`. The `layout` payload SHALL carry the reserved room per side and a padding that includes it; the boxes SHALL be computed before the `layout` listeners run. Custom layers SHALL be able to define `inset` like built-in ones. A chart without a layer that reserves room SHALL lay out and render exactly as before, with the same `layout` payload.
+
+#### Scenario: Room below the axis
+
+- **WHEN** a 400 × 300 px chart with the default padding and an X axis at the bottom with an offset of 30 has a custom layer whose `inset` returns `{ bottom: 20 }`
+- **THEN** the drawing area's bottom edge is at 300 − 5 − 20 − 30 = 245 px, the X axis labels sit below the area as without the layer, and the layer's `insetArea.bottom` box spans y 275 to 295 (between the axis band and the padding) and the area's width
+
+#### Scenario: Two layers on one side
+
+- **WHEN** two layers each reserve 16 px on the left
+- **THEN** the area's left edge moves in by 32 px, the first layer's box is next to the Y axis band, and the second layer's box is outside the first one
+
+#### Scenario: Multiple axes on one side
+
+- **WHEN** a chart has two Y axes on the left with offsets 40 and 50 and a layer reserves 20 px on the left
+- **THEN** the area's left edge is at the left padding plus 110 px, and the layer's box lies between the padding and the outer axis's band
+
+#### Scenario: Presets keep their labels next to the area
+
+- **WHEN** `lineChart` gets `layers: { above: [layer] }` and the layer reserves 24 px at the top, with the X axis at the top (`axisX: { position: 'start' }`)
+- **THEN** the X axis labels sit directly above the area, below the reserved box, as they would with `chartPadding.top` raised by 24
+
+#### Scenario: Room that depends on the size
+
+- **WHEN** a layer's `inset` returns more room at the bottom when the chart is narrower than 400 px, and the container shrinks from 600 to 300 px
+- **THEN** the chart lays out again with the larger room, without a call to `resolve` or `prepare` listeners
+
+#### Scenario: The layout payload
+
+- **WHEN** a `layout` listener runs on a chart whose layers reserve 20 px at the bottom
+- **THEN** its payload's `inset` is `{ top: 0, right: 0, bottom: 20, left: 0 }` and its padding's `bottom` is the padding option plus 20
+
+#### Scenario: No layer reserves room
+
+- **WHEN** a chart has no layer with `inset`, or every `inset` returns `undefined` or zeros
+- **THEN** its `layout` payload has no `inset`, its padding is the padding option, and its scene equals the scene of the same chart before `inset` existed
+
+#### Scenario: Invalid room
+
+- **WHEN** a layer of type `caption` returns `{ left: -4 }` or `{ left: NaN }`
+- **THEN** creating the chart throws an error that names `caption`
+
+#### Scenario: A pie chart
+
+- **WHEN** a pie chart has a layer that reserves 40 px on the right
+- **THEN** the pie is centered in the area left of the reserved room, and the layer's box spans the area's height on the right
+
+#### Scenario: Measured with the renderer
+
+- **WHEN** a chart with a layer that sizes its room with `measureText` is built with `toScene()`, with `chart()` in a browser and with the terminal renderer's cell measurement
+- **THEN** each uses its own text measurement for the room, as the axis labels do
+
+### Requirement: Minor grid lines
+
+A created axis SHALL be able to list minor ticks next to its ticks. `axisGrid()` and the presets' grids SHALL draw a grid line for each minor tick the axis places inside the chart area, when the axis shows its grid: a `line` with the axis's grid classes (`ct-grid` and the direction class) plus `ct-grid-minor` (the `gridMinor` class name of `axisGrid()`; the presets always use `ct-grid-minor`), the role `grid`, and a context with the axis, the minor tick's index and `minor: true`. An axis's minor grid lines SHALL come before its other grid lines in the scene, so they're drawn beneath them. Axis labels SHALL ignore minor ticks. The core stylesheet SHALL style `.ct-grid-minor` through `--ct-grid-minor-color`, `--ct-grid-minor-width` and `--ct-grid-minor-dasharray`, lighter than the other grid lines by default and following the color scheme like them. Axes without minor ticks SHALL produce the same scene as before minor ticks existed.
+
+#### Scenario: A custom axis with minor ticks
+
+- **WHEN** a custom axis factory creates an axis with ticks 0 and 10 and minor ticks 2, 4, 6 and 8, and the chart has `axisGrid()` and `axisLabels()`
+- **THEN** the output has four `line.ct-grid.ct-grid-minor` elements before the two other grid lines, and two labels
+
+#### Scenario: No grid
+
+- **WHEN** that axis has `showGrid: false`
+- **THEN** the output has no minor grid lines
+
+#### Scenario: Restyled with CSS
+
+- **WHEN** a page sets `--ct-grid-minor-color: red` on the chart
+- **THEN** the minor grid lines are red and the other grid lines keep their color
+
+#### Scenario: Unchanged charts
+
+- **WHEN** a chart uses only the core's axis types
+- **THEN** its scene is the same, node for node, as before minor ticks existed
+
+### Requirement: Axis transforms
+
+An axis factory, and the axis it creates, SHALL be able to declare a transform: a `forward` function, in whose results the axis is linear, and its `inverse`. A layer's `extent` SHALL receive the transforms of the X and Y axis it draws on, or none for axes without one. The presets SHALL keep the transform of an axis factory given as `axisX.type` or `axisY.type`. Axes without a transform SHALL behave as before.
+
+#### Scenario: A transform reaches the layers
+
+- **WHEN** a custom axis factory declares a square root transform and a custom layer reads its axes in `extent` and `compose`
+- **THEN** `extent` receives the transform for that axis id's direction, and the created axis in `compose` carries the same transform
+
+#### Scenario: Through a preset
+
+- **WHEN** `barChart` gets `axisY: { type: factory }` and the factory declares a transform
+- **THEN** the bar chart's value axis carries that transform
+
+### Requirement: Annotating layers
+
+A layer SHALL be able to define an optional `annotate` method, for layers that draw from where other layers drew, such as labels on bars. Once the nodes of every layer without `annotate` have been composed, keyed, refined and passed through the `compose` events, `annotate` SHALL be called with those finished top-level nodes, in the order of `layers`, and the annotating layer's own compose context. The nodes it returns SHALL be keyed with the annotating layer's index, refined and passed through the `compose` events like any layer's nodes, and SHALL be drawn after the nodes the layer's `compose` returned, at the layer's place in `layers`. An annotating layer SHALL NOT see the nodes of other annotating layers. The draw order SHALL stay the order of `layers`. Charts without an annotating layer SHALL render exactly as before. Custom layers SHALL be able to define `annotate` like built-in ones and the layers of maintained packages.
+
+#### Scenario: Labels on another layer's bars
+
+- **WHEN** a custom layer listed after a bar layer defines `annotate` that returns a `text` node at the end of every `bar` node it receives
+- **THEN** the output has one text per bar, at each bar's end, after the bars
+
+#### Scenario: Listeners run first
+
+- **WHEN** a `compose` listener drops the bar of value index 1 and adds the class `ct-high` to the bar of index 2
+- **THEN** `annotate` receives no bar for index 1 and the bar of index 2 with the class `ct-high`
+
+#### Scenario: Draw order
+
+- **WHEN** an annotating layer is listed before a line layer
+- **THEN** its nodes come before the line layer's nodes in the scene, and it still receives the line layer's points
+
+#### Scenario: The annotating layer's nodes
+
+- **WHEN** an annotating layer returns nodes with a role and a series and value index
+- **THEN** each gets a key with the annotating layer's index, and `compose` listeners receive them
+
+#### Scenario: Two annotating layers
+
+- **WHEN** a chart has two annotating layers
+- **THEN** neither receives the other's nodes
+
+#### Scenario: No annotating layer
+
+- **WHEN** a chart has no layer with `annotate`
+- **THEN** its scene equals the scene before annotating layers existed

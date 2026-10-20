@@ -204,7 +204,12 @@ export function line(options: LineLayerOptions = {}): Layer {
           area,
           shift,
           smoothing,
-          valueIndex => getMetaData(series, valueIndex)
+          // reverseData reverses the values; their meta follows (#1534).
+          valueIndex =>
+            getMetaData(
+              series,
+              options.reverseData ? values.length - 1 - valueIndex : valueIndex
+            )
         );
         const seriesContext = { series, seriesIndex, meta: seriesMeta };
 

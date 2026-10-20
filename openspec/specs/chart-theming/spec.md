@@ -72,25 +72,6 @@ The package SHALL ship an opt-in theme `chartist/themes/accessible.css` that set
 - **WHEN** the wrapper (or the page) sets `color-scheme: dark`
 - **THEN** the chart uses the dark values of the accessible palette
 
-### Requirement: Target line and band styles
-
-The default stylesheet SHALL style target lines, their labels and bands through custom properties with defaults: the target line's color, width and dash pattern (`--ct-target-line-color`, `--ct-target-line-width`, `--ct-target-line-dasharray`), and the band's color and opacity (`--ct-band-color`, `--ct-band-opacity`). By default a target line SHALL be a dashed line in the text color, and a band a light fill in the same color, so both read as references behind the data. A target line, label or band with a `ct-series-<letter>` class, or inside a series group, SHALL take that series' color from `--ct-color` instead. The defaults SHALL work in light and dark mode.
-
-#### Scenario: Theme with a property
-
-- **WHEN** a page sets `--ct-band-opacity: 0.3`
-- **THEN** every band's fill opacity is 0.3
-
-#### Scenario: Series color on a target line
-
-- **WHEN** a target line has the class `ct-series-c`
-- **THEN** its line and its label are drawn in the third series' color
-
-#### Scenario: Dark mode
-
-- **WHEN** the chart's text color changes for dark mode
-- **THEN** target lines and bands without a series class follow it
-
 ### Requirement: Defaults for a dark color scheme
 
 The default stylesheet SHALL give labels and grid lines light defaults where the chart's `color-scheme` is dark, in browsers that support `light-dark()`: light text for labels and light, translucent grid lines. Where the color scheme is light or not set, and in browsers without `light-dark()`, the defaults SHALL stay the 1.x values. `--ct-label-color` and `--ct-grid-color` SHALL win over these defaults, and a Sass setting SHALL turn the dark defaults off.
@@ -109,15 +90,6 @@ The default stylesheet SHALL give labels and grid lines light defaults where the
 
 - **WHEN** a dark page sets `--ct-label-color: orange`
 - **THEN** the labels are orange
-
-### Requirement: Trend line styles
-
-The default stylesheet SHALL draw trend lines dashed, in their series' color, with their width and dash pattern as custom properties (`--ct-trend-line-width`, `--ct-trend-line-dasharray`).
-
-#### Scenario: Series color
-
-- **WHEN** a trend line is drawn for the second series
-- **THEN** it has the second series' color and the default dash pattern
 
 ### Requirement: Styles for markup without inline styles
 
@@ -142,3 +114,17 @@ The rules SHALL NOT change how a chart drawn by `chart()`, a preset or a 1.x cla
 
 - **WHEN** the visual tests run after adding the rules
 - **THEN** every existing screenshot matches
+
+### Requirement: Band styles
+
+The default stylesheet SHALL style bands through custom properties with defaults: the band's color and opacity (`--ct-band-color`, `--ct-band-opacity`). By default a band SHALL be a light fill in the text color, so it reads as a reference behind the data. A band with a `ct-series-<letter>` class, or inside a series group, SHALL take that series' color from `--ct-color` instead. The defaults SHALL work in light and dark mode. The default stylesheet SHALL NOT style target lines or trend lines; the essentials stylesheet does.
+
+#### Scenario: Theme with a property
+
+- **WHEN** a page sets `--ct-band-opacity: 0.3`
+- **THEN** every band's fill opacity is 0.3
+
+#### Scenario: Dark mode
+
+- **WHEN** the chart's text color changes for dark mode
+- **THEN** bands without a series class follow it

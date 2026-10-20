@@ -11,7 +11,8 @@ export type ChartType =
   | 'pie'
   | 'composed'
   | 'styling'
-  | 'live';
+  | 'live'
+  | 'essentials';
 
 /** Named viewport presets the visual regression tests render an example at. */
 export type ViewportName = 'default' | 'tablet' | 'mobile' | 'mobile-landscape';
@@ -589,13 +590,6 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
-    id: 'composed/target-line',
-    title: 'Target lines on a bar chart',
-    description:
-      'Monthly sales against a goal and a minimum, added to the bar chart preset as extra layers.',
-    v2: true
-  }),
-  example({
     id: 'composed/band-chart',
     title: 'Band chart',
     description:
@@ -607,20 +601,6 @@ export const examples: Example[] = [
     title: 'Grouped stacked bars',
     description:
       'New and returning customers per quarter, one stack per year, drawn by two bar layers side by side.',
-    v2: true
-  }),
-  example({
-    id: 'composed/trend-line',
-    title: 'Bars with a trend line',
-    description:
-      'Monthly sign-ups as bars, with the least-squares trend through them added to the bar chart preset.',
-    v2: true
-  }),
-  example({
-    id: 'composed/scatter-regression',
-    title: 'Scatter plot with a regression line',
-    description:
-      'Ice cream sales against the temperature as points, with the least-squares line through them.',
     v2: true
   }),
   example({
@@ -705,5 +685,83 @@ export const examples: Example[] = [
       'New numbers and a switch between grouped and stacked bars in one update, every bar moving to its new place.',
     v2: true,
     settle: { at: 3200 }
+  }),
+  // Essentials: the layers and axes of @chartist-js/essentials.
+  example({
+    id: 'essentials/axis-titles',
+    title: 'Axis titles',
+    description:
+      'A line chart of visits per day with a title for each axis, each in room of its own.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/axis-titles-composed',
+    title: 'Axis titles on two Y axes',
+    description:
+      'Revenue in EUR and ad spend in USD on their own Y axes, each named, one title aligned to the end and one turned to face the chart.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/target-line',
+    title: 'Target lines on a bar chart',
+    description:
+      'Monthly sales against a goal and a minimum, added to the bar chart preset as extra layers.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/trend-line',
+    title: 'Bars with a trend line',
+    description:
+      'Monthly sign-ups as bars, with the least-squares trend through them added to the bar chart preset.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/scatter-regression',
+    title: 'Scatter plot with a regression line',
+    description:
+      'Ice cream sales against the temperature as points, with the least-squares line through them.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/value-labels-bars',
+    title: 'Value labels on bars',
+    description:
+      'Profit per quarter with each value past the end of its bar, and below it for a loss.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/value-labels-stacked',
+    title: 'Labels on stacked segments',
+    description:
+      'Hours per work order on three machines as stacked horizontal bars, each segment labeled with its order and hours.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/value-labels-line',
+    title: 'Labeled points with a unit',
+    description:
+      "Temperatures in two cities, each point labeled in degrees and in its series' color.",
+    v2: true
+  }),
+  example({
+    id: 'essentials/log-axis',
+    title: 'Log axis',
+    description:
+      'Users growing from 120 to 850,000 in six years on a log Y axis, where each tenfold step is the same height.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/moores-law',
+    title: "Moore's law, linear or log",
+    description:
+      'Transistors per processor from 1971 to 2022 on a log Y axis with minor grid lines, and a button that moves the points to a linear scale and back.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/log-log',
+    title: 'Log-log chart',
+    description:
+      'Body mass and metabolic rate from a mouse to an elephant on two log axes with minor grid lines, and the straight trend line of their power law.',
+    v2: true
   })
 ];

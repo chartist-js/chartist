@@ -22,18 +22,16 @@ test('a tile shows the plugin at a glance and opens its page', async ({
   page
 }) => {
   await page.goto('/plugins/');
-  const tile = page.locator('#chartist-plugin-axistitle');
-  await expect(tile).toContainText('Axis title');
-  await expect(tile).toContainText('Adds a title to the X and Y axes');
+  const tile = page.locator('#chartist-plugin-threshold');
+  await expect(tile).toContainText('Threshold');
+  await expect(tile).toContainText('Splits lines and bars at a value');
   await expect(tile.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
   await expect(tile.locator('.tag.warn', { hasText: 'Global' })).toBeVisible();
   await expect(tile.locator('.tag', { hasText: 'No SSR' })).toBeVisible();
   await expect(tile).toContainText('downloads a month');
   await tile.getByRole('link').click();
-  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-axistitle\/$/);
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Axis title'
-  );
+  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-threshold\/$/);
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Threshold');
   await page
     .getByRole('navigation', { name: 'Breadcrumb' })
     .getByRole('link', { name: 'Plugins' })
@@ -46,12 +44,12 @@ test('the tile previews run the plugins', async ({ page }) => {
   page.on('pageerror', error => errors.push(String(error)));
   await page.goto('/plugins/');
   const preview = page.locator(
-    '#chartist-plugin-pointlabels [data-gallery-preview]'
+    '#chartist-plugin-threshold [data-gallery-preview]'
   );
   await preview.scrollIntoViewIfNeeded();
-  // The plugin's labels, drawn by its published code in the thumbnail.
+  // The plugin's split, drawn by its published code in the thumbnail.
   await expect(
-    preview.frameLocator('iframe').locator('text.ct-label').first()
+    preview.frameLocator('iframe').locator('.ct-threshold-above').first()
   ).toBeAttached({ timeout: 10_000 });
   expect(errors).toEqual([]);
 });
@@ -59,26 +57,19 @@ test('the tile previews run the plugins', async ({ page }) => {
 test('a plugin page credits its author and links its sources', async ({
   page
 }) => {
-  await page.goto('/plugins/chartist-plugin-axistitle/');
+  await page.goto('/plugins/chartist-plugin-threshold/');
   const main = page.locator('article');
-  await expect(main).toContainText('Alex Stanbury');
-  await expect(main).toContainText('MIT');
+  await expect(main).toContainText('Gion Kunz');
+  await expect(main).toContainText('WTFPL');
   await expect(main).toContainText('a month');
   await expect(main.locator('.tag', { hasText: 'API v0.x' })).toBeVisible();
   await expect(main.getByRole('link', { name: 'npm' })).toHaveAttribute(
     'href',
-    'https://www.npmjs.com/package/chartist-plugin-axistitle'
+    'https://www.npmjs.com/package/chartist-plugin-threshold'
   );
   await expect(
     main.getByRole('heading', { name: 'Use it on your site' })
   ).toBeVisible();
-  await page.goto('/plugins/stklcode-chartist-plugin-tooltips/');
-  await expect(
-    page.locator('article .tag', { hasText: 'API v1.x' })
-  ).toBeVisible();
-  // A plugin whose repository is gone links to npm and says so.
-  await page.goto('/plugins/chartist-plugin-tooltips/');
-  await expect(page.locator('article')).toContainText('Repository gone');
 });
 
 test('plugin pages link to their neighbors in the overview order', async ({
@@ -92,10 +83,8 @@ test('plugin pages link to their neighbors in the overview order', async ({
 });
 
 test('an old link to an entry opens the plugin page', async ({ page }) => {
-  await page.goto('/plugins/#stklcode-chartist-plugin-tooltips');
-  await expect(page).toHaveURL(
-    /\/plugins\/stklcode-chartist-plugin-tooltips\/$/
-  );
+  await page.goto('/plugins/#chartist-plugin-threshold');
+  await expect(page).toHaveURL(/\/plugins\/chartist-plugin-threshold\/$/);
 });
 
 test('the filter narrows the tiles by text and chart type', async ({
@@ -107,9 +96,11 @@ test('the filter narrows the tiles by text and chart type', async ({
   const count = page.locator('[data-plugin-count]');
   await expect(count).toHaveText(`${total} plugins`);
 
-  await page.getByRole('searchbox', { name: 'Find a plugin' }).fill('tooltip');
-  await expect(visible).toHaveCount(2);
-  await expect(count).toHaveText(`2 of ${total} plugins`);
+  await page
+    .getByRole('searchbox', { name: 'Find a plugin' })
+    .fill('threshold');
+  await expect(visible).toHaveCount(1);
+  await expect(count).toHaveText(`1 of ${total} plugins`);
 
   await page.getByRole('searchbox', { name: 'Find a plugin' }).fill('');
   await page.getByRole('button', { name: 'Pie' }).click();
@@ -182,7 +173,7 @@ for (const plugin of examples) {
 test('a plugin example runs in the full playground from its link', async ({
   page
 }) => {
-  await page.goto('/plugins/chartist-plugin-pointlabels/');
+  await page.goto('/plugins/chartist-plugin-threshold/');
   const live = page.locator('[data-live-example]');
   await live.scrollIntoViewIfNeeded();
   await live.getByRole('button', { name: 'Edit' }).click();
@@ -199,8 +190,8 @@ test('a plugin example runs in the full playground from its link', async ({
   await expect(frame.locator('svg.ct-chart-line')).toBeVisible({
     timeout: 10_000
   });
-  // The plugin drew its labels in the playground too.
-  await expect(frame.locator('text.ct-label').first()).toBeVisible();
+  // The plugin split the chart in the playground too.
+  await expect(frame.locator('.ct-threshold-above').first()).toBeAttached();
   await expect(
     playground.getByRole('button', { name: 'Export to StackBlitz' })
   ).toHaveCount(0);

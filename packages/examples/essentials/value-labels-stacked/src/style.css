@@ -1,0 +1,9 @@
+/* Bars thick enough for two lines of text inside them. */
+#chart {
+  --ct-bar-width: 40px;
+}
+
+/* Dark text on the light third series. */
+.ct-value-label-inside.ct-series-c {
+  --ct-value-label-inside-color: #453d3f;
+}

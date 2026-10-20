@@ -34,36 +34,13 @@ const hoverPoint = async (page: Page) => {
   const box = (await point.boundingBox())!;
   await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
 };
-const tooltipShows = async (page: Page) =>
-  expect(page.locator('.chartist-tooltip')).toContainText('b');
 
 const CASES: Case[] = [
-  {
-    package: 'chartist-plugin-axistitle',
-    kind: 'line',
-    plugin: `Chartist.plugins.ctAxisTitle({ axisX: { axisTitle: 'Day', axisClass: 'ct-axis-title', offset: { x: 0, y: 50 }, textAnchor: 'middle' }, axisY: { axisTitle: 'Visits', axisClass: 'ct-axis-title', offset: { x: 0, y: -1 }, flipTitle: false } })`,
-    check: page => expect(page.locator('#chart .ct-axis-title')).toHaveCount(2)
-  },
   {
     package: 'chartist-plugin-legend',
     kind: 'line',
     plugin: 'Chartist.plugins.legend()',
     check: page => expect(page.locator('.ct-legend li')).toHaveCount(2)
-  },
-  {
-    package: 'chartist-plugin-tooltips',
-    kind: 'line',
-    plugin: 'Chartist.plugins.tooltip()',
-    stylesheet: 'chartist-plugin-tooltips/chartist-plugin-tooltip.css',
-    act: hoverPoint,
-    check: tooltipShows
-  },
-  {
-    package: 'chartist-plugin-pointlabels',
-    kind: 'line',
-    plugin: 'Chartist.plugins.ctPointLabels()',
-    check: page =>
-      expect(page.locator('#chart .ct-series text.ct-label')).toHaveCount(10)
   },
   {
     package: 'chartist-hover',
@@ -116,13 +93,6 @@ const CASES: Case[] = [
     }
   },
   {
-    package: 'chartist-plugin-barlabels',
-    kind: 'bar',
-    plugin: 'Chartist.plugins.ctBarLabels()',
-    check: page =>
-      expect(page.locator('#chart .ct-series text.ct-label')).toHaveCount(8)
-  },
-  {
     package: 'chartist-plugin-accessibility',
     kind: 'line',
     plugin: `Chartist.plugins.ctAccessibility({ caption: 'Visits per day' })`,
@@ -141,30 +111,16 @@ const CASES: Case[] = [
         page.locator('#chart .ct-threshold-below').first()
       ).toBeAttached();
     }
-  },
-  {
-    package: '@stklcode/chartist-plugin-tooltips',
-    kind: 'line',
-    plugin: 'window.ChartistPluginTooltip',
-    stylesheet:
-      '@stklcode/chartist-plugin-tooltips/chartist-plugin-tooltip.css',
-    act: hoverPoint,
-    check: tooltipShows
   }
 ];
 
 const SCRIPTS: Record<string, string> = {
-  'chartist-plugin-axistitle': 'chartist-plugin-axistitle.js',
   'chartist-plugin-legend': 'chartist-plugin-legend.js',
-  'chartist-plugin-tooltips': 'chartist-plugin-tooltip.js',
-  'chartist-plugin-pointlabels': 'chartist-plugin-pointlabels.js',
   'chartist-hover': 'chartist-hover.js',
   'chartist-plugin-zoom': 'chartist-plugin-zoom.js',
   'chartist-plugin-fill-donut': 'chartist-plugin-fill-donut.js',
-  'chartist-plugin-barlabels': 'chartist-plugin-barlabels.js',
   'chartist-plugin-accessibility': 'chartist-plugin-accessibility.js',
-  'chartist-plugin-threshold': 'chartist-plugin-threshold.js',
-  '@stklcode/chartist-plugin-tooltips': 'chartist-plugin-tooltip.umd.js'
+  'chartist-plugin-threshold': 'chartist-plugin-threshold.js'
 };
 
 /** How the page loads Chartist, the plugin, and how it creates the chart. */
@@ -285,14 +241,16 @@ test('a plugin script loaded at runtime after importing compat, as with a bundle
       document.head.append(script);
     });
   }
-  await loadScript('${LIB}plugins/chartist-plugin-axistitle/chartist-plugin-axistitle.js');
+  await loadScript('${LIB}plugins/chartist-plugin-threshold/chartist-plugin-threshold.js');
   lineChart('#chart', { series: [[1, 3, 2, 4]] }, {
-    plugins: [fromLegacyPlugin(Chartist.plugins.ctAxisTitle({ axisY: { axisTitle: 'Visits', axisClass: 'ct-axis-title' } }))]
+    plugins: [fromLegacyPlugin(Chartist.plugins.ctThreshold({ threshold: 2.5 }))]
   });
 </script>`
     })
   );
   await page.goto(url);
-  await expect(page.locator('#chart .ct-axis-title')).toHaveCount(1);
+  await expect(
+    page.locator('#chart .ct-threshold-above').first()
+  ).toBeAttached();
   expect(errors).toEqual([]);
 });

@@ -1,0 +1,111 @@
+---
+title: Value labels
+description: Write each value next to its point or bar with valueLabels(), format the text like a tooltip's, and let labels that don't fit move to where they do.
+order: 4
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+Some charts are read for their numbers. A reader who needs to know that Q4 made 15, not "about 15", shouldn't have to hover. `valueLabels()` writes each value next to the point or bar that shows it: above points, past the ends of bars, below them for negative values, and in the middle of stacked segments.
+
+It comes from `@chartist-js/essentials`, with its stylesheet after Chartist's:
+
+```ts
+import 'chartist/styles.css';
+import '@chartist-js/essentials/styles.css';
+```
+
+## Labels on bars
+
+Add it as an extra layer, `above` on a preset:
+
+<LiveExample
+  title='Profit per quarter'
+  label='Bar chart of profit in six quarters with each value written past the end of its bar: plus 12, minus 4 below its bar, plus 8, plus 15, minus 2 and plus 9'
+  gallery='essentials/value-labels-bars'
+/>
+
+The layer reads the bars and points after the other layers drew them, so it follows stacking, `seriesBarDistance`, horizontal bars and anything a `compose` listener changed, without knowing their options. A bar a listener dropped gets no label.
+
+## Text
+
+The default text is the value along the value axis, written with `Intl.NumberFormat`. `numberFormat` takes its options, and `locale` its locale:
+
+```ts
+import { valueLabels } from '@chartist-js/essentials';
+
+export const money = valueLabels({
+  locale: 'de-CH',
+  numberFormat: { style: 'currency', currency: 'CHF' }
+});
+```
+
+Set `locale` when charts render on a server: without it, the server's locale writes the numbers.
+
+For anything else, `format(item)` returns the text. It gets the same item as the `format` of [`@chartist-js/tooltips`](../../tooltips/content-and-styling/): the value, its `meta`, the series and its name, the label at the value's index, and the node's `context`. Return `undefined` to keep the default text, `null` or an empty string for no label, and `\n` for a second line. Here the text comes from each value's `meta`:
+
+<LiveExample
+  title='Work orders on three machines'
+  label='Horizontal stacked bars of hours per work order on a mill, a lathe and a press; each segment is labeled with its order number and its hours on two lines'
+  gallery='essentials/value-labels-stacked'
+  show='src/main.ts'
+/>
+
+Holes get no label, and `format` isn't called for them. A value of 0 is labeled.
+
+## Where they go
+
+| Option          | What it does                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `pointPosition` | `above` (default), `below`, `left`, `right` or `center` of a point                         |
+| `barPosition`   | `end` (default), `inside-end`, `center` or `inside-base`, from the bar's base to its value |
+| `offset`        | The gap in px between the point or the bar's end and the label: 8 for points, 4 for bars   |
+| `roles`         | `['point']`, `['bar']` or both (default)                                                   |
+| `series`        | The series to label, by name or index; default: all of them                                |
+| `overflow`      | `fit` (default) or `show`                                                                  |
+| `labels`        | `svg` (default) or `html`                                                                  |
+
+Segments of stacked bars are labeled in their middle, since past a segment's end is the next one. A line drawn without points (`showPoint: false`) gets its labels where the points would be.
+
+### When they don't fit
+
+With `overflow: 'fit'`, a label that doesn't fit inside its bar goes past its end instead; in a stacked segment, it's left out. A label that would leave the chart moves inward, and a bar's label that would leave it at the top goes inside the bar's end. Bars are 10 px thin by default, so a label inside one is cramped: give the chart room instead, with a `high` above the highest value or more `chartPadding`, or make the bars wider with `--ct-bar-width`, as the examples do. `overflow: 'show'` draws every label where its position puts it.
+
+## Styling
+
+Labels look like the axis labels until you say otherwise. Each one has the class `ct-value-label` and its series' class, so one line gives them their series' colors:
+
+<LiveExample
+  title='Temperatures in two cities'
+  label='Line chart of temperatures from Monday to Friday in Basel and Chur, each point labeled in degrees Celsius in its line color'
+  gallery='essentials/value-labels-line'
+  show='src/style.css'
+/>
+
+| Property                        | What it sets                                                  |
+| ------------------------------- | ------------------------------------------------------------- |
+| `--ct-value-label-color`        | The text color; default: the axis label color, light and dark |
+| `--ct-value-label-inside-color` | The color of labels inside a bar; default: white              |
+| `--ct-value-label-size`         | The font size; default: the axis label size                   |
+
+Labels inside or centered in a bar also have `ct-value-label-inside`. `classNames` replaces `group` (`ct-value-labels`), `label` and `inside`.
+
+## SVG, HTML, server and terminal
+
+Labels are SVG `text` by default, whatever the chart's `labels` option says, so they render the same on a server, in an exported image and in [the terminal](../../terminal/). `labels: 'html'` draws each one as a `span` in a `foreignObject` instead, for CSS boxes: a background, padding, rounded corners.
+
+In listeners and plugins, find them by the role `valueLabel`. Its context has the labeled value, its indexes, the text and where the label ended up. They're keyed like their values, so with [live updates](../../../docs/live-updates/) a label keeps its element and moves with its bar.
+
+## Coming from the label plugins
+
+`chartist-plugin-pointlabels` and `chartist-plugin-barlabels` were 1.x `draw` listeners. `valueLabels()` covers both:
+
+| Plugin option                        | With `valueLabels()`                                          |
+| ------------------------------------ | ------------------------------------------------------------- |
+| `labelInterpolationFnc`              | `format`, which gets the value and its meta, series and label |
+| `labelOffset`, `textAnchor`, `align` | `pointPosition`, `barPosition` and `offset`                   |
+| `labelClass`                         | `classNames: { label }`; the default is `ct-value-label`      |
+| `showZeroLabels`                     | Zero is labeled; return `null` from `format` to leave it out  |
+| `thresholdPercentage`, `startAtBase` | `barPosition: 'inside-end'` or `'inside-base'`, with fitting  |
+
+Add the layer to `layers.above` instead of `plugins`. It draws in `g.ct-value-labels` above all series, so a later series doesn't cover an earlier series' labels.

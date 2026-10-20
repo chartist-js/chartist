@@ -57,15 +57,13 @@ $ct-class-slice-pie: ct-slice-pie !default;
 $ct-class-slice-donut: ct-slice-donut !default;
 $ct-class-grid: ct-grid !default;
 $ct-class-grid-background: ct-grid-background !default;
+$ct-class-grid-minor: ct-grid-minor !default;
 $ct-class-vertical: ct-vertical !default;
 $ct-class-horizontal: ct-horizontal !default;
 $ct-class-start: ct-start !default;
 $ct-class-end: ct-end !default;
-$ct-class-target-line: ct-target-line !default;
-$ct-class-target-label: ct-target-label !default;
 $ct-class-band: ct-band !default;
 $ct-class-band-area: ct-band-area !default;
-$ct-class-trend-line: ct-trend-line !default;
 
 // Container ratio
 $ct-container-ratio: math.div(1, 1.618) !default;
@@ -86,6 +84,12 @@ $ct-grid-color-dark: rgba(255, 255, 255, 0.2) !default;
 $ct-grid-dasharray: 2px !default;
 $ct-grid-width: 1px !default;
 $ct-grid-background-fill: none !default;
+// Minor grid lines, between the ticks of an axis that has them (a log axis): lighter and solid
+$ct-grid-minor-color: rgba(0, 0, 0, 0.08) !default;
+// The minor grid color where the chart's `color-scheme` is dark. null: rgba(255, 255, 255, 0.08), or none when $ct-grid-color-dark is false; false: always $ct-grid-minor-color
+$ct-grid-minor-color-dark: null !default;
+$ct-grid-minor-dasharray: false !default;
+$ct-grid-minor-width: 1px !default;
 
 // Line chart properties
 $ct-line-width: 4px !default;
@@ -98,15 +102,6 @@ $ct-area-opacity: 0.1 !default;
 
 // Bar chart bar width
 $ct-bar-width: 10px !default;
-
-// Target lines: a dashed line in the text color by default, so it reads as a reference behind the data
-$ct-target-line-color: currentColor !default;
-$ct-target-line-width: 1px !default;
-$ct-target-line-dasharray: 4px 4px !default;
-
-// Trend lines: dashed, in the series' color
-$ct-trend-line-width: 2px !default;
-$ct-trend-line-dasharray: 6px 4px !default;
 
 // Bands: a light fill in the text color by default. Fill transparency between 0 and 1
 $ct-band-color: currentColor !default;

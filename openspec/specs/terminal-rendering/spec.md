@@ -247,3 +247,26 @@ A scene SHALL also render as a DOM element: a `pre` element with the same struct
 
 - **WHEN** a chart with the label `<b>` is rendered as an element
 - **THEN** the element contains the text `<b>` and no `b` element
+
+### Requirement: Vertical text
+
+A `text` node whose `transform` rotates it by a quarter turn (`rotate(-90 …)` or `rotate(90 …)`, about its anchor) SHALL be drawn vertically, one character per row, in the column of its anchor: bottom to top for −90, top to bottom for 90, aligned along the column as its `text-anchor` says (start, middle or end). Text with any other transform SHALL be drawn as before.
+
+#### Scenario: A vertical axis title
+
+- **WHEN** a line chart with `axisTitle({ axis: 'y', text: 'Visits' })` from `@chartist-js/essentials` is rendered to the terminal
+- **THEN** the letters of `Visits` stand in one column left of the Y axis labels, centered on the chart's height, reading from bottom to top
+
+#### Scenario: Unrotated text
+
+- **WHEN** a scene has a `text` node without a `transform`
+- **THEN** it is drawn in one row, as before
+
+### Requirement: Minor grid lines left out
+
+Grid lines marked as minor (role `grid`, a context with `minor: true`) SHALL NOT be drawn: a cell stands for 16 px of height, so they would fill most rows and hide the major grid lines. The other grid lines and the labels SHALL be drawn as without them.
+
+#### Scenario: A log axis with minor ticks
+
+- **WHEN** a line chart whose Y axis has minor ticks is rendered
+- **THEN** the output has grid lines only at the axis's ticks, the same as for that chart without minor ticks

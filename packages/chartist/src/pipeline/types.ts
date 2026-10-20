@@ -10,7 +10,14 @@ import type {
 } from '../render/types';
 import type { ChartPadding, Label, NormalizedSeries } from '../core/types';
 import type { LabelMode, MeasureStyle, MeasureText } from '../render/measure';
-import type { AxisExtent, CartesianAxes, ChartAxes } from '../scales/axis';
+import type {
+  AxisDefinition,
+  AxisExtent,
+  AxisSide,
+  AxisTransform,
+  CartesianAxes,
+  ChartAxes
+} from '../scales/axis';
 import type { SceneNode } from '../scene/node';
 
 /**
@@ -88,6 +95,12 @@ export interface Layout {
   readonly padding: ChartPadding;
   /** Where the layers draw, inside the padding and the axes. */
   readonly area: Area;
+  /**
+   * The room layers reserved outside the drawing area with
+   * {@link Layer.inset}, in px per side; `padding` includes it. Absent when
+   * no layer reserved room.
+   */
+  readonly inset?: ChartPadding;
 }
 
 /** Data normalized for axes: multi values (`{ x, y }`), padded labels. */
@@ -138,6 +151,44 @@ export interface LayerContext {
   readonly seriesIndexes?: readonly number[];
   /** How label layers draw labels: chart option, else the renderer's. */
   readonly labels: LabelMode;
+  /**
+   * The boxes the layer reserved with {@link Layer.inset}, one per side,
+   * in px in the SVG: just outside the axes on that side (and the boxes of
+   * layers listed before it), as long as the drawing area. Absent when the
+   * layer reserved no room.
+   */
+  readonly insetArea?: Partial<Record<AxisSide, Area>>;
+}
+
+/**
+ * What a layer's `inset` gets: the chart's size and padding, its axes, the
+ * layer's series and ways to measure text and styles, so it can size the
+ * room it needs.
+ */
+export interface InsetContext {
+  /** The chart's width in px. */
+  readonly width: number;
+  /** The chart's height in px. */
+  readonly height: number;
+  /** The chart's padding option, in px, without any reserved room. */
+  readonly padding: ChartPadding;
+  /** The prepared data; only the layer's series when it selects some. */
+  readonly data: PreparedData;
+  /** The chart's axis definitions, with their ids, sides and offsets; empty without axes. */
+  readonly axes: readonly AxisDefinition[];
+  /** The chart's coordinate system. */
+  readonly coordinates: Coordinates;
+  /** The layer's index in the chart's `layers`. */
+  readonly layerIndex: number;
+  /** How label layers draw labels: chart option, else the renderer's. */
+  readonly labels: LabelMode;
+  /**
+   * Measures text with the renderer's metrics (in the browser, with the
+   * page's fonts and the chart's classes).
+   */
+  readonly measureText: MeasureText;
+  /** Reads computed styles with the renderer. Absent without a DOM. */
+  readonly measureStyle?: MeasureStyle;
 }
 
 /**
@@ -152,6 +203,14 @@ export interface ExtentContext {
   readonly normalized: NormalizedChartData;
   /** The ids of the X and Y axis the layer draws on. */
   readonly axes: { readonly x?: string; readonly y?: string };
+  /**
+   * The transforms of the X and Y axis the layer draws on, for axes that
+   * declare one (see {@link AxisTransform}), such as a log axis.
+   */
+  readonly transforms?: {
+    readonly x?: AxisTransform;
+    readonly y?: AxisTransform;
+  };
 }
 
 /**
@@ -197,6 +256,36 @@ export interface Layer {
    */
   extent?(context: ExtentContext): Readonly<Record<string, AxisExtent>>;
   /**
+   * Reserves room outside the drawing area, in px per side, for something
+   * the layer draws next to the chart, such as an axis title or a legend.
+   * The room is added to the chart's padding, so the area shrinks and the
+   * axes stay next to it; the layer draws in the boxes its context gets as
+   * `insetArea`. Layers that reserve room on the same side stack outward in
+   * the order of `layers`. Runs on every layout, before the `layout`
+   * listeners, so the room can depend on the chart's size. The "Custom
+   * layers" guide shows a layer that uses it.
+   *
+   * @example
+   * ```ts
+   * import { node, type Layer } from 'chartist';
+   *
+   * // A source note below the chart, in a line of its own.
+   * const source = (text: string): Layer => ({
+   *   type: 'source',
+   *   coordinates: ['cartesian'],
+   *   series: [],
+   *   inset: ({ measureText }) => ({ bottom: measureText(text).height + 4 }),
+   *   compose: ({ insetArea }) => {
+   *     const box = insetArea?.bottom;
+   *     return box
+   *       ? [node('text', { x: box.x1, y: box.y1 }, 'ct-source').text(text)]
+   *       : [];
+   *   }
+   * });
+   * ```
+   */
+  inset?(context: InsetContext): Partial<ChartPadding> | undefined;
+  /**
    * Draws the layer: returns its top-level nodes, usually one `series`
    * group per series. The pipeline keys their data nodes and passes every
    * node with a role through the `compose` listeners.
@@ -236,6 +325,41 @@ export interface Layer {
    * ```
    */
   refine?(node: SceneNode, context: LayerContext): SceneNode | undefined;
+  /**
+   * Draws from where the other layers drew, such as a label at each bar's
+   * end. Runs once the nodes of every layer without `annotate` are
+   * composed, keyed, refined and through the `compose` listeners, so a bar
+   * a listener dropped isn't there and a moved one is where it ends up.
+   * It gets those finished top-level nodes in the order of `layers`, not
+   * the nodes of other annotating layers. The nodes it returns are keyed,
+   * refined and emitted like `compose`'s, after them, at the layer's place
+   * in `layers`; their `compose` events come after the other layers'. Find
+   * the nodes you need with `findAll()`.
+   *
+   * @param drawn The finished top-level nodes of the other layers.
+   * @param context The context this layer's `compose` got.
+   *
+   * @example
+   * ```ts
+   * import { findAll, getMultiValue, node, type Layer } from 'chartist';
+   *
+   * // Writes each bar's value past its end.
+   * const barValues: Layer = {
+   *   type: 'barValues',
+   *   coordinates: ['cartesian'],
+   *   series: [],
+   *   compose: () => [],
+   *   annotate: drawn =>
+   *     drawn.flatMap(top =>
+   *       findAll(top, { role: 'bar' }).map(bar =>
+   *         node('text', { x: bar.ctx.x2, y: bar.ctx.y2 - 4 }, 'ct-bar-value')
+   *           .text(String(getMultiValue(bar.ctx.value, 'y')))
+   *       )
+   *     )
+   * };
+   * ```
+   */
+  annotate?(drawn: readonly SceneNode[], context: LayerContext): SceneNode[];
   /**
    * Gives the keyframes of an update animation for one of the layer's
    * nodes, for attributes that don't move well number by number, such as

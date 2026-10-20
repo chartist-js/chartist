@@ -57,7 +57,13 @@
   },
   "overrides": [
     {
-      "files": ["**/test/**", "**/*.spec.ts", "**/*.test.ts", "**/*.test.mjs"],
+      "files": [
+        "**/test/**",
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/*.test.mjs",
+        "packages/visual/**"
+      ],
       "plugins": ["typescript", "unicorn", "oxc", "vitest"],
       "rules": {
         "no-console": "off",

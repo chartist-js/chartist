@@ -1,6 +1,6 @@
 # @chartist/examples
 
-The Chartist examples, shared by the docs site, the live playground and the visual regression tests (`packages/chartist/test/visual`). Private, never published.
+The Chartist examples, shared by the docs site, the live playground and the visual regression tests (`packages/visual`). Private, never published.
 
 ## Example format
 
@@ -40,7 +40,7 @@ New examples have no 1.x code (`v2: true`); their baselines come from the local 
 
 - `pnpm nx typecheck examples`: type-checks every example in strict mode against the built `chartist` declarations (builds `chartist` first).
 - `pnpm nx check examples`: validates the manifest against the folders.
-- `pnpm nx run chartist:test:visual`: screenshots every example (see `packages/chartist/test/visual`).
+- `pnpm nx run visual:test:visual`: screenshots every example (see `packages/visual`).
 
 ## Coverage of the 1.x examples
 

@@ -1,0 +1,10 @@
+{
+  "//": "@chartist-js/tooltips's compiler options for TypeDoc (docs:api); `chartist` resolves to its built declarations.",
+  "extends": "../../../packages/tooltips/tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "../../../packages/tooltips",
+    "noEmit": true
+  },
+  "include": ["../../../packages/tooltips/src"],
+  "exclude": ["../../../packages/tooltips/src/**/*.spec.ts"]
+}

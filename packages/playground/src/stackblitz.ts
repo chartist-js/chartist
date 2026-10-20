@@ -5,7 +5,7 @@ export interface StackblitzOptions {
   title: string;
   /**
    * npm version range of `chartist` in the generated package.json, and of
-   * `@chartist-js/terminal` when the example imports it.
+   * each `@chartist-js` package the example imports.
    */
   chartistVersion: string;
   description?: string;
@@ -20,8 +20,13 @@ export function stackblitzProject(
   files: PlaygroundFiles,
   options: StackblitzOptions
 ): Project {
-  const usesTerminal = Object.values(files).some(code =>
-    /['"]@chartist-js\/terminal(?:\/[^'"]*)?['"]/.test(code)
+  // The @chartist-js packages the files import, such as `@chartist-js/terminal`.
+  const packages = new Set(
+    Object.values(files).flatMap(code =>
+      [
+        ...code.matchAll(/['"](@chartist-js\/[a-z0-9-]+)(?:\/[^'"]*)?['"]/g)
+      ].map(match => match[1])
+    )
   );
   const packageJson = {
     name: 'chartist-example',
@@ -36,9 +41,9 @@ export function stackblitzProject(
     dependencies: {
       chartist: options.chartistVersion,
       // Released together with chartist, so at the same version.
-      ...(usesTerminal
-        ? { '@chartist-js/terminal': options.chartistVersion }
-        : {})
+      ...Object.fromEntries(
+        [...packages].sort().map(name => [name, options.chartistVersion])
+      )
     },
     devDependencies: {
       typescript: '~6.0.3',

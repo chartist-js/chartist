@@ -124,3 +124,20 @@ describe('layers/line', () => {
     ).toEqual(['second', 'first']);
   });
 });
+
+describe('layers/line meta', () => {
+  it('reverses the meta with the values for reverseData (#1534)', () => {
+    const meta = (value: number, name: string) => ({ value, meta: name });
+    const points = findAll(
+      scene([[meta(1, 'a'), meta(2, 'b'), meta(3, 'c')]], {
+        reverseData: true
+      }),
+      { role: 'point' }
+    );
+    expect(points.map(point => [point.ctx.value, point.ctx.meta])).toEqual([
+      [{ x: undefined, y: 3 }, 'c'],
+      [{ x: undefined, y: 2 }, 'b'],
+      [{ x: undefined, y: 1 }, 'a']
+    ]);
+  });
+});

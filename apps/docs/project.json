@@ -137,13 +137,15 @@
       }
     },
     "api": {
-      "command": "typedoc --options api/typedoc.json && typedoc --options api/typedoc.terminal.json",
+      "command": "typedoc --options api/typedoc.json && typedoc --options api/typedoc.terminal.json && typedoc --options api/typedoc.essentials.json && typedoc --options api/typedoc.tooltips.json",
       "options": {
         "cwd": "{projectRoot}"
       },
       "inputs": [
         "{workspaceRoot}/packages/chartist/src/**/*",
         "{workspaceRoot}/packages/terminal/src/**/*",
+        "{workspaceRoot}/packages/essentials/src/**/*",
+        "{workspaceRoot}/packages/tooltips/src/**/*",
         "{projectRoot}/api/*",
         {
           "externalDependencies": ["typedoc", "typescript"]

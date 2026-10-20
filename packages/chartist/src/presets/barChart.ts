@@ -109,7 +109,8 @@ function valueAxis(
       ? legacyAxis(type)
       : type;
   return {
-    kind: inner.kind,
+    // The kind, and a transform such as a log axis's.
+    ...inner,
     create(context) {
       const found = getHighLow(
         context.series,

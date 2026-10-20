@@ -1,7 +1,7 @@
 ---
 /**
  * How a package is licensed, the same on the package index and the landing
- * page: free with its license, or commercial with its terms.
+ * page: open source with its license, or premium with its terms.
  */
 import type { PackageLicense } from '../data/packages';
 
@@ -14,14 +14,14 @@ const { license } = Astro.props;
 
 <p class="m-0 flex flex-wrap items-center gap-2 text-sm text-ink-2">
   {
-    license.kind === 'free' ? (
+    license.kind === 'open-source' ? (
       <>
-        <span class="tag ok">Free</span>
+        <span class="tag ok">Open source</span>
         <span>{license.name}</span>
       </>
     ) : (
       <>
-        <span class="tag accent">Commercial</span>
+        <span class="tag accent">Premium</span>
         <span>{license.terms}</span>
       </>
     )

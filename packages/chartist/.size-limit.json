@@ -2,14 +2,14 @@
   {
     "name": "Browser ESM (dist/index.min.js)",
     "path": "dist/index.min.js",
-    "limit": "27.6 kB",
+    "limit": "27.35 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "27.7 kB",
+    "limit": "27.45 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -59,35 +59,35 @@
     "name": "import { LineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ LineChart }",
-    "limit": "16.25 kB",
+    "limit": "16.75 kB",
     "gzip": true
   },
   {
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "14.65 kB",
+    "limit": "15.15 kB",
     "gzip": true
   },
   {
     "name": "import { PieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ PieChart }",
-    "limit": "12.15 kB",
+    "limit": "12.65 kB",
     "gzip": true
   },
   {
     "name": "import { chart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ chart }",
-    "limit": "5.9 kB",
+    "limit": "6.4 kB",
     "gzip": true
   },
   {
     "name": "import { toScene, renderToString } from chartist/server (tree-shaken)",
     "path": "dist/server.js",
     "import": "{ toScene, renderToString }",
-    "limit": "3.8 kB",
+    "limit": "4.35 kB",
     "gzip": true
   },
   {
@@ -108,35 +108,35 @@
     "name": "import { renderForHydration } from chartist/server (tree-shaken)",
     "path": "dist/server.js",
     "import": "{ renderForHydration }",
-    "limit": "4.5 kB",
+    "limit": "5.05 kB",
     "gzip": true
   },
   {
     "name": "import { lineChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ lineChart }",
-    "limit": "14.6 kB",
+    "limit": "15.15 kB",
     "gzip": true
   },
   {
     "name": "import { barChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ barChart }",
-    "limit": "13.1 kB",
+    "limit": "13.6 kB",
     "gzip": true
   },
   {
     "name": "import { pieChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ pieChart }",
-    "limit": "10.6 kB",
+    "limit": "11.1 kB",
     "gzip": true
   },
   {
     "name": "import { chart, cartesianAxes, line, bar, axisGrid, axisLabels, \u2026 } (composed chart)",
     "path": "dist/index.js",
     "import": "{ chart, cartesianAxes, stepAxis, autoScaleAxis, line, bar, axisGrid, axisLabels }",
-    "limit": "14.55 kB",
+    "limit": "15.05 kB",
     "gzip": true
   },
   {
@@ -157,13 +157,13 @@
     "name": "import * (everything, bundled)",
     "path": "dist/index.js",
     "import": "*",
-    "limit": "28.45 kB",
+    "limit": "28.15 kB",
     "gzip": true
   },
   {
     "name": "CSS (dist/index.min.css)",
     "path": "dist/index.min.css",
-    "limit": "2.2 kB",
+    "limit": "2 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },

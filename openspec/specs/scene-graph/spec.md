@@ -89,16 +89,30 @@ The scene node type SHALL be discriminated by role: checking a node's role again
 - **WHEN** code reads `ctx.path` on a node narrowed to role `point`
 - **THEN** it does not type-check
 
-### Requirement: Target line and band roles
+### Requirement: Band role
 
-The target line and band layers SHALL give their nodes the built-in roles `targetLine` (a line), `targetLabel` (a line's label) and `band` (a band's filled path). Each role SHALL have a defined context type: a target line and its label know the axis, the value, the label text and their position in px; a band knows the edges it was drawn from and its path. Checking a node's role against one of them SHALL narrow its context and attributes like the other built-in roles, and `compose` listeners SHALL receive these nodes and be able to change or drop them.
-
-#### Scenario: Finding a target line
-
-- **WHEN** a `scene` listener queries the scene for nodes with role `targetLine`
-- **THEN** it gets one node per target line, and each node's context has the line's value and its axis
+The band layer SHALL give its nodes the built-in role `band` (a band's filled path), with a defined context type: the edges it was drawn from and its path. Checking a node's role against it SHALL narrow its context and attributes like the other built-in roles, and `compose` listeners SHALL receive these nodes and be able to change or drop them.
 
 #### Scenario: Dropping a band
 
 - **WHEN** a `compose` listener returns `null` for nodes with role `band`
 - **THEN** the output has no band paths, and the rest of the chart is unchanged
+
+### Requirement: Bar direction and stacking in the bar context
+
+The context of a `bar` node SHALL say whether the bar is horizontal (`horizontal`, true when the bar layer draws `horizontalBars`) and whether it's a segment of a stack (`stacked`, true when the bar layer stacks with `accumulate` or `accumulate-relative`; false for `overlap`, which draws every bar from zero). The output SHALL NOT change.
+
+#### Scenario: A horizontal stacked bar chart
+
+- **WHEN** a `compose` listener receives the bars of `barChart(container, data, { horizontalBars: true, stackBars: true })`
+- **THEN** every bar's context has `horizontal: true` and `stacked: true`
+
+#### Scenario: Overlapping bars
+
+- **WHEN** a bar chart has `stackBars: true` and `stackMode: 'overlap'`
+- **THEN** every bar's context has `stacked: false`
+
+#### Scenario: Unchanged output
+
+- **WHEN** a bar chart is rendered before and after these fields existed
+- **THEN** both outputs are identical

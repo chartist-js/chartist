@@ -28,6 +28,17 @@ function sources(folder: string) {
     .join('\n');
 }
 
+/** The example folders, one per gallery section. */
+const TYPES = [
+  'line',
+  'bar',
+  'pie',
+  'composed',
+  'styling',
+  'live',
+  'essentials'
+];
+
 // Unique ids, in the `<type>/<name>` format.
 const ids = new Set<string>();
 for (const { id, type } of examples) {
@@ -36,7 +47,7 @@ for (const { id, type } of examples) {
   }
   ids.add(id);
   if (
-    !/^(line|bar|pie|composed|styling|live)\/[a-z0-9-]+$/.test(id) ||
+    !new RegExp(`^(${TYPES.join('|')})/[a-z0-9-]+$`).test(id) ||
     !id.startsWith(type + '/')
   ) {
     fail(
@@ -46,7 +57,7 @@ for (const { id, type } of examples) {
 }
 
 // Every example folder on disk is in the manifest.
-for (const type of ['line', 'bar', 'pie', 'composed', 'styling', 'live']) {
+for (const type of TYPES) {
   for (const name of readdirSync(path.join(root, type))) {
     if (!ids.has(`${type}/${name}`)) {
       fail(`${type}/${name}: folder is not in the manifest`);
@@ -102,6 +113,10 @@ for (const example of examples) {
   }
   if (/chartist\/dist\//.test(code)) {
     fail(`${id}: import from 'chartist', not from 'chartist/dist/'`);
+  }
+  // The package's examples live in their own gallery section.
+  if (/@chartist-js\/essentials/.test(code) && example.type !== 'essentials') {
+    fail(`${id}: examples of @chartist-js/essentials go in essentials/`);
   }
   if (/Math\.random\(/.test(code)) {
     fail(`${id}: use a seeded generator instead of Math.random()`);

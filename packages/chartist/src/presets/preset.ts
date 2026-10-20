@@ -110,16 +110,17 @@ export type PresetAxisOptions = Omit<AxisOptions, 'type'> & {
 };
 
 /**
- * Extra layers of a preset chart, such as `targetLine()` or `band()`: they
- * draw on the preset's axes and get all series.
+ * Extra layers of a preset chart, such as `band()` or the target and
+ * trend lines of `@chartist-js/essentials`: they draw on the preset's
+ * axes and get all series.
  * @example
  * ```ts
- * import { barChart, targetLine } from 'chartist';
+ * import { barChart, band } from 'chartist';
  *
  * barChart(
  *   '#chart',
  *   { labels: ['Q1', 'Q2', 'Q3'], series: [[800, 1200, 950]] },
- *   { layers: { above: [targetLine({ value: 1000 })] } }
+ *   { layers: { below: [band({ low: 800, high: 1200 })] } }
  * );
  * ```
  */

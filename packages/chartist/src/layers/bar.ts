@@ -298,7 +298,13 @@ export function bar(options: BarLayerOptions = {}): Layer {
           positions.y1 = Math.min(Math.max(positions.y1, area.y2), area.y1);
           positions.y2 = Math.min(Math.max(positions.y2, area.y2), area.y1);
 
-          const meta = getMetaData(current, valueIndex);
+          // reverseData reverses the values; their meta follows (#1534).
+          const meta = getMetaData(
+            current,
+            options.reverseData
+              ? series[localIndex].length - 1 - valueIndex
+              : valueIndex
+          );
           bars.push(
             node(
               'line',
@@ -316,6 +322,8 @@ export function bar(options: BarLayerOptions = {}): Layer {
                   valueIndex,
                   value,
                   meta,
+                  horizontal,
+                  stacked: Boolean(stacks),
                   ...positions
                 }
               }

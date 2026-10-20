@@ -223,15 +223,15 @@ export const V0_PAGES: readonly V0Page[] = [
       ),
       ...each(
         ['tooltip-plugin', 'example-plugin-tooltip'],
-        'plugins/chartist-plugin-tooltips/'
+        'packages/tooltips/'
       ),
       ...each(
         ['point-label-plugin', 'example-plugin-pointlabel'],
-        'plugins/chartist-plugin-pointlabels/'
+        'packages/essentials/value-labels/'
       ),
       ...each(
         ['axis-title-plugin', 'example-plugin-axistitle'],
-        'plugins/chartist-plugin-axistitle/'
+        'packages/essentials/axis-titles/'
       ),
       ...each(
         ['threshold-plugin', 'example-plugin-threshold'],
@@ -245,10 +245,10 @@ export const V0_PAGES: readonly V0Page[] = [
         ['zoom-plugin', 'example-plugin-zoom'],
         'plugins/chartist-plugin-zoom/'
       ),
-      // The core's target lines replace the plugin.
+      // The target lines of @chartist-js/essentials replace the plugin.
       ...each(
         ['target-line-plugin', 'example-plugin-targetline'],
-        'docs/target-lines-and-bands/'
+        'packages/essentials/target-lines/'
       ),
       ...each(
         [

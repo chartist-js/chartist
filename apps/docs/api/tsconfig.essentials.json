@@ -1,0 +1,10 @@
+{
+  "//": "@chartist-js/essentials's compiler options for TypeDoc (docs:api); `chartist` resolves to its built declarations.",
+  "extends": "../../../packages/essentials/tsconfig.build.json",
+  "compilerOptions": {
+    "rootDir": "../../../packages/essentials",
+    "noEmit": true
+  },
+  "include": ["../../../packages/essentials/src"],
+  "exclude": ["../../../packages/essentials/src/**/*.spec.ts"]
+}

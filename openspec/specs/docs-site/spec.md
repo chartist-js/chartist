@@ -211,7 +211,7 @@ The site SHALL have a target that captures the landing sections, the first live 
 
 ### Requirement: Guides and chart type pages
 
-The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, target lines and bands, animations, events and plugins, custom layers, server rendering, SSR with hydration, charts in frameworks, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output. The one exception is the framework recipes in the charts in frameworks guide: they MAY hand server markup to a framework's own raw-HTML feature (`dangerouslySetInnerHTML`, `v-html`, `{@html}`, a host element's `innerHTML` on the server), which is how frameworks put server-rendered HTML into a page, and they SHALL say that the browser never sets it again. The docs navigation SHALL list the pages from first steps to advanced topics, in the groups Start here, Chart types, Basics (data and options, axes and scales, sizing, styling, responsive options, animations, target lines and bands) and Advanced (live updates, events and plugins, custom layers, server rendering, SSR with hydration, charts in frameworks, security and CSP).
+The docs SHALL have pages for each chart type (line, bar, pie and donut, composed) and guides for data and options, sizing, styling with CSS, responsive options, axes and scales, bands, animations, events and plugins, custom layers, server rendering, SSR with hydration, charts in frameworks, live updates, and security and CSP. They SHALL use the functional API, show at least one live example each, and follow the writing guide in `apps/docs/WRITING.md`. Guides and examples SHALL NOT put chart output into a page with `innerHTML`; they SHALL use the DOM renderer or an element output. The one exception is the framework recipes in the charts in frameworks guide: they MAY hand server markup to a framework's own raw-HTML feature (`dangerouslySetInnerHTML`, `v-html`, `{@html}`, a host element's `innerHTML` on the server), which is how frameworks put server-rendered HTML into a page, and they SHALL say that the browser never sets it again. The docs navigation SHALL list the pages from first steps to advanced topics, in the groups Start here, Chart types, Basics (data and options, axes and scales, sizing, styling, responsive options, animations, bands) and Advanced (live updates, events and plugins, custom layers, server rendering, SSR with hydration, charts in frameworks, security and CSP).
 
 #### Scenario: A guide runs as written
 
@@ -220,8 +220,8 @@ The docs SHALL have pages for each chart type (line, bar, pie and donut, compose
 
 #### Scenario: Target lines and bands on a preset
 
-- **WHEN** a reader opens the target lines and bands guide
-- **THEN** it shows a target line added to a preset with the `layers` option and a band chart with a band and lines on top, both live
+- **WHEN** a reader opens the bands guide at `/docs/bands/` and the essentials pages for target and trend lines
+- **THEN** the bands guide shows a band added to a preset with the `layers` option and a band chart with a band and lines on top, importing `band()` from `chartist`, the target lines page shows a target line added to a preset, importing it from `@chartist-js/essentials`, all live, and the bands guide links both pages
 
 #### Scenario: Security and CSP
 
@@ -293,7 +293,7 @@ Docs for experimental or polyfill-dependent features SHALL say so at the start o
 
 #### Scenario: Stable composition
 
-- **WHEN** a reader opens the composed charts, custom layers or target lines and bands guide
+- **WHEN** a reader opens the composed charts, custom layers or bands guide
 - **THEN** none of them says the functional API, the layer contract or the layers are experimental
 
 ### Requirement: Checked code samples
@@ -638,8 +638,8 @@ The plugins page SHALL have a filter for the plugin tiles only: a text field tha
 
 #### Scenario: Filter by text
 
-- **WHEN** a visitor types "tooltip" into the filter
-- **THEN** only the tooltip plugins' tiles remain and the page says how many match
+- **WHEN** a visitor types "threshold" into the filter
+- **THEN** only the tiles of plugins that match "threshold" remain and the page says how many match
 
 #### Scenario: Filter by chart type
 
@@ -690,21 +690,31 @@ Each listed plugin SHALL have a page at `/plugins/<slug>/`, where the slug is it
 
 ### Requirement: Old plugin links keep working
 
-A link to an entry of the former single-page list, `/plugins/#<slug>`, SHALL land on that plugin's page. Links within the site SHALL point to the plugin pages directly.
+A link to an entry of the former single-page list, `/plugins/#<slug>`, SHALL land on that plugin's page while the plugin is listed; a link to a plugin that has left the list SHALL stay on the plugins overview. Links within the site SHALL point to the plugin pages directly.
 
 #### Scenario: Old anchor
 
-- **WHEN** a visitor opens `/plugins/#stklcode-chartist-plugin-tooltips`
-- **THEN** the page of `@stklcode/chartist-plugin-tooltips` opens
+- **WHEN** a visitor opens `/plugins/#chartist-plugin-threshold`
+- **THEN** the page of `chartist-plugin-threshold` opens
 
 ### Requirement: Plugins the core replaces
 
-A plugin whose use case the core covers SHALL NOT be listed on the plugins page. When its page was published, its URL SHALL redirect to the docs page that covers the use case.
+A plugin whose use case the core covers SHALL NOT be listed on the plugins page. When its page was published, its URL SHALL redirect to the docs page that covers the use case. A plugin that an official `@chartist-js` package replaces SHALL NOT be listed either, and its page and live example SHALL be removed from the site without a redirect. Every link to such a removed page, within the site, in its tests and in the redirect pages for the 0.x site, SHALL point to the package's docs instead, so no link of the site leads to a removed page.
 
 #### Scenario: The target line plugin
 
 - **WHEN** a visitor opens `/plugins/chartist-plugin-targetline/`
-- **THEN** they land on the target lines and bands guide, and the plugins overview has no tile for `chartist-plugin-targetline`
+- **THEN** they land on the essentials page for target lines, and the plugins overview has no tile for `chartist-plugin-targetline`
+
+#### Scenario: The tooltip plugins
+
+- **WHEN** the site is built
+- **THEN** it has no page and no redirect page at `/plugins/chartist-plugin-tooltips/` or `/plugins/stklcode-chartist-plugin-tooltips/`, and the plugins overview has no tooltip tile
+
+#### Scenario: The 0.x tooltip example
+
+- **WHEN** the 0.x redirect table is read for the old plugins page's `#tooltip-plugin` or `#example-plugin-tooltip` anchor
+- **THEN** its target is `/packages/tooltips/`, a page of the built site
 
 ### Requirement: Live data in the examples gallery
 
@@ -857,3 +867,12 @@ The docs SHALL import `renderToString`, `renderForHydration`, `computeStyles` an
 
 - **WHEN** a reader opens the server rendering guide's section on styles in the SVG
 - **THEN** it says that Chartist's CSS engine is deliberately small and made for chart styles, lists what it supports and its known limitations (sibling and structural selectors, ids, nesting, the `font` shorthand, `calc()` and relative units such as `rem`, which are written as they are), shows `onSkip` for finding rules that didn't apply, and shows how to pass another style engine to `applyStyles()`, with a recipe that computes the styles in a headless browser
+
+### Requirement: Essentials in the examples gallery
+
+The examples gallery SHALL have an "Essentials" section, after "Live data", with every docs example of the `essentials` type, each with its own page like the other examples, running in the playground with `@chartist-js/essentials` and its stylesheet. Examples that use the package SHALL NOT appear in the other sections. The guides of the essentials docs SHALL show these examples from the gallery, not copies of them.
+
+#### Scenario: The section
+
+- **WHEN** a visitor opens the examples gallery
+- **THEN** an "Essentials" section after "Live data" lists the axis title examples, its filter chip shows only them, and each one's page runs it and opens it in the playground

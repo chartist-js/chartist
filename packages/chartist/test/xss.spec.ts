@@ -1,7 +1,6 @@
 import { toScene } from '../src/chart/toScene';
 import { serialize } from '../src/core/data/serialize';
 import type { ChartConfig } from '../src/chart/types';
-import { targetLine } from '../src/layers/targetLine';
 import { barChart, barChartConfig } from '../src/presets/barChart';
 import { lineChart, lineChartConfig } from '../src/presets/lineChart';
 import { pieChart, pieChartConfig } from '../src/presets/pieChart';
@@ -63,19 +62,6 @@ const fields: Record<string, Field> = {
       lineChartConfig(
         { labels, series: [[1, 2]] },
         { axisY: { labelInterpolationFnc: value => `${value}${p}` } }
-      )
-  },
-  'target line label': {
-    draw: (element, p) =>
-      lineChart(
-        element,
-        { labels, series: [[1, 2]] },
-        { layers: { above: [targetLine({ value: 1.5, label: p })] } }
-      ),
-    config: p =>
-      lineChartConfig(
-        { labels, series: [[1, 2]] },
-        { layers: { above: [targetLine({ value: 1.5, label: p })] } }
       )
   },
   'pie label': {

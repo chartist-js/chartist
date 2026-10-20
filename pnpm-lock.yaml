@@ -87,9 +87,15 @@ importers:
       '@astrojs/mdx':
         specifier: 8.1.0
         version: 8.1.0(@astrojs/markdown-satteri@0.4.4)(astro@7.4.0(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../../packages/essentials
       '@chartist-js/terminal':
         specifier: workspace:*
         version: link:../../packages/terminal
+      '@chartist-js/tooltips':
+        specifier: workspace:*
+        version: link:../../packages/tooltips
       '@fontsource-variable/atkinson-hyperlegible-next':
         specifier: 5.3.0
         version: 5.3.0
@@ -124,9 +130,6 @@ importers:
       '@resvg/resvg-js':
         specifier: 2.6.2
         version: 2.6.2
-      '@stklcode/chartist-plugin-tooltips':
-        specifier: 2.0.1
-        version: 2.0.1
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
@@ -142,27 +145,15 @@ importers:
       chartist-plugin-accessibility:
         specifier: 0.0.5
         version: 0.0.5
-      chartist-plugin-axistitle:
-        specifier: 0.0.7
-        version: 0.0.7
-      chartist-plugin-barlabels:
-        specifier: 0.0.5
-        version: 0.0.5
       chartist-plugin-fill-donut:
         specifier: 0.1.4
         version: 0.1.4
       chartist-plugin-legend:
         specifier: 0.6.2
         version: 0.6.2
-      chartist-plugin-pointlabels:
-        specifier: 0.0.6
-        version: 0.0.6
       chartist-plugin-threshold:
         specifier: 0.0.2
         version: 0.0.2
-      chartist-plugin-tooltips:
-        specifier: 0.0.17
-        version: 0.0.17
       chartist-plugin-zoom:
         specifier: 0.6.0
         version: 0.6.0
@@ -202,12 +193,6 @@ importers:
 
   packages/chartist:
     devDependencies:
-      '@chartist/examples':
-        specifier: workspace:*
-        version: link:../examples
-      '@playwright/test':
-        specifier: 1.64.1
-        version: 1.64.1
       '@resvg/resvg-js':
         specifier: 2.6.2
         version: 2.6.2
@@ -253,12 +238,46 @@ importers:
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-      vite:
-        specifier: 8.3.4
-        version: 8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1)
+
+  packages/essentials:
+    dependencies:
+      chartist:
+        specifier: workspace:^
+        version: link:../chartist
+    devDependencies:
+      '@size-limit/esbuild':
+        specifier: 14.2.0
+        version: 14.2.0(size-limit@14.2.0)
+      '@size-limit/file':
+        specifier: 14.2.0
+        version: 14.2.0(size-limit@14.2.0)
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.19.2
+      del-cli:
+        specifier: ^8.0.0
+        version: 8.0.1
+      playwright:
+        specifier: 1.64.1
+        version: 1.64.1
+      size-limit:
+        specifier: 14.2.0
+        version: 14.2.0
+      tsdown:
+        specifier: 0.23.1
+        version: 0.23.1(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3)
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(jsdom@30.1.3)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
 
   packages/examples:
     dependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
       chartist:
         specifier: workspace:*
         version: link:../chartist
@@ -348,6 +367,9 @@ importers:
         specifier: workspace:^
         version: link:../chartist
     devDependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
       '@types/node':
         specifier: ^24.0.0
         version: 24.19.2
@@ -369,6 +391,67 @@ importers:
       vitest:
         specifier: 5.0.5
         version: 5.0.5(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(jsdom@30.1.3)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
+
+  packages/tooltips:
+    dependencies:
+      chartist:
+        specifier: workspace:^
+        version: link:../chartist
+    devDependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
+      '@size-limit/esbuild':
+        specifier: 14.2.0
+        version: 14.2.0(size-limit@14.2.0)
+      '@size-limit/file':
+        specifier: 14.2.0
+        version: 14.2.0(size-limit@14.2.0)
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.19.2
+      del-cli:
+        specifier: ^8.0.0
+        version: 8.0.1
+      playwright:
+        specifier: 1.64.1
+        version: 1.64.1
+      size-limit:
+        specifier: 14.2.0
+        version: 14.2.0
+      tsdown:
+        specifier: 0.23.1
+        version: 0.23.1(@volar/typescript@2.4.28)(oxc-resolver@11.24.2)(typescript@6.0.3)
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: 5.0.5
+        version: 5.0.5(@types/node@24.19.2)(@vitest/coverage-v8@5.0.5)(jsdom@30.1.3)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
+
+  packages/visual:
+    devDependencies:
+      '@chartist-js/essentials':
+        specifier: workspace:*
+        version: link:../essentials
+      '@chartist/examples':
+        specifier: workspace:*
+        version: link:../examples
+      '@playwright/test':
+        specifier: 1.64.1
+        version: 1.64.1
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.19.2
+      chartist:
+        specifier: workspace:*
+        version: link:../chartist
+      chartist-v1:
+        specifier: npm:chartist@1.5.0
+        version: chartist@1.5.0
+      vite:
+        specifier: 8.3.4
+        version: 8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1)
 
 packages:
 
@@ -2801,9 +2884,6 @@ packages:
   '@stackblitz/sdk@1.11.1':
     resolution: {integrity: sha512-5wl1j3IhtmE7POTl2W9VGQdbQyBQrRsF3jcYBK+0V353AuO8H2GFZkiFNyTRxL+TDY3HIFCHc3G983Osmg76Lg==}
 
-  '@stklcode/chartist-plugin-tooltips@2.0.1':
-    resolution: {integrity: sha512-NglNrI8MHA4rFmR2gclugGAP643ds5S4XZrmB14ChbXSzY74FcFgy2XUJEfS6QwVI1GOrvgFBP+sbbKc8l4LKg==}
-
   '@swc-node/core@1.15.0':
     resolution: {integrity: sha512-WAerrrl087WgenB92XG4Th2t0NQFfMNLYSe0sW2cEMMqM/LQmP4rozsDJl0vuzTrbewjpKQryxFXI+aYig/dBg==}
     engines: {node: '>= 10'}
@@ -3648,31 +3728,15 @@ packages:
     resolution: {integrity: sha512-TwY5UQqHjmvq3aj4L1+X4CP7cuuY71/efKWmkCnZMyR7aqIODnOfesfUfQWi1Txg5xRBL2uIoUZXxv44VQztiA==}
     engines: {node: '>=0.8.0'}
 
-  chartist-plugin-axistitle@0.0.7:
-    resolution: {integrity: sha512-qFG7R/qiZZyCn/gx9WJpMcnyhE0LIpGBxDnPpYtzY5cG53fHBkvJDsAEHEFFfO1l/RHI0G8oN9fpoUD/BMeiFA==}
-    engines: {node: '>=0.8.0'}
-
-  chartist-plugin-barlabels@0.0.5:
-    resolution: {integrity: sha512-QJpFB37jCD0pyDqb0/FSnaXXqUhnzabN1gULkBqK0VOoC/KerihR5EomNdOPnjZoEm8T9gRSNbxGGObZKJFKiw==}
-    engines: {node: '>=0.8.0'}
-
   chartist-plugin-fill-donut@0.1.4:
     resolution: {integrity: sha512-/ZUXLQY9LfDJuDoHYG2sZIPBpFKZ/FYwm9E6zyIy8j0ZDUpG8yMUmXvngBfJCtUEmPMde5782Q2CLuuZ3YyndQ==}
 
   chartist-plugin-legend@0.6.2:
     resolution: {integrity: sha512-GKDgbY1JmeizWboebQO+cx/W7+0f3PcccRoKXtptqUw9ZxzT7+4eD+FCc8JS3d1AgDsJ8nndbueyEDuWDwXVIg==}
 
-  chartist-plugin-pointlabels@0.0.6:
-    resolution: {integrity: sha512-DUemVUBWAN0qAHBUMXKKLrDCsUL1qWWwN+EfxN8gpftgXSheMiYeq83uHoHyp4X+W5Pz/aUWBf3N/HJwj+eRFw==}
-    engines: {node: '>=0.8.0'}
-
   chartist-plugin-threshold@0.0.2:
     resolution: {integrity: sha512-PkT5ll2ezoMx8iSLVySF2UoxXUVg0hsklyqOmRmUil4m85ipIKW+SSPqLgbV6KI03O40be5Za8Ai1gd8TuPN2w==}
     engines: {node: '>=0.8.0'}
-
-  chartist-plugin-tooltips@0.0.17:
-    resolution: {integrity: sha512-frXv269MyRHfuhyZILdTTsNG4PP3+Ab0NkysdnMk73aN4w76oWarsGguuciYzZawKrctp8RZzU/W44A4+Y4vOg==}
-    engines: {node: '>=0.10.0'}
 
   chartist-plugin-zoom@0.6.0:
     resolution: {integrity: sha512-FrnJK/HVl6FEqCVrvAiz6WJiwt+5DMBc3AozSqiufpUdEk5ybfPjYqw7wWFC3phiKVRrJrVxJan3DwSI8VwhJA==}
@@ -9409,10 +9473,6 @@ snapshots:
 
   '@stackblitz/sdk@1.11.1': {}
 
-  '@stklcode/chartist-plugin-tooltips@2.0.1':
-    dependencies:
-      chartist: 1.5.0
-
   '@swc-node/core@1.15.0(@swc/core@1.16.18(@swc/helpers@0.5.23))(@swc/types@0.1.28)':
     dependencies:
       '@swc/core': 1.16.18(@swc/helpers@0.5.23)
@@ -10338,19 +10398,11 @@ snapshots:
 
   chartist-plugin-accessibility@0.0.5: {}
 
-  chartist-plugin-axistitle@0.0.7: {}
-
-  chartist-plugin-barlabels@0.0.5: {}
-
   chartist-plugin-fill-donut@0.1.4: {}
 
   chartist-plugin-legend@0.6.2: {}
 
-  chartist-plugin-pointlabels@0.0.6: {}
-
   chartist-plugin-threshold@0.0.2: {}
-
-  chartist-plugin-tooltips@0.0.17: {}
 
   chartist-plugin-zoom@0.6.0: {}
 

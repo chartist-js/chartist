@@ -1,0 +1,78 @@
+---
+title: '@chartist-js/tooltips'
+description: Tooltips for mouse, touch and keyboard that show a value's label, series and number, stay on their value while the chart updates, and take their looks from CSS.
+order: 0
+label: Overview
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+Chartist's core has no tooltips: a tooltip is interaction in the browser, and a chart drawn on a server or in a terminal has nothing to hover. `@chartist-js/tooltips` adds them to the charts that need them, as a plugin. Hover a point, tap it, or press **Tab** and use the arrow keys:
+
+<LiveExample
+  title='Tooltips'
+  label='A line chart of visitors and sign-ups from Monday to Friday; hovering or focusing a point shows its day, series and value'
+  example='tooltips/basic'
+/>
+
+## Install
+
+```sh
+npm install @chartist-js/tooltips
+```
+
+It brings `chartist` along. Load its stylesheet after Chartist's.
+
+### Without a bundler
+
+The browser build imports nothing, so it works next to any copy of Chartist 2, without an import map:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/chartist@2/dist/index.css"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@chartist-js/tooltips@2/dist/styles.css"
+/>
+<div id="chart"></div>
+<script type="module">
+  import { lineChart } from 'https://cdn.jsdelivr.net/npm/chartist@2/dist/index.min.js';
+  import { tooltips } from 'https://cdn.jsdelivr.net/npm/@chartist-js/tooltips@2/dist/index.min.js';
+
+  lineChart('#chart', { series: [[5, 9, 7, 8, 5]] }, { plugins: [tooltips()] });
+</script>
+```
+
+## Quick start
+
+Add `tooltips()` to a chart's `plugins`: points, bars and slices get a tooltip with the value's label, its series' name and the value.
+
+```ts
+import 'chartist/styles.css';
+import '@chartist-js/tooltips/styles.css';
+import { barChart } from 'chartist';
+import { tooltips } from '@chartist-js/tooltips';
+
+barChart(
+  '#chart',
+  {
+    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+    series: [{ name: 'Sales', data: [5, 4, 3, 7] }]
+  },
+  { plugins: [tooltips()] }
+);
+```
+
+A chart with tooltips is one stop in the page's tab order: **Tab** focuses a value, the arrow keys move between values and series, and **Escape** hides the tooltip. Screen readers announce the focused value with its tooltip's text. `keyboard: false` leaves the tab order alone.
+
+Charts that use a 1.x tooltip plugin can keep it: it runs through [`fromLegacyPlugin`](../../docs/coming-from-1x/#community-plugins). `tooltips()` takes its place on the functional API, with `format`, `numberFormat` and `render` where the 1.x plugins had their callbacks.
+
+The tooltip shows in the top layer, so an ancestor's `overflow: hidden` can't cut it off, and it's placed through the CSSOM, so it works under a strict [Content Security Policy](../../docs/security-and-csp/). Without a page, in `toScene()` or on a server, the plugin does nothing, so one config serves both.
+
+## Next
+
+- [Content and styling](content-and-styling/): your own text, your own markup or framework template, numbers, roles, positions and the custom properties.
+- [API](api/): every option of the plugin.
+- [Events and plugins](../../docs/events-and-plugins/): how plugins like this one hook into a chart.

@@ -1,0 +1,18 @@
+{
+  "runtime": ["axisTitle", "logAxis", "targetLine", "trendLine", "valueLabels"],
+  "types": [
+    "AxisTitleOptions",
+    "BarLabelPosition",
+    "LogAxisOptions",
+    "PointLabelPosition",
+    "TargetLabelContext",
+    "TargetLineContext",
+    "TargetLineOptions",
+    "TrendLineContext",
+    "TrendLineOptions",
+    "ValueLabelContext",
+    "ValueLabelItem",
+    "ValueLabelRole",
+    "ValueLabelsOptions"
+  ]
+}

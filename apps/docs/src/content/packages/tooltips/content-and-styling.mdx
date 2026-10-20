@@ -1,0 +1,200 @@
+---
+title: Content and styling
+description: Your own text with format, your own markup or a framework's template with render, numbers, roles, positions, live charts and the custom properties of the tooltip.
+order: 1
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+A tooltip shows up to three parts by default: a title, the series' name and the value. The title is the value's `meta` when it's a string or a number, otherwise its label; a part that's empty or repeats an earlier one is left out. This page changes what a tooltip says, what it looks like and where it shows.
+
+## Your own text
+
+`format` gets the hovered value and returns its tooltip's text. Line breaks show as line breaks. `null` or an empty string means no tooltip for that value, and `undefined` keeps the default text:
+
+<LiveExample
+  title='Text with format'
+  label='A bar chart of orders per quarter; hovering a bar shows the quarter and its orders on two lines, and the empty quarter has no tooltip'
+  example='tooltips/format'
+/>
+
+The item `format` gets has the value's `role`, `seriesIndex` and `valueIndex`, its `value` (a number, or `{ x, y }` when it has both, as in a scatter chart), its `meta`, the `series` and its `seriesName`, its `label` and its `element`. The text is also the focused value's accessible name, so write it to be read out too.
+
+For numbers, the default text is often enough: `numberFormat` takes `Intl.NumberFormat` options, in the reader's locale.
+
+```ts
+import { barChart } from 'chartist';
+import { tooltips } from '@chartist-js/tooltips';
+
+barChart(
+  '#chart',
+  { labels: ['Q1', 'Q2', 'Q3'], series: [[1250, 1830, 1470]] },
+  {
+    plugins: [
+      tooltips({ numberFormat: { style: 'currency', currency: 'CHF' } })
+    ]
+  }
+);
+```
+
+## Your own markup
+
+The default text is text only: data, `meta` and `format` can't put markup into the page. For markup, `render` fills the tooltip yourself. It gets the tooltip's content element, emptied for each value, the hovered item and the chart's data, so a tooltip can compare a value with its neighbours:
+
+<LiveExample
+  title='Markup with render'
+  label='A line chart of visitors; hovering a point shows its visitors in bold and the change since the day before, in green or red'
+  example='tooltips/render'
+  show='src/main.ts'
+/>
+
+`render` also takes a framework's template: mount a component into the content element, and return a function that unmounts it. The plugin calls it before the next value's `render`, when the tooltip hides and on `destroy()`. Content a framework fills in later is fine: the tooltip is placed again when its content changes size.
+
+```ts nocheck
+tooltips({
+  render(content, item) {
+    // Angular: a dynamic component in the tooltip.
+    const ref = createComponent(ValueTooltip, {
+      environmentInjector,
+      hostElement: content
+    });
+    ref.setInput('item', item);
+    appRef.attachView(ref.hostView);
+    return () => ref.destroy();
+  }
+});
+```
+
+With `render`, `format` still decides which values have a tooltip and gives their accessible name; without `format`, the name is the content's text. What `render` does is your code: setting an HTML string with `innerHTML` needs your own Trusted Types policy on a page that requires them.
+
+## Which values, and where
+
+`roles` picks the nodes that get tooltips: `point`, `bar` and `slice` by default. Any role works, including the roles of other layers and plugins: `roles: ['line']` gives each series of a line chart one tooltip, with its name, and a target line's tooltip shows its label and value. For what the default text doesn't know, `item.context` is the node's data context, so `format` can describe a trend line by its `slope`, and by its `correlation` how well it fits the values (squared, the R² spreadsheets show):
+
+```ts
+import { lineChart } from 'chartist';
+import { trendLine } from '@chartist-js/essentials';
+import { tooltips } from '@chartist-js/tooltips';
+
+lineChart(
+  '#chart',
+  { series: [{ name: 'Visitors', data: [12, 15, 14, 18, 21] }] },
+  {
+    layers: { above: [trendLine()] },
+    plugins: [
+      tooltips({
+        roles: ['point', 'trendLine'],
+        format: item => {
+          if (item.role !== 'trendLine') {
+            // Points keep the default text.
+            return undefined;
+          }
+          const { slope, correlation } = item.context;
+          const fit =
+            correlation === undefined
+              ? ''
+              : `, R² ${(correlation ** 2).toFixed(2)}`;
+          return `${item.seriesName}: ${slope >= 0 ? '+' : ''}${slope.toFixed(1)} a day${fit}`;
+        }
+      })
+    ]
+  }
+);
+```
+
+Thin lines are hard to hover: give them a wider stroke in your CSS, or use the keyboard, which reaches every role in `roles`.
+
+### Roles from your own layers
+
+The plugin doesn't keep a list of roles it knows: it works from the chart's scene. So the roles of [your own layers](../../../docs/custom-layers/) and of layers from other packages get tooltips the same way, once you list them. This chart's dots come from the lollipop layer of the custom layers guide, with a role of its own:
+
+<LiveExample
+  title='Tooltips on a custom layer'
+  label='A lollipop chart of visits from Monday to Friday; hovering or focusing a dot shows its day, series and value'
+  example='tooltips/custom-layer'
+/>
+
+What the default text shows depends on the node's context: a layer that gives its nodes `seriesIndex`, `valueIndex` and `value`, as Chartist's own layers do, gets the label, the series' name and the value without any setup. Anything else a layer puts into a node's context reaches `format` and `render` as `item.context`. It's typed by the roles you list: checking `item.role` narrows `item.context` to that role's context, for Chartist's roles and for the roles other layers declare in `NodeRoles` alike.
+
+```ts
+import { lineChart } from 'chartist';
+import { tooltips } from '@chartist-js/tooltips';
+
+// A role of a forecast layer from another package, as such layers declare it.
+declare module 'chartist' {
+  interface NodeRoles {
+    forecast: {
+      ctx: { readonly low: number; readonly high: number };
+      attrs: object;
+    };
+  }
+}
+
+lineChart(
+  '#chart',
+  { series: [[12, 15, 14]] },
+  {
+    plugins: [
+      tooltips({
+        roles: ['point', 'trendLine', 'forecast'],
+        format: item => {
+          if (item.role === 'forecast') {
+            // Numbers here: TypeScript knows the forecast's context.
+            return `Forecast: ${item.context.low} to ${item.context.high}`;
+          }
+          if (item.role === 'trendLine') {
+            return `Trend: ${item.context.slope.toFixed(1)} a day`;
+          }
+          return undefined;
+        }
+      })
+    ]
+  }
+);
+```
+
+Returning `undefined` keeps the default text, so a `format` like this one handles its own roles and leaves points as they were.
+
+`position: 'pointer'` makes the tooltip follow the mouse while it moves over a value. Touch and keyboard always place it at the value: at a point, at a bar's end, at the middle of a slice's arc. It shows above, below when there's no room above, and moves sideways to stay in the viewport.
+
+## Live charts
+
+With [`liveDomRenderer()`](../../../docs/live-updates/), a tooltip stays on its value while the chart updates, shows the new value, and moves in step with the update animation. Hover a point:
+
+<LiveExample
+  title='A tooltip on a live chart'
+  label='A line chart of visitors that gets a new value every second and a half; hovering a point shows its value, which follows the point'
+  example='tooltips/live'
+/>
+
+## Styling
+
+The tooltip is `.ct-tooltip`, with `.ct-tooltip-title`, `.ct-tooltip-series` and `.ct-tooltip-value` inside, or `.ct-tooltip-text` for `format`'s text. Its looks are custom properties. Set them on the page, or on a chart's container for one chart:
+
+<LiveExample
+  title='A styled tooltip'
+  label='A bar chart of fruit in two years; hovering a bar shows a square, dark blue tooltip with a large value and an arrow pointing at the bar'
+  example='tooltips/styled'
+  show='src/style.css'
+/>
+
+| Property                    | What it sets                                                                    |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| `--ct-tooltip-background`   | The background; dark on light pages and light on dark ones                      |
+| `--ct-tooltip-color`        | The text color                                                                  |
+| `--ct-tooltip-border`       | The border, as the `border` shorthand                                           |
+| `--ct-tooltip-radius`       | The corner radius                                                               |
+| `--ct-tooltip-padding`      | The padding                                                                     |
+| `--ct-tooltip-font`         | The font, as the `font` shorthand                                               |
+| `--ct-tooltip-shadow`       | The shadow                                                                      |
+| `--ct-tooltip-max-width`    | The widest the tooltip gets before its text wraps                               |
+| `--ct-tooltip-offset`       | The distance from the value, in px                                              |
+| `--ct-tooltip-hide-delay`   | How long it stays after the pointer leaves                                      |
+| `--ct-tooltip-focus-color`  | The color of the focused value's outline                                        |
+| `--ct-tooltip-focus-width`  | The width of that outline                                                       |
+| `--ct-tooltip-series-color` | Set by the plugin: the series' color, for the swatch before its name            |
+| `--ct-tooltip-anchor-x`     | Set by the plugin: the value's place from the tooltip's left edge, for an arrow |
+
+The example also draws a callout arrow toward the value. The plugin sets `data-placement` on the tooltip (`top` or `bottom`, the side of the value it shows on) and `--ct-tooltip-anchor-x`, the value's place from the tooltip's left edge, which stays right when the tooltip moved sideways to stay in view. Set `--ct-tooltip-offset` to at least the arrow's size.
+
+The colors follow the page's `color-scheme`, like Chartist's own. `className` adds classes to the tooltip, for plain CSS beyond the properties. The tooltip stays while the pointer is over it, and the hide delay is a CSS transition, which reduced motion turns off.

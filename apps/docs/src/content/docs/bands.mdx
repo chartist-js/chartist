@@ -1,0 +1,167 @@
+---
+title: Bands
+description: Shade ranges on line and bar charts with the band() layer, between two series, around a group or at fixed values, and mark the values in or out of them.
+group: Basics
+order: 7
+---
+
+import Callout from '../../components/docs/Callout.astro';
+import LiveExample from '../../components/LiveExample.astro';
+
+export const weeks = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8'];
+
+export const stores = [
+  { name: 'Basel', data: [42, 45, 40, 38, 44, 47, 50, 52] },
+  { name: 'Bern', data: [36, 38, 33, 28, 30, 41, 49, 55] },
+  { name: 'Chur', data: [25, 27, 30, 29, 31, 30, 33, 34] },
+  { name: 'Geneva', data: [50, 53, 55, 51, 49, 54, 58, 60] },
+  { name: 'Lucerne', data: [31, 30, 34, 36, 35, 37, 36, 40] },
+  { name: 'Zurich', data: [46, 44, 49, 52, 50, 48, 53, 57] }
+];
+
+export const average = weeks.map(
+  (_, week) =>
+    stores.reduce((sum, store) => sum + store.data[week], 0) / stores.length
+);
+
+export const temperatures = {
+  labels: [
+    '0h',
+    '2h',
+    '4h',
+    '6h',
+    '8h',
+    '10h',
+    '12h',
+    '14h',
+    '16h',
+    '18h',
+    '20h',
+    '22h'
+  ],
+  series: [[18, 17.5, 17, 17, 19, 21, 22.5, 24.5, 25, 23, 21, 19.5]]
+};
+
+A value on its own says little. Is 21 degrees fine? Against a comfort zone of 19 to 24, you see it at a glance. `band()` draws that range: a shaded area between two edges, from a group of series, two series, your own values or two numbers. It's part of the core, works on the presets and in composed charts, and you style it with CSS like the rest of the chart.
+
+For a single goal or limit, or the trend of a series, use the [target lines](../../packages/essentials/target-lines/) and [trend lines](../../packages/essentials/trend-lines/) of `@chartist-js/essentials`. They go well with a band.
+
+## Band charts
+
+A band shows a range: from the lowest to the highest value of a group, between two series such as percentiles, or between two fixed values. With the group's average and one member drawn on top, you get a [band chart](https://www.clearlyandsimply.com/2011/04/an-underrated-chart-type-the-band-chart/): how does Bern do compared to the other stores?
+
+<LiveExample
+  title='A band chart'
+  label='Weekly sales of six stores over eight weeks: a shaded band from the lowest to the highest store, the average as a line and the store Bern as a line with points'
+  preview={{
+    type: 'chart',
+    data: {
+      labels: weeks,
+      series: [
+        ...stores,
+        { name: 'average', className: 'ct-series-e', data: average }
+      ]
+    },
+    options: {
+      axes: {
+        $call: 'cartesianAxes',
+        args: [
+          {
+            x: { type: { $call: 'stepAxis' } },
+            y: { type: { $call: 'autoScaleAxis' }, low: 0 }
+          }
+        ]
+      },
+      layers: [
+        { $call: 'axisGrid' },
+        {
+          $call: 'band',
+          args: [{ series: stores.map(store => store.name), lineSmooth: false }]
+        },
+        {
+          $call: 'line',
+          args: [{ series: ['average'], lineSmooth: false, showPoint: false }]
+        },
+        { $call: 'line', args: [{ series: ['Bern'], lineSmooth: false }] },
+        { $call: 'axisLabels' }
+      ]
+    }
+  }}
+  example='bands/band-chart'
+/>
+
+`band({ series })` takes the group by name or index and covers its minimum to its maximum at each label. The average is a series you compute yourself: one line of code, and you decide what "average" means. Layers draw in order, so the band comes before the lines.
+
+The edges of a band can be:
+
+- **values of their own:** `band({ low: [3, 4, 3, 5], high: [9, 11, 10, 12] })`, one per label, like a series that isn't in your data,
+- **two numbers:** `band({ low: 40, high: 60 })`, a target zone across the whole chart,
+- **two series** from your data: `band({ low: 'p10', high: 'p90' })`,
+- **a mix:** `band({ low: 0, high: forecast })`.
+
+A number is a constant, an array holds values, and a string names a series; pick a series by index with `{ series: 2 }`.
+
+Edges follow `lineSmooth` like lines do, smooth by default, and `align: 'center'` lines a band up with bars, as for [lines](../composed-charts/#lining-up-with-bars). Where an edge has no value, the band breaks.
+
+### On a preset
+
+Presets take extra layers in their `layers` option: `below` draws them behind the bars or lines, `above` on top. [Responsive options](../responsive/) can change them too: a `layers: { below: [...] }` entry replaces the `below` list and keeps `above`.
+
+Give a preset's band its own values. The edges then stay out of your data, so the preset doesn't draw them as lines and the series keep their colors:
+
+```ts
+import { band, lineChart } from 'chartist';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [[5, 8, 6, 9, 7]]
+  },
+  {
+    layers: {
+      below: [band({ low: [3, 4, 3, 5, 4], high: [9, 11, 10, 12, 11] })]
+    }
+  }
+);
+```
+
+On a scale X axis (an XY chart), give the values as `{ x, y }`, like the data.
+
+## In or out of the band
+
+With `mark: true`, the band marks the points and bars of the other layers: `ct-in-band` when the value is within the band, edges included, `ct-out-band` when it isn't. What "out" looks like is up to your CSS.
+
+<LiveExample
+  title='A comfort zone'
+  label='Line chart of room temperature over a day with a shaded band from 19 to 24 degrees; the points within the band are mustard yellow, the ones below and above it larger and red'
+  preview={{
+    type: 'line',
+    data: temperatures,
+    options: {
+      low: 15,
+      high: 27,
+      layers: {
+        below: [{ $call: 'band', args: [{ low: 19, high: 24, mark: true }] }]
+      }
+    }
+  }}
+  example='bands/comfort-zone'
+/>
+
+The band marks the points no matter where it's listed: it works from the data, after every layer has drawn. Marking classes whole points and bars; a line keeps one color where it crosses an edge.
+
+## Styling
+
+A band draws in the text color by default, as a light fill, so it reads as context behind the data. Change it with custom properties, or give it a series color with `className: 'ct-series-c'`:
+
+```css
+.ct-chart {
+  --ct-band-color: #b07800;
+  --ct-band-opacity: 0.2;
+}
+```
+
+The markup: a `g.ct-band` group with a `path.ct-band-area` per piece of the band. In listeners and plugins, find them by the role `band`, as in [events and plugins](../events-and-plugins/).
+
+Next: add a goal with a [target line](../../packages/essentials/target-lines/), [compose your own charts](../composed-charts/) with several axes, or [style the chart](../styling-with-css/) to match your page.

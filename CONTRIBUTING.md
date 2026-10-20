@@ -17,7 +17,7 @@ You need the current Node.js LTS (`.nvmrc`) and pnpm (the version in `package.js
    - `pnpm nx test chartist --watch`: the library's unit tests in watch mode.
    - `pnpm --dir packages/examples exec vite line/simple`: run one example.
    - `pnpm nx dev docs`: the docs site at http://localhost:4321.
-   - `pnpm nx run chartist:test:visual`: compare every example with the screenshot baseline. The committed baselines are recorded on Linux with Playwright's Chromium; on other machines, fonts render differently, so use `pnpm nx run chartist:test:visual:local-baseline` once and then `pnpm nx run chartist:test:visual:local`.
+   - `pnpm nx run visual:test:visual`: compare every example with the screenshot baseline. The committed baselines are recorded on Linux with Playwright's Chromium; on other machines, fonts render differently, so use `pnpm nx run visual:test:visual:local-baseline` once and then `pnpm nx run visual:test:visual:local`.
 
 The repository layout and the standing decisions are described in [`docs/decisions.md`](docs/decisions.md); the behavior of each part is specified in [`openspec/specs/`](openspec/specs/).
 

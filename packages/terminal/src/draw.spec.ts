@@ -1,13 +1,16 @@
 import {
+  autoScaleAxis,
   barChartConfig,
   lineChartConfig,
   node,
   pieChartConfig,
   toScene,
   type AttrValue,
+  type AxisFactory,
   type NodeRole,
   type SceneNode
 } from 'chartist';
+import { axisTitle, logAxis, valueLabels } from '@chartist-js/essentials';
 import { toPlainText } from './canvas.ts';
 import { drawScene, measureCells, terminalSize } from './draw.ts';
 
@@ -108,6 +111,62 @@ describe('lines, points and areas', () => {
   });
 });
 
+describe('grid lines', () => {
+  it('leaves out minor grid lines', () => {
+    // The default scale axis, with a minor tick between every two ticks.
+    const withMinor: AxisFactory = {
+      kind: 'autoScale',
+      create(context) {
+        const axis = autoScaleAxis().create(context);
+        const ticks = axis.ticks as number[];
+        return {
+          ...axis,
+          minorTicks: ticks.slice(1).map((tick, i) => (tick + ticks[i]) / 2)
+        };
+      }
+    };
+    const draw = (type?: AxisFactory) =>
+      plain(
+        toScene(
+          lineChartConfig(
+            { series: [[1, 9, 4, 7]] },
+            { axisY: type && { type } }
+          ),
+          terminalSize(60, 16)
+        )
+      );
+    const minor = toScene(
+      lineChartConfig(
+        { series: [[1, 9, 4, 7]] },
+        { axisY: { type: withMinor } }
+      ),
+      terminalSize(60, 16)
+    );
+    expect(JSON.stringify(minor)).toContain('ct-grid-minor');
+    expect(draw(withMinor)).toBe(draw(autoScaleAxis()));
+  });
+
+  it('draws a log axis with a grid line and a label per tick', () => {
+    const draw = (minorTicks: boolean) =>
+      plain(
+        toScene(
+          lineChartConfig(
+            { labels: ['a', 'b', 'c'], series: [[2, 40, 900]] },
+            { axisY: { type: logAxis({ minorTicks }) } }
+          ),
+          terminalSize(60, 20)
+        )
+      );
+    const output = draw(true);
+    expect(output).toBe(draw(false));
+    for (const label of ['1', '10', '100', '1000']) {
+      expect(lines(output).some(row => row.trim().startsWith(label))).toBe(
+        true
+      );
+    }
+  });
+});
+
 describe('target lines and bands', () => {
   /** A node with a role and classes, as the layers draw them. */
   const classed = (
@@ -180,6 +239,21 @@ describe('target lines and bands', () => {
 });
 
 describe('bars', () => {
+  it('writes value labels next to the bars', () => {
+    const output = plain(
+      toScene(
+        barChartConfig(
+          { labels: ['a', 'b', 'c'], series: [[12, 47, 30]] },
+          { high: 60, layers: { above: [valueLabels()] } }
+        ),
+        terminalSize(40, 14)
+      )
+    );
+    for (const value of ['12', '47', '30']) {
+      expect(output).toContain(value);
+    }
+  });
+
   it('ends a vertical bar with an eighth block', () => {
     const output = plain(
       scene(1, 4, [withRole('line', { x1: 4, y1: 64, x2: 4, y2: 42 }, 'bar')])
@@ -372,5 +446,107 @@ describe('nodes without a built-in role', () => {
       scene(2, 1, [group.append(node('text', { x: 0, y: 13.6 }).text('ok'))])
     );
     expect(output).toBe('ok');
+  });
+});
+
+describe('vertical text', () => {
+  /** The characters of a column, top to bottom. */
+  const column = (output: string, index: number) =>
+    lines(output)
+      .map(line => line[index] ?? ' ')
+      .join('');
+
+  it('draws a −90° turn from bottom to top, one character per row', () => {
+    const output = toPlainText(
+      drawScene(
+        scene(4, 6, [
+          node('text', { x: 14, y: 80, transform: 'rotate(-90 14 80)' }).text(
+            'abc'
+          )
+        ])
+      )
+    );
+    expect(column(output, 1)).toBe('  cba');
+  });
+
+  it('draws a 90° turn from top to bottom', () => {
+    const output = toPlainText(
+      drawScene(
+        scene(4, 6, [
+          node('text', { x: 2, y: 16, transform: 'rotate(90 2 16)' }).text(
+            'abc'
+          )
+        ])
+      )
+    );
+    expect(column(output, 0)).toBe(' abc');
+  });
+
+  it('aligns the column by its text-anchor', () => {
+    const at = (anchor: string) =>
+      column(
+        toPlainText(
+          drawScene(
+            scene(2, 8, [
+              node('text', {
+                x: 14,
+                y: 64,
+                'text-anchor': anchor,
+                transform: 'rotate(-90 14 64)'
+              }).text('abcd')
+            ])
+          )
+        ),
+        1
+      );
+    // The anchor is at the top of row 4: the text starts there and reads
+    // up, is centered on it, or ends there.
+    expect(at('start')).toBe('dcba');
+    expect(at('middle')).toBe('  dcba');
+    expect(at('end')).toBe('    dcba');
+  });
+
+  it('draws text with another transform in a row, as before', () => {
+    const output = toPlainText(
+      drawScene(
+        scene(4, 1, [
+          node('text', { x: 0, y: 13.6, transform: 'translate(0 0)' }).text(
+            'ab'
+          )
+        ])
+      )
+    );
+    expect(output).toBe('ab');
+  });
+
+  it('draws axis titles of @chartist-js/essentials beside the labels', () => {
+    const data = { labels: ['Mon', 'Tue', 'Wed'], series: [[12, 9, 7]] };
+    const titles = [
+      axisTitle({ axis: 'x', text: 'Day' }),
+      axisTitle({ axis: 'y', text: 'Visits' })
+    ];
+    for (const config of [
+      lineChartConfig(data, { layers: { above: titles } }),
+      barChartConfig(data, { layers: { above: titles } })
+    ]) {
+      const output = toPlainText(
+        drawScene(toScene(config, terminalSize(40, 14)))
+      );
+      const rows = lines(output);
+      // The Y title reads from bottom to top in a column of its own.
+      const columns = Array.from({ length: 4 }, (_, index) =>
+        column(output, index).trim()
+      );
+      expect(columns).toContain('stisiV');
+      const titleColumn = columns.indexOf('stisiV');
+      expect(rows.every(row => /^\s*$/.test(row.slice(0, titleColumn)))).toBe(
+        true
+      );
+      // The X title is the last row, below the X labels.
+      expect(rows.at(-1)!.trim()).toBe('Day');
+      expect(rows.findIndex(row => /Mon/.test(row))).toBeLessThan(
+        rows.length - 1
+      );
+    }
   });
 });

@@ -16,7 +16,7 @@ describe('moved pages', () => {
   const path = 'plugins/chartist-plugin-targetline/';
 
   test('the target line plugin goes to the guide', () => {
-    expect(MOVED_PAGES[path]).toBe('docs/target-lines-and-bands/');
+    expect(MOVED_PAGES[path]).toBe('packages/essentials/target-lines/');
     expect(movedFile(path)).toBe(
       'plugins/chartist-plugin-targetline/index.html'
     );
@@ -30,13 +30,13 @@ describe('moved pages', () => {
     const page = movedPage(path, { base: '/', site: 'https://chartist.dev' });
     expect(page).toContain(` ${REDIRECT_MARKER}>`);
     expect(page).toContain(
-      '<meta http-equiv="refresh" content="0; url=/docs/target-lines-and-bands/">'
+      '<meta http-equiv="refresh" content="0; url=/packages/essentials/target-lines/">'
     );
     expect(page).toContain(
-      'location.replace("/docs/target-lines-and-bands/" + location.search + location.hash)'
+      'location.replace("/packages/essentials/target-lines/" + location.search + location.hash)'
     );
     expect(page).toContain(
-      '<link rel="canonical" href="https://chartist.dev/docs/target-lines-and-bands/">'
+      '<link rel="canonical" href="https://chartist.dev/packages/essentials/target-lines/">'
     );
     expect(page).toContain('<meta name="robots" content="noindex">');
     expect(page).not.toContain('data-pagefind-body');
@@ -47,9 +47,9 @@ describe('moved pages', () => {
       base: '/chartist',
       site: 'https://example.org'
     });
-    expect(page).toContain('url=/chartist/docs/target-lines-and-bands/"');
+    expect(page).toContain('url=/chartist/packages/essentials/target-lines/"');
     expect(page).toContain(
-      'href="https://example.org/chartist/docs/target-lines-and-bands/"'
+      'href="https://example.org/chartist/packages/essentials/target-lines/"'
     );
   });
 });

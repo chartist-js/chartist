@@ -1,0 +1,38 @@
+/* The tooltip's look is custom properties: here on the chart's container. */
+#chart {
+  --ct-tooltip-background: #1e3a8a;
+  --ct-tooltip-color: #fff;
+  --ct-tooltip-radius: 0;
+  --ct-tooltip-padding: 0.5rem 0.75rem;
+  --ct-tooltip-offset: 14px;
+  --ct-tooltip-hide-delay: 600ms;
+}
+
+/* And plain CSS, through the class the plugin adds. */
+.fruit-tooltip .ct-tooltip-value {
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+/*
+ * A callout arrow toward the value. The plugin says on which side the
+ * tooltip is (data-placement) and where the value is from its left edge
+ * (--ct-tooltip-anchor-x), even when the tooltip moved to stay in view.
+ */
+.fruit-tooltip::after {
+  content: '';
+  position: absolute;
+  left: var(--ct-tooltip-anchor-x, 50%);
+  translate: -50% 0;
+  border: 7px solid transparent;
+}
+
+.fruit-tooltip[data-placement='top']::after {
+  top: 100%;
+  border-top-color: #1e3a8a;
+}
+
+.fruit-tooltip[data-placement='bottom']::after {
+  bottom: 100%;
+  border-bottom-color: #1e3a8a;
+}

@@ -1,0 +1,158 @@
+{
+  "name": "@chartist-js/tooltips",
+  "type": "module",
+  "version": "2.1.0",
+  "description": "Accessible tooltips for Chartist charts: pointer, touch and keyboard, text by default, styled with CSS",
+  "author": "Gion Kunz",
+  "homepage": "https://chartist.dev/packages/tooltips/",
+  "license": "MIT OR WTFPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chartist-js/chartist.git",
+    "directory": "packages/tooltips"
+  },
+  "bugs": {
+    "url": "https://github.com/chartist-js/chartist/issues"
+  },
+  "keywords": [
+    "chartist",
+    "charts",
+    "tooltip",
+    "tooltips",
+    "accessibility"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE-WTFPL",
+    "LICENSE-MIT"
+  ],
+  "scripts": {
+    "build": "del-cli ./dist && tsdown && node scripts/styles.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run",
+    "test:smoke": "node --test \"test/smoke/*.test.mjs\"",
+    "test:size": "size-limit"
+  },
+  "dependencies": {
+    "chartist": "workspace:^"
+  },
+  "devDependencies": {
+    "@chartist-js/essentials": "workspace:*",
+    "@size-limit/esbuild": "14.2.0",
+    "@size-limit/file": "14.2.0",
+    "@types/node": "^24.0.0",
+    "del-cli": "^8.0.0",
+    "playwright": "1.64.1",
+    "size-limit": "14.2.0",
+    "tsdown": "0.23.1",
+    "typescript": "6.0.3",
+    "vitest": "5.0.5"
+  },
+  "nx": {
+    "name": "tooltips",
+    "namedInputs": {
+      "build": [
+        "{projectRoot}/src/**/*",
+        "!{projectRoot}/src/**/*.spec.ts",
+        "{projectRoot}/scripts/**/*",
+        "{projectRoot}/package.json",
+        "{projectRoot}/tsdown.config.ts",
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/tsconfig.build.json",
+        {
+          "externalDependencies": [
+            "tsdown",
+            "typescript"
+          ]
+        }
+      ]
+    },
+    "targets": {
+      "build": {
+        "cache": true,
+        "dependsOn": [
+          "^build"
+        ],
+        "inputs": [
+          "build",
+          "^build"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ]
+      },
+      "typecheck": {
+        "cache": true,
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "test": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ]
+      },
+      "test:smoke": {
+        "cache": true,
+        "dependsOn": [
+          "build",
+          "^build"
+        ],
+        "inputs": [
+          "build",
+          "^build",
+          "{projectRoot}/README.md",
+          "{projectRoot}/test/smoke/**/*",
+          {
+            "externalDependencies": [
+              "playwright"
+            ]
+          }
+        ]
+      },
+      "test:size": {
+        "cache": true,
+        "dependsOn": [
+          "build"
+        ],
+        "inputs": [
+          "build",
+          "{projectRoot}/.size-limit.json",
+          {
+            "externalDependencies": [
+              "size-limit",
+              "@size-limit/file",
+              "@size-limit/esbuild"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

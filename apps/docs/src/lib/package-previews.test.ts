@@ -20,6 +20,27 @@ describe('packagePreview', () => {
     expect(terminal).toBe('ct-cli');
   });
 
+  test('the essentials package draws a chart with axis titles', () => {
+    const { html, terminal } = packagePreview('essentials');
+    expect(html).toMatch(/^<svg[^>]*viewBox="0 0 480 280"/);
+    expect(html).toMatch(/^<svg[^>]*aria-hidden="true"/);
+    expect(html).not.toMatch(/^<svg[^>]*\sheight=/);
+    expect(html).toMatch(
+      /<text[^>]*class="ct-axis-title[^"]*"[^>]*>Day<\/text>/
+    );
+    expect(html).toMatch(
+      /<text[^>]*class="ct-axis-title[^"]*"[^>]*>Visits<\/text>/
+    );
+    expect(terminal).toBeUndefined();
+  });
+
+  test('the tooltips package shows a tooltip over a chart', () => {
+    const { html } = packagePreview('tooltips');
+    expect(html).toMatch(/<svg[^>]*aria-hidden="true"/);
+    expect(html).toContain('<div class="ct-tooltip" aria-hidden="true"');
+    expect(html).toContain('<span class="ct-tooltip-title">Thu</span>');
+  });
+
   test('an unknown package throws', () => {
     expect(() => packagePreview('nope')).toThrow(/No preview/);
   });

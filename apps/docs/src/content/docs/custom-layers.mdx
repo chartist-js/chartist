@@ -35,7 +35,9 @@ Use it like any layer: in `layers` of [`chart()`](../composed-charts/), or on a 
 | `axes`        | The ids of the X and Y axis to draw on; by default the first of each                                |
 | `series`      | The series to draw, by name or index; by default all of them                                        |
 | `extent`      | Widens the axes beyond the layer's values, such as to include zero                                  |
+| `inset`       | Reserves room outside the drawing area, such as for a title or a legend                             |
 | `refine`      | Changes nodes that any layer drew, after all of them have drawn                                     |
+| `annotate`    | Draws from the finished nodes of the other layers, such as a label at each bar's end                |
 | `chartType`   | The chart class it gives `chart()` without a `className`: `'bar'` centers the X labels, for example |
 
 Only `type`, `coordinates` and `compose` are required. A layer is data: create it with a function that takes options, and keep no state in it. The same layer object may draw several charts, and every resize draws again.
@@ -53,6 +55,7 @@ Only `type`, `coordinates` and `compose` are required. A layer is data: create i
 | `seriesIndexes` | Each series' index in the whole chart, when the layer selects some                             |
 | `layerIndex`    | The layer's position in `layers`                                                               |
 | `measureText`   | Measures text with the page's fonts, for layers that lay out labels                            |
+| `insetArea`     | The boxes of the room the layer reserved with `inset`, one per side                            |
 
 **From values to px.** `axis.project(value, index, series)` gives the distance in px from the start of the axis. Y grows upward and SVG downward, so a Y position is `area.y1 - y.project(value)`, and an X position `area.x1 + x.project(value)`. A step axis places by index instead of value; its `step` is the width of one step.
 
@@ -84,7 +87,7 @@ The axis covers every layer's extent and the data together. An axis's own `low` 
 
 ## refine: changing what others drew
 
-Some layers need to change other layers' nodes: the [band](../target-lines-and-bands/#in-or-out-of-the-band) marks the points inside it. That's `refine(node, context)`. Once every layer has composed, it's called for each node with a role, from all layers, before the `compose` events reach plugins:
+Some layers need to change other layers' nodes: the [band](../bands/#in-or-out-of-the-band) marks the points inside it. That's `refine(node, context)`. Once every layer has composed, it's called for each node with a role, from all layers, before the `compose` events reach plugins:
 
 ```ts
 import type { Layer } from 'chartist';
@@ -122,6 +125,49 @@ Refining has rules, so layers can't break each other:
 
 Leave `refine` out when you don't need it: charts without a refining layer skip the step.
 
+## annotate: drawing from what others drew
+
+`refine` changes nodes but can't add any. To draw something where another layer's nodes ended up, such as a label at each bar's end after stacking, use `annotate(drawn, context)`. It runs once the other layers' nodes are composed, refined and through the plugins' `compose` events, and gets those finished nodes. What it returns is drawn at the layer's place in `layers`:
+
+```ts
+import { findAll, getMultiValue, node, type Layer } from 'chartist';
+
+// Writes each bar's value past its end.
+export const barValues: Layer = {
+  type: 'barValues',
+  coordinates: ['cartesian'],
+  series: [],
+  compose: () => [],
+  annotate: drawn =>
+    drawn.flatMap(top =>
+      findAll(top, { role: 'bar' }).map(bar =>
+        node('text', { x: bar.ctx.x2, y: bar.ctx.y2 - 4 }, 'ct-bar-value').text(
+          String(getMultiValue(bar.ctx.value, 'y'))
+        )
+      )
+    )
+};
+```
+
+A bar a plugin dropped isn't in `drawn`, and a moved one is where it ends up. Annotating layers don't see each other's nodes. A bar's context also says whether it's `horizontal` and `stacked`. [`valueLabels()`](../../packages/essentials/value-labels/) of `@chartist-js/essentials` is built this way.
+
+## inset: room outside the chart
+
+Titles, notes and legends sit next to the chart, not on it. A layer that draws there reserves the room it needs with `inset(context)`, in px per side. Chartist adds the room to the padding before the axes take theirs, so the drawing area shrinks and the axis labels stay next to it. You don't touch `chartPadding`:
+
+<LiveExample
+  title='A source note below the chart'
+  label='A line chart of visits from Monday to Friday, with the note Source: web analytics, week 20 below the X axis labels, aligned right'
+  example='custom-layers/source-note'
+  show='src/source.ts'
+/>
+
+`inset` runs on every layout, before the axes are created, so the room can depend on the chart's size. Its context has the chart's `width` and `height`, the `padding` option, the layer's series in `data`, the axis definitions in `axes` (with their ids, sides and offsets) and `measureText`, so the room follows the stylesheet's font.
+
+`compose` then gets the room as `insetArea`: one box per side the layer reserved, an `Area` like the drawing area. A box sits just outside the axes on its side and runs along the drawing area. Layers that reserve room on the same side stack outward in the order of `layers`, the way axes do. The `layout` event shows the total as `inset`, and charts without such a layer lay out as before.
+
+[Axis titles](../../packages/essentials/axis-titles/) in `@chartist-js/essentials` are built this way.
+
 ## Sharing a layer
 
 A layer is a function, so a package of layers is a module of functions. Depend on `chartist` as a peer dependency, export a function per layer with typed options, and ship a small stylesheet with your classes, using `--ct-color` and the other `--ct-*` properties so the user's theme applies.
@@ -135,4 +181,4 @@ What you get for free:
 
 In the API reference: [`Layer`](../../api/layers/#Layer), [`LayerContext`](../../api/layers/#LayerContext) and [`node`](../../api/scene/#node).
 
-Next: [events and plugins](../events-and-plugins/), to change charts instead of drawing on them, or the [target line and band layers](../target-lines-and-bands/).
+Next: [events and plugins](../events-and-plugins/), to change charts instead of drawing on them, or the [band layer](../bands/).

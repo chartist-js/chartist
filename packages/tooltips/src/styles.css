@@ -1,0 +1,129 @@
+/* @chartist-js/tooltips: the tooltip and the focused value. */
+
+/*
+ * The tooltip: a popover in the top layer, placed with --ct-tooltip-x and
+ * --ct-tooltip-y, which the plugin sets. For an arrow, it also sets
+ * --ct-tooltip-anchor-x (the value's place from the tooltip's left edge)
+ * and data-placement (top or bottom). The other properties are yours.
+ */
+.ct-tooltip {
+  position: fixed;
+  inset: auto;
+  top: 0;
+  left: 0;
+  translate: var(--ct-tooltip-x, 0) var(--ct-tooltip-y, 0);
+  box-sizing: border-box;
+  max-width: var(--ct-tooltip-max-width, 16rem);
+  margin: 0;
+  padding: var(--ct-tooltip-padding, 0.375rem 0.625rem);
+  overflow: visible;
+  border: var(--ct-tooltip-border, 0);
+  border-radius: var(--ct-tooltip-radius, 0.375rem);
+  box-shadow: var(--ct-tooltip-shadow, 0 4px 12px rgba(0, 0, 0, 0.18));
+  background: var(--ct-tooltip-background, rgba(24, 22, 20, 0.94));
+  color: var(--ct-tooltip-color, #fff);
+  font: var(
+    --ct-tooltip-font,
+    500 0.8125rem/1.35 system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif
+  );
+  text-align: left;
+  pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 120ms ease-out,
+    visibility 0s;
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  .ct-tooltip {
+    background: var(
+      --ct-tooltip-background,
+      light-dark(rgba(24, 22, 20, 0.94), rgba(250, 248, 244, 0.96))
+    );
+    color: var(--ct-tooltip-color, light-dark(#fff, #18161a));
+  }
+}
+
+/* Hiding: stays for the delay, and while the pointer is on it. */
+.ct-tooltip.ct-tooltip-hidden:not(:hover) {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 120ms ease-in var(--ct-tooltip-hide-delay, 300ms),
+    visibility 0s calc(var(--ct-tooltip-hide-delay, 300ms) + 120ms);
+}
+
+/* Without popover support the plugin toggles `hidden`. */
+.ct-tooltip[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-tooltip,
+  .ct-tooltip.ct-tooltip-hidden:not(:hover) {
+    transition: none;
+  }
+}
+
+.ct-tooltip-title,
+.ct-tooltip-value {
+  display: block;
+}
+
+.ct-tooltip-title {
+  font-weight: 600;
+}
+
+.ct-tooltip-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* The series' name, after a swatch of its color. */
+.ct-tooltip-series {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+
+.ct-tooltip-series::before {
+  content: '';
+  flex: none;
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 2px;
+  background: var(--ct-tooltip-series-color, currentColor);
+}
+
+/* format() text keeps its line breaks. */
+.ct-tooltip-text {
+  white-space: pre-line;
+}
+
+/* The focused value. */
+.ct-tooltip-target:focus {
+  outline: none;
+}
+
+.ct-tooltip-target:focus-visible {
+  outline: var(--ct-tooltip-focus-width, 2px) solid
+    var(--ct-tooltip-focus-color, #18161a);
+  outline-offset: 2px;
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  .ct-tooltip-target:focus-visible {
+    outline-color: var(--ct-tooltip-focus-color, light-dark(#18161a, #faf8f4));
+  }
+}
+
+.ct-point.ct-tooltip-target:focus-visible {
+  stroke-width: calc(var(--ct-point-size, 10px) * 1.6);
+}
+
+.ct-bar.ct-tooltip-target:focus-visible {
+  stroke-width: calc(var(--ct-bar-width, 10px) + 4px);
+}

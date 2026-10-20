@@ -25,8 +25,9 @@ export const REDIRECT_MARKER = 'data-redirect';
  * @type {Readonly<Record<string, string>>}
  */
 export const MOVED_PAGES = {
-  // The plugin left the plugin list: the core's targetLine() covers it.
-  'plugins/chartist-plugin-targetline/': 'docs/target-lines-and-bands/',
+  // The plugin left the plugin list: targetLine() of @chartist-js/essentials
+  // covers it.
+  'plugins/chartist-plugin-targetline/': 'packages/essentials/target-lines/',
   // The guide to updating charts grew into the live updates guide.
   'docs/updating-charts/': 'docs/live-updates/'
 };

@@ -17,6 +17,20 @@ export interface NewsEntry {
 export const NEWS: readonly NewsEntry[] = [
   {
     tag: 'New',
+    title: '@chartist-js/tooltips',
+    text: 'Tooltips for mouse, touch and keyboard that stay on their value while the chart updates.',
+    href: 'packages/tooltips/',
+    linkLabel: 'Meet it'
+  },
+  {
+    tag: 'New',
+    title: '@chartist-js/essentials',
+    text: 'Axis titles, trend lines, a log axis and more: the additions people ask for most, in a package of their own.',
+    href: 'packages/essentials/',
+    linkLabel: 'Meet it'
+  },
+  {
+    tag: 'New',
     title: '@chartist-js/terminal',
     text: 'Chartist charts in your terminal and as text art in HTML, with the ct-cli command.',
     href: 'packages/terminal/',

@@ -1,0 +1,9 @@
+/* The series group sets --ct-color; stems and dots take it. */
+.ct-stem {
+  stroke: var(--ct-color);
+  stroke-width: 2px;
+}
+
+.ct-lollipop {
+  fill: var(--ct-color);
+}

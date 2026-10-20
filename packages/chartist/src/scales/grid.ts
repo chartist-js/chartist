@@ -23,6 +23,11 @@ export interface AxisClassNames {
   readonly start: string;
   /** Labels of an axis at the bottom or right (`ct-end`). */
   readonly end: string;
+  /**
+   * Grid lines at an axis's `minorTicks`, next to the `grid` class
+   * (`ct-grid-minor`).
+   */
+  readonly gridMinor?: string;
 }
 
 /** Axis options with the 1.x defaults applied. */
@@ -104,6 +109,41 @@ export function axisNodes(
   const gridLength = axis.dimension === 'x' ? area.height : area.width;
   const grids: SceneNode[] = [];
   const labels: SceneNode[] = [];
+  const gridLine = (
+    position: number,
+    ctx: { readonly index: number; readonly minor?: true },
+    extra = ''
+  ) => {
+    // x1, x2, y1, y2 in the axis direction first (the output order).
+    const attrs = {
+      [`${units.pos}1`]: position,
+      [`${units.pos}2`]: position,
+      [`${units.counterPos}1`]: gridOffset,
+      [`${units.counterPos}2`]: gridOffset + gridLength
+    } as Record<'x1' | 'x2' | 'y1' | 'y2', number>;
+    grids.push(
+      node(
+        'line',
+        attrs,
+        `${classNames.grid} ${classNames[units.dir]}${extra}`,
+        { role: 'grid', ctx: { axis, ...ctx, ...attrs } }
+      )
+    );
+  };
+
+  if (options.showGrid) {
+    // Minor grid lines first, so the others draw over them.
+    axis.minorTicks?.forEach((tick, index) => {
+      const relative = axis.project(tick);
+      if (relative >= 0 && relative <= axis.length) {
+        gridLine(
+          axis.dimension === 'x' ? area.x1 + relative : area.y1 - relative,
+          { index, minor: true },
+          ` ${classNames.gridMinor ?? 'ct-grid-minor'}`
+        );
+      }
+    });
+  }
 
   projected.forEach((relative, index) => {
     const labelValue = labelValues[index];
@@ -146,19 +186,7 @@ export function axisNodes(
     }
 
     if (options.showGrid) {
-      // x1, x2, y1, y2 in the axis direction first (the output order).
-      const attrs = {
-        [`${units.pos}1`]: position,
-        [`${units.pos}2`]: position,
-        [`${units.counterPos}1`]: gridOffset,
-        [`${units.counterPos}2`]: gridOffset + gridLength
-      } as Record<'x1' | 'x2' | 'y1' | 'y2', number>;
-      grids.push(
-        node('line', attrs, `${classNames.grid} ${classNames[units.dir]}`, {
-          role: 'grid',
-          ctx: { axis, index, ...attrs }
-        })
-      );
+      gridLine(position, { index });
     }
 
     if (options.showLabel) {

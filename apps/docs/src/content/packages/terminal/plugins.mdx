@@ -27,7 +27,8 @@ How it works:
 On an SVG chart, the layer and the plugin go into the same options:
 
 ```ts nocheck
-import { lineChart, targetLine } from 'chartist';
+import { lineChart } from 'chartist';
+import { targetLine } from '@chartist-js/essentials';
 import { reached } from './reached';
 
 lineChart('#chart', data, {

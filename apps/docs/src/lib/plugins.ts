@@ -21,7 +21,7 @@ export const sortedPlugins = (): Plugin[] =>
       pluginFacts(a.package).monthlyDownloads
   );
 
-/** The plugin's anchor on the page, e.g. `chartist-plugin-axistitle`. */
+/** The plugin's anchor on the page, e.g. `chartist-plugin-legend`. */
 export const pluginSlug = (plugin: Plugin) =>
   plugin.package.replace(/^@/, '').replace(/\//g, '-');
 

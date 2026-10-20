@@ -46,9 +46,13 @@ Triage labels say where a change belongs and how big it is. An open feature requ
   - `core`: in the `chartist` package itself;
   - `plugins`: as a plugin, not in the core;
   - `layer`: as a layer (`chart()` and the presets' `layers`);
-  - `axis`: as an axis type or an axis feature.
+  - `axis`: as an axis type or an axis feature;
+  - `essentials`: in `@chartist-js/essentials` (new axis types and layers such as axis titles, legend, value labels);
+  - `tooltips`: in `@chartist-js/tooltips`.
 
-  `layer` and `axis` go together with `core` when the core should ship that layer or axis.
+  `layer` and `axis` go together with `core` or `essentials`, whichever ships that layer or axis.
+
+- **Milestone:** the release a planned change ships in (`2.2.0`, `2.3.0`, …).
 
 - **Size:** `simple` or `complex`, judged by the implementation, not by how often it's asked for.
 - **`v2`:** planned for v2 final, or already fixed by v2. Use it only for what fits before 2.0, not as a wish list.
@@ -72,21 +76,21 @@ Lessons from earlier sessions; each one cost time once.
 
 - **Verify UI by looking.** Tests pass on broken layouts.
   - After a visible change, take Playwright screenshots in light and dark mode and at phone width (375 to 390 px), and check that the page doesn't scroll horizontally.
-  - `@playwright/test` resolves from `packages/chartist/`, so run ad-hoc scripts from there, and delete them afterwards.
+  - `playwright` resolves from `packages/chartist/` (and `@playwright/test` from `packages/visual/`), so run ad-hoc scripts from there, and delete them afterwards.
   - Run the page's e2e and axe checks (`pnpm nx e2e docs`).
 - **Dev servers.**
   - The author's docs dev server runs on 127.0.0.1:4321. Never stop or restart it.
   - Astro allows one dev server per project. A second one with `--ignore-lock` shares Vite's dependency cache and breaks both (504 "Outdated Optimize Dep").
   - For your own testing, build and serve `dist`: `PORT=<free port> node apps/docs/e2e/serve.mjs`.
   - Stop processes by explicit PID from `ps`. `pkill -f` and `pgrep -f` patterns can match your own shell.
-- **The visual reference platform.** Committed screenshots are recorded on the author's WSL host or in CI, never in the dev container, whose fonts render differently. In the container, use `pnpm nx run chartist:test:visual:local`. For examples without 1.x code, the local baseline compares the current build with itself, so check those against the committed images.
+- **The visual reference platform.** Committed screenshots are recorded on the author's WSL host or in CI, never in the dev container, whose fonts render differently. In the container, use `pnpm nx run visual:test:visual:local`. For examples without 1.x code, the local baseline compares the current build with itself, so check those against the committed images.
 - **Shell.** The interactive shell is zsh: it doesn't word-split `$VAR` in loops, and an unmatched glob is an error (for example `grep --include=*.ts`). Use `bash -c '…'` or quote the patterns.
 - **Don't guess facts.**
   - Check CLI flags with `--help`. Check GitHub and npm state with `gh api` and `npm view` before stating it.
   - Read a third-party API's docs before relying on it.
   - Type-check code snippets the docs show (`pnpm nx run docs:samples`, part of `check`).
 - **Facts snapshot.** `pnpm nx run docs:facts` refreshes `apps/docs/src/data/facts.json`. Run it with `GITHUB_TOKEN=$(gh auth token)`, or the collaborator roles can't be read. Builds never fetch.
-- **Caching.** Nx caches test targets, so a green run may not have run anything. When verifying a change, use `--skip-nx-cache`, or check that the output shows the tests ran.
+- **Caching.** Nx caches test targets, so a green run may not have run anything. When verifying a change, use `--skip-nx-cache`, or check that the output shows the tests ran. Vitest keeps transformed modules in `node_modules/.vitest-cache`, `import.meta.glob` results included: after adding a generated file (a package's API model), delete that folder, or the tests don't see the file.
 - **nx-astro** rewrites `apps/docs/package.json` (dropping its final newline) unless every `astro`/`@astrojs/*` dependency is also listed in the root `package.json`.
 - **Tailwind and `hidden`.** A `flex` or `grid` utility overrides the `[hidden]` attribute. On elements toggled with `hidden`, add `[&[hidden]]:hidden`.
 - **Big splittable work** goes to parallel worktree agents after a shared foundation commit, so they build on the same base and don't collide:

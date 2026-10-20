@@ -86,11 +86,9 @@
     "splitIntoSegments",
     "stepAxis",
     "sum",
-    "targetLine",
     "textAscent",
     "times",
     "toScene",
-    "trendLine",
     "withOptions"
   ],
   "types": [
@@ -123,6 +121,7 @@
     "AxisOptions",
     "AxisSetup",
     "AxisSide",
+    "AxisTransform",
     "AxisType",
     "AxisUnits",
     "BandContext",
@@ -178,6 +177,7 @@
     "GridBackgroundDrawEvent",
     "GridContext",
     "GridDrawEvent",
+    "InsetContext",
     "Interpolation",
     "Keyframes",
     "Label",
@@ -302,13 +302,8 @@
     "SvgList",
     "SvgPath",
     "SvgPathOptions",
-    "TargetLabelContext",
-    "TargetLineContext",
-    "TargetLineOptions",
     "TextAttrs",
     "TextMetrics",
-    "TrendLineContext",
-    "TrendLineOptions",
     "UpdateAnimation",
     "ValueContext",
     "ViewBox",
@@ -386,11 +381,9 @@
     "splitIntoSegments",
     "stepAxis",
     "sum",
-    "targetLine",
     "textAscent",
     "times",
     "toScene",
-    "trendLine",
     "withOptions"
   ]
 }

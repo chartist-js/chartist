@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test';
 import { MOVED_PAGES } from '../integrations/redirects.mjs';
 
 const OLD = '/plugins/chartist-plugin-targetline/';
-const GUIDE = '/docs/target-lines-and-bands/';
+const GUIDE = '/packages/essentials/target-lines/';
 
 test('the target line plugin page lands on the guide, keeping the hash', async ({
   page

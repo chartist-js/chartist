@@ -4,8 +4,9 @@
  * index.css and themes/accessible.css (as in the package's dist), the
  * declarations index.d.ts, compat.d.ts, live.d.ts and server.d.ts (for
  * type-aware editing), the
- * @chartist-js/terminal build under terminal/ (index.js, styles.css and
- * index.d.ts), the match-container polyfill that container query examples
+ * builds of @chartist-js/terminal, @chartist-js/essentials and
+ * @chartist-js/tooltips under terminal/, essentials/ and tooltips/
+ * (index.js, styles.css and index.d.ts each), the match-container polyfill that container query examples
  * import, the UMD
  * builds index.umd.js and compat.umd.js, and the community plugins of the
  * plugins page under plugins/<package>/ (src/data/plugin-files.json): each
@@ -25,6 +26,11 @@ import pluginFiles from '../src/data/plugin-files.json' with { type: 'json' };
 
 const DIST = new URL('../../../packages/chartist/dist/', import.meta.url);
 const TERMINAL = new URL('../../../packages/terminal/dist/', import.meta.url);
+const ESSENTIALS = new URL(
+  '../../../packages/essentials/dist/',
+  import.meta.url
+);
+const TOOLTIPS = new URL('../../../packages/tooltips/dist/', import.meta.url);
 const POLYFILL = new URL(
   '../node_modules/match-container/matchContainer.js',
   import.meta.url
@@ -69,6 +75,30 @@ const FILES = {
   },
   'terminal/index.d.ts': {
     source: new URL('index.d.ts', TERMINAL),
+    type: 'text/plain'
+  },
+  'essentials/index.js': {
+    source: new URL('index.js', ESSENTIALS),
+    type: 'text/javascript'
+  },
+  'essentials/styles.css': {
+    source: new URL('styles.css', ESSENTIALS),
+    type: 'text/css'
+  },
+  'essentials/index.d.ts': {
+    source: new URL('index.d.ts', ESSENTIALS),
+    type: 'text/plain'
+  },
+  'tooltips/index.js': {
+    source: new URL('index.js', TOOLTIPS),
+    type: 'text/javascript'
+  },
+  'tooltips/styles.css': {
+    source: new URL('styles.css', TOOLTIPS),
+    type: 'text/css'
+  },
+  'tooltips/index.d.ts': {
+    source: new URL('index.d.ts', TOOLTIPS),
     type: 'text/plain'
   },
   'match-container.js': { source: POLYFILL, type: 'text/javascript' },
