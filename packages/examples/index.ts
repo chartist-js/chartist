@@ -590,13 +590,6 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
-    id: 'composed/target-line',
-    title: 'Target lines on a bar chart',
-    description:
-      'Monthly sales against a goal and a minimum, added to the bar chart preset as extra layers.',
-    v2: true
-  }),
-  example({
     id: 'composed/band-chart',
     title: 'Band chart',
     description:
@@ -608,20 +601,6 @@ export const examples: Example[] = [
     title: 'Grouped stacked bars',
     description:
       'New and returning customers per quarter, one stack per year, drawn by two bar layers side by side.',
-    v2: true
-  }),
-  example({
-    id: 'composed/trend-line',
-    title: 'Bars with a trend line',
-    description:
-      'Monthly sign-ups as bars, with the least-squares trend through them added to the bar chart preset.',
-    v2: true
-  }),
-  example({
-    id: 'composed/scatter-regression',
-    title: 'Scatter plot with a regression line',
-    description:
-      'Ice cream sales against the temperature as points, with the least-squares line through them.',
     v2: true
   }),
   example({
@@ -720,6 +699,27 @@ export const examples: Example[] = [
     title: 'Axis titles on two Y axes',
     description:
       'Revenue in EUR and ad spend in USD on their own Y axes, each named, one title aligned to the end and one turned to face the chart.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/target-line',
+    title: 'Target lines on a bar chart',
+    description:
+      'Monthly sales against a goal and a minimum, added to the bar chart preset as extra layers.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/trend-line',
+    title: 'Bars with a trend line',
+    description:
+      'Monthly sign-ups as bars, with the least-squares trend through them added to the bar chart preset.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/scatter-regression',
+    title: 'Scatter plot with a regression line',
+    description:
+      'Ice cream sales against the temperature as points, with the least-squares line through them.',
     v2: true
   }),
   example({
