@@ -6,4 +6,4 @@ packages:
 # satori pins fflate 0.7.3. Remove an entry once its parent ships the patch.
 overrides:
   undici@7: 7.29.1
-  fflate@0.7: 0.7.5
+  fflate@0.7: 0.8.3
