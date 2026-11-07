@@ -95,12 +95,40 @@ async function compile() {
 }
 
 /**
- * postcss-preset-env without its custom-properties transform: the styles
- * read --ct-* properties at runtime, with their fallbacks inside var().
+ * postcss-preset-env without its custom-properties and light-dark()
+ * transforms: the styles read --ct-* properties at runtime, with their
+ * fallbacks inside var(), and the themes keep light-dark() as written
+ * instead of a toggle built from extra custom properties.
  */
 function env() {
-  return presetEnv({ features: { 'custom-properties': false } });
+  return presetEnv({
+    features: { 'custom-properties': false, 'light-dark-function': false }
+  });
 }
+
+/**
+ * cssnano keeps custom property values as written, and Sass wraps long
+ * ones over several lines (light-dark(...) in the themes), so the minified
+ * theme files collapse that whitespace first.
+ */
+function compactCustomProperties() {
+  return {
+    postcssPlugin: 'compact-custom-properties',
+    Declaration(decl) {
+      if (decl.prop.startsWith('--')) {
+        const value = decl.value
+          .replace(/\s+/g, ' ')
+          .replace(/\(\s+/g, '(')
+          .replace(/\s+\)/g, ')')
+          .replace(/,\s+/g, ',');
+        if (value !== decl.value) {
+          decl.value = value;
+        }
+      }
+    }
+  };
+}
+compactCustomProperties.postcss = true;
 
 /** Compiles each theme to dist/themes/<name>.css and .min.css. */
 async function compileThemes() {
@@ -117,10 +145,10 @@ async function compileThemes() {
         style: 'expanded'
       });
       const readable = await postcss([env()]).process(css, { from: undefined });
-      const minified = await postcss([cssnano({ preset: 'default' })]).process(
-        readable.css,
-        { from: undefined }
-      );
+      const minified = await postcss([
+        compactCustomProperties(),
+        cssnano({ preset: 'default' })
+      ]).process(readable.css, { from: undefined });
       await Promise.all([
         fs.writeFile(path.join(outDir, `${name}.css`), readable.css),
         fs.writeFile(path.join(outDir, `${name}.min.css`), minified.css)

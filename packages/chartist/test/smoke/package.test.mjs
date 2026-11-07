@@ -271,7 +271,7 @@ test('CSS: labels and grid lines have defaults for a dark color scheme', async (
   assert.match(css, DARK_DEFAULTS);
   assert.match(css, DARK_GRID);
   const min = String(await readFile(path.join(pkgDir, 'dist/index.min.css')));
-  assert.match(min, /@supports \(color:\s*light-dark\(#000,\s*#fff\)\)/);
+  assert.match(min, /@supports\s*\(color:\s*light-dark\(#000,\s*#fff\)\)/);
 });
 
 test('Sass: false leaves out the dark defaults', () => {
