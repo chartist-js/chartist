@@ -331,7 +331,8 @@ export function createAnimation(
 
     // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
     // which needs to be in ms aside
-    timeout = quantity(def.begin || 0).value;
+    const begin = quantity(def.begin || 0);
+    timeout = begin.unit === 's' ? begin.value * 1000 : begin.value;
     def.begin = 'indefinite';
   }
 

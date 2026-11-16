@@ -122,6 +122,11 @@ Renderers MAY provide a style measurement capability that layout uses for values
 - **WHEN** a donut without `donutWidth` is rendered to a string
 - **THEN** its ring is laid out for 60 px
 
+#### Scenario: Fractional donut width
+
+- **WHEN** a donut has `donutWidth: '40.5%'`
+- **THEN** its stroke width is 40.5 percent of its radius, keeping the fractional part and the percent unit in both DOM and string rendering
+
 ### Requirement: Charts in another document
 
 A chart attached to an element of another document (an iframe, or JSDOM in Node without globals) SHALL use that element's document and window to create elements, match media queries, observe its size and listen for resizes. `Svg` SHALL recognize elements of any document.

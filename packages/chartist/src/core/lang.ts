@@ -16,7 +16,7 @@ export function ensureUnit<T>(value: T, unit: string) {
  */
 export function quantity<T>(input: T) {
   if (typeof input === 'string') {
-    const match = /^(\d+)\s*(.*)$/g.exec(input);
+    const match = /^([+-]?\d*\.?\d+)\s*(.*)$/.exec(input);
     return {
       value: match ? +match[1] : 0,
       unit: match?.[2] || undefined

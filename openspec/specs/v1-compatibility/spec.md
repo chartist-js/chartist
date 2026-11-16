@@ -370,3 +370,17 @@ The 1.x chart classes, and charts created with the compat plugin, SHALL replace 
 
 - **WHEN** a point is animated with `easing: 'easeOutQuart'`
 - **THEN** its `animate` element has `calcMode="spline"` and the curve's `keySplines`, as in 1.x
+
+### Requirement: Animation time quantities
+
+`Svg#animate()` SHALL preserve fractional time values and interpret `s` as seconds and `ms` or a number as milliseconds, including when sampling easings and scheduling a guided animation.
+
+#### Scenario: Fractional duration with sampled easing
+
+- **WHEN** an animation with `easing: 'easeOutBack'` has `dur: '1.5s'`
+- **THEN** it has the same 30 sampled values and key times as `dur: '1500ms'` or `dur: 1500`
+
+#### Scenario: Guided start in seconds
+
+- **WHEN** a guided animation has `begin: '0.5s'`
+- **THEN** it starts after 500 ms, as with `begin: '500ms'` or `begin: 500`
