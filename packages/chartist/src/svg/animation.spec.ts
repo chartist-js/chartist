@@ -63,6 +63,43 @@ describe('sampleEasing', () => {
 describe('Svg#animate easings', () => {
   const point = () => new Svg('line', { y1: 0 });
 
+  it.each(['1.5s', '1500ms', 1500])(
+    'samples a duration of %s for the full elapsed time',
+    dur => {
+      const element = point();
+      element.animate(
+        { y1: { dur, from: 0, to: 100, easing: 'easeOutBack' } },
+        false
+      );
+      const animation = element.getNode().querySelector('animate')!;
+      expect(animation.getAttribute('values')!.split(';')).toHaveLength(30);
+      expect(animation.getAttribute('keyTimes')!.split(';')).toHaveLength(30);
+    }
+  );
+
+  it.each([
+    { begin: '1s', delay: 1000 },
+    { begin: '0.5s', delay: 500 },
+    { begin: '500ms', delay: 500 },
+    { begin: 500, delay: 500 }
+  ])('starts a guided animation after $begin', ({ begin, delay }) => {
+    vi.useFakeTimers();
+    try {
+      const element = point();
+      element.animate({ y1: { begin, dur: 100, from: 0, to: 100 } });
+      const animation = element.getNode().querySelector('animate')!;
+      const beginElement = vi.fn();
+      Object.defineProperty(animation, 'beginElement', { value: beginElement });
+
+      vi.advanceTimersByTime(delay - 1);
+      expect(beginElement).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(beginElement).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it('keeps the keySplines of easings within 0 to 1, as 1.x', () => {
     const element = point();
     element.animate(

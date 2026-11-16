@@ -1,11 +1,33 @@
 // @vitest-environment node
 import { node } from '../scene/node';
+import { toScene } from '../chart/toScene';
+import { pieChartConfig } from '../presets/pieChart';
 import { renderToString } from './string';
 
 const ROOT =
   'xmlns="http://www.w3.org/2000/svg" xmlns:ct="http://gionkunz.github.com/chartist-js/ct"';
 
 describe('render/string', () => {
+  it.each([
+    { donutWidth: '40%', width: 62 },
+    { donutWidth: '40.5%', width: 62.775 },
+    { donutWidth: '0.5%', width: 0.775 },
+    { donutWidth: '40.5px', width: 40.5 },
+    { donutWidth: 40.5, width: 40.5 }
+  ])('renders a donut width of $donutWidth', ({ donutWidth, width }) => {
+    const svg = renderToString(
+      toScene(pieChartConfig({ series: [3, 1] }, { donut: true, donutWidth }), {
+        width: 320,
+        height: 320
+      })
+    );
+    const widths = Array.from(
+      svg.matchAll(/stroke-width:\s*([^;"]+)/g),
+      match => match[1]
+    );
+    expect(widths).toEqual([`${width}px`, `${width}px`]);
+  });
+
   it('serializes the root with namespaces, size and classes', () => {
     expect(
       renderToString(node('svg', { width: 600, height: 300 }, 'chart'))
