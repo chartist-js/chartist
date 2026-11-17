@@ -1,3 +1,10 @@
+## 2.2.1 (2026-11-17)
+
+### 🩹 Fixes
+
+- preserve fractional quantities and animation timing ([c0a32a35](https://github.com/chartist-js/chartist/commit/c0a32a35))
+- **deps:** patch undici, markdown-it and the CSS build chain ([f722587f](https://github.com/chartist-js/chartist/commit/f722587f))
+
 ## 2.2.0 (2026-10-20)
 
 ### 🚀 Features
