@@ -1,6 +1,8 @@
 // @vitest-environment node
 import { node } from '../scene/node';
 import { toScene } from '../chart/toScene';
+import { barChartConfig } from '../presets/barChart';
+import { lineChartConfig } from '../presets/lineChart';
 import { pieChartConfig } from '../presets/pieChart';
 import { renderToString } from './string';
 
@@ -8,6 +10,61 @@ const ROOT =
   'xmlns="http://www.w3.org/2000/svg" xmlns:ct="http://gionkunz.github.com/chartist-js/ct"';
 
 describe('render/string', () => {
+  it.each([
+    {
+      dimension: 'X',
+      horizontalBars: false,
+      closingLine: '<line class="ct-grid ct-horizontal" x1="305" x2="305"'
+    },
+    {
+      dimension: 'Y',
+      horizontalBars: true,
+      closingLine: '<line class="ct-grid ct-vertical" y1="15" y2="15"'
+    }
+  ])(
+    'adds a closing grid line to the $dimension step axis on request',
+    ({ dimension, horizontalBars, closingLine }) => {
+      const data = { labels: ['A', 'B'], series: [[1, 2]] };
+      const render = (
+        options: { showClosingGridLine?: boolean; showGrid?: boolean } = {}
+      ) =>
+        renderToString(
+          toScene(
+            barChartConfig(data, {
+              horizontalBars,
+              [`axis${dimension}`]: options
+            }),
+            {
+              width: 320,
+              height: 180
+            }
+          )
+        );
+
+      expect(render()).not.toContain(closingLine);
+      expect(render({ showClosingGridLine: true })).toContain(closingLine);
+      expect(
+        render({ showClosingGridLine: true, showGrid: false })
+      ).not.toContain(closingLine);
+    }
+  );
+
+  it('does not draw a second closing line when the final step tick is already there', () => {
+    const data = { labels: ['A', 'B'], series: [[1, 2]] };
+    const svg = renderToString(
+      toScene(
+        lineChartConfig(data, {
+          fullWidth: true,
+          axisX: { showClosingGridLine: true }
+        }),
+        { width: 320, height: 180 }
+      )
+    );
+    expect(
+      svg.match(/<line class="ct-grid ct-horizontal" x1="305" x2="305"/g)
+    ).toHaveLength(1);
+  });
+
   it.each([
     { donutWidth: '40%', width: 62 },
     { donutWidth: '40.5%', width: 62.775 },

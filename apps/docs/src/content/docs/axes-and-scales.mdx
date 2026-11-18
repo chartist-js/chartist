@@ -61,6 +61,8 @@ For values that span several orders of magnitude, [`@chartist-js/essentials`](..
 
 With `horizontalBars: true`, the bar chart swaps them: the labels go down the Y axis and the values along X.
 
+Each step starts with a grid line. To draw one at the far edge, set `axisX: { showClosingGridLine: true }` on a bar chart, or set it on `axisY` for horizontal bars. This adds a line without shifting the bars or adding a label.
+
 The labels in your data only become ticks through that default step axis. Give `axisX` another `type` and the labels have nothing left to do.
 
 ## Tuning the auto scale

@@ -237,6 +237,24 @@ export function axisNodes(
     }
   });
 
+  if (
+    axis.kind === 'step' &&
+    axis.length > 0 &&
+    axis.ticks.length > 0 &&
+    options.showGrid &&
+    options.showClosingGridLine
+  ) {
+    const end = axis.dimension === 'x' ? area.x2 : area.y2;
+    const tolerance =
+      Number.EPSILON * Math.max(1, Math.abs(end), axis.length) * 4;
+    const hasLineAtEnd = grids.some(
+      grid => Math.abs(Number(grid.attrs[`${units.pos}1`]) - end) <= tolerance
+    );
+    if (!hasLineAtEnd) {
+      gridLine(end, { index: axis.ticks.length });
+    }
+  }
+
   return { grids, labels };
 }
 
