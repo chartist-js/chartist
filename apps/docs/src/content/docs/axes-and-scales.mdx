@@ -61,6 +61,10 @@ For values that span several orders of magnitude, [`@chartist-js/essentials`](..
 
 With `horizontalBars: true`, the bar chart swaps them: the labels go down the Y axis and the values along X.
 
+Each step starts with a grid line. To close the grid at the far edge, set `axisX: { showClosingGridLine: true }` on a line chart with `fullWidth` off or on a vertical bar chart. For horizontal bars, set the option on `axisY`.
+
+The option adds a grid line and leaves the ticks, labels and data positions as they are. On a line chart, `fullWidth: true` stretches the step axis. If the last tick already draws a grid line at the edge, Chartist skips the extra line.
+
 The labels in your data only become ticks through that default step axis. Give `axisX` another `type` and the labels have nothing left to do.
 
 ## Tuning the auto scale

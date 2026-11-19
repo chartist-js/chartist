@@ -4,7 +4,7 @@
  */
 import type { AxisOptions, ChartPadding } from '../core/types';
 import type { Area } from '../pipeline/types';
-import { node, withFields, type SceneNode } from '../scene/node';
+import { node, withFields, type RoleNode, type SceneNode } from '../scene/node';
 import { isFalseyButZero } from '../utils/utils';
 import type { ScaleAxis } from './axis';
 import type { SvgLabelBuilder } from './svgLabels';
@@ -107,7 +107,7 @@ export function axisNodes(
   const labelValues = axis.ticks.map(options.labelTransform);
   const gridOffset = axis.dimension === 'x' ? area.y2 : area.x1;
   const gridLength = axis.dimension === 'x' ? area.height : area.width;
-  const grids: SceneNode[] = [];
+  const grids: RoleNode<'grid'>[] = [];
   const labels: SceneNode[] = [];
   const gridLine = (
     position: number,
@@ -236,6 +236,22 @@ export function axisNodes(
       );
     }
   });
+
+  if (
+    options.showClosingGridLine &&
+    options.showGrid &&
+    axis.kind === 'step' &&
+    axis.length > 0 &&
+    projected.length
+  ) {
+    const end = axis.dimension === 'x' ? area.x2 : area.y2;
+    // A projected end tick can differ from the edge by rounding.
+    if (
+      !grids.some(grid => Math.abs(grid.attrs[`${units.pos}1`] - end) < 1e-6)
+    ) {
+      gridLine(end, { index: projected.length });
+    }
+  }
 
   return { grids, labels };
 }

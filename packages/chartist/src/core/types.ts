@@ -167,6 +167,15 @@ export interface AxisOptions {
   /** Draws the grid lines of the axis. */
   showGrid?: boolean;
   /**
+   * Draws a grid line at the end of a step axis. Off by default. Requires
+   * `showGrid`, and does not add a label or move any ticks.
+   *
+   * Use it on a line chart's X axis to close the grid with `fullWidth` off.
+   * If `fullWidth: true` already puts a grid line at the edge, Chartist
+   * skips the extra line.
+   */
+  showClosingGridLine?: boolean;
+  /**
    * Turns each label (and its index) into the text to show. Return `null`
    * or `undefined` to leave a label out. Wins over `labelInterpolationFnc`
    * when both are set.
