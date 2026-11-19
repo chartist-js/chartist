@@ -169,6 +169,10 @@ export interface AxisOptions {
   /**
    * Draws a grid line at the end of a step axis. Off by default. Requires
    * `showGrid`, and does not add a label or move any ticks.
+   *
+   * Use it on a line chart's X axis to close the grid with `fullWidth` off.
+   * If `fullWidth: true` already puts a grid line at the edge, Chartist
+   * skips the extra line.
    */
   showClosingGridLine?: boolean;
   /**

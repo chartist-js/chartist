@@ -49,6 +49,25 @@ describe('render/string', () => {
     }
   );
 
+  it('adds a closing grid line to a line chart without fullWidth', () => {
+    const data = { labels: ['A', 'B'], series: [[1, 2]] };
+    const render = (showClosingGridLine?: boolean) =>
+      renderToString(
+        toScene(lineChartConfig(data, { axisX: { showClosingGridLine } }), {
+          width: 320,
+          height: 180
+        })
+      );
+    const closingLine =
+      /<line class="ct-grid ct-horizontal" x1="305" x2="305"[^>]*\/>/;
+    const svg = render();
+    const svgWithClosingLine = render(true);
+
+    expect(svg).not.toMatch(closingLine);
+    expect(svgWithClosingLine).toMatch(closingLine);
+    expect(svgWithClosingLine.replace(closingLine, '')).toBe(svg);
+  });
+
   it('does not draw a second closing line when the final step tick is already there', () => {
     const data = { labels: ['A', 'B'], series: [[1, 2]] };
     const svg = renderToString(
