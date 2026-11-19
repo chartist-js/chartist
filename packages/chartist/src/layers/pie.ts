@@ -37,6 +37,8 @@ export interface PieLayerOptions {
   readonly total?: number;
   /** Draws a donut: rings instead of filled slices. */
   readonly donut?: boolean;
+  /** Draws a background ring behind the slices, including for empty donuts. */
+  readonly donutTrack?: boolean;
   /**
    * Donut ring width in px, or a share of the radius (`'25%'`). Without
    * it, the stylesheet sets the width (`--ct-donut-width`, 60px by
@@ -300,6 +302,24 @@ export function pie(options: PieLayerOptions = {}): Layer {
 
       const groups: SceneNode[] = [];
       const labelNodes: SceneNode[] = [];
+
+      if (options.donut && options.donutTrack && radius > 0) {
+        groups.push(
+          node(
+            'circle',
+            {
+              cx: center.x,
+              cy: center.y,
+              r: radius,
+              fill: 'none',
+              'stroke-width': donutWidth.value,
+              'aria-hidden': 'true',
+              'pointer-events': 'none'
+            },
+            'ct-donut-track'
+          )
+        );
+      }
 
       raw.forEach((series, index) => {
         if (values[index] === 0 && options.ignoreEmptyValues) {
