@@ -63,6 +63,8 @@ A donut's SVG gets `ct-chart-donut` instead of `ct-chart-pie`, and its slices ar
   working.
 </Callout>
 
+Set `donutTrack: true` to draw a background ring even when the series is empty. The track uses the same width as the slices. Set `--ct-donut-track-color` on the chart container to change its default gray color. With a fixed `total`, the track also shows the unfilled portion of the gauge.
+
 ## Gauges
 
 Two options turn a donut into a gauge. `startAngle` is where the first slice starts, in degrees: `0` points up and the slices run clockwise. `total` fixes the value of a full circle; without it, the slices always add up to one. When your values sum to less than `total`, part of the circle stays empty.

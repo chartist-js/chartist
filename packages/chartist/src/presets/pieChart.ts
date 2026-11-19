@@ -43,11 +43,13 @@ export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
    * change after the chart is created.
    */
   readonly renderer?: Renderer;
+  /** Draws a background ring when `donut` is enabled. */
+  readonly donutTrack?: boolean;
   /** Extra layers below or above the pie's slices, in polar coordinates. */
   readonly layers?: PresetLayers;
 };
 
-type Resolved = typeof pieDefaults & PieChartOptions;
+type Resolved = typeof pieDefaults & PieChartPresetOptions;
 
 /** What the pie preset passes to plugins as `ResolvedConfig.preset`. */
 export type PiePresetState = PresetState<
@@ -83,6 +85,7 @@ const pieSpec: PresetSpec<PieChartData, PieChartPresetOptions> = {
           startAngle: options.startAngle,
           total: options.total,
           donut: options.donut,
+          donutTrack: options.donutTrack,
           donutWidth: options.donutWidth,
           showLabel: options.showLabel,
           labelOffset: options.labelOffset,
