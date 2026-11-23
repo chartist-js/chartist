@@ -177,12 +177,17 @@ A created axis SHALL report its kind (for example `step`, `autoScale`, `fixedSca
 
 ### Requirement: Layers select their series
 
-A layer SHALL accept a series selection by index or name. A layer without a selection draws all series. Selected series SHALL keep their chart-wide index for classes, keys and data contexts.
+A layer SHALL accept a series selection by index or name. A layer without a selection draws all series. Selected series SHALL keep their chart-wide index for classes, keys and data contexts. A layer that selects no series (`series: []`) draws none and SHALL NOT shape any axis range, but its `inset`, `extent` and compose contexts SHALL still have every series of the chart, as on the presets, so a layer such as a legend can read the series without changing the axes.
 
 #### Scenario: Bars and a line from one data set
 
 - **WHEN** a chart has the series `revenue` and `margin`, a bar layer selects `revenue` and a line layer selects `margin`
 - **THEN** the bar layer draws only revenue bars in `g.ct-series.ct-series-a`, and the line layer only the margin line in `g.ct-series.ct-series-b`
+
+#### Scenario: A layer that reads every series
+
+- **WHEN** a composed chart draws `revenue` on the axis `revenue` and `margin` on the axis `margin`, and has a layer with `series: []` bound to `margin`
+- **THEN** that layer's `inset` and `compose` get both series, without `seriesIndexes`, and the `margin` axis has the same range as without the layer
 
 ### Requirement: Grid and label layers
 

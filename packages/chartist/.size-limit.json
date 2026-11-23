@@ -9,7 +9,7 @@
   {
     "name": "UMD (dist/index.umd.js)",
     "path": "dist/index.umd.js",
-    "limit": "27.5 kB",
+    "limit": "27.55 kB",
     "gzip": true,
     "disablePlugins": ["@size-limit/esbuild"]
   },
@@ -66,7 +66,7 @@
     "name": "import { BarChart } (tree-shaken)",
     "path": "dist/index.js",
     "import": "{ BarChart }",
-    "limit": "15.2 kB",
+    "limit": "15.25 kB",
     "gzip": true
   },
   {

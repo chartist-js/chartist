@@ -227,9 +227,13 @@ const bySide = (value: (side: AxisSide) => number) =>
     number
   >;
 
-/** The layer's data: only its series when it selects some. */
+/**
+ * The layer's data: only its series when it selects some. A layer without
+ * series (`series: []`) draws none, but reads them all, as on the presets.
+ */
 function layerDataOf(data: PreparedData, binding: LayerBinding | undefined) {
-  const selection = data.flat ? undefined : binding?.series;
+  const selection =
+    binding?.series?.length && !data.flat ? binding.series : undefined;
   return {
     selection,
     data: selection
