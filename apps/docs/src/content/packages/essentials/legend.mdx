@@ -1,0 +1,113 @@
+---
+title: Legend
+description: Name the series on any side of the chart, each next to a marker in its color. The names and colors come from the chart, so the legend never gets out of step.
+order: 5
+---
+
+import LiveExample from '../../../components/LiveExample.astro';
+
+Three lines in three colors need a key. `legend()` names the series, each next to a marker in its color. It reads the names from the chart's data and gives each entry its series' class, so you never keep a second list of names and colors in step with the chart: a new series, a new name or a new color in the stylesheet shows up in the legend on its own.
+
+<LiveExample
+  title='Cups per day'
+  label='A line chart of cups of tea, coffee and cocoa from Monday to Friday, with a legend above it naming Tea, Coffee and Cocoa next to a dot in each line color'
+  gallery='essentials/legend'
+/>
+
+## Where it goes
+
+Add it as an extra layer, `above` on a preset. It sits on top by default and reserves the room it needs there, so the drawing area shrinks and the legend never lands on the axis labels. `side` moves it:
+
+<LiveExample
+  title='A donut with a legend on the right'
+  label='A donut chart of visitor sources with each share written on its slice, and a legend on the right naming Search, Direct, Social and Email next to a dot in each slice color'
+  gallery='essentials/legend-pie'
+/>
+
+| Option   | What it does                                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `side`   | `top` (default), `right`, `bottom` or `left`.                                                                           |
+| `align`  | `start`, `middle` (default) or `end` along the side. The start is the left on the top and bottom, the top on the sides. |
+| `gap`    | The space between the legend and the chart, in px (8 by default).                                                       |
+| `series` | The series to list, by index or name. By default, every series with a name.                                             |
+
+On the top and bottom, the entries wrap into rows as wide as the drawing area, so a narrow chart gets a taller legend. On the left and right, they stand in a column. A legend and [axis titles](../axis-titles/) on the same side stack outward in the order of `layers`.
+
+## What it lists
+
+Every series with a `name`, in the order of the data. Series without one are left out, and keep their color. In a pie or donut chart, the series are values, so the legend lists the slices by their labels, or by a value's own `name`.
+
+In a [composed chart](../../../docs/composed-charts/), add it to the layers like any other. It lists the series of every layer, on whichever axis they're drawn, and leaves the axes as they are:
+
+```ts
+import {
+  autoScaleAxis,
+  axisLabels,
+  bar,
+  cartesianAxes,
+  chart,
+  line,
+  stepAxis
+} from 'chartist';
+import { legend } from '@chartist-js/essentials';
+
+chart('#chart', {
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+    series: [
+      { name: 'Revenue (EUR)', data: [120, 180, 150, 210] },
+      { name: 'Ad spend (USD)', data: [13, 19, 16, 23] }
+    ]
+  },
+  axes: cartesianAxes([
+    { id: 'month', side: 'bottom', type: stepAxis() },
+    { id: 'eur', side: 'left', type: autoScaleAxis(), low: 0 },
+    { id: 'usd', side: 'right', type: autoScaleAxis(), low: 0 }
+  ]),
+  layers: [
+    bar({ series: [0], y: 'eur' }),
+    line({ series: [1], y: 'usd', align: 'center' }),
+    axisLabels(),
+    legend({ side: 'bottom' })
+  ],
+  className: 'ct-chart-bar'
+});
+```
+
+Because it reads the data on every render, `update()` and [responsive options](../../../docs/responsive/) change it with the chart. A responsive override can also move it, for example to the bottom on small screens.
+
+## Styling
+
+Each entry is a `g.ct-legend-item` with its series' class (`ct-series-a`, or the series' `className`), holding a `circle.ct-legend-marker` and a `text.ct-legend-label`. The marker takes `--ct-color` from the series' class, the same color its line, bars or slice get. The names look like the axis labels until you say otherwise:
+
+```css
+.ct-legend-label {
+  --ct-legend-label-size: 0.875rem;
+  /* Each name in its series' color. */
+  --ct-legend-label-color: var(--ct-color);
+}
+```
+
+`--ct-legend-label-color` and `--ct-legend-label-size` fall back to `--ct-label-color` and `--ct-label-size`. The room and the marker follow the size: a larger font reserves taller rows and draws larger markers. `classNames` replaces the classes `ct-legend`, `ct-legend-item`, `ct-legend-marker` and `ct-legend-label`.
+
+In `compose` listeners and plugins, an entry has the role `legendItem`, with its series' index, the series, its name and the legend's side in `ctx`.
+
+## On the server and in the terminal
+
+The legend is SVG in the chart's scene, so [server rendering](../../../docs/server-rendering/) draws it, `applyStyles()` styles it, and hydration takes it over without repairs. `@chartist-js/terminal` writes the names, each after a marker in its series' color.
+
+## Coming from chartist-plugin-legend
+
+The 1.x plugin wrote an HTML list before or after the chart, named from the data or from `legendNames`. `legend()` draws inside the chart instead, so it reserves its room and renders wherever the chart does:
+
+| `chartist-plugin-legend`        | `legend()`                                                                       |
+| ------------------------------- | -------------------------------------------------------------------------------- |
+| `position: 'top'` or `'bottom'` | `side`, which also takes `left` and `right`                                      |
+| `position: element`             | Not needed: the legend is part of the chart.                                     |
+| `legendNames`                   | The series' `name`; pick some with `series`.                                     |
+| `className`, `classNames`       | `classNames` replaces the legend's own classes; a series' `className` styles it. |
+| `clickable`, `onClick`          | Not in `legend()`: clicking an entry doesn't hide its series.                    |
+
+To hide a series on a click, the plugin still runs on v2 through `fromLegacyPlugin`: see [its page](../../../plugins/chartist-plugin-legend/).
+
+Next: every option on the [API page](../api/), or how a layer reserves room in [Custom layers](../../../docs/custom-layers/).
