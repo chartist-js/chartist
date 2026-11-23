@@ -8,6 +8,14 @@
     "gzip": true
   },
   {
+    "name": "import { legend } (tree-shaken, without chartist)",
+    "path": "dist/index.js",
+    "import": "{ legend }",
+    "ignore": ["chartist"],
+    "limit": "1.5 kB",
+    "gzip": true
+  },
+  {
     "name": "import { logAxis } (tree-shaken, without chartist)",
     "path": "dist/index.js",
     "import": "{ logAxis }",

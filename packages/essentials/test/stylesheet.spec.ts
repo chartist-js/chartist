@@ -118,6 +118,33 @@ describe('stylesheet', () => {
     });
   });
 
+  it('gives legend names the label defaults, the dark one included', () => {
+    const name = rule(css, '.ct-legend-label');
+    const label = rule(core, '.ct-label');
+    expect(name).toMatch(
+      /fill:\s*var\(\s*--ct-legend-label-color,\s*var\(\s*--ct-label-color,/
+    );
+    expect(name).toMatch(
+      /font-size:\s*var\(\s*--ct-legend-label-size,\s*var\(\s*--ct-label-size,/
+    );
+    expect(rgba(fallbackAfter(name, '--ct-label-color,'))).toEqual(
+      rgba(fallbackAfter(label, '--ct-label-color,'))
+    );
+    expect(parseFloat(fallbackAfter(name, '--ct-label-size,'))).toBe(
+      parseFloat(fallbackAfter(label, '--ct-label-size,'))
+    );
+    expect(
+      lightDark(
+        fallbackAfter(rule(css, '.ct-legend-label', 1), '--ct-label-color,')
+      )
+    ).toEqual(
+      lightDark(fallbackAfter(rule(core, '.ct-label', 1), '--ct-label-color,'))
+    );
+    expect(rule(css, '.ct-legend-marker')).toMatch(
+      /fill:\s*var\(\s*--ct-color,/
+    );
+  });
+
   it('gives value labels the core dark default', () => {
     expect(
       lightDark(

@@ -1,4 +1,9 @@
 export { axisTitle, type AxisTitleOptions } from './axisTitle.ts';
+export {
+  legend,
+  type LegendItemContext,
+  type LegendOptions
+} from './legend.ts';
 export { logAxis, type LogAxisOptions } from './logAxis.ts';
 export type {
   TargetLabelContext,

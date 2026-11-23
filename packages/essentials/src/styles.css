@@ -83,3 +83,29 @@ span.ct-value-label {
   white-space: pre;
   line-height: 1.2;
 }
+
+/*
+ * Legends: names that look like the axis labels unless the page says
+ * otherwise, each after a marker in its series' color.
+ * `--ct-legend-label-color: var(--ct-color)` writes the names in it too.
+ */
+.ct-legend-label {
+  fill: var(--ct-legend-label-color, var(--ct-label-color, rgba(0, 0, 0, 0.4)));
+  font-size: var(--ct-legend-label-size, var(--ct-label-size, 0.75rem));
+}
+
+@supports (color: light-dark(#000, #fff)) {
+  .ct-legend-label {
+    fill: var(
+      --ct-legend-label-color,
+      var(
+        --ct-label-color,
+        light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.6))
+      )
+    );
+  }
+}
+
+.ct-legend-marker {
+  fill: var(--ct-color, currentColor);
+}
