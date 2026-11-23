@@ -39,8 +39,9 @@ describe('render/string', () => {
       )
     );
     expect(markup).toMatch(
-      /<circle class="ct-donut-track"[^>]+stroke-width="60"[^>]*>.*<path class="ct-slice-donut"/
+      /<circle class="ct-donut-track"[^>]*>.*<path class="ct-slice-donut"/
     );
+    expect(markup).not.toContain('stroke-width=');
   });
 
   it.each([

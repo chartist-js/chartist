@@ -55,6 +55,7 @@ $ct-class-area: ct-area !default;
 $ct-class-bar: ct-bar !default;
 $ct-class-slice-pie: ct-slice-pie !default;
 $ct-class-slice-donut: ct-slice-donut !default;
+$ct-class-donut-track: ct-donut-track !default;
 $ct-class-grid: ct-grid !default;
 $ct-class-grid-background: ct-grid-background !default;
 $ct-class-grid-minor: ct-grid-minor !default;
@@ -109,6 +110,9 @@ $ct-band-opacity: 0.12 !default;
 
 // Donut width (If donut width is to big it can cause issues where the shape gets distorted)
 $ct-donut-width: 60px !default;
+$ct-donut-track-color: rgba(0, 0, 0, 0.2) !default;
+// Follows the grid's dark default; false: always use $ct-donut-track-color.
+$ct-donut-track-color-dark: $ct-grid-color-dark !default;
 
 // If set to true it will include the default classes and generate CSS output. If you're planning to use the mixins you
 // should set this property to false

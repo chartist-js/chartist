@@ -37,7 +37,10 @@ export interface PieLayerOptions {
   readonly total?: number;
   /** Draws a donut: rings instead of filled slices. */
   readonly donut?: boolean;
-  /** Draws a background ring behind the slices, including for empty donuts. */
+  /**
+   * Draws a background ring behind the slices, including for empty donuts.
+   * Only applies with `donut: true`.
+   */
   readonly donutTrack?: boolean;
   /**
    * Donut ring width in px, or a share of the radius (`'25%'`). Without
@@ -92,13 +95,14 @@ export interface PieLayerOptions {
   readonly preventOverlappingLabelOffset?: number;
   /**
    * Replaces the classes of what the layer draws: `series` (`ct-series`),
-   * `slicePie` (`ct-slice-pie`), `sliceDonut` (`ct-slice-donut`) and
-   * `label` (`ct-label`).
+   * `slicePie` (`ct-slice-pie`), `sliceDonut` (`ct-slice-donut`),
+   * `donutTrack` (`ct-donut-track`) and `label` (`ct-label`).
    */
   readonly classNames?: {
     readonly series?: string;
     readonly slicePie?: string;
     readonly sliceDonut?: string;
+    readonly donutTrack?: string;
     readonly label?: string;
   };
 }
@@ -162,6 +166,7 @@ const CLASS_NAMES = {
   series: 'ct-series',
   slicePie: 'ct-slice-pie',
   sliceDonut: 'ct-slice-donut',
+  donutTrack: 'ct-donut-track',
   label: 'ct-label'
 };
 
@@ -312,11 +317,13 @@ export function pie(options: PieLayerOptions = {}): Layer {
               cy: center.y,
               r: radius,
               fill: 'none',
-              'stroke-width': donutWidth.value,
+              ...(options.donutWidth !== undefined
+                ? { 'stroke-width': donutWidth.value }
+                : {}),
               'aria-hidden': 'true',
               'pointer-events': 'none'
             },
-            'ct-donut-track'
+            classNames.donutTrack
           )
         );
       }

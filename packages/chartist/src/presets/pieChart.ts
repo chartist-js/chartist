@@ -10,7 +10,7 @@ import type {
 } from '../charts/PieChart/PieChart.types';
 import type { ChartConfig, PluginEntry } from '../chart/types';
 import type { PhaseListeners } from '../pipeline/types';
-import { pie } from '../layers/pie';
+import { pie, type PieLayerOptions } from '../layers/pie';
 import { pieDefaults } from './pieDefaults';
 import {
   createPreset,
@@ -27,7 +27,13 @@ import {
  * Options of `pieChart`: the 1.x `PieChart` options, with v2 plugins and
  * phase listeners.
  */
-export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
+export type PieChartPresetOptions = Omit<
+  PieChartOptions,
+  'plugins' | 'classNames'
+> & {
+  /** Replaces the chart and pie layer classes, including `donutTrack`. */
+  readonly classNames?: PieChartOptions['classNames'] &
+    PieLayerOptions['classNames'];
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
   readonly plugins?: readonly PluginEntry[];
   /**
@@ -43,7 +49,7 @@ export type PieChartPresetOptions = Omit<PieChartOptions, 'plugins'> & {
    * change after the chart is created.
    */
   readonly renderer?: Renderer;
-  /** Draws a background ring when `donut` is enabled. */
+  /** Draws a background ring behind the slices. Only applies with `donut: true`. */
   readonly donutTrack?: boolean;
   /** Extra layers below or above the pie's slices, in polar coordinates. */
   readonly layers?: PresetLayers;
