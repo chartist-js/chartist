@@ -209,7 +209,7 @@ lineChart(
 | `gap`        | Space between the legend and the chart, in px (default 8)                                                                  |
 | `classNames` | `{ legend, item, marker, label }` replace the classes `ct-legend`, `ct-legend-item`, `ct-legend-marker`, `ct-legend-label` |
 
-Series without a name are left out. In a pie chart, the legend lists the slices by their labels. On the top and bottom, the entries wrap into rows as wide as the drawing area; on the left and right, they stand in a column. In a composed chart it lists every series, whichever layer and axis draws it. The names look like the axis labels until you set `--ct-legend-label-color` or `--ct-legend-label-size`; the markers take their series' `--ct-color`.
+Series without a name are left out. In a pie chart, the legend lists the slices by their labels. On the top and bottom, the entries wrap into rows as wide as the drawing area; on the left and right, they stand in a column, which doesn't wrap, so a long legend fits better on the top or bottom. In a composed chart it lists every series, whichever layer and axis draws it. The names look like the axis labels until you set `--ct-legend-label-color` or `--ct-legend-label-size`; the markers take their series' `--ct-color`.
 
 ## Log axis
 
