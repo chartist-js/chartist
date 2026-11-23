@@ -69,7 +69,7 @@ Keys come for free: nodes with a series and value index get one from the layer i
 
 A layer draws on one X and one Y axis. Give it `x` and `y` options and pass them on as `axes`, as the built-in layers do, so users can bind it to any axis by id. The `series` option works the same way: pass it on as `series`, and `compose` gets only those series, with their chart-wide indexes in `seriesIndexes`.
 
-The selection also decides what the axes fit: **each axis covers the series of the layers bound to it.** A layer that draws no series (a reference line, an annotation) sets `series: []`, so it doesn't shape any axis.
+The selection also decides what the axes fit: **each axis covers the series of the layers bound to it.** A layer that draws no series (a reference line, an annotation, a legend) sets `series: []`, so it doesn't shape any axis. It still gets every series in its context, to read.
 
 **extent** adds to that. It runs before the axes are created and returns, by axis id, the range the layer needs:
 
@@ -119,7 +119,7 @@ Refining has rules, so layers can't break each other:
 
 - **One node at a time.** `refine` gets the node it's called for, not the scene. To compare with other values, work from the data in the context, as above.
 - **No structural changes.** Return the node with changed attributes, classes or context, or `undefined` to leave it. Whatever you return keeps the node's key and children, and refining can't drop a node. Removing and rearranging nodes is a plugin's job.
-- **Your own context.** The context is the one your `compose` got: your layer's data and axes. A layer with `series: []` sees no data here either; leave `series` out, as above, to see all of it.
+- **Your own context.** The context is the one your `compose` got: your layer's data and axes. Without a selection, or with `series: []`, that's every series.
 - **Order.** Every layer composes first, so a layer can refine the nodes of layers listed after it. Refining layers run in the order of `layers`, and plugins see the result in their `compose` events, where they can still change it.
 - **No state.** Don't count or remember between calls: the same layer object may refine several charts.
 

@@ -2,7 +2,7 @@
 
 The Chartist additions people ask for most, as layers you add to a chart. They're kept out of the core, so charts that don't use them stay small, and they're made and released together with Chartist.
 
-It holds `axisTitle()`, `targetLine()`, `trendLine()`, `valueLabels()` and `logAxis()` today. More layers and axes follow.
+It holds `axisTitle()`, `targetLine()`, `trendLine()`, `valueLabels()`, `legend()` and `logAxis()` today. More layers and axes follow.
 
 ## Install
 
@@ -179,6 +179,37 @@ barChart(
 ```
 
 `format(item)` gets the same item as the `format` of `@chartist-js/tooltips`: `undefined` keeps the default text, `null` draws no label, and `\n` starts a new line. `pointPosition`, `barPosition` and `offset` place the labels, `roles` and `series` pick what gets one. Style them with `--ct-value-label-color`, `--ct-value-label-inside-color` and `--ct-value-label-size`.
+
+## Legend
+
+`legend()` names the series, each next to a marker in its color. It reads the names from the chart's data and gives each entry its series' class, so it stays in step with `update()` and takes its colors from the stylesheet. It reserves the room it needs on its side, so it never overlaps the axis labels:
+
+```ts
+import { lineChart } from 'chartist';
+import { legend } from '@chartist-js/essentials';
+
+lineChart(
+  '#chart',
+  {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+    series: [
+      { name: 'Tea', data: [5, 6, 4, 7, 6] },
+      { name: 'Coffee', data: [8, 9, 7, 9, 10] }
+    ]
+  },
+  { layers: { above: [legend({ side: 'bottom' })] } }
+);
+```
+
+| Option       | What it does                                                                                                               |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `side`       | `top` (default), `right`, `bottom` or `left`                                                                               |
+| `align`      | `start`, `middle` (default) or `end` along the side; the start is the left on the top and bottom, the top on the sides     |
+| `series`     | The series to list, by index or name; default: every series with a name                                                    |
+| `gap`        | Space between the legend and the chart, in px (default 8)                                                                  |
+| `classNames` | `{ legend, item, marker, label }` replace the classes `ct-legend`, `ct-legend-item`, `ct-legend-marker`, `ct-legend-label` |
+
+Series without a name are left out. In a pie chart, the legend lists the slices by their labels. On the top and bottom, the entries wrap into rows as wide as the drawing area; on the left and right, they stand in a column, which doesn't wrap, so a long legend fits better on the top or bottom. In a composed chart it lists every series, whichever layer and axis draws it. The names look like the axis labels until you set `--ct-legend-label-color` or `--ct-legend-label-size`; the markers take their series' `--ct-color`.
 
 ## Log axis
 

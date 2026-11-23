@@ -2,7 +2,7 @@
   "name": "@chartist-js/essentials",
   "type": "module",
   "version": "2.2.1",
-  "description": "The Chartist additions people ask for most: axis titles, target and trend lines, value labels and a log axis",
+  "description": "The Chartist additions people ask for most: axis titles, target and trend lines, value labels, a legend and a log axis",
   "author": "Gion Kunz",
   "homepage": "https://chartist.dev/packages/essentials/",
   "license": "MIT OR WTFPL",
@@ -21,6 +21,7 @@
     "target line",
     "trend line",
     "value labels",
+    "legend",
     "log axis",
     "layers"
   ],

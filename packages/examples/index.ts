@@ -744,6 +744,20 @@ export const examples: Example[] = [
     v2: true
   }),
   example({
+    id: 'essentials/legend',
+    title: 'Legend',
+    description:
+      'Cups of tea, coffee and cocoa per day, each named above the chart next to a marker in its color.',
+    v2: true
+  }),
+  example({
+    id: 'essentials/legend-pie',
+    title: 'Legend beside a donut',
+    description:
+      'Where visitors came from as a donut with each share on its slice, and the sources named in a legend on the right.',
+    v2: true
+  }),
+  example({
     id: 'essentials/log-axis',
     title: 'Log axis',
     description:

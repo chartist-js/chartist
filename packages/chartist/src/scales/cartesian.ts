@@ -141,8 +141,10 @@ function layerExtents(
       return;
     }
     const binding = bindings[index] ?? {};
-    // As in compose: a flat series isn't split by a selection.
-    const selection = data.flat ? undefined : binding.series;
+    // As in compose: a flat series isn't split by a selection, and a layer
+    // without series reads them all.
+    const selection =
+      binding.series?.length && !data.flat ? binding.series : undefined;
     const axes = { x: binding.x ?? firstOf('x'), y: binding.y ?? firstOf('y') };
     // 1.x axis classes have no transform.
     const transformOf = (id?: string) =>

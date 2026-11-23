@@ -262,6 +262,38 @@ describe('composition: axes', () => {
       'unknown series "nope"'
     );
   });
+
+  it('a layer without series reads every series and shapes no axis', () => {
+    const revenue = probe({ axes: { y: 'revenue' }, series: ['revenue'] });
+    const margin = probe({ axes: { y: 'margin' }, series: ['margin'] });
+    run([revenue.layer, margin.layer]);
+    const before = margin.context().axes.y!.range;
+    let insetNames: (string | undefined)[] = [];
+    let extentSeries = 0;
+    const reader: Layer = {
+      ...probe({ axes: { y: 'margin' }, series: [] }).layer,
+      inset: ({ data: { series } }) => {
+        insetNames = series.map(s => s.name);
+        return undefined;
+      },
+      extent: ({ normalized }) => {
+        extentSeries = normalized.series.length;
+        return {};
+      }
+    };
+    const listing = probe({ axes: { y: 'margin' }, series: [] });
+    run([revenue.layer, margin.layer, reader, listing.layer]);
+    expect(insetNames).toEqual(['revenue', 'margin']);
+    expect(extentSeries).toBe(2);
+    expect(listing.context().data.series.map(s => s.name)).toEqual([
+      'revenue',
+      'margin'
+    ]);
+    expect(listing.context().normalized!.series).toHaveLength(2);
+    expect(listing.context().seriesIndexes).toBeUndefined();
+    // Bound to margin, it doesn't bring revenue's values to that axis.
+    expect(margin.context().axes.y!.range).toEqual(before);
+  });
 });
 
 describe('composition: layers', () => {
