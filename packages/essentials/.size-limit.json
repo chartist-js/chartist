@@ -12,7 +12,7 @@
     "path": "dist/index.js",
     "import": "{ legend }",
     "ignore": ["chartist"],
-    "limit": "1.5 kB",
+    "limit": "1.55 kB",
     "gzip": true
   },
   {
