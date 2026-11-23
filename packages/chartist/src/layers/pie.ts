@@ -99,10 +99,15 @@ export interface PieLayerOptions {
    * `donutTrack` (`ct-donut-track`) and `label` (`ct-label`).
    */
   readonly classNames?: {
+    /** The class of each slice's series group. */
     readonly series?: string;
+    /** The class of a filled pie slice. */
     readonly slicePie?: string;
+    /** The class of a donut slice. */
     readonly sliceDonut?: string;
+    /** The class of the background donut ring. */
     readonly donutTrack?: string;
+    /** The class of a slice label. */
     readonly label?: string;
   };
 }
