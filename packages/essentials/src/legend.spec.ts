@@ -318,6 +318,43 @@ describe('legend', () => {
     expect(Number(marker(bottom[0]).attrs.cy) + 8).toBeLessThanOrEqual(300);
   });
 
+  it('widens its rows to a width they fit with fractional text widths', () => {
+    // Widths that sum to a slightly different number in another order: the
+    // rows must still settle on the room the bottom legend reserved.
+    const widths: Record<string, number> = {
+      A: 21.638048371131553,
+      B: 10.678973608035117,
+      C: 21.509430246199216,
+      D: 68.99414787022124
+    };
+    const measureText: MeasureText = text => ({
+      width: widths[text] ?? text.length * 7.3,
+      height: 16,
+      fontSize: 12
+    });
+    const { items } = draw(
+      lineChartConfig(
+        {
+          labels: ['a'],
+          series: Object.keys(widths).map(name => ({ name, data: [1] }))
+        },
+        {
+          layers: {
+            above: [
+              legend({ side: 'bottom' }),
+              axisTitle({ axis: 'y', text: 'Cups' }),
+              legend({ side: 'right' })
+            ]
+          }
+        }
+      ),
+      { width: 308, measureText }
+    );
+    const bottom = items.filter(item => item.ctx.side === 'bottom');
+    expect(names(bottom)).toEqual(['A', 'B', 'C', 'D']);
+    expect(new Set(bottom.map(item => marker(item).attrs.cy)).size).toBe(1);
+  });
+
   it('stands in a column on the left and right, beside the axis labels', () => {
     const plain = draw(lineChartConfig(data));
     const right = draw(lineWith(legend({ side: 'right' })));

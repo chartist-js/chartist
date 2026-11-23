@@ -165,6 +165,23 @@ function wrap(widths: readonly number[], spacing: number, width: number) {
   return rows;
 }
 
+/**
+ * The width `wrap()` needs to fit the entry `next` after a row, added up in
+ * `wrap()`'s own order: text widths are fractional, and another order can
+ * round to a width that still doesn't fit.
+ */
+const reach = (
+  row: readonly number[],
+  next: number,
+  widths: readonly number[],
+  spacing: number
+) =>
+  row
+    .slice(1)
+    .reduce((used, index) => used + (spacing + widths[index]), widths[row[0]]) +
+  spacing +
+  widths[next];
+
 /** The width of a row of entries, spacing included. */
 const rowWidth = (
   row: readonly number[],
@@ -323,17 +340,18 @@ export function legend(options: LegendOptions = {}): Layer {
     // took room on the left or right since, the area is narrower than
     // the rows were made for: widen them until they fit that many again.
     const reserved = Math.max(1, Math.round((box.height - gap) / lineHeight));
+    // Each pass lets a row take the first entry of the next one, so the
+    // row breaks only move forward: n² passes are always enough.
     let rows = wrap(widths, spacing, box.width);
-    while (rows.length > reserved) {
+    for (
+      let pass = 0;
+      rows.length > reserved && pass < widths.length ** 2;
+      pass++
+    ) {
       const wider = Math.min(
         ...rows
           .slice(0, -1)
-          .map(
-            (row, index) =>
-              rowWidth(row, widths, spacing) +
-              spacing +
-              widths[rows[index + 1][0]]
-          )
+          .map((row, index) => reach(row, rows[index + 1][0], widths, spacing))
       );
       rows = wrap(widths, spacing, wider);
     }
