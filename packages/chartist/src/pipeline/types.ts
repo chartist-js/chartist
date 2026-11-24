@@ -119,7 +119,10 @@ export interface NormalizedChartData {
  * the axes and ways to measure text and styles.
  */
 export interface LayerContext {
-  /** The prepared data; only the layer's series when it selects some. */
+  /**
+   * The prepared data; only the layer's series when it selects some, all
+   * of them when it selects none (`series: []`).
+   */
   readonly data: PreparedData;
   /** The drawing area, in px in the SVG. */
   readonly area: Area;
@@ -146,7 +149,7 @@ export interface LayerContext {
   readonly normalized?: NormalizedChartData;
   /**
    * Chart-wide index of each series in `data` (a layer may select a subset
-   * of the series). Absent when the layer draws all series.
+   * of the series). Absent when `data` has all series.
    */
   readonly seriesIndexes?: readonly number[];
   /** How label layers draw labels: chart option, else the renderer's. */
@@ -172,7 +175,10 @@ export interface InsetContext {
   readonly height: number;
   /** The chart's padding option, in px, without any reserved room. */
   readonly padding: ChartPadding;
-  /** The prepared data; only the layer's series when it selects some. */
+  /**
+   * The prepared data; only the layer's series when it selects some, all
+   * of them when it selects none (`series: []`).
+   */
   readonly data: PreparedData;
   /** The chart's axis definitions, with their ids, sides and offsets; empty without axes. */
   readonly axes: readonly AxisDefinition[];
@@ -198,7 +204,8 @@ export interface InsetContext {
 export interface ExtentContext {
   /**
    * The layer's series, normalized as for the axes (`{ x, y }` values or
-   * holes); only the layer's series when it selects some.
+   * holes); only the layer's series when it selects some, all of them
+   * when it selects none (`series: []`).
    */
   readonly normalized: NormalizedChartData;
   /** The ids of the X and Y axis the layer draws on. */
@@ -233,7 +240,12 @@ export interface Layer {
   readonly coordinates: readonly Coordinates[];
   /** Axis ids to draw on; default: the first X and the first Y axis. */
   readonly axes?: { readonly x?: string; readonly y?: string };
-  /** Series to draw, by index or name; default: all series. */
+  /**
+   * Series to draw, by index or name; default: all series. The axes fit
+   * the series of the layers drawn on them. A layer that draws none, such
+   * as a reference line or a legend, sets `[]`: it doesn't shape any axis,
+   * and its context still has every series to read.
+   */
   readonly series?: readonly (number | string)[];
   /**
    * Reports the range of values the layer needs on its axes beyond the

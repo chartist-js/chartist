@@ -1,3 +1,10 @@
+## 2.3.0 (2026-11-24)
+
+### 🚀 Features
+
+- **chartist:** add an opt-in closing grid line for step axes ([#1542](https://github.com/chartist-js/chartist/pull/1542))
+- **essentials:** add legend() ([#1544](https://github.com/chartist-js/chartist/pull/1544))
+
 ## 2.2.1 (2026-11-17)
 
 ### 🩹 Fixes

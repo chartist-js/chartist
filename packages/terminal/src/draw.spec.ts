@@ -10,7 +10,12 @@ import {
   type NodeRole,
   type SceneNode
 } from 'chartist';
-import { axisTitle, logAxis, valueLabels } from '@chartist-js/essentials';
+import {
+  axisTitle,
+  legend,
+  logAxis,
+  valueLabels
+} from '@chartist-js/essentials';
 import { toPlainText } from './canvas.ts';
 import { drawScene, measureCells, terminalSize } from './draw.ts';
 
@@ -517,6 +522,39 @@ describe('vertical text', () => {
       )
     );
     expect(output).toBe('ab');
+  });
+
+  it('draws the legend of @chartist-js/essentials above the chart', () => {
+    const canvas = drawScene(
+      toScene(
+        lineChartConfig(
+          {
+            labels: ['Mon', 'Tue', 'Wed'],
+            series: [
+              { name: 'Tea', data: [5, 6, 4] },
+              { name: 'Coffee', data: [8, 9, 7] }
+            ]
+          },
+          { layers: { above: [legend()] } }
+        ),
+        terminalSize(40, 12)
+      )
+    );
+    const rows = lines(toPlainText(canvas));
+    // Below the top padding, above the grid.
+    const row = rows.findIndex(text => /Tea\s+.*Coffee/.test(text));
+    expect(row).toBe(1);
+    // Each name after a marker in its series' color.
+    for (const [name, series] of [
+      ['Tea', 0],
+      ['Coffee', 1]
+    ] as const) {
+      const column = [...rows[row]].indexOf(name[0]);
+      expect(canvas.cellAt(column - 1, row)?.ink).toMatchObject({
+        kind: 'point',
+        series
+      });
+    }
   });
 
   it('draws axis titles of @chartist-js/essentials beside the labels', () => {
