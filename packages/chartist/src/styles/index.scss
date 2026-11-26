@@ -303,9 +303,23 @@
     fill: none;
   }
 
+  .#{$ct-class-donut-track} {
+    stroke: var(--ct-donut-track-color, #{$ct-donut-track-color});
+
+    @if $ct-donut-track-color-dark {
+      @supports (color: light-dark(#000, #fff)) {
+        stroke: var(
+          --ct-donut-track-color,
+          light-dark(#{$ct-donut-track-color}, #{$ct-donut-track-color-dark})
+        );
+      }
+    }
+  }
+
   // Not over a slice's stroke-width attribute, which markup without inline
   // styles has for donutWidth. :where() keeps the single-class specificity.
-  .#{$ct-class-slice-donut}:not(:where([stroke-width])) {
+  .#{$ct-class-slice-donut}:not(:where([stroke-width])),
+  .#{$ct-class-donut-track}:not(:where([stroke-width])) {
     @include ct-chart-donut($ct-donut-width);
   }
 

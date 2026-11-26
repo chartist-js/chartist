@@ -38,6 +38,11 @@ export interface PieLayerOptions {
   /** Draws a donut: rings instead of filled slices. */
   readonly donut?: boolean;
   /**
+   * Draws a background ring behind the slices, including for empty donuts.
+   * Only applies with `donut: true`.
+   */
+  readonly donutTrack?: boolean;
+  /**
    * Donut ring width in px, or a share of the radius (`'25%'`). Without
    * it, the stylesheet sets the width (`--ct-donut-width`, 60px by
    * default), and in the browser the ring is laid out for the width the
@@ -90,13 +95,19 @@ export interface PieLayerOptions {
   readonly preventOverlappingLabelOffset?: number;
   /**
    * Replaces the classes of what the layer draws: `series` (`ct-series`),
-   * `slicePie` (`ct-slice-pie`), `sliceDonut` (`ct-slice-donut`) and
-   * `label` (`ct-label`).
+   * `slicePie` (`ct-slice-pie`), `sliceDonut` (`ct-slice-donut`),
+   * `donutTrack` (`ct-donut-track`) and `label` (`ct-label`).
    */
   readonly classNames?: {
+    /** The class of each slice's series group. */
     readonly series?: string;
+    /** The class of a filled pie slice. */
     readonly slicePie?: string;
+    /** The class of a donut slice. */
     readonly sliceDonut?: string;
+    /** The class of the background donut ring. */
+    readonly donutTrack?: string;
+    /** The class of a slice label. */
     readonly label?: string;
   };
 }
@@ -160,6 +171,7 @@ const CLASS_NAMES = {
   series: 'ct-series',
   slicePie: 'ct-slice-pie',
   sliceDonut: 'ct-slice-donut',
+  donutTrack: 'ct-donut-track',
   label: 'ct-label'
 };
 
@@ -300,6 +312,26 @@ export function pie(options: PieLayerOptions = {}): Layer {
 
       const groups: SceneNode[] = [];
       const labelNodes: SceneNode[] = [];
+
+      if (options.donut && options.donutTrack && radius > 0) {
+        groups.push(
+          node(
+            'circle',
+            {
+              cx: center.x,
+              cy: center.y,
+              r: radius,
+              fill: 'none',
+              ...(options.donutWidth !== undefined
+                ? { 'stroke-width': donutWidth.value }
+                : {}),
+              'aria-hidden': 'true',
+              'pointer-events': 'none'
+            },
+            classNames.donutTrack
+          )
+        );
+      }
 
       raw.forEach((series, index) => {
         if (values[index] === 0 && options.ignoreEmptyValues) {

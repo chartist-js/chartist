@@ -10,6 +10,40 @@ const ROOT =
   'xmlns="http://www.w3.org/2000/svg" xmlns:ct="http://gionkunz.github.com/chartist-js/ct"';
 
 describe('render/string', () => {
+  it('adds a track to an empty donut on request', () => {
+    const render = (donutTrack: boolean, donut = true) =>
+      renderToString(
+        toScene(
+          pieChartConfig({ series: [] }, { donut, donutTrack, donutWidth: 20 }),
+          { width: 200, height: 160 }
+        )
+      );
+
+    expect(render(true)).toContain(
+      '<circle class="ct-donut-track" cx="100" cy="80" r="65"'
+    );
+    expect(render(true)).toContain('stroke-width="20"');
+    expect(render(true)).not.toContain('ct-slice-donut');
+    expect(render(false)).not.toContain('ct-donut-track');
+    expect(render(true, false)).not.toContain('ct-donut-track');
+  });
+
+  it('draws the donut track behind gauge slices', () => {
+    const markup = renderToString(
+      toScene(
+        pieChartConfig(
+          { series: [30] },
+          { donut: true, donutTrack: true, total: 100 }
+        ),
+        { width: 200, height: 160 }
+      )
+    );
+    expect(markup).toMatch(
+      /<circle class="ct-donut-track"[^>]*>.*<path class="ct-slice-donut"/
+    );
+    expect(markup).not.toContain('stroke-width=');
+  });
+
   it.each([
     {
       dimension: 'X',

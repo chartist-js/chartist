@@ -275,3 +275,17 @@ A renderer MAY provide `adopt(container, replay)`: it takes over server markup i
 
 - **WHEN** a renderer's `adopt` returns nothing for the server's svg
 - **THEN** the chart renders with the renderer's `render()` as on a first render
+
+### Requirement: Optional donut track
+
+The pie layer and `pieChart()` preset SHALL draw a background ring when both `donut` and `donutTrack` are true, including for empty data. Its class SHALL follow `classNames.donutTrack`. Its width SHALL follow the same CSS custom property as the slices unless `donutWidth` is provided. Its default color SHALL follow the chart's light or dark color scheme, with `--ct-donut-track-color` taking precedence.
+
+#### Scenario: An empty donut receives data
+
+- **WHEN** an empty donut with a track is updated with non-empty series
+- **THEN** one track remains behind all slices
+
+#### Scenario: Width changes through CSS
+
+- **WHEN** `donutWidth` is omitted and `--ct-donut-width` changes without a new layout
+- **THEN** the track and slices use the same updated stroke width

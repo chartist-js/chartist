@@ -1,4 +1,5 @@
 import { estimateText, type MeasureStyle } from '../render/measure';
+import { chart } from '../chart/chart';
 import { createPhaseEmitter } from '../pipeline/emitter';
 import { runPipeline } from '../pipeline/phases';
 import { findAll } from '../scene/tree';
@@ -28,6 +29,65 @@ function scene(
 }
 
 describe('layers/pie', () => {
+  it('uses the configured donut track class', () => {
+    const track = findAll(
+      scene([], {
+        donut: true,
+        donutTrack: true,
+        classNames: { donutTrack: 'custom-track' }
+      })
+    ).find(node => node.name === 'circle');
+    expect(track?.classes).toEqual(['custom-track']);
+  });
+
+  it('leaves track width to CSS unless donutWidth is given', () => {
+    const track = (options: PieLayerOptions) =>
+      findAll(
+        scene(
+          [],
+          { donut: true, donutTrack: true, ...options },
+          undefined,
+          () => '20px'
+        )
+      ).find(node => node.name === 'circle')!;
+    expect(track({}).attrs).toMatchObject({ r: 90 });
+    expect(track({}).attrs['stroke-width']).toBeUndefined();
+    expect(track({ donutWidth: 40 }).attrs).toMatchObject({
+      r: 80,
+      'stroke-width': 40
+    });
+  });
+
+  it('keeps the track behind slices when an empty donut receives data', () => {
+    const container = document.createElement('div');
+    const handle = chart(container, {
+      data: { series: [] },
+      coordinates: 'polar',
+      width: 200,
+      height: 200,
+      layers: [pie({ donut: true, donutTrack: true })]
+    });
+    try {
+      expect(container.querySelectorAll('.ct-donut-track')).toHaveLength(1);
+      expect(container.querySelector('.ct-slice-donut')).toBeNull();
+
+      handle.update({ data: { series: [3, 2] } });
+
+      const track = container.querySelector('.ct-donut-track')!;
+      const slices = container.querySelectorAll('.ct-slice-donut');
+      expect(container.querySelectorAll('.ct-donut-track')).toHaveLength(1);
+      expect(slices).toHaveLength(2);
+      slices.forEach(slice => {
+        expect(
+          track.compareDocumentPosition(slice) &
+            Node.DOCUMENT_POSITION_FOLLOWING
+        ).toBeTruthy();
+      });
+    } finally {
+      handle.destroy();
+    }
+  });
+
   it('draws in polar coordinates only', () => {
     expect(() =>
       runPipeline(
