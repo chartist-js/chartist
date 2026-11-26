@@ -51,6 +51,11 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     include: ['**/*.api.ts'],
+    // The export-list tests load TypeScript and build a program over a
+    // declaration file: 1-2 s on a laptop, but on CI, next to the other
+    // targets, they took up to 5.2 s on Node 22 and hit Vitest's 5 s default
+    // (#1546).
+    testTimeout: 20_000,
     // The v2 API doesn't exist in chartist@1.5.0.
     exclude: targetName === 'v1' ? ['**/*.v2.api.ts'] : [],
     setupFiles: ['setup.ts'],
