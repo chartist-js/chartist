@@ -1,3 +1,9 @@
+## 2.4.0 (2026-11-26)
+
+### 🚀 Features
+
+- **chartist:** add an opt-in donut track ([#1543](https://github.com/chartist-js/chartist/pull/1543))
+
 ## 2.3.0 (2026-11-24)
 
 ### 🚀 Features
