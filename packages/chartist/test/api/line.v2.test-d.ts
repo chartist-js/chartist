@@ -20,9 +20,12 @@ import {
 describe('line preset types', () => {
   test('lineChart takes 1.x arguments and returns a handle', () => {
     expectTypeOf(
-      lineChart('#c', { labels: ['a'], series: [[1]] }, { showArea: true }, [
-        ['(max-width: 600px)', { showPoint: false }]
-      ])
+      lineChart(
+        '#c',
+        { labels: ['a'], series: [[1]] },
+        { showArea: true, stack: true },
+        [['(max-width: 600px)', { showPoint: false }]]
+      )
     ).toEqualTypeOf<PresetHandle<LineChartPresetOptions>>();
     expectTypeOf(barChart('#c', { series: [[1]] })).toEqualTypeOf<
       PresetHandle<BarChartPresetOptions>
@@ -31,6 +34,8 @@ describe('line preset types', () => {
       PresetHandle<PieChartPresetOptions>
     >();
     expectTypeOf(lineChart('#c', { series: [] })).toExtend<ChartHandle>();
+    // @ts-expect-error stack is a boolean
+    lineChart('#c', { series: [] }, { stack: 'yes' });
     // @ts-expect-error showArea is a boolean
     lineChart('#c', { series: [] }, { showArea: 'yes' });
   });
@@ -96,7 +101,11 @@ describe('line preset types', () => {
 
   test('line returns a layer', () => {
     expectTypeOf(
-      line({ showArea: true, overrides: { a: { showPoint: false } } })
+      line({
+        stack: true,
+        showArea: true,
+        overrides: { a: { showPoint: false } }
+      })
     ).toEqualTypeOf<Layer>();
   });
 });

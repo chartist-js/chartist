@@ -41,6 +41,8 @@ export type LineChartPresetOptions = Omit<
   LineChartOptions,
   'axisX' | 'axisY' | 'plugins' | 'series'
 > & {
+  /** Adds series at each value index, as `stack` on {@link line}. */
+  readonly stack?: boolean;
   /** v2 plugins; convert 1.x plugins with `fromLegacyPlugin`. */
   readonly plugins?: readonly PluginEntry[];
   /**
@@ -147,6 +149,7 @@ const lineSpec: PresetSpec<LineChartData, LineChartPresetOptions> = {
             showPoint: options.showPoint,
             showLine: options.showLine,
             showArea: options.showArea,
+            stack: options.stack,
             areaBase: options.areaBase,
             overrides: options.series,
             reverseData: options.reverseData,

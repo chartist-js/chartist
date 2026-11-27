@@ -15,6 +15,15 @@ export const area = {
   series: [[5, 9, 7, 8, 5, 3, 5]]
 };
 
+export const stacked = {
+  labels: week,
+  series: [
+    [5, 9, 7, 8, 5, 3, 5],
+    [2, 3, 4, 2, 3, 5, 4],
+    [1, 2, 2, 3, 2, 1, 2]
+  ]
+};
+
 export const smoothing = {
   labels: ['6am', '9am', '12pm', '3pm', '6pm', '9pm'],
   series: [
@@ -60,6 +69,25 @@ Turn on `showArea` and you have an area chart:
 />
 
 The area closes at `areaBase`, which is `0` by default. If `0` is outside the axis range, as in this example, the area closes at the edge of the chart instead. Its opacity, like every other color and size, is set in CSS: see [Styling with CSS](../styling-with-css/).
+
+## Stacked lines and areas
+
+Set `stack: true` to add each series to the ones before it at the same value index. The Y axis fits the running totals, and points still carry their original values for tooltips.
+
+With `showArea: true`, the first area starts at zero and each later area fills between the previous total and the new one. `areaBase` doesn't apply to stacked areas. Negative values subtract from the running total; a missing value leaves the total unchanged and creates a gap in that series.
+
+<LiveExample
+  title='Stacked areas'
+  label='Three series stacked from Monday to Sunday, each area filling between successive totals'
+  preview={{
+    type: 'line',
+    data: stacked,
+    options: { stack: true, showArea: true }
+  }}
+  example='line-charts/stacked-area'
+/>
+
+For a composed chart, use the same options on `line({ stack: true, showArea: true })`.
 
 ## Smooth or straight
 

@@ -289,3 +289,26 @@ The pie layer and `pieChart()` preset SHALL draw a background ring when both `do
 
 - **WHEN** `donutWidth` is omitted and `--ct-donut-width` changes without a new layout
 - **THEN** the track and slices use the same updated stroke width
+
+### Requirement: Stacked line layers
+
+The `line()` layer and `lineChart()` preset SHALL accept an optional boolean `stack`. When true, the layer SHALL add series values at each value index in drawing order and project their running totals. Its Y-axis extent SHALL include zero and every intermediate total, unless explicit axis bounds override it. The original normalized values and metadata SHALL remain available in point and path contexts and `ct:value` attributes.
+
+#### Scenario: Areas between stacked lines
+
+- **WHEN** a stacked line layer draws areas
+- **THEN** its first area closes at zero and later areas close along the preceding totals, using the configured interpolation instead of `areaBase`
+
+#### Scenario: Missing and negative values
+
+- **WHEN** a stacked series contains a missing value
+- **THEN** its line and area have a hole there unless the interpolation fills holes, and subsequent series retain the preceding total at that index
+- **WHEN** a value is negative
+- **THEN** it subtracts from the preceding total, and the Y-axis extent still includes the intermediate totals
+
+#### Scenario: Selected and reversed series
+
+- **WHEN** a stacked layer selects series
+- **THEN** only those series contribute to its totals, in selection order
+- **WHEN** a stacked layer reverses data
+- **THEN** it stacks the reversed series and values in drawing order

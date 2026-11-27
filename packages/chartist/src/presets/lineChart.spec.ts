@@ -59,6 +59,36 @@ describe('presets/lineChart', () => {
     ]);
   });
 
+  it('updates between stacked and unstacked areas', () => {
+    const element = sized();
+    const handle = lineChart(
+      element,
+      {
+        labels: ['a', 'b'],
+        series: [
+          [2, 3],
+          [4, 5]
+        ]
+      },
+      {
+        stack: true,
+        showArea: true,
+        lineSmooth: false
+      }
+    );
+    const stacked = element.querySelectorAll('.ct-line')[1].getAttribute('d');
+    expect(element.querySelectorAll('.ct-area')).toHaveLength(2);
+    handle.setOptions({ stack: false });
+    expect(element.querySelectorAll('.ct-line')[1].getAttribute('d')).not.toBe(
+      stacked
+    );
+    handle.setOptions({ stack: true });
+    expect(element.querySelectorAll('.ct-line')[1].getAttribute('d')).toBe(
+      stacked
+    );
+    handle.detach();
+  });
+
   it('accepts v2 axis factories next to 1.x classes', async () => {
     const { fixedScaleAxis } = await import('../scales/factories');
     const { FixedScaleAxis } = await import('../axes/FixedScaleAxis');
