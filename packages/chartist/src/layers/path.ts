@@ -40,6 +40,7 @@ export function centerShift(
  * Projects a series' values into the chart area and interpolates a path
  * through them. Holes break the path unless the interpolation fills them.
  * @param meta The meta of a value, attached to its path element.
+ * @param dataValues The original values when the projected values are transformed.
  */
 export function seriesPath(
   values: NormalizedSeries,
@@ -47,7 +48,8 @@ export function seriesPath(
   area: Area,
   shift: number,
   interpolation: LineInterpolation,
-  meta: (valueIndex: number) => unknown = () => undefined
+  meta: (valueIndex: number) => unknown = () => undefined,
+  dataValues: NormalizedSeries = values
 ): SvgPath {
   const pathCoordinates: number[] = [];
   const pathData: SegmentData[] = [];
@@ -56,7 +58,11 @@ export function seriesPath(
       area.x1 + shift + axes.x.project(value, valueIndex, values),
       area.y1 - axes.y.project(value, valueIndex, values)
     );
-    pathData.push({ value, valueIndex, meta: meta(valueIndex) });
+    pathData.push({
+      value: dataValues[valueIndex],
+      valueIndex,
+      meta: meta(valueIndex)
+    });
   });
   return interpolation(pathCoordinates, pathData);
 }

@@ -129,6 +129,13 @@ export const examples: Example[] = [
     classic: true
   }),
   example({
+    id: 'line/stacked-area',
+    title: 'Stacked areas',
+    description:
+      'Three series stacked from zero, with areas between their running totals.',
+    v2: true
+  }),
+  example({
     id: 'line/axis-auto',
     title: 'Auto scale axis',
     description:

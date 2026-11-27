@@ -9,8 +9,10 @@ import type { NormalizedSeries, Series, SeriesObject } from '../core/types';
 import type { LineInterpolation } from '../charts/LineChart/LineChart.types';
 import type { Layer, PreparedSeries } from '../pipeline/types';
 import { node, withFields, type SceneNode } from '../scene/node';
+import { SvgPath } from '../svg/SvgPath';
 import { isNumeric, safeHasProperty } from '../utils/utils';
-import { centerShift, interpolationOf, seriesPath } from './path';
+import { stackedExtent } from './bar';
+import { centerShift, interpolationOf, reversePath, seriesPath } from './path';
 
 /**
  * The line options you can set per series: in the `overrides` of
@@ -28,11 +30,11 @@ export interface LineSeriesOptions {
   readonly showPoint?: boolean;
   /** Draws the lines. */
   readonly showLine?: boolean;
-  /** Fills the area between each line and `areaBase`. */
+  /** Fills each line down to `areaBase`, or between totals with `stack`. */
   readonly showArea?: boolean;
   /**
    * The value the areas close at, usually 0. It's kept within the Y axis
-   * range.
+   * range. Ignored with `stack: true`.
    */
   readonly areaBase?: number;
 }
@@ -43,6 +45,14 @@ export interface LineSeriesOptions {
  * axis.
  */
 export interface LineLayerOptions extends LineSeriesOptions {
+  /**
+   * Adds each series to the ones before it at the same value index. Areas
+   * fill between successive totals instead of `areaBase`, starting at 0.
+   * Holes leave the total unchanged and break that series' line and area
+   * unless the interpolation fills them.
+   * Negative values subtract from the total. The Y axis grows to fit it.
+   */
+  readonly stack?: boolean;
   /** Series to draw, by index or name; default: all series. */
   readonly series?: readonly (number | string)[];
   /** The id of the X axis to draw on; default: the first X axis. */
@@ -166,6 +176,19 @@ export function line(options: LineLayerOptions = {}): Layer {
     coordinates: ['cartesian'],
     axes: { x: options.x, y: options.y },
     series: options.series,
+    extent({ normalized, axes }) {
+      const extent = options.stack
+        ? stackedExtent(normalized.series, 'y')
+        : undefined;
+      return axes.y !== undefined && extent
+        ? {
+            [axes.y]: {
+              low: Math.min(0, extent.low),
+              high: Math.max(0, extent.high)
+            }
+          }
+        : {};
+    },
     compose({ data, area, axes, normalized, seriesIndexes }) {
       const { x: axisX, y: axisY } = axes;
       if (!axisX || !axisY || !normalized) {
@@ -182,6 +205,7 @@ export function line(options: LineLayerOptions = {}): Layer {
       if (options.reverseData) {
         order.reverse();
       }
+      const totals: number[] = [];
 
       return order.map((dataIndex, localIndex) => {
         // The chart-wide index, for classes, keys and contexts.
@@ -198,8 +222,23 @@ export function line(options: LineLayerOptions = {}): Layer {
         const smoothing = interpolationOf(
           seriesOption(series, options, 'lineSmooth')
         );
+        const lower: NormalizedSeries = [];
+        const projectedValues = options.stack
+          ? values.map((value, valueIndex) => {
+              const amount = safeHasProperty(value, 'y') ? value.y : value;
+              if (!isNumeric(amount)) {
+                lower.push(undefined);
+                return undefined;
+              }
+              const base = totals[valueIndex] ?? 0;
+              const x = safeHasProperty(value, 'x') ? value.x : undefined;
+              lower.push({ x, y: base });
+              totals[valueIndex] = base + Number(amount);
+              return { x, y: totals[valueIndex] };
+            })
+          : values;
         const path = seriesPath(
-          values,
+          projectedValues,
           { x: axisX, y: axisY },
           area,
           shift,
@@ -209,7 +248,8 @@ export function line(options: LineLayerOptions = {}): Layer {
             getMetaData(
               series,
               options.reverseData ? values.length - 1 - valueIndex : valueIndex
-            )
+            ),
+          values
         );
         const seriesContext = { series, seriesIndex, meta: seriesMeta };
 
@@ -262,6 +302,15 @@ export function line(options: LineLayerOptions = {}): Layer {
         }
 
         if (seriesOption(series, options, 'showArea') && axisY.range) {
+          const lowerPieces = options.stack
+            ? seriesPath(
+                lower,
+                { x: axisX, y: axisY },
+                area,
+                shift,
+                smoothing
+              ).splitByCommand('M')
+            : undefined;
           const areaBase = Math.max(
             Math.min(
               seriesOption(series, options, 'areaBase'),
@@ -272,19 +321,36 @@ export function line(options: LineLayerOptions = {}): Layer {
           const areaBaseProjected = area.y1 - axisY.project(areaBase);
           path
             .splitByCommand('M')
-            .filter(segment => segment.pathElements.length > 1)
-            .map(segment => {
+            .flatMap((segment, index) => {
+              if (segment.pathElements.length < 2) {
+                return [];
+              }
+              if (lowerPieces) {
+                const lowerPiece = lowerPieces[index];
+                if (!lowerPiece) {
+                  return [];
+                }
+                const back = reversePath(lowerPiece);
+                const start = back.pathElements[0];
+                back
+                  .position(0)
+                  .remove(1)
+                  .line(start.x, start.y, false, start.data);
+                return [SvgPath.join([segment, back], true)];
+              }
               const first = segment.pathElements[0];
               const last =
                 segment.pathElements[segment.pathElements.length - 1];
-              return segment
-                .clone(true)
-                .position(0)
-                .remove(1)
-                .move(first.x, areaBaseProjected)
-                .line(first.x, first.y, false, first.data)
-                .position(segment.pathElements.length + 1)
-                .line(last.x, areaBaseProjected);
+              return [
+                segment
+                  .clone(true)
+                  .position(0)
+                  .remove(1)
+                  .move(first.x, areaBaseProjected)
+                  .line(first.x, first.y, false, first.data)
+                  .position(segment.pathElements.length + 1)
+                  .line(last.x, areaBaseProjected)
+              ];
             })
             .forEach(areaPath => {
               children = [
